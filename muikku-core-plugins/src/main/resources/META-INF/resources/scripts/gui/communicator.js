@@ -19,7 +19,9 @@ $(document).ready(function(){
     init: function () {
       $('.cm-messages-container').on('click','.cm-message:not(.open)', $.proxy(this._onMessageClick, this));
       $('.cm-messages-container').on('click','.icon-goback', $.proxy(this._onMessageBackClick, this));
+      $('.cm-messages-container').on('click','.cm-message-reply-link', $.proxy(this._replyMessage, this));
       $('#socialNavigation').on('focus', '#recipientContent', $.proxy(this._onRecipientFocus, this));
+      $("#socialNavigation").on("click", ".cm-message-recipient-name", $.proxy(this._onRemoveRecipientClick, this));
       $("#socialNavigation").on("click", ".cm-message-recipient-name", $.proxy(this._onRemoveRecipientClick, this));
       $('*[data-message-type="inbox"]').addClass('selected');      
 
@@ -92,66 +94,69 @@ $(document).ready(function(){
         renderDustTemplate('communicator/communicator_items_open.dust', result, function(text) {
           mCont.empty();
           mCont.append($.parseHTML(text));
+          
 
-          $(".cm-message-reply-link").click(function(event) {
-            var element = $(event.target);
-            element = element.parents(".cm-message");
-            var eId = element.attr('id');
-            var fCont = element.find('.cm-message-content-tools-reply-container');
-            var tCont = element.find('.cm-message-content-tools-container');
-            var messageId = element.find('input[name="communicatorMessageId"]').val();
-
-            mApi().communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback) {
-              mApi().communicator.communicatormessages.sender.read(messageId).callback(function(err, user) {
-                reply.senderFullName = user.firstName + ' ' + user.lastName;
-                reply.senderHasPicture = user.hasImage;
-              });
-
-              replyCallback();
-            })
-
-            .callback(function(err, result) {
-              renderDustTemplate('communicator/communicator_replymessage.dust', result, function(text) {
-
-                tCont.hide();
-                fCont.append($.parseHTML(text));
-
-                var cBtn = $(fCont).find("input[name='cancel']");
-                var sBtn = $(fCont).find("input[name='send']");
-
-                $(sBtn).click(function() {
-                  var cmId = $(fCont).find("input[name='communicatorMessageId']").val();
-                  var subject = $(fCont).find("input[name='subject']").val();
-                  var content = $(fCont).find("textarea[name='content']").val();
-                  var tagStr = ""; // TODO: Tag content
-                  var tags = tagStr != undefined ? tagStr.split(' ') : [];
-                  var recipientIdStr = $(fCont).find("input[name='recipientIds']").val();
-                  var recipientIds = recipientIdStr != undefined ? recipientIdStr.split(',') : [];
-                  var groupIds = [];
-
-                  mApi().communicator.messages.create(cmId, {
-                    categoryName : "message",
-                    caption : subject,
-                    content : content,
-                    tags : tags,
-                    recipientIds : recipientIds,
-                    recipientGroupIds : groupIds
-                  }).callback(function(err, result) {
-                  });
-
-                  // Go to inbox
-                  window.location.reload();
-                });
-
-                $(cBtn).click(function() {
-                  tCont.show();
-                  fCont.empty();
-
-                });
-
-              });
-            });
-          });
+          
+          
+//          $(".cm-message-reply-link").click(function(event) {
+//            var element = $(event.target);
+//            element = element.parents(".cm-message");
+//            var eId = element.attr('id');
+//            var fCont = element.find('.cm-message-content-tools-reply-container');
+//            var tCont = element.find('.cm-message-content-tools-container');
+//            var messageId = element.find('input[name="communicatorMessageId"]').val();
+//
+//            mApi().communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback) {
+//              mApi().communicator.communicatormessages.sender.read(messageId).callback(function(err, user) {
+//                reply.senderFullName = user.firstName + ' ' + user.lastName;
+//                reply.senderHasPicture = user.hasImage;
+//              });
+//
+//              replyCallback();
+//            }).callback(function(err, result) {
+//              renderDustTemplate('communicator/communicator_replymessage.dust', result, function(text) {
+//
+//                tCont.hide();
+//                fCont.append($.parseHTML(text));
+//
+//                var cBtn = $(fCont).find("input[name='cancel']");
+//                var sBtn = $(fCont).find("input[name='send']");
+//                
+//                $(sBtn).click(function() {
+//              
+//                  var cmId = $(fCont).find("input[name='communicatorMessageThreadId']").val();
+//                  var subject = $(fCont).find("input[name='subject']").val();
+//                  var content = $(fCont).find("textarea[name='content']").val();
+//                  var tagStr = undefined; // TODO: Tag content
+//                  var tags = tagStr != undefined ? tagStr.split(' ') : [];
+//                  var recipientIdStr = $(fCont).find("input[name='recipientIds']").val();
+//                  var recipientIds = recipientIdStr != undefined ? recipientIdStr.split(',') : [];
+//                  var groupIds = [];
+//
+//                  mApi().communicator.messages.create(cmId, {
+//                    categoryName : "message",
+//                    caption : subject,
+//                    content : content,
+//                    tags : tags,
+//                    recipientIds : recipientIds,
+//                    recipientGroupIds : groupIds
+//                  }).callback(function(err, result) {
+//                    
+//                  });
+//
+//                  window.location.reload();
+//
+//                });
+//
+//                $(cBtn).click(function() {
+//                  tCont.show();
+//                  fCont.empty();
+//
+//                });
+//
+//              });
+//            });
+//          });
         });
 
         mApi().communicator.messages.markasread.create(communicatorMessageId).callback(function (err, result) {
@@ -198,7 +203,7 @@ $(document).ready(function(){
     _onMessageClick: function (event) {
       var element = $(event.target);
       element = element.parents(".cm-message");
-      var cmId = element.find("input[name='communicatorMessageIdId']").val();
+      var cmId = element.find("input[name='communicatorMessageThreadId']").val();
 
       var box = "#inbox";
       
@@ -257,6 +262,8 @@ $(document).ready(function(){
         });
       }
 	},
+	
+
 	_onRemoveRecipientClick : function (event) {
 	  var element = $(event.target);
 	  if (!element.hasClass("cm-message-recipient"))
@@ -272,6 +279,33 @@ $(document).ready(function(){
 //  	  return this._searchUsers(searchTerm);
   },    	
 
+  
+  _replyMessage : function(event){
+    
+     var element = $(event.target);
+     element = element.parents(".cm-message");
+     var eId = element.attr('id');
+     var threadId = element.find('input[name="communicatorMessageThreadId"]').val();
+     var _this = this;
+     var sendReply = function(values){
+  
+       var tId = threadId; 
+       mApi().communicator.messages.create(tId, values).callback(function (err, result) {
+          _this._showMessage(threadId); 
+        });
+    }   
+     mApi().communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback) {
+       mApi().communicator.communicatormessages.sender.read(eId).callback(function(err, user) {
+         reply.senderFullName = user.firstName + ' ' + user.lastName;
+         reply.senderHasPicture = user.hasImage;
+       });
+    
+       replyCallback();
+    }).callback(function(err, result) {
+      openInSN('/communicator/communicator_replymessage.dust', result, sendReply);       
+    });
+    
+  },
   _searchGroups: function (searchTerm) {
     var _this = this;
     var users = new Array();
@@ -297,7 +331,10 @@ $(document).ready(function(){
     
     return users;
   },
-
+  _refreshThread : function(threadId){
+    
+    
+  },
   _searchUsers: function (searchTerm) {
 		var _this = this;
 		var users = new Array();

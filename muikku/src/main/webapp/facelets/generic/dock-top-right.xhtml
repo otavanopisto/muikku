@@ -6,8 +6,8 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
-  <m:widgetSpace name="generic.dock-top.right" keepEmpty="false" sizing="MINIMIZE" styleClass="">
-    <!--  <m:widget name="dock-environment-settings" size="1" rendered="#{sessionBackingBean.loggedIn}"/>  -->
+  <m:widgetSpace name="generic.dock-top.right" keepEmpty="false" sizing="MINIMIZE" styleClass="noLid">
+    <m:widget name="dock-workspaces-loggeduser" size="2" rendered="#{sessionBackingBean.loggedIn and location == 'workspace'}"/>   
   </m:widgetSpace>
 
 </ui:composition>

@@ -6,7 +6,7 @@
   xmlns:h="http://java.sun.com/jsf/html" 
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
-  template="/WEB-INF/templates/default.xhtml">
+  template="/jsf/workspace/templates/workspace-base-template.xhtml">
 
   <!-- Lets set the base body class per view -->
   <ui:param name="bodyClass" value="workspace-discussions" />
@@ -20,52 +20,14 @@
   <ui:define name="viewCss">
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-discussions.css" />  
   </ui:define>
-
-  <ui:define name="sitebody">
-    <header id="staticNavigationWrapperWorkspace">
-      <nav id="staticNavigation" class="container_24">
-        <ui:insert name="dock.top">
-          <m:widgetSpaceSet styleClass="noLid">
-            <ui:insert name="dock.top.left">
-              <ui:include src="/facelets/generic/dock-top-left.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="dock.top.center">
-              <ui:include src="/facelets/generic/dock-top-center.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="dock.top.right">
-              <ui:include src="/facelets/generic/dock-top-right.xhtml"></ui:include>
-            </ui:insert>
-          </m:widgetSpaceSet>
-        </ui:insert>
-        <div class="clear"></div> 
-      </nav>
-    </header>  
-    <div id="workspaceNavigationWrapper">
-      <ui:insert name="workspace.dock">
-        <m:widgetSpaceSet>
-          <nav id="workspaceEvaluationDockWrapper">
-            <div id="workspaceEvaluationDock">
-              <ui:insert name="workspaces.evaluation.dock">
-                <ui:include src="/facelets/generic/workspaces-assessment-dock.xhtml"></ui:include>
-              </ui:insert>
-            </div>
-          </nav>
-          <nav id="workspaceDockWrapper">
-            <div id="workspaceDock">
-              <ui:insert name="workspaces.dock">
-                <ui:include src="/facelets/generic/workspaces-main-dock.xhtml"></ui:include>
-              </ui:insert>
-            </div>
-          </nav>
-        </m:widgetSpaceSet>
-      </ui:insert>
-    </div>
+  
+  <ui:define name="workspace.main.content">
     <main id="content" class="container_24">
       <section>
+        <h1 class="page-title">#{i18n.text['plugin.workspace.discussions.pageTitle']}</h1>
 
         <ui:insert name="workspace.content.top.static">
           <div class="widgetSpaceSet mf-content-functions grid_24 nomargin noLid">
-  
             <m:widgetSpaceSet styleClass="nomargin mf-content-tools-top">
               <m:widgetSpace name="workspace.content-tools-top.left" keepEmpty="false" sizing="SUM" styleClass="mf-button-container nomargin noLid">
                 <ui:insert name="workspace.content.top.left" />
@@ -77,9 +39,7 @@
                 <ui:insert name="workspace.content.top.right" />
               </m:widgetSpace>
             </m:widgetSpaceSet>
-          
           </div>
-          
         </ui:insert>
         
         <ui:insert name="workspace.content">
@@ -98,25 +58,6 @@
         
       </section>
     </main>
-    
-    <div id="socialNavigation" class="sn-container open">
-      <div class="sn-container closed" >
-        <ui:insert name="dock.bottom">
-          <m:widgetSpaceSet parentStyleClass="container_24">
-            <ui:insert name="dock.bottom.left">
-              <ui:include src="/facelets/generic/dock-bottom-left.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="dock.bottom.center">
-              <ui:include src="/facelets/generic/dock-bottom-center.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="dock.bottom.right">
-              <ui:include src="/facelets/generic/dock-bottom-right.xhtml"></ui:include>
-            </ui:insert>
-          </m:widgetSpaceSet>
-        </ui:insert>
-      </div>
-    </div>
-      
   </ui:define>
 
 </ui:composition>

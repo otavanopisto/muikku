@@ -209,12 +209,7 @@
           font-weight:300;
           
           .di-message-replies{
-            font-weight:600;
-            float:right;
-            width:25px;
-            background-color:$hlBgr;
-            text-align:center;
-            margin-left:10px;
+           @extend .co-item-count;
           }         
           
         }
@@ -332,7 +327,6 @@
           
             .di-message-tool {
               box-shadow:none;
-              margin:0;
             }
           
           }

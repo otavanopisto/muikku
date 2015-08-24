@@ -1,7 +1,6 @@
 package fi.muikku.plugins.assessmentrequest.rest;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,7 +9,6 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -28,9 +26,7 @@ import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestPermissions;
 import fi.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
-import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.rest.RESTPermitUnimplemented;
-import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceController;

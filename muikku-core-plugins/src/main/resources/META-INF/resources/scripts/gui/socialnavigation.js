@@ -1,4 +1,3 @@
-
 function openInSN(template, result, formFunction) {
   var functionContainer = $('.sn-container');
   var formContainer = $('#mainfunctionFormTabs');
@@ -16,23 +15,44 @@ function openInSN(template, result, formFunction) {
     $(tabDiv).append($.parseHTML(text));
 
     var textareas = functionContainer.find("textarea");    
+    var textfields = functionContainer.find("input[type='textfield']"); 
     var cancelBtn = $(tabDiv).find("input[name='cancel']");
     var sendBtn = $(tabDiv).find("input[name='send']");
     var elements = $(tabDiv).find("form");
+    
+    
+    // Getting existing content 
+    
+    // Discussion 
+     if(result != null && result.actionType == "edit"){
+      var textContent = result.message;
+      var topic = result.title;
+     }
 
+     $(textfields).each(function(index,textfield){
+       
+       $(textfield).val(topic);
+
+       
+     });     
+     
     $(textareas).each(function(index,textarea){
+      
+      $(textarea).val(textContent);
       
       CKEDITOR.replace(textarea, {
         height : '100px',
         toolbar: [
-                  { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
-                  { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },                    
-                  { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language' ] },
-                  { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-                  { name: 'insert', items: [ 'Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe' ] },
-     
-                ]          
-          
+                    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat' ] },
+                    { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', '-', 'Undo', 'Redo' ] },
+                    { name: 'editing', items: [ 'Find', 'Replace', '-', 'SelectAll' ] },
+                    
+                    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
+                    { name: 'links', items: [ 'Link' ] },
+                    { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
+                    { name: 'styles', items: [ 'Format' ] },
+                    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+                  ]
       });
       
     });
