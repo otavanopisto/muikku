@@ -56,6 +56,10 @@ public class WorkspaceUserEntityController {
     return findWorkspaceUserEntityByWorkspaceAndUserDataSourceAndUserIdentifier(workspaceEntity, schoolDataSource, identifier);
   }
   
+  public WorkspaceUserEntity findWorkspaceUserEntityByIdentifier(String identifier) {
+    return workspaceUserEntityDAO.findByIdentifier(identifier);
+  }
+  
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserDataSourceAndUserIdentifier(WorkspaceEntity workspaceEntity,
       SchoolDataSource schoolDataSource, String identifier) {
     
