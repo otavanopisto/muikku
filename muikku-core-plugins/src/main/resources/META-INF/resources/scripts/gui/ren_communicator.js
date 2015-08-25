@@ -5,7 +5,7 @@ $(document).ready(function(){
 	$(".bt-mainFunction").m3modal({
 		title : "Uusi viesti ",
 		description : "Voit lähettää uuden viestin opettajillesi tai opiskelutovereillesi.",
-		content: $('<div><div><select name="msgTemplates"><option>Ei pohjia</option></select></div><div><div><input type="textfield" value="vastaanottajat" name="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea value="" name="msgContent"></textarea></div></div>'),
+		content: $('<div><div><select name="msgTemplates"><option>Ei pohjia</option></select></div><div><div><input type="text" value="vastaanottajat" name="msgRecipients"></input></div><div><input type="text" value="aihe" name="msgSubject"></input></div></div><div><textarea value="" name="msgContent"></textarea></div></div>'),
 		modalgrid : 24,
 		contentgrid : 24,
 

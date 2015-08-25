@@ -17,7 +17,7 @@ import fi.muikku.schooldata.WorkspaceEntityController;
 @ApplicationScoped
 public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
 
-  private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.workspace-students.batchsize", "20"));
+  private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.workspace-students.batchsize", "1"));
 
   @Inject
   private Logger logger;
@@ -38,7 +38,6 @@ public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler extends PyramusDa
     int offset = getOffset();    
     int count = 0;
     try {
-      logger.fine("Synchronizing Pyramus workspace students");
 
       List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntitiesByDataSource(
           SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, offset, BATCH_SIZE);
@@ -46,13 +45,14 @@ public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler extends PyramusDa
         updateOffset(0);
       } else {
         for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+          logger.info(String.format("Synchronizing Pyramus workspace students of workspace %d", workspaceEntity.getId()));
           count += pyramusUpdater.updateWorkspaceStudents(workspaceEntity);
         }
 
         updateOffset(offset + workspaceEntities.size());
       }
     } finally {
-      logger.fine(String.format("Synchronized %d Pyramus workspace students", count));
+      logger.info(String.format("Synchronized %d Pyramus workspace students", count));
     }
   }
   

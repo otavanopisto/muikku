@@ -8,7 +8,7 @@
           <div class="di-message-new-body">
             <div class="mf-fieldRow">
 <!--               <div class="mf-textfield"> -->
-<!--                 <input type="textfield" value="" name="title"></input> -->
+<!--                 <input type="text" value="" name="title"></input> -->
 <!--               </div>     -->
               <div id="areaSelect" class="mf-select">
                 <h3><span class="mf-category-{forumAreaId}-font">{areaName}</span> - {title}</h3>

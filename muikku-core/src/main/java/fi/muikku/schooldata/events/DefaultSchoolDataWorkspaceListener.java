@@ -54,7 +54,7 @@ public class DefaultSchoolDataWorkspaceListener {
   public synchronized void onSchoolDataWorkspaceDiscoveredEvent(@Observes SchoolDataWorkspaceDiscoveredEvent event) {
     String discoverId = "WS-" + event.getDataSource() + "/" + event.getIdentifier();
     if (discoveredWorkspaces.containsKey(discoverId)) {
-      event.setDiscoveredWorkspaceEntityId(discoveredWorkspaceUsers.get(discoverId));
+      event.setDiscoveredWorkspaceEntityId(discoveredWorkspaces.get(discoverId));
       return;
     }
     
