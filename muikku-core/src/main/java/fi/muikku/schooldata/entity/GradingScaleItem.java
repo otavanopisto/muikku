@@ -8,4 +8,5 @@ public interface GradingScaleItem extends SchoolDataEntity {
 	
 	public String getName();
 
+	public Boolean isPassingGrade();
 }
