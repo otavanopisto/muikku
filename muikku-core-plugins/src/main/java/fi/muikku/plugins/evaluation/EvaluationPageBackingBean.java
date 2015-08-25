@@ -191,16 +191,23 @@ public class EvaluationPageBackingBean {
               WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(assignmentNode.getWorkspaceMaterialId());
               WorkspaceMaterialEvaluation assignmentEvaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
 
+              Long numOfTries = 0l;
+              Date replyCreated = null;
+              Date replyModified = null;
+              
               if (assignmentEvaluation == null) {
                 WorkspaceMaterialReply assignmentReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
                 if (assignmentReply != null) {
                   assignmentStatus = StudentAssignmentStatus.DONE;
+                  replyCreated = assignmentReply.getCreated();
+                  replyModified = assignmentReply.getLastModified();
                 }
               } else {
                 assignmentStatus = StudentAssignmentStatus.EVALUATED;
               }
 
-              studentAssignments.add(new StudentAssignment(workspaceMaterial.getId(), assignmentEvaluation != null ? assignmentEvaluation.getId() : null, assignmentStatus));
+              studentAssignments.add(new StudentAssignment(workspaceMaterial.getId(), assignmentEvaluation != null ? assignmentEvaluation.getId() : null, assignmentStatus,
+                  numOfTries, replyCreated, replyModified));
             }
           } catch (Exception e) {
             logger.log(Level.SEVERE, "Failed to load student workspace assignments", e);
@@ -385,10 +392,13 @@ public class EvaluationPageBackingBean {
 
   public static class StudentAssignment {
 
-    public StudentAssignment(Long workspaceMaterialId, Long workspaceMaterialEvaluationId, StudentAssignmentStatus status) {
+    public StudentAssignment(Long workspaceMaterialId, Long workspaceMaterialEvaluationId, StudentAssignmentStatus status, Long numOfTries, Date created, Date lastModified) {
       this.workspaceMaterialId = workspaceMaterialId;
       this.workspaceMaterialEvaluationId = workspaceMaterialEvaluationId;
       this.status = status;
+      this.numOfTries = numOfTries;
+      this.created = created;
+      this.lastModified = lastModified;
     }
 
     public Long getWorkspaceMaterialId() {
@@ -403,9 +413,24 @@ public class EvaluationPageBackingBean {
       return workspaceMaterialEvaluationId;
     }
 
-    private Long workspaceMaterialId;
-    private StudentAssignmentStatus status;
-    private Long workspaceMaterialEvaluationId;
+    public Long getNumOfTries() {
+      return numOfTries;
+    }
+
+    public Date getCreated() {
+      return created;
+    }
+
+    public Date getLastModified() {
+      return lastModified;
+    }
+
+    private final Long workspaceMaterialId;
+    private final StudentAssignmentStatus status;
+    private final Long workspaceMaterialEvaluationId;
+    private final Long numOfTries;
+    private final Date created;
+    private final Date lastModified;
   }
 
   public static enum StudentAssignmentStatus {
