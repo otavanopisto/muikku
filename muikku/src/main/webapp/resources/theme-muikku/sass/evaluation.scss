@@ -390,6 +390,7 @@ body.evaluation {
                 text-align:center;
                 background:#617e94;
                 opacity:0.15;
+                position:relative;
                 
                 &:hover {
                   box-shadow:0 0 0 5px #8cd1fa;
@@ -426,6 +427,19 @@ body.evaluation {
                   height:100px;  
                   width:100%;
                   box-sizing:border-box;
+                }
+                
+                .evaluation-assignment-date {
+                  width:100%;
+                  box-sizing:border-box;
+                  padding:2px 4px;
+                  color:#fff;
+                  text-align:right;
+                  position:absolute;
+                  top:0;
+                  font-size:14px;
+                  line-height:1.3em;
+                  white-space:normal;
                 }
                 
                 .evaluation-assignment-title {
