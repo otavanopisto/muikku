@@ -20,7 +20,6 @@
 
   .md-content{
 
-    
    div:not(:first-child){
     margin-top: 10px;
    }
@@ -31,7 +30,7 @@
      box-sizing:border-box;
      padding:15px; 
 
-       input[type='textfield']{
+       input[type='text']{
         width:100%;
        }
 

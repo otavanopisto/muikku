@@ -15,7 +15,7 @@ function openInSN(template, result, formFunction) {
     $(tabDiv).append($.parseHTML(text));
 
     var textareas = functionContainer.find("textarea");    
-    var textfields = functionContainer.find("input[type='textfield']"); 
+    var textfields = functionContainer.find("input[type='text']"); 
     var cancelBtn = $(tabDiv).find("input[name='cancel']");
     var sendBtn = $(tabDiv).find("input[name='send']");
     var elements = $(tabDiv).find("form");

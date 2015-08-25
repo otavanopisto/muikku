@@ -30,9 +30,10 @@
       <!-- Dynamic Grid -->
       <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/dgrid.css" />
       
-      <!-- Default Calendar CSS -->
-      <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />
-      
+
+      <!-- Moment -->
+      <h:outputScript name="scripts/moment/moment-with-locales.min.js" />    
+        
       <!-- jQuery -->
       <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
       <h:outputScript name="scripts/jquery.klass/jquery.klass-0.1a.js" />
