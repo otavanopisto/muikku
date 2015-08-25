@@ -128,6 +128,10 @@
                 .append($('<div>').addClass('evaluation-assignment-title').text(assignment.title))
                 .appendTo(row);
               
+              if (studentAssignmentData.lastModified != null) {
+                wrapper.append($('<div>').addClass('evaluation-assignment-date').text(formatDate(new Date(studentAssignmentData.lastModified))));
+              }
+              
               switch (studentAssignmentData.status) {
                 case 'DONE':
                   wrapper.addClass('assignment-done');

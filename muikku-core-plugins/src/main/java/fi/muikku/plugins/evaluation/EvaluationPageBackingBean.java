@@ -26,7 +26,6 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
-import fi.muikku.plugins.assessmentrequest.AssessmentRequestState;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.ContentNode;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -160,17 +159,19 @@ public class EvaluationPageBackingBean {
             }
           }
 
+          Date assessmentRequestDate = null;
           try {
             List<WorkspaceAssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceUser(workspaceStudent);
 
+            assessmentRequestDate = findMaxDate(assessmentRequests);
+            
             if (!assessmentRequests.isEmpty()){
               WorkspaceAssessmentRequest assessmentRequest = assessmentRequests.get(0);
               
               boolean hasAssessment = !assessments.isEmpty();
-              Date requestDate = assessmentRequest.getDate();
-              WorkspaceAssessment assessment = assessments.get(0);
+              WorkspaceAssessment assessment = hasAssessment ? assessments.get(0) : null;
 
-              if ((!hasAssessment) || (requestDate.after(assessment.getDate()))) {
+              if ((!hasAssessment) || (assessmentRequestDate.after(assessment.getDate()))) {
                 if (assessmentRequest.getDate().getTime() + 1209600000 < new Date().getTime())
                   status = "CRITICAL";
                 else
@@ -190,16 +191,23 @@ public class EvaluationPageBackingBean {
               WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(assignmentNode.getWorkspaceMaterialId());
               WorkspaceMaterialEvaluation assignmentEvaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
 
+              Long numOfTries = 0l;
+              Date replyCreated = null;
+              Date replyModified = null;
+              
               if (assignmentEvaluation == null) {
                 WorkspaceMaterialReply assignmentReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
                 if (assignmentReply != null) {
                   assignmentStatus = StudentAssignmentStatus.DONE;
+                  replyCreated = assignmentReply.getCreated();
+                  replyModified = assignmentReply.getLastModified();
                 }
               } else {
                 assignmentStatus = StudentAssignmentStatus.EVALUATED;
               }
 
-              studentAssignments.add(new StudentAssignment(workspaceMaterial.getId(), assignmentEvaluation != null ? assignmentEvaluation.getId() : null, assignmentStatus));
+              studentAssignments.add(new StudentAssignment(workspaceMaterial.getId(), assignmentEvaluation != null ? assignmentEvaluation.getId() : null, assignmentStatus,
+                  numOfTries, replyCreated, replyModified));
             }
           } catch (Exception e) {
             logger.log(Level.SEVERE, "Failed to load student workspace assignments", e);
@@ -221,7 +229,8 @@ public class EvaluationPageBackingBean {
               status, 
               studentAssignmentData, 
               assessmentData, 
-              alreadyEvaluated));
+              alreadyEvaluated,
+              assessmentRequestDate));
         }
       }
     }
@@ -259,11 +268,29 @@ public class EvaluationPageBackingBean {
     return workspaceStudents;
   }
 
+  private Date findMaxDate(List<WorkspaceAssessmentRequest> wars) {
+    Date maxDate = null;
+    
+    for (WorkspaceAssessmentRequest war : wars) {
+      Date compDate = war.getDate();
+      
+      if (compDate != null) {
+        if (maxDate == null) {
+          maxDate = compDate;
+        } else {
+          maxDate = maxDate.before(compDate) ? compDate : maxDate;
+        }
+      }
+    }
+    
+    return maxDate;
+  }
+  
   private List<WorkspaceStudent> workspaceStudents;
 
   public static class WorkspaceStudent {
 
-    public WorkspaceStudent(Long userEntityId, Long workspaceUserEntityId, String displayName, String studyProgrammeName, String status, String studentAssignmentData, String workspaceAssessmentData, boolean evaluated) {
+    public WorkspaceStudent(Long userEntityId, Long workspaceUserEntityId, String displayName, String studyProgrammeName, String status, String studentAssignmentData, String workspaceAssessmentData, boolean evaluated, Date assessmentRequestDate) {
       this.userEntityId = userEntityId;
       this.workspaceUserEntityId = workspaceUserEntityId;
       this.displayName = displayName;
@@ -272,6 +299,7 @@ public class EvaluationPageBackingBean {
       this.studentAssignmentData = studentAssignmentData;
       this.workspaceAssessmentData = workspaceAssessmentData;
       this.evaluated = evaluated;
+      this.assessmentRequestDate = assessmentRequestDate;
     }
 
     public Long getUserEntityId() {
@@ -306,6 +334,15 @@ public class EvaluationPageBackingBean {
       return evaluated;
     }
     
+    public Date getAssessmentRequestDate() {
+      return assessmentRequestDate;
+    }
+
+    public void setAssessmentRequestDate(Date assessmentRequestDate) {
+      this.assessmentRequestDate = assessmentRequestDate;
+    }
+
+    private Date assessmentRequestDate;
     private Long workspaceUserEntityId;
     private Long userEntityId;
     private String displayName;
@@ -355,10 +392,13 @@ public class EvaluationPageBackingBean {
 
   public static class StudentAssignment {
 
-    public StudentAssignment(Long workspaceMaterialId, Long workspaceMaterialEvaluationId, StudentAssignmentStatus status) {
+    public StudentAssignment(Long workspaceMaterialId, Long workspaceMaterialEvaluationId, StudentAssignmentStatus status, Long numOfTries, Date created, Date lastModified) {
       this.workspaceMaterialId = workspaceMaterialId;
       this.workspaceMaterialEvaluationId = workspaceMaterialEvaluationId;
       this.status = status;
+      this.numOfTries = numOfTries;
+      this.created = created;
+      this.lastModified = lastModified;
     }
 
     public Long getWorkspaceMaterialId() {
@@ -373,9 +413,24 @@ public class EvaluationPageBackingBean {
       return workspaceMaterialEvaluationId;
     }
 
-    private Long workspaceMaterialId;
-    private StudentAssignmentStatus status;
-    private Long workspaceMaterialEvaluationId;
+    public Long getNumOfTries() {
+      return numOfTries;
+    }
+
+    public Date getCreated() {
+      return created;
+    }
+
+    public Date getLastModified() {
+      return lastModified;
+    }
+
+    private final Long workspaceMaterialId;
+    private final StudentAssignmentStatus status;
+    private final Long workspaceMaterialEvaluationId;
+    private final Long numOfTries;
+    private final Date created;
+    private final Date lastModified;
   }
 
   public static enum StudentAssignmentStatus {

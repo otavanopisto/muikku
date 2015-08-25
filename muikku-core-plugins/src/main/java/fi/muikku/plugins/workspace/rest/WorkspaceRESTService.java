@@ -809,7 +809,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     fi.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, sessionController.getLoggedUserEntity());
     if (workspaceMaterialReply == null) {
-      workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, sessionController.getLoggedUserEntity());
+      Date d = new Date();
+      workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, sessionController.getLoggedUserEntity(),
+          1l, d, d);
+    } else {
+      workspaceMaterialReplyController.incWorkspaceMaterialReplyTries(workspaceMaterialReply);
     }
     
     try {
