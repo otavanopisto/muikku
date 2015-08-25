@@ -14,8 +14,8 @@
 @font-face {
   font-family: 'muikku';
   @include font-src('fonts/muikku.eot');
-  @include font-srcs2(
-  'fonts/muikku.eot?#iefix5p5m9k','embedded-opentype',
+  @include font-srcs(
+  'fonts/muikku.eot#iefix','embedded-opentype',
   'fonts/muikku.ttf','truetype',
   'fonts/muikku.woff','woff',
   'fonts/muikku.svg#muikku','svg');
