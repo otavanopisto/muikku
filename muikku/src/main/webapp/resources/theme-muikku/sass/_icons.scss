@@ -2,8 +2,8 @@
 
 @font-face {
   font-family: 'muikku';
-  @include font-src('fonts/muikku.eot'); /* IE9 */
-  @include font-srcs2(
+  @include font-srcs(
+  'fonts/muikku.eot', 'embedded-opentype',
   'fonts/muikku.woff','woff', /* Modern Browsers */
   'fonts/muikku.ttf','truetype', /* Safari, Android, iOS */
   'fonts/muikku.svg#muikku','svg'); /* old IOS - NOT WORKING!!! JSF libraries do not work with webparams DEM BASTARDS! */ 
