@@ -1,6 +1,7 @@
 package fi.muikku.plugins.workspace;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -30,8 +31,9 @@ public class WorkspaceMaterialReplyController {
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
   
-  public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial, UserEntity userEntity) {
-    return workspaceMaterialReplyDAO.create(workspaceMaterial, userEntity.getId());
+  public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial, UserEntity userEntity, 
+      Long numberOfTries, Date created, Date lastModified) {
+    return workspaceMaterialReplyDAO.create(workspaceMaterial, userEntity.getId(), numberOfTries, created, lastModified);
   }
 
   public WorkspaceMaterialReply findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(WorkspaceMaterial morkspaceMaterial, UserEntity userEntity) {
@@ -70,5 +72,9 @@ public class WorkspaceMaterialReplyController {
   
   public void deleteWorkspaceMaterialReply(WorkspaceMaterialReply workspaceMaterialReply) {
     workspaceMaterialReplyDAO.delete(workspaceMaterialReply); 
+  }
+
+  public void incWorkspaceMaterialReplyTries(WorkspaceMaterialReply workspaceMaterialReply) {
+    workspaceMaterialReplyDAO.update(workspaceMaterialReply, workspaceMaterialReply.getNumberOfTries() + 1, new Date());
   }
 }

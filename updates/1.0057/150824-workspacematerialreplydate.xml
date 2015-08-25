@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <alterTables>
+    <table name="WorkspaceMaterialReply">
+      <addFields>
+        <field name="numberOfTries" type="java.lang.Long" nullable="false" unique="false" />
+        <field name="created" type="Types.TIMESTAMP" nullable="false" unique="false" />
+        <field name="lastModified" type="Types.TIMESTAMP" nullable="false" unique="false" />
+      </addFields>
+    </table>
+  </alterTables>
+  
+  <sql>update WorkspaceMaterialReply set numberOfTries = 1;</sql>
+  <sql>update WorkspaceMaterialReply set created = now();</sql>
+  <sql>update WorkspaceMaterialReply set lastModified = now();</sql>
+  
+</update>
