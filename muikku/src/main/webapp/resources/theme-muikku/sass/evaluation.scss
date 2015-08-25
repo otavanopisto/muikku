@@ -228,6 +228,22 @@ body.evaluation {
               /* Workspace has been evaluated by teacher */
               &.workspace-evaluated {
               
+                .evaluation-assessment-request-date {
+                  width:100%;
+                  box-sizing:border-box;
+                  padding:3px 4px;
+                  background:#fff;
+                  border-radius:3px;
+                  font-size:16px;
+                  line-height:1.3em;
+                  white-space:normal;
+                  position:absolute;
+                  font-size:0.9em;
+                  top:5px;
+                  background:#3cdd2a;
+                  color:#fff;
+                }
+              
                 .evaluation-student-picture {
                   box-shadow:0 0 0 5px #3cdd2a;
                 }
@@ -236,6 +252,22 @@ body.evaluation {
               
               /* Student has sent workspace assessment request */
               &.workspace-assessment-requested {
+              
+               .evaluation-assessment-request-date {
+                  width:100%;
+                  box-sizing:border-box;
+                  padding:3px 4px;
+                  background:#fff;
+                  border-radius:3px;
+                  font-size:16px;
+                  line-height:1.3em;
+                  white-space:normal;
+                  position:absolute;
+                  font-size:0.9em;
+                  top:5px;
+                  background:#00ccff;
+                  color:#fff;
+                }
               
                 .evaluation-student-picture {
                   box-shadow:0 0 0 5px #0099ff;
@@ -246,6 +278,22 @@ body.evaluation {
               /* Workspace hasn't been evaluated in time and TIME IS RUNNING OUT */
               &.workspace-assessment-critical {
               
+               .evaluation-assessment-request-date {
+                  width:100%;
+                  box-sizing:border-box;
+                  padding:3px 4px;
+                  background:#fff;
+                  border-radius:3px;
+                  font-size:16px;
+                  line-height:1.3em;
+                  white-space:normal;
+                  position:absolute;
+                  font-size:0.9em;
+                  top:5px;
+                  background:#de5500;
+                  color:#fff;
+                }
+              
                 .evaluation-student-picture {
                   box-shadow:0 0 0 5px #de0000;
                 }
@@ -255,10 +303,42 @@ body.evaluation {
               /* Workspace has been reviewed and needs more input from student */
               &.workspace-reviewed-but-not-evaluated {
               
+                .evaluation-assessment-request-date {
+                  width:100%;
+                  box-sizing:border-box;
+                  padding:3px 4px;
+                  background:#fff;
+                  border-radius:3px;
+                  font-size:16px;
+                  line-height:1.3em;
+                  white-space:normal;
+                  position:absolute;
+                  font-size:0.9em;
+                  top:5px;
+                  background:#ea7401;
+                  color:#fff;
+                }
+              
                 .evaluation-student-picture {
                   box-shadow:0 0 0 5px #ea7401;
                 }
 
+              }
+              
+              .evaluation-assessment-request-date {
+                width:100%;
+                box-sizing:border-box;
+                padding:3px 4px;
+                background:#fff;
+                border-radius:3px;
+                font-size:16px;
+                line-height:1.3em;
+                white-space:normal;
+                position:absolute;
+                font-size:0.9em;
+                top:5px;
+                background:#fff;
+                color:#000;
               }
             
               .evaluation-student-picture {
