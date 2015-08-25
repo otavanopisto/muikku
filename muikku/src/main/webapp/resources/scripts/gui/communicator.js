@@ -341,21 +341,33 @@ $(document).ready(function(){
   _searchUsers: function (searchTerm) {
 		var _this = this;
 		var users = new Array();
-	
+    var recipients = new Array();
+    var recipientListElement = $(".cm-message-recipients");      
+    var existingRecipients = recipientListElement.find(".cm-message-recipient-name");
+
+    for(var r = 0; r < existingRecipients.length; r++){
+      var rId= $(existingRecipients[r]).attr("id");
+      recipients.push(rId);
+    }   
+    
 		mApi().user.users.read({ 'searchString' : searchTerm }).callback(function(err, result) {
       if (result != undefined) {
         for (var i = 0, l = result.length; i < l; i++) {
-          var img = undefined;
-          if (result[i].hasImage)
-            img = CONTEXTPATH + "/picture?userId=" + result[i].id;
-
-          users.push({
-            category : getLocaleText("plugin.communicator.users"),
-            label : result[i].firstName + " " + result[i].lastName,
-            id : result[i].id,
-            image : img,
-            type : "USER"
-          });
+          var uId = result[i].id.toString();
+          var inArr = $.inArray(uId, recipients); 
+          if ( inArr == -1){                       
+            var img = undefined;
+            if (result[i].hasImage)
+              img = CONTEXTPATH + "/picture?userId=" + result[i].id;
+  
+            users.push({
+              category : getLocaleText("plugin.communicator.users"),
+              label : result[i].firstName + " " + result[i].lastName,
+              id : result[i].id,
+              image : img,
+              type : "USER"
+            });
+          }
         }
       }
     }); 
