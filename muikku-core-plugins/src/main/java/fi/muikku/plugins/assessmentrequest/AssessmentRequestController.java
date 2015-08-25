@@ -10,9 +10,13 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
+import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
+import fi.muikku.schooldata.entity.GradingScale;
+import fi.muikku.schooldata.entity.GradingScaleItem;
+import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.Permit;
@@ -69,15 +73,36 @@ public class AssessmentRequestController {
     try {
       WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
       
-      List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
+      List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(
           workspaceEntity.getDataSource().getIdentifier(), 
           workspaceEntity.getIdentifier(),
           workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-      
-      if (assessmentRequests.isEmpty()) {
-        return WorkspaceAssessmentState.UNASSESSED;
+
+      if (workspaceAssessments.isEmpty()) {
+        List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
+            workspaceEntity.getDataSource().getIdentifier(), 
+            workspaceEntity.getIdentifier(),
+            workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+        
+        if (assessmentRequests.isEmpty()) {
+          return WorkspaceAssessmentState.UNASSESSED;
+        } else {
+          return WorkspaceAssessmentState.PENDING;
+        }
       } else {
-        return WorkspaceAssessmentState.PENDING;
+        WorkspaceAssessment assessment = workspaceAssessments.get(0);
+        GradingScale gradingScale = gradingController.findGradingScale(
+            assessment.getGradingScaleSchoolDataSource(), 
+            assessment.getGradingScaleIdentifier());
+        GradingScaleItem grade = gradingController.findGradingScaleItem(
+            gradingScale, 
+            assessment.getGradeSchoolDataSource(), 
+            assessment.getGradeIdentifier());
+
+        if (grade.isPassingGrade())
+          return WorkspaceAssessmentState.PASS;
+        else
+          return WorkspaceAssessmentState.FAIL;
       }
       
     } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
