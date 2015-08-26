@@ -1,11 +1,11 @@
 
 $(document).ready(function(){
   
-	$(".bt-mainFunction").click(function(){
-	  var sendMessage = function(values){
-		  var _this = this;
-		  delete values.recipient;
-		  
+  $(".bt-mainFunction").click(function(){
+    var sendMessage = function(values){
+      var _this = this;
+      delete values.recipient;
+      
       mApi().communicator.messages.create(values)
       .callback(function (err, result) {
         if (err) {
@@ -15,11 +15,11 @@ $(document).ready(function(){
         }
       });
       window.mCommunicator._refreshView();
-		}		
+    }   
 
-		openInSN('/communicator/communicator_create_message.dust', null, sendMessage);		
-	});
-	
+    openInSN('/communicator/communicator_create_message.dust', null, sendMessage);    
+  });
+  
 
   CommunicatorImpl = $.klass({
     init: function () {
@@ -194,37 +194,37 @@ $(document).ready(function(){
         response(mCommunicator._doSearch(request.term));
       },
       select: function (event, ui) {
-    	mCommunicator._selectRecipient(event, ui.item);
+      mCommunicator._selectRecipient(event, ui.item);
         $(this).val("");
         return false;
       }
-    });    	
+    });     
 
 
-    	
+      
     }, 
  
-	  _selectRecipient: function (event, item) {
-		  var _this = this;
-		  var element = $(event.target);
-		  var recipientListElement = $("#msgRecipientsContainer"); 		  
-		  var prms = {
-		    id: item.id,
-		    name: item.label,
-		    type: item.type
-		  };
+    _selectRecipient: function (event, item) {
+      var _this = this;
+      var element = $(event.target);
+      var recipientListElement = $("#msgRecipientsContainer");      
+      var prms = {
+        id: item.id,
+        name: item.label,
+        type: item.type
+      };
 
-		  if (item.type == "USER") {
-		    renderDustTemplate('communicator/communicator_messagerecipient.dust', prms, function (text) {
-		      recipientListElement.prepend($.parseHTML(text));
-		    });
-		  } else if (item.type == "GROUP") {
+      if (item.type == "USER") {
+        renderDustTemplate('communicator/communicator_messagerecipient.dust', prms, function (text) {
+          recipientListElement.prepend($.parseHTML(text));
+        });
+      } else if (item.type == "GROUP") {
         renderDustTemplate('communicator/communicator_messagerecipientgroup.dust', prms, function (text) {
           recipientListElement.prepend($.parseHTML(text));
         });
       }
-	},
-	_refreshView: function(){
+  },
+  _refreshView: function(){
     if (window.location.hash) {
       var hash = window.location.hash.substring(1);
       if (window.location.hash.indexOf("#sent") === 0){
@@ -249,7 +249,7 @@ $(document).ready(function(){
       }
 
     } 
-	},
+  },
   _addLoading : function(parentEl){
     $(parentEl).append('<div class="mf-loading"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div></div>');  
     
@@ -261,19 +261,19 @@ $(document).ready(function(){
   },    
 
   _onRemoveRecipientClick : function (event) {
-	  var element = $(event.target);
-	  if (!element.hasClass("cm-message-recipient"))
-	    element = element.parents(".cm-message-recipient");
-	  element.remove();
-	},    
-	    
+    var element = $(event.target);
+    if (!element.hasClass("cm-message-recipient"))
+      element = element.parents(".cm-message-recipient");
+    element.remove();
+  },    
+      
   _doSearch: function (searchTerm) {
-	  var groups = this._searchGroups(searchTerm);
-	  var users = this._searchUsers(searchTerm);
-	  
-	  return $.merge(groups, users);
-//  	  return this._searchUsers(searchTerm);
-  },    	
+    var groups = this._searchGroups(searchTerm);
+    var users = this._searchUsers(searchTerm);
+    
+    return $.merge(groups, users);
+//      return this._searchUsers(searchTerm);
+  },      
 
   
   _replyMessage : function(event){
@@ -334,8 +334,8 @@ $(document).ready(function(){
   },
 
   _searchUsers: function (searchTerm) {
-		var _this = this;
-		var users = new Array();
+    var _this = this;
+    var users = new Array();
     var recipients = new Array();
     var recipientListElement = $(".cm-message-recipients");      
     var existingRecipients = recipientListElement.find(".cm-message-recipient-name");
@@ -345,7 +345,7 @@ $(document).ready(function(){
       recipients.push(rId);
     }   
     
-		mApi().user.users.read({ 'searchString' : searchTerm }).callback(function(err, result) {
+    mApi().user.users.read({ 'searchString' : searchTerm }).callback(function(err, result) {
       if (result != undefined) {
         for (var i = 0, l = result.length; i < l; i++) {
           var uId = result[i].id.toString();
@@ -366,9 +366,9 @@ $(document).ready(function(){
         }
       }
     }); 
-  	
-  	return users;
-	},
+    
+    return users;
+  },
   
   _setSelected : function(selected){
     var container = $(".mf-list");
