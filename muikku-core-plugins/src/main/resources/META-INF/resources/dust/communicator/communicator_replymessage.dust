@@ -17,11 +17,15 @@
      <div class="clear"></div>
     </div>
     <div class="mf-form-paragraph cm-reply-body">
-      <div class="mf-form-row cm-reply-subject">
+      <div class="mf-fieldRow">
         <div class="mf-textfield">
-          <input type="text" name="caption" value="RE: {caption}" />
+          <div class="mf-textfield-subcontainer">
+            <span class="mf-textfield-title">{#localize key="plugin.communicator.createmessage.title.subject"/}</span>
+            <input class="mf-textfield-subject" type="text" name="caption" value="RE: {caption}" ></input>
+          </div>
         </div>
       </div>
+
       <div class="mf-form-row cm-reply-content">
          <textarea id="textContent" name="content">
            
