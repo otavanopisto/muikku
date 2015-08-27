@@ -2,22 +2,18 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:h="http://java.sun.com/jsf/html">
-    
-    
-  <h:outputScript name="scripts/gui/login.js" target="head"/>
-  
 
+  <c:set var="authSource" value="#{loginWidgetBackingBean.credentialessAuthSources[0]}"/>
+  
   <div class="widget loginWidget">
     <div class="loginWidgetButton">
-      <div class="bt-generic icon-signout bt-login"><span>Kirjaudu sisään</span></div>
-    </div>
-    <div class="loginWidgetWrapper">
-      <div class="loginBoxTopArrow"></div>
-      <ui:include src="credentiallogin.xhtml" />
-      <ui:include src="externallogin.xhtml" />
-      <ui:include src="forgotpassword.xhtml" />
+      <div class="bt-generic icon-signout bt-login">
+        <h:link outcome="/login.jsf" styleClass="loginSource-#{authSource.strategy}"><f:param name="authSourceId" value="#{authSource.id}"/><span>#{i18n.text['plugin.login.buttonLabel']}</span></h:link>
+      </div>
     </div>
   </div>
-    
+
 </ui:composition>
