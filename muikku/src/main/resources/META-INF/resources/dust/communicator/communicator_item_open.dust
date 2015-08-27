@@ -1,0 +1,43 @@
+
+    <div class="mf-item cm-message open {?isOwner}owner{/isOwner}" id="{id}">
+      <div class="cm-message-topic mf-item-topic">
+        <span class="mf-item-header-name cm-message-header"><h3>{caption}</h3></span>
+        <div class="clear"></div>
+      </div>
+      <div class="mf-item-details cm-message-details">
+        <div class="mf-item-details-container cm-message-details-container">       
+          <div class="mf-item-description cm-message-details">
+            <div class="cm-message-details-sender">
+              <input type="hidden" name="mf-person-id" value="{sender}"/>
+              {?senderHasPicture} 
+                <img class="cm-user-picture custom" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
+              {:else}
+                <div class="cm-user-picture default "></div>
+              {/senderHasPicture}         
+              <span class="mf-item-header-content-primary cm-message-header-content-primary">{senderFullName}
+              </span>        
+              <span class="mf-item-header-content-secondary cm-message-header-content-secondary">{created|formatDate} {created|formatTime}</span>    
+              <div class="clear"></div>
+            </div>
+            <div class="mf-item-content cm-message-content ">     
+              <div class="mf-item-content-text cm-message-content-text">{content|s}</div>          
+              <div class="mf-item-content-tools cm-message-content-tools">
+                <div class="cm-message-content-tools-container">
+                   {^isOwner}
+                    <div  id="{id}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>Vastaa viestiin</span></div>
+                  {/isOwner}
+                </div>
+                <div class="cm-message-content-tools-reply-container"></div>
+                <div class="clear"></div>
+              </div>
+            </div>
+          </div>       
+          <div class="clear"></div>
+        </div>
+      </div>
+    
+      <input type="hidden" name="communicatorMessageId" value="{id}"/>
+      <input type="hidden" name="communicatorMessageThreadId" value="{communicatorMessageId}"/>  
+    </div >
+
+

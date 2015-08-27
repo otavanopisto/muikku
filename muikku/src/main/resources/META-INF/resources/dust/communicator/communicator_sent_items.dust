@@ -1,0 +1,5 @@
+{#.}
+  {>"communicator/communicator_sent_item.dust"/}
+{:else}    
+  {>"communicator/communicator_empty.dust"/}
+{/.}
