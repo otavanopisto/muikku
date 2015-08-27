@@ -181,6 +181,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 	}
   
   private Workspace createWorkspaceEntity(Course course) {
+    if (course == null)
+      return null;
+    
     String educationTypeIdentifier = null;
     
     if (course.getSubjectId() != null) {

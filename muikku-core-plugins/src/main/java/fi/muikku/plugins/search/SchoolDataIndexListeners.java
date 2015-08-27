@@ -11,6 +11,8 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.events.SchoolDataUserDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataUserEnvironmentRoleDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataUserEnvironmentRoleRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupUpdatedEvent;
@@ -66,6 +68,13 @@ public class SchoolDataIndexListeners {
     indexer.remove(User.class.getSimpleName(), event.getSearchId());
   }
   
+  public void onSchoolDataUserEnvironmentRoleDiscoveredEvent(@Observes SchoolDataUserEnvironmentRoleDiscoveredEvent event) {
+    userIndexer.indexUser(event.getUserDataSource(), event.getUserIdentifier());
+  }
+  
+  public void onSchoolDataUserEnvironmentRoleRemovedEvent(@Observes SchoolDataUserEnvironmentRoleRemovedEvent event) {
+    userIndexer.indexUser(event.getUserDataSource(), event.getUserIdentifier());
+  }
   
   public void onSchoolDataUserGroupDiscoveredEvent(@Observes SchoolDataUserGroupDiscoveredEvent event) {
     schoolDataBridgeSessionController.startSystemSession();
