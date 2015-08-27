@@ -107,8 +107,8 @@ public class CourseTestsBase extends AbstractUITest {
   }
   
   @Test
-  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/adminRolePermissionSetup.sql"})
-  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/adminRolePermissionDelete.sql"})
+  @SqlBefore(value = {"sql/workspace1Setup.sql"})
+  @SqlAfter(value = {"sql/workspace1Delete.sql"})
   public void courseUnpublishTest() throws IOException {
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
