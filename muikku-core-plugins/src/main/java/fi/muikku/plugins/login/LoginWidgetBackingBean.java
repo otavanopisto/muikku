@@ -1,4 +1,4 @@
-package fi.muikku.plugins.externallogin;
+package fi.muikku.plugins.login;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import fi.muikku.model.security.AuthSource;
 @Named
 @Stateful
 @RequestScoped
-public class ExternalLoginWidgetBackingBean {
+public class LoginWidgetBackingBean {
 
   @Inject
   private AuthSourceController authSourceController;

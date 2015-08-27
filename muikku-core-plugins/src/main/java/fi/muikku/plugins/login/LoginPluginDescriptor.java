@@ -1,4 +1,4 @@
-package fi.muikku.plugins.externallogin;
+package fi.muikku.plugins.login;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 
-public class ExternalLoginPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
+public class LoginPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
   @Override
   public void init() {
@@ -19,14 +19,14 @@ public class ExternalLoginPluginDescriptor implements PluginDescriptor, Localize
 
   @Override
   public String getName() {
-    return "externallogin";
+    return "login";
   }
 
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.externallogin.ExternalLoginPluginMessages", LocaleUtils.toLocale("fi"))));
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.externallogin.ExternalLoginPluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.login.LoginPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.login.LoginPluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
   }
 
