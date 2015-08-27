@@ -5,16 +5,15 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:h="http://java.sun.com/jsf/html">
-    
-  <c:set var="authSource" scope="session" value="#{LoginWidgetBackingBean.credentialessAuthSources[0]}"/>
+
+  <c:set var="authSource" value="#{loginWidgetBackingBean.credentialessAuthSources[0]}"/>
+  
   <div class="widget loginWidget">
     <div class="loginWidgetButton">
       <div class="bt-generic icon-signout bt-login">
-        <h:link outcome="/login.jsf" value="#{authSource.name}" styleClass="loginSource-#{authSource.strategy}">
-          <span>#{i18n.text['plugin.login.buttonLabel']}</span>
-        </h:link>
+        <h:link outcome="/login.jsf" styleClass="loginSource-#{authSource.strategy}"><f:param name="authSourceId" value="#{authSource.id}"/><span>#{i18n.text['plugin.login.buttonLabel']}</span></h:link>
       </div>
     </div>
   </div>
-  
+
 </ui:composition>
