@@ -86,68 +86,83 @@ public class SchoolDataSearchReindexListener {
   }
   
   private boolean reindexWorkspaceEntities() {
-    List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntities();
+    try {
+      List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntities();
+      
+      if (workspaceIndex < workspaceEntities.size()) {
+        int last = Math.min(workspaceEntities.size(), workspaceIndex + BATCH);
+        
+        for (int i = workspaceIndex; i < last; i++) {
+          WorkspaceEntity workspaceEntity = workspaceEntities.get(i);
+          workspaceIndexer.indexWorkspace(workspaceEntity);
+        }
     
-    if (workspaceIndex < workspaceEntities.size()) {
-      int last = Math.min(workspaceEntities.size(), workspaceIndex + BATCH);
-      
-      for (int i = workspaceIndex; i < last; i++) {
-        WorkspaceEntity workspaceEntity = workspaceEntities.get(i);
-        workspaceIndexer.indexWorkspace(workspaceEntity);
-      }
-
-      logger.log(Level.INFO, "Reindexed batch of workspaces (" + workspaceIndex + "-" + last + ")");
-      
-      workspaceIndex += BATCH;
-      return false;
-    } else
+        logger.log(Level.INFO, "Reindexed batch of workspaces (" + workspaceIndex + "-" + last + ")");
+        
+        workspaceIndex += BATCH;
+        return false;
+      } else
+        return true;
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, "Could not finish indexing workspace entities.", ex);
       return true;
+    }
   }
 
   private boolean reindexUsers() {
-    List<UserEntity> users = userEntityController.listUserEntities();
-    
-    if (userIndex < users.size()) {
-      int last = Math.min(users.size(), userIndex + BATCH);
+    try {
+      List<UserEntity> users = userEntityController.listUserEntities();
       
-      for (int i = userIndex; i < last; i++) {
-        UserEntity userEntity = users.get(i);
-
-        userIndexer.indexUser(userEntity);
-      }
-      
-      logger.log(Level.INFO, "Reindexed batch of users (" + userIndex + "-" + last + ")");
-
-      userIndex += BATCH;
-      return false;
-    } else
+      if (userIndex < users.size()) {
+        int last = Math.min(users.size(), userIndex + BATCH);
+        
+        for (int i = userIndex; i < last; i++) {
+          UserEntity userEntity = users.get(i);
+  
+          userIndexer.indexUser(userEntity);
+        }
+        
+        logger.log(Level.INFO, "Reindexed batch of users (" + userIndex + "-" + last + ")");
+  
+        userIndex += BATCH;
+        return false;
+      } else
+        return true;
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, "Could not finish indexing user entities.", ex);
       return true;
+    }
   }
   
   private boolean reindexUserGroups() {
-    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupEntities();
-    
-    if (groupIndex < userGroups.size()) {
-      int last = Math.min(userGroups.size(), groupIndex + BATCH);
+    try {
+      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupEntities();
       
-      for (int i = groupIndex; i < last; i++) {
-        UserGroupEntity groupEntity = userGroups.get(i);
-
-        UserGroup userGroup = userGroupController.findUserGroup(groupEntity.getSchoolDataSource(), groupEntity.getIdentifier());
+      if (groupIndex < userGroups.size()) {
+        int last = Math.min(userGroups.size(), groupIndex + BATCH);
         
-        try {
-          indexer.index(UserGroup.class.getSimpleName(), userGroup);
-        } catch (Exception e) {
-          logger.log(Level.WARNING, "could not index UserGroup #" + groupEntity.getSchoolDataSource() + '/' + groupEntity.getIdentifier(), e);
+        for (int i = groupIndex; i < last; i++) {
+          UserGroupEntity groupEntity = userGroups.get(i);
+  
+          UserGroup userGroup = userGroupController.findUserGroup(groupEntity.getSchoolDataSource(), groupEntity.getIdentifier());
+          
+          try {
+            indexer.index(UserGroup.class.getSimpleName(), userGroup);
+          } catch (Exception e) {
+            logger.log(Level.WARNING, "could not index UserGroup #" + groupEntity.getSchoolDataSource() + '/' + groupEntity.getIdentifier(), e);
+          }
         }
-      }
-      
-      logger.log(Level.INFO, "Reindexed batch of usergroups (" + groupIndex + "-" + last + ")");
-
-      groupIndex += BATCH;
-      return false;
-    } else
+        
+        logger.log(Level.INFO, "Reindexed batch of usergroups (" + groupIndex + "-" + last + ")");
+  
+        groupIndex += BATCH;
+        return false;
+      } else
+        return true;
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, "Could not finish indexing usergroup entities.", ex);
       return true;
+    }
   }
   
 }
