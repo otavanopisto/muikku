@@ -11,7 +11,7 @@ $(document).ready(function(){
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.newMessage.error'));
         } else {
-        $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage'));
+        $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage.success'));
         }
       });
       window.mCommunicator._refreshView();
@@ -185,13 +185,40 @@ $(document).ready(function(){
       window.location.hash = box;
       return false;
     },
-    _onMessageDeleteClick: function() {
-      var inputs = $(CommunicatorImpl.msgContainer).find("input:checked");
-      var deleteQ = [];
+    _onMessageDeleteClick : function(event) {
       
-      for (i = 0; i < inputs.length; i++){
-        var msgId = $(inputs[i]).attr("value");
-        mApi().communicator.messages.del(msgId).callback(function (err, result){
+      var element = $(event.target);
+      var parent = element.parents(".cm-messages-container");
+      
+      openElement = parent.find(".open");
+
+
+      
+      if(openElement.length > 0){
+        var id = [openElement.attr("id")];
+        
+        this._deleteMessages(id);
+        this._onMessageBackClick();
+      }else{
+        var inputs = $(CommunicatorImpl.msgContainer).find("input:checked");    
+        var deleteQ = [];
+        for (i = 0; i < inputs.length; i++){
+          var msgId = $(inputs[i]).attr("value");
+          deleteQ.push(msgId);
+        }         
+        this._deleteMessages(deleteQ)
+      }
+      
+      
+      
+
+    },    
+    
+    _deleteMessages : function(ids){
+
+      for (i = 0; i < ids.length; i++){
+
+        mApi().communicator.messages.del(ids[i]).callback(function (err, result){
          if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
           } else {
@@ -201,7 +228,7 @@ $(document).ready(function(){
         
         this._refreshView();
       } 
-    },    
+    },
     
     _onRecipientFocus:function(event){
       $(event.target).autocomplete({
@@ -266,7 +293,10 @@ $(document).ready(function(){
         
       }
 
-    } 
+    } else{
+      this._showInbox();
+      
+    }
   },
   _addLoading : function(parentEl){
     $(parentEl).append('<div class="mf-loading"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div></div>');  

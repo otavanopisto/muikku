@@ -1,5 +1,5 @@
 
-    <div class="mf-item cm-message open {?isOwner}owner{/isOwner}" id="{id}">
+    <div class="mf-item cm-message open{?isOwner} owner{/isOwner}" id="{id}">
       <div class="cm-message-topic mf-item-topic">
         <span class="mf-item-header-name cm-message-header"><h3>{caption}</h3></span>
         <div class="clear"></div>

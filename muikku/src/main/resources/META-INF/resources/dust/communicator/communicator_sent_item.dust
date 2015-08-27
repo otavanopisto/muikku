@@ -1,6 +1,7 @@
     <div class="mf-item cm-message {?unreadMessagesInThread}unread{/unreadMessagesInThread}" id="{id}">
-      <div class="mf-item-details">
-        <div class="mf-item-details-container">       
+      <div class="mf-item-details cm-message-details">
+        <div class="mf-item-options-container cm-message-options-container"><div class="mf-item-select cm-message-select"><input type="checkbox"  name="messageSelect" value="{id}" /></div></div>
+        <div class="mf-item-details-container cm-message-details-container">       
           <div class="mf-item-additionalInfo">
             <span>
               {?threadLatestMessageDate}
@@ -29,8 +30,6 @@
           <div class="clear"></div>
         </div>
       </div>
-    
       <input type="hidden" name="communicatorMessageId" value="{id}"/>
       <input type="hidden" name="communicatorMessageThreadId" value="{communicatorMessageId}"/>
-  
     </div>
