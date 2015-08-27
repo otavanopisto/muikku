@@ -25,7 +25,7 @@
             <div class="mf-fieldRow">
               <div class="mf-textfield">
                <div class="mf-textfield-subcontainer">
-                 <span class="mf-textfield-title">{#localize key="plugin.communicator.createmessage.title.subject"/}</span><input class="mf-textfield-subject" type="text" name="caption"></input>
+                 <span class="mf-textfield-title">{#localize key="plugin.communicator.createmessage.title.subject"/}</span><input class="mf-textfield-subject" type="text" name="caption" value="RE: {caption}"></input>
                </div>  
               </div>      
             </div>
@@ -43,53 +43,5 @@
           <input type="button" name="cancel" value='{#localize key="plugin.communicator.createmessage.button.cancel"/}'/>
         </div>   
     </form>
-  
-  
   </div>
-  
 </div>
-
-
-
-<!-- <div class="cm-message-reply"> -->
-<!--   <form> -->
-<!--     <input type="hidden" name="communicatorMessageId" value="{communicatorMessageId}" /> -->
-<!--     <input type="hidden" name="recipientIds" value="{senderId}" data-array="true" /> -->
-
-<!--     <div class="mf-form-paragraph cm-message-recipients"> -->
-<!--       <div class="mf-form-row mf-selected-items cm-message-selected-recipients"> -->
-<!--         <div class="mf-item-user cm-message-recipient"> -->
-<!--           {?senderHasPicture}  -->
-<!--             <img title="{senderFullName}" class="cm-user-picture reply-recipient custom" src="{@contextPath/}/picture?userId={sender}" width="20" height="20" /> -->
-<!--           {:else} -->
-<!--             <div title="{senderFullName}" class="cm-user-picture reply-recipient default "></div> -->
-<!--           {/senderHasPicture}   -->
-
-<!--         </div>  -->
-<!--       </div> -->
-<!--      <div class="clear"></div> -->
-<!--     </div> -->
-<!--     <div class="mf-form-paragraph cm-reply-body"> -->
-<!--       <div class="mf-fieldRow"> -->
-<!--         <div class="mf-textfield"> -->
-<!--           <div class="mf-textfield-subcontainer"> -->
-<!--             <span class="mf-textfield-title">{#localize key="plugin.communicator.createmessage.title.subject"/}</span> -->
-<!--             <input class="mf-textfield-subject" type="text" name="caption" value="RE: {caption}" ></input> -->
-<!--           </div> -->
-<!--         </div> -->
-<!--       </div> -->
-
-<!--       <div class="mf-form-row cm-reply-content"> -->
-<!--          <textarea id="textContent" name="content"> -->
-           
-<!--          </textarea> -->
-<!--       </div>   -->
-  
-<!--       <div class="mf-form-row mf-toolbar cm-reply-toolbar"> -->
-<!--         <input type="button" name="send" value='{#localize key="plugin.communicator.newmessage.send"/}'/> -->
-<!--         <input type="button" name="cancel" value='{#localize key="plugin.communicator.newmessage.cancel"/}'/> -->
-<!--         <input type="hidden" name="categoryName" value="message" /> -->
-<!--       </div>         -->
-<!--     </div>		 -->
-<!--   </form> -->
-<!-- </div> -->
