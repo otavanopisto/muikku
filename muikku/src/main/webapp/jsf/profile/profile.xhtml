@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd" 
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+  template="/jsf/profile/templates/profile-view.xhtml">
+
+  <ui:define name="content.center.widget">
+    <m:widget name="profile-content" size="18" rendered="#{sessionBackingBean.loggedIn}"/>
+  </ui:define>
+
+  <ui:define name="content.right.widget">
+    <m:widget name="profile-section-links" size="6" rendered="#{sessionBackingBean.loggedIn}" />
+  </ui:define>
+
+</ui:composition>

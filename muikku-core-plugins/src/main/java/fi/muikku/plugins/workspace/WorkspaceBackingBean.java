@@ -9,12 +9,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
+import fi.muikku.users.WorkspaceUserEntityController;
 
 @Named
 @Stateful
@@ -23,6 +26,9 @@ public class WorkspaceBackingBean {
 
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
   
   @LocalSession
   @Inject
@@ -58,13 +64,36 @@ public class WorkspaceBackingBean {
     return workspaceEntity;
   }
 
+  public Boolean isStudent() {
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    
+    if (userEntity == null)
+      return false;
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(
+        getWorkspaceEntity(), userEntity);
+    
+    if (workspaceUserEntity != null)
+      return workspaceUserEntity.getWorkspaceUserRole().getArchetype().equals(WorkspaceRoleArchetype.STUDENT);
+    else
+      return false;
+  }
+  
   public String getAssessmentState() {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
+    
     if (userEntity == null) {
-      return WorkspaceAssessmentState.UNASSESSED.getStateName();
+//      return WorkspaceAssessmentState.UNASSESSED.getStateName();
+      return null;
     }
-    WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(getWorkspaceEntity(), userEntity);
-    return assessmentState.getStateName();
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(getWorkspaceEntity(), userEntity);
+    
+    if (workspaceUserEntity != null) {
+      WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
+      return assessmentState.getStateName();
+    } else
+      return null;
   }
   
   public Boolean getMayManageMaterials() {

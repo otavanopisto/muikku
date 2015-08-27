@@ -132,6 +132,32 @@ class PyramusRestClient implements Serializable {
       response.close();
     }
   }
+
+  public void delete(Client client, String accssToken, String path) {
+    WebTarget target = client.target(url + path);
+
+    String blockOutgoing = System.getProperty("muikku.schoolDataPyramus.blockOutgoing", "false");
+    
+    if ("true".equals(blockOutgoing)) {
+      throw new RuntimeException("Outgoing school-data-pyramus traffic blocked");
+    }
+
+    Builder request = target.request();
+    request.header("Authorization", "Bearer " + accssToken);
+    Response response = request.delete();
+
+    switch (response.getStatus()) {
+      case 200:
+      case 204:
+      case 404:
+      break;
+      
+      case 403:
+        throw new PyramusRestClientUnauthorizedException(String.format("Received http error %d when requesting %s", response.getStatus(), path));
+      default:
+        throw new RuntimeException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
+    }
+  }
   
   public AccessToken createAccessToken(Client client, String code) {
     Form form = new Form()
@@ -174,6 +200,8 @@ class PyramusRestClient implements Serializable {
         } else {
           return null;
         }
+      case 403:
+        throw new PyramusRestClientUnauthorizedException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
       case 404:
         return null;
       default:

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  
+  <createTables>
+    <table primaryKeys="id" name="UserGroupEntity">
+      <fields>
+        <field name="id" type="java.lang.Long" nullable="false" unique="false" />
+        <field name="schoolDataSource_id" type="java.lang.Long" nullable="true" unique="false" />
+        <field name="identifier" type="java.lang.String" nullable="false" unique="true" />
+        <field name="archived" type="java.lang.Boolean" nullable="false" unique="false" />
+      </fields>
+      
+      <foreignKeys>
+        <key referencedColumns="id" columns="schoolDataSource_id" referencedTable="SchoolDataSource" name="FK_USERGROUPENTITY_SCHOOLDATASOURCE"/>
+      </foreignKeys>
+    </table>
+
+    <table primaryKeys="id" name="UserGroupUserEntity">
+      <fields>
+        <field name="id" type="java.lang.Long" nullable="false" unique="false" />
+        <field name="userGroupEntity_id" type="java.lang.Long" nullable="true" unique="false" />
+        <field name="userSchoolDataIdentifier_id" type="java.lang.Long" nullable="true" unique="false" />
+        <field name="schoolDataSource_id" type="java.lang.Long" nullable="true" unique="false" />
+        <field name="identifier" type="java.lang.String" nullable="false" unique="true" />
+        <field name="archived" type="java.lang.Boolean" nullable="false" unique="false" />
+      </fields>
+      
+      <foreignKeys>
+        <key referencedColumns="id" columns="userGroupEntity_id" referencedTable="UserGroupEntity" name="FK_USERGROUPUSERENTITY_USERGROUPENTITY"/>
+        <key referencedColumns="id" columns="schoolDataSource_id" referencedTable="SchoolDataSource" name="FK_USERGROUPUSERENTITY_SCHOOLDATASOURCE"/>
+        <key referencedColumns="id" columns="userSchoolDataIdentifier_id" referencedTable="UserSchoolDataIdentifier" name="FK_USERGROUPUSERENTITY_USERSCHOOLDATAIDENTIFIER"/>
+      </foreignKeys>
+    </table>
+  </createTables>
+
+  <sql>alter table UserGroupEntity modify column id bigint auto_increment;</sql>
+  <sql>alter table UserGroupUserEntity modify column id bigint auto_increment;</sql>
+
+</update>

@@ -54,21 +54,30 @@
           return;
         }
         
-        mApi().workspace.workspaces.materials.create(this.options.workspaceEntityId, {
+        // TODO These are against widget ideology but it would be a nightmare to keep them up-to-date in material management 
+        var workspaceEntityId = $('.workspaceEntityId').val();
+        var parentFolder = $(this.element).prevAll('.folder').first();
+        var parentId = parentFolder ? $(parentFolder).data('workspace-material-id') : $('.workspaceRootFolderId').val();
+        var nextMaterial = $(this.element).next('.workspace-materials-view-page');
+        var nextSiblingId = $(nextMaterial) && !$(nextMaterial).hasClass('folder') ? $(nextMaterial).data('workspace-material-id') : undefined;
+        
+        mApi().workspace.workspaces.materials.create(workspaceEntityId, {
           materialId: materialResult.id,
-          parentId: this.options.parentId,
-          nextSiblingId: this.options.nextSiblingId
+          parentId: parentId,
+          nextSiblingId: nextSiblingId
         })
         .callback($.proxy(function (workspaceMaterialErr, workspaceMaterialResult) {
           if (workspaceMaterialErr) {
             $('.notification-queue').notificationQueue('notification', 'error', workspaceMaterialErr);
             return;
-          } else {
+          }
+          else {
             $(this.element).trigger('fileUploaded', {
               'title': materialResult.title,
               'parentId': workspaceMaterialResult.parentId,
               'materialId': materialResult.id,
-              'workspaceMaterialId': workspaceMaterialResult.id
+              'workspaceMaterialId': workspaceMaterialResult.id,
+              'nextSiblingId': nextSiblingId
             });
           } 
         }, this));

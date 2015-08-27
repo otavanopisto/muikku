@@ -10,18 +10,19 @@ import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
-import fi.muikku.plugins.assessmentrequest.AssessmentRequest;
-import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.users.UserController;
-import fi.muikku.users.UserEntityController;
+import fi.muikku.users.WorkspaceUserEntityController;
 
 @Dependent
 public class CommunicatorAssessmentRequestController {
@@ -43,16 +44,13 @@ public class CommunicatorAssessmentRequestController {
   private UserController userController;
   
   @Inject
-  private UserEntityController userEntityController;
-  
-  @Inject
-  private CommunicatorMessageIdDAO communicatorMessageIdDAO;
-  
-  @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @Inject
-  private WorkspaceEntityController workspaceEntityController;
+  private WorkspaceUserEntityController workspaceUserController;
+  
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
   
   private String getText(String key, Object... params) {
     Locale locale = sessionController.getLocale();
@@ -95,37 +93,46 @@ public class CommunicatorAssessmentRequestController {
     return getText("plugin.communicator.assessmentrequest.body.cancelled", userName, workspaceName);
   }
 
-  
-  public CommunicatorMessage sendAssessmentRequestMessage(AssessmentRequest assessmentRequest) {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(assessmentRequest.getWorkspace());
-    UserEntity student = userEntityController.findUserEntityById(assessmentRequest.getStudent());
+  public CommunicatorMessage sendAssessmentRequestMessage(WorkspaceAssessmentRequest assessmentRequest) {
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserController.findWorkspaceUserEntityByIdentifier(assessmentRequest.getWorkspaceUserIdentifier());
+    
+    UserEntity student = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    
+    CommunicatorMessageId communicatorMessageId = assessmentRequestController.findCommunicatorMessageId(workspaceUserEntity);
     
     schoolDataBridgeSessionController.startSystemSession();
     try {
-        List<UserEntity> teachers = workspaceController.listUserEntitiesByWorkspaceEntityAndRoleArchetype(
-            workspaceEntity,
-            WorkspaceRoleArchetype.TEACHER);
-       if(assessmentRequest.getCommunicatorMessageId() != null){
-           return communicatorController.replyToMessage(student,
-                                           getText("plugin.communicator.assessmentrequest.category"),
-                                           assessmentRequestTitle(workspaceEntity, student),
-                                           assessmentRequestBody(workspaceEntity, student, assessmentRequest.getMessage()),
-                                           teachers,
-                                           communicatorMessageIdDAO.findById(assessmentRequest.getCommunicatorMessageId()));
-       }
-          return communicatorController.postMessage(student,
-                                           getText("plugin.communicator.assessmentrequest.category"),
-                                           assessmentRequestTitle(workspaceEntity, student),
-                                           assessmentRequestBody(workspaceEntity, student, assessmentRequest.getMessage()),
-                                           teachers);
+      List<UserEntity> teachers = workspaceController.listUserEntitiesByWorkspaceEntityAndRoleArchetype(
+          workspaceEntity, WorkspaceRoleArchetype.TEACHER);
+      
+      if (communicatorMessageId != null) {
+        return communicatorController.replyToMessage(student,
+            getText("plugin.communicator.assessmentrequest.category"),
+            assessmentRequestTitle(workspaceEntity, student),
+            assessmentRequestBody(workspaceEntity, student, assessmentRequest.getRequestText()), teachers,
+            communicatorMessageId);
+      } else {
+        CommunicatorMessage postMessage = communicatorController.postMessage(student, getText("plugin.communicator.assessmentrequest.category"),
+            assessmentRequestTitle(workspaceEntity, student),
+            assessmentRequestBody(workspaceEntity, student, assessmentRequest.getRequestText()), teachers);
+        
+        assessmentRequestController.setCommunicatorMessageId(assessmentRequest, postMessage.getCommunicatorMessageId());
+
+        return postMessage;
+      }
     } finally {
-        schoolDataBridgeSessionController.endSystemSession();
+      schoolDataBridgeSessionController.endSystemSession();
     }
   }
   
-  public void sendAssessmentRequestCancelledMessage(AssessmentRequest assessmentRequest) {
-    UserEntity student = userEntityController.findUserEntityById(assessmentRequest.getStudent());
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(assessmentRequest.getWorkspace());
+  public void sendAssessmentRequestCancelledMessage(WorkspaceUserEntity workspaceUserEntity) {
+    UserEntity student = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    CommunicatorMessageId communicatorMessageId = assessmentRequestController.findCommunicatorMessageId(workspaceUserEntity);
+    
+    if (communicatorMessageId == null)
+      communicatorMessageId = communicatorController.createMessageId();
 
     schoolDataBridgeSessionController.startSystemSession();
     try {
@@ -137,9 +144,10 @@ public class CommunicatorAssessmentRequestController {
                                            assessmentCancelledTitle(workspaceEntity, student),
                                            assessmentCancelledBody(workspaceEntity, student),
                                            teachers,
-                                           communicatorMessageIdDAO.findById(assessmentRequest.getCommunicatorMessageId()));
+                                           communicatorMessageId);
     } finally {
         schoolDataBridgeSessionController.endSystemSession();
     }
   }
+  
 }

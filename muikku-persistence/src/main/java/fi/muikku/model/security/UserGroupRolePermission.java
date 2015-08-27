@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
-import fi.muikku.model.users.UserGroup;
+import fi.muikku.model.users.UserGroupEntity;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
@@ -12,14 +12,14 @@ public class UserGroupRolePermission extends RolePermission {
 
   // TODO: Unique all?
 
-  public UserGroup getUserGroup() {
+  public UserGroupEntity getUserGroup() {
     return userGroup;
   }
 
-  public void setUserGroup(UserGroup userGroup) {
+  public void setUserGroup(UserGroupEntity userGroup) {
     this.userGroup = userGroup;
   }
 
   @ManyToOne
-  private UserGroup userGroup;
+  private UserGroupEntity userGroup;
 }

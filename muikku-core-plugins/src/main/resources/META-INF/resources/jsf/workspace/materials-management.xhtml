@@ -21,44 +21,40 @@
         <div class="workspace-materials-management-TOC-title">
           <h1>#{i18n.text['plugin.workspace.materialsManagement.tocTitle']}</h1>
         </div>
-        <div class="workspace-materials-toc-content-outer">
-          <div class="workspace-materials-toc-content-inner">
-            <div class="workspace-materials-toc-content-scrolling">
-              <div class="workspace-materials-toc-root">
-                <ui:repeat var="node" value="#{workspaceMaterialsManagementBackingBean.contentNodes}">
-                  <ui:fragment rendered="#{node.type eq 'folder'}">
-                    <ul class="workspace-materials-toc-section" data-workspace-node-id="#{node.workspaceMaterialId}">
-                      <li class="workspace-materials-toc-subtitle #{node.hidden ? 'item-hidden' : ''}">
-                        <h:outputLink value="#page-#{node.workspaceMaterialId}">#{node.title}</h:outputLink>
-                        <span class="workspace-materials-toc-sectionDragHandle icon-move"></span>
-                      </li>
+        <div class="workspace-materials-toc-content-scrolling" id="materialsScrollableTOC">
+          <div class="workspace-materials-toc-root">
+            <ui:repeat var="node" value="#{workspaceMaterialsManagementBackingBean.contentNodes}">
+              <ui:fragment rendered="#{node.type eq 'folder'}">
+                <ul class="workspace-materials-toc-section" data-workspace-node-id="#{node.workspaceMaterialId}">
+                  <li class="workspace-materials-toc-subtitle #{node.hidden ? 'item-hidden' : ''}">
+                    <h:outputLink value="#page-#{node.workspaceMaterialId}">#{node.title}</h:outputLink>
+                    <span class="workspace-materials-toc-sectionDragHandle icon-move"></span>
+                  </li>
 
-                      <ui:repeat var="articleNode" value="#{node.children}">
-                        <ui:fragment rendered="#{articleNode.type eq 'folder'}">
-                          <li class="workspace-materials-toc-subtitle #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}">
-                            <h:outputLink value="#page-#{node.workspaceMaterialId}">#{articleNode.title}</h:outputLink>
-                          </li>
-                        </ui:fragment>
-                        <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                          <li class="workspace-materials-toc-item #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"  data-workspace-node-id="#{articleNode.workspaceMaterialId}">
-                            <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
-                            <span class="workspace-materials-toc-itemDragHandle icon-move"></span>  
-                          </li>
-                        </ui:fragment>
-                      </ui:repeat>
-                    </ul>
-                  </ui:fragment>
-                  <ui:fragment rendered="#{node.type ne 'folder'}">
-                    <ul class="workspace-materials-toc-section temporary-toc-fix">
-                      <li class="workspace-materials-toc-item #{node.hidden ? 'item-hidden' : ''}" data-workspace-node-id="#{node.workspaceMaterialId}">
-                        <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
-                        <span class="workspace-materials-toc-itemDragHandle icon-move"></span> 
+                  <ui:repeat var="articleNode" value="#{node.children}">
+                    <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+                      <li class="workspace-materials-toc-subtitle #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}">
+                        <h:outputLink value="#page-#{node.workspaceMaterialId}">#{articleNode.title}</h:outputLink>
                       </li>
-                    </ul>
-                  </ui:fragment>
-                </ui:repeat>
-              </div>
-            </div>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+                      <li class="workspace-materials-toc-item #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"  data-workspace-node-id="#{articleNode.workspaceMaterialId}">
+                        <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+                        <span class="workspace-materials-toc-itemDragHandle icon-move"></span>  
+                      </li>
+                    </ui:fragment>
+                  </ui:repeat>
+                </ul>
+              </ui:fragment>
+              <ui:fragment rendered="#{node.type ne 'folder'}">
+                <ul class="workspace-materials-toc-section temporary-toc-fix">
+                  <li class="workspace-materials-toc-item #{node.hidden ? 'item-hidden' : ''}" data-workspace-node-id="#{node.workspaceMaterialId}">
+                    <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
+                    <span class="workspace-materials-toc-itemDragHandle icon-move"></span> 
+                  </li>
+                </ul>
+              </ui:fragment>
+            </ui:repeat>
           </div>
         </div>
       </div>
@@ -69,9 +65,6 @@
     <div class="workspace-materials-management-add">
       <span class="workspace-materials-management-line-separator"></span><a
         class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
-    </div>
-    <div class="workspaces-materials-management-insert-file">
-      <input type="file" />
     </div>
     <ui:repeat var="node" value="#{workspaceMaterialsManagementBackingBean.contentNodes}">
       <ui:fragment rendered="#{node.type eq 'folder'}">

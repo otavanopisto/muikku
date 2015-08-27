@@ -7,7 +7,7 @@
           <div class="di-area-new-body">
             <div class="mf-fieldRow">
               <div class="mf-textfield">
-                <input type="textfield" value="" name="name"></input>
+                <input type="text" value="" name="name"></input>
               </div>        
             </div>
           </div>

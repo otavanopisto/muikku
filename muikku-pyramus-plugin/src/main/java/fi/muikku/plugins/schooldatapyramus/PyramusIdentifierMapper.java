@@ -13,7 +13,12 @@ public class PyramusIdentifierMapper {
   private static final String WORKSPACE_STAFF_PREFIX = "STAFF-";
   private static final String WORKSPACE_STAFF_ROLE_PREFIX = "WS-";
   private static final String ENVIRONMENT_ROLE_PREFIX = "ENV-";
-  
+  private static final String STUDENTGROUP_PREFIX = "USERGROUP-";
+  private static final String STUDENTGROUPSTUDENT_PREFIX = "USERGROUPSTUDENT-";
+  private static final String STUDENTGROUPSTAFFMEMBER_PREFIX = "USERGROUPSTAFFMEMBER-";
+  private static final String STUDYPROGRAMME_PREFIX = "STUDYPROGRAMME-";
+  private static final String STUDYPROGRAMMESTUDENT_PREFIX = "STUDYPROGRAMMESTUDENT-";
+
   public String getWorkspaceIdentifier(Long courseId) {
     return courseId.toString();
   }
@@ -137,5 +142,96 @@ public class PyramusIdentifierMapper {
   public String getWorkspaceCourseIdentifier(Long subjectId, Integer courseNumber) {
     return (subjectId == null)||(courseNumber == null) ? null : String.format("%d/%d", subjectId, courseNumber);
   }
+  
+  public Long getPyramusStudentGroupId(String studentGroupIdentifier){
+    if (StringUtils.startsWith(studentGroupIdentifier, STUDENTGROUP_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(studentGroupIdentifier, STUDENTGROUP_PREFIX.length()));
+    }
+    
+    return null;
+  }
+  
+  public String getStudentGroupIdentifier(Long pyramusStudentGroupId){
+    return STUDENTGROUP_PREFIX + String.valueOf(pyramusStudentGroupId);
+  }
+  
+  public Long getPyramusStudentGroupStudentId(String groupUserIdentifier) {
+    if (StringUtils.startsWith(groupUserIdentifier, STUDENTGROUPSTUDENT_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(groupUserIdentifier, STUDENTGROUPSTUDENT_PREFIX.length()));
+    }
+    
+    return null;
+  }
+  
+  public String getStudentGroupStudentIdentifier(Long pyramusGroupUserId){
+    return STUDENTGROUPSTUDENT_PREFIX + String.valueOf(pyramusGroupUserId);
+  }
+  
+  public Long getPyramusStudentGroupStaffMemberId(String groupUserIdentifier) {
+    if (StringUtils.startsWith(groupUserIdentifier, STUDENTGROUPSTAFFMEMBER_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(groupUserIdentifier, STUDENTGROUPSTAFFMEMBER_PREFIX.length()));
+    }
+    
+    return null;
+  }
+  
+  public String getStudentGroupStaffMemberIdentifier(Long pyramusGroupUserId){
+    return STUDENTGROUPSTAFFMEMBER_PREFIX + String.valueOf(pyramusGroupUserId);
+  }
 
+  public StudentGroupUserType getStudentGroupUserType(String identifier) {
+    if (StringUtils.startsWith(identifier, STUDENTGROUPSTAFFMEMBER_PREFIX))
+      return StudentGroupUserType.STAFFMEMBER;
+    
+    if (StringUtils.startsWith(identifier, STUDENTGROUPSTUDENT_PREFIX))
+      return StudentGroupUserType.STUDENT;
+    
+    return null;
+  }
+  
+  enum StudentGroupUserType {
+    STUDENT,
+    STAFFMEMBER
+  }
+  
+  public Long getPyramusStudyProgrammeId(String studyProgrammeIdentifier) {
+    if (StringUtils.startsWith(studyProgrammeIdentifier, STUDYPROGRAMME_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(studyProgrammeIdentifier, STUDYPROGRAMME_PREFIX.length()));
+    }
+    
+    return null;
+  }
+  
+  public String getStudyProgrammeIdentifier(Long pyramusStudyProgrammeId){
+    return STUDYPROGRAMME_PREFIX + String.valueOf(pyramusStudyProgrammeId);
+  }
+
+  public StudentGroupType getStudentGroupType(String identifier) {
+    if (StringUtils.startsWith(identifier, STUDENTGROUP_PREFIX))
+      return StudentGroupType.STUDENTGROUP;
+    
+    if (StringUtils.startsWith(identifier, STUDYPROGRAMME_PREFIX))
+      return StudentGroupType.STUDYPROGRAMME;
+    
+    return null;
+  }
+  
+  public enum StudentGroupType {
+    STUDENTGROUP,
+    STUDYPROGRAMME
+  }
+
+  public String getStudyProgrammeStudentIdentifier(Long pyramusStudentId) {
+    return STUDYPROGRAMMESTUDENT_PREFIX + String.valueOf(pyramusStudentId);
+  }
+
+  public Long getPyramusStudyProgrammeStudentId(String studyProgrammeStudentIdentifier) {
+    if (StringUtils.startsWith(studyProgrammeStudentIdentifier, STUDYPROGRAMMESTUDENT_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(studyProgrammeStudentIdentifier, STUDYPROGRAMMESTUDENT_PREFIX.length()));
+    }
+    
+    return null;
+  }
+  
+  
 }

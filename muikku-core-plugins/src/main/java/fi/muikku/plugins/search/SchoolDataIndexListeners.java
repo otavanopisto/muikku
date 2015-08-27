@@ -8,8 +8,12 @@ import javax.inject.Inject;
 
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.events.SchoolDataUserDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
@@ -17,6 +21,7 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUpdatedEvent;
 import fi.muikku.search.SearchIndexer;
 import fi.muikku.users.UserController;
+import fi.muikku.users.UserGroupController;
 
 public class SchoolDataIndexListeners {
   
@@ -29,6 +34,9 @@ public class SchoolDataIndexListeners {
   @Inject
   private UserController userController;
 
+  @Inject
+  private UserGroupController userGroupController;
+  
   @Inject
   private SearchIndexer indexer;
   
@@ -78,4 +86,38 @@ public class SchoolDataIndexListeners {
   public void onSchoolDataUserRemovedEvent(@Observes SchoolDataUserRemovedEvent event) {
     indexer.remove(User.class.getSimpleName(), event.getSearchId());
   }
+  
+  
+  public void onSchoolDataUserGroupDiscoveredEvent(@Observes SchoolDataUserGroupDiscoveredEvent event) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      UserGroup userGroup = userGroupController.findUserGroup(event.getDataSource(), event.getIdentifier());
+      if (userGroup != null) {
+        indexer.index(UserGroup.class.getSimpleName(), userGroup);
+      } else {
+        logger.warning("could not index user group because user group '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
+      }
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }  
+
+  public void onSchoolDataUserGroupRemovedEvent(@Observes SchoolDataUserGroupRemovedEvent event) {
+    indexer.remove(UserGroup.class.getSimpleName(), event.getSearchId());
+  }  
+
+  public void onSchoolDataUserGroupUpdatedEvent(@Observes SchoolDataUserGroupUpdatedEvent event) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      UserGroup userGroup = userGroupController.findUserGroup(event.getDataSource(), event.getIdentifier());
+      if (userGroup != null) {
+        indexer.index(UserGroup.class.getSimpleName(), userGroup);
+      } else {
+        logger.warning("could not index user group because user group '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
+      }
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }  
+  
 }

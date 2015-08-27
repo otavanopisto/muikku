@@ -8,19 +8,17 @@
 
   <div class="widget lu-widget" id="loggedUserWidget">
     <div class="lu-badgeContainer">
-      <div class="lu-user-picture" id="loggedUserPicture"></div>
+      <div class="lu-user-picture" id="loggedUserPicture">
+        <h:link outcome="/jsf/profile/profile.jsf"><img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/></h:link> 
+      </div>
       <div class="lu-infoContainer">
         <div class="lu-user-name">
           <div class="lu-user-name-button">
-            <div class="lu-user-name-button-value">#{sessionBackingBean.loggedUserName}</div>
-            <div class="lu-user-name-button-icon"></div> 
+            <div class="lu-user-name-button-value"><h:link outcome="/jsf/profile/profile.jsf">#{sessionBackingBean.loggedUserName}</h:link></div>
           </div>     
         </div>
         <div class="lu-actions">
 	        <h:form>
-<!-- Removed because it kills the environment
-             <h:outputLink styleClass="lu-action-edit icon-edit" value="#{request.contextPath}/user-edit"/>  
- -->
             <h:commandLink styleClass="lu-action-signout icon-signout"  action="#{logoutWidgetBackingBean.logout}"/>
 	        </h:form>
         </div>

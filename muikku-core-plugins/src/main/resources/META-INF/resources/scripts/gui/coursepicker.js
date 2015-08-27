@@ -7,19 +7,12 @@
       var _this = this;
       widgetElement = $(widgetElement);
       this._widgetElement = widgetElement;
-      this._workspaceStudentRoleId = widgetElement.find("input[name='workspaceStudentRoleId']").val();
       this._coursesContainer = $('#coursesList');
 
       this._searchInput = widgetElement.find("input[name='coursePickerSearch']");
       
-      var coursePickerAllCoursesSearchBtn = widgetElement.find(".cp-category-allCourses");
-      coursePickerAllCoursesSearchBtn.click($.proxy(this._onSearchAllCoursesClick, this));
-
-      var searchMyCoursesButton = widgetElement.find('.cp-category-myCourses');
-      if (searchMyCoursesButton) {
-        searchMyCoursesButton.click($.proxy(this._onSearchMyCoursesClick, this));
-      }
-
+      $("#cpCategories").find("span").click($.proxy(this._onDropdownChange, this));
+      
       this._coursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
 
       var coursePickerSearchCoursesInput = widgetElement.find("input[name='coursePickerSearch']");
@@ -161,28 +154,20 @@
         subjects.push($(this).find("input[name='subjectId']").val());
       });
       
+      var ownWorkspaces = hash == "my" || hash == "te";
+      var includeUnpublished = hash == "te";
       if (((term != undefined) && (term != "")) || (subjects.length > 0)) {
-        if (hash == "my") {
-          this._loadCourses({
-            userId: MUIKKU_LOGGED_USER_ID,
-            subjects: subjects,
-            search: term
-          });
-        } else {
-          this._loadCourses({
-            subjects: subjects,
-            search: term
-          });
-        }
+        this._loadCourses({
+          subjects: subjects,
+          search: term,
+          myWorkspaces: ownWorkspaces,
+          includeUnpublished: includeUnpublished
+        });
       } else {
-        if (hash == "my") {
-          this._loadCourses({
-            userId: MUIKKU_LOGGED_USER_ID
-          });
-        }
-        else {
-          this._loadCourses();
-        }
+        this._loadCourses({
+          myWorkspaces: ownWorkspaces,
+          includeUnpublished: includeUnpublished
+        });
       }
     },
     
@@ -193,44 +178,41 @@
     _loadCourses: function (params) {
       this._coursesContainer.children().remove();
       
-      this._loadUserCourses($.proxy(function (userWorkspaceIds) {
-        mApi().workspace.workspaces.read(params||{})
-          .on('$', function (workspace, workspaceCallback) {
+      mApi().coursepicker.workspaces.read(params||{})
+        .on('$', function (workspace, workspaceCallback) {
 
-  //        mApi().workspace.workspaces.users.read(workspace.id, {
-  //          roleArchtype: 'TEACHER'
-  //        })  
-  //        .on('$', function (workspaceUser, workspaceUserCallback) {
-  //          mApi().user.users.read(workspaceUser.userId).callback(function (userErr, user) {
-  //            workspaceUser.hasPicture = user.hasImage;
-  //            workspaceUser.fullName = (user.firstName ? user.firstName + ' ' : '') + user.lastName;
-  //            workspaceUserCallback();
-  //          });
-  //        })
-  //        .callback(function (workspaceUsersErr, workspaceUsers) {
-  //          workspace.teachers = workspaceUsers;
-  //        });
-            
-            // TODO: Implement these
-            workspace.hasCourseFee = false;
-            workspace.hasAssessmentFee = false;
-            workspace.rating = 5;
-            workspace.ratingCount = 3;
-            workspace.teachers = [];
-            workspace.canJoin = $('input[name="studentLoggedIn"]').val() == 'true' && userWorkspaceIds.indexOf(workspace.id) == -1;
-            workspaceCallback();
-        })
-        .callback($.proxy(function (err, workspaces) {
-          renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
-            this._coursesContainer.append(text);
-          }, this));
-        }, this));        
-      }, this));
+//        mApi().coursepicker.workspaces.users.read(workspace.id, {
+//          roleArchtype: 'TEACHER'
+//        })  
+//        .on('$', function (workspaceUser, workspaceUserCallback) {
+//          mApi().user.users.read(workspaceUser.userId).callback(function (userErr, user) {
+//            workspaceUser.hasPicture = user.hasImage;
+//            workspaceUser.fullName = (user.firstName ? user.firstName + ' ' : '') + user.lastName;
+//            workspaceUserCallback();
+//          });
+//        })
+//        .callback(function (workspaceUsersErr, workspaceUsers) {
+//          workspace.teachers = workspaceUsers;
+//        });
+          
+          // TODO: Implement these
+          workspace.hasCourseFee = false;
+          workspace.hasAssessmentFee = false;
+          workspace.rating = 5;
+          workspace.ratingCount = 3;
+          workspace.teachers = [];
+          workspaceCallback();
+      })
+      .callback($.proxy(function (err, workspaces) {
+        renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
+          this._coursesContainer.append(text);
+        }, this));
+      }, this));        
     },
     
     _loadUserCourses: function (callback) {
       if (MUIKKU_LOGGED_USER_ID) {
-        mApi().workspace.workspaces
+        mApi().coursepicker.workspaces
           .read({ userId: MUIKKU_LOGGED_USER_ID })
           .callback($.proxy(function (err, workspaces) {
             var ids = $.map(workspaces||[], function (workspace) {
@@ -262,6 +244,9 @@
     _onSearchCoursesChange: function (event) {
       this._refreshListTimer();
     },
+    _onDropdownChange: function (event) {
+      this._refreshListTimer();
+    },
     _onCheckCourseClick: function (event) {
       event.stopPropagation();
       var element = $(event.target);
@@ -273,16 +258,11 @@
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
     },
     _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
-      mApi().workspace.workspaces.users.create(workspaceId, {
-        roleId: this._workspaceStudentRoleId
+      mApi().coursepicker.workspaces.signup.create(workspaceId, {
+        message: joinMessage
       })
       .callback(function (workspaceUsersErr, workspaceUsers) {
-        mApi().workspace.workspaces.signups.create(workspaceId, {
-          message: joinMessage
-        })
-        .callback(function (workspaceUsersErr, workspaceUsers) {
-          window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
-        });
+        window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
       });
     },
     _onCourseNameClick: function (event) {
@@ -294,7 +274,7 @@
         courseDetails.slideUp();
       else
         courseDetails.slideDown();
-// 
+ 
       return false;
     },
     _onFilterAllCoursesClick: function (event) {

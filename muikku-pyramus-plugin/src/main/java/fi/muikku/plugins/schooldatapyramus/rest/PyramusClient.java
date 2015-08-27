@@ -14,4 +14,5 @@ public interface PyramusClient {
 
   public <T> T get(String path, Class<T> type);
 
+  public void delete(String path);
 }

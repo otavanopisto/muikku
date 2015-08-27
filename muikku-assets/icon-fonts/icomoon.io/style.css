@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?-i0j49z');
-	src:url('fonts/muikku.eot?#iefix-i0j49z') format('embedded-opentype'),
-		url('fonts/muikku.ttf?-i0j49z') format('truetype'),
-		url('fonts/muikku.woff?-i0j49z') format('woff'),
-		url('fonts/muikku.svg?-i0j49z#muikku') format('svg');
+	src:url('fonts/muikku.eot?5p5m9k');
+	src:url('fonts/muikku.eot?#iefix5p5m9k') format('embedded-opentype'),
+		url('fonts/muikku.ttf?5p5m9k') format('truetype'),
+		url('fonts/muikku.woff?5p5m9k') format('woff'),
+		url('fonts/muikku.svg?5p5m9k#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -23,6 +23,12 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.icon-edit-index:before {
+	content: "\e637";
+}
+.icon-edit-help:before {
+	content: "\e63e";
+}
 .icon-download:before {
 	content: "\f019";
 }
@@ -182,7 +188,7 @@
 .icon-assessment-pending:before {
 	content: "\e9df";
 }
-.icon-diary:before {
+.icon-journal:before {
 	content: "\e615";
 }
 .icon-compare:before {

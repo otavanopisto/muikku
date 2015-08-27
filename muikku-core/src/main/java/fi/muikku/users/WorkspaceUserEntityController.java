@@ -12,6 +12,7 @@ import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 
@@ -55,6 +56,10 @@ public class WorkspaceUserEntityController {
     return findWorkspaceUserEntityByWorkspaceAndUserDataSourceAndUserIdentifier(workspaceEntity, schoolDataSource, identifier);
   }
   
+  public WorkspaceUserEntity findWorkspaceUserEntityByIdentifier(String identifier) {
+    return workspaceUserEntityDAO.findByIdentifier(identifier);
+  }
+  
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserDataSourceAndUserIdentifier(WorkspaceEntity workspaceEntity,
       SchoolDataSource schoolDataSource, String identifier) {
     
@@ -72,6 +77,10 @@ public class WorkspaceUserEntityController {
 
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRole(WorkspaceEntity workspaceEntity, WorkspaceRoleEntity role) {
     return workspaceUserEntityDAO.listByWorkspaceAndRole(workspaceEntity, role);
+  }
+
+  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archetype) {
+    return workspaceUserEntityDAO.listByWorkspaceAndRoleArchetype(workspaceEntity, archetype);
   }
 
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {

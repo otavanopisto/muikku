@@ -48,6 +48,8 @@
   {@eq value="binary"}
     <div class="workspace-materials-management-view-page-controls">
       <div class="management-page-controls-primary-subsection">
+	    <a href="javascript:void(null)" class="edit-page icon-edit" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialEditTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialEditTooltip"/}</span></a>
+	    <a href="javascript:void(null)" class="close-page-editor icon-exit-editing" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialCloseEditorTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialCloseEditorTooltip"/}</span></a>
 	    <a href="javascript:void(null)" class="delete-page icon-delete" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialDeleteTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialDeleteTooltip"/}</span></a>
 	    {?hidden}
 	      <a href="javascript:void(null)" class="hide-page icon-show" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialShowTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialShowTooltip"/}</span></a>

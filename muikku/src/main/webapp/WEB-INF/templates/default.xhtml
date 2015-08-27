@@ -15,28 +15,32 @@
           var CONTEXTPATH = "#{request.contextPath}";
           var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
           var MUIKKU_LOGGEDIN = #{muikkuSession.loggedIn};
+
       </script>
       
-      <script src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
+      <script type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
       <h:outputScript name="scripts/gui/locales.js" target="head" />
   
       <!-- CSS to remove all default styles -->
       <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/cssreset-min.css" />
-      
 
-      
       <!--  Temporary styles -->
       <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/temp.css" />
       
       <!-- Dynamic Grid -->
       <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/dgrid.css" />
       
-      <!-- Default Calendar CSS -->
-      <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />
-      
+
+      <!-- Moment -->
+      <h:outputScript name="scripts/moment/moment-with-locales.min.js" />    
+        
       <!-- jQuery -->
       <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
       <h:outputScript name="scripts/jquery.klass/jquery.klass-0.1a.js" />
+      
+      <!-- Perfect Scrollbar -->
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.5/js/min/perfect-scrollbar.jquery.min.js"/>
+      <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.5/css/perfect-scrollbar.min.css"/>
   
       <!-- jQuery UI -->
       <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"/>

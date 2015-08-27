@@ -13,25 +13,20 @@
     <h:outputScript name="scripts/gui/calendar-event.js" />
   </ui:define>
 
-    <ui:define name="content.tools.center">
-    
-      <div class="mf-content-toolbar grid_18 omega noLid">  
-        <div class="mf-content-tool-container">
-          <a class="mf-content-tool icon-home" jsf:outcome="/jsf/calendar/index.jsf"></a>
-          <a class="mf-content-tool icon-day" jsf:outcome="/jsf/calendar/view_day.jsf" data-mode="DAY"></a>
-          <a class="mf-content-tool icon-week" jsf:outcome="/jsf/calendar/view_week.jsf" data-mode="WEEK"></a>
-          <a class="mf-content-tool icon-month" jsf:outcome="/jsf/calendar/view_month.jsf" data-mode="MONTH"></a>  
-          <a class="mf-content-tool icon-numbered-list selected" jsf:outcome="/jsf/calendar/view_event.jsf" data-mode="EVENT_LIST"></a>  
-        </div>
+  <ui:define name="content.tools.center">
+    <div class="mf-content-toolbar grid_18 omega noLid">  
+      <div class="mf-content-tool-container">
+        <a class="mf-content-tool icon-home" jsf:outcome="/jsf/calendar/index.jsf"></a>
+        <a class="mf-content-tool icon-day" jsf:outcome="/jsf/calendar/view_day.jsf" data-mode="DAY"></a>
+        <a class="mf-content-tool icon-week" jsf:outcome="/jsf/calendar/view_week.jsf" data-mode="WEEK"></a>
+        <a class="mf-content-tool icon-month" jsf:outcome="/jsf/calendar/view_month.jsf" data-mode="MONTH"></a>  
+        <a class="mf-content-tool icon-numbered-list selected" jsf:outcome="/jsf/calendar/view_event.jsf" data-mode="EVENT_LIST"></a>  
       </div>
-    </ui:define>
+    </div>
+  </ui:define>
 
-
-    <ui:define name="content.center.widget">
-
-       <m:widget name="calendar_view_content_event" rendered="#{sessionBackingBean.loggedIn}"/>      
-      
-
-    </ui:define>
+  <ui:define name="content.center.widget">
+     <m:widget name="calendar_view_content_events" rendered="#{sessionBackingBean.loggedIn}"/>      
+  </ui:define>
 
 </ui:composition>

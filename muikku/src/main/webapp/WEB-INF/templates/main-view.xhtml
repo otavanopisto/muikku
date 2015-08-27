@@ -7,7 +7,7 @@
   template="/WEB-INF/templates/default.xhtml">
 
   <!-- Lets set the base body class per view -->
-  <ui:param name="bodyClass" value="index"/>
+  <ui:param name="bodyClass" value="#{empty bodyClass ? 'index' : bodyClass}"/>
 
   <ui:define name="sitebody">
     <div class="index">
@@ -32,7 +32,6 @@
       </ui:insert>
 
       <div id="staticNavigationWrapper">
-<!--         <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget> -->
         <div id="staticNavigationBG"></div>
         <div id="staticNavigation" class="container_24">
           <ui:insert name="dock.top">
@@ -52,9 +51,7 @@
         </div>
       </div>
 
-
       <h:panelGroup id="content" layout="block" styleClass="container_24 #{contentClass}">
-     
         <ui:insert name="content.tools.top">
           <m:widgetSpaceSet styleClass="nomargin">
             <ui:insert name="content.tools.top.left">

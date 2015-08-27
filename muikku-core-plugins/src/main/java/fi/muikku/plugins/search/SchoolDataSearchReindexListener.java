@@ -15,14 +15,18 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.search.SearchIndexer;
 import fi.muikku.search.SearchReindexEvent;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
+import fi.muikku.users.UserGroupController;
+import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 
 @ApplicationScoped
@@ -43,6 +47,12 @@ public class SchoolDataSearchReindexListener {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController; 
+
+  @Inject
+  private UserGroupController userGroupController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
   
   @Inject
   private SearchIndexer indexer;
@@ -54,6 +64,7 @@ public class SchoolDataSearchReindexListener {
   private TimerService timerService;
 
   private int userIndex = 0;
+  private int groupIndex = 0;
   private int workspaceIndex = 0;
   private static int BATCH = 100;
   
@@ -72,7 +83,7 @@ public class SchoolDataSearchReindexListener {
 
     logger.log(Level.INFO, "Commencing Reindex task.");
     try {
-      boolean alldone = reindexWorkspaceEntities() || reindexUsers();
+      boolean alldone = reindexWorkspaceEntities() || reindexUsers() || reindexUserGroups();
   
       if (!alldone)
         timerService.createSingleActionTimer(5000, new TimerConfig());
@@ -124,6 +135,32 @@ public class SchoolDataSearchReindexListener {
       logger.log(Level.INFO, "Reindexed batch of users (" + userIndex + "-" + last + ")");
 
       userIndex += BATCH;
+      return false;
+    } else
+      return true;
+  }
+  
+  private boolean reindexUserGroups() {
+    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupEntities();
+    
+    if (groupIndex < userGroups.size()) {
+      int last = Math.min(userGroups.size(), groupIndex + BATCH);
+      
+      for (int i = groupIndex; i < last; i++) {
+        UserGroupEntity groupEntity = userGroups.get(i);
+
+        UserGroup userGroup = userGroupController.findUserGroup(groupEntity.getSchoolDataSource(), groupEntity.getIdentifier());
+        
+        try {
+          indexer.index(UserGroup.class.getSimpleName(), userGroup);
+        } catch (Exception e) {
+          logger.log(Level.WARNING, "could not index UserGroup #" + groupEntity.getSchoolDataSource() + '/' + groupEntity.getIdentifier(), e);
+        }
+      }
+      
+      logger.log(Level.INFO, "Reindexed batch of usergroups (" + groupIndex + "-" + last + ")");
+
+      groupIndex += BATCH;
       return false;
     } else
       return true;

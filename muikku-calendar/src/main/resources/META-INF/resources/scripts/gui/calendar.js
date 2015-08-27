@@ -1,5 +1,7 @@
 (function() {
   
+//  moment.locale('_MUIKKU_LOCALE');
+  
   var createDateField = function (id, name, placeholder) {
     return $('<div>') 
       .addClass('ca-field-date')
@@ -23,6 +25,7 @@
         'required': 'required'
       }));
   };
+  
   
   function createModalContent() { 
     var repeat = $('<div>')
@@ -220,7 +223,9 @@
   	// TODO: What is the purpose of this script?
   	var td = new Date();
   	var tdD = td.getDate();
-  	var tdDN = td.getDay();
+  	var loc = _MUIKKU_LOCALE;
+  	
+//  	var tdDN = td.getDay();
   
   	var tdT = td.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1");
   	
@@ -229,8 +234,8 @@
   	var tdTDiv = $(".ca-date-day-time span");
   	
   	tdDDiv.append(tdD);
-  	tdNDiv.append("Päivä " + tdDN);
-  	tdTDiv.append(tdT);
+  	tdNDiv.append(moment().format("dddd"));
+  	tdTDiv.append(moment().format("HH:mm"));
         
     $('#smallMonthCalendar').fullCalendar({
       header:{
@@ -238,9 +243,12 @@
         center: 'title',
         right: 'next'
       },  
+      firstDay : 1,
       titleFormat:{
         month: 'MMMM'
-      }
+      },
+      lang : _MUIKKU_LOCALE,
+      height: 209
     });    
     
 	});

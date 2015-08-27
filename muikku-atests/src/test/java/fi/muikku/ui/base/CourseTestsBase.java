@@ -130,6 +130,7 @@ public class CourseTestsBase extends AbstractUITest {
   }
   
   @Test
+<<<<<<< HEAD
 //  @SqlBefore("sql/workspace1Setup.sql")
 //  @SqlAfter("sql/workspace1Delete.sql")
   public void courseDiscussionButtonTest() throws Exception {

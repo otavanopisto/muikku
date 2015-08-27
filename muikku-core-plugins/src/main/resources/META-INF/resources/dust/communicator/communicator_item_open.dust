@@ -37,8 +37,7 @@
       </div>
     
       <input type="hidden" name="communicatorMessageId" value="{id}"/>
-      <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId}"/>
-  
+      <input type="hidden" name="communicatorMessageThreadId" value="{communicatorMessageId}"/>  
     </div >
 
 

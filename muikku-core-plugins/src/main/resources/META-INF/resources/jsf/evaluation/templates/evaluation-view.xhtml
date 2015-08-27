@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
+  template="/WEB-INF/templates/default.xhtml">
+
+  <!-- Lets set the base body class per view -->
+  <ui:param name="bodyClass" value="evaluation" />
+  
+  <ui:define name="viewScripts">
+    <!-- Sly -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/Sly/1.2.1/sly.min.js"></script>
+    
+     <!--  Materials -->
+    <h:outputScript name="scripts/jquery.jsplumb/jquery.jsPlumb-1.7.2-min.js"/>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"/>
+    <h:outputScript name="scripts/gui/muikku-file-field-component.js"/>
+    <h:outputScript name="scripts/gui/muikku-connect-field-component.js"/>
+    <h:outputScript name="scripts/gui/muikku-material-loader.js"/> 
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
+    <h:outputScript name="scripts/lazyyt/lazyyt.js" />
+    <h:outputScript name="scripts/gui/lazypdf.js" />
+    <h:outputScript name="scripts/gui/lazyswf.js" />
+
+    <!-- Datepicker locale support -->   
+    <h:outputScript name="scripts/datepicker/datepicker-fi.js" />    
+    
+    <!--  View itself -->
+    <h:outputScript name="scripts/gui/evaluation.js" />
+  </ui:define>
+  
+  <ui:define name="viewCss">  
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/evaluation.css" />  
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/muikku-file-field-component.css" />  
+    <h:outputStylesheet name="scripts/lazyyt/lazyyt.css" />  
+  </ui:define>
+  
+  <ui:define name="sitebody">
+    
+    <ui:insert name="evaluation.queue"></ui:insert>
+    
+    <ui:insert name="evaluation.toolbar"></ui:insert>
+    
+    <main id="contentEvaluation"> <!-- class attribute removed as we are not using grid here -->
+      <ui:insert name="evaluation.content.studentAssignmentListing"></ui:insert>
+    </main>
+
+  </ui:define>
+
+</ui:composition>

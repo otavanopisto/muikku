@@ -11,7 +11,7 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/guider/", to = "/jsf/guider/index.jsf")
+@Join (path = "/guider", to = "/jsf/guider/index.jsf")
 @LoggedIn
 
 public class GuidanceToolBackingBean {

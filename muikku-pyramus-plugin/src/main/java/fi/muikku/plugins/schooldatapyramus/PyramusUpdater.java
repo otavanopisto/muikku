@@ -19,6 +19,8 @@ import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserGroupEntity;
+import fi.muikku.model.users.UserGroupUserEntity;
 import fi.muikku.model.users.UserRoleType;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
@@ -34,6 +36,12 @@ import fi.muikku.schooldata.events.SchoolDataEnvironmentRoleRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserEnvironmentRoleDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserEnvironmentRoleRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupUpdatedEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupUserDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupUserRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupUserUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
@@ -48,6 +56,7 @@ import fi.muikku.users.EnvironmentRoleEntityController;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.RoleSchoolDataIdentifierController;
 import fi.muikku.users.UserEntityController;
+import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.WorkspaceRoleEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.pyramus.rest.model.ContactType;
@@ -59,6 +68,10 @@ import fi.pyramus.rest.model.Email;
 import fi.pyramus.rest.model.Person;
 import fi.pyramus.rest.model.StaffMember;
 import fi.pyramus.rest.model.Student;
+import fi.pyramus.rest.model.StudentGroup;
+import fi.pyramus.rest.model.StudentGroupStudent;
+import fi.pyramus.rest.model.StudentGroupUser;
+import fi.pyramus.rest.model.StudyProgramme;
 import fi.pyramus.rest.model.UserRole;
 
 public class PyramusUpdater {
@@ -98,6 +111,9 @@ public class PyramusUpdater {
   
   @Inject
   private WorkspaceRoleEntityController workspaceRoleEntityController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
   
   @Inject
   private Event<SchoolDataUserDiscoveredEvent> schoolDataUserDiscoveredEvent;
@@ -144,6 +160,24 @@ public class PyramusUpdater {
   @Inject
   private Event<SchoolDataUserEnvironmentRoleRemovedEvent> schoolDataUserEnvironmentRoleRemovedEvent;
 
+  @Inject
+  private Event<SchoolDataUserGroupDiscoveredEvent> schoolDataUserGroupDiscoveredEvent;
+
+  @Inject
+  private Event<SchoolDataUserGroupUpdatedEvent> schoolDataUserGroupUpdatedEvent;
+
+  @Inject
+  private Event<SchoolDataUserGroupRemovedEvent> schoolDataUserGroupRemovedEvent;
+
+  @Inject
+  private Event<SchoolDataUserGroupUserDiscoveredEvent> schoolDataUserGroupUserDiscoveredEvent;
+
+  @Inject
+  private Event<SchoolDataUserGroupUserUpdatedEvent> schoolDataUserGroupUserUpdatedEvent;
+
+  @Inject
+  private Event<SchoolDataUserGroupUserRemovedEvent> schoolDataUserGroupUserRemovedEvent;
+
   /**
    * Updates students from Pyramus.
    * 
@@ -188,6 +222,213 @@ public class PyramusUpdater {
     }
     
     return staffMembers.length;
+  }
+
+  public int updateStudyProgrammes() {
+    StudyProgramme[] studyProgrammes = pyramusClient.get().get("/students/studyProgrammes", StudyProgramme[].class);
+    
+    if (studyProgrammes.length == 0)
+      return -1;
+    
+    for (StudyProgramme studyProgramme : studyProgrammes) {
+      updateStudyProgramme(studyProgramme.getId());
+    }
+    
+    return studyProgrammes.length;
+  }
+
+  public void updateStudyProgramme(Long pyramusId) {
+    StudyProgramme studentGroup = pyramusClient.get().get(String.format("/students/studyProgrammes/%d", pyramusId), StudyProgramme.class);
+    String identifier = identifierMapper.getStudyProgrammeIdentifier(pyramusId);
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+    
+    if (studentGroup == null) {
+      if (userGroupEntity != null)
+        fireUserGroupRemoved(identifier);
+    } else {
+      if (userGroupEntity == null) {
+        fireUserGroupDiscovered(identifier);
+      } else {
+        fireUserGroupUpdated(identifier);
+      }
+    }
+  }
+  
+  public int updateStudyProgrammeMembers(int offset, int maxStudents) {
+    Student[] students = pyramusClient.get().get("/students/students?filterArchived=false&firstResult=" + offset + "&maxResults=" + maxStudents, Student[].class);
+    if (students.length == 0) {
+      return -1;
+    }
+
+    for (Student student : students) {
+      updateStudyProgrammeMember(student);
+    }
+    
+    return students.length;
+  }
+
+  public void updateStudyProgrammeMember(Student student) {
+    if (student.getStudyProgrammeId() != null) {
+      String studyProgrammeIdentifier = identifierMapper.getStudyProgrammeIdentifier(student.getStudyProgrammeId());
+      String studyProgrammeStudentIdentifier = identifierMapper.getStudyProgrammeStudentIdentifier(student.getId());
+
+      UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studyProgrammeStudentIdentifier);
+      
+      boolean isActive = (!student.getArchived()) && (student.getStudyEndDate() == null);
+      
+      if (isActive) {
+        if (userGroupUserEntity == null) {
+          String userEntityIdentifier = identifierMapper.getStudentIdentifier(student.getId());
+          fireUserGroupUserDiscovered(studyProgrammeStudentIdentifier, studyProgrammeIdentifier, userEntityIdentifier);
+        } else
+          fireUserGroupUserUpdated(studyProgrammeStudentIdentifier);
+      } else {
+        if (userGroupUserEntity != null)
+          fireUserGroupUserRemoved(studyProgrammeStudentIdentifier, studyProgrammeIdentifier);
+      }
+    }
+  }
+  
+  public int updateStudentGroups(int offset, int batchSize) {
+    StudentGroup[] userGroups = pyramusClient.get().get("/students/studentGroups?firstResult=" + offset + "&maxResults=" + batchSize, StudentGroup[].class);
+    
+    if (userGroups.length == 0)
+      return -1;
+    
+    for (StudentGroup userGroup : userGroups) {
+      updateStudentGroup(userGroup.getId());
+    }
+    
+    return userGroups.length;
+  }
+  
+  public void updateStudentGroup(Long pyramusId) {
+    StudentGroup studentGroup = pyramusClient.get().get(String.format("/students/studentGroups/%d", pyramusId), StudentGroup.class);
+    String identifier = identifierMapper.getStudentGroupIdentifier(pyramusId);
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+    
+    if (studentGroup == null) {
+      if (userGroupEntity != null)
+        fireUserGroupRemoved(identifier);
+    } else {
+      if (userGroupEntity == null) {
+        fireUserGroupDiscovered(identifier);
+      } else {
+        fireUserGroupUpdated(identifier);
+      }
+    }
+  }
+
+  public int updateStudyProgrammeGroupUsers(Long studyProgrammeId) {
+    // TODO: There's no endpoint to do this efficiently atm
+    
+    return 0;
+  }
+  
+  public int updateStudentGroupUsers(Long studentGroupId) {
+    String userGroupIdentifier = identifierMapper.getStudentGroupIdentifier(studentGroupId);
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier);    
+
+    if (userGroupEntity != null) {
+      List<UserGroupUserEntity> existingUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroupEntity);
+      List<String> existingGroupUserIds = new ArrayList<String>();
+      for (UserGroupUserEntity existingUser : existingUsers) {
+        existingGroupUserIds.add(existingUser.getIdentifier());
+      }
+  
+      List<String> foundGroupUserIds = new ArrayList<String>();
+
+      int count = 0;
+      
+      StudentGroupUser[] userGroupStaffMembers = pyramusClient.get().get(String.format("/students/studentGroups/%d/staffmembers", studentGroupId), StudentGroupUser[].class);
+      if (userGroupStaffMembers != null) {
+        for (StudentGroupUser sgStaffMember : userGroupStaffMembers) {
+          String identifier = identifierMapper.getStudentGroupStaffMemberIdentifier(sgStaffMember.getId());
+
+          foundGroupUserIds.add(identifier);
+          
+          // If not existing, then it's a new one
+          if (!existingGroupUserIds.contains(identifier)) {
+            String staffMemberIdentifier = identifierMapper.getStaffIdentifier(sgStaffMember.getStaffMemberId());
+            fireUserGroupUserDiscovered(identifier, userGroupIdentifier, staffMemberIdentifier);
+          }
+        }
+        
+        count += userGroupStaffMembers.length;
+      }
+      
+      StudentGroupStudent[] userGroupStudents = pyramusClient.get().get(String.format("/students/studentGroups/%d/students", studentGroupId), StudentGroupStudent[].class);
+      if (userGroupStudents != null) {
+        for (StudentGroupStudent sgs : userGroupStudents) {
+          String identifier = identifierMapper.getStudentGroupStudentIdentifier(sgs.getId());
+  
+          foundGroupUserIds.add(identifier);
+
+          // If not existing, then it's a new one
+          if (!existingGroupUserIds.contains(identifier)) {
+            String studentIdentifier = identifierMapper.getStudentIdentifier(sgs.getStudentId());
+            fireUserGroupUserDiscovered(identifier, userGroupIdentifier, studentIdentifier);
+          }
+        }
+        
+        count += userGroupStudents.length;
+      }
+
+      // Remove found ids from existing and we'll get the ones to remove
+      existingGroupUserIds.removeAll(foundGroupUserIds);
+      
+      for (String identifier : existingGroupUserIds) {
+        fireUserGroupUserRemoved(identifier, userGroupIdentifier);
+      }
+      
+      return count;
+    } else  {
+      logger.log(Level.WARNING, String.format("UserGroup is null for id %d - update of users is skipped", studentGroupId));
+    }
+    
+    return 0;
+  }
+  
+  public void updateStudentGroupStudent(Long studentGroupId, Long studentGroupStudentId) {
+    StudentGroupStudent studentGroupStudent = pyramusClient.get().get(String.format("/students/studentGroups/%d/students/%d", studentGroupId, studentGroupStudentId), StudentGroupStudent.class);
+    String identifier = identifierMapper.getStudentGroupStudentIdentifier(studentGroupStudentId);
+    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+    
+    String userGroupIdentifier = identifierMapper.getStudentGroupIdentifier(studentGroupId);
+
+    if (studentGroupStudent == null) {
+      if (userGroupUserEntity != null)
+        fireUserGroupUserRemoved(identifier, userGroupIdentifier);
+    } else {
+      if (userGroupUserEntity == null) {
+        String studentIdentifier = identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId());
+        fireUserGroupUserDiscovered(identifier, userGroupIdentifier, studentIdentifier);
+      } else {
+        fireUserGroupUserUpdated(identifier);
+      }
+    }
+  }
+
+  public void updateStudentGroupStaffMember(Long studentGroupId, Long studentGroupStaffMemberId) {
+    StudentGroupUser studentGroupStaffMember = pyramusClient.get().get(String.format("/students/studentGroups/%d/staffmembers/%d", studentGroupId, studentGroupStaffMemberId), StudentGroupUser.class);
+    String identifier = identifierMapper.getStudentGroupStaffMemberIdentifier(studentGroupStaffMemberId);
+    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+    
+    String userGroupIdentifier = identifierMapper.getStudentGroupIdentifier(studentGroupId);
+
+    if (studentGroupStaffMember == null) {
+      if (userGroupUserEntity != null)
+        fireUserGroupUserRemoved(identifier, userGroupIdentifier);
+    } else {
+      if (userGroupUserEntity == null) {
+        String staffMemberIdentifier = identifierMapper.getStaffIdentifier(studentGroupStaffMember.getStaffMemberId());
+        fireUserGroupUserDiscovered(identifier, userGroupIdentifier, staffMemberIdentifier);
+      } else {
+        fireUserGroupUserUpdated(identifier);
+      }
+    }
   }
 
   /**
@@ -883,4 +1124,40 @@ public class PyramusUpdater {
         identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         userIdentifier));
   }
+
+  private void fireUserGroupDiscovered(String userGroupIdentifier) {
+    schoolDataUserGroupDiscoveredEvent.fire(new SchoolDataUserGroupDiscoveredEvent(
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier));
+  }
+
+  private void fireUserGroupUpdated(String userGroupIdentifier) {
+    schoolDataUserGroupUpdatedEvent.fire(new SchoolDataUserGroupUpdatedEvent(
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier));
+  }
+  
+  private void fireUserGroupRemoved(String userGroupIdentifier) {
+    String searchId = userGroupIdentifier + '/' + SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+    schoolDataUserGroupRemovedEvent.fire(new SchoolDataUserGroupRemovedEvent(
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier,
+        searchId));
+  }
+  
+  private void fireUserGroupUserDiscovered(String userGroupUserIdentifier, String userGroupIdentifier, String userEntityIdentifier) {
+    schoolDataUserGroupUserDiscoveredEvent.fire(new SchoolDataUserGroupUserDiscoveredEvent(
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier,
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier,
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userEntityIdentifier));
+  }
+
+  private void fireUserGroupUserUpdated(String userGroupUserIdentifier) {
+    schoolDataUserGroupUserUpdatedEvent.fire(new SchoolDataUserGroupUserUpdatedEvent(
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier));
+  }
+  
+  private void fireUserGroupUserRemoved(String userGroupUserIdentifier, String userGroupIdentifier) {
+    schoolDataUserGroupUserRemovedEvent.fire(new SchoolDataUserGroupUserRemovedEvent(
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier,
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier));
+  }
+
 }

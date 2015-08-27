@@ -3,6 +3,14 @@
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 
+.lazy-pdf {
+  height: 882px;
+}
+
+.lazy-swf {
+  height: 500px;
+}
+
 body.workspace-materials-reading {
   background:#8ba4b5;
   padding:0.01em; /* Prevent margin collapsing  */
@@ -143,115 +151,100 @@ body.workspace-materials-reading {
         }
         
       }
-    
-      .workspace-materials-toc-content-outer {
-        overflow:hidden;
+        
+      .workspace-materials-toc-content-scrolling {
+        width:350px;
+        padding:0 6px;
+        box-sizing:border-box;
         position:absolute;
         top:40px;
-        bottom:5px;
-        width:350px;
-      
-        .workspace-materials-toc-content-inner {  
-          position:absolute;
-          overflow-x: hidden;
-          overflow-y: scroll;
-          width:370px;
-          top:0;
-          bottom:0;
-        
-          .workspace-materials-toc-content-scrolling {
-            width:338px;
-            padding:0 6px;
-        
-            .workspace-materials-toc-root {
-
-              .workspace-materials-toc-item {
-                list-style:none;
-                margin:1px 0;
-                
-                &:first-child {
-                  margin-top:5px;
-                  padding-top:2px;
-                }
-                
-                &.item-hidden {
-                  opacity:0.4;
-                }
-                
-                a {
-                  text-decoration:none;
-                  color:#2c2c2c;
-                  display:block;
-                  @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out);
-                  @include rounded(2px);
-                  padding:2px 8px 2px 6px;
-                  border-left:2px solid #e8f0f5;
-                  
-                  &:hover,
-                  &.active {
-                    background:#596e7d;
-                    color:#fff;
-                  }
-
-                  &.evaluated {
-                    border-left:2px solid $evaluatedAssignment;
-                  }
-                  
-                  &.exercise {
-                    border-left:2px solid $exerciseAssignment;
-                  }
-                  
-                }
+        bottom:0;
     
+        .workspace-materials-toc-root {
+
+          .workspace-materials-toc-item {
+            list-style:none;
+            margin:1px 0;
+            
+            &:first-child {
+              margin-top:5px;
+              padding-top:2px;
+            }
+            
+            &.item-hidden {
+              opacity:0.4;
+            }
+            
+            a {
+              text-decoration:none;
+              color:#2c2c2c;
+              display:block;
+/*                   @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out); */
+              @include rounded(2px);
+              padding:2px 8px 2px 6px;
+              border-left:2px solid #e8f0f5;
+              
+              &:hover,
+              &.active {
+                background:#596e7d;
+                color:#fff;
               }
-        
-              .workspace-materials-toc-section {
-                margin:0;
-                padding-top:5px;
-                padding-bottom:10px;
+
+              &.evaluated {
+                border-left:2px solid $evaluatedAssignment;
+              }
+              
+              &.exercise {
+                border-left:2px solid $exerciseAssignment;
+              }
+              
+            }
+
+          }
+    
+          .workspace-materials-toc-section {
+            margin:0;
+            padding-top:5px;
+            padding-bottom:10px;
+            
+            .workspace-materials-toc-subtitle {
+              margin:0 0 5px 0;
+              text-transform:uppercase;
+              font-size:15px;
+              padding:2px 8px;
+              font-weight:400;
+              
+              &.subtitle-hidden {
+                opacity:0.4;
+              }
+              
+            }
+            
+            .workspace-materials-toc-item {
+              list-style:none;
+              
+              &.item-hidden {
+                opacity:0.4;
+              }
+              
+              a {
+                text-decoration:none;
+                color:#2c2c2c;
+                display:block;
+/*                     @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out); */
+                @include rounded(2px);
+                padding:2px 8px;
                 
-                .workspace-materials-toc-subtitle {
-                  margin:0 0 5px 0;
-                  text-transform:uppercase;
-                  font-size:15px;
-                  padding:2px 8px;
-                  font-weight:400;
-                  
-                  &.subtitle-hidden {
-                    opacity:0.4;
-                  }
-                  
-                }
-                
-                .workspace-materials-toc-item {
-                  list-style:none;
-                  
-                  &.item-hidden {
-                    opacity:0.4;
-                  }
-                  
-                  a {
-                    text-decoration:none;
-                    color:#2c2c2c;
-                    display:block;
-                    @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out);
-                    @include rounded(2px);
-                    padding:2px 8px;
-                    
-                    &:hover,
-                    &.active {
-                      background:#596e7d;
-                      color:#fff;
-                    }
-                  }
-      
+                &:hover,
+                &.active {
+                  background:#596e7d;
+                  color:#fff;
                 }
               }
+  
             }
           }
-        
         }
-      
       }
     
     }

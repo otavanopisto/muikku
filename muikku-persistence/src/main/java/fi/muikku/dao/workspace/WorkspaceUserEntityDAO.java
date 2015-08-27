@@ -14,7 +14,9 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.users.UserSchoolDataIdentifier_;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.muikku.model.workspace.WorkspaceRoleEntity_;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity_;
 
@@ -62,6 +64,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
         criteriaBuilder.equal(root.get(WorkspaceUserEntity_.userSchoolDataIdentifier), userSchoolDataIdentifier),
         criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity)
       ) 
@@ -120,6 +123,26 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
             criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
             criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity),
             criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceUserRole), workspaceUserRole)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public List<WorkspaceUserEntity> listByWorkspaceAndRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archetype) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    Join<WorkspaceUserEntity, WorkspaceRoleEntity> join = root.join(WorkspaceUserEntity_.workspaceUserRole);
+    
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity),
+            criteriaBuilder.equal(join.get(WorkspaceRoleEntity_.archetype), archetype)
         )
     );
     
@@ -200,6 +223,21 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
   
   public void delete(WorkspaceUserEntity workspaceUserEntity) {
     super.delete(workspaceUserEntity);
+  }
+
+  public WorkspaceUserEntity findByIdentifier(String identifier) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceUserEntity_.identifier), identifier)
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
   }
 
 }

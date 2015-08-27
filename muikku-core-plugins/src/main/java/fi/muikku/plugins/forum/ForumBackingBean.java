@@ -23,7 +23,7 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/discussion/", to = "/jsf/discussion/index.jsf")
+@Join (path = "/discussion", to = "/jsf/discussion/index.jsf")
 @LoggedIn
 public class ForumBackingBean {
   

@@ -3,7 +3,6 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -19,7 +18,7 @@ import fi.muikku.schooldata.WorkspaceEntityController;
 
 @Dependent
 @Stateful
-public class PyramusSchoolDataWorkspaceUsersUpdateScheduler implements PyramusUpdateScheduler {
+public class PyramusSchoolDataWorkspaceUsersUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
 
   private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.workspace-users.batchsize", "20"));
 
@@ -35,13 +34,13 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler implements PyramusUp
   @Inject
   private PyramusUpdater pyramusUpdater;
   
-  @PostConstruct
-  public void init() {
-    offset = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.workspace-users.start", "0"));
+  @Override
+  public String getSchedulerName() {
+    return "workspace-users";
   }
-  
-  public void synchronize() throws UnexpectedSchoolDataBridgeException {
 
+  public void synchronize() throws UnexpectedSchoolDataBridgeException {
+    int offset = getOffset();
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus workspace users");
@@ -49,14 +48,14 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler implements PyramusUp
       List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntitiesByDataSource(
           SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, offset, BATCH_SIZE);
       if (workspaceEntities.size() == 0) {
-        offset = 0;
+        updateOffset(0);
       } else {
         for (WorkspaceEntity workspaceEntity : workspaceEntities) {
           Long courseId = identityMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
           count += pyramusUpdater.updateCourseStaffMembers(courseId);
         }
 
-        offset += workspaceEntities.size();
+        updateOffset(offset + workspaceEntities.size());
       }
     } finally {
       logger.fine(String.format("Synchronized %d Pyramus workspace users", count));
@@ -67,6 +66,4 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler implements PyramusUp
   public int getPriority() {
     return 4;
   }
-
-  private int offset = 0;
 }

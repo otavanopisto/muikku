@@ -41,10 +41,6 @@ public class RoleController {
   @Inject
   private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
   
-  public WorkspaceRoleEntity ROLE_WORKSPACE_TEACHER() {
-    return workspaceRoleEntityDAO.findByName("Workspace Teacher");
-  }
-  
   /* Roles */
 
 	public Role findRole(SchoolDataSource dataSource, String identifier) {

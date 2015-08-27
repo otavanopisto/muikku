@@ -102,195 +102,180 @@ body.workspace-materials-management {
         }
 
       }
-    
-      .workspace-materials-toc-content-outer {
-        overflow:hidden;
+        
+      .workspace-materials-toc-content-scrolling {
+        width:350px;
+        padding:0 6px;
+        box-sizing:border-box;
         position:absolute;
         top:40px;
-        bottom:5px;
-        width:350px;
-      
-        .workspace-materials-toc-content-inner {  
-          position:absolute;
-          overflow-x: hidden;
-          overflow-y: scroll;
-          width:370px;
-          top:0;
-          bottom:0;
+        bottom:0;
         
-          .workspace-materials-toc-content-scrolling {
-            width:338px;
-            padding:0 6px;
+        .workspace-materials-toc-root {
+
+          /* PLACEHOLDER item to indicate where user can drop sortable item */
+          .sortable-placeholder {
+            background:#bed3df;
+          }
+          
+          .sortable-section-placeholder {
+            background:#bed3df;
+            margin:0;
+            padding:10px 0;
+          }
+
+          .workspace-materials-toc-item {
+            list-style:none;
+            position:relative;
+            margin:1px 0;
             
-            .workspace-materials-toc-root {
-
-              /* PLACEHOLDER item to indicate where user can drop sortable item */
-              .sortable-placeholder {
-                background:#bed3df;
+            &.item-hidden {
+              opacity:0.4;
+            }
+            
+            &.parent-hidden {
+              opacity:0.4;
+            }
+            
+            a {
+              text-decoration:none;
+              color:#2c2c2c;
+              display:block;
+/*                   @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out); */
+              @include rounded(2px);
+              padding:2px 24px 2px 6px;
+              border-left:2px solid #e8f0f5;
+              
+              &.evaluated {
+                border-left:2px solid $evaluatedAssignment;
+                margin:1px 0 0 0;
               }
               
-              .sortable-section-placeholder {
-                background:#bed3df;
-                margin:0;
-                padding:10px 0;
+              &.exercise {
+                border-left:2px solid $exerciseAssignment;
+                margin:1px 0 0 0;
               }
+            }
+            
+            &:hover,
+            &.active {
+              background:#596e7d;
+              color:#fff;
+              border-radius:2px;
+              
+              a {
+                color:#fff;
+              }
+            
+              .workspace-materials-toc-itemDragHandle {
+                opacity:1;
+              }
+            
+            }
+            
+            /* When user drops sortable item this prevents hover effect happening so link stays readable */
+            &.no-hover:hover {
+            
+              a {
+                color:#2c2c2c;
+              }
+            
+            }
+            
+            /* ITEM SORTING RULES */
+            &.ui-sortable-helper {
+              background:#000;
+              color:#fff;
+              border-radius:2px;
+              left:6px;
+              
+              a {
+                color:#fff;
+              }
+            
+              .workspace-materials-toc-itemDragHandle {
+                opacity:1;
+              }
+              
+            }
+            
+            .workspace-materials-toc-itemDragHandle {
+              opacity:0;
+              color:#ffffff;
+              cursor:move;
+              font-size:14px;
+              padding:6px 8px 6px 8px;
+              position:absolute;
+              top:0px;
+              right:0px;
+            }
 
-              .workspace-materials-toc-item {
-                list-style:none;
-                position:relative;
-                margin:1px 0;
-                
-                &.item-hidden {
-                  opacity:0.4;
-                }
-                
-                &.parent-hidden {
-                  opacity:0.4;
-                }
-                
-                a {
-                  text-decoration:none;
-                  color:#2c2c2c;
-                  display:block;
-                  @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out);
-                  @include rounded(2px);
-                  padding:2px 24px 2px 6px;
-                  border-left:2px solid #e8f0f5;
-                  
-                  &.evaluated {
-                    border-left:2px solid $evaluatedAssignment;
-                    margin:1px 0 0 0;
-                  }
-                  
-                  &.exercise {
-                    border-left:2px solid $exerciseAssignment;
-                    margin:1px 0 0 0;
-                  }
-                }
-                
-                &:hover,
-                &.active {
-                  background:#596e7d;
-                  color:#fff;
-                  border-radius:2px;
-                  
-                  a {
-                    color:#fff;
-                  }
-                
-                  .workspace-materials-toc-itemDragHandle {
-                    opacity:1;
-                  }
-                
-                }
-                
-                /* When user drops sortable item this prevents hover effect happening so link stays readable */
-                &.no-hover:hover {
-                
-                  a {
-                    color:#2c2c2c;
-                  }
-                
-                }
-                
-                /* ITEM SORTING RULES */
-                &.ui-sortable-helper {
-                  background:#000;
-                  color:#fff;
-                  border-radius:2px;
-                  left:6px;
-                  
-                  a {
-                    color:#fff;
-                  }
-                
-                  .workspace-materials-toc-itemDragHandle {
-                    opacity:1;
-                  }
-                  
-                }
-                
-                .workspace-materials-toc-itemDragHandle {
-                  opacity:0;
-                  color:#ffffff;
-                  cursor:move;
-                  font-size:14px;
-                  padding:6px 4px 6px 6px;
-                  position:absolute;
-                  top:0px;
-                  right:0px;
-                }
+          } 
     
-              } 
-        
-              .workspace-materials-toc-section {
-                margin:0;
-                padding:10px 0;
-                
-                &.temporary-toc-fix {
-                  padding:0;
-                }
-                
-                .workspace-materials-toc-subtitle {
-                  margin:0 0 5px 0;
-                  text-transform:uppercase;
-                  font-size:15px;
-                  position:relative;
-                  
-                  a {
-                    font-weight:400;
-                    padding:2px 24px 2px 8px;
-                    text-decoration:none;
-                    color:#2c2c2c;
-                    display:inline-block;
-                  }
-                  
-                  .workspace-materials-toc-sectionDragHandle {
-                    opacity:0;
-                    color:#2c2c2c;
-                    cursor:move;
-                    font-size:14px;
-                    padding:6px 4px 6px 6px;
-                    position:absolute;
-                    top:0px;
-                    right:0px;
-                  }
-                  
-                  &:hover,
-                  &.active {
-                    background:#c8e6f7;
-
-                    .workspace-materials-toc-sectionDragHandle {
-                      opacity:1;
-                    }
-                    
-                  }
-
-                  &.item-hidden {
-                    opacity:0.4;
-                  }
-                  
-                  &.parent-hidden {
-                    opacity:0.4;
-                  }
-                  
-                }
-                
-                &.ui-sortable-helper {
-                  background:#47728c;
-                  color:#fff;
-                  border-radius:2px;
-                  left:6px;
-                }
-                
-              } 
+          .workspace-materials-toc-section {
+            margin:0;
+            padding:10px 0;
+            
+            &.temporary-toc-fix {
+              padding:0;
+            }
+            
+            .workspace-materials-toc-subtitle {
+              margin:0 0 5px 0;
+              text-transform:uppercase;
+              font-size:15px;
+              position:relative;
               
-            } 
+              a {
+                font-weight:400;
+                padding:2px 24px 2px 8px;
+                text-decoration:none;
+                color:#2c2c2c;
+                display:inline-block;
+              }
+              
+              .workspace-materials-toc-sectionDragHandle {
+                opacity:0;
+                color:#2c2c2c;
+                cursor:move;
+                font-size:14px;
+                padding:6px 8px 6px 8px;
+                position:absolute;
+                top:0px;
+                right:0px;
+              }
+              
+              &:hover,
+              &.active {
+                background:#c8e6f7;
+
+                .workspace-materials-toc-sectionDragHandle {
+                  opacity:1;
+                }
+                
+              }
+
+              &.item-hidden {
+                opacity:0.4;
+              }
+              
+              &.parent-hidden {
+                opacity:0.4;
+              }
+              
+            }
+            
+            &.ui-sortable-helper {
+              background:#47728c;
+              color:#fff;
+              border-radius:2px;
+              left:6px;
+            }
             
           } 
           
         } 
-        
+
       } 
       
     } 
@@ -533,7 +518,7 @@ body.workspace-materials-management {
           padding:50px 0 10px 0;
           box-sizing:border-box;
         
-          /* Editor input override */
+          /* Folder editor input override */
           input[type="text"].workspace-material-folder-editor-title {
             width:100%;
             box-sizing:border-box;
@@ -548,11 +533,37 @@ body.workspace-materials-management {
             box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
           }
           
-          /* Editor title override */
+          /* Folder editor title override */
           .workspace-material-folder-editor-title-wrapper {
             margin:19px 30px 26px 30px;
           
             input.workspace-material-folder-editor-title {
+              padding:0 0 2px 0;
+              margin:0;
+            }
+          
+          }
+
+          /* Binary editor input override */
+          input[type="text"].workspace-material-binary-editor-title {
+            width:100%;
+            box-sizing:border-box;
+            text-align:left;
+            color:#38393a;
+            font-size:27px;
+            border:0;
+            padding:0 0 2px 0;
+            margin:19px 30px 0px 30px;
+            border-radius:0;
+            background:#f3faff;
+            box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
+          }
+          
+          /* Binary editor title override */
+          .workspace-material-binary-editor-title-wrapper {
+            margin:19px 30px 26px 30px;
+          
+            input.workspace-material-binary-editor-title {
               padding:0 0 2px 0;
               margin:0;
             }

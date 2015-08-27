@@ -1,0 +1,21 @@
+
+  <div class="di-messages-page">
+    {#.}
+        {>"discussion/discussion_item.dust"/}
+    {/.} 
+    {?.}  
+      <div class="di-messages-paging">
+        <div class="di-paging-toolbar">
+          <div class="di-paging-tool di-page-link-load-more-messages">{#localize key="plugin.discussion.links.more"/}</div>
+        </div>
+      </div>
+    {:else}
+      <div class="di-messages-paging">
+        <div class="di-paging-toolbar">
+          <div class="di-paging-tool di-page-link-load-more disabled">{#localize key="plugin.discussion.links.nomore"/}</div>
+        </div>
+      </div>    
+    {/.}    
+    
+  
+  </div>

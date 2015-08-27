@@ -13,7 +13,10 @@ import fi.muikku.plugins.wall.WallFeedItem;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallType;
 import fi.muikku.plugins.wall.model.WorkspaceWall;
+import fi.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 
 public class AssessmentRequestWallEntryProvider implements WallEntryProvider {
 
@@ -30,18 +33,23 @@ public class AssessmentRequestWallEntryProvider implements WallEntryProvider {
   public List<WallFeedItem> listWallEntryItems(Wall wall) {
     List<WallFeedItem> feedItems = new ArrayList<WallFeedItem>();
 
-    if (wall.getWallType() == WallType.WORKSPACE) {
-      WorkspaceWall workspaceWall = wallController.findWorkspaceWallById(wall.getId());
-      
-      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceWall.getWorkspace());
-      
-      List<AssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspace(workspaceEntity);
-      
-      if (assessmentRequests != null) {
-        for (AssessmentRequest assessmentRequest : assessmentRequests) {
-          feedItems.add(new UserFeedAssessmentRequestItem(assessmentRequest));
+    try {
+      if (wall.getWallType() == WallType.WORKSPACE) {
+        WorkspaceWall workspaceWall = wallController.findWorkspaceWallById(wall.getId());
+        
+        WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceWall.getWorkspace());
+        
+        List<WorkspaceAssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspace(workspaceEntity);
+        
+        if (assessmentRequests != null) {
+          for (WorkspaceAssessmentRequest assessmentRequest : assessmentRequests) {
+            feedItems.add(new UserFeedAssessmentRequestItem(assessmentRequest));
+          }
         }
       }
+    } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
     
     return feedItems;

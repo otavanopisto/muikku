@@ -13,6 +13,8 @@ import fi.muikku.plugins.material.events.HtmlMaterialFieldCreateEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialFieldDeleteEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialFieldUpdateEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
+import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.material.model.QueryField;
 
 @Stateless
 public class HtmlMaterialChangeListener {
@@ -25,7 +27,13 @@ public class HtmlMaterialChangeListener {
 
   @Inject
   private Event<HtmlMaterialFieldDeleteEvent> htmlMaterialFieldDeleteEvent;
+  
+  @Inject
+  private QuerySelectFieldController querySelectFieldController;
 
+  @Inject
+  private QueryMultiSelectFieldController queryMultiSelectFieldController;
+  
   public void onHtmlMaterialCreated(@Observes HtmlMaterialCreateEvent event) {
     MaterialFieldCollection fieldCollection = new MaterialFieldCollection(event.getMaterial().getHtml());
     for (MaterialField newField : fieldCollection.getFields()) {
@@ -53,8 +61,17 @@ public class HtmlMaterialChangeListener {
     
     List<MaterialField> updatedFields = newFieldCollection.getUpdatedFields(oldFieldCollection);
     for (MaterialField updatedField : updatedFields) {
-      HtmlMaterialFieldUpdateEvent updatedEvent = new HtmlMaterialFieldUpdateEvent(event.getMaterial(), updatedField, event.getRemoveAnswers());
-      htmlMaterialFieldUpdateEvent.fire(updatedEvent);
+      // awkward fix for #293; remove when implementing #305
+      if (isSelectFieldChangingType(event.getMaterial(), updatedField)) {
+        HtmlMaterialFieldDeleteEvent deleteEvent = new HtmlMaterialFieldDeleteEvent(event.getMaterial(), updatedField, event.getRemoveAnswers());
+        htmlMaterialFieldDeleteEvent.fire(deleteEvent);
+        HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), updatedField);
+        htmlMaterialFieldCreateEvent.fire(createEvent);
+      }
+      else {
+        HtmlMaterialFieldUpdateEvent updatedEvent = new HtmlMaterialFieldUpdateEvent(event.getMaterial(), updatedField, event.getRemoveAnswers());
+        htmlMaterialFieldUpdateEvent.fire(updatedEvent);
+      }
     }
     
     List<MaterialField> newFields = newFieldCollection.getNewFields(oldFieldCollection);
@@ -72,6 +89,19 @@ public class HtmlMaterialChangeListener {
       HtmlMaterialFieldDeleteEvent deletedEvent = new HtmlMaterialFieldDeleteEvent(event.getMaterial(), deletedField, event.getRemoveAnswers());
       htmlMaterialFieldDeleteEvent.fire(deletedEvent);
     }
+  }
+  
+  private boolean isSelectFieldChangingType(HtmlMaterial material, MaterialField field) {
+    String type = field.getType();
+    if ("application/vnd.muikku.field.select".equals(type)) {
+      QueryField oldField = queryMultiSelectFieldController.findQueryMultiSelectFieldByMaterialAndName(material, field.getName());
+      return oldField != null;
+    }
+    else if ("application/vnd.muikku.field.multiselect".equals(type)) {
+      QueryField oldField = querySelectFieldController.findQuerySelectFieldByMaterialAndName(material, field.getName());
+      return oldField != null;
+    }
+    return false;
   }
 
 }

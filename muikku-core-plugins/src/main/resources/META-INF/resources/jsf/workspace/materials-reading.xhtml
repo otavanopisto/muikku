@@ -25,40 +25,35 @@
           <h1>#{i18n.text['plugin.workspace.materialsReading.tocTitle']}</h1>
           <div id="workspaceMaterialsReadingTOCPinicon" class="icon-pin" title="Kiinnitä sisällysluettelo"></div>
         </div>
-        <div class="workspace-materials-toc-content-outer">
-          <div class="workspace-materials-toc-content-inner">
-            <div class="workspace-materials-toc-content-scrolling">
-              <ul class="workspace-materials-toc-root">
-                <ui:repeat var="node" value="#{workspaceMaterialsReadingBackingBean.contentNodes}">
-                  <ui:fragment rendered="#{node.type eq 'folder'}">
-                    <li>
-                      <ul class="workspace-materials-toc-section">
-                        <li class="workspace-materials-toc-subtitle">#{node.title}</li>
+        <div class="workspace-materials-toc-content-scrolling" id="materialsScrollableTOC">
+          <ul class="workspace-materials-toc-root">
+            <ui:repeat var="node" value="#{workspaceMaterialsReadingBackingBean.contentNodes}">
+              <ui:fragment rendered="#{node.type eq 'folder'}">
+                <li>
+                  <ul class="workspace-materials-toc-section">
+                    <li class="workspace-materials-toc-subtitle">#{node.title}</li>
 
-                        <ui:repeat var="articleNode" value="#{node.children}">
-                          <ui:fragment rendered="#{articleNode.type eq 'folder'}">
-                            <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
-                          </ui:fragment>
-                          <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                            <li class="workspace-materials-toc-item">
-                              <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
-                            </li>
-                          </ui:fragment>
-                        </ui:repeat>
-                      </ul>
-                    </li>
-                  </ui:fragment>
+                    <ui:repeat var="articleNode" value="#{node.children}">
+                      <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+                        <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
+                      </ui:fragment>
+                      <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+                        <li class="workspace-materials-toc-item">
+                          <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+                        </li>
+                      </ui:fragment>
+                    </ui:repeat>
+                  </ul>
+                </li>
+              </ui:fragment>
 
-                  <ui:fragment rendered="#{node.type ne 'folder'}">
-                    <li class="workspace-materials-toc-item">
-                      <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
-                    </li>
-                  </ui:fragment>
-                </ui:repeat>
-                
-              </ul>
-            </div>
-          </div>
+              <ui:fragment rendered="#{node.type ne 'folder'}">
+                <li class="workspace-materials-toc-item">
+                  <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
+                </li>
+              </ui:fragment>
+            </ui:repeat>
+          </ul>
         </div>
       </div>
     </div>

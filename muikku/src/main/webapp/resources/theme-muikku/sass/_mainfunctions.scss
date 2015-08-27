@@ -11,22 +11,7 @@
     background-color:$mainFuncSide;
   }
 
-/* Animations */
 
-@-webkit-keyframes bouncedelay {
-  0%, 80%, 100% { -webkit-transform: scale(0.0) }
-  40% { -webkit-transform: scale(1.0) }
-}
-
-@keyframes bouncedelay {
-  0%, 80%, 100% { 
-    transform: scale(0.0);
-    -webkit-transform: scale(0.0);
-  } 40% { 
-    transform: scale(1.0);
-    -webkit-transform: scale(1.0);
-  }
-}
 
 .mf-loading{
   
@@ -402,7 +387,19 @@
      font-weight:700;
    }
 }
-  
+ .mf-item-tool-btn{
+    &:not(:first-child){
+     margin-left:10px;
+    }
+    background:#068feb;
+    cursor:pointer;
+    @include rounded(3px);
+    padding:2px 6px;
+    display:inline-block;
+    color:#fff;
+    margin-top:5px;
+    box-shadow:0 0 5px rgba(0,0,0,0.25);
+  }   
 
 .mf-item{
    @extend .co-listItem;
@@ -430,25 +427,9 @@
   }
  
 
-  .mf-item-tools{
-    
 
-  
-      .mf-item-tool-btn{
-        &:not(:first-child){
-         margin-left:10px;
-        }
-        background:#068feb;
-        cursor:pointer;
-        @include rounded(3px);
-        padding:2px 6px;
-        display:inline-block;
-        color:#fff;
-        margin-top:5px;
-        box-shadow:0 0 5px rgba(0,0,0,0.25);
-      } 
- 
-           
+  .mf-item-tools{
+
      .mf-item-tool{
 
         dispay:inline-block;
@@ -466,9 +447,9 @@
     }
     
 }
+
   
   .mf-item-details-container{
-    background-color:#f0f3f4;
     min-height:35px;
   }
   
@@ -490,7 +471,6 @@
   
 .mf-item-header-name{
     display : inline-block;
-    text-transform:uppercase;
     vertical-align:center;
     white-space:nowrap;
     width:80%;
@@ -699,14 +679,63 @@
     .mf-textfield {
       position:relative;
       top:0;
-    
-      input[type="textfield"] {
+      
+      .mf-textfield-subelement {
+        display:inline-block;
+        float:left;
+      }
+      
+      .mf-textfield-subcontainer {
         border:2px solid #fff;
         color:#000;
         border-radius:3px;
-        padding:6px 8px;
+        padding:0 8px;
+        margin:0 0 4px 0;
+
+        background-color:#fff;
+        
+        .mf-textfield-title {
+          color:$formTitle;
+          padding:6px 5px;
+        }
+        
+      }
+      
+      input[type="text"] {
+        border:0 solid #fff;
+        color:#000;
+        border-radius:3px;
+        padding:5px 8px;
         line-height:1em;
-        font-size:18px;
+        margin-left:5px;
+        margin-top:5px;
+        min-width:200px;
+        width:auto;
+        
+        &:focus {
+          background-color:#eee;     
+          border:0;
+          box-shadow:none;    
+        }
+        
+        &:hover {
+          background-color:#eee;   
+          border:0;
+          box-shadow:none;      
+        }
+        
+        &.mf-textfield-subject {        
+          width:750px;
+          
+          &:focus {
+            background-color:#fff;         
+          }
+          
+          &:hover {
+            background-color:#fff;         
+          }
+         
+        }
       }
       
     }

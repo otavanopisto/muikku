@@ -1,5 +1,0 @@
-<div class="di-submessages-container mf-subitem-container">
-  {#.}
-      {>"discussion/discussion_subitem.dust"/}      
-  {/.}
-</div>

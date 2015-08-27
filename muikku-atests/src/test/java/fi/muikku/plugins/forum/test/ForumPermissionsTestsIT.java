@@ -35,7 +35,7 @@ public class ForumPermissionsTestsIT extends AbstractRESTPermissionsTest {
   
   @Before
   public void before() {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
     
     Response response = asAdmin()
       .contentType("application/json")
@@ -52,7 +52,7 @@ public class ForumPermissionsTestsIT extends AbstractRESTPermissionsTest {
   
   @Test
   public void testCreateEnvironmentForum() throws NoSuchFieldException {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
     
     Response response = asRole()
       .contentType("application/json")
@@ -118,7 +118,7 @@ public class ForumPermissionsTestsIT extends AbstractRESTPermissionsTest {
 
   @Test
   public void testDeleteForumArea() throws NoSuchFieldException {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
     
     Response response = asAdmin()
       .contentType("application/json")

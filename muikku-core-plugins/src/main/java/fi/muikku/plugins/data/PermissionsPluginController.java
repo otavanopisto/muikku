@@ -18,8 +18,8 @@ import fi.muikku.dao.security.UserGroupRolePermissionDAO;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
+import fi.muikku.dao.users.UserGroupEntityDAO;
 import fi.muikku.dao.users.SystemRoleEntityDAO;
-import fi.muikku.dao.users.UserGroupDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
@@ -29,7 +29,7 @@ import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.SystemRoleType;
-import fi.muikku.model.users.UserGroup;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
@@ -72,7 +72,7 @@ public class PermissionsPluginController {
 	private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
 
 	@Inject
-	private UserGroupDAO userGroupDAO;
+	private UserGroupEntityDAO userGroupDAO;
 	
   @Inject
   private UserGroupRolePermissionDAO userGroupRolePermissionDAO;
@@ -114,9 +114,9 @@ public class PermissionsPluginController {
             final String permissionScope = collection.getPermissionScope(permissionName);
             
             if (permissionScope != null) {
-              if (!PermissionScope.PERSONAL.equals(permissionScope)) {
-                permission = permissionDAO.create(permissionName, permissionScope);
+              permission = permissionDAO.create(permissionName, permissionScope);
   
+              if (!PermissionScope.PERSONAL.equals(permissionScope)) {
                 String[] pseudoRoles = collection.getDefaultPseudoRoles(permissionName);
                 EnvironmentRoleArchetype[] environmentRoles = collection.getDefaultEnvironmentRoles(permissionName);
                 WorkspaceRoleArchetype[] workspaceRoles = collection.getDefaultWorkspaceRoles(permissionName);
@@ -170,11 +170,11 @@ public class PermissionsPluginController {
                   break;
                   
                   case PermissionScope.USERGROUP:
-                    List<UserGroup> userGroups = userGroupDAO.listAll();
+                    List<UserGroupEntity> userGroups = userGroupDAO.listAll();
                     
                     for (RoleEntity role : roles) {
                       // TODO Workspace creation & templates - is this necessary and bulletproof?
-                      for (UserGroup userGroup: userGroups) {
+                      for (UserGroupEntity userGroup: userGroups) {
                         userGroupRolePermissionDAO.create(userGroup, role, permission);
                       }
                     }

@@ -9,6 +9,7 @@ $(document).ready(function(){
     	    $(GuideImpl.guideContainer).on("click", '.gt-tool-view-profile', $.proxy(this.viewUserProfile,this));
     	    $(GuideImpl.guideContainer).on("click", '.gt-tool-send-mail', $.proxy(this.messageToUser,this));    	    
     	    
+          dust.preload("guider/guider_item.dust");
     	},
     	
     	
@@ -25,14 +26,14 @@ $(document).ready(function(){
             
  
     	    
-    	    mApi().user.users.read({archetype : 'STUDENT'})
+    	    mApi().user.users.read({ archetype : 'STUDENT', maxResults: 100000 })
     	    .callback(function (err, users) {
     	  	  
     		    if( err ){
     		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
     		  	}else{    	  
 
-    		  	 renderDustTemplate('/guider/guider_items.dust', users, function(text) {
+    		  	 renderDustTemplate('guider/guider_items.dust', users, function(text) {
     		 		$(GuideImpl.guideContainer).append($.parseHTML(text));
     		 		
     		  	});
@@ -55,7 +56,7 @@ $(document).ready(function(){
 				    if( err ){
 				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
 				  	}else{    	  
-					  	renderDustTemplate('/guider/guider_view_profile.dust', user, function(text) {				  		
+					  	renderDustTemplate('guider/guider_view_profile.dust', user, function(text) {				  		
 					        $(GuideImpl.guideContainer).append($.parseHTML(text));
 					        
 					        searchEl.hide("slide");
@@ -63,7 +64,7 @@ $(document).ready(function(){
 						  	var cont1 = $(".gt-data-container-1 div.gt-data");
 
 					          mApi().workspace.workspaces.read({ userId: uId}).callback(function(err, wps){						  	
-							  	renderDustTemplate('/guider/guider_view_profile_workspaces.dust',wps,function(text){
+							  	renderDustTemplate('guider/guider_view_profile_workspaces.dust',wps,function(text){
 							  		$(cont1).append($.parseHTML(text));
 							  		
 							  	});
@@ -92,7 +93,7 @@ $(document).ready(function(){
 				    if( err ){
 				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
 				  	}else{    	  
-					  	renderDustTemplate('/guider/guider_item_details.dust', user, function(text) {				  		
+					  	renderDustTemplate('guider/guider_item_details.dust', user, function(text) {				  		
 					  		$(detcont).append($.parseHTML(text));
 					  	});
 				  	}	
@@ -133,7 +134,7 @@ $(document).ready(function(){
 		      	if( err ){
 		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
 		    	}else{ 		
-				  openInSN('/guider/guider_create_message.dust', user, createMessage );
+				  openInSN('guider/guider_create_message.dust', user, createMessage );
 		
 		    	}
 		      });		   

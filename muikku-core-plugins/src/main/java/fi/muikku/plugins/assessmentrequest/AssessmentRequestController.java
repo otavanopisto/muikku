@@ -1,19 +1,24 @@
 package fi.muikku.plugins.assessmentrequest;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
-import fi.muikku.plugins.communicator.model.CommunicatorMessage;
-import fi.muikku.plugins.workspace.fieldio.WorkspaceConnectFieldIOHandler;
-import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.schooldata.WorkspaceEntityController;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.plugins.communicator.CommunicatorController;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
+import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.muikku.schooldata.GradingController;
+import fi.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
+import fi.muikku.schooldata.entity.GradingScale;
+import fi.muikku.schooldata.entity.GradingScaleItem;
+import fi.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
+import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.Permit;
 import fi.otavanopisto.security.PermitContext;
 
@@ -21,75 +26,121 @@ import fi.otavanopisto.security.PermitContext;
 public class AssessmentRequestController {
 
   @Inject
-  private AssessmentRequestDAO assessmentRequestDAO;
-  
-  @Inject
-  private CommunicatorAssessmentRequestController communicatorAssessmentRequestController;
-  
-  @Inject
-  private WorkspaceController workspaceController;
-  
-  @Inject
-  private WorkspaceEntityController workspaceEntityController;
-  
-  @Permit (AssessmentRequestPermissions.CREATE_WORKSPACE_ASSESSMENTREQUEST)
-  public AssessmentRequest create(@PermitContext WorkspaceEntity workspaceEntity, UserEntity student, Date date, String message) {
-    return assessmentRequestDAO.create(workspaceEntity, student, date, message, AssessmentRequestState.PENDING);
-  }
+  private AssessmentRequestMessageIdDAO assessmentRequestMessageIdDAO;
 
-  public AssessmentRequest findById(Long id) {
-    return assessmentRequestDAO.findById(id);
+  @Inject
+  private CommunicatorController communicatorController;
+  
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+  
+  @Inject
+  private GradingController gradingController;
+
+  public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, String requestText) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    String dataSource = workspaceUserEntity.getWorkspaceEntity().getDataSource().getIdentifier();
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    
+    return gradingController.createWorkspaceAssessmentRequest(
+        dataSource, 
+        workspaceUserEntity.getIdentifier(), 
+        dataSource, 
+        workspaceEntity.getIdentifier(), 
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), 
+        requestText, 
+        new Date());
   }
   
-  public void cancelAssessmentRequest(AssessmentRequest assessmentRequest) {
-    assessmentRequestDAO.updateState(assessmentRequest, AssessmentRequestState.CANCELED);
-    communicatorAssessmentRequestController.sendAssessmentRequestCancelledMessage(assessmentRequest);
-  }
   
   @Permit (AssessmentRequestPermissions.LIST_WORKSPACE_ASSESSMENTREQUESTS)
-  public List<AssessmentRequest> listByWorkspace(@PermitContext WorkspaceEntity workspaceEntity) {
-    return assessmentRequestDAO.listByWorkspace(workspaceEntity);
-  }
-  
-  public List<AssessmentRequest> listByUser(UserEntity user) {
-    List<WorkspaceEntity> teacherWorkspaces = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(user);
-    List<AssessmentRequest> assessmentRequests = new ArrayList<>();
-    
-    for (WorkspaceEntity workspaceEntity : teacherWorkspaces) {
-      assessmentRequests.addAll(listByWorkspace(workspaceEntity));
-    }
-    
-    return assessmentRequests;
-  }
-  
-  public void requestAssessment(WorkspaceEntity workspaceEntity, UserEntity student, String message) {
-    AssessmentRequest assessmentRequest = this.create(workspaceEntity, student, new Date(), message);
-    List<AssessmentRequest> oldAssessmentRequests = this.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntity.getId(), student.getId());
-    AssessmentRequest oldAssessmentRequest = oldAssessmentRequests.get(oldAssessmentRequests.size() - 1);
-    if(oldAssessmentRequest.getCommunicatorMessageId() == null){
-      CommunicatorMessage msg = communicatorAssessmentRequestController.sendAssessmentRequestMessage(assessmentRequest);
-      assessmentRequestDAO.updateMessageId(assessmentRequest, msg.getCommunicatorMessageId().getId());
-    }else{
-      assessmentRequest = assessmentRequestDAO.updateMessageId(assessmentRequest, oldAssessmentRequest.getCommunicatorMessageId());
-      communicatorAssessmentRequestController.sendAssessmentRequestMessage(assessmentRequest);
-    }
-
+  public List<WorkspaceAssessmentRequest> listByWorkspace(@PermitContext WorkspaceEntity workspaceEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    return gradingController.listWorkspaceAssessmentRequests(
+        workspaceEntity.getDataSource().getIdentifier(), 
+        workspaceEntity.getIdentifier());
   }
 
-  public List<AssessmentRequest> listByWorkspaceIdAndStudentIdOrderByCreated(
-      Long workspaceEntityId,
-      Long studentEntityId) {
-    return assessmentRequestDAO.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, studentEntityId);
+  public List<WorkspaceAssessmentRequest> listByWorkspaceUser(WorkspaceUserEntity workspaceUserEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    
+    List<WorkspaceAssessmentRequest> workspaceAssessmentRequests = gradingController.listWorkspaceAssessmentRequests(
+        workspaceEntity.getDataSource().getIdentifier(), 
+        workspaceEntity.getIdentifier(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+    return workspaceAssessmentRequests;
   }
   
-  public WorkspaceAssessmentState getWorkspaceAssessmentState(
-     WorkspaceEntity workspaceEntity,
-     UserEntity studentEntity) {
-    List<AssessmentRequest> assessmentRequests = listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntity.getId(), studentEntity.getId());
-    if (assessmentRequests.isEmpty()) {
+  public WorkspaceAssessmentState getWorkspaceAssessmentState(WorkspaceUserEntity workspaceUserEntity) {
+    try {
+      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+      
+      List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(
+          workspaceEntity.getDataSource().getIdentifier(), 
+          workspaceEntity.getIdentifier(),
+          workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+
+      if (workspaceAssessments.isEmpty()) {
+        List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
+            workspaceEntity.getDataSource().getIdentifier(), 
+            workspaceEntity.getIdentifier(),
+            workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+        
+        if (assessmentRequests.isEmpty()) {
+          return WorkspaceAssessmentState.UNASSESSED;
+        } else {
+          return WorkspaceAssessmentState.PENDING;
+        }
+      } else {
+        WorkspaceAssessment assessment = workspaceAssessments.get(0);
+        GradingScale gradingScale = gradingController.findGradingScale(
+            assessment.getGradingScaleSchoolDataSource(), 
+            assessment.getGradingScaleIdentifier());
+        GradingScaleItem grade = gradingController.findGradingScaleItem(
+            gradingScale, 
+            assessment.getGradeSchoolDataSource(), 
+            assessment.getGradeIdentifier());
+
+        if (grade.isPassingGrade())
+          return WorkspaceAssessmentState.PASS;
+        else
+          return WorkspaceAssessmentState.FAIL;
+      }
+      
+    } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
       return WorkspaceAssessmentState.UNASSESSED;
-    } else {
-      return WorkspaceAssessmentState.fromAssessmentRequestState(assessmentRequests.get(0).getState());
     }
   }
+
+  public void deleteWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, String assessmentRequestId) {
+    gradingController.deleteWorkspaceAssessmentRequest(
+        workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier(), 
+        assessmentRequestId,
+        workspaceUserEntity.getWorkspaceEntity().getIdentifier(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+  }
+
+  public CommunicatorMessageId findCommunicatorMessageId(WorkspaceUserEntity workspaceUserEntity) {
+    AssessmentRequestMessageId assessmentRequestMessageId = assessmentRequestMessageIdDAO.findByWorkspaceUser(workspaceUserEntity);
+    
+    if (assessmentRequestMessageId != null)
+      return communicatorController.findCommunicatorMessageId(assessmentRequestMessageId.getCommunicatorMessageId());
+    else
+      return null;
+  }
+
+
+  public void setCommunicatorMessageId(WorkspaceAssessmentRequest assessmentRequest,
+      CommunicatorMessageId communicatorMessageId) {
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByIdentifier(assessmentRequest.getWorkspaceUserIdentifier());
+    
+    AssessmentRequestMessageId requestMessageId = assessmentRequestMessageIdDAO.findByWorkspaceUser(workspaceUserEntity);
+    
+    if (requestMessageId == null)
+      assessmentRequestMessageIdDAO.create(workspaceUserEntity, communicatorMessageId);
+    else
+      assessmentRequestMessageIdDAO.updateMessageId(requestMessageId, communicatorMessageId);
+  }
+
+
 }

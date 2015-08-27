@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
+  template="/WEB-INF/templates/default.xhtml">
+
+  <ui:define name="sitebody">
+    <header id="staticNavigationWrapperWorkspace">
+      <nav id="staticNavigation" class="container_24">
+        <ui:insert name="dock.top">
+          <m:widgetSpaceSet styleClass="noLid">
+            <ui:insert name="dock.top.left">
+              <ui:include src="/facelets/generic/dock-top-left.xhtml"></ui:include>
+            </ui:insert>
+            <ui:insert name="dock.top.center">
+              <ui:include src="/facelets/generic/dock-top-center.xhtml"></ui:include>
+            </ui:insert>
+            <ui:insert name="dock.top.right">
+              <ui:include src="/facelets/generic/dock-top-right.xhtml">
+                <ui:param name="location" value="workspace" />
+              </ui:include>
+            </ui:insert>
+          </m:widgetSpaceSet>
+        </ui:insert>
+        <div class="clear"></div> 
+      </nav>
+    </header>  
+    <div id="workspaceNavigationWrapper">
+      <ui:insert name="workspace.dock">
+        <m:widgetSpaceSet>
+          <nav id="workspaceEvaluationDockWrapper">
+            <div id="workspaceEvaluationDock">
+              <ui:insert name="workspaces.evaluation.dock">
+                <ui:include src="/facelets/generic/workspaces-assessment-dock.xhtml"></ui:include>
+              </ui:insert>
+            </div>
+          </nav>
+          
+          <ui:insert name="workspace.navigation.materials">
+          
+          </ui:insert>
+          <ui:insert name="workspace.navigation.edit">
+          
+          </ui:insert>
+          
+          <nav id="workspaceDockWrapper">
+            <div id="workspaceDock">
+              <ui:insert name="workspaces.dock">
+                <ui:include src="/facelets/generic/workspaces-main-dock.xhtml"></ui:include>
+              </ui:insert>
+            </div>
+          </nav>
+        </m:widgetSpaceSet>
+      </ui:insert>
+    </div>
+    <ui:insert name="workspace.main.content">
+      <main id="content" class="container_24">
+        <section>
+          <ui:insert name="workspace.content.top.static"></ui:insert>
+          <ui:insert name="workspace.content"></ui:insert>
+          <ui:insert name="workspace.content.bottom.static"></ui:insert>
+        </section>
+      </main>
+    </ui:insert>
+    <ui:insert name="workspace.footer">
+    
+    </ui:insert>
+    <ui:insert name="workspace.socialnavigation">
+      <div id="socialNavigation" class="sn-container open">
+        <div class="sn-container closed" >
+          <ui:insert name="dock.bottom">
+            <m:widgetSpaceSet parentStyleClass="container_24">
+              <ui:insert name="dock.bottom.left">
+                <ui:include src="/facelets/generic/dock-bottom-left.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="dock.bottom.center">
+                <ui:include src="/facelets/generic/dock-bottom-center.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="dock.bottom.right">
+                <ui:include src="/facelets/generic/dock-bottom-right.xhtml"></ui:include>
+              </ui:insert>
+            </m:widgetSpaceSet>
+          </ui:insert>
+        </div>
+      </div>
+    </ui:insert>
+    
+  </ui:define>
+
+</ui:composition>

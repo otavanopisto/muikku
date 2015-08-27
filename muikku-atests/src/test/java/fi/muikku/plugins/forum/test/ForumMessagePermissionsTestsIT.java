@@ -54,7 +54,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTPermissionsTest 
     
     // Create forum
     
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
     
     Response response = asAdmin()
       .contentType("application/json")
@@ -66,7 +66,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTPermissionsTest 
     // Create thread
     
     ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
-        creator, new Date(), forumAreaId, false, false, new Date());
+        creator, new Date(), forumAreaId, false, false, new Date(), 1l);
     
     response = asAdmin()
       .contentType("application/json")
@@ -98,7 +98,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTPermissionsTest 
   @Test
   public void testCreateThread() throws NoSuchFieldException {
     ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
-        creator, new Date(), forumAreaId, false, false, new Date());
+        creator, new Date(), forumAreaId, false, false, new Date(), 1l);
     
     Response response = asRole()
       .contentType("application/json")

@@ -7,7 +7,7 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
   <m:widgetSpace name="workspaces.evaluation.dock" keepEmpty="true" sizing="MINIMIZE" styleClass="">
-    <m:widget name="dock-workspaces-assessment" size="1" />
+    <m:widget name="dock-workspaces-assessment" size="1" rendered="#{workspaceBackingBean.isStudent()}"/>
   </m:widgetSpace>
 
 </ui:composition>

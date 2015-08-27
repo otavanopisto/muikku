@@ -179,9 +179,8 @@
             var workspaceEntityId = $('.workspaceEntityId').val();
             var message = $('#evaluationRequestAdditionalMessage').val();
 
-            mApi().assessmentrequest.assessmentrequests.create({
-              'workspaceId': parseInt(workspaceEntityId, 10),
-              'message': message
+            mApi().assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
+              'requestText': message
             }).callback(function(err, result) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -229,14 +228,19 @@
                   .text(getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"));
           
             evalButton.attr('data-state', 'canceled');
+            
             var workspaceEntityId = parseInt($('.workspaceEntityId').val(), 10);
-            mApi().assessmentrequest.cancellastassessmentrequest.create(workspaceEntityId)
-            .callback(function(err, result) {
-              if (err) {
-                $('.notification-queue').notificationQueue('notification', 'error', err);
-              } else {
-                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
-              }
+            
+            mApi().assessmentrequest.workspace.request.read(workspaceEntityId).callback(function(err, result) {
+              var assessmentRequestId = result.id;
+              
+              mApi().assessmentrequest.workspace.assessmentRequests.del(workspaceEntityId, assessmentRequestId).callback(function(err, result) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                } else {
+                  $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
+                }
+              });
             });
             
             $(this).dialog("destroy").remove();

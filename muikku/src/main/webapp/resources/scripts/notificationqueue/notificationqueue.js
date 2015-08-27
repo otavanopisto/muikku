@@ -11,7 +11,7 @@
       },
       'severity-info': {
         'class': 'notification-queue-item-info',
-        'timeout': 30000
+        'timeout': 5000
       },
       'severity-warn': {
         'class': 'notification-queue-item-warn'
@@ -24,7 +24,7 @@
       },
       'severity-success': {
         'class': 'notification-queue-item-success',
-        'timeout': 30000
+        'timeout': 5000
       },
       'severity-loading': {
         'class': 'notification-queue-item-loading'

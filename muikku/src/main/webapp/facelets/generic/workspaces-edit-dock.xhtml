@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html">
+
+  <m:widgetSpace name="workspaces.edit.dock" keepEmpty="true" sizing="MINIMIZE" styleClass="">
+    <m:widget name="dock-workspaces-frontpage-editor" size="1"  rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}" />
+    <m:widget name="dock-workspaces-helppage-editor" size="1"  rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}" />
+  </m:widgetSpace>
+
+</ui:composition>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"  
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  template="./templates/workspace-journal-view.xhtml">
+  
+  <ui:define name="workspace.content.top.static">
+    <form style="display: none;">
+    <input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
+    </form>
+    <div class="workspace-journal-new-entry-container" style="height:auto;">
+      <div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
+    </div>
+  </ui:define>
+  
+  <ui:define name="workspace.content">
+    <div class="workspace-journal-content-wrapper">
+    <ui:repeat var="entry" value="#{workspaceJournalBackingBean.journalEntries}">
+    
+      <!-- Start of da Loopa-Loop for single journal entry -->
+      <div class="workspace-single-journal-entry" data-entry-id="#{entry.id}">
+        <h:form>
+            <h:commandButton class="delete-entry-#{entry.id}" actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
+        </h:form>
+        <div class="workspace-journal-entry-view">
+	        <div class="workspace-journal-title">#{entry.title}</div>
+	        <div class="workspace-journal-entry-meta">
+	          <div class="workspace-journal-dateTime">#{entry.created}</div>
+	        </div>
+	        <div class="workspace-journal-content">
+	          <p><h:outputText value="#{entry.html}" escape="false"/></p>
+	        </div>
+        </div>
+        <div class="workspace-journal-entry-edit" style="display:none;">
+			<h:form class='edit-journal-entry-form'>
+			    <h:inputText class='edit-journal-entry-form-title' value="#{workspaceJournalBackingBean.workspaceJournalEntryTitle}" />
+			    <h:inputTextarea class='edit-journal-entry-form-content' value="#{workspaceJournalBackingBean.workspaceJournalEntryHtml}" />
+			    <h:commandButton class="workspace-journal-edit-entry-button" action="#{workspaceJournalBackingBean.editWorkspaceJournalEntry(entry.id)}" value="#{i18n.text['plugin.workspace.journal.editEntryContent.save.label']}" />
+			    <input type="submit" value="#{i18n.text['plugin.workspace.journal.editEntryContent.cancel.label']}" class="workspace-journal-edit-entry-button cancel-entry-edit-btn" />
+			</h:form>
+        </div>
+        <div class="workspace-journal-footer">
+			<button class="journal-edit-button">#{i18n.text['plugin.workspace.journal.editEntryButton.label']}</button>
+			<button data-entry-id="#{entry.id}" class="journal-delete-button">#{i18n.text['plugin.workspace.journal.deleteEntryButton.label']}</button>
+			<ui:remove><button class="journal-permanent-url-button">#{i18n.text['plugin.workspace.journal.copyUrlEntryButton.label']}</button></ui:remove>
+        </div>
+      </div>
+      
+    </ui:repeat>
+    </div>
+  </ui:define>
+  
+</ui:composition>

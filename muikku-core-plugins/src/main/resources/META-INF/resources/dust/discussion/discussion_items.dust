@@ -1,10 +1,11 @@
 
 
+  <div class="di-messages-pages">
+      {?.}
+        {>"discussion/discussion_page.dust"/}  
+      {:else}
+        {>"discussion/discussion_empty.dust"/}
+      {/.}  
+  </div>
 
-  {#.}
-      {>"discussion/discussion_item.dust"/}  
-  {:else}
-      {>"discussion/discussion_empty.dust"/}
-  {/.}
-
-<div class="clear"></div>
+  <div class="clear"></div>

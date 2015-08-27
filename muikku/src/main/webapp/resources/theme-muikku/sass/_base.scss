@@ -23,10 +23,15 @@ $category11 : #000000;
 
 /* Fonts */
 
-$header:#ff7800;
+/* $header:#ff7800; */
+$header:#2c2c2c;
 $title:#000;
 $subTitle:#4e4e4e;
 $link:#0099ff;
+$formTitle: #5b5b5b;
+
+
+  
 
 
 /* Shadow */
@@ -43,6 +48,8 @@ $brd-top:#9bbee6;
 $textContentPadding:15px;
 
 /* Margins */
+
+
 
 /* Generic background */
 $bgr: #fff;
@@ -162,6 +169,14 @@ $text: 12px;
 /* Transition durations */
 
 /* Generic Mixins */
+
+@mixin textOverflow{
+    white-space: nowrap;  
+    overflow: hidden;  
+    text-overflow: ellipsis;  
+}
+
+
 @mixin contentMeta($fStyle:normal,$fColor:#4c4c4c) {
   font-style:$fStyle;
   color:$fColor;
@@ -461,54 +476,4 @@ background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1)
  
 @mixin transitionDirection($val1:0,$val2:0,$val3:0,$val4:0) {
   margin:$val1 $val2 $val3 $val4;
-}
-
-/* Generic cross bowser content loading animation for spinner icon */
-@-webkit-keyframes spinner /* Safari and Chrome */ {
-  from {
-    -ms-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  to {
-    -ms-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -webkit-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-@-moz-keyframes spinner /* Older Firefox */ {
-  from {
-    -ms-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  to {
-    -ms-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -webkit-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-@keyframes spinner {
-  from {
-    -ms-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  to {
-    -ms-transform: rotate(360deg);
-    -moz-transform: rotate(360deg);
-    -webkit-transform: rotate(360deg);
-    -o-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
 }

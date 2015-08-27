@@ -1,9 +1,6 @@
 
   <div class="wi-message {?unreadMessagesInThread}unread{/unreadMessagesInThread}">
-    <div class="wi-message-caption icon-envelope">
-      <span>
-        <a href="/communicator/#in/{communicatorMessageId}">{caption}</a>
-      </span>
+    <div class="wi-message-caption">
+      <a href="/communicator#inbox/{communicatorMessageId}">{caption}</a>
     </div>
-    <div class="wi-message-content"><span>{content}</span></div>   
   </div>

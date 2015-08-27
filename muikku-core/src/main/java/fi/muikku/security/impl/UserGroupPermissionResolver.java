@@ -4,13 +4,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import fi.muikku.dao.security.PermissionDAO;
-import fi.muikku.dao.security.UserGroupRolePermissionDAO;
-import fi.muikku.dao.users.UserGroupUserDAO;
 import fi.muikku.model.security.Permission;
-import fi.muikku.model.users.RoleEntity;
-import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserGroup;
-import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.security.AbstractPermissionResolver;
 import fi.muikku.security.PermissionScope;
 import fi.otavanopisto.security.ContextReference;
@@ -23,11 +17,12 @@ public class UserGroupPermissionResolver extends AbstractPermissionResolver impl
   @Inject
   private PermissionDAO permissionDAO;
   
+  /*
+  
   @Inject
   private UserGroupUserDAO userGroupUserDAO;
-
-  @Inject
-  private UserGroupRolePermissionDAO userGroupRolePermissionDAO;
+  
+  */
 
   @Override
   public boolean handlesPermission(String permission) {
@@ -41,19 +36,28 @@ public class UserGroupPermissionResolver extends AbstractPermissionResolver impl
 
   @Override
   public boolean hasPermission(String permission, ContextReference contextReference, User user) {
+    /*
+    
     Permission perm = permissionDAO.findByName(permission);
     UserEntity userEntity = getUserEntity(user);
     
     UserGroupUser uguchaga = userGroupUserDAO.findByGroupAndUser((UserGroup) contextReference, userEntity);
 
     return userGroupRolePermissionDAO.hasPermissionAccess((UserGroup) contextReference, uguchaga.getRole(), perm);
+    
+    */
+    return false;
   }
 
   @Override
   public boolean hasEveryonePermission(String permission, ContextReference contextReference) {
+    /*
+    
     RoleEntity everyoneRole = getEveryoneRole();
     Permission perm = permissionDAO.findByName(permission);
     
     return userGroupRolePermissionDAO.hasPermissionAccess((UserGroup) contextReference, everyoneRole, perm);
+    */
+    return false;
   }
 }

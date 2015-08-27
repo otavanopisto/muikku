@@ -6,7 +6,7 @@
   xmlns:h="http://java.sun.com/jsf/html" 
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
-  template="/WEB-INF/templates/default.xhtml">
+  template="/jsf/workspace/templates/workspace-base-template.xhtml">
 
   <!-- Lets set the base body class per view -->
   <ui:param name="bodyClass" value="workspace" />
@@ -19,73 +19,25 @@
     <h:outputScript name="scripts/gui/workspace-frontpage.js"/>
 
     <!-- Lazy loading -->
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"/>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
     <h:outputScript name="scripts/lazyyt/lazyyt.js" />
   </ui:define>
   
   <ui:define name="viewCss">
-    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces.css" />  
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-index.css" />  
     <h:outputStylesheet name="scripts/lazyyt/lazyyt.css" />  
   </ui:define>
-
-  <ui:define name="sitebody">
-    <header id="staticNavigationWrapperWorkspace">
-      <nav id="staticNavigation" class="container_24">
-        <ui:insert name="dock.top">
-          <m:widgetSpaceSet styleClass="noLid">
-            <ui:insert name="dock.top.left">
-              <ui:include src="/facelets/generic/dock-top-left.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="dock.top.center">
-              <ui:include src="/facelets/generic/dock-top-center.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="dock.top.right">
-              <ui:include src="/facelets/generic/dock-top-right.xhtml"></ui:include>
-            </ui:insert>
-          </m:widgetSpaceSet>
-        </ui:insert>
-        <div class="clear"></div> 
+  
+  <ui:define name="workspace.navigation.edit">
+    <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">
+      <nav id="workspaceEditDockWrapper">
+        <div id="workspaceEditDock">
+          <ui:insert name="workspaces.edit.dock">
+            <ui:include src="/facelets/generic/workspaces-edit-dock.xhtml"></ui:include>
+          </ui:insert>
+        </div>
       </nav>
-    </header>  
-    <div id="workspaceNavigationWrapper">
-      <ui:insert name="workspace.dock">
-        <m:widgetSpaceSet>
-          <nav id="workspaceEvaluationDockWrapper">
-            <div id="workspaceEvaluationDock">
-              <ui:insert name="workspaces.evaluation.dock">
-                <ui:include src="/facelets/generic/workspaces-assessment-dock.xhtml"></ui:include>
-              </ui:insert>
-            </div>
-          </nav>
-          <!-- 
-          <nav id="workspaceEditIndexDockWrapper">
-            <div id="workspaceEditIndexDock">
-              <ui:insert name="workspaces.EditIndex.dock">
-                <ui:include src="/facelets/generic/workspaces-edit-index-dock.xhtml"></ui:include>
-              </ui:insert>
-            </div>
-          </nav>
-          -->
-          <nav id="workspaceDockWrapper">
-            <div id="workspaceDock">
-              <ui:insert name="workspaces.dock">
-                <ui:include src="/facelets/generic/workspaces-main-dock.xhtml"></ui:include>
-              </ui:insert>
-            </div>
-          </nav>
-        </m:widgetSpaceSet>
-      </ui:insert>
-    </div>
-    <main id="content" class="container_24">
-      <section>
-        <ui:insert name="workspace.content.top.static"></ui:insert>
-        <ui:insert name="workspace.content"></ui:insert>
-        <ui:insert name="workspace.content.bottom.static"></ui:insert>
-      </section>
-    </main>
-    <div id="socialNavigation">
-    </div>
-    
+    </ui:fragment>
   </ui:define>
 
 </ui:composition>

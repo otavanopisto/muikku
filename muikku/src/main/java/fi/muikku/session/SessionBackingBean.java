@@ -83,6 +83,10 @@ public class SessionBackingBean {
     return loggedUserName;
   }
   
+  public String getCurrentCountry() {
+    return sessionController.getLocale().getCountry();
+  }
+  
   private EnvironmentRoleArchetype loggedUserRoleArchetype;
   private String loggedUserName;
 }

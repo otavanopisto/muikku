@@ -11,7 +11,12 @@
           <div class="cm-message-create-body">
             <div class="mf-fieldRow">
               <div class="mf-textfield">
-                <input id="recipientContent" type="textfield" name="recipient"></input>
+                <div class="mf-textfield-subcontainer">
+                 <div class="mf-textfield-title mf-textfield-subelement"><span>{#localize key="plugin.communicator.createmessage.title.recipients"/}</span></div>
+                 <div class="cm-message-recipients" id="msgRecipientsContainer"><input id="recipientContent" type="text" name="recipient"></input></div>
+                 <div class="cm-message-recipient-search mf-textfield-subelement"></div>
+                 <div class="clear"></div>
+                </div>
                 <div class="cm-message-recipients" id="msgRecipientsContainer">
                  <div class="clear"></div>
                 </div>
@@ -19,7 +24,9 @@
             </div>
             <div class="mf-fieldRow">
               <div class="mf-textfield">
-                <input type="textfield" name="caption"></input>
+               <div class="mf-textfield-subcontainer">
+                 <span class="mf-textfield-title">{#localize key="plugin.communicator.createmessage.title.subject"/}</span><input class="mf-textfield-subject" type="text" name="caption"></input>
+               </div>  
               </div>      
             </div>
             <div class="mf-fieldRow">

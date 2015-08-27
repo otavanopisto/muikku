@@ -1,13 +1,25 @@
 @import "_jsf.scss";
 
+/* @font-face { */
+/*   font-family: 'muikku'; */
+/*   @include font-src('fonts/muikku.eot'); */
+/*   @include font-srcs2( */
+/*   'fonts/muikku.woff','woff', */
+/*   'fonts/muikku.ttf','truetype', */
+/*   'fonts/muikku.svg#muikku','svg');  */
+/*   font-weight: normal;   */
+/*   font-style: normal; */
+/* } */
+
 @font-face {
   font-family: 'muikku';
-  @include font-src('fonts/muikku.eot'); /* IE9 */
-  @include font-srcs('fonts/muikku.eot?#iefix','embedded-opentype', /* IE6-IE8 - NOT WORKING!!! JSF libraries do not work with webparams */
-  'fonts/muikku.woff','woff', /* Modern Browsers */
-  'fonts/muikku.ttf','truetype', /* Safari, Android, iOS */
-  'fonts/muikku.svg#muikku','svg'); /* old IOS - NOT WORKING!!! JSF libraries do not work with webparams DEM BASTARDS! */ 
-  font-weight: normal;  
+  @include font-src('fonts/muikku.eot');
+  @include font-srcs(
+  'fonts/muikku.eot#iefix','embedded-opentype',
+  'fonts/muikku.ttf','truetype',
+  'fonts/muikku.woff','woff',
+  'fonts/muikku.svg#muikku','svg');
+  font-weight: normal;
   font-style: normal;
 }
 
@@ -33,6 +45,12 @@
   display:inline-block;
 }
 
+.icon-edit-index:before {
+  content: "\e637";
+}
+.icon-edit-help:before {
+  content: "\e63e";
+}
 .icon-download:before {
   content: "\f019";
 }
@@ -192,7 +210,7 @@
 .icon-assessment-pending:before {
   content: "\e9df";
 }
-.icon-diary:before {
+.icon-journal:before {
   content: "\e615";
 }
 .icon-compare:before {

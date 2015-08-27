@@ -2,9 +2,9 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html">
 
-  <div class="widget wi-workspace-dock-navi-button-helppage-editor">
-    <h:link styleClass="icon-cogs w-tooltip" title="#{i18n.text['plugin.workspace.dock.home']}" outcome="/jsf/workspace/helppage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
-      <span class="workspace-navi-tt-container-helppage-editor">Edit helppage</span><!-- TODO: localize! -->
+  <div class="widget wi-workspace-dock-navi-button-edit-helppage">
+    <h:link styleClass="icon-edit-help w-tooltip" title="#{i18n.text['plugin.workspace.dock.editHelp']}" outcome="/jsf/workspace/helppage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+      <span class="workspace-navi-tt-container-helppage-editor">#{i18n.text['plugin.workspace.dock.editHelp']}</span>
     </h:link>
   </div>
 

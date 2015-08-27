@@ -11,7 +11,10 @@
           <div class="di-message-new-body">
             <div class="mf-fieldRow">
               <div class="mf-textfield">
-                <input type="textfield" value="" name="title"}></input>
+                <div class="mf-textfield-subcontainer">
+                  <span class="mf-textfield-title">{#localize key="plugin.discussion.createmessage.title"/}</span>
+                  <input type="text" value="" name="title"></input>
+                </div>
               </div>    
               <div id="areaSelect" class="mf-select">
                 <select id="forumAreaIdSelect" name="forumAreaId">

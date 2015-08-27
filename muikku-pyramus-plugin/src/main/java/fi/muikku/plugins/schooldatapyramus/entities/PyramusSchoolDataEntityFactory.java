@@ -15,20 +15,27 @@ import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
+import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseAssessment;
+import fi.pyramus.rest.model.CourseAssessmentRequest;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseStudent;
 import fi.pyramus.rest.model.CourseType;
 import fi.pyramus.rest.model.EducationalTimeUnit;
+import fi.pyramus.rest.model.StudentGroup;
+import fi.pyramus.rest.model.StudentGroupStudent;
+import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.UserRole;
 
 public class PyramusSchoolDataEntityFactory {
@@ -285,7 +292,7 @@ public class PyramusSchoolDataEntityFactory {
     );
   }
 
-  public WorkspaceAssessment createEntity(CourseAssessment courseAssessment){
+  public WorkspaceAssessment createEntity(CourseAssessment courseAssessment) {
     return new PyramusWorkspaceAssessment(
        courseAssessment.getId().toString(),
        identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
@@ -297,12 +304,66 @@ public class PyramusSchoolDataEntityFactory {
      );
   }
   
-  public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments){
+  public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments) {
     List<WorkspaceAssessment> result = new ArrayList<>();
     for(CourseAssessment courseAssessment : courseAssessments){
       result.add(createEntity(courseAssessment));
     }
     return result;
+  }
+  
+  public WorkspaceAssessmentRequest createEntity(CourseAssessmentRequest courseAssessmentRequest) {
+    return new PyramusWorkspaceAssessmentRequest(
+       courseAssessmentRequest.getId().toString(),
+       identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
+       courseAssessmentRequest.getRequestText(),
+       courseAssessmentRequest.getCreated().toDate()
+     );
+  }
+  
+  public List<WorkspaceAssessmentRequest> createEntity(CourseAssessmentRequest... courseAssessmentRequests) {
+    List<WorkspaceAssessmentRequest> result = new ArrayList<>();
+    
+    for (CourseAssessmentRequest courseAssessment : courseAssessmentRequests) {
+      result.add(createEntity(courseAssessment));
+    }
+
+    return result;
+  }
+  
+  public UserGroup createEntity(StudentGroup studentGroup){
+    return new PyramusUserGroup(identifierMapper.getStudentGroupIdentifier(studentGroup.getId()), studentGroup.getName());
+  }
+  
+  public List<UserGroup> createEntities(StudentGroup... studentGroups) {
+    List<UserGroup> result = new ArrayList<>();
+    
+    for(StudentGroup studentGroup : studentGroups){
+      result.add(createEntity(studentGroup));
+    }
+    return result;
+  }
+  
+  public GroupUser createEntity(StudentGroupStudent studentGroupStudent) {
+    return new PyramusGroupUser(
+          identifierMapper.getStudentGroupStudentIdentifier(studentGroupStudent.getId()),
+          identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId())
+        );
+  }
+  
+  public GroupUser createEntity(StudentGroupUser studentGroupUser) {
+    return new PyramusGroupUser(
+          identifierMapper.getStudentGroupStaffMemberIdentifier(studentGroupUser.getId()),
+          identifierMapper.getStaffIdentifier(studentGroupUser.getStaffMemberId())
+        );
+  }
+  
+  public List<GroupUser> createEntities(StudentGroupStudent... studentGroupStudents){
+    List<GroupUser> results = new ArrayList<>();
+    for(StudentGroupStudent studentGroupStudent : studentGroupStudents){
+      results.add(createEntity(studentGroupStudent));
+    }
+    return results;
   }
   
   public List<WorkspaceType> createEntities(CourseType... courseTypes) {
@@ -330,6 +391,8 @@ public class PyramusSchoolDataEntityFactory {
         return EnvironmentRoleArchetype.MANAGER;
       case STUDENT:
         return EnvironmentRoleArchetype.STUDENT;
+      case USER:
+        return EnvironmentRoleArchetype.TEACHER;
       default:
         return EnvironmentRoleArchetype.CUSTOM;
     }

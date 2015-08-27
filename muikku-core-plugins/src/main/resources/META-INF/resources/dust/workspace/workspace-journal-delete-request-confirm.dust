@@ -1,0 +1,4 @@
+<div class="workspace-journal-delete-confirm-dialog" title="{#localize key="plugin.workspace.journal.deleteEntry.dialog.title"/}" data-button-delete-text="{#localize key="plugin.workspace.journal.deleteEntry.dialog.deleteButton"/}" data-button-cancel-text="{#localize key="plugin.workspace.journal.deleteEntry.dialog.cancelButton"/}">
+  {#localize key="plugin.workspace.journal.deleteEntry.dialog.description"/}
+  
+</div>

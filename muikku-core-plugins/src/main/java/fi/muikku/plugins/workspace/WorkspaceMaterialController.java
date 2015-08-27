@@ -37,10 +37,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
+import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.MaterialController;
-import fi.muikku.plugins.material.dao.MaterialDAO;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
@@ -61,11 +61,18 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.muikku.session.SessionController;
 
 @Dependent
 @Stateful
 // TODO Should probably be split or renamed WorkspaceNodeController
 public class WorkspaceMaterialController {
+
+  @Inject
+  private LocaleController localeController;
+
+  @Inject
+  private SessionController sessionController;
 
   @Inject
   private WorkspaceRootFolderDAO workspaceRootFolderDAO;
@@ -78,9 +85,6 @@ public class WorkspaceMaterialController {
 
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
-
-  @Inject
-  private MaterialDAO materialDAO;
 
   @Inject
   private Event<WorkspaceRootFolderCreateEvent> workspaceRootFolderCreateEvent;
@@ -342,7 +346,8 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceMaterial findWorkspaceMaterialByWorkspaceEntityAndPath(WorkspaceEntity workspaceEntity, String path) {
-    return (WorkspaceMaterial) findWorkspaceNodeByWorkspaceEntityAndPath(workspaceEntity, path);
+    WorkspaceNode workspaceNode = findWorkspaceNodeByWorkspaceEntityAndPath(workspaceEntity, path); 
+    return workspaceNode instanceof WorkspaceMaterial ? (WorkspaceMaterial) workspaceNode : null;
   }
 
   public List<WorkspaceMaterial> listWorkspaceMaterialsByParent(WorkspaceNode parent) {
@@ -553,6 +558,42 @@ public class WorkspaceMaterialController {
     String urlName = generateUniqueUrlName(title);
     return createWorkspaceFolder(parent, title, urlName);
   }
+  
+  public WorkspaceMaterial ensureWorkspaceFrontPageExists(WorkspaceEntity workspace) {
+    WorkspaceFolder frontPageFolder = findWorkspaceFrontPageFolder(workspace);
+    if (frontPageFolder == null) {
+      frontPageFolder = createWorkspaceFrontPageFolder(workspace);
+    }
+    WorkspaceMaterial frontPageMaterial = null;
+    List<WorkspaceMaterial> frontPageMaterials = listWorkspaceMaterialsByParent(frontPageFolder);
+    if (frontPageMaterials.isEmpty()) {
+      String title = localeController.getText(sessionController.getLocale(), "plugin.workspace.frontPage.title");
+      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(title, "", "text/html", 0l);
+      frontPageMaterial = createWorkspaceMaterial(frontPageFolder, htmlMaterial);
+    }
+    else {
+      frontPageMaterial = frontPageMaterials.get(0);
+    }
+    return frontPageMaterial;
+  }
+
+  public WorkspaceMaterial ensureWorkspaceHelpPageExists(WorkspaceEntity workspace) {
+    WorkspaceFolder helpPageFolder = findWorkspaceHelpPageFolder(workspace);
+    if (helpPageFolder == null) {
+      helpPageFolder = createWorkspaceHelpPageFolder(workspace);
+    }
+    WorkspaceMaterial helpPageMaterial = null;
+    List<WorkspaceMaterial> helpPageMaterials = listWorkspaceMaterialsByParent(helpPageFolder);
+    if (helpPageMaterials.isEmpty()) {
+      String title = localeController.getText(sessionController.getLocale(), "plugin.workspace.helpPage.title");
+      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(title, "", "text/html", 0l);
+      helpPageMaterial = createWorkspaceMaterial(helpPageFolder, htmlMaterial);
+    }
+    else {
+      helpPageMaterial = helpPageMaterials.get(0);
+    }
+    return helpPageMaterial;
+  }
 
   public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
     return workspaceFolderDAO.findById(workspaceFolderId);
@@ -681,7 +722,7 @@ public class WorkspaceMaterialController {
     return contentNodes;
   }
 
-  private ContentNode createContentNode(WorkspaceNode rootMaterialNode) throws WorkspaceMaterialException {
+  public ContentNode createContentNode(WorkspaceNode rootMaterialNode) throws WorkspaceMaterialException {
     return createContentNode(rootMaterialNode, 1, true, true);
   }
 
@@ -759,10 +800,12 @@ public class WorkspaceMaterialController {
           InputSource inputSource = new InputSource(htmlReader);
           parser.parse(inputSource);
           Document document = parser.getDocument();
-
+ 
           NodeList imgList = document.getElementsByTagName("img");
           for (int i = 0, l = imgList.getLength(); i < l; i++) {
             Element img = (Element) imgList.item(i);
+            String imgClass = img.getAttribute("class");
+            img.setAttribute("class", imgClass == null ? "lazy" : imgClass + " lazy");
             img.setAttribute("data-original", img.getAttribute("src"));
             img.removeAttribute("src");
           }
@@ -854,11 +897,11 @@ public class WorkspaceMaterialController {
   /* Front page */
 
   public WorkspaceFolder createWorkspaceHelpPageFolder(WorkspaceEntity workspaceEntity) {
-    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Ohjeet", "ohjeet", 0, false, null, WorkspaceFolderType.HELP_PAGE);
+    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Ohjeet", "ohjeet", 0, false, WorkspaceFolderType.HELP_PAGE);
   }
 
   public WorkspaceFolder createWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
-    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Etusivu", "etusivu", 0, false, null, WorkspaceFolderType.FRONT_PAGE);
+    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Etusivu", "etusivu", 0, false, WorkspaceFolderType.FRONT_PAGE);
   }
 
   private WorkspaceFolder findWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {

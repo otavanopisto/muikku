@@ -1,0 +1,719 @@
+/* @import "_base.scss";  Has to be loaded 1st, has all the mixins */
+
+body[class^='workspace'] { 
+  @include background-image('/gfx/light-diagonal-strips.png');
+  background-repeat:repeat;
+  background-color:#f0f3f5;
+  min-height:100%;
+  font-size:16px;
+  font-weight:300;
+  padding:0 0 30px 0;
+  
+  main > section {
+    background:#fff;
+    margin:23px 0 0 0;
+    
+    /* Generic title for view's inside workspace.
+       Use this class if there is no need for specific titles and layouts
+     */
+    h1.workspace-generic-view-title { 
+      padding:20px;
+      margin:0; 
+    }
+    
+    > article {
+      padding:20px;
+    }
+    
+    h1.page-title {
+      font-size:25px;
+      padding:30px;
+      margin:0;
+      
+      text-transform:uppercase;
+    }
+    
+    .workspace-content-widgetspaceset {
+      padding:20px 20px;
+      
+      .widgetSpace.grid_24 {
+        width:100%;
+      }
+      
+    }
+  }
+  
+  #staticNavigationWrapperWorkspace {
+    background:none; /* We need to remove all background rules first */
+    @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */
+    background-position:250px 0px;
+    background-repeat:no-repeat;
+    background-color:#32acf6;
+    border-bottom:1px solid #ffffff; 
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+    height:76px;
+    
+    &.stuckStNav {
+      content:" ";
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:99;
+    }
+    
+    /* LOGGED IN USER'S PICTURE WIDGET */
+    
+    .lu-picture-widget {
+      margin-top:5px;
+
+      .lu-picture-container {
+        @incude border(2px,#fff,solid);
+        box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
+        height:48px;
+        width:48px;      
+        box-sizing:border-box; 
+        display:inline-block;
+        border-radius:24px;
+        margin:0 4px 0 0;
+        z-index:15;
+        background-size:100% auto;
+        border:2px solid #fff;
+        @include background-image('/gfx/default-user-picture.jpg');
+        overflow:hidden;
+        
+        &:hover {
+            box-shadow:0 0 15px rgba(255, 255, 255, 0.9);
+        }
+      
+        img {
+          width:100%;
+          border:0;
+        }
+        
+      }
+      
+    }
+    
+  }
+  
+  #workspaceNavigationWrapper { 
+    position:fixed;
+    top:100px;
+    z-index:21;
+    
+    .grid_1 {
+      float:none;
+      width:auto;
+      margin:0;
+    }
+    
+    #workspaceDockWrapper {
+      background:#67d9bf;
+      @include rounded(3px);
+      width:60px;
+      
+      #workspaceDock {
+        text-align:center;
+      }
+      
+    }
+    
+    #workspaceMaterialsDockWrapper {
+      background:#288fcd;
+      @include rounded(3px);
+      width:60px;
+      margin-bottom:10px;
+      
+      #workspaceMaterialsDock {
+        text-align:center;
+      }
+      
+    }
+    
+    #workspaceEditDockWrapper {
+      background:#288fcd;
+      @include rounded(3px);
+      width:60px;
+      margin-bottom:10px;
+      
+      #workspaceEditDock {
+        text-align:center;
+      }
+
+    }
+    
+    #workspaceEvaluationDockWrapper {
+      text-align:center;
+    }
+
+  }
+  
+  /* WORKSPACE NAVIGATION - EVALUATION */  
+  .wi-workspace-dock-navi-button-evaluation { /* Button's master rules */
+    width:60px;
+    margin-bottom:10px;
+    @include rounded(3px);
+    
+    a {
+      text-shadow:none;
+      transition: background 0.2s ease-in-out;
+    }
+    
+    &[data-state='unassessed'] { /* Default state */
+      background:#55bbff;
+
+      a:hover {
+        background:#28a1f2;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#28a1f2;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='pending'] { /* Evaluation Request Pending */
+      background:#0099ff; 
+      transition: background 0.2s ease-in-out;
+
+      a:hover {
+        background:#0075c3;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#0075c3;
+        }
+        
+      }
+      
+      &:hover {
+        background:#f6a930;
+        
+        a {
+          background:#e5961b;
+          
+          &:before {
+            content: "\e9f3"; /* Override Pending icon with Cancellation icon */
+          }
+          
+          &:hover {
+            background:#e5961b;
+          
+            span[class*='workspace-navi-tt-container-'] {
+              background:#e5961b;
+            }
+          
+          }
+
+        }
+
+      }
+      
+    }
+    
+    &[data-state='cancel'] { /* Evaluation Request Cancelled */
+      background:#f6a930; /* Same as Default at this point */
+      
+      a:hover {
+        background:#e5961b;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#e5961b;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='canceled'] { /* Evaluation Request Cancelled */
+      background:#55bbff; /* Same as Default at this point */
+      
+      a:hover {
+        background:#509ccf;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#509ccf;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='pass'] { /* Evaluation of Workspace - Pass */
+      background:#1ec30c;
+      
+      a:hover {
+        background:#16a506;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#16a506;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='fail'] { /* Evaluation of Workspace - Fail */
+      background:#ea7401;
+      
+      a:hover {
+        background:#d66b03;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#d66b03;
+        }
+        
+      }
+    }
+    
+  }
+
+  /* WORKSPACE NAVIGATION */
+  div[class*='workspace-dock-navi-button'] > a,
+  div[class*='workspace-dock-navi-button'] > span {
+    cursor:pointer;
+    font-size:32px;
+    color:#fff;
+    text-decoration:none;
+    background:transparent;
+    padding:6px;
+    margin:4px;
+    display:inline-block;
+    position:relative;
+    width:34px;
+    @include rounded(3px);
+    
+    span[class*='workspace-navi-tt-container-'] {
+      opacity:0;
+      font-family:"Open Sans";
+      font-size:16px;
+      height:16px;
+      font-weight:300;
+      position:absolute;
+      top:0px;
+      left:-4500px;
+      width:0px;
+      color:#fff;
+      text-transform:uppercase;
+      padding:13px 15px 15px 14px;
+      @include rounded-top-right(3px);
+      @include rounded-bottom-right(3px);
+      @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+      z-index:99;
+      white-space:nowrap;
+    }
+    
+    &:hover {
+      background:#25c29e;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        display:block;
+        background:#25c29e;
+        opacity:1;
+        width:auto;
+        left:45px;
+      }
+    }
+  }
+  
+  /* WORKSPACE NAVIGATION - EDIT VIEW */
+  div[class*='workspace-dock-navi-button-edit-'] > a,
+  div[class*='workspace-dock-navi-button-edit-'] > span {
+    cursor:pointer;
+    font-size:32px;
+    color:#fff;
+    text-decoration:none;
+    background:transparent;
+    padding:6px;
+    margin:4px;
+    display:inline-block;
+    position:relative;
+    width:34px;
+    @include rounded(3px);
+  
+    span[class*='workspace-navi-tt-container-'] {
+      opacity:0;
+      font-family:"Open Sans";
+      font-size:16px;
+      height:16px;
+      font-weight:300;
+      position:absolute;
+      top:0px;
+      left:-4500px;
+      width:0px;
+      color:#fff;
+      text-transform:uppercase;
+      padding:13px 15px 15px 14px;
+      @include rounded-top-left(3px);
+      @include rounded-bottom-left(3px);
+      @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+    }
+    
+    &:hover {
+      background:#1a75ac;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        display:block;
+        background:#1a75ac;
+        opacity:1;
+        width:auto;
+        left:45px;
+      }
+    }
+  }
+  
+  /* WORKSPACE WIDGET ACTION MENU */
+  div[class^='widget wi-workspace-widget-action-menu-launcher'] {
+    position:absolute;
+    right:8px;
+    top:8px;
+    font-size:22px;
+    cursor:pointer;
+    width:22px;
+    
+    &:hover { /* Need to increase action menu icons container for easier use */
+      padding-left:100px; 
+      padding-bottom:20px;  
+    }
+  
+    .wi-workspace-widget-action-menu-container { /* Hiding the menu with visibility and height rules for css transitions, use display:none/block if no transitions are needed */
+      visibility:hidden;
+      height:0px;
+      opacity:0;
+      @include widgetActionMenuTransition(opacity,0.1s,ease-in-out);
+      position:absolute;
+      right:-5px;
+      top:20px;
+      color:#fff;
+      font-family:"Open Sans";
+      
+      .wi-workspace-widget-action-menu-arrow {
+        @include background-image('gfx/workspace-contextual-menu-arrow.png');
+        background-repeat:no-repeat;
+        height:9px;
+        background-position:bottom right;
+        background-color:transparent;
+        float:none;
+        position:relative;
+        right:12px;
+      }
+      
+      .wi-workspace-widget-action-menu-item-container {
+        background:#2c91ce;
+        opacity:0.98;
+      
+        .wi-workspace-widget-action-item {
+          padding:10px 15px;
+          font-size:16px;
+          position:relative;
+          margin:0;
+          display:block;
+          float:none;
+          @include widgetActionMenuItemTransition;
+          
+          .icon-delete,
+          .icon-move {
+            width:16px;
+            display:inline-block;
+            text-align:center;
+          }
+          
+          .wi-workspace-widget-action-item-label {
+            padding:0 0 0 10px;
+            display:inline-block;
+            font-family:"Open Sans";
+            font-size:13px;
+            position:relative;
+            top:-2px; /* Adjusting text in relation to icon as they are different sizes */
+            text-transform:uppercase;
+          }
+        
+          &:hover {
+            color:#fff;
+            background:#4da5da;
+          }
+        }
+      }
+    
+    }
+    
+    &:hover {
+    
+      .wi-workspace-widget-action-menu-container {
+        visibility:visible;
+        height:auto;
+        opacity:1;
+    
+        .wi-workspace-widget-action-menu-arrow {
+      
+        }
+      
+      }
+    
+    }
+  
+  }
+
+  /* TEXT CONTENT RULES */
+  
+  /* Content link overrides */
+  #content a {
+    color:#4290ea; 
+  }
+  
+  /* UL, LI overrides */
+  ul {
+    list-style-type:disc;
+  }
+  
+  ol {
+     list-style-type:decimal;
+  }
+  
+  ul,
+  ol {
+    margin:0 20px;
+  
+    li {
+      margin:5px;
+    }
+    
+    ol {
+      list-style-type:decimal;
+    }
+    
+    ul {
+      list-style-type:circle;
+    }
+  
+  }
+  
+  img {
+    max-width:100%;
+  }
+  
+  h1,
+  h2 {
+  
+    &:first-child {
+      margin:20px 0 20px 0;
+    }
+    
+  }
+  
+  h1,
+  h2,
+  h3 {
+    margin:40px 0 20px 0;
+    color:#38393a;
+    font-weight:300;
+    text-transform:none;
+    line-height:1.3em;
+  }
+  
+  h4,
+  h5,
+  h6 {
+    margin:20px 0 20px 0;
+    color:#38393a;
+    font-weight:300;
+    text-transform:none;
+    line-height:1.3em;
+  }
+  
+  h1 {
+    font-size:29px;
+  }
+    
+  h2 { /* Page title */
+    font-size:26px;
+  }
+  
+  h3 {
+    font-size:22px;
+    font-weight:400;
+  }
+  
+  h4 {
+    font-size:19px;
+    font-weight:400;
+  }
+  
+  h5 {
+    font-size:17px;
+    font-weight:400;
+  }
+  
+  h6 {
+    font-size:16px;
+    font-weight:400;
+  }
+  
+  p {
+    margin:15px 0 15px 0;
+  }
+  
+  strong,b {
+    font-weight:600; /* Override values used in reading/management */
+  }
+  
+  em,i {
+    font-weight:400;
+  }
+
+  /* JQuery UI Dialog Overrides */
+  .ui-widget-overlay {
+    background:#000;
+    opacity:0.5;
+  }
+  
+  .workspace-evaluation-confirm-dialog {
+    box-shadow:0 0 80px rgba(0,0,0,0.4);
+    background:#fff;
+    font-family: 'Open Sans',Verdana, sans-serif;
+    font-weight:300;
+    padding:0;
+    border-radius:5px;
+    border:none;
+    position:fixed;
+    
+    &.ui-corner-all {
+      border-radius:0px;
+    }
+    
+    .ui-dialog-titlebar {
+      text-transform:uppercase;
+      border:0px;
+      background:#7391a7;
+      color:#fff;
+      border-radius:0px;
+      padding:8px 36px 8px 12px;
+      font-weight:400;
+      
+      .ui-dialog-title {
+        margin:0;
+        font-size:18px;
+        width:100%;
+        font-weight:300;
+      }
+      
+      .ui-dialog-titlebar-close {
+        background:#7391a7;
+        border-radius:0px;
+        border:0px;
+        width:24px;
+        margin:-13px 0 0 0;
+        font-size:22px;
+        height:22px; /* Same height as font-size */
+        
+        span {
+          display:none;
+        }
+        
+        &:before {
+          content: "\e63b";
+          color:#fff;
+          font-size:22px;
+          font-weight:normal;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          
+          /* Better Font Rendering =========== */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+      }
+      
+    }
+    
+    .workspace-evaluation-request-confirm-dialog,
+    .workspace-evaluation-cancellation-confirm-dialog {
+      margin:10px 0 0 0;
+      
+      .evaluation-request-additional-message-wrapper {
+        margin:10px 0;
+      
+        label {
+          font-weight:400;
+          text-transform:uppercase;
+          padding:5px 0 5px 2px;
+          font-size:14px;
+          font-family:"Open Sans";
+          color:#4c4c4c;
+        }
+      
+        #evaluationRequestAdditionalMessage {
+          width:100%;
+          max-width:100%;
+          box-sizing:border-box;
+          min-height:100px;
+          border:3px solid #ededed;
+          font-family:"Open Sans";
+          color:#4c4c4c;
+          padding:4px 8px;
+          font-weight:400;
+          border-radius:0px;
+          
+          &:focus,
+          &:hover,
+          &:active {
+            box-shadow:none;
+            border:3px solid #ededed;
+            outline:none;
+          }
+          
+        }
+      
+      }
+      
+    }
+    
+    .ui-dialog-buttonpane {
+      border:0;
+      background:transparent;
+      padding:0px 10px 10px 10px;
+      margin:10px 0 0 0;
+      
+      .ui-dialog-buttonset {
+        float:none;
+        position:relative;
+      
+        button {
+          border-radius:0px;
+          border:0;
+          color:#fff;
+          font-weight:400;
+          text-transform:uppercase;
+          margin:5px;
+          outline:none;
+          font-family:"Open Sans";
+          min-width:90px;
+        }
+        
+        button.request-button {
+          float:right;
+          background:#068feb;
+        }
+        
+        button.cancellation-button {
+          float:right;
+          background:#f6a930;
+        }
+        
+        button.cancel-button {
+          float:right;
+          background:#7391a7;
+        }
+      
+      }
+    }
+  }
+}
+  

@@ -15,12 +15,22 @@
     <extension>eot</extension>
     <mime-type>application/vnd.ms-fontobject</mime-type>
   </mime-mapping>
-
+  
   <mime-mapping>
     <extension>woff</extension>
     <mime-type>application/x-font-woff</mime-type>
   </mime-mapping>
-
+  
+  <mime-mapping>
+    <extension>ttf</extension>
+    <mime-type>application/font-sfnt</mime-type>
+  </mime-mapping>
+  
+  <mime-mapping>
+    <extension>svg</extension>
+    <mime-type>image/svg+xml</mime-type>
+  </mime-mapping>  
+  
   <context-param>
     <param-name>javax.faces.PROJECT_STAGE</param-name>
     <param-value>Production</param-value>
@@ -60,6 +70,13 @@
       <param-value>UTF-8</param-value>
     </init-param>
   </filter>
+  
+  
+  <filter>
+    <filter-name>JsessionIdAvoiderFilter</filter-name>
+    <filter-class>fi.muikku.JsessionIdAvoiderFilter</filter-class>
+  </filter>
+  
 
   <filter-mapping>
     <filter-name>EncodingFilter</filter-name>

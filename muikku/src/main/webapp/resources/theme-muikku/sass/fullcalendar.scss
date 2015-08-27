@@ -1,15 +1,9 @@
-@import "_base.scss";
 
-.fc th {
-  text-align: center;
-}
 
-.fc th,
-.fc td {
-  padding: 0;
-  vertical-align: center;
-}
 
+/*   .fc th, .fc td { */
+/*     text-align: center; */
+/*   } */
 
 
   .fc td.fc-today {
@@ -24,8 +18,8 @@
 
 .fc-header-title{
   h2{
-  margin-top:20px;
-}
+   margin-top:20px;
+  }
 }
 
 .fc-agenda-days{
@@ -35,28 +29,35 @@
 /* Small month calendar */
 
 #smallMonthCalendar{
+  
 
+   th, td {
+    border-style:none;
+  }
+  
+  
   div[data-name="calendar.contentToolsTopRight"] {
     text-align: right;
   }
   
-  /* FullCalendar Month Calendar Overrides  */
+  FullCalendar Month Calendar Overrides 
   
   .monthCalendar {
-  	background-color:fff;
+    background-color:fff;
   }
   .fc-button{
-    width:30px;
-    display:inline-block;
-    font-size:2em;
-    color:#c4c4c4;
-    background:#fff;
-    cursor:pointer;
-    
+    background: #fff none repeat scroll 0 0;
+    color: #c4c4c4;
+    cursor: pointer;
+    display: inline-block;
+    height: 27px;
+    line-height: 2.5em;
+    width: 44px;
   }
-  .fc-header{
+  .fc-toolbar{
     background-color: #AED4E3;
     height:27px;
+    margin-bottom:0;
     h2{
       color:#fff;
       font-size:1em;
@@ -66,60 +67,59 @@
       text-align:center;
     
     }
-    .fc-header-left, .fc-header-right{
+    .fc-left, .fc-right{
       text-align:center;
       color:#fff;
       span{
        height:27px;
       }
+
     }
-  
-  
   }
 
+    .fc-basic-view .fc-body .fc-row {
+        min-height:0;
+    }
 
-  
-  .fc-content{
+  .fc-view-container{
     background-color:#fff;
     border-bottom:1px solid #ededed;
   }
-  
+
   .fc-widget-title {
     color:#fff;
     text-align:center;
   }
-  
+
   .fc-day-header{
     text-align:center;  
   }
-  
+
   .fc-day{
     text-align:center;  
   }
-  
+
   .fc-state-highlight {
     color: #000;
     z-index:30;
-    border:2px solid #AED4E3;
     border-collapse: collapse;
   }
-  
-  
+
   .fc-other-month {
     background-color: #F0F5F8;
     color:#DDDADA;
   }
-  
+
   .fc-view-month .moreInfo {
     background: transparent !important;
     border: 0px !important;
     margin: 1px;
   }
-  
+
   .fc-view-month .moreInfo .fc-event-inner .fc-event-time { 
     display: none;
   }
-  
+
   .fc-view-month .moreInfo .fc-event-inner .fc-event-title {
     color: #000;
     font-weight: normal;
@@ -129,36 +129,76 @@
 
 }
 
+
 #fpDayEvents{
-  .fc-event{
-    padding-left:15px;
-    margin-bottom: 10px;
-    border-radius: 25px;
-    font-weight: 300;
-    font-size: 2em;
-    border:none !important;  
-    line-height:normal;
-    background-color: #AED4E3;    
-    position:static !important;
+    .fc-event{
+      padding-left:15px;
+      margin-bottom: 10px;
+      border-radius: 25px;
+      font-weight: 300;
+      font-size: 2em;
+      border:none !important;  
+      line-height:normal;
+      background-color: #AED4E3;    
+      position:static !important;
+    }
+
+    .fc-today {
+     background-color:#fff;  
+    }   
+   th, td {
+    border-style:none;
   }
- 
-  .fc-today {
-   background-color:#fff;  
-  }   
-  
-  
 }
 
-#dayView{
-  .fc-today {
-   background-color:#fff;  
-  }     
+#fpWeekView{
 
-  thead{
-    background-color: #AED4E3;  
-    height:27px;
-    color:#fff;
+  .fc-view{
+    border-left:1px solid #F0F3F4;     
   }
+  .fc-head{
+   border-top:1px solid #F0F3F4; 
+   border-bottom:1px solid #F0F3F4;   
+   background-color: #AED4E3;
+   height:27px;
+   }
+   
+   .fc-widget-header,.fc-widget-content{
+    border-style:none;
+   }
+   
+   .fc-day-header{
+     color:#fff;
+   }
+  
+   th, td {
+    border-style:none;
+  }
+  
+  .fc-agenda-axis{
+         border-right:1px solid #F0F3F4;     
+   } 
+
+    thead{
+      background-color: #AED4E3;  
+      height:27px;
+      color:#fff;
+    }
+  
+
+  
+  .fc-event{
+   overflow:hidden;
+   font-size:7 px;
+  }
+
+  
+  .fc-widget-header{
+    text-align:center;
+  }
+
+
+
   .fc-widget-content{
     border-right:1px solid #F0F3F4; 
   }  
@@ -200,7 +240,8 @@
 
   .fc-today{
     color:#aed4e3;
-    border:5px solid #aed4e3;
+    font-weight:700;
+    font-size:20px;
    }
 
   .fc-other-month {
@@ -208,7 +249,7 @@
     color:#DDDADA;
   }
 
-  thead{
+  .fc-day-header{
     background-color: #AED4E3;  
     height:27px;
     color:#fff;
@@ -218,7 +259,7 @@
 
 #agendaView{
   margin:5px;
-  
+
   .fc-day{
    div{
     min-height:auto !important;
@@ -254,8 +295,8 @@
  
   }
   
-  .fc-view-basicDay div{
-     div:nth-child(even){
+  .fc-content-skeleton tr:nth-child(even){
+     a{
      background-color:#f7f9fa;
     }  
   }  
@@ -264,37 +305,3 @@
 }
 
 
-#fpWeekView{
-
-
-  .fc-agenda-axis{
-         border-right:1px solid #F0F3F4;     
-   } 
-
-  thead{
-    background-color: #AED4E3;  
-    height:27px;
-    color:#fff;
-  }
-  
-  tbody{
-
-  }
-  
-  .fc-event{
-   overflow:hidden;
-   font-size:7 px;
-  }
-
-  
-  .fc-widget-header{
-    text-align:center;
-  }
-
-  .fc-content{
-    border-left:1px solid #F0F3F4;  
-  }
-  .fc-widget-content{
-    border-right:1px solid #F0F3F4; 
-  }
-}

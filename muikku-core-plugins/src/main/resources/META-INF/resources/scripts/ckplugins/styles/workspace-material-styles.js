@@ -20,11 +20,12 @@ CKEDITOR.stylesSet.add( 'workspace-material-styles', [
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.objectiveBox"), element: 'p', attributes: { 'class': 'material-objectivebox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.informationBox"), element: 'p', attributes: { 'class': 'material-infobox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.recapBox"), element: 'p', attributes: { 'class': 'material-recapbox material-styles-block' } },
-  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.chatBubble"), element: 'p', attributes: { 'class': 'material-chatbubble material-styles-block' } },
-  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.citationBasic"), element: 'p', attributes: { 'class': 'material-citation-basic material-styles-block' } },
-  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.citationHighlight"), element: 'p', attributes: { 'class': 'material-citation-highlight material-styles-block' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.citationBasic"), element: 'p', attributes: { 'class': 'material-citation-basic material-styles-text' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.citationHighlight"), element: 'p', attributes: { 'class': 'material-citation-highlight material-styles-text' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.exampleBox"), element: 'p', attributes: { 'class': 'material-example material-styles-text' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.externalLinkBox"), element: 'p', attributes: { 'class': 'material-linkbox material-styles-block' } },
-  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.audioBox"), element: 'p', attributes: { 'class': 'material-audiobox material-styles-block' } }
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.audioBox"), element: 'p', attributes: { 'class': 'material-audiobox material-styles-block' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.chatBubble"), element: 'p', attributes: { 'class': 'material-chatbubble material-styles-block' } }
   
   /* Inline Styles */
 

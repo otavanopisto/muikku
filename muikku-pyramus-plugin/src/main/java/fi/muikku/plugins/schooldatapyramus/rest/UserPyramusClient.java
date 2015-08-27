@@ -117,6 +117,16 @@ class UserPyramusClient implements PyramusClient, Serializable {
       releaseClient(client);
     }
   }
+
+  @Override
+  public void delete(String path) {
+    Client client = obtainClient();
+    try {
+      restClient.delete(client, getAccessToken(), path);
+    } finally {
+      releaseClient(client);
+    }
+  }
   
   private String getAccessToken() {
     fi.muikku.session.AccessToken accessToken = sessionController.getOAuthAccessToken("pyramus");
@@ -210,4 +220,5 @@ class UserPyramusClient implements PyramusClient, Serializable {
       return objectMapper;
     }
   }
+
 }

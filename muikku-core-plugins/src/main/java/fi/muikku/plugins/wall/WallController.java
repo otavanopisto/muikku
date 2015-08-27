@@ -144,7 +144,7 @@ public class WallController {
       case 3:
         // Assessment request
         
-        assessmentRequestController.create(workspaceEntity, userEntity, new Date(), "Arvioi mut, beibe! #" + r);
+//        assessmentRequestController.create(workspaceEntity, userEntity, new Date(), "Arvioi mut, beibe! #" + r);
       break;
 
       default:
