@@ -1,5 +1,0 @@
-<div class="sk-autocomplete-container">
-  <div class="sk-autocomplete-item icon-envelope">
-    <a class="sk-autocomplete-item-link" href="{@contextPath/}/communicator/#new">{#localize key="plugin.communicator.seekerresultcaption"/}: Uusi viesti</a>
-  </div>
-</div>
