@@ -16,18 +16,14 @@ import javax.inject.Inject;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
-import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.WorkspaceEntityController;
-import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.search.SearchIndexer;
 import fi.muikku.search.SearchReindexEvent;
-import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserGroupController;
 import fi.muikku.users.UserGroupEntityController;
-import fi.muikku.users.UserSchoolDataIdentifierController;
 
 @ApplicationScoped
 @Singleton
@@ -40,13 +36,7 @@ public class SchoolDataSearchReindexListener {
   private WorkspaceEntityController workspaceEntityController;
   
   @Inject
-  private UserController userController;
-
-  @Inject
   private UserEntityController userEntityController;
-  
-  @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController; 
 
   @Inject
   private UserGroupController userGroupController;
@@ -56,6 +46,9 @@ public class SchoolDataSearchReindexListener {
   
   @Inject
   private SearchIndexer indexer;
+  
+  @Inject
+  private UserIndexer userIndexer;
   
   @Inject
   private WorkspaceIndexer workspaceIndexer;
@@ -120,16 +113,7 @@ public class SchoolDataSearchReindexListener {
       for (int i = userIndex; i < last; i++) {
         UserEntity userEntity = users.get(i);
 
-        List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
-
-        for (UserSchoolDataIdentifier identifier : identifiers) {
-          User user = userController.findUserByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
-          try {
-            indexer.index(User.class.getSimpleName(), user);
-          } catch (Exception e) {
-            logger.log(Level.WARNING, "could not index User #" + user.getSchoolDataSource() + '/' + user.getIdentifier(), e);
-          }
-        }
+        userIndexer.indexUser(userEntity);
       }
       
       logger.log(Level.INFO, "Reindexed batch of users (" + userIndex + "-" + last + ")");

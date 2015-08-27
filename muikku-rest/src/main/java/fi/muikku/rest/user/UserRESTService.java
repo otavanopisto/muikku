@@ -72,20 +72,14 @@ public class UserRESTService extends AbstractRESTService {
 	  if (!sessionController.isLoggedIn()) {
 	    return Response.status(Status.FORBIDDEN).build();
 	  }
-	  
+
+	  EnvironmentRoleArchetype roleArchetype = archetype != null ? EnvironmentRoleArchetype.valueOf(archetype) : null;
+
 		SearchProvider elasticSearchProvider = getProvider("elastic-search");
 		if (elasticSearchProvider != null) {
 			String[] fields = new String[] { "firstName", "lastName" };
-			SearchResult result = null;
-
-			if (StringUtils.isBlank(searchString)) {
-				result = elasticSearchProvider.matchAllSearch(firstResult,
-						maxResults, User.class);
-			} else {
-				result = elasticSearchProvider.search(searchString, fields,
-						firstResult, maxResults, User.class);
-			}
-
+			SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, roleArchetype, firstResult, maxResults);
+			
 			List<Map<String, Object>> results = result.getResults();
 			boolean hasImage = false;
 

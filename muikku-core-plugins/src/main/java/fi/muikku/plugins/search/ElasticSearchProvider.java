@@ -23,6 +23,7 @@ import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
 
+import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 
@@ -42,6 +43,55 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public void deinit() {
     elasticClient.close();
+  }
+  
+  @Override
+  public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, int start, int maxResults) {
+    try {
+      // TODO: query_string search for case insensitive searches??
+      // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
+      text = text != null ? text.toLowerCase() : null;
+
+      QueryBuilder query = null;
+
+      if ((archetype == null) && StringUtils.isBlank(text)) {
+        query = QueryBuilders.matchAllQuery();
+      } else {
+        query = QueryBuilders.boolQuery();
+        
+        if (archetype != null) {
+          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("archetype", archetype.name().toLowerCase()));
+        }
+    
+        if (StringUtils.isNotBlank(text)) {
+          for (String textField : textFields)
+            ((BoolQueryBuilder) query).should(QueryBuilders.prefixQuery(textField, text));
+        }
+      }
+      
+      SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setTypes("User")
+        .setFrom(start)
+        .setSize(maxResults);
+      
+      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHit[] results = response.getHits().getHits();
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSource();
+        hitSource.put("indexType", hit.getType());
+        searchResults.add(hitSource);
+      }
+      
+      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      return result;
+    } catch (IndexMissingException ime) {
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+    }
   }
   
   @Override

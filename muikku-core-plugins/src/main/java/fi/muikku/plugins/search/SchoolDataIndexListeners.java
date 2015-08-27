@@ -20,7 +20,6 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUpdatedEvent;
 import fi.muikku.search.SearchIndexer;
-import fi.muikku.users.UserController;
 import fi.muikku.users.UserGroupController;
 
 public class SchoolDataIndexListeners {
@@ -32,13 +31,13 @@ public class SchoolDataIndexListeners {
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
-  private UserController userController;
-
-  @Inject
   private UserGroupController userGroupController;
   
   @Inject
   private SearchIndexer indexer;
+  
+  @Inject
+  private UserIndexer userIndexer;
   
   @Inject
   private WorkspaceIndexer workspaceIndexer;
@@ -56,31 +55,11 @@ public class SchoolDataIndexListeners {
   }
   
   public void onSchoolDataUserDiscoveredEvent(@Observes (during = TransactionPhase.BEFORE_COMPLETION) SchoolDataUserDiscoveredEvent event) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      User user = userController.findUserByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-      if (user != null) {
-        indexer.index(User.class.getSimpleName(), user);
-      } else {
-        logger.warning("could not index user because user '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
-      }
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    userIndexer.indexUser(event.getDataSource(), event.getIdentifier());
   }
   
   public void onSchoolDataUserUpdatedEvent(@Observes SchoolDataUserUpdatedEvent event) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      User user = userController.findUserByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-      if (user != null) {
-        indexer.index(User.class.getSimpleName(), user);
-      } else {
-        logger.warning("could not index user because user '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
-      }
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    userIndexer.indexUser(event.getDataSource(), event.getIdentifier());
   }
   
   public void onSchoolDataUserRemovedEvent(@Observes SchoolDataUserRemovedEvent event) {
