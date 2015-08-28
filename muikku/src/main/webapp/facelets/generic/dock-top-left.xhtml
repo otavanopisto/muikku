@@ -12,7 +12,7 @@ xmlns:h="http://java.sun.com/jsf/html">
     <m:widget rendered="#{sessionBackingBean.loggedIn}" name="dock-environment-communicator" size="2" />
     <m:widget rendered="#{sessionBackingBean.administratorLoggedIn}" name="dock-environment-calendar" size="2" />
     <m:widget rendered="#{sessionBackingBean.loggedIn}" name="dock-environment-discussion" size="2" />
-    <m:widget rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.teacherLoggedIn}" name="dock-environment-guider" size="2" />
+    <m:widget rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}" name="dock-environment-guider" size="2" />
     <m:widget rendered="#{sessionBackingBean.studentLoggedIn}" name="dock-environment-records" size="2" />
     <m:widget rendered="#{evaluationWidgetBackingBean.visible}" name="dock-environment-evaluation" size="2" />
     <m:widget name="dock-environment-search" size="2" />
