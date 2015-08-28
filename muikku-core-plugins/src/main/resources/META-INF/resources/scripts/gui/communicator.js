@@ -191,11 +191,12 @@ $(document).ready(function(){
       var parent = element.parents(".cm-messages-container");
       
       openElement = parent.find(".open");
+     
 
 
       
       if(openElement.length > 0){
-        var id = [openElement.attr("id")];
+        var id = [openElement.attr("data-thread-id")];
         
         this._deleteMessages(id);
         this._onMessageBackClick();
@@ -224,9 +225,10 @@ $(document).ready(function(){
           } else {
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
           }         
+          this._refreshView();
         });
         
-        this._refreshView();
+
       } 
     },
     

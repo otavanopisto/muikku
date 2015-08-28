@@ -1,6 +1,8 @@
     <div class="mf-item cm-message {?unreadMessagesInThread}unread{/unreadMessagesInThread}" id="{id}">
       <div class="mf-item-details cm-message-details">
-        <div class="mf-item-options-container cm-message-options-container"><div class="mf-item-select cm-message-select"><input type="checkbox"  name="messageSelect" value="{id}" /></div></div>
+        <div class="mf-item-options-container cm-message-options-container">
+          <div class="mf-item-select cm-message-select"><input type="checkbox"  name="messageSelect" value="{communicatorMessageId}" /></div>
+        </div>
         <div class="mf-item-details-container cm-message-details-container">       
           <div class="mf-item-additionalInfo">
             <span>
@@ -14,14 +16,13 @@
           <div class="mf-item-description">
 
             <div class="mf-item-header-name cm-message-header-name">
-              {?recipientHasPicture} 
-                <img class="cm-user-picture custom" src="{@contextPath/}/picture?userId={sender}" title="{recipientFullName}" width="50" height="50" />
+              {?senderHasPicture} 
+                <img class="cm-user-picture custom" title="{senderFullName}" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
               {:else}
-                <div class="cm-user-picture default" title="{recipientFullName}"></div>
-              {/recipientHasPicture}    
+                <div class="cm-user-picture default"></div>
+              {/senderHasPicture}            
               <input type="hidden" name="mf-person-id" value="{sender}"/>
-
-              <div class="mf-item-header-content-secondary cm-message-header-content-secondary{?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</div>    
+              <div class="mf-item-header-content-secondary cm-message-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</div>    
             </div>
             <div class="mf-item-header-details cm-message-header-count">
               <span class="cm-message-replies">{@gt key=messageCount value=1}{messageCount}{/gt}</span>
@@ -29,7 +30,11 @@
           </div>       
           <div class="clear"></div>
         </div>
+        
+         
       </div>
+    
       <input type="hidden" name="communicatorMessageId" value="{id}"/>
       <input type="hidden" name="communicatorMessageThreadId" value="{communicatorMessageId}"/>
-    </div>
+  
+    </div >
