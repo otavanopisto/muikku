@@ -25,8 +25,13 @@ public class FrontPagePluginDescriptor implements PluginDescriptor, LocalizedPlu
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
-    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.frontpage.FrontPagePluginMessages", LocaleUtils.toLocale("fi"))));
-    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.frontpage.FrontPagePluginMessages", LocaleUtils.toLocale("en"))));
+    
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.frontpage.FrontPagePluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.frontpage.FrontPagePluginMessages", LocaleUtils.toLocale("en"))));
+
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.frontpage.FrontPageJsPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.frontpage.FrontPageJsPluginMessages", LocaleUtils.toLocale("en"))));
+
     return bundles;
   }
 

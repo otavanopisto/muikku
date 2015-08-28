@@ -25,8 +25,8 @@ public class ForumPluginDescriptor implements PluginDescriptor, LocalizedPluginD
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
-//    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.forum.ForumPluginMessages", LocaleUtils.toLocale("fi"))));
-//    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.forum.ForumPluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.forum.ForumPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.forum.ForumPluginMessages", LocaleUtils.toLocale("en"))));
 
     bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.forum.ForumJsPluginMessages", LocaleUtils.toLocale("fi"))));
     bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.forum.ForumJsPluginMessages", LocaleUtils.toLocale("en"))));
