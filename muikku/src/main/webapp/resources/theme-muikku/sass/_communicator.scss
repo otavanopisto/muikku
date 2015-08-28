@@ -109,6 +109,11 @@
   
 }
 .cm-message {
+
+   .cm-message-select{
+    margin-left: 5px;
+    margin-top: 5px;
+   }
    .cm-message-header-name{
      width:90%;
    }
@@ -167,9 +172,23 @@
     min-height:50px;
     padding:5px;   
   }
-  
+ 
+   .cm-message-details{
+     max-height:35px;
+    }
+     
+   .cm-message-options-container{
+    display:inline-block;
+    box-sizing:border-box;
+    width:30px;
+    vertical-align:top;
+   } 
    .cm-message-details-container{
+    display:inline-block;
+    box-sizing:border-box;
     background-color:#fff;
+    width:680px;
+    
    }
    
   .cm-message-content{
@@ -240,6 +259,12 @@
   &.open{
      border-left:5px solid orange;   
      padding-left:10px;
+     
+      .cm-message-details{
+         max-height:none;
+      }
+      
+      
      &.owner{
        border-left:5px solid $brd2; 
        h3{

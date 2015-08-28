@@ -2,6 +2,7 @@
 
 <div class="cm-messages-toolbar"> 
    <div class="cm-messages-tool mf-item-tool icon-goback"></div>
+   <div class="cm-messages-tool mf-item-tool icon-delete"></div>   
    <div class="clear"></div>
 </div>
 
