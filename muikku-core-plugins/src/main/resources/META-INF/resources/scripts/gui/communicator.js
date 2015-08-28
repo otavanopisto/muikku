@@ -406,9 +406,14 @@ $(document).ready(function(){
             if (result[i].hasImage)
               img = CONTEXTPATH + "/picture?userId=" + result[i].id;
   
+            var label = result[i].firstName + " " + result[i].lastName;
+            
+            if (result[i].email)
+              label = label + " (" + result[i].email + ")"
+            
             users.push({
               category : getLocaleText("plugin.communicator.users"),
-              label : result[i].firstName + " " + result[i].lastName,
+              label : label,
               id : result[i].id,
               image : img,
               type : "USER"
