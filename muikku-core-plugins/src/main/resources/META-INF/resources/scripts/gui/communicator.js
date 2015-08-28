@@ -360,24 +360,25 @@ $(document).ready(function(){
     var _this = this;
     var users = new Array();
   
-
-    mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
-      if (result != undefined) {
-        for (var i = 0, l = result.length; i < l; i++) {
-          var img = undefined;
-          if (result[i].hasImage)
-            img = CONTEXTPATH + "/picture?userId=" + result[i].id;
-
-          users.push({
-            category : getLocaleText("plugin.communicator.usergroups"),
-            label : result[i].name,
-            id : result[i].id,
-            image : img,
-            type : "GROUP"
-          });
+    if (MUIKKU_LOGGEDINROLES.admin || MUIKKU_LOGGEDINROLES.manager || MUIKKU_LOGGEDINROLES.teacher) {
+      mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
+        if (result != undefined) {
+          for (var i = 0, l = result.length; i < l; i++) {
+            var img = undefined;
+            if (result[i].hasImage)
+              img = CONTEXTPATH + "/picture?userId=" + result[i].id;
+  
+            users.push({
+              category : getLocaleText("plugin.communicator.usergroups"),
+              label : result[i].name,
+              id : result[i].id,
+              image : img,
+              type : "GROUP"
+            });
+          }
         }
-      }
-    }); 
+      });
+    }
     
     return users;
   },
