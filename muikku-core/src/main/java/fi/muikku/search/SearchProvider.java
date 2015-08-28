@@ -2,6 +2,8 @@ package fi.muikku.search;
 
 import java.util.List;
 
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+
 public interface SearchProvider {
   
   public String getName();
@@ -13,4 +15,5 @@ public interface SearchProvider {
   public void deinit();
   
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults);
+  SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, int start, int maxResults);
 }

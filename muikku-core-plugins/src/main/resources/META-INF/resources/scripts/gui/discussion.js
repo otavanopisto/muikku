@@ -59,7 +59,7 @@ $(document).ready(function() {
         });
         
         var d = new Date(msgs.created);
-        msgs.prettyDate = d.toLocaleString();
+        msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
         msgsCallback();
       }).callback(function(err, threads) {
 
@@ -132,7 +132,7 @@ $(document).ready(function() {
 
         var d = new Date(thread.created);
 
-        thread.prettyDate = d.toLocaleString();
+        thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
 
         threadCallback();
       }).callback(function(err, threads) {
@@ -173,7 +173,7 @@ $(document).ready(function() {
 
           var d = new Date(thread.created);
 
-          thread.prettyDate = d.toLocaleString();
+          thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
 
           threadCallback();
         }).callback(function(err, threads) {
@@ -239,7 +239,7 @@ $(document).ready(function() {
           
           var d = new Date(msgs.created);
   
-          msgs.prettyDate = d.toLocaleString();
+          msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
   
           msgsCallback();
   
@@ -272,7 +272,7 @@ $(document).ready(function() {
 
           var d = new Date(thread.created);
 
-          thread.prettyDate = d.toLocaleString();
+          thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
 
           threadCallback();
         }).callback(function(err, threads) {
@@ -334,7 +334,7 @@ $(document).ready(function() {
         });
         var d = new Date(replies.created);
        
-        replies.prettyDate = d.toLocaleString();
+        replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
         repliesCallback();
       }).callback(function(err, replies) {
         
@@ -382,7 +382,7 @@ $(document).ready(function() {
 
         var d = new Date(thread.created);
 
-        thread.prettyDate = d.toLocaleString();
+        thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
 
         threadCallback();
       }).callback(function(err, threads) {
@@ -431,7 +431,7 @@ $(document).ready(function() {
         });
         var d = new Date(replies.created);
        
-        replies.prettyDate = d.toLocaleString();
+        replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
         replies.threadId = threadId;
 
         repliesCallback();
