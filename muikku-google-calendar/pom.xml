@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.58-SNAPSHOT</version>
+    <version>1.0.59-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>calendar-plugin</artifactId>
-      <version>1.0.58-SNAPSHOT</version>
+      <version>1.0.59-SNAPSHOT</version>
     </dependency>
 
     <!-- CDI -->
