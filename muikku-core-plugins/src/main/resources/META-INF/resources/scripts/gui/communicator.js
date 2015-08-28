@@ -216,16 +216,15 @@ $(document).ready(function(){
     },    
     
     _deleteMessages : function(ids){
-
-      for (i = 0; i < ids.length; i++){
-
+      var _this = this;
+      for (i = 0; i < ids.length; i++){ 
         mApi().communicator.messages.del(ids[i]).callback(function (err, result){
          if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
           } else {
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
           }         
-          this._refreshView();
+          _this._refreshView();
         });
         
 
