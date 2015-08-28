@@ -341,7 +341,7 @@ $(document).ready(function(){
            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.newMessage.error'));
          } else {
           _this._showMessage(threadId); 
-          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage'));
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage.success'));
          }
         });
     }   
