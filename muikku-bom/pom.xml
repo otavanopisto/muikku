@@ -4,7 +4,7 @@
 
   <groupId>fi.muikku</groupId>
   <artifactId>bom</artifactId>
-  <version>1.0.59-SNAPSHOT</version>
+  <version>1.0.59</version>
   <packaging>pom</packaging>
   <name>Muikku BOM</name>
 
@@ -37,7 +37,7 @@
 
     <!-- Muikku -->
 
-    <muikku.version>1.0.59-SNAPSHOT</muikku.version>
+    <muikku.version>1.0.59</muikku.version>
 
     <!-- Lucene -->
     <lucene.version>4.10.2</lucene.version>
