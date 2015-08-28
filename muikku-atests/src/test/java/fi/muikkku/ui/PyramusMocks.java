@@ -28,6 +28,7 @@ import fi.pyramus.rest.model.Email;
 import fi.pyramus.rest.model.Person;
 import fi.pyramus.rest.model.StaffMember;
 import fi.pyramus.rest.model.Student;
+import fi.pyramus.rest.model.StudentGroup;
 import fi.pyramus.rest.model.Subject;
 import fi.pyramus.rest.model.WhoAmI;
 
@@ -544,4 +545,19 @@ public class PyramusMocks{
         .withStatus(204)));
   }
   
+ public static void studentGroupsMocks() throws JsonProcessingException {
+   ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+   DateTime created = new DateTime(1990, 2, 2, 0, 0, 0, 0);
+   DateTime begin = new DateTime(2000, 1, 1, 0, 0, 0, 0);
+   DateTime lastmodified = new DateTime(2000, 1, 1, 0, 0, 0, 0);
+   StudentGroup studentGroupStudents = new StudentGroup((long) 1, "Opiskelijat", "Spring 2015 Students", begin, (long) 1, created, (long) 1, lastmodified, null, false);
+   StudentGroup studentGroupAnother = new StudentGroup((long) 2, "Opiskelijat 2", "Spring 2015 Students 2", begin, (long) 1, created, (long) 1, lastmodified, null, false);
+   StudentGroup[] studentGroupArray = {studentGroupStudents, studentGroupAnother};
+   String studentGroupsJson = objectMapper.writeValueAsString(studentGroupArray);
+   stubFor(get(urlMatching("/1/students/studentGroups"))
+     .willReturn(aResponse()
+       .withHeader("Content-Type", "application/json")
+       .withBody(studentGroupsJson)
+       .withStatus(200)));
+ } 
 }
