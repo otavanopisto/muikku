@@ -216,7 +216,7 @@ $(document).ready(function(){
     },    
     
     _deleteMessages : function(ids){
-
+      var _this = this;
       for (i = 0; i < ids.length; i++){
 
         mApi().communicator.messages.del(ids[i]).callback(function (err, result){
@@ -225,7 +225,7 @@ $(document).ready(function(){
           } else {
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
           }         
-          this._refreshView();
+          _this._refreshView();
         });
         
 
