@@ -28,7 +28,7 @@ public class EvaluationWidgetBackingBean {
     
     if (sessionController.isLoggedIn()) {
       EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(sessionController.getLoggedUserEntity());
-      if (environmentUser != null) {
+      if ((environmentUser != null) && (environmentUser.getRole() != null)) {
         EnvironmentRoleArchetype roleArchetype = environmentUser.getRole().getArchetype();
         switch (roleArchetype) {
           case TEACHER:

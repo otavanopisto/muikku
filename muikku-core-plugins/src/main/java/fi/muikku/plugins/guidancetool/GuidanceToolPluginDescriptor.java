@@ -25,8 +25,13 @@ public class GuidanceToolPluginDescriptor implements PluginDescriptor, Localized
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
-    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.guidancetool.GuidanceToolPluginMessages", LocaleUtils.toLocale("fi"))));
-    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.guidancetool.GuidanceToolPluginMessages", LocaleUtils.toLocale("en"))));
+    
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.guidancetool.GuidanceToolPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.guidancetool.GuidanceToolPluginMessages", LocaleUtils.toLocale("en"))));
+
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.guidancetool.GuidanceToolJsPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.guidancetool.GuidanceToolJsPluginMessages", LocaleUtils.toLocale("en"))));
+    
     return bundles;
   }
 }

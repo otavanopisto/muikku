@@ -15,7 +15,12 @@
           var CONTEXTPATH = "#{request.contextPath}";
           var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
           var MUIKKU_LOGGEDIN = #{muikkuSession.loggedIn};
-
+          var MUIKKU_LOGGEDINROLES = {
+            teacher: #{sessionBackingBean.teacherLoggedIn},
+            manager: #{sessionBackingBean.managerLoggedIn},
+            admin: #{sessionBackingBean.administratorLoggedIn},
+            student: #{sessionBackingBean.studentLoggedIn}
+          };
       </script>
       
       <script type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>

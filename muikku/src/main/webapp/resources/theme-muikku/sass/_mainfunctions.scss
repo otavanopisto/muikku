@@ -148,7 +148,7 @@
       > div:first-child{
         width:170px;
         margin-left:31px;
-        margin-top:20px;
+        margin-top:13px;
       }
   }
   
@@ -204,6 +204,7 @@
       
       li{
         border-bottom: 1px solid $brd1;
+        border-left: 5px solid #fff;
 
         a{
           font-weight:300;
@@ -614,6 +615,7 @@
       white-space:normal;
 
     }
+
     
   .mf-item-description{
      width:100%;

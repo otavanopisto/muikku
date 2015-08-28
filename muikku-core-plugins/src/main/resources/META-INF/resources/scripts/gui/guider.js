@@ -26,7 +26,7 @@ $(document).ready(function(){
             
  
     	    
-    	    mApi().user.users.read({ archetype : 'STUDENT', maxResults: 100000 })
+    	    mApi().user.users.read({ archetype : 'STUDENT', maxResults: 25 })
     	    .callback(function (err, users) {
     	  	  
     		    if( err ){
