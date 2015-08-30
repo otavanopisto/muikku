@@ -1,0 +1,69 @@
+{#.}
+ 
+ 
+  <div id="crsId-{id}" class="cp-course ft-01">
+    <input type="hidden" name="workspaceId" value="{id}"/>
+    <input type="hidden" name="workspaceUrl" value="{urlName}"/>
+
+    <div class="cp-course-details">
+      <div class="cp-course-details-container">       
+        <div class="cp-course-additionalInfo">
+          <div class="cp-course-details-teachers">
+            {?teachers}
+              <div style="display:none;" class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>             
+              {#teachers}
+                <div class="cp-course-details-teacher">
+                  <div class="cp-course-details-teacher-picture-container">
+                    {?hasPicture} 
+                      <img class="cp-course-details-teacher-picture" title="{fullName}" src="{@contextPath/}/picture?userId={id}" width="20" height="20" />
+                    {:else}
+                      <div class="cp-teacher-picture-default"></div>
+                    {/hasPicture}
+                  </div>
+  
+
+                  <div class="clear"></div>
+                </div>
+  
+              {/teachers}
+            {:else}
+              {#localize key="plugin.coursepicker.course.noteachers" /}
+            {/teachers}
+          </div>
+  
+          {?hasCourseFee}      
+            <div class="cp-course-details-fee">{#localize key="plugin.coursepicker.course.coursehasfee" /}</div>
+          {/hasCourseFee}
+  
+          {?hasAssessmentFee}      
+            <div class="cp-course-details-assessmentFee">{#localize key="plugin.coursepicker.course.assessmenthasfee" /}</div>
+          {/hasAssessmentFee}
+        </div>
+        <div class="cp-course-description">
+          <div class="cp-course-header-name">
+           <span class="cp-course-short"></span>
+           <span class="cp-course-long">{name}</span>
+          </div>
+          
+          <div class="cp-course-header-details">
+           {?ratingCount}<span class="cp-course-rating">{rating} ({ratingCount})</span>{/ratingCount}
+           <span class="cp-course-len"></span>
+           <span class="cp-course-age"></span>
+          </div>
+         
+          <div id="detailsCrs-{id}" class="cp-course-content-details" style="display:none;">     
+            <div class="cp-course-description-picture"></div>
+            <div class="cp-course-description-text">{description}</div>          
+            <div class="cp-course-details-toolbar">
+              <input class="bt-coursepicker cp-course-tour-button" type="button"
+                value='{#localize key="plugin.coursepicker.course.checkout" /}' />
+            </div>
+          </div>
+
+        </div>       
+
+        <div class="clear"></div>
+    </div>
+  </div>
+</div>
+{/.}
