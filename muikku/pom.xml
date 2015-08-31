@@ -9,7 +9,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.60</version>
+    <version>1.0.61-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -221,13 +221,13 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>school-data-pyramus</artifactId>
-          <version>1.0.60</version>
+          <version>1.0.61-SNAPSHOT</version>
         </dependency>
 
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>pyramus-oauth-plugin</artifactId>
-          <version>1.0.60</version>
+          <version>1.0.61-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -238,7 +238,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>dummy-mail-bridge-plugin</artifactId>
-          <version>1.0.60</version>
+          <version>1.0.61-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -249,7 +249,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>mongo-log-plugin</artifactId>
-          <version>1.0.60</version>
+          <version>1.0.61-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -260,7 +260,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>google-calendar-plugin</artifactId>
-          <version>1.0.60</version>
+          <version>1.0.61-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -271,7 +271,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>atests-plugin</artifactId>
-          <version>1.0.60</version>
+          <version>1.0.61-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -282,7 +282,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>h2db-plugin</artifactId>
-          <version>1.0.60</version>
+          <version>1.0.61-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -293,7 +293,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>google-oauth-plugin</artifactId>
-          <version>1.0.60</version>
+          <version>1.0.61-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -304,7 +304,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>facebook-oauth-plugin</artifactId>
-          <version>1.0.60</version>
+          <version>1.0.61-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -315,7 +315,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>calendar-plugin</artifactId>
-          <version>1.0.60</version>
+          <version>1.0.61-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -326,7 +326,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>deus-nex-machina</artifactId>
-          <version>1.0.60</version>
+          <version>1.0.61-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
