@@ -5,6 +5,7 @@ import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,9 +64,16 @@ public class ElasticSearchProvider implements SearchProvider {
           ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("archetype", archetype.name().toLowerCase()));
         }
     
+        
         if (StringUtils.isNotBlank(text)) {
-          for (String textField : textFields)
-            ((BoolQueryBuilder) query).should(QueryBuilders.prefixQuery(textField, text));
+          StringTokenizer tokenizer = new StringTokenizer(text, " ");
+
+          while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+
+            for (String textField : textFields)
+              ((BoolQueryBuilder) query).should(QueryBuilders.prefixQuery(textField, token));
+          }
         }
       }
       
