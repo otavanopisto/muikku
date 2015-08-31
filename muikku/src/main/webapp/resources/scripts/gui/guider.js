@@ -79,14 +79,15 @@ $(document).ready(function(){
 				
 	    },    	
 	    _showUser : function(event){
-
+        var _this = this;
 	    	var element = $(event.target); 
 	      element = element.parents(".gt-user");
 	      var uId = $(element).attr("id");
 		    var det = element.find(".gt-user-details"); 
-	      var detcont = element.find(".gt-user-details-content"); 
+	      var detCont = element.find(".gt-user-details-content"); 
         var detCloseDiv = element.find(".gt-user-name");
 	    	$(element).addClass("open");
+	    	_this._addLoading(detCont);
 	    	$(det).show();	   
 	    	
 
@@ -97,7 +98,8 @@ $(document).ready(function(){
 				  	}else{    	  
 
 				  	  renderDustTemplate('guider/guider_item_details.dust', user, function(text) {				  		
-					  		$(detcont).append($.parseHTML(text));				
+					  		_this._clearLoading();
+				  	    $(detCont).append($.parseHTML(text));				
 					  		
 			
 				  		
@@ -121,44 +123,44 @@ $(document).ready(function(){
 
       },	    
 	    
-	   messageToUser : function(event){
-		   
-			var element = $(event.target); 
-			element = element.parents(".gt-user");
-			var uId = $(element).attr("id");
-
-		   
-			var createMessage = function(values){
-
-				for(value in values){
-					  if(value == "recipienIds"){
-					  var recipientIds = values[value];
-					  delete values[value];
-				  }    	
-				 }				
-//	               	categoryName: "message",
-//	                caption : subject,
-//	                content : content,
-//	                tags : tags,
-//	                recipientId : recipientId,
-//	                recipientGroupIds : groupIds				
-				
-	            mApi().communicator.messages.create(recipientIds,values)
-	              .callback(function (err, result) {
-	              });
-
-			}	
-				
-		    mApi().user.users.read(uId)
-		      .callback(function (err, user) {
-		      	if( err ){
-		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
-		    	}else{ 		
-				  openInSN('guider/guider_create_message.dust', user, createMessage );
-		
-		    	}
-		      });		   
-	   }, 
+//	   messageToUser : function(event){
+//		   
+//			var element = $(event.target); 
+//			element = element.parents(".gt-user");
+//			var uId = $(element).attr("id");
+//
+//		   
+//			var createMessage = function(values){
+//
+//				for(value in values){
+//					  if(value == "recipienIds"){
+//					  var recipientIds = values[value];
+//					  delete values[value];
+//				  }    	
+//				 }				
+////	               	categoryName: "message",
+////	                caption : subject,
+////	                content : content,
+////	                tags : tags,
+////	                recipientId : recipientId,
+////	                recipientGroupIds : groupIds				
+//				
+//	            mApi().communicator.messages.create(recipientIds,values)
+//	              .callback(function (err, result) {
+//	              });
+//
+//			}	
+//				
+//		    mApi().user.users.read(uId)
+//		      .callback(function (err, user) {
+//		      	if( err ){
+//		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
+//		    	}else{ 		
+//				  openInSN('guider/guider_create_message.dust', user, createMessage );
+//		
+//		    	}
+//		      });		   
+//	   }, 
 
 	   _addLoading : function(parentEl){
 	     $(parentEl).append('<div class="mf-loading"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div></div>');  
