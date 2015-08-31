@@ -813,3 +813,31 @@
   
   
 }
+
+.mf-items-paging{
+  padding:10px;
+}
+.mf-paging-toolbar{
+  text-align:center;
+  
+}
+
+
+.mf-paging-tool{
+    margin-left: auto;
+    margin-right: auto;
+    background: #36A3CE none repeat scroll 0% 0%;
+    cursor: pointer;
+    padding: 6px 26px;
+    display: inline-block;
+    color: #FFF;
+    font-size: 18px;
+
+  
+  &.disabled{
+    background:$bgr1;
+    color:$bgr2;
+  }
+}
+
+

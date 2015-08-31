@@ -1,0 +1,19 @@
+
+  <div class="gt-users-page">
+    {#.}
+        {>"guider/guider_item.dust"/}
+    {/.} 
+    {?.}  
+      <div class="mf-items-paging gt-users-paging">
+        <div class="mf-paging-toolbar gt-paging-toolbar">
+          <div class="mf-paging-tool mf-page-link-load-more gt-paging-tool gt-page-link-load-more">{#localize key="plugin.discussion.links.more"/}</div>
+        </div>
+      </div>
+    {:else}
+      <div class="mf-items-paging gt-users-paging">
+        <div class="mf-paging-toolbar gt-paging-toolbar">
+          <div class="mf-paging-tool mf-page-link-load-more gt-paging-tool gt-page-link-load-more disabled">{#localize key="plugin.discussion.links.nomore"/}</div>
+        </div>
+      </div>    
+    {/.}    
+  </div>
