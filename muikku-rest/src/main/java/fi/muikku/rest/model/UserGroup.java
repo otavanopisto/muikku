@@ -5,9 +5,10 @@ public class UserGroup {
   public UserGroup() {
   }
 
-  public UserGroup(Long id, String name) {
+  public UserGroup(Long id, String name, Long userCount) {
     this.id = id;
     this.name = name;
+    this.userCount = userCount;
   }
   
   public Long getId() {
@@ -26,6 +27,15 @@ public class UserGroup {
     this.name = name;
   }
 
+  public Long getUserCount() {
+    return userCount;
+  }
+
+  public void setUserCount(Long userCount) {
+    this.userCount = userCount;
+  }
+
   private Long id;
   private String name;
+  private Long userCount;
 }

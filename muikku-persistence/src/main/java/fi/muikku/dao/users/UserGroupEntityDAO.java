@@ -111,4 +111,21 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public Long countGroupUsers(UserGroupEntity userGroupEntity) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<UserGroupUserEntity> root = criteria.from(UserGroupUserEntity.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(UserGroupUserEntity_.userGroupEntity), userGroupEntity),
+            criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
+        )
+    );
+   
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+
 }

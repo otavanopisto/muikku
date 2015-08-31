@@ -7,7 +7,7 @@ public class CoursePickerWorkspace {
   public CoursePickerWorkspace() {
   }
 
-  public CoursePickerWorkspace(Long id, String urlName, Boolean archived, Boolean published, String name, String description, Long numVisits, Date lastVisit, boolean canSignup) {
+  public CoursePickerWorkspace(Long id, String urlName, Boolean archived, Boolean published, String name, String description, Long numVisits, Date lastVisit, boolean canSignup, boolean isCourseMember) {
     super();
     this.id = id;
     this.urlName = urlName;
@@ -18,6 +18,7 @@ public class CoursePickerWorkspace {
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
     this.canSignup = canSignup;
+    this.isCourseMember = isCourseMember;
   }
 
   public Long getId() {
@@ -92,6 +93,14 @@ public class CoursePickerWorkspace {
     this.canSignup = canSignup;
   }
 
+  public Boolean getIsCourseMember() {
+    return isCourseMember;
+  }
+
+  public void setIsCourseMember(Boolean isCourseMember) {
+    this.isCourseMember = isCourseMember;
+  }
+
   private Long id;
   private String urlName;
   private Boolean archived;
@@ -101,4 +110,5 @@ public class CoursePickerWorkspace {
   private Date lastVisit;
   private Boolean published;
   private Boolean canSignup;
+  private Boolean isCourseMember;
 }

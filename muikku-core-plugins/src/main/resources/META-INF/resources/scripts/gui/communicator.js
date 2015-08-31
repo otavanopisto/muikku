@@ -368,7 +368,7 @@ $(document).ready(function(){
   
             users.push({
               category : getLocaleText("plugin.communicator.usergroups"),
-              label : result[i].name,
+              label : result[i].name + " (" + result[i].userCount + ")",
               id : result[i].id,
               image : img,
               type : "GROUP"
