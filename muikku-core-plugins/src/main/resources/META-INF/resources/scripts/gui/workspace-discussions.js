@@ -30,7 +30,7 @@ $(document).ready(function() {
 
     init : function() {
       // todo: parse url
-      this.refreshLatest();
+
       this.refreshAreas();
 
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this._onMessageClick, this));
