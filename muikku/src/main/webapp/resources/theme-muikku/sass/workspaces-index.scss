@@ -1,4 +1,5 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "_custom-ckeditor-styles.scss";
 @import "_workspaces.scss"; /* Generic workspace styles */
 
 body[class^='workspace'] { 
@@ -119,14 +120,14 @@ body[class^='workspace'] {
     }
     
      .workspace-publication-container {
-        position: absolute;
-        bottom: 0px;
-        right: 5px;
-        width: 200px;
-        font-size: 15px;
-        text-transform: uppercase;
-        padding:4px 0;
-        text-align: right;
+        position:absolute;
+        bottom:0px;
+        right:5px;
+        width:200px;
+        font-size:15px;
+        text-transform:uppercase;
+        text-align:right;
+        padding:3px 0px 5px 0px;
         
         a {
           text-decoration:none;
