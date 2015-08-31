@@ -30,7 +30,7 @@
       </fields>
       <foreignKeys>
         <key columns="id" referencedTable="GroupPermission" referencedColumns="id" name="FK_WORKSPACEGROUPPERMISSION_GROUPPERMISSION" />
-        <key columns="id" referencedTable="WorkspaceEntity" referencedColumns="id" name="FK_WORKSPACEGROUPPERMISSION_WORKSPACEENTITY" />
+        <key columns="workspace_id" referencedTable="WorkspaceEntity" referencedColumns="id" name="FK_WORKSPACEGROUPPERMISSION_WORKSPACEENTITY" />
       </foreignKeys>
     </table>
   </createTables>
