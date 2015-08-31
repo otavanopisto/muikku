@@ -473,29 +473,3 @@
   
 }
 
-.di-messages-paging, .di-replies-paging{
-  padding:10px;
-}
-.di-paging-toolbar{
-  text-align:center;
-  
-}
-
-
-.di-paging-tool{
-    margin-left: auto;
-    margin-right: auto;
-    background: #36A3CE none repeat scroll 0% 0%;
-    cursor: pointer;
-    padding: 6px 26px;
-    display: inline-block;
-    color: #FFF;
-    font-size: 18px;
-
-  
-  &.disabled{
-    background:$bgr1;
-    color:$bgr2;
-  }
-}
-

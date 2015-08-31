@@ -1145,7 +1145,8 @@ body.workspace-materials-management {
 
       h1,
       h2,
-      h3 {
+      h3,
+      h4 {
         margin:40px 0 20px 0;
         color:#38393a;
         font-weight:300;
@@ -1168,6 +1169,11 @@ body.workspace-materials-management {
       h3 {
         margin:20px 0 20px 0;
         font-size:24px;
+      }
+      
+      h4 {
+        margin:20px 0 20px 0;
+        font-size:22px;
       }
       
       p {

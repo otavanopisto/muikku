@@ -504,18 +504,9 @@ body[class^='workspace'] {
   
   h1,
   h2,
-  h3 {
+  h3,
+  h4 {
     margin:40px 0 20px 0;
-    color:#38393a;
-    font-weight:300;
-    text-transform:none;
-    line-height:1.3em;
-  }
-  
-  h4,
-  h5,
-  h6 {
-    margin:20px 0 20px 0;
     color:#38393a;
     font-weight:300;
     text-transform:none;
@@ -531,23 +522,13 @@ body[class^='workspace'] {
   }
   
   h3 {
-    font-size:22px;
-    font-weight:400;
+    margin:20px 0 20px 0;
+    font-size:23px;
   }
   
   h4 {
-    font-size:19px;
-    font-weight:400;
-  }
-  
-  h5 {
-    font-size:17px;
-    font-weight:400;
-  }
-  
-  h6 {
-    font-size:16px;
-    font-weight:400;
+    margin:20px 0 20px 0;
+    font-size:21px;
   }
   
   p {

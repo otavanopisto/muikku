@@ -39,7 +39,7 @@ $(document).ready(function() {
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-replies:not(.disabled)', $.proxy(this._onMoreRepliesClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyMessage, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this.editMessage, this));      
-      $(DiscImpl.msgContainer).on("click", '.di-reply-edit-link', $.proxy(this.editMessageReply, this));      
+      $(DiscImpl.msgContainer).on("click", '.di-reply-edit-link', $.proxy(this.editMessageReply, this));
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
       $(window).on("hashchange", $.proxy(this._onHashChange, this));
       $(window).trigger("hashchange");
@@ -248,9 +248,9 @@ $(document).ready(function() {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
           } else {
-            _this.clearLoading();
+
             renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
-  
+              _this.clearLoading(); 
              pageElement.append($.parseHTML(text));
   
             });
@@ -281,7 +281,7 @@ $(document).ready(function() {
           } else {
 
             renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
-
+              _this.clearLoading();
               $(".di-messages-pages").append($.parseHTML(text));
 
             });
