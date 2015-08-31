@@ -96,13 +96,9 @@ $(document).ready(function(){
 				    if( err ){
 				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
 				  	}else{    	  
-
 				  	  renderDustTemplate('guider/guider_item_details.dust', user, function(text) {				  		
 					  		_this._clearLoading();
 				  	    $(detCont).append($.parseHTML(text));				
-					  		
-			
-				  		
 					  	});
 				  	}	
 		    });  		
