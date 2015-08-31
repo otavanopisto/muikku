@@ -78,11 +78,13 @@ public class UserGroupRESTService extends AbstractRESTService {
           String[] id = ((String) o.get("id")).split("/", 2);
 
           UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(id[1], id[0]);
-
+          Long userCount = userGroupEntityController.getGroupUserCount(userGroupEntity);
+          
           if (userGroupEntity != null) {
             ret.add(new fi.muikku.rest.model.UserGroup(
                 userGroupEntity.getId(), 
-                (String) o.get("name")));
+                (String) o.get("name"),
+                userCount));
           }
         }
 
