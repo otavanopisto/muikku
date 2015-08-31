@@ -42,17 +42,22 @@ function openInSN(template, result, formFunction) {
       
       CKEDITOR.replace(textarea, {
         height : '100px',
-        toolbar: [
-                    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat' ] },
-                    { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', '-', 'Undo', 'Redo' ] },
-                    { name: 'editing', items: [ 'Find', 'Replace', '-', 'SelectAll' ] },
-                    
-                    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
-                    { name: 'links', items: [ 'Link' ] },
-                    { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
-                    { name: 'styles', items: [ 'Format' ] },
-                    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-                  ]
+        toolbarGroups: [
+                        { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                        { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+                        { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+                        { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
+                        { name: 'forms', groups: [ 'forms' ] },
+                        { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
+                        { name: 'links', groups: [ 'links' ] },
+                        { name: 'insert', groups: [ 'insert' ] },
+                        { name: 'styles', groups: [ 'styles' ] },
+                        { name: 'colors', groups: [ 'colors' ] },
+                        { name: 'tools', groups: [ 'tools' ] },
+                        { name: 'others', groups: [ 'others' ] },
+                        { name: 'about', groups: [ 'about' ] }
+                      ],             
+       removeButtons : 'Source,Save,NewPage,Preview,Print,Templates,PasteText,PasteFromWord,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CreateDiv,Language,BidiRtl,BidiLtr,Flash,HorizontalRule,PageBreak,Iframe,Font,FontSize,Maximize,ShowBlocks,About,Find,Replace,SelectAll,Scayt,Anchor,Unlink,Styles,Subscript,Superscript'
       });
       
     });
