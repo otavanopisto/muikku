@@ -275,16 +275,22 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     // TODO: Duplicates
     
-    for (Long groupId : newMessage.getRecipientGroupIds()) {
-      UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
-      List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
-      
-      for (UserGroupUserEntity groupUser : groupUsers) {
-        UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier());
+    if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING, null)) {
+      for (Long groupId : newMessage.getRecipientGroupIds()) {
+        UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
+        List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
         
-        recipients.add(userEntity);
+        for (UserGroupUserEntity groupUser : groupUsers) {
+          UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
+          UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier());
+          
+          recipients.add(userEntity);
+        }
       }
+    } else {
+      // Trying to feed group ids when you don't have permission greets you with bad request
+      if (!newMessage.getRecipientGroupIds().isEmpty())
+        return Response.status(Status.BAD_REQUEST).build();
     }
     
     // TODO Category not existing at this point would technically indicate an invalid state
@@ -401,17 +407,24 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
-    for (Long groupId : newMessage.getRecipientGroupIds()) {
-      UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
-      List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
-      
-      for (UserGroupUserEntity groupUser : groupUsers) {
-        UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier());
+    if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING, null)) {
+      for (Long groupId : newMessage.getRecipientGroupIds()) {
+        UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
+        List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
         
-        recipients.add(userEntity);
+        for (UserGroupUserEntity groupUser : groupUsers) {
+          UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
+          UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier());
+          
+          recipients.add(userEntity);
+        }
       }
+    } else {
+      // Trying to feed group ids when you don't have permission greets you with bad request
+      if (!newMessage.getRecipientGroupIds().isEmpty())
+        return Response.status(Status.BAD_REQUEST).build();
     }
+      
 
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());

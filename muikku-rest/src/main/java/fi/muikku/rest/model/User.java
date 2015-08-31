@@ -12,7 +12,8 @@ public class User {
               String nationality,
               String language,
               String municipality,
-              String school) {
+              String school,
+              String email) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -22,6 +23,7 @@ public class User {
     this.language = language;
     this.municipality = municipality;
     this.school = school;
+    this.email = email;
   }
 
   public Long getId() {
@@ -88,6 +90,14 @@ public class User {
     this.school = school;
   }
 
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
   private Long id;
   private String firstName;
   private String lastName;
@@ -96,4 +106,5 @@ public class User {
   private String language;
   private String municipality;
   private String school;
+  private String email;
 }

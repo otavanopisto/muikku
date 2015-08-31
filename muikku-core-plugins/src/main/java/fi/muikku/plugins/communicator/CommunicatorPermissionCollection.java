@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.security.AbstractMuikkuPermissionCollection;
+import fi.muikku.security.DefaultEnvironmentPermissionRoles;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
@@ -21,6 +22,10 @@ public class CommunicatorPermissionCollection extends AbstractMuikkuPermissionCo
   
   @Scope (PERMISSIONSCOPE_COMMUNICATOR)
   public static final String READ_MESSAGE = "READ_MESSAGE";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER })
+  public static final String COMMUNICATOR_GROUP_MESSAGING = "COMMUNICATOR_GROUP_MESSAGING";
   
   @Override
   public List<String> listPermissions() {
