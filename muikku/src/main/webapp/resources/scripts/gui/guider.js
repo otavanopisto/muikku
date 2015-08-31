@@ -7,7 +7,8 @@ $(document).ready(function(){
     	    $(GuideImpl.guideContainer).on("click", '.gt-user:not(.open)', $.proxy(this._showUser,this));  
           $(GuideImpl.guideContainer).on("click", '.gt-user.open .gt-user-name', $.proxy(this._hideUser,this));  
     	    $(GuideImpl.guideContainer).on("click", '.gt-tool-view-profile', $.proxy(this._onShowProfileClick,this));
-    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-send-mail', $.proxy(this.messageToUser,this));    	    
+    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-send-mail', $.proxy(this.messageToUser,this));
+          $(GuideImpl.guideContainer).on("click", '.gt-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));    	    
     	    
           dust.preload("guider/guider_item.dust");
           
@@ -44,6 +45,44 @@ $(document).ready(function(){
     	    });		
     		
     	},
+
+      _onMoreClick : function(event){
+        var element = $(event.target);
+        element = element.parents(".gt-users-paging");
+        var pageElement = $(".gt-users-pages");
+        var _this = this;  
+
+        $(element).remove(); 
+        _this._addLoading(pageElement);
+        
+
+        var usrsCount = 0;
+        var usrs = $(GuideImpl.guideContainer).find('.gt-user');
+        
+        for(var m = 0; m < usrs.length; m++){
+          usrsCount ++;
+         }
+              
+        var fRes = usrsCount;
+        
+
+          mApi().user.users.read({archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, threads) {
+    
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
+            } else {
+              _this._clearLoading();
+              renderDustTemplate('/guider/guider_page.dust', threads, function(text) {
+    
+               pageElement.append($.parseHTML(text));
+    
+              });
+            }
+          });     
+        
+
+      },      	
+    	
     	_onShowProfileClick : function(event){
         var element = $(event.target); 
         element = element.parents(".gt-user");
