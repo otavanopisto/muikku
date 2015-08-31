@@ -172,9 +172,10 @@ public class CoursePickerRESTService extends PluginRESTService {
               String name = (String) result.get("name");
               String description = (String) result.get("description");
               boolean canSignup = getCanSignup(workspaceEntity);
+              boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
               
               if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, description, canSignup));
+                workspaces.add(createRestModel(workspaceEntity, name, description, canSignup, isCourseMember));
               }
             }
           }
@@ -235,8 +236,9 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
 
     boolean canSignup = getCanSignup(workspaceEntity);
+    boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
 
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getDescription(), canSignup)).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getDescription(), canSignup, isCourseMember)).build();
   }
   
   @POST
@@ -322,6 +324,15 @@ public class CoursePickerRESTService extends PluginRESTService {
     return Response.ok(result).build();
   }
 
+  private boolean getIsAlreadyOnWorkspace(WorkspaceEntity workspaceEntity) {
+    if (sessionController.isLoggedIn()) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
+
+      return workspaceUserEntity != null;
+    } else
+      return false;
+  }
+  
   private boolean getCanSignup(WorkspaceEntity workspaceEntity) {
     if (sessionController.isLoggedIn()) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
@@ -343,11 +354,11 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
   }
   
-  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String description, boolean canSignup) {
+  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String description, boolean canSignup, boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     return new CoursePickerWorkspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
-        workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, description, numVisits, lastVisit, canSignup);
+        workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, description, numVisits, lastVisit, canSignup, isCourseMember);
   }
 
   
