@@ -230,124 +230,62 @@ $(document).ready(function() {
             
       var fRes = msgsCount;
       
-    if (areaId == undefined){    
-      
-      mApi().forum.workspace.latest.read(workspaceId, {'firstResult' : fRes}).on('$', function(msgs, msgsCallback) {
-        mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
-          msgs.areaName = area.name;
-        });
+      if (areaId == undefined){    
         
-        mApi().user.users.basicinfo.read(msgs.creator).callback(function(err, user) {
-          msgs.creatorFullName = user.firstName + ' ' + user.lastName;
-        });
-        
-        var d = new Date(msgs.created);
-        msgs.prettyDate = d.toLocaleString();
-        msgsCallback();
-      }).callback(function(err, threads) {
-        
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
-        } else {
-          _this.clearLoading();
-          renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
-           pageElement.append($.parseHTML(text));
+        mApi().forum.workspace.latest.read(workspaceId, {'firstResult' : fRes}).on('$', function(msgs, msgsCallback) {
+          mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
+            msgs.areaName = area.name;
           });
-        }        
-      });  
-      
-    }else{
-
-      mApi().forum.areas.threads.read(areaId, {'firstResult' : fRes}).on('$', function(thread, threadCallback) {
-        
-        mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
-          thread.areaName = area.name;
-        });
-  
-        mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
-          thread.creatorFullName = user.firstName + ' ' + user.lastName;
-        });
-  
-        var d = new Date(thread.created);
-  
-        thread.prettyDate = d.toLocaleString();
-  
-        threadCallback();
-      }).callback(function(err, threads) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
-        }else{
-          _this.clearLoading();
-          renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
-            $(".di-messages-pages").append($.parseHTML(text));
+          
+          mApi().user.users.basicinfo.read(msgs.creator).callback(function(err, user) {
+            msgs.creatorFullName = user.firstName + ' ' + user.lastName;
           });
+          
+          var d = new Date(msgs.created);
+          msgs.prettyDate = d.toLocaleString();
+          msgsCallback();
+        }).callback(function(err, threads) {
+          
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
+          } else {
+            _this.clearLoading();
+            renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
+             pageElement.append($.parseHTML(text));
+            });
+          }        
+        });  
+        
+      }else{
   
-        }
-      });          
-  }      
-      
-//      if (areaId == undefined){
-//        mApi().forum.latest.read({'firstResult' : fRes}).on('$', function(msgs, msgsCallback) {
-//          mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
-//            msgs.areaName = area.name;
-//  
-//          });
-//  
-//  
-//          
-//          var d = new Date(msgs.created);
-//  
-//          msgs.prettyDate = d.toLocaleString();
-//  
-//          msgsCallback();
-//  
-//        }).callback(function(err, threads) {
-//  
-//          if (err) {
-//            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
-//          } else {
-//            _this.clearLoading();
-//            renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
-//  
-//             pageElement.append($.parseHTML(text));
-//  
-//            });
-//          }
-//        });     
-//      
-//      }else{
-//        mApi().forum.areas.threads.read(areaId, {'firstResult' : fRes}).on('$', function(thread, threadCallback) {
-//
-//          mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
-//            thread.areaName = area.name;
-//
-//          });
-//
-//          mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
-//            thread.creatorFullName = user.firstName + ' ' + user.lastName;
-//
-//          });
-//
-//          var d = new Date(thread.created);
-//
-//          thread.prettyDate = d.toLocaleString();
-//
-//          threadCallback();
-//        }).callback(function(err, threads) {
-//          if (err) {
-//            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
-//          } else {
-//
-//            renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
-//
-//              $(".di-messages-pages").append($.parseHTML(text));
-//
-//            });
-//          }
-//
-//        });        
-//        
-//      }
+        mApi().forum.areas.threads.read(areaId, {'firstResult' : fRes}).on('$', function(thread, threadCallback) {
+          
+          mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+            thread.areaName = area.name;
+          });
+    
+          mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
+            thread.creatorFullName = user.firstName + ' ' + user.lastName;
+          });
+    
+          var d = new Date(thread.created);
+    
+          thread.prettyDate = d.toLocaleString();
+    
+          threadCallback();
+        }).callback(function(err, threads) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
+          }else{
+            _this.clearLoading();
+            renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
+              $(".di-messages-pages").append($.parseHTML(text));
+            });
+    
+          }
+        });          
+     }      
+  
     },   
     _onMoreRepliesClick : function(event){
       var element = $(event.target);
