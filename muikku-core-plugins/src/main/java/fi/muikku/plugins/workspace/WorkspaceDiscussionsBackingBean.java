@@ -22,6 +22,7 @@ import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
@@ -57,13 +58,16 @@ public class WorkspaceDiscussionsBackingBean {
     }
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
-
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
     }
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceEntityId = workspaceEntity.getId();
+
+    workspaceName = workspace.getName();
     
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
@@ -79,6 +83,11 @@ public class WorkspaceDiscussionsBackingBean {
     
     return null;
   }
+  
+  public String getWorkspaceName() {
+    return workspaceName;
+  }
+  
   
   public String getWorkspaceUrlName() {
     return workspaceUrlName;
@@ -111,4 +120,5 @@ public class WorkspaceDiscussionsBackingBean {
     
     private Boolean removeThread;
   }
+    private String workspaceName;
 }
