@@ -19,14 +19,21 @@
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.invalid"));  
             } else if (emailField.val() == '' || emailField == null) {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.required"));  
-            } else if (emailField == 'noUserFound') {
-              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.noUserFound"));
-            } else {
-              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.forgotPassword.forgotPasswordDialog.mailSent"));
-              $(this).dialog("close");
-            }
-                        
+            } 
             
+            mApi().forgotpassword.reset.read({ email: emailField.val() }).callback(function (err, response) {
+              if (err) {
+                if (response.status == 404) {
+                  $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.noUserFound"));
+                } else { // most likely 400 - bad request
+                  $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.invalid"));  
+                } 
+                
+              } else {
+                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.forgotPassword.forgotPasswordDialog.mailSent"));
+                $(this).dialog("close");
+              }
+            });
           }
         }, {
           'text': dialog.data('button-cancel-text'),
