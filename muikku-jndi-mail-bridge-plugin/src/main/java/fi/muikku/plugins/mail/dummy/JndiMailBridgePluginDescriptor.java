@@ -16,12 +16,4 @@ public class JndiMailBridgePluginDescriptor implements PluginDescriptor {
   public void init() {
     
   }
-
-  @Override
-  public List<Class<?>> getBeans() {
-    return Arrays.asList(new Class<?>[] {
-        JndiMailBridge.class
-    });
-  }
-
 }

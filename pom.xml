@@ -63,6 +63,7 @@
 		<module>muikku-rest</module>
 		<module>muikku-pyramus-plugin</module>
 		<module>muikku-dummy-mail-bridge-plugin</module>
+		<module>muikku-jndi-mail-bridge-plugin</module>
 		<module>muikku-deus-nex-machina</module>
 		<module>muikku</module>
 		<module>muikku-atests</module>

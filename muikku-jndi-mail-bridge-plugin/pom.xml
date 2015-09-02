@@ -5,11 +5,13 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.61-SNAPSHOT</version>
   </parent>
 
+  <artifactId>jndi-mail-bridge-plugin</artifactId>
   <packaging>jar</packaging>
   <name>Muikku plugin that provides a JNDI mail bridge</name>
+  <description>Plugin for Muikku that provides a JNDI mail bridge (java:/mail/muikku).</description>
 
   <build>
     <finalName>${project.artifactId}</finalName>
@@ -26,6 +28,39 @@
   </build>
 
   <dependencies>
+  
+    <!-- CDI -->
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.interceptor</groupId>
+      <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- EJB -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Mail API -->
+    
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>javax.mail-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Muikku -->
+    
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>plugin</artifactId>
@@ -45,6 +80,4 @@
       <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
     </repository>
   </repositories>
-  <description>Plugin for Muikku that provides a JNDI mail bridge (java:/mail/muikku).</description>
-  <artifactId>jndi-mail-bridge-plugin</artifactId>
 </project>
