@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace.dao;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Order;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -36,6 +38,7 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     Root<WorkspaceJournalEntry> root = criteria.from(WorkspaceJournalEntry.class);
     criteria.select(root);
     criteria.where(criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntityId));
+    criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceJournalEntry_.created)));
 
     return entityManager.createQuery(criteria).getResultList();
   }
@@ -53,6 +56,7 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
             criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId)
         )
     );
+    criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceJournalEntry_.created)));
 
     return entityManager.createQuery(criteria).getResultList();
   }

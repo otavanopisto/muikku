@@ -27,6 +27,7 @@
             <h:commandButton class="delete-entry-#{entry.id}" actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
         </h:form>
         <div class="workspace-journal-entry-view">
+          <div class="workspace-journal-poster">#{workspaceJournalBackingBean.posterOf(entry)}</div>
 	        <div class="workspace-journal-title">#{entry.title}</div>
 	        <div class="workspace-journal-entry-meta">
 	          <div class="workspace-journal-dateTime">#{entry.created}</div>
