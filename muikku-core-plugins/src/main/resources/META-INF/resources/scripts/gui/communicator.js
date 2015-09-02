@@ -216,19 +216,16 @@ $(document).ready(function(){
     },    
     
     _deleteMessages : function(ids){
-
-      for (i = 0; i < ids.length; i++){
-
+      var _this = this;
+      for (i = 0; i < ids.length; i++){ 
         mApi().communicator.messages.del(ids[i]).callback(function (err, result){
          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
           } else {
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
           }         
-          this._refreshView();
+          _this._refreshView();
         });
-        
-
       } 
     },
     
@@ -371,7 +368,7 @@ $(document).ready(function(){
   
             users.push({
               category : getLocaleText("plugin.communicator.usergroups"),
-              label : result[i].name,
+              label : result[i].name + " (" + result[i].userCount + ")",
               id : result[i].id,
               image : img,
               type : "GROUP"
@@ -406,9 +403,14 @@ $(document).ready(function(){
             if (result[i].hasImage)
               img = CONTEXTPATH + "/picture?userId=" + result[i].id;
   
+            var label = result[i].firstName + " " + result[i].lastName;
+            
+            if (result[i].email)
+              label = label + " (" + result[i].email + ")"
+            
             users.push({
               category : getLocaleText("plugin.communicator.users"),
-              label : result[i].firstName + " " + result[i].lastName,
+              label : label,
               id : result[i].id,
               image : img,
               type : "USER"

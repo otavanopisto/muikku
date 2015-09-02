@@ -1,6 +1,8 @@
 @import "_custom-ckeditor-styles.scss";
 @import "_fonts.scss";
 
+
+
 body {
   font-family: 'Open Sans',Verdana, sans-serif;
   line-height:1.5em;
@@ -10,6 +12,21 @@ body {
   padding:10px 30px;
   font-weight:300;
   
+  h1.cke_panel_grouptitle {
+    margin:0 !important;
+  }
+  
+  .cke_panel_listItem.cke_selected { /* Rules for styles and format dropdowns selected items */
+
+   > a {
+      background:#72c1f5;
+      outline:none;
+      border:0;
+      box-shadow:none;
+    }
+  
+  }
+  
   &.cke_editable {
     font-size:18px;
     line-height:1.5em; 
@@ -17,7 +34,8 @@ body {
   
   h1,
   h2,
-  h3 {
+  h3,
+  h4 {
     margin:40px 0 20px 0;
     color:#38393a;
     font-weight:300;
@@ -27,6 +45,7 @@ body {
     &:first-child {
       margin:20px 0 20px 0;
     }
+
   }
   
   h1 {
@@ -40,6 +59,12 @@ body {
   h3 {
     margin:20px 0 20px 0;
     font-size:24px;
+  }
+  
+  h4 {
+    margin:20px 0 20px 0;
+    font-size:20px;
+    font-weight:400;
   }
   
   p {

@@ -18,11 +18,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
-
 import fi.muikku.model.users.EnvironmentRoleArchetype;
-import fi.muikku.model.users.EnvironmentRoleEntity;
-import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
@@ -32,8 +28,8 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 import fi.muikku.session.SessionController;
-import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
+import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
 
 @Path("/user")
@@ -48,8 +44,8 @@ public class UserRESTService extends AbstractRESTService {
 	private UserEntityController userEntityController;
 
 	@Inject
-	private EnvironmentUserController environmentUserController;
-
+	private UserEmailEntityController userEmailEntityController;
+	
 	@Inject
 	private SessionController sessionController;
 	
@@ -87,31 +83,24 @@ public class UserRESTService extends AbstractRESTService {
 
 			if (!results.isEmpty()) {
 				for (Map<String, Object> o : results) {
-					boolean filter = false;
 					String[] id = ((String) o.get("id")).split("/", 2);
 					UserEntity userEntity = userEntityController
 							.findUserEntityByDataSourceAndIdentifier(id[1],
 									id[0]);
-					if (!StringUtils.isEmpty(archetype)) {
-						EnvironmentUser environmentUser = environmentUserController
-								.findEnvironmentUserByUserEntity(userEntity);
-					    if (environmentUser != null) {
-					    	EnvironmentRoleEntity environmentRole = environmentUser.getRole();
-							EnvironmentRoleArchetype environmentRoleArchetype = environmentRole.getArchetype();
-							if (!StringUtils.equals(environmentRoleArchetype.toString(), archetype)) {
-								filter = true;
-							}
-					    }
-					}
+					
+					if (userEntity != null) {
+					  String emailAddress = getUserEmailAddress(userEntity);
 
-					if (!filter && userEntity != null)
+					  emailAddress = secret(emailAddress);
+					  
 						ret.add(new fi.muikku.rest.model.User(userEntity
 								.getId(), (String) o.get("firstName"),
 								(String) o.get("lastName"), hasImage,
 								(String) o.get("nationality"), (String) o
 										.get("language"), (String) o
 										.get("municipality"), (String) o
-										.get("school")));
+										.get("school"), emailAddress));
+					}
 				}
 
 				return Response.ok(ret).build();
@@ -122,7 +111,7 @@ public class UserRESTService extends AbstractRESTService {
 		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 	}
 
-	@GET
+  @GET
 	@Path("/users/{ID}")
   @RESTPermitUnimplemented
 	public Response findUser(@PathParam("ID") Long id) {
@@ -175,14 +164,50 @@ public class UserRESTService extends AbstractRESTService {
     }
   }
 
+  private String secret(String emailAddress) {
+    if (emailAddress == null)
+      return null;
+
+    emailAddress = emailAddress.toLowerCase();
+    
+    int atIndex = emailAddress.indexOf('@');
+    
+    if (atIndex != -1) {
+      String user = emailAddress.substring(0, atIndex);
+      
+      if (user.length() > 3) {
+        String domain = emailAddress.substring(atIndex);
+    
+        return user.substring(0, 2) + "..." + domain;
+      } else
+        return null;
+    } else
+      return null;
+  }
+
+  private String getUserEmailAddress(UserEntity userEntity) {
+    String emailAddress = null;
+    List<String> addressesByUserEntity = userEmailEntityController.listAddressesByUserEntity(userEntity);
+    
+    if ((addressesByUserEntity != null) && (addressesByUserEntity.size() > 0))
+      emailAddress = addressesByUserEntity.get(0);
+    
+    return emailAddress;
+  }
+  
 	private fi.muikku.rest.model.User createRestModel(UserEntity userEntity,
 			User user) {
 		// TODO: User Image
 		boolean hasImage = false;
+		
+		String emailAddress = getUserEmailAddress(userEntity);
+		
+		emailAddress = secret(emailAddress);
+		
 		return new fi.muikku.rest.model.User(userEntity.getId(),
 				user.getFirstName(), user.getLastName(), hasImage,
 				user.getNationality(), user.getLanguage(),
-				user.getMunicipality(), user.getSchool());
+				user.getMunicipality(), user.getSchool(), emailAddress);
 	}
 
 	//

@@ -11,6 +11,11 @@ body.workspace-materials-management {
   font-weight:300;
   font-size:18px;
   
+  >.cke_combopanel { /* Increases width for styles and format dropdowns in CKEditor */
+    width:350px;
+    height:250px;
+  }
+  
   /* WORKSPACE NAVIGATION - FULLSCREEN */
   div[class*='workspace-materials-full-screen-navi-button'] > a,
   div[class*='workspace-materials-full-screen-navi-button'] > span {
@@ -1140,7 +1145,8 @@ body.workspace-materials-management {
 
       h1,
       h2,
-      h3 {
+      h3,
+      h4 {
         margin:40px 0 20px 0;
         color:#38393a;
         font-weight:300;
@@ -1163,6 +1169,12 @@ body.workspace-materials-management {
       h3 {
         margin:20px 0 20px 0;
         font-size:24px;
+      }
+      
+      h4 {
+        margin:20px 0 20px 0;
+        font-size:20px;
+        font-weight:400;
       }
       
       p {

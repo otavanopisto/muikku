@@ -56,8 +56,13 @@
             <div class="cp-course-description-picture"></div>
             <div class="cp-course-description-text">{description|s}</div>          
             <div class="cp-course-details-toolbar">
-              <input class="bt-coursepicker cp-course-tour-button" type="button"
-                value='{#localize key="plugin.coursepicker.course.checkout" /}' />
+              {#isCourseMember}
+                <input class="bt-coursepicker cp-course-tour-button" type="button"
+                  value='{#localize key="plugin.coursepicker.course.goto" /}' />
+              {:else}
+                <input class="bt-coursepicker cp-course-tour-button" type="button"
+                  value='{#localize key="plugin.coursepicker.course.checkout" /}' />
+              {/isCourseMember}
             
               {#isLoggedIn}
                 {#canSignup}
