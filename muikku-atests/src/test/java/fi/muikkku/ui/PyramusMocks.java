@@ -118,6 +118,7 @@ public class PyramusMocks{
 
     Student[] studentArray = { student };
     String studentArrayJson = objectMapper.writeValueAsString(studentArray);
+    
     stubFor(get(urlEqualTo("/1/students/students?email=testuser@made.up"))
     // .withQueryParam("email", matching(".*"))
       .willReturn(aResponse()

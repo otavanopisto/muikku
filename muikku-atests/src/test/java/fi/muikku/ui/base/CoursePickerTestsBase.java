@@ -65,7 +65,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
     waitForElementToBePresent(By.className("workspace-title"));
     getWebDriver().findElementByClassName("workspace-publish-button").click();
     waitForElementToBePresent(By.className("workspace-title"));
-    getWebDriver().get(getAppUrl(true) + "/coursepicker/");
+    getWebDriver().get(getAppUrl(true) + "/coursepicker");
     waitForElementToBePresent(By.className("bt-mainFunction-content"));
     takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.id("coursesList")).size() > 0;

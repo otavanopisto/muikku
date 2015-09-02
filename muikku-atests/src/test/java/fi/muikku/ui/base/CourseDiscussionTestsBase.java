@@ -22,6 +22,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.muikkku.ui.AbstractUITest;
@@ -29,16 +32,24 @@ import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial;
+import fi.muikku.webhooks.WebhookCourseCreatePayload;
+import fi.muikku.webhooks.WebhookStaffMemberCreatePayload;
+import fi.muikku.webhooks.WebhookStudentCreatePayload;
 
 public class CourseDiscussionTestsBase extends AbstractUITest {
   
   @Test
-  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1DiscussionAreaSetup.sql"})
-  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1DiscussionAreaDelete.sql", "sql/workspace1DiscussionMessageDelete.sql"})
-  public void courseDiscussioSendMessageTest() throws IOException {
+  @SqlBefore(value = {"sql/workspace1DiscussionAreaSetup.sql"})
+  @SqlAfter(value = {"sql/workspace1DiscussionAreaDelete.sql", "sql/workspace1DiscussionMessageDelete.sql"})
+  public void courseDiscussioSendMessageTest() throws Exception {
     PyramusMocks.student1LoginMock();
     PyramusMocks.personsPyramusMocks();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     PyramusMocks.workspace1PyramusMock();  
+    payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload((long) 1));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     asAdmin().get("/test/reindex");
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
@@ -47,6 +58,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/discussions");
     waitForElementToBePresent(By.className("workspace-discussions"));
     getWebDriver().findElementByClassName("di-new-message-button").click();
+    waitForElementToBePresent(By.className("mf-textfield input"));
     getWebDriver().findElementByCssSelector(".mf-textfield input").sendKeys("Test title for discussion");
     getWebDriver().findElement(By.id("cke_1_contents")).click();
     getWebDriver().switchTo().activeElement().sendKeys("Test text for discussion.");
@@ -59,40 +71,19 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   }
   
 //  403 from rest service. Ehm?!?!?!
-//  @Test
+  @Test
 //  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/adminRolePermissionSetup.sql"})
 //  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/adminRolePermissionDelete.sql"})
-//  public void courseDiscussionCreateAreaTest() throws IOException {
-//    PyramusMocks.adminLoginMock();
-//    PyramusMocks.personsPyramusMocks();
-//    PyramusMocks.workspace1PyramusMock();  
-//    asAdmin().get("/test/reindex");
-//    
-//    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-//    getWebDriver().manage().window().maximize();
-//    waitForElementToBePresent(By.className("index"));
-//    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/discussions");
-//    waitForElementToBePresent(By.className("workspace-discussions"));
-//    getWebDriver().findElementByClassName("di-new-area-button").click();
-//    sleep(500);
-//    getWebDriver().findElementByCssSelector(".mf-textfield input").sendKeys("Test area");
-//    getWebDriver().findElementByName("send").click();
-//    sleep(500);
-//    
-//    WebElement wElement = getWebDriver().findElement(By.id("discussionAreaSelect"));
-//    List<WebElement> options = wElement.findElements(By.tagName("option"));
-//    boolean found = inWebElements(options, "Test area");
-//    WireMock.reset();
-//    assertTrue(found);
-//  }
-  
-  @Test
-  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1DiscussionAreaSetup.sql", "sql/workspace1DiscussionMessageSetup.sql"})
-  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1DiscussionAreaDelete.sql", "sql/workspace1DiscussionMessageDelete.sql", "sql/workspace1DiscussionMessageReplyCleanup.sql"})
-  public void courseDiscussionReplyTest() throws IOException {
-    PyramusMocks.student1LoginMock();
+  public void courseDiscussionCreateAreaTest() throws Exception {
+    PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
-    PyramusMocks.workspace1PyramusMock();  
+    PyramusMocks.workspace1PyramusMock();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    PyramusMocks.workspace1PyramusMock();     
+    payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload((long) 1));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     asAdmin().get("/test/reindex");
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
@@ -100,10 +91,43 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/discussions");
     waitForElementToBePresent(By.className("workspace-discussions"));
+    getWebDriver().findElementByClassName("di-new-area-button").click();
+    sleep(500);
+    getWebDriver().findElementByCssSelector(".mf-textfield input").sendKeys("Test area");
+    getWebDriver().findElementByName("send").click();
+    sleep(500);
+    
+    WebElement wElement = getWebDriver().findElement(By.id("discussionAreaSelect"));
+    List<WebElement> options = wElement.findElements(By.tagName("option"));
+    boolean found = inWebElements(options, "Test area");
+    WireMock.reset();
+    assertTrue(found);
+  }
+  
+  @Test
+  @SqlBefore(value = {"sql/workspace1DiscussionAreaSetup.sql", "sql/workspace1DiscussionMessageSetup.sql"})
+  @SqlAfter(value = {"sql/workspace1DiscussionAreaDelete.sql", "sql/workspace1DiscussionMessageDelete.sql", "sql/workspace1DiscussionMessageReplyCleanup.sql"})
+  public void courseDiscussionReplyTest() throws Exception {
+    PyramusMocks.student1LoginMock();
+    PyramusMocks.personsPyramusMocks();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    PyramusMocks.workspace1PyramusMock();     
+    payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload((long) 1));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+
+    asAdmin().get("/test/reindex");
+    
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    getWebDriver().manage().window().maximize();
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/discussions");
+    waitForElementToBePresent(By.className("di-message-meta-topic"));
     getWebDriver().findElementByCssSelector(".di-message-meta-topic>span").click();
-    sleep(500);
+    waitForElementToBePresent(By.className("di-message-reply-link"));
     getWebDriver().findElementByClassName("di-message-reply-link").click();
-    sleep(500);
+    waitForElementToBePresent(By.id("cke_1_contents"));
     getWebDriver().findElement(By.id("cke_1_contents")).click();
     getWebDriver().switchTo().activeElement().sendKeys("Test reply for test.");
     getWebDriver().findElementByName("send").click();
@@ -116,12 +140,18 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   }
 
   @Test
-  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1DiscussionAreaSetup.sql", "sql/workspace1DiscussionMessageSetup.sql"})
-  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1DiscussionAreaDelete.sql", "sql/workspace1DiscussionMessageDelete.sql"})
-  public void courseDiscussionDeleteThreadTest() throws IOException {
+  @SqlBefore(value = {"sql/workspace1DiscussionAreaSetup.sql", "sql/workspace1DiscussionMessageSetup.sql"})
+  @SqlAfter(value = {"sql/workspace1DiscussionAreaDelete.sql", "sql/workspace1DiscussionMessageDelete.sql"})
+  public void courseDiscussionDeleteThreadTest() throws Exception {
     PyramusMocks.student1LoginMock();
     PyramusMocks.personsPyramusMocks();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     PyramusMocks.workspace1PyramusMock();  
+    payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload((long) 1));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
     asAdmin().get("/test/reindex");
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
@@ -130,9 +160,9 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/discussions");
     waitForElementToBePresent(By.className("workspace-discussions"));
     getWebDriver().findElementByCssSelector(".di-message-meta-topic>span").click();
-    sleep(500);
+    waitForElementToBePresent(By.className("di-remove-thread-link"));
     getWebDriver().findElementByClassName("di-remove-thread-link").click();
-    sleep(500);
+    waitForElementToBePresent(By.className("delete-button"));
     getWebDriver().findElementByCssSelector(".delete-button>span").click();
     waitForElementToBePresent(By.className("workspace-discussions"));
     String content = getWebDriver().findElement(By.cssSelector(".mf-content-empty>h3")).getText();
