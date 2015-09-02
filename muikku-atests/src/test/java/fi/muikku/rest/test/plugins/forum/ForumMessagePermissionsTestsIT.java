@@ -1,4 +1,4 @@
-package fi.muikku.plugins.forum.test;
+package fi.muikku.rest.test.plugins.forum;
 
 import java.util.Date;
 import java.util.List;

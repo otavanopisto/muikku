@@ -44,7 +44,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     getWebDriver().manage().window().maximize();
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/discussions");
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/discussions");
     waitForElementToBePresent(By.className("workspace-discussions"));
     getWebDriver().findElementByClassName("di-new-message-button").click();
     getWebDriver().findElementByCssSelector(".mf-textfield input").sendKeys("Test title for discussion");
@@ -71,7 +71,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
 //    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
 //    getWebDriver().manage().window().maximize();
 //    waitForElementToBePresent(By.className("index"));
-//    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/discussions");
+//    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/discussions");
 //    waitForElementToBePresent(By.className("workspace-discussions"));
 //    getWebDriver().findElementByClassName("di-new-area-button").click();
 //    sleep(500);
@@ -98,7 +98,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     getWebDriver().manage().window().maximize();
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/discussions");
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/discussions");
     waitForElementToBePresent(By.className("workspace-discussions"));
     getWebDriver().findElementByCssSelector(".di-message-meta-topic>span").click();
     sleep(500);
@@ -127,7 +127,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     getWebDriver().manage().window().maximize();
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/discussions");
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/discussions");
     waitForElementToBePresent(By.className("workspace-discussions"));
     getWebDriver().findElementByCssSelector(".di-message-meta-topic>span").click();
     sleep(500);

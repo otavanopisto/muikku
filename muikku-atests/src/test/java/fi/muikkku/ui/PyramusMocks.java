@@ -285,7 +285,7 @@ public class PyramusMocks{
       DateTime created = new DateTime(1990, 2, 2, 0, 0, 0, 0);
       DateTime begin = new DateTime(2000, 1, 1, 0, 0, 0, 0);
       DateTime end = new DateTime(2050, 1, 1, 0, 0, 0, 0);
-      Course course = new Course((long) 1, "testCourse", created, created, "test course for testing", false, 1, 
+      Course course = new Course((long) 1, "testcourse", created, created, "test course for testing", false, 1, 
         (long) 25, begin, end, "test extension", (double) 15, (double) 45,
         (double) 15, (double) 45, (double) 45, end, (long) 1,
         (long) 1, (long) 1, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 

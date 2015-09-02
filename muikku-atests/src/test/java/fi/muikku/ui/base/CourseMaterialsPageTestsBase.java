@@ -28,7 +28,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/materials");
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
     waitForElementToBePresent(By.cssSelector(".material-view"));
     takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.cssSelector("article p")).size() > 0;
@@ -46,7 +46,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/materials");
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
     waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
     takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-materials-reading")).size() > 0;
@@ -64,7 +64,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/materials");
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
     waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
     takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-materials-management")).size() > 0;
@@ -82,7 +82,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/materials");
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
     waitForElementToBePresent(By.cssSelector("#contentWorkspaceMaterials"));
     takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.cssSelector("#workspaceMaterialsTOCWrapper")).size() > 0;
@@ -100,7 +100,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/materials");
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
     waitForElementToBePresent(By.cssSelector("#workspaceMaterialsTOCWrapper"));
     getWebDriver().findElementByLinkText("2.0 Testmaterial").click();
     sleep(500);
@@ -120,7 +120,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/materials");
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
     waitForElementToBePresent(By.id("contentWorkspaceMaterials"));
     String actual = getWebDriver().findElementByCssSelector("#page-45>div").getAttribute("class");
     String expected = new String("muikku-page-assignment-type evaluated");
@@ -138,7 +138,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/materials");
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
     waitForElementToBePresent(By.id("contentWorkspaceMaterials"));
     String actual = getWebDriver().findElementByCssSelector("#page-46>div").getAttribute("class");
     String expected = new String("muikku-page-assignment-type exercise");
