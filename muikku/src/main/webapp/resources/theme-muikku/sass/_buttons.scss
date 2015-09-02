@@ -9,11 +9,15 @@
   color:#ffffff;
   cursor:pointer;
   @include buttonFontShadow;
-  @include buttonShadow;
   
   &.bt-login {
+    border-radius:0;
+    border-top-left-radius:3px;
+    border-bottom-left-radius:3px;
     background-color:#52b050;
-    border:1px solid #73c071;
+    border-top:1px solid #73c071;
+    border-left:1px solid #73c071;
+    border-bottom:1px solid #73c071;
     font-size:1.1em;
     background: rgb(107,187,105);
     @include gradient-top-bottom(rgba(107,187,105,1),rgba(76,163,74,1),#52b050);
@@ -23,13 +27,68 @@
     }
     
   }
-   
-  &.bt-login-active {
-    background-color:#52b050;
-    border:1px solid #73c071;
-    font-size:1.1em;
-    background: rgb(107,187,105);
-    @include gradient-top-bottom(rgba(76,163,74,1),rgba(107,187,105,1),#52b050);
+  
+  &.bt-forgotpassword {
+    border-radius:0;
+    border-top-right-radius:3px;
+    border-bottom-right-radius:3px;
+    background-color:#3c9e3a;
+    border-top:1px solid #73c071;
+    border-right:1px solid #73c071;
+    border-bottom:1px solid #73c071; 
+    font-size:1.5em;
+    line-height:1.53em;
+    position:relative;
+    float:right;
+    padding:7px;
+    @include gradient-top-bottom(rgba(96,178,94,1),rgba(57,142,55,1),#52b050);
+    
+    &:hover {
+
+    }
+
+    a {
+      color:#fff;
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      overflow:hidden;
+      
+      span {
+        display:inline-block;
+        border-radius:0;
+        border-top-left-radius:3px;
+        border-bottom-left-radius:3px;
+        background-color:#397db0;
+        border-top:1px solid #73c071;
+        border-left:1px solid #73c071;
+        border-bottom:1px solid #73c071; 
+        @include gradient-top-bottom(rgba(96,178,94,1),rgba(57,142,55,1),#52b050);
+        top:-1px;
+        right:35px;
+        bottom:-1px;
+        position:absolute;
+        padding:7px 0px 7px 7px;
+        color:#fff;
+        white-space:nowrap;
+        font-size:15px;
+        transition:opacity 0.3s ease-in-out;
+        opacity:0;
+        z-index:99;
+      }
+      
+      &:hover {
+        overflow:visible;
+      
+        span {
+          opacity:1;
+        }
+      
+      }
+    }
+    
   }
 
 }
