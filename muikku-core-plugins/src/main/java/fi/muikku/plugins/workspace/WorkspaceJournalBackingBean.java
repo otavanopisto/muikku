@@ -17,8 +17,11 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserController;
+import fi.muikku.users.UserEntityController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -33,6 +36,12 @@ public class WorkspaceJournalBackingBean {
 
   @Inject
   private SessionController sessionController;
+
+  @Inject
+  private UserController userController;
+  
+  @Inject
+  private UserEntityController userEntityController;
 
   @Inject
   private WorkspaceController workspaceController;
@@ -62,6 +71,12 @@ public class WorkspaceJournalBackingBean {
     workspaceEntityId = workspaceEntity.getId();
     
     return null;
+  }
+  
+  public String posterOf(WorkspaceJournalEntry entry) {
+    UserEntity userEntity = userEntityController.findUserEntityById(entry.getUserEntityId());
+    User user = userController.findUserByUserEntityDefaults(userEntity);
+    return user.getDisplayName();
   }
   
   public void addWorkspaceJournalEntry(){

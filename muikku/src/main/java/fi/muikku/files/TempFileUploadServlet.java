@@ -39,6 +39,10 @@ public class TempFileUploadServlet extends HttpServlet {
     
     Map<String, String> output = new HashMap<>();
     output.put("fileId", tempFile.getName());
+    String fileName = getFileName(file);
+    if (fileName != null) {
+      output.put("fileContentType", getServletContext().getMimeType(fileName));
+    }
     
     resp.setContentType("application/json");
     ServletOutputStream servletOutputStream = resp.getOutputStream();
@@ -48,5 +52,14 @@ public class TempFileUploadServlet extends HttpServlet {
       servletOutputStream.flush();
     }
   }
-  
+ 
+  private String getFileName(final Part part) {
+    for (String content : part.getHeader("content-disposition").split(";")) {
+      if (content.trim().startsWith("filename")) {
+        return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+      }
+    }
+    return null;
+  }  
+
 }
