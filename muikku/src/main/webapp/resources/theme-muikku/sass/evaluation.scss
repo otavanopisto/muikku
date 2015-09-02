@@ -1013,12 +1013,6 @@ body.evaluation {
     
   }
 
-  /* JQuery UI Dialog Overrides */
-  .ui-widget-overlay {
-    background:#000;
-    opacity:0.5;
-  }
-  
   .evaluation-evaluate-modal {
     background:#fff;
     font-family: 'Open Sans',Verdana, sans-serif;
@@ -1034,8 +1028,9 @@ body.evaluation {
     left:15px;
     background:#fff;
     border-radius:10px;
-    overflow:auto;
+    overflow:hidden;
     min-width:990px;
+    text-transform:none;
     
     .ui-dialog-titlebar {
       width:auto;
