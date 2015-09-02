@@ -30,23 +30,23 @@ $(document).ready(function() {
 
     init : function() {
       // todo: parse url
-      
-      this.refreshAreas();
+
+      this._refreshAreas();
 
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this._onMessageClick, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this._onBackClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-replies:not(.disabled)', $.proxy(this._onMoreRepliesClick, this));
-      $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyMessage, this));
-      $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this.editMessage, this));      
-      $(DiscImpl.msgContainer).on("click", '.di-reply-edit-link', $.proxy(this.editMessageReply, this));
+      $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this._replyMessage, this));
+      $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this._editMessage, this));      
+      $(DiscImpl.msgContainer).on("click", '.di-reply-edit-link', $.proxy(this._editMessageReply, this));      
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
       $(window).on("hashchange", $.proxy(this._onHashChange, this));
       $(window).trigger("hashchange");
      
     },
 
-    refreshLatest : function() {
+    _refreshLatest : function() {
       var _this = this;
 
       mApi().forum.latest.read().on('$', function(msgs, msgsCallback) {
@@ -59,15 +59,15 @@ $(document).ready(function() {
         });
         
         var d = new Date(msgs.created);
-        msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
+        msgs.prettyDate = d.toLocaleString();
         msgsCallback();
       }).callback(function(err, threads) {
 
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
-          _this.clearLoading();  
-          _this.clearMessages(); 
+          _this._clearLoading();  
+          _this._clearMessages(); 
   
           renderDustTemplate('/discussion/discussion_items.dust', threads, function(text) {
             $(DiscImpl.msgContainer).append($.parseHTML(text));
@@ -76,8 +76,7 @@ $(document).ready(function() {
       });
     },
 
-    refreshAreas : function() {
-    
+    _refreshAreas : function() {
 
       mApi().forum.areas.read().callback(function(err, areas) {
 
@@ -110,11 +109,11 @@ $(document).ready(function() {
 
     },
 
-    refreshThread : function(aId, tId) {
-     var _this = this;
-      
-     _this.clearMessages();
-     _this.addLoading(DiscImpl.msgContainer);
+    _refreshThread : function(aId, tId) {
+      var _this = this;
+     _this._clearMessages();
+     _this._addLoading(DiscImpl.msgContainer);
+     
       mApi().forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
         mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
@@ -132,14 +131,14 @@ $(document).ready(function() {
 
         var d = new Date(thread.created);
 
-        thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+        thread.prettyDate = d.toLocaleString();
 
         threadCallback();
       }).callback(function(err, threads) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
-          _this.clearLoading();
+          _this._clearLoading();
           var areaPermissions = $.parseJSON($('input[name="areaPermissions"]').val());
           var mayRemoveThread = areaPermissions[aId] && areaPermissions[aId].removeThread;
 
@@ -155,11 +154,13 @@ $(document).ready(function() {
       this.loadThreadReplies(aId, tId);
     },
 
-    filterMessagesByArea : function(val) {
+    _filterMessagesByArea : function(val) {
+      var _this = this;
+      _this._clearMessages();
+      _this._addLoading(DiscImpl.msgContainer);
 
-      this.clearMessages();
       if (val == 'all') {
-        this.refreshLatest();
+        _this._refreshLatest();
       } else {
         mApi().forum.areas.threads.read(val).on('$', function(thread, threadCallback) {
 
@@ -173,7 +174,7 @@ $(document).ready(function() {
 
           var d = new Date(thread.created);
 
-          thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+          thread.prettyDate = d.toLocaleString();
 
           threadCallback();
         }).callback(function(err, threads) {
@@ -181,6 +182,7 @@ $(document).ready(function() {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
           } else {
             renderDustTemplate('/discussion/discussion_items.dust', threads, function(text) {
+              _this._clearLoading();
               $(DiscImpl.msgContainer).append($.parseHTML(text));
             });
             
@@ -215,8 +217,7 @@ $(document).ready(function() {
       element = element.parents(".di-messages-paging");
       var pageElement = $(".di-messages-pages");
       var _this = this;  
-     
-      _this.addLoading(pageElement);
+      _this._addLoading(pageElement);
       
       $(element).remove();
       var msgsCount = 0;
@@ -238,11 +239,8 @@ $(document).ready(function() {
   
           
           var d = new Date(msgs.created);
-  
           msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
-  
           msgsCallback();
-  
         }).callback(function(err, threads) {
   
           if (err) {
@@ -250,7 +248,7 @@ $(document).ready(function() {
           } else {
 
             renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
-              _this.clearLoading(); 
+              _this._clearLoading(); 
              pageElement.append($.parseHTML(text));
   
             });
@@ -271,17 +269,17 @@ $(document).ready(function() {
           });
 
           var d = new Date(thread.created);
-
-          thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
-
+    
+          thread.prettyDate = d.toLocaleString();
+    
           threadCallback();
         }).callback(function(err, threads) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
-          } else {
-
+          }else{
+            _this._clearLoading();
             renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
-              _this.clearLoading();
+              _this._clearLoading();
               $(".di-messages-pages").append($.parseHTML(text));
 
             });
@@ -300,7 +298,7 @@ $(document).ready(function() {
       var pageElement = $(".di-replies-container");
       var _this = this;  
      
-      _this.addLoading(pageElement);      
+      _this._addLoading(pageElement);      
       
       $(element).remove();
 
@@ -334,7 +332,7 @@ $(document).ready(function() {
         });
         var d = new Date(replies.created);
        
-        replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
+        replies.prettyDate = d.toLocaleString();
         repliesCallback();
       }).callback(function(err, replies) {
         
@@ -346,9 +344,9 @@ $(document).ready(function() {
           replies.areaId = areaId;
           replies.threadId = threadId;
           }
-          _this.clearLoading();
+          _this._clearLoading();
           renderDustTemplate('/discussion/discussion_replies_page.dust', replies, function(text) {
-
+            _this._clearLoading();
             $(".di-replies-container").append($.parseHTML(text));
 
           });
@@ -382,7 +380,7 @@ $(document).ready(function() {
 
         var d = new Date(thread.created);
 
-        thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+        thread.prettyDate = d.toLocaleString();
 
         threadCallback();
       }).callback(function(err, threads) {
@@ -397,7 +395,7 @@ $(document).ready(function() {
             threads : threads,
             mayRemoveThread : mayRemoveThread
           }, function(text) {
-            _this.clearMessages();  
+            _this._clearMessages();  
             $(DiscImpl.msgContainer).append($.parseHTML(text));
 
           });
@@ -405,16 +403,16 @@ $(document).ready(function() {
 
       });
 
-      this.loadThreadReplies(aId, tId);
+      this._loadThreadReplies(aId, tId);
 
     },
 
-    loadThreadReplies : function(areaId, threadId) {
+    _loadThreadReplies : function(areaId, threadId) {
 
       var pageNo = 1;
       _this = this;
-      this.clearReplies();
-      _this.addLoading(DiscImpl.msgContainer);
+      this._clearReplies();
+      _this._addLoading(DiscImpl.msgContainer);
       mApi().forum.areas.threads.replies.read(areaId, threadId).on('$', function(replies, repliesCallback) {
         
         mApi().forum.areas.read(replies.forumAreaId).callback(function(err, area) {
@@ -430,8 +428,8 @@ $(document).ready(function() {
           }
         });
         var d = new Date(replies.created);
-       
-        replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
+
+        replies.prettyDate = d.toLocaleString();
         replies.threadId = threadId;
 
         repliesCallback();
@@ -439,7 +437,7 @@ $(document).ready(function() {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
         } else {
-          _this.clearLoading();
+          _this._clearLoading();
           if(replies){
           replies.areaId = areaId;
           replies.threadId = threadId;
@@ -468,7 +466,7 @@ $(document).ready(function() {
       }, this));
     },
 
-    replyMessage : function(event) {
+    _replyMessage : function(event) {
 
       var element = $(event.target);
       element = element.parents(".di-message");
@@ -499,7 +497,7 @@ $(document).ready(function() {
         }
       });
     },
-   editMessage : function(event) {
+   _editMessage : function(event) {
 
       var element = $(event.target);
       element = element.parents(".di-message");
@@ -532,7 +530,7 @@ $(document).ready(function() {
         }
       });
     },
-    editMessageReply : function(event) {
+    _editMessageReply : function(event) {
 
       var element = $(event.target);
       element = element.parents(".di-message");
@@ -545,7 +543,7 @@ $(document).ready(function() {
         mApi().forum.areas.threads.replies.update(aId, tId, rId, values).callback(function(err, result) {
         });
 
-        window.discussion.refreshThread(aId, tId);
+        window.discussion._refreshThread(aId, tId);
 
 
       }
@@ -566,16 +564,16 @@ $(document).ready(function() {
         }
       });
     },   
-    clearMessages : function() {
+    _clearMessages : function() {
       $(DiscImpl.msgContainer).empty();
     },
   
-    addLoading : function(parentEl){
+    _addLoading : function(parentEl){
       $(parentEl).append('<div class="mf-loading"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div></div>');  
       
     },
     
-    clearLoading : function() {
+    _clearLoading : function() {
       var loadingDivs = $(DiscImpl.msgContainer).find("div.mf-loading");
       
       loadingDivs.remove();
@@ -584,7 +582,7 @@ $(document).ready(function() {
     },    
     
    
-    clearReplies : function() {
+    _clearReplies : function() {
       $(DiscImpl.subContainer).empty();
     },
     
@@ -614,10 +612,10 @@ $(document).ready(function() {
           }else{
            var areaId = "all";
           }
-          this.filterMessagesByArea(areaId);
+          this._filterMessagesByArea(areaId);
           $("#discussionAreaSelect").val(areaId);
         }else{
-          this.refreshLatest();
+          this._refreshLatest();
         }
 
     },    
@@ -686,8 +684,8 @@ $(document).ready(function() {
       mApi().forum.areas.create(values).callback(function(err, result) {
       });
 
-      window.discussion.refreshLatest();
-      window.discussion.refreshAreas();
+      window.discussion._refreshLatest();
+      window.discussion._refreshAreas();
       $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newarea'));
     }
 
