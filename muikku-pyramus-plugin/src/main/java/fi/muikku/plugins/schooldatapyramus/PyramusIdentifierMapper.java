@@ -104,7 +104,7 @@ public class PyramusIdentifierMapper {
   }
   
   public String getSubjectIdentifier(Long pyramusSubjectId) {
-    return String.valueOf(pyramusSubjectId);
+    return pyramusSubjectId == null ? null : String.valueOf(pyramusSubjectId);
   }
 
   public Long getPyramusSubjectId(String subjectIdentifier) {
@@ -112,7 +112,7 @@ public class PyramusIdentifierMapper {
   }
 
   public String getEducationTypeIdentifier(Long pyramusEducationTypeId) {
-    return String.valueOf(pyramusEducationTypeId);
+    return pyramusEducationTypeId == null ? null : String.valueOf(pyramusEducationTypeId);
   }
 
   public Long getPyramusEducationTypeId(String educationTypeIdentifier) {
@@ -120,7 +120,7 @@ public class PyramusIdentifierMapper {
   }
 
   public String getCourseLengthUnitIdentifier(Long pyramusEducationalTimeUnitId) {
-    return String.valueOf(pyramusEducationalTimeUnitId);
+    return pyramusEducationalTimeUnitId == null ? null : String.valueOf(pyramusEducationalTimeUnitId);
   }
 
   public Long getPyramusEducationalTimeUnitId(String lengthUnitIdentifier) {
@@ -132,7 +132,7 @@ public class PyramusIdentifierMapper {
   }
 
   public String getWorkspaceTypeIdentifier(Long pyramusCourseTypeId) {
-    return pyramusCourseTypeId != null ? String.valueOf(pyramusCourseTypeId) : null;
+    return pyramusCourseTypeId == null ? null : String.valueOf(pyramusCourseTypeId);
   }
 
   public Long getPyramusCourseTypeId(String workspaceTypeIdentifier) {
@@ -152,7 +152,7 @@ public class PyramusIdentifierMapper {
   }
   
   public String getStudentGroupIdentifier(Long pyramusStudentGroupId){
-    return STUDENTGROUP_PREFIX + String.valueOf(pyramusStudentGroupId);
+    return pyramusStudentGroupId == null ? null : STUDENTGROUP_PREFIX + String.valueOf(pyramusStudentGroupId);
   }
   
   public Long getPyramusStudentGroupStudentId(String groupUserIdentifier) {
@@ -164,7 +164,7 @@ public class PyramusIdentifierMapper {
   }
   
   public String getStudentGroupStudentIdentifier(Long pyramusGroupUserId){
-    return STUDENTGROUPSTUDENT_PREFIX + String.valueOf(pyramusGroupUserId);
+    return pyramusGroupUserId == null ? null : STUDENTGROUPSTUDENT_PREFIX + String.valueOf(pyramusGroupUserId);
   }
   
   public Long getPyramusStudentGroupStaffMemberId(String groupUserIdentifier) {
@@ -176,7 +176,7 @@ public class PyramusIdentifierMapper {
   }
   
   public String getStudentGroupStaffMemberIdentifier(Long pyramusGroupUserId){
-    return STUDENTGROUPSTAFFMEMBER_PREFIX + String.valueOf(pyramusGroupUserId);
+    return pyramusGroupUserId == null ? null : STUDENTGROUPSTAFFMEMBER_PREFIX + String.valueOf(pyramusGroupUserId);
   }
 
   public StudentGroupUserType getStudentGroupUserType(String identifier) {
@@ -203,7 +203,7 @@ public class PyramusIdentifierMapper {
   }
   
   public String getStudyProgrammeIdentifier(Long pyramusStudyProgrammeId){
-    return STUDYPROGRAMME_PREFIX + String.valueOf(pyramusStudyProgrammeId);
+    return pyramusStudyProgrammeId == null ? null : STUDYPROGRAMME_PREFIX + String.valueOf(pyramusStudyProgrammeId);
   }
 
   public StudentGroupType getStudentGroupType(String identifier) {
@@ -222,7 +222,7 @@ public class PyramusIdentifierMapper {
   }
 
   public String getStudyProgrammeStudentIdentifier(Long pyramusStudentId) {
-    return STUDYPROGRAMMESTUDENT_PREFIX + String.valueOf(pyramusStudentId);
+    return pyramusStudentId == null ? null : STUDYPROGRAMMESTUDENT_PREFIX + String.valueOf(pyramusStudentId);
   }
 
   public Long getPyramusStudyProgrammeStudentId(String studyProgrammeStudentIdentifier) {
