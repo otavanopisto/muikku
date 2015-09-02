@@ -45,19 +45,19 @@ function openInSN(template, result, formFunction) {
         toolbarGroups: [
                         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
                         { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
-                        { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
                         { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
-                        { name: 'forms', groups: [ 'forms' ] },
                         { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
                         { name: 'links', groups: [ 'links' ] },
                         { name: 'insert', groups: [ 'insert' ] },
+                        { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+                        { name: 'forms', groups: [ 'forms' ] },
                         { name: 'styles', groups: [ 'styles' ] },
                         { name: 'colors', groups: [ 'colors' ] },
                         { name: 'tools', groups: [ 'tools' ] },
                         { name: 'others', groups: [ 'others' ] },
                         { name: 'about', groups: [ 'about' ] }
                       ],             
-       removeButtons : 'Source,Save,NewPage,Preview,Print,Templates,PasteText,PasteFromWord,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CreateDiv,Language,BidiRtl,BidiLtr,Flash,HorizontalRule,PageBreak,Iframe,Font,FontSize,Maximize,ShowBlocks,About,Find,Replace,SelectAll,Scayt,Anchor,Unlink,Styles,Subscript,Superscript'
+         removeButtons : 'Source,Save,NewPage,Preview,Print,Templates,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,PasteText,PasteFromWord,CreateDiv,BidiLtr,BidiRtl,Language,Anchor,Unlink,Flash,HorizontalRule,Smiley,PageBreak,Iframe,Styles,Font,FontSize,About,ShowBlocks,Replace,Blockquote,Scayt,SelectAll,Find'
       });
       
     });
