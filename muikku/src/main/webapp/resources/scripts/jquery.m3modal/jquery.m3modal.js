@@ -63,7 +63,7 @@
        // Box 		
       
        box.css({
-        'position' : 'fixed',
+        'position' : 'absolute',
         'top' :options.top,
         'padding' : '15px',
         'left' : mLeft,
@@ -104,7 +104,7 @@
           'left' : '0',
           'top' : '0',
           'height' : pH,
-          'z-index' : '15'
+          'z-index' : '100'
         });      
     }
     
