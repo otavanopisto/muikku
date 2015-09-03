@@ -211,10 +211,8 @@
             $(this).find('select[name="grade"]').val(evaluationData.gradeString);
             $(this).find('select[name="assessor"]').val(evaluationData.assessingUserEntityId);
           }
-          
-          var verbalAssessmentEditor = $("#evaluateFormLiteralEvaluation")[0];
         
-          CKEDITOR.replace(verbalAssessmentEditor, {
+          CKEDITOR.replace($("#evaluateFormLiteralEvaluation")[0], {
             height : '200px',
             toolbar: [
                       { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
@@ -392,9 +390,7 @@
             $(this).find('select[name="assessor"]').val(workspaceMaterialEvaluation.assessorEntityId);
           }
         
-          var verbalAssessmentEditor = $("#evaluateFormLiteralEvaluation")[0];
-      
-          CKEDITOR.replace(verbalAssessmentEditor, {
+          CKEDITOR.replace($("#evaluateFormLiteralEvaluation")[0], {
             height : '200px',
             toolbar: [
                       { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
@@ -408,7 +404,6 @@
                     ]
           });
             
-          
           mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId, {
             userEntityId: studentEntityId
           }).callback(function (err, reply) {
