@@ -23,16 +23,16 @@
             <div class="mf-fieldRow">
               <div class="mf-textfield">
                <div class="mf-textfield-subcontainer">
-                 <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.summary"/}</span><input class="mf-textfield-title" type="text" name="title"></input>
-                 <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.summary"/}</span><select id="eventCalendar" class="mf-textfield-calendar" name="eventCalendar"></select>
-                 <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.summary"/}</span><input class="mf-textfield-title" type="checkbox" name="repeatable"></input>
+                 <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.summary"/}</span><input class="mf-textfield-title" type="text" name="summary"></input>
+                 <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.calendar"/}</span><select id="eventCalendar" class="mf-textfield-calendar" name="eventCalendar"></select>
+                 <span class="mf-textfield-title">{#localize key="plugin.calendar.recurrenceInput.label"/}</span><input class="mf-textfield-title" type="checkbox" name="repeatable"></input>
                </div>  
               </div>      
             </div>
             <div class="mf-fieldRow">
               <div class="cm-message-create-content">
                 <div class="mf-textarea">
-                 <textarea id="textContent" name="content"></textarea>
+                 <textarea id="textContent" name="description"></textarea>
                 </div>
               </div>
              </div> 
