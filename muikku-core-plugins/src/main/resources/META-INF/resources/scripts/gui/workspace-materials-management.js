@@ -234,14 +234,14 @@
           'text': dialog.data('button-delete-text'),
           'class': 'delete-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             confirmCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
@@ -260,14 +260,14 @@
           'text': dialog.data('button-delete-text'),
           'class': 'delete-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             confirmCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
@@ -514,14 +514,14 @@
             'text': dialog.data('button-remove-text'),
             'class': 'delete-button',
             'click': function(event) {
-              $(this).dialog("close");
+              $(this).dialog().remove();
               confirmCallback();
             }
           }, {
             'text': dialog.data('button-cancel-text'),
             'class': 'cancel-button',
             'click': function(event) {
-              $(this).dialog("close");
+              $(this).dialog().remove();
             }
           }]
         });
@@ -1437,14 +1437,14 @@
           'text': dialog.data('button-publish-text'),
           'class': 'publish-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             confirmCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
@@ -1463,14 +1463,14 @@
           'text': dialog.data('button-confirm-text'),
           'class': 'confirm-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             confirmCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
@@ -1489,14 +1489,14 @@
           'text': dialog.data('button-confirm-text'),
           'class': 'confirm-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             confirmCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
@@ -1583,14 +1583,14 @@
           'text': dialog.data('button-revert-text'),
           'class': 'revert-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             revertCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
