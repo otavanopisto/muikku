@@ -31,11 +31,13 @@
       var sendEvent = function(values){
         var eventStart = moment(values.startDate + " " + values.startTime, 'dd.mm.yyyy hh:mm').format();    
         var eventStop = moment(values.endDate + " " + values.endTime, 'dd.mm.yyyy hh:mm').format();
-        
+        var calendarId = values.eventCalendar; 
+         
          delete values.startDate;
          delete values.startTime;
          delete values.endDate;
          delete values.endTime;
+         delete values.eventCalendar;
          
          values.start = eventStart;
          values.end = eventStop;
@@ -59,7 +61,7 @@
 ////      attendees: attendees,
 ////      reminders: calendarEvent.reminders
         
-        mApi().calendar.calendars.events.create($('#eventCalendar').val(), values).callback(function (err, result) {
+        mApi().calendar.calendars.events.create(calendarId, values).callback(function (err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
