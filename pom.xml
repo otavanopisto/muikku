@@ -49,6 +49,7 @@
 	<modules>
 		<module>muikku-bom</module>
 		<module>muikku-core</module>
+    <module>muikku-debug</module>
 		<module>muikku-core-plugins</module>
     <module>muikku-calendar</module>
 		<module>muikku-hsqldb-plugin</module>

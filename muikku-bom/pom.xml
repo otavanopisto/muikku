@@ -145,6 +145,12 @@
 				<version>${muikku.version}</version>
 			</dependency>
 
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>debug</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+
 			<dependency>
 				<groupId>fi.muikku</groupId>
 				<artifactId>rest</artifactId>
