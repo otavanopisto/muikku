@@ -14,8 +14,8 @@ insert into htmlmaterial (id, contentType, html, revisionNumber) values
 insert into workspacenode (id, hidden, orderNumber, urlName, parent_id, title) values 
   (3, false, 1, 'Test Course material folder', 1, 'Test material folder');
   
-insert into workspacefolder(id, defaultMaterial_id, folderType, title) values 
-  (3, null, 'DEFAULT', 'Test folder');
+insert into workspacefolder(id, defaultMaterial_id, folderType) values 
+  (3, null, 'DEFAULT');
 
 insert into workspacenode (id, hidden, orderNumber, urlName, parent_id, title) values 
   (42, false, 1, 'Test Course material folder', 3, 'Test material folder');
