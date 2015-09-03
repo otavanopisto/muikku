@@ -2,15 +2,13 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 
-@Dependent
-@Stateful
+@ApplicationScoped
 public class PyramusSchoolDataRolesUpdateScheduler implements PyramusUpdateScheduler {
   
   @Inject
