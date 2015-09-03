@@ -17,15 +17,14 @@
 
             if (emailField == 'invalid') {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.invalid"));  
-            } else if (emailField.val() == '' || emailField == null) {
+            } else if (emailField.val() == '') {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.required"));  
             } else if (emailField == 'noUserFound') {
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.noUserFound"));
             } else {
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.forgotPassword.forgotPasswordDialog.mailSent"));
               $(this).dialog("close");
-            }
-                        
+            }           
             
           }
         }, {
