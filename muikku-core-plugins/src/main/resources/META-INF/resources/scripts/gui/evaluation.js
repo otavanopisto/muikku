@@ -203,15 +203,31 @@
             });
           $(this).find('input[name="evaluationDate"]').datepicker('option', $.datepicker.regional[datePickerLocale]);
           
-          if(!alreadyEvaluated){
+          if (!alreadyEvaluated) {
             $(this).find('input[name="evaluationDate"]').datepicker('setDate', new Date()); 
-          }else{
+          } else {
             $(this).find('input[name="evaluationDate"]').datepicker('setDate', new Date(evaluationData.date));
             $(this).find('#evaluateFormLiteralEvaluation').val(evaluationData.verbalAssessment);
             $(this).find('select[name="grade"]').val(evaluationData.gradeString);
             $(this).find('select[name="assessor"]').val(evaluationData.assessingUserEntityId);
           }
           
+          var verbalAssessmentEditor = $("#evaluateFormLiteralEvaluation")[0];
+        
+          CKEDITOR.replace(verbalAssessmentEditor, {
+            height : '200px',
+            toolbar: [
+                      { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+                      { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+                      { name: 'links', items: [ 'Link' ] },
+                      { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+                      { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+                      { name: 'styles', items: [ 'Format' ] },
+                      { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+                      { name: 'tools', items: [ 'Maximize' ] }
+                    ]
+          });
+        
           var workspaceMaterialIds = $.map(ASSIGNMENTS, function (assignment) {
             return assignment.workspaceMaterialId;
           });
@@ -254,7 +270,8 @@
             var gradingScale = gradeValue[1].split('/', 2);
             var evaluationDate = $(this).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
             var assessorEntityId = $(this).find('select[name="assessor"]').val();
-            var verbalAssessment = $(this).find('#evaluateFormLiteralEvaluation').val();
+
+            var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
             
             if(alreadyEvaluated){
               mApi().workspace.workspaces.assessments.update(workspaceEntityId, evaluationData.assessmentIdentifier, {
@@ -284,7 +301,7 @@
                   $(this).dialog("destroy").remove();
                 }
               }, this));
-            }else{
+            } else {
               mApi().workspace.workspaces.assessments.create(workspaceEntityId, {
                 evaluated: evaluationDate,
                 gradeIdentifier: grade[0],
@@ -374,6 +391,23 @@
             $(this).find('select[name="grade"]').val(gradeId);
             $(this).find('select[name="assessor"]').val(workspaceMaterialEvaluation.assessorEntityId);
           }
+        
+          var verbalAssessmentEditor = $("#evaluateFormLiteralEvaluation")[0];
+      
+          CKEDITOR.replace(verbalAssessmentEditor, {
+            height : '200px',
+            toolbar: [
+                      { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+                      { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+                      { name: 'links', items: [ 'Link' ] },
+                      { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+                      { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+                      { name: 'styles', items: [ 'Format' ] },
+                      { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+                      { name: 'tools', items: [ 'Maximize' ] }
+                    ]
+          });
+            
           
           mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId, {
             userEntityId: studentEntityId
@@ -408,6 +442,7 @@
             // TODO: Switch to ISO 8601
             var evaluationDate = $(this).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
             var assessorEntityId = $(this).find('select[name="assessor"]').val();
+            var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
             
             if (workspaceMaterialEvaluation && workspaceMaterialEvaluation.id) {
               mApi().workspace.workspaces.materials.evaluations.update(workspaceEntityId, workspaceMaterialId, workspaceMaterialEvaluation.id, {
@@ -419,7 +454,7 @@
                 assessorEntityId: assessorEntityId,
                 studentEntityId: studentEntityId,
                 workspaceMaterialId: workspaceMaterialId,
-                verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
+                verbalAssessment: verbalAssessment
               }).callback($.proxy(function (err, result) {
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -440,7 +475,7 @@
                 assessorEntityId: assessorEntityId,
                 studentEntityId: studentEntityId,
                 workspaceMaterialId: workspaceMaterialId,
-                verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
+                verbalAssessment: verbalAssessment
               }).callback($.proxy(function (err, result) {
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
