@@ -1658,6 +1658,28 @@ public class WorkspaceRESTService extends PluginRESTService {
         restModel.getTitle());
     return Response.noContent().build();
   }
+
+  @PUT
+  @Path("/journal/{JOURNALENTRYID}")
+  @RESTPermitUnimplemented
+  public Response updateJournalEntry(@PathParam("JOURNALENTRYID") Long journalEntryId,
+                                     WorkspaceJournalEntryRESTModel restModel) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
+    if (workspaceJournalEntry == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    workspaceJournalController.updateJournalEntry(
+        journalEntryId,
+        restModel.getTitle(),
+        restModel.getContent());
+
+    return Response.noContent().build();
+  }
   
   private List<WorkspaceMaterialEvaluation> createRestModel(fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation... entries) {
     List<WorkspaceMaterialEvaluation> result = new ArrayList<>();
