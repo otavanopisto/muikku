@@ -14,6 +14,7 @@
           'click': function(event) {
             
             var emailField = $("#forgotpassword-email");
+            var dlog = $(this);
 
             if (emailField == 'invalid') {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.invalid"));  
@@ -31,7 +32,7 @@
                 
               } else {
                 $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.forgotPassword.forgotPasswordDialog.mailSent"));
-                $(this).dialog("close");
+                dlog.dialog("close");
               }
             });
           }

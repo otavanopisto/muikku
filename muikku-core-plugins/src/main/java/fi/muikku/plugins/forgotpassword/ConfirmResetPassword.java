@@ -1,4 +1,4 @@
-package fi.muikku.plugins.user.rest;
+package fi.muikku.plugins.forgotpassword;
 
 public class ConfirmResetPassword {
 
