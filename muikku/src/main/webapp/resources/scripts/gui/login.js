@@ -25,13 +25,13 @@
             mApi().forgotpassword.reset.read({ email: emailField.val() }).callback(function (err, response) {
               if (err) {
                 if (response.status == 404) {
-                  $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.noUserFound"));
+                  $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.noUserFound", emailField.val()));
                 } else { // most likely 400 - bad request
                   $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.invalid"));  
                 } 
                 
               } else {
-                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.forgotPassword.forgotPasswordDialog.mailSent"));
+                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.forgotPassword.forgotPasswordDialog.mailSent", emailField.val()));
                 dlog.dialog("close");
               }
             });
