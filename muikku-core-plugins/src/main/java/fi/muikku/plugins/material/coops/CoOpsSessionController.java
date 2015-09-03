@@ -62,6 +62,13 @@ public class CoOpsSessionController {
     closeSession(session, false);
   }
   
+  public void deleteAllSessions() {
+    List<CoOpsSession> sessions = coOpsSessionDAO.listAll();
+    for (CoOpsSession session : sessions) {
+      coOpsSessionDAO.delete(session);
+    }
+  }
+  
   public void closeSession(CoOpsSession session, boolean quiet) {
     coOpsSessionDAO.updateClosed(session, Boolean.TRUE);
     if (!quiet) {

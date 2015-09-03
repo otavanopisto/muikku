@@ -18,7 +18,7 @@
 
             if (emailField == 'invalid') {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.invalid"));  
-            } else if (emailField.val() == '' || emailField == null) {
+            } else if (emailField.val() == '') {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.required"));  
             } 
             

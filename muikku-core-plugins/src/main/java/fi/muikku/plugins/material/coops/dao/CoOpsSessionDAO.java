@@ -106,4 +106,8 @@ public class CoOpsSessionDAO extends CorePluginsDAO<CoOpsSession> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public void delete(CoOpsSession e) {
+    super.delete(e);
+  }
+
 }
