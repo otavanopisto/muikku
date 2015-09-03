@@ -13,7 +13,6 @@ import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -26,7 +25,6 @@ import fi.muikku.events.ContextInitializedEvent;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 
 @Singleton
-@ApplicationScoped
 //@AccessTimeout (
 //  value = 30,
 //  unit = TimeUnit.SECONDS

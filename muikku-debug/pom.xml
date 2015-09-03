@@ -9,27 +9,13 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>facebook-oauth-plugin</artifactId>
+  <artifactId>debug</artifactId>
   <packaging>jar</packaging>
-  <name>Muikku Facebook OAuth plugin</name>
-  <description>Plugin that provides Facebook OAuth login support </description>
-  
+  <name>Muikku Debug Tools</name>
+  <description>Muikku Debug Tools</description>
+
   <dependencies>
-  
-    <!-- Jackson -->
 
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    
     <!-- CDI -->
 
     <dependency>
@@ -43,7 +29,7 @@
       <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- EJB -->
 
     <dependency>
@@ -51,14 +37,7 @@
       <artifactId>jboss-ejb-api_3.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-  
-    <!-- Muikku -->
 
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>plugin</artifactId>
-    </dependency>
-    
   </dependencies>
-  
+
 </project>
