@@ -4,7 +4,7 @@
   <div class="ca-event-create">
     <form>
   
-     <input type="hidden" name="categoryName" value="message" />
+<!--      <input type="hidden" name="categoryName" value="message" /> -->
      <div class="mf-form-header"><h3>{#localize key="plugin.calendar.eventForm.newTitle"/}</h3></div>
  
       <div class="mf-content">
@@ -12,9 +12,9 @@
             <div class="mf-fieldRow">
               <div class="mf-textfield">
                 <div class="mf-textfield-subcontainer">
-                 <div class="mf-textfield-title mf-textfield-subelement"><input id="startTime" class="mf-textfield-time" type="time" name="startTime"></input></div>
+                 <div class="mf-textfield-title mf-textfield-subelement"><input id="startTime" class="mf-textfield-time" type="time" name="startTime" data-time-format="H:i"></input></div>
                  <div class="mf-textfield-title mf-textfield-subelement"><input id="startDate" class="mf-textfield-date" type="date" name="startDate"></input></div>
-                 <div class="mf-textfield-title mf-textfield-subelement"><input id="endTime" class="mf-textfield-time" type="time" name="endTime"></input></div>
+                 <div class="mf-textfield-title mf-textfield-subelement"><input id="endTime" class="mf-textfield-time" type="time" name="endTime" data-time-format="H:i"></input></div>
                  <div class="mf-textfield-title mf-textfield-subelement"><input id="endDate" class="mf-textfield-date" type="date" name="endDate"></input></div>
                  <div class="clear"></div>
                 </div>
@@ -24,7 +24,7 @@
               <div class="mf-textfield">
                <div class="mf-textfield-subcontainer">
                  <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.summary"/}</span><input class="mf-textfield-title" type="text" name="summary"></input>
-                 <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.calendar"/}</span><select id="eventCalendar" class="mf-textfield-calendar" name="eventCalendar"></select>
+                 <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.calendar"/}</span><select id="eventCalendar" class="mf-textfield-calendar" name="eventCalendar"><option>No calendar</option></select>
                  <span class="mf-textfield-title">{#localize key="plugin.calendar.recurrenceInput.label"/}</span><input class="mf-textfield-title" type="checkbox" name="repeatable"></input>
                </div>  
               </div>      

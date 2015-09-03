@@ -29,19 +29,21 @@
     _onCreateClick : function(){
       
       var sendEvent = function(values){
+        var eventStart = moment(values.startDate + " " + values.startTime, 'dd.mm.yyyy hh:mm').format();    
+        var eventStop = moment(values.endDate + " " + values.endTime, 'dd.mm.yyyy hh:mm').format();
         
-        var date = values.startDate;
-        var time = values.startTime;        
-        
-        var mins = date.getMinutes();
-        var offset = date.getTimezoneOffset();
-        function getISODateTime(date, time) {
-          date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-          return date.toISOString().split('T')[0] + 'T' + time.toISOString().split('T')[1];
-        }
-        
-        var startISO = getISODateTime(values.startDate, values.startTime);
-        var endISO = getISODateTime(values.endDate, values.endTime);
+         delete values.startDate;
+         delete values.startTime;
+         delete values.endDate;
+         delete values.endTime;
+         
+         values.start = eventStart;
+         values.end = eventStop;
+         values.status = 'CONFIRMED';
+         values.startTimeZone = 'GMT';
+         values.endTimeZone = 'GMT';        
+         values.allDay = 'false';
+   
 
         
         
@@ -49,25 +51,15 @@
 
         
         
-//        summary: $('input[name="eventSubject"]').val(),
-//        description: $('input[name="eventContent"]').val(),
-//        recurrence: recurrence,
+
 ////      location: calendarEvent.location,
 ////      latitude:calendarEvent.latitude,
 ////      longitude: calendarEvent.longitude,
 ////      url: calendarEvent.url,
-//        status: 'CONFIRMED',
-//        start: startISO,
-//        startTimeZone: 'GMT',
-//        end: endISO ,
-//        endTimeZone: 'GMT',
-//        allDay: false,
 ////      attendees: attendees,
 ////      reminders: calendarEvent.reminders
         
-        mApi().calendar.calendars.events.create($('#eventCalendar').val(), values
-
-        ).callback(function (err, result) {
+        mApi().calendar.calendars.events.create($('#eventCalendar').val(), values).callback(function (err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
