@@ -36,14 +36,6 @@
 	          <p><h:outputText value="#{entry.html}" escape="false"/></p>
 	        </div>
         </div>
-        <div class="workspace-journal-entry-edit" style="display:none;">
-			<h:form class='edit-journal-entry-form'>
-			    <h:inputText class='edit-journal-entry-form-title' value="#{workspaceJournalBackingBean.workspaceJournalEntryTitle}" />
-			    <h:inputTextarea class='edit-journal-entry-form-content' value="#{workspaceJournalBackingBean.workspaceJournalEntryHtml}" />
-			    <h:commandButton class="workspace-journal-edit-entry-button" action="#{workspaceJournalBackingBean.editWorkspaceJournalEntry(entry.id)}" value="#{i18n.text['plugin.workspace.journal.editEntryContent.save.label']}" />
-			    <input type="submit" value="#{i18n.text['plugin.workspace.journal.editEntryContent.cancel.label']}" class="workspace-journal-edit-entry-button cancel-entry-edit-btn" />
-			</h:form>
-        </div>
         <div class="workspace-journal-footer">
 			<button class="journal-edit-button">#{i18n.text['plugin.workspace.journal.editEntryButton.label']}</button>
 			<button data-entry-id="#{entry.id}" class="journal-delete-button">#{i18n.text['plugin.workspace.journal.deleteEntryButton.label']}</button>
