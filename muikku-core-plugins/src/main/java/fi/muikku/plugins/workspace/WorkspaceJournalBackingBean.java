@@ -76,7 +76,7 @@ public class WorkspaceJournalBackingBean {
   public String posterOf(WorkspaceJournalEntry entry) {
     UserEntity userEntity = userEntityController.findUserEntityById(entry.getUserEntityId());
     User user = userController.findUserByUserEntityDefaults(userEntity);
-    return user.getDisplayName();
+    return user.getFirstName() + " " + user.getLastName();
   }
   
   public void addWorkspaceJournalEntry(){

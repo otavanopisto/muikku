@@ -2,8 +2,7 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -11,8 +10,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 
-@Dependent
-@Stateful
+@ApplicationScoped
 public class PyramusSchoolDataStudyProgrammeMembersUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
 
   private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.studyprogramme-members.batchsize", "100"));

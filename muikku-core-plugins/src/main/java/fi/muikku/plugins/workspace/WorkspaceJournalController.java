@@ -26,6 +26,10 @@ public class WorkspaceJournalController {
   public List<WorkspaceJournalEntry> listEntriesByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity){
     return workspaceJournalEntryDAO.listByWorkspaceEntityIdAndUserEntityId(workspaceEntity.getId(), userEntity.getId());
   }
+  
+  public WorkspaceJournalEntry findJournalEntry(Long workspaceJournalEntryId) {
+    return workspaceJournalEntryDAO.findById(workspaceJournalEntryId);
+  }
 
   public WorkspaceJournalEntry updateJournalEntry(Long workspaceJournalEntryId, String title, String html){
     WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalEntryDAO.findById(workspaceJournalEntryId);

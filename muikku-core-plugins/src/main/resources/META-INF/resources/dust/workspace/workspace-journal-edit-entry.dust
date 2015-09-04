@@ -2,8 +2,6 @@
   <div class="jo-message-create">
     <form>
       <div class="mf-form-header"><h3>{#localize key="plugin.workspace.journal.editEntry.title"/}</h3></div>
-      <input type="hidden" name="sticky" value="false" />
-      <input type="hidden" name="locked" value="false" />
         <div class="mf-content">
           <div class="jo-message-new-body">
             <div class="mf-fieldRow">
@@ -24,7 +22,7 @@
         </div>
   
        <div class="mf-toolbar">
-         <input type="button" name="send" value='{#localize key="plugin.workspace.journal.create.button.label"/}' {?.}{:else}disabled{/.}/>
+         <input type="button" name="send" value='{#localize key="plugin.workspace.journal.update.button.label"/}' {?.}{:else}disabled{/.}/>
          <input type="button" name="cancel" value='{#localize key="plugin.workspace.journal.cancel.button.label"/}'/>
       </div>   
     </form>
