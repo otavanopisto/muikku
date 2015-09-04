@@ -25,7 +25,7 @@
                <div class="mf-textfield-subcontainer">
                  <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.summary"/}</span><input class="mf-textfield-title" type="text" name="summary"></input>
                  <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.calendar"/}</span><select id="eventCalendar" class="mf-textfield-calendar" name="eventCalendar"><option>No calendar</option></select>
-                 <span class="mf-textfield-title">{#localize key="plugin.calendar.recurrenceInput.label"/}</span><input class="mf-textfield-title" type="checkbox" name="repeatable"></input>
+<!--                  <span class="mf-textfield-title">{#localize key="plugin.calendar.recurrenceInput.label"/}</span><input class="mf-textfield-title" type="checkbox" name="repeatable"></input> -->
                </div>  
               </div>      
             </div>
