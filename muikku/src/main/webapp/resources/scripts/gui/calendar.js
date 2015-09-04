@@ -29,8 +29,11 @@
     _onCreateClick : function(){
       
       var sendEvent = function(values){
-        var eventStart = moment(values.startDate + " " + values.startTime, 'dd.mm.yyyy hh:mm').format();    
-        var eventStop = moment(values.endDate + " " + values.endTime, 'dd.mm.yyyy hh:mm').format();
+        
+       
+        
+        var eventStart = moment(values.startDate + " " + values.startTime, 'D.MM.YYYY HH:mm').format();    
+        var eventStop = moment(values.endDate + " " + values.endTime, 'D.M.YYYY HH:mm').format();
         var calendarId = values.eventCalendar; 
          
          delete values.startDate;
@@ -42,13 +45,10 @@
          values.start = eventStart;
          values.end = eventStop;
          values.status = 'CONFIRMED';
-         values.startTimeZone = 'GMT';
-         values.endTimeZone = 'GMT';        
+         values.startTimeZone = 'GMT+3';
+         values.endTimeZone = 'GMT+3';        
          values.allDay = 'false';
    
-
-        
-        
         //        var recurrence = $('#eventRecurrence').recurrenceInput("rrule");
 
         
@@ -69,8 +69,11 @@
           }
         });        
       }
-      
+
       var formParams = function(){
+        
+        
+        
         
         // Get the user calendars and append them to select field
         
