@@ -22,8 +22,11 @@ function openInSN(template, result, formFunction, formParameters) {
     
     
     // Getting existing content 
-    
-    formParameters();
+    if(formParameters != undefined){
+      formParameters();      
+      
+    }
+
     
     // Discussion - TODO: replace with formParameters 
      if(result != null && result.actionType == "edit"){
