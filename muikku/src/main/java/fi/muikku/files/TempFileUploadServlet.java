@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.MultipartConfig;
@@ -18,15 +19,27 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import fi.muikku.controller.SystemSettingsController;
+
 @MultipartConfig
 @WebServlet("/tempFileUploadServlet")
 public class TempFileUploadServlet extends HttpServlet {
 
   private static final long serialVersionUID = -4689635910226270913L;
+  
+  @Inject
+  private SystemSettingsController systemSettingsController;
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     Part file = req.getPart("file");
+    
+    long fileSizeLimit = Long.parseLong(systemSettingsController.getSetting("uploadFileSizeLimit"));
+    
+    if (Integer.valueOf(file.getHeader("Content-Length")) > fileSizeLimit) {
+      resp.setStatus(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+      return;
+    }
     
     File tempFile = TempFileUtils.createTempFile();
     FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
