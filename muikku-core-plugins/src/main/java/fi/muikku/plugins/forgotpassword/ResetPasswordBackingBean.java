@@ -1,6 +1,8 @@
 package fi.muikku.plugins.forgotpassword;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -10,16 +12,17 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 
-import fi.muikku.users.UserEntityController;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
-import fi.muikku.plugins.internalauth.InternalAuthController;
+import fi.muikku.plugins.user.UserPendingPasswordChange;
+import fi.muikku.plugins.user.UserPendingPasswordChangeDAO;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserEntityController;
 import fi.muikku.utils.FacesUtils;
 
 @Named
@@ -30,6 +33,9 @@ public class ResetPasswordBackingBean {
 
   @Parameter ("h")
   private String urlHash;
+
+  @Inject
+  private Logger logger;
   
   @Inject
   private LocaleController localeController;
@@ -38,42 +44,58 @@ public class ResetPasswordBackingBean {
   private SessionController sessionController;
 
   @Inject
-  private ForgotPasswordController forgotPasswordController;
-  
-  @Inject
   private UserEntityController userEntityController;
   
   @Inject
-  private InternalAuthController internalAuthController;
+  private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  
+  @Inject
+  private UserPendingPasswordChangeDAO userPendingPasswordChangeDAO;
   
   public void savePassword() {
-    long userEntityId;
-    PasswordResetRequest passwordResetRequest = forgotPasswordController.findPasswordResetRequestByResetHash(urlHash);
-    if (passwordResetRequest != null) {
-      UserEntity userEntity = userEntityController.findUserEntityById(passwordResetRequest.getUserEntityId());
-      if (userEntity != null) {
-        userEntityId = userEntity.getId();
-        if (getPassword1().equals(getPassword2())) {
-          String hashed = DigestUtils.md5Hex(getPassword1());
-          hashed = DigestUtils.md5Hex(hashed);
-          internalAuthController.updateUserEntityPassword(userEntityId, hashed);
-          FacesUtils.addPostRedirectMessage(FacesMessage.SEVERITY_INFO, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordChanged"));
-          ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-          try {
-            context.redirect(context.getRequestContextPath());
+    try {
+      UserPendingPasswordChange passwordChange = userPendingPasswordChangeDAO.findByConfirmationHash(urlHash);
+      
+      if (passwordChange != null) {
+        UserEntity userEntity = userEntityController.findUserEntityById(passwordChange.getUserEntity());
+
+        if (userEntity != null) {
+          if (getPassword1().equals(getPassword2())) {
+            schoolDataBridgeSessionController.startSystemSession();
+            try {
+              if (!userSchoolDataController.confirmResetPassword(userEntity.getDefaultSchoolDataSource(), urlHash, getPassword1()))
+                FacesUtils.addPostRedirectMessage(FacesMessage.SEVERITY_WARN, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordChangeFailed"));
+              else
+                userPendingPasswordChangeDAO.delete(passwordChange);
+            } finally {
+              schoolDataBridgeSessionController.endSystemSession();
+            }
+            
+            FacesUtils.addPostRedirectMessage(FacesMessage.SEVERITY_INFO, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordChanged"));
+            ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+            try {
+              String redirectUrl = "/";
+              context.redirect(redirectUrl);
+            }
+            catch (IOException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
           }
-          catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+          else {
+            FacesUtils.addMessage(FacesMessage.SEVERITY_WARN, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordMismatch"));
           }
-        }
-        else {
-          FacesUtils.addMessage(FacesMessage.SEVERITY_WARN, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordMismatch"));
         }
       }
-    }
-    else {
-      // TODO invalid URL hash
+      else {
+        FacesUtils.addMessage(FacesMessage.SEVERITY_WARN, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordChangeFailed"));
+      }
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, "Password recovery failed with hash " + urlHash, ex);
+      FacesUtils.addMessage(FacesMessage.SEVERITY_WARN, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordChangeFailed"));
     }
   }
   
