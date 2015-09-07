@@ -692,10 +692,16 @@
           $(this.element).removeAttr('readonly');
         } 
       },
-      readonly: false
+      readonly: false,
+      saveTimeout: 300
     },
     _create : function() {
+      this._saveTimeoutId = null;
+      
       $(this.element).addClass('muikku-field');
+      $(this.element).on("change", $.proxy(this._onChange, this));
+      $(this.element).on("keyup", $.proxy(this._onKeyUp, this));
+      
       this.readonly(this.options.readonly);
     },
     answer: function () {
@@ -725,13 +731,58 @@
     meta: function () {
       return this.options.meta;
     },
+    
     readonly: function (readonly) {
       if (readonly === undefined) {
         return this.options.isReadonly.call(this);
       } else {
         this.options.setReadonly.call(this, readonly);
       }
+    },
+    
+    _saveField: function () {
+      var answer = this.answer();
+      var embedId =  this.embedId();
+      var materialId = this.materialId();
+      var fieldName = this.fieldName();
+      
+      $(this.element)
+        .removeClass('muikku-field-unsaved')
+        .addClass('muikku-field-saving');
+      
+      setTimeout($.proxy(function () {
+        $(this.element)
+          .removeClass('muikku-field-saving')
+          .addClass('muikku-field-saved');
+      }, this), 2000);
+    },
+    
+    _onChange: function (event) {
+      $(this.element)
+        .removeClass('muikku-field-saved muikku-field-saving')
+        .addClass('muikku-field-unsaved');
+    
+      if (this._saveTimeoutId) {
+        clearTimeout(this._saveTimeoutId);
+        this._saveTimeoutId = null;
+      }
+      
+      this._saveTimeoutId = setTimeout($.proxy(this._saveField, this), this.options.saveTimeout);
+    },
+    
+    _onKeyUp: function (event) {
+      $(this.element)
+        .removeClass('muikku-field-saved muikku-field-saving')
+        .addClass('muikku-field-unsaved');
+      
+      if (this._saveTimeoutId) {
+        clearTimeout(this._saveTimeoutId);
+        this._saveTimeoutId = null;
+      }
+      
+      this._saveTimeoutId = setTimeout($.proxy(this._saveField, this), this.options.saveTimeout);
     }
+    
   });
   
   function createEmbedId(parentIds) {
