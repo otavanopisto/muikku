@@ -50,7 +50,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     @include rounded(3px);
     display:inline-block;
     padding:4px 8px;
-    transition:border,box-shadow 0.1s,0.2s ease-in-out;
+    transition:border,box-shadow 0.2s,0.2s ease-in-out;
     outline:none;
     font-size:17px;
     color:#0061a2;
@@ -75,54 +75,6 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
 
     }
     
-    &.muikku-field-unsaved {
-      border:3px solid #e4e630;
-      
-      &:hover {
-        border:3px solid #e4e630;
-      }
-    }
-    
-    &.muikku-field-saving {
-      background: linear-gradient(270deg, #07e70a, #ffffff);
-      background-size: 400% 400%;
-      
-      -webkit-animation: autoSaving 6s ease infinite;
-      -moz-animation: autoSaving 6s ease infinite;
-      -o-animation: autoSaving 6s ease infinite;
-      animation: autoSaving 6s ease infinite;
-    }
-
-    @-webkit-keyframes autoSaving {
-        0%{background-position:0% 50%}
-        50%{background-position:100% 50%}
-        100%{background-position:0% 50%}
-    }
-    @-moz-keyframes autoSaving {
-        0%{background-position:0% 50%}
-        50%{background-position:100% 50%}
-        100%{background-position:0% 50%}
-    }
-    @-o-keyframes autoSaving {
-        0%{background-position:0% 50%}
-        50%{background-position:100% 50%}
-        100%{background-position:0% 50%}
-    }
-    @keyframes autoSaving {
-        0%{background-position:0% 50%}
-        50%{background-position:100% 50%}
-        100%{background-position:0% 50%}
-    }
-    
-    
-    &.muikku-field-saved {
-      border:3px solid #07e92c;
-      
-      &:hover {
-        border:3px solid #07e92c;
-      }
-    }
-
     &::-webkit-input-placeholder {
       color:#b4b4b4;
       font-style:italic;
@@ -173,6 +125,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       border:3px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
     }
+
   }
 
   /* Select and Option field overrides */
@@ -221,6 +174,89 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       border:3px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
     }
+  }
+  
+  input[type="text"],
+  textarea,
+  select {
+  
+    &.muikku-field-unsaved {
+      border:3px solid #e4e630;
+      box-shadow:0 0 0px 3px rgba(202,225,252,0.25);
+      
+      &:hover {
+        border:3px solid #e4e630;
+      }
+    }
+    
+    &.muikku-field-saving {
+      animation: saving 4s ease infinite;
+      box-shadow:0 0 0px 3px rgba(202,225,252,0.25);
+    }
+    
+    @keyframes saving {
+      0% {border-color:#e4e630}
+      25% {border-color:#ffffff}
+      50% {border-color:#e4e630}
+      100% {border-color:#ffffff}
+    }
+
+    &.muikku-field-saved {
+      border:3px solid #9cf3c7;
+      box-shadow:0 0 0px 3px rgba(202,225,252,0.25);
+      
+      &:hover {
+        border:3px solid #9cf3c7;
+      }
+    }
+
+  }
+  
+  .muikku-select-field,
+  .muikku-checkbox-field {
+  
+    &.muikku-field-unsaved {
+    
+      input[type="checkbox"],
+      input[type="radio"] {
+        box-shadow:0 0 0px 3px #e4e630;
+        
+        &:hover {
+          box-shadow:0 0 0px 3px #e4e630;
+        }
+      
+      }
+      
+    }
+    
+    &.muikku-field-saving {
+    
+      input[type="checkbox"],
+      input[type="radio"] {
+        animation: saving 4s ease infinite;
+        box-shadow:0 0 0px 3px #e4e630;
+      }
+    }
+    
+    @keyframes saving {
+      0% {box-shadow:0 0 0px 3px #e4e630;}
+      25% {box-shadow:0 0 0px 3px #ffffff;}
+      50% {box-shadow:0 0 0px 3px #e4e630;}
+      100% {box-shadow:0 0 0px 3px #ffffff;}
+    }
+
+    &.muikku-field-saved {
+    
+      input[type="checkbox"],
+      input[type="radio"] {
+        box-shadow:0 0 0px 3px #9cf3c7;
+      
+        &:hover {
+          box-shadow:0 0 0px 3px #9cf3c7;
+        }
+      }
+    }
+
   }
   
   blockquote {
