@@ -702,6 +702,8 @@
       $(this.element).on("change", $.proxy(this._onChange, this));
       $(this.element).on("keyup", $.proxy(this._onKeyUp, this));
       
+      $(document).on('workspace:field-answer-saved', $.proxy(this._onFieldAnswerSaved, this));
+      
       this.readonly(this.options.readonly);
     },
     answer: function () {
@@ -741,20 +743,22 @@
     },
     
     _saveField: function () {
-      var answer = this.answer();
-      var embedId =  this.embedId();
-      var materialId = this.materialId();
-      var fieldName = this.fieldName();
-      
       $(this.element)
         .removeClass('muikku-field-unsaved')
         .addClass('muikku-field-saving');
       
-      setTimeout($.proxy(function () {
-        $(this.element)
-          .removeClass('muikku-field-saving')
-          .addClass('muikku-field-saved');
-      }, this), 2000);
+      // TODO: THESE VALUES CAN NOT BE RETRIEVED LIKE THIS!!!!
+      var workspaceEntityId = $('.workspaceEntityId').val(); 
+      var workspaceMaterialId = $(this.element).closest('.workspace-materials-view-page').data('workspace-material-id');
+      
+      mSocket().sendMessage('workspace:field-answer-save', JSON.stringify({
+        'answer': this.answer(),
+        'embedId': this.embedId(),
+        'materialId': this.materialId(),
+        'fieldName':this.fieldName(),
+        'workspaceEntityId': workspaceEntityId,
+        'workspaceMaterialId': workspaceMaterialId
+      }));
     },
     
     _onChange: function (event) {
@@ -781,6 +785,16 @@
       }
       
       this._saveTimeoutId = setTimeout($.proxy(this._saveField, this), this.options.saveTimeout);
+    },
+    
+    _onFieldAnswerSaved: function (event, data) {
+      var message = $.parseJSON(data);
+      
+      if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
+        $(this.element)
+          .removeClass('muikku-field-unsaved muikku-field-saving')
+          .addClass('muikku-field-saved');
+      }
     }
     
   });
