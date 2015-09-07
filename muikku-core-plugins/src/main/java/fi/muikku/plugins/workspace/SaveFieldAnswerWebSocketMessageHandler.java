@@ -9,8 +9,6 @@ import java.util.logging.Logger;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.model.users.UserEntity;
@@ -25,7 +23,6 @@ import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.muikku.session.SessionController;
 import fi.muikku.users.UserEntityController;
 
 public class SaveFieldAnswerWebSocketMessageHandler {
@@ -54,16 +51,13 @@ public class SaveFieldAnswerWebSocketMessageHandler {
   @Inject
   private QueryFieldController queryFieldController;
   
-  @Inject
-  private SessionController sessionController;
-  
-  public void handleError(String error){
+  public void handleError(String error, String ticket){
     ObjectMapper mapper = new ObjectMapper();
     SaveFieldErrorWebSocketMessage message = new SaveFieldErrorWebSocketMessage();
     message.setError(error);
     try {
       String data = mapper.writeValueAsString(message);
-      webSocketMessenger.sendMessage("workspace:field-answer-error", data, Arrays.asList(sessionController.getLoggedUserEntity().getId()));
+      webSocketMessenger.sendMessage("workspace:field-answer-error", data, ticket);
     } catch (IOException e) {
         logger.log(Level.SEVERE, "Failed to send error message");
     }    
@@ -82,34 +76,34 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       Material material = materialController.findMaterialById(message.getMaterialId());
       if (material == null) {
         logger.log(Level.SEVERE, "Could not find material");
-        handleError("Could not find material");
+        handleError("Could not find material", event.getTicket());
         return;
       }
       
       UserEntity userEntity = userEntityController.findUserEntityById(event.getUserEntityId());
       if (userEntity == null) {
         logger.log(Level.SEVERE, "Could not find user");
-        handleError("Could not find user");
+        handleError("Could not find user", event.getTicket());
         return;
       }
       
       WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(message.getWorkspaceMaterialId());
       if (workspaceMaterial == null) {
         logger.log(Level.SEVERE, "Could not find workspace material");
-        handleError("Could not find workspace material");
+        handleError("Could not find workspace material", event.getTicket());
         return;
       }
 
       if (!workspaceMaterial.getMaterialId().equals(material.getId())) {
         logger.log(Level.SEVERE, "Invalid materialId or workspaceMaterialId");
-        handleError("Invalid materialId or workspaceMaterialId");
+        handleError("Invalid materialId or workspaceMaterialId", event.getTicket());
         return;
       }
       
       QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, message.getFieldName());
       if (queryField == null) {
         logger.log(Level.SEVERE, "Could not find query field");
-        handleError("Could not find query field");
+        handleError("Could not find query field", event.getTicket());
         return;
       }
 
@@ -129,7 +123,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
         workspaceMaterialFieldController.storeFieldValue(materialField, reply, message.getAnswer());
       } catch (WorkspaceFieldIOException e) {
         logger.log(Level.SEVERE, "Could not store field value");
-        handleError("Could not store field value");
+        handleError("Could not store field value", event.getTicket());
         return;
       }
       

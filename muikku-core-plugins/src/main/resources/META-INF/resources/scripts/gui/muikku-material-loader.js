@@ -703,7 +703,7 @@
       $(this.element).on("keyup", $.proxy(this._onKeyUp, this));
       
       $(document).on('workspace:field-answer-saved', $.proxy(this._onFieldAnswerSaved, this));
-      $(document).on('workspace:field-answer-error', $.proxy(this.__onFieldAnswerSaveError, this));
+      $(document).on('workspace:field-answer-error', $.proxy(this._onFieldAnswerSaveError, this));
       
       this.readonly(this.options.readonly);
     },
