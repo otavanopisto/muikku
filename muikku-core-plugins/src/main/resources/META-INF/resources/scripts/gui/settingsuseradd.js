@@ -17,7 +17,7 @@
         var buttons = new Object();
         
         buttons["Cancel"] = function (event) {
-          $(this).dialog("close");
+          $(this).dialog().remove();
         };
         
         buttons["Create"] = function (event) {
@@ -30,7 +30,7 @@
           
           alert(JSON.stringify(userEntity));
           
-          $(this).dialog("close");
+          $(this).dialog().remove();
         };
         
         $(text).dialog({
