@@ -39,17 +39,17 @@ import fi.pyramus.webhooks.WebhookCourseUpdatePayload;
 public class CourseTestsBase extends AbstractUITest {
   
   @Test
-//  @SqlBefore("sql/workspace1Setup.sql")
-//  @SqlAfter("sql/workspace1Delete.sql")
+  @SqlBefore("sql/workspace1Setup.sql")
+  @SqlAfter("sql/workspace1Delete.sql")
   public void courseExistsTest() throws Exception {
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     PyramusMocks.workspace1PyramusMock();  
     asAdmin().get("/test/reindex");
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new fi.muikku.webhooks.WebhookCourseCreatePayload((long) 1));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
+//    String payload = objectMapper.writeValueAsString(new fi.muikku.webhooks.WebhookCourseCreatePayload((long) 1));
+//    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
