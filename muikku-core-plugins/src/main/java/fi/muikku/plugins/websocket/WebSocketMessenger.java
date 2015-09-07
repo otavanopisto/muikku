@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -24,12 +25,17 @@ public class WebSocketMessenger {
   private Logger logger;
 
   @Inject
-  private Event<WebSocketMessage> webSocketMessageEvent;
+  private Event<WebSocketMessageEvent> webSocketMessageEvent;
 
   @Inject
   private WebSocketTicketController webSocketTicketController;
   
-  private Set<Session> sessions = new HashSet<Session>();
+  private Set<Session> sessions;
+  
+  @PostConstruct
+  public void init() {
+    sessions = new HashSet<Session>();
+  }
   
   /**
    * TODO: Logged user management in session (incl. Login/logout)
@@ -84,13 +90,18 @@ public class WebSocketMessenger {
     webSocketTicketController.removeTicket(ticket);
   }
 
-  public void handleMessage(String message, Session session, String ticket) {
+  public void handleMessage(String message, Session session, String ticketId) {
     ObjectMapper mapper = new ObjectMapper();
 
     try {
-      WebSocketMessage message2 = mapper.readValue(message, WebSocketMessage.class);
-
-      webSocketMessageEvent.select(new MuikkuWebSocketEventLiteral(message2.getEventType())).fire(message2);
+      WebSocketTicket ticket = webSocketTicketController.findTicket(ticketId);
+      if (ticket != null) {
+        WebSocketMessage messageData = mapper.readValue(message, WebSocketMessage.class);
+        WebSocketMessageEvent event = new WebSocketMessageEvent(ticket.getTicket(), ticket.getUser(), messageData);
+        webSocketMessageEvent.select(new MuikkuWebSocketEventLiteral(messageData.getEventType())).fire(event);
+      } else {
+        logger.log(Level.SEVERE, "Received a WebSocket message with invalid ticket");
+      }
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to handle WebSocket message", e);
     }
