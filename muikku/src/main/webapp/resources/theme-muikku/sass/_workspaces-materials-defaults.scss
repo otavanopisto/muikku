@@ -59,12 +59,11 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     box-sizing:border-box;
     margin:4px 3px;
     
-
-    
     &:focus,
     &:hover {
       border:3px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+      
       span.muikku-text-field-hint {
         display:block;
         border-bottom-left-radius:3px;
@@ -73,7 +72,55 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
         color:#fff;
         font-size:12px;
       }
+
+    }
+    
+    &.muikku-field-unsaved {
+      border:3px solid #e4e630;
       
+      &:hover {
+        border:3px solid #e4e630;
+      }
+    }
+    
+    &.muikku-field-saving {
+      background: linear-gradient(270deg, #07e70a, #ffffff);
+      background-size: 400% 400%;
+      
+      -webkit-animation: autoSaving 6s ease infinite;
+      -moz-animation: autoSaving 6s ease infinite;
+      -o-animation: autoSaving 6s ease infinite;
+      animation: autoSaving 6s ease infinite;
+    }
+
+    @-webkit-keyframes autoSaving {
+        0%{background-position:0% 50%}
+        50%{background-position:100% 50%}
+        100%{background-position:0% 50%}
+    }
+    @-moz-keyframes autoSaving {
+        0%{background-position:0% 50%}
+        50%{background-position:100% 50%}
+        100%{background-position:0% 50%}
+    }
+    @-o-keyframes autoSaving {
+        0%{background-position:0% 50%}
+        50%{background-position:100% 50%}
+        100%{background-position:0% 50%}
+    }
+    @keyframes autoSaving {
+        0%{background-position:0% 50%}
+        50%{background-position:100% 50%}
+        100%{background-position:0% 50%}
+    }
+    
+    
+    &.muikku-field-saved {
+      border:3px solid #07e92c;
+      
+      &:hover {
+        border:3px solid #07e92c;
+      }
     }
 
     &::-webkit-input-placeholder {
@@ -371,7 +418,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       }
       
     }
-    
+
     .muikku-page-assignment-type {
       padding:2px 8px;
       border-radius:2px;
