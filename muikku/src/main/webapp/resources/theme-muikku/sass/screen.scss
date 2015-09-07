@@ -20,6 +20,7 @@
 @import "_profile.scss";
 @import "_coursepicker.scss";
 @import "_tasktool.scss";
+@import "_dialog.scss";
 
 
 /* CKEditor css rules for modals and form element plugins */
@@ -325,20 +326,10 @@ a.header {
 
 /* Navigation */
 
-.sticky-wrapper {
-  
-}
-
 #dynNaviWrapper {
 	position: absolute;
 	top: 10px;
 	z-index: 14;
-}
-
-#dynamicNavigation {
-}
-
-#dynamicNaviButton {
 }
 
 .wi-dock-dynami-navi-contentBgr {
@@ -521,32 +512,16 @@ a.header {
   @include background-image('gfx/icons/32x32/actions/navigate-chevron_l.png');   
 }
 
-/*
-#sidebarLeft {
-  width: 250px;
-  float: left;
-}
-
-#sidebarRight {
-  width: 250px;
-  float: right; 
-}
-*/
-
 .buttonPanel {
   text-align: right;
   margin: 4px 0px 4px 0px;
 }
-
-
-
 
 div[data-name="settings.content-sidebar.left"] {
   padding:0;	
 }
 
 /* Student browser (.st*) */
-
 .st-filters {
   padding:0 5px 0 5px;
 }
@@ -894,4 +869,102 @@ div[data-name="settings.content-sidebar.left"] {
   position: absolute;
   top: 4px;
   left: 4px;
+}
+
+/* Reset Password */
+
+.reset-password-overlay {
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0;
+  z-index:998;
+  background: rgba(0,37,105,0.14);
+  background: -moz-linear-gradient(top, rgba(0,37,105,0.14) 0%, rgba(0,27,76,0.5) 28%, rgba(0,0,0,1) 100%);
+  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(0,37,105,0.14)), color-stop(28%, rgba(0,27,76,0.5)), color-stop(100%, rgba(0,0,0,1)));
+  background: -webkit-linear-gradient(top, rgba(0,37,105,0.14) 0%, rgba(0,27,76,0.5) 28%, rgba(0,0,0,1) 100%);
+  background: -o-linear-gradient(top, rgba(0,37,105,0.14) 0%, rgba(0,27,76,0.5) 28%, rgba(0,0,0,1) 100%);
+  background: -ms-linear-gradient(top, rgba(0,37,105,0.14) 0%, rgba(0,27,76,0.5) 28%, rgba(0,0,0,1) 100%);
+  background: linear-gradient(to bottom, rgba(0,37,105,0.14) 0%, rgba(0,27,76,0.5) 28%, rgba(0,0,0,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#002569', endColorstr='#000000', GradientType=0 );
+}
+
+.reset-password-wrapper {
+  position:absolute;
+  top:50%;
+  left:50%;
+  margin:-240px 0 0 -270px;
+  width:500px;
+  z-index:999;
+
+  .muikku-logo {
+    @include background-image('gfx/muikku-header-text-small.png');
+    background-repeat:no-repeat; 
+    height:90px;
+    width:500px;
+    position:relative;
+    z-index:999;
+  }
+  
+  .reset-password-container {
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 200px rgba(0, 0, 0, 0.7);
+    
+    h1 {
+      font-weight:300;
+      font-size:26px;
+    }
+    
+    .formElementRow {
+      margin:10px 0 0 0;
+    
+      label {
+        font-weight:300;
+        text-transform:uppercase;
+        font-size:16px;
+      }
+      
+      input[type="password"] {
+        font-size:18px;
+        font-weight:300;
+        padding:8px 16px;
+        border-radius:3px;
+        line-height:2em;
+      }
+      
+      input[type=submit].reset-password-reset-button {
+        font-size:18px;
+        font-weight:300;
+        padding:8px 16px;
+        border-radius:3px;
+        border:0;
+        background:#27b91c;
+        color:#fff;
+        margin:10px 0 0 10px;
+        line-height:2em;
+        float:right;
+      }
+      
+      a.reset-password-cancel-button {
+        font-size:18px;
+        font-weight:300;
+        padding:9px 16px;
+        border-radius:3px;
+        border:0;
+        background:#7391a7;
+        color:#fff;
+        line-height:2em;
+        margin:10px 0 0 10px;
+        text-decoration:none;
+        text-transform:uppercase;
+        display:inline-block;
+        float:right;
+      }
+    
+    }
+  }
+
 }

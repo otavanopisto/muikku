@@ -12,14 +12,14 @@ $(document).ready(function() {
           'text' : dialog.attr('data-button-confirm-text'),
           'class' : 'delete-button',
           'click' : function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             confirmCallback();
           }
         }, {
           'text' : dialog.attr('data-button-cancel-text'),
           'class' : 'cancel-button',
           'click' : function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         } ]
       });

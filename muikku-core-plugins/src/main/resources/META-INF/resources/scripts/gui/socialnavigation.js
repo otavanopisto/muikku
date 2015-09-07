@@ -1,4 +1,4 @@
-function openInSN(template, result, formFunction) {
+function openInSN(template, result, formFunction, formParameters) {
   var functionContainer = $('.sn-container');
   var formContainer = $('#mainfunctionFormTabs');
 
@@ -22,8 +22,13 @@ function openInSN(template, result, formFunction) {
     
     
     // Getting existing content 
+    if(formParameters != undefined){
+      formParameters();      
+      
+    }
+
     
-    // Discussion 
+    // Discussion - TODO: replace with formParameters 
      if(result != null && result.actionType == "edit"){
       var textContent = result.message;
       var topic = result.title;
