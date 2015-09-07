@@ -2,12 +2,12 @@
 
   $.widget("custom.workspaceMaterialUpload", {
     options: {
-      
+      maxFileSize: undefined
     },
     
-    _create: function () {
+    _create: function (options) {
       this._fileField = $(this.element).find('input[type="file"]')
-        .muikkuFileField()
+        .muikkuFileField({maxFileSize: this.options.maxFileSize})
         .on("uploadDone", $.proxy(this._onUploadDone, this));
     },
     

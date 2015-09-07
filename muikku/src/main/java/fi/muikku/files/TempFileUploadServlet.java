@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -26,21 +27,29 @@ import fi.muikku.controller.SystemSettingsController;
 public class TempFileUploadServlet extends HttpServlet {
 
   private static final long serialVersionUID = -4689635910226270913L;
-  
+
   @Inject
   private SystemSettingsController systemSettingsController;
+  
+  @Inject
+  private Logger logger;
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     Part file = req.getPart("file");
-    
-    long fileSizeLimit = Long.parseLong(systemSettingsController.getSetting("uploadFileSizeLimit"));
-    
-    if (Integer.valueOf(file.getHeader("Content-Length")) > fileSizeLimit) {
-      resp.setStatus(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
-      return;
+
+    String fileSizeLimitString = systemSettingsController.getSetting("uploadFileSizeLimit");
+
+    if (fileSizeLimitString != null) {
+      
+      long fileSizeLimit = Long.parseLong(fileSizeLimitString, 10);
+
+      if (file.getSize() > fileSizeLimit) {
+        resp.setStatus(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+        return;
+      }
     }
-    
+
     File tempFile = TempFileUtils.createTempFile();
     FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
     try {
@@ -49,14 +58,14 @@ public class TempFileUploadServlet extends HttpServlet {
       fileOutputStream.flush();
       fileOutputStream.close();
     }
-    
+
     Map<String, String> output = new HashMap<>();
     output.put("fileId", tempFile.getName());
     String fileName = getFileName(file);
     if (fileName != null) {
       output.put("fileContentType", getServletContext().getMimeType(fileName));
     }
-    
+
     resp.setContentType("application/json");
     ServletOutputStream servletOutputStream = resp.getOutputStream();
     try {
@@ -65,7 +74,7 @@ public class TempFileUploadServlet extends HttpServlet {
       servletOutputStream.flush();
     }
   }
- 
+
   private String getFileName(final Part part) {
     for (String content : part.getHeader("content-disposition").split(";")) {
       if (content.trim().startsWith("filename")) {
@@ -73,6 +82,6 @@ public class TempFileUploadServlet extends HttpServlet {
       }
     }
     return null;
-  }  
+  }
 
 }

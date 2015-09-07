@@ -14,8 +14,14 @@
   }
   
   function enableFileUploader(element) {
+    
+    var maxFileSize = null;
+    if ($("input[name='max-file-size']").length) {
+      maxFileSize = Number($("input[name='max-file-size']").val());
+    }
+    
     $(element)
-      .workspaceMaterialUpload()
+      .workspaceMaterialUpload({maxFileSize: maxFileSize})
       .on('fileUploaded', function (event, data) {
         var newPage = $('<section>')
           .addClass('workspace-materials-view-page material-management-view')
