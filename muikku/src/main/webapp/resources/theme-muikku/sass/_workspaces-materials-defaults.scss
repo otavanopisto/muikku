@@ -195,10 +195,10 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     }
     
     @keyframes saving {
-      0% {border-color:#e4e630}
-      25% {border-color:#ffffff}
-      50% {border-color:#e4e630}
-      100% {border-color:#ffffff}
+      0% { border-color:#e4e630 }
+      25% { border-color:#ffffff } 
+      50% { border-color:#e4e630 }
+      100% { border-color:#ffffff }
     }
 
     &.muikku-field-saved {
@@ -208,6 +208,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       &:hover {
         border:3px solid #9cf3c7;
       }
+      
     }
 
   }
@@ -233,16 +234,17 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
       input[type="checkbox"],
       input[type="radio"] {
-        animation: saving 4s ease infinite;
+        animation: savingSelect 4s ease infinite;
         box-shadow:0 0 0px 3px #e4e630;
       }
+      
     }
     
-    @keyframes saving {
-      0% {box-shadow:0 0 0px 3px #e4e630;}
-      25% {box-shadow:0 0 0px 3px #ffffff;}
-      50% {box-shadow:0 0 0px 3px #e4e630;}
-      100% {box-shadow:0 0 0px 3px #ffffff;}
+    @keyframes savingSelect {
+      0% { box-shadow:0 0 0px 3px #e4e630 }
+      25% { box-shadow:0 0 0px 3px #ffffff }
+      50% { box-shadow:0 0 0px 3px #e4e630 }
+      100% { box-shadow:0 0 0px 3px #ffffff }
     }
 
     &.muikku-field-saved {
@@ -254,7 +256,9 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
         &:hover {
           box-shadow:0 0 0px 3px #9cf3c7;
         }
+        
       }
+      
     }
 
   }
