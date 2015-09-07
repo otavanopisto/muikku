@@ -13,7 +13,11 @@
       <div class="bt-generic icon-signout bt-login">
         <h:link outcome="/login.jsf" styleClass="loginSource-#{authSource.strategy}"><f:param name="authSourceId" value="#{authSource.id}"/><span>#{i18n.text['plugin.login.buttonLabel']}</span></h:link>
       </div>
+      <div class="bt-generic icon-forgotpassword bt-forgotpassword">
+        <div><span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span></div>
+      </div>
     </div>
+    
   </div>
 
 </ui:composition>

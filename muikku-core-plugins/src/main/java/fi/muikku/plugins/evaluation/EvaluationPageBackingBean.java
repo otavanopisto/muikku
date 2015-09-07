@@ -204,6 +204,11 @@ public class EvaluationPageBackingBean {
                 }
               } else {
                 assignmentStatus = StudentAssignmentStatus.EVALUATED;
+                WorkspaceMaterialReply assignmentReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+                if (assignmentReply != null) {
+                  replyCreated = assignmentReply.getCreated();
+                  replyModified = assignmentReply.getLastModified();
+                }
               }
 
               studentAssignments.add(new StudentAssignment(workspaceMaterial.getId(), assignmentEvaluation != null ? assignmentEvaluation.getId() : null, assignmentStatus,

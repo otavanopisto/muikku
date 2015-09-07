@@ -58,13 +58,13 @@
             });
 
             if (!erronous)
-              $(this).dialog("close");
+              $(this).dialog().remove();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
