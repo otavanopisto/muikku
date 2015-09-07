@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -37,12 +37,13 @@ public class SystemSetting {
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column (nullable = false, unique = true)
+  @Column (nullable = false, unique = true, name = "settingKey")
   @NotNull
   @NotEmpty
   private String key;
 
-  @Column (nullable = false)
+  @Column (nullable = false, name = "settingValue")
   @NotNull
+  @Lob
   private String value;
 }
