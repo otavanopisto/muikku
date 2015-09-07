@@ -39,4 +39,24 @@ public class UserPendingPasswordChangeDAO extends CorePluginsDAO<UserPendingPass
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
+  public UserPendingPasswordChange findByUserEntity(UserEntity userEntity) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserPendingPasswordChange> criteria = criteriaBuilder.createQuery(UserPendingPasswordChange.class);
+    Root<UserPendingPasswordChange> root = criteria.from(UserPendingPasswordChange.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.equal(root.get(UserPendingPasswordChange_.userEntity), userEntity.getId()));
+    
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public UserPendingPasswordChange updateHash(UserPendingPasswordChange passwordChange, String confirmationHash) {
+    passwordChange.setConfirmationHash(confirmationHash);
+    
+    getEntityManager().persist(passwordChange);
+    
+    return passwordChange;
+  }
+
 }
