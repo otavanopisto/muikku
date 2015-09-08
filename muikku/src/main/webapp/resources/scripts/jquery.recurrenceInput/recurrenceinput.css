@@ -2,9 +2,9 @@
   text-align: right;
 }
 
-.recurrence-input>div.recurrence-input-controls {
-  position: fixed;
-}
+/* .recurrence-input>div.recurrence-input-controls { */
+/*   position: absolute; */
+/* } */
 
 .recurrence-input-interval-input {
   width: 40px;

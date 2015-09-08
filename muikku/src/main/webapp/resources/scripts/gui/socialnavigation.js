@@ -1,11 +1,11 @@
-function openInSN(template, result, formFunction, formParameters) {
+  function openInSN(template, result, formSendFunction, formContentFunction, cke) {
   var functionContainer = $('.sn-container');
   var formContainer = $('#mainfunctionFormTabs');
-
+  var ck = cke;
   // temporary solution for removing existing tabs --> TODO: TABBING
 
   formContainer.empty();
-
+ 
   var openTabs = formContainer.children().length;
   var tabDiv = $("<div class='mf-form-tab' id='mainfunctionFormTab-" + eval(openTabs + 1) + "'>");
 
@@ -13,7 +13,7 @@ function openInSN(template, result, formFunction, formParameters) {
 
   renderDustTemplate(template, result, function(text) {
     $(tabDiv).append($.parseHTML(text));
-
+    var ckeditor = ck;
     var textareas = functionContainer.find("textarea");    
     var textfields = functionContainer.find("input[type='text']"); 
     var cancelBtn = $(tabDiv).find("input[name='cancel']");
@@ -22,14 +22,14 @@ function openInSN(template, result, formFunction, formParameters) {
     
     
     // Getting existing content 
-    
-    formParameters();
-    
+    if (formContentFunction != undefined){
+      formContentFunction();
+    }
     // Discussion - TODO: replace with formParameters 
-     if(result != null && result.actionType == "edit"){
+    if(result != null && result.actionType == "edit"){
       var textContent = result.message;
       var topic = result.title;
-     }
+    }
 
      $(textfields).each(function(index,textfield){
        
@@ -38,26 +38,33 @@ function openInSN(template, result, formFunction, formParameters) {
        
      });     
      
-    $(textareas).each(function(index,textarea){
-      
-      $(textarea).val(textContent);
-      
-      CKEDITOR.replace(textarea, {
-        height : '100px',
-        toolbar: [
-                  { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
-                  { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
-                  { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-                  { name: 'links', items: [ 'Link' ] },
-                  { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
-                  { name: 'styles', items: [ 'Format' ] },
-                  { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-                  { name: 'tools', items: [ 'Maximize' ] }
-                ]
-      });
-      
-    });
-    
+     if(ckeditor == undefined){
+       var ckeditor = true;
+     }
+     
+     if(ckeditor == true){
+     
+        $(textareas).each(function(index,textarea){
+          
+          $(textarea).val(textContent);
+          
+          CKEDITOR.replace(textarea, {
+            height : '100px',
+            toolbar: [
+                      { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+                      { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+                      { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+                      { name: 'links', items: [ 'Link' ] },
+                      { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+                      { name: 'styles', items: [ 'Format' ] },
+                      { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+                      { name: 'tools', items: [ 'Maximize' ] }
+                    ]
+          });
+          
+        });
+     }
+     
     // Selects current forum area when new message form loads
     var selArea = $("#discussionAreaSelect").val();
     
@@ -76,7 +83,9 @@ function openInSN(template, result, formFunction, formParameters) {
       adjustContentMargin();
     });
 
+    
     sendBtn.on("click", sendBtn, function() {
+
       var vals = elements.serializeArray();
       var obj = {};
       var varIsArray = {};
@@ -94,6 +103,8 @@ function openInSN(template, result, formFunction, formParameters) {
       });
 
       $.each(vals, function(index, value) {
+        
+        
         if (varIsArray[value.name] != true) {
           
           if (value.name == "content" || value.name == "message" && textareas.length > 0) {
@@ -110,7 +121,7 @@ function openInSN(template, result, formFunction, formParameters) {
         }
       });
 
-      var result = formFunction(obj);
+      var result = formSendFunction(obj);
       if (result !== false) {
         formContainer.empty();
         $('.sn-container').removeClass('open');

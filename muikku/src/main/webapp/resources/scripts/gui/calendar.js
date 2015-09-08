@@ -23,11 +23,12 @@
         
         tdDDiv.append(tdD);
         tdNDiv.append(moment().format("dddd"));
-        tdTDiv.append(moment().format("HH:mm"));      
+        tdTDiv.append(moment().format("HH:mm"));   
+     
     },
     
     _onCreateClick : function(){
-      
+
       var sendEvent = function(values){
         
        
@@ -35,13 +36,25 @@
         var eventStart = moment(values.startDate + " " + values.startTime, 'D.MM.YYYY HH:mm').format();    
         var eventStop = moment(values.endDate + " " + values.endTime, 'D.M.YYYY HH:mm').format();
         var calendarId = values.eventCalendar; 
-         
+        var recurrence = $('#eventRecurrence').recurrenceInput("rrule");
+        
          delete values.startDate;
          delete values.startTime;
          delete values.endDate;
          delete values.endTime;
          delete values.eventCalendar;
+         delete values.recurrenceFreq;
+         delete values.recurrenceInterval;
+         delete values.recurrenceCount;
+         delete values.recurrenceUntil;
+         delete values.recurrenceObject;
+         delete values.endRecurrence;
+         delete values.repeatable;
+         if(values.recurrenceInputWeekday){
+           delete values.recurrenceInputWeekday;
+         }
          
+         values.recurrence = recurrence;
          values.start = eventStart;
          values.end = eventStop;
          values.status = 'CONFIRMED';
@@ -49,7 +62,7 @@
          values.endTimeZone = 'GMT+3';        
          values.allDay = 'false';
    
-        //        var recurrence = $('#eventRecurrence').recurrenceInput("rrule");
+
 
         
         
@@ -70,10 +83,41 @@
         });        
       }
 
-      var formParams = function(){
+      var formContentFunctions = function(){
         
-        
-        
+     
+        var locale = getLocale().toLowerCase();
+        var dpRegional = $.datepicker.regional[locale] || $.datepicker.regional[''];
+        $.datepicker.setDefaults(dpRegional);        
+        $('#eventRecurrence.recurrence-input').recurrenceInput('destroy');
+        $('#eventRecurrence').recurrenceInput({
+          texts: {
+            label: getLocaleText('plugin.calendar.recurrenceInput.label'),
+            freq: {
+              "SECONDLY": getLocaleText('plugin.calendar.recurrenceInput.freqSecondly'),
+              "MINUTELY": getLocaleText('plugin.calendar.recurrenceInput.freqMinutely'),
+              "DAILY": getLocaleText('plugin.calendar.recurrenceInput.freqDaily'),
+              "WEEKLY": getLocaleText('plugin.calendar.recurrenceInput.freqWeekly'),
+              "MONTHLY": getLocaleText('plugin.calendar.recurrenceInput.freqMonthly'),
+              "YEARLY": getLocaleText('plugin.calendar.recurrenceInput.freqYearly')
+            },
+            notRepeating: getLocaleText('plugin.calendar.recurrenceInput.notRepeating'),
+            intervalLabel: getLocaleText('plugin.calendar.recurrenceInput.intervalLabel'),
+            intervalDays: getLocaleText('plugin.calendar.recurrenceInput.intervalDays'),
+            weekdaysLabel: getLocaleText('plugin.calendar.recurrenceInput.weekdaysLabel'),
+            intervalWeeks: getLocaleText('plugin.calendar.recurrenceInput.intervalWeeks'),
+            intervalMonths: getLocaleText('plugin.calendar.recurrenceInput.intervalMonths'),
+            yearLabel: getLocaleText('plugin.calendar.recurrenceInput.yearLabel'),
+            intervalYears: getLocaleText('plugin.calendar.recurrenceInput.intervalYears'),
+            recurrenceLabel: getLocaleText('plugin.calendar.recurrenceInput.recurrenceLabel'),
+            recurrenceNever: getLocaleText('plugin.calendar.recurrenceInput.recurrenceNever'),
+            recurrenceOccurrencesLabel: getLocaleText('plugin.calendar.recurrenceInput.recurrenceOccurrencesLabel'),
+            recurrenceOccurrences: getLocaleText('plugin.calendar.recurrenceInput.recurrenceOccurrences'),
+            recurrenceUntilLabel: getLocaleText('plugin.calendar.recurrenceInput.recurrenceUntilLabel'),
+            recurrenceUntil: getLocaleText('plugin.calendar.recurrenceInput.recurrenceUntil'),
+            dayNamesShort: dpRegional.dayNamesShort
+          }
+        });       
         
         // Get the user calendars and append them to select field
         
@@ -111,17 +155,40 @@
           .timepicker()
           .timepicker('setTime', end);
         
-//        $('.ca-event-new').on('focus', 'input', function(){
-//          var dval = this.defaultValue;
-//          var cval = $(this).val();
-//          if (dval == cval){
-//            $(this).val('');
-//          } 
-//        });
+        $('input[name="repeatable"]').click(function () {
+        if ($(this).is(':checked')){          
+
+
+            $('#eventRecurrence').recurrenceInput('show');
+          } else {
+            $('#eventRecurrence').hide();;      
+
+            $('#eventRecurrence').recurrenceInput('rrule', null);  
+            $('#eventRecurrence').recurrenceInput('hide');  
+          }
+        });
+        
+        $('#eventRecurrence').on("show", function () {
+          $('input[name="repeatable"]')
+            .attr("checked", "checked")
+            .prop("checked", "checked");
+        });
+        
+        $('#eventRecurrence').on("hide", function () {
+          if ($(this).recurrenceInput('rrule')) {
+            $('input[name="repeatable"]')
+              .attr("checked", "checked")
+              .prop("checked", "checked");
+          } else {
+            $('input[name="repeatable"]')
+              .removeAttr("checked")
+              .prop("checked", false);
+          }
+        });
         
       }
-      
-      openInSN('/calendar/calendar_create_event.dust', null, sendEvent, formParams);    
+      var cke = false;
+      openInSN('/calendar/calendar_create_event.dust', null, sendEvent, formContentFunctions, cke);    
       
     },
     

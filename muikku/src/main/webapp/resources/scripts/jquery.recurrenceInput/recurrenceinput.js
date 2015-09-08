@@ -38,6 +38,8 @@
     },
     _create: function () {
       this.element.addClass('recurrence-input');
+      var controlsContainer = this.element.find('.mf-textfield-subcontainer');
+      var repeatebleSelect = $(":input[name='repeatable']").parent('.mf-textfield-subcontainer').find('.ca-repeatable-info');
       
       var showControlsLink = $('<a>')
         .addClass('recurrence-input-show-link')
@@ -46,8 +48,7 @@
         .click($.proxy(this._onShowControlsLinkClick, this));
 
       var controls = $('<div>')
-        .addClass('recurrence-input-controls')
-        .hide();
+        .addClass('recurrence-input-controls');
       
       controls.append($('<label>').text(this.options.texts.label));
       
@@ -84,8 +85,8 @@
         .val('')
         .appendTo(controls);
       
-      this.element.append(showControlsLink);
-      this.element.append(controls);
+      repeatebleSelect.append(showControlsLink);
+      controlsContainer.append(controls);
       
       freqSelect.change($.proxy(this._onRecurrenceFreqChange, this));
       freqSelect.keyup($.proxy(this._onRecurrenceFreqKeyUp, this));
@@ -95,7 +96,7 @@
     
     show: function () {
       var offset = this.element.offset();      
-      this.element.find('.recurrence-input-controls').show();
+      this.element.show();
       this._updateRecurrenceCtrl(this.val()||{freq:'DAILY'});
       this.element.trigger("show");
     },
@@ -105,8 +106,9 @@
     },
     
     hide: function () {
-      this.element.find('.recurrence-input-controls').hide();
+      this.element.hide();
       this.element.trigger("hide");
+      this._refreshText();
     },
     
     rrule: function (rrule) {
@@ -207,9 +209,10 @@
         
         var weekdayInput = $('<input>')
           .attr({
-            'name': "recurrence-input-weekday",
+            'name': "recurrenceInputWeekday",
             'data-value': code,
-            'type': 'checkbox'
+            'type': 'checkbox',
+            'data-serialize': 'false'
           });
         
         if ($.isArray(weekdays) && (weekdays.indexOf(code) != -1)) {
@@ -327,7 +330,9 @@
     },
     
     _refreshText: function () {
-      this.element.find('span[name="humanReadableRecurrence"]').text(this.humanReadable());
+      var txContainer = $(":input[name='repeatable']").parent('.mf-textfield-subcontainer');
+      
+      txContainer.find('span[name="humanReadableRecurrence"]').text(this.humanReadable());
     },
     
     _jsonToRRule: function (json) {
@@ -404,7 +409,7 @@
       });
     
       var weekdays = [];
-      this.element.find('input[name="recurrence-input-weekday"]').each(function(){
+      this.element.find('input[name="recurrenceInputWeekday"]').each(function(){
         if($(this).is(':checked')){
           weekdays.push($(this).data('value'));
         }
@@ -420,12 +425,12 @@
     _onSaveButtonClick: function(e) {
       e.preventDefault();
       this.applyValues();
-      this.hide();
+      this.element.hide();
     },
     
     _onCancelButtonClick: function (event) {
       event.preventDefault();
-      this.hide();
+      this.element.hide();
     },
     
     _onRecurrenceFreqChange: function (event) {
@@ -438,7 +443,7 @@
     
     _onShowControlsLinkClick: function (event) {
       event.preventDefault();
-      this.show();
+      this.element.show();
     },
     
     _destroy: function () {
