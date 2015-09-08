@@ -1,16 +1,5 @@
 @import "_jsf.scss";
 
-/* @font-face { */
-/*   font-family: 'muikku'; */
-/*   @include font-src('fonts/muikku.eot'); */
-/*   @include font-srcs2( */
-/*   'fonts/muikku.woff','woff', */
-/*   'fonts/muikku.ttf','truetype', */
-/*   'fonts/muikku.svg#muikku','svg');  */
-/*   font-weight: normal;   */
-/*   font-style: normal; */
-/* } */
-
 @font-face {
   font-family: 'muikku';
   @include font-src('fonts/muikku.eot');
@@ -46,13 +35,16 @@
 }
 
 .icon-edit-index:before {
-  content: "\e637";
+  content: "\e640";
 }
-.icon-edit-help:before {
-  content: "\e63e";
+.icon-pen-alt-fill:before {
+  content: "\e641";
 }
 .icon-forgotpassword:before {
   content: "\e63f";
+}
+.icon-correct-answers:before {
+  content: "\e642";
 }
 .icon-download:before {
   content: "\f019";

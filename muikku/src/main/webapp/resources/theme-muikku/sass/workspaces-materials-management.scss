@@ -1013,7 +1013,6 @@ body.workspace-materials-management {
       
       } 
       
-      
       &.workspace-materials-management-editing-attachments .page-content {
         display: none;
       }
@@ -1054,7 +1053,6 @@ body.workspace-materials-management {
           position:relative;
           top:-3px;
           left:-1px;
-          transform:rotate(330deg);
           font-size:17px;
         }
         
@@ -1068,7 +1066,6 @@ body.workspace-materials-management {
           position:relative;
           top:-3px;
           left:-1px;
-          transform:rotate(30deg);
           font-size:17px;
         }
       
@@ -1096,6 +1093,7 @@ body.workspace-materials-management {
         a.delete-page, 
         a.hide-page,
         a.change-assignment,
+        a.correct-answers,
         a.publish-page,
         a.revert-page,
         a.close-page-editor,
