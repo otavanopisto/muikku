@@ -228,12 +228,12 @@ public class ForumController {
 
   public List<WorkspaceForumArea> listCourseForums() {
     return sessionController.filterResources(
-        workspaceForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_LISTFORUM);
+        workspaceForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_LISTWORKSPACEFORUM);
   }
 
   public List<WorkspaceForumArea> listCourseForums(WorkspaceEntity workspace) {
     return sessionController.filterResources(
-        workspaceForumAreaDAO.listByWorkspace(workspace), ForumResourcePermissionCollection.FORUM_LISTFORUM);
+        workspaceForumAreaDAO.listByWorkspace(workspace), ForumResourcePermissionCollection.FORUM_LISTWORKSPACEFORUM);
   }
 
 //  @Permit (ForumResourcePermissionCollection.FORUM_READMESSAGES)
