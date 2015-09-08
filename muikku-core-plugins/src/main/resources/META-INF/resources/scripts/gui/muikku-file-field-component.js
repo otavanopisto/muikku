@@ -2,7 +2,11 @@
   'use strict';
 
   $.widget("custom.muikkuFileField", {
+    options : {
+        maxFileSize: undefined
+      },
     _create : function() {
+      
       this._readonly = false;
       this._fieldName = this.element.attr("name");
       this._multiple = this.element.attr("multiple") == 'multiple';
@@ -176,6 +180,15 @@
       
       if (data.context.length == 0) {
         data.context = this._createFileElement(this._fileIndex);
+      }
+      
+      var i, l;
+      for (i=0, l=data.originalFiles.length; i<l; i++) {
+        if (data.originalFiles[i].size && data.originalFiles[i].size > this.options.maxFileSize) {
+          // TODO localize
+          $('.notification-queue').notificationQueue('notification', 'error', "File size too large");
+          return;
+        }
       }
       
       $(this.element).trigger('uploadStart');

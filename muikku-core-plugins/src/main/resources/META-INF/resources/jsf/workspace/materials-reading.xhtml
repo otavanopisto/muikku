@@ -9,6 +9,10 @@
   template="/jsf/workspace/templates/workspace-materials-reading-view.xhtml">
   
   <ui:define name="workspaces.materials.reading.toc">
+    <form style="display: none;">
+      <input type="hidden" name="max-file-size" value="#{workspaceMaterialsBackingBean.maxFileSize}" />
+    </form>
+  
     <div id="workspaceMaterialsReadingTOCWrapper">
       <nav class="workspace-waterials-reading-nav" id="workspaceMaterialsReadingNav">
         <m:widgetSpaceSet>

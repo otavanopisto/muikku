@@ -870,10 +870,17 @@
     $(data.pageElement).find('img.lazy').lazyload();
     $(data.pageElement).find('.js-lazyyt').lazyYT();
     
+    var maxFileSize = null;
+    if ($("input[name='max-file-size']").length) {
+      maxFileSize = Number($("input[name='max-file-size']").val());
+    }
+    
     // File field support
     $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
       $(field)
-        .muikkuFileField()
+        .muikkuFileField({
+          maxFileSize: maxFileSize
+        })
         .muikkuField({
           fieldName: $(field).data('field-name'),
           embedId: $(field).data('embed-id'),
