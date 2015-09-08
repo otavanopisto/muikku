@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -58,6 +60,14 @@ public class WorkspaceMaterialReply  {
   public void setLastModified(Date lastModified) {
     this.lastModified = lastModified;
   }
+  
+  public WorkspaceMaterialReplyState getState() {
+    return state;
+  }
+  
+  public void setState(WorkspaceMaterialReplyState state) {
+    this.state = state;
+  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -83,4 +93,7 @@ public class WorkspaceMaterialReply  {
   @Column (nullable = false)
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date lastModified;
+  
+  @Enumerated (EnumType.STRING)
+  private WorkspaceMaterialReplyState state;
 }
