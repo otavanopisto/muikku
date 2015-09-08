@@ -182,7 +182,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
     &.muikku-field-unsaved {
       border:3px solid #e4e630;
-      box-shadow:0 0 0px 3px rgba(202,225,252,0.25);
+      box-shadow:0 0 1px 3px rgba(202,225,252,0.25);
       
       &:hover {
         border:3px solid #e4e630;
@@ -191,7 +191,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
     &.muikku-field-saving {
       animation: saving 4s ease infinite;
-      box-shadow:0 0 0px 3px rgba(202,225,252,0.25);
+      box-shadow:0 0 1px 3px rgba(202,225,252,0.25);
     }
     
     @keyframes saving {
@@ -203,7 +203,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
 
     &.muikku-field-saved {
       border:3px solid #9cf3c7;
-      box-shadow:0 0 0px 3px rgba(202,225,252,0.25);
+      box-shadow:0 0 1px 3px rgba(202,225,252,0.25);
       
       &:hover {
         border:3px solid #9cf3c7;
@@ -425,17 +425,29 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     }
     
     .muikku-field-correct-answer {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
-      border:1px solid #00ff2a;
+      box-shadow:0 0 1px 3px rgba(0,255,42,0.3) !important;
+      border:3px solid #00ff2a !important;
       @include rounded(3px);
-      padding-bottom:2px; /* This is only for div containers that are used to wrap checkbox/radio lists */
+      padding-bottom:4px; /* This is only for div containers that are used to wrap checkbox/radio lists */
+      
+      &:hover {
+        box-shadow:0 0 2px 3px rgba(0,255,42,0.3) !important;
+        border:3px solid #00ff2a !important;
+      }
+      
     }
     
     .muikku-field-incorrect-answer {
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-      border:1px solid #f64e4e;
+      border:3px solid #f64e4e !important;
+      box-shadow:0 0 1px 3px rgba(255,0,0,0.3) !important;
       @include rounded(3px);
-      padding-bottom:2px; /* This is only for div containers that are used to wrap checkbox/radio lists */
+      padding-bottom:4px; /* This is only for div containers that are used to wrap checkbox/radio lists */
+      
+      &:hover {
+        border:3px solid #f64e4e !important;
+        box-shadow:0 0 1px 3px rgba(255,0,0,0.3) !important;
+      }
+      
     }
     
     span.muikku-field-examples {
