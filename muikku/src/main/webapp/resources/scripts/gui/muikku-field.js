@@ -3,8 +3,12 @@
 
   $.widget("custom.muikkuField", {
     options : {
-      answer: function () {
-        return $(this.element).val();
+      answer: function (val) {
+        if (val !== undefined) {
+          $(this.element).val(val);
+        } else {
+          return $(this.element).val();
+        }
       },
       canCheckAnswer: function () {
         return false;
@@ -43,8 +47,8 @@
       
       this.readonly(this.options.readonly);
     },
-    answer: function () {
-      return this.options.answer.call(this)||'';
+    answer: function (val) {
+      return this.options.answer.call(this, val)||'';
     },
     hasExamples: function () {
       return this.options.hasExamples.call(this);
@@ -128,9 +132,16 @@
       var message = $.parseJSON(data);
       
       if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
-        $(this.element)
-          .removeClass('muikku-field-unsaved muikku-field-saving')
-          .addClass('muikku-field-saved');
+        if (message.originTicket == mSocket().getTicket()) {
+          $(this.element)
+            .removeClass('muikku-field-unsaved muikku-field-saving')
+            .addClass('muikku-field-saved');
+        } else {
+          $(this.element)
+            .removeClass('muikku-field-unsaved muikku-field-saving')
+            .addClass('muikku-field-saved');
+          this.answer(message.answer);
+        }
       }
     },
     

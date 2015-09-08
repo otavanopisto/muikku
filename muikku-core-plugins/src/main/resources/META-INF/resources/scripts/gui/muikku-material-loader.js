@@ -523,8 +523,13 @@
             embedId: data.embedId,
             meta: meta,
             readonly: data.readOnlyFields||false,
-            answer: function() {
-              return $(this.element).find('input:checked').val();
+            answer: function(val) {
+              if (val) {
+                $(this.element).find('input').prop('checked', false);
+                $(this.element).find('input[value="' + val + '"]').prop('checked', true);
+              } else {
+                return $(this.element).find('input:checked').val();
+              }
             },
             canCheckAnswer: function() {
               for (var i = 0, l = meta.options.length; i < l; i++) {
@@ -591,12 +596,21 @@
         embedId: data.embedId,
         meta: meta,
         readonly: data.readOnlyFields||false,
-        answer: function() {
-          var values = [];
-          $(this.element).find('input:checked').each(function() {
-            values.push($(this).val());
-          });
-          return JSON.stringify(values); 
+        answer: function(val) {
+          if (val) {
+            $(this.element).find('input').prop('checked', false);
+            $.each($.isArray(val) ? val : $.parseJSON(val), $.proxy(function (index, value) {
+              $(this.element).find('input[value="' + value + '"]').prop('checked', true);
+            }, this));
+            
+          } else {
+            var values = [];
+            $(this.element).find('input:checked').each(function() {
+              values.push($(this).val());
+            });
+
+            return JSON.stringify(values); 
+          }
         },
         canCheckAnswer: function() {
           for (var i = 0, l = meta.options.length; i < l; i++) {
@@ -746,7 +760,8 @@
           embedId: $(field).data('embed-id'),
           materialId: $(field).data('material-id'),
           readonly: data.readOnlyFields||false,
-          answer: function () {
+          answer: function (val) {
+            // TODO: Support setter for files
             return JSON.stringify($(this.element).muikkuFileField('files'));
           },
           isReadonly: function () {
