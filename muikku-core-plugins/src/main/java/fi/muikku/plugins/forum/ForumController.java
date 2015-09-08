@@ -223,12 +223,12 @@ public class ForumController {
   
   public List<EnvironmentForumArea> listEnvironmentForums() {
     return sessionController.filterResources(
-        environmentForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_LISTFORUM);
+        environmentForumAreaDAO.listAllNonArchived(), ForumResourcePermissionCollection.FORUM_LISTFORUM);
   }
 
   public List<WorkspaceForumArea> listCourseForums() {
     return sessionController.filterResources(
-        workspaceForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_LISTWORKSPACEFORUM);
+        workspaceForumAreaDAO.listAllNonArchived(), ForumResourcePermissionCollection.FORUM_LISTWORKSPACEFORUM);
   }
 
   public List<WorkspaceForumArea> listCourseForums(WorkspaceEntity workspace) {

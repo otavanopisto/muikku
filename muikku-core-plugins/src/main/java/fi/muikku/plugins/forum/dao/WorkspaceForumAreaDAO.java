@@ -35,6 +35,20 @@ public class WorkspaceForumAreaDAO extends CorePluginsDAO<WorkspaceForumArea> {
     return forumArea;
   }
   
+  public List<WorkspaceForumArea> listAllNonArchived() {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceForumArea> criteria = criteriaBuilder.createQuery(WorkspaceForumArea.class);
+    Root<WorkspaceForumArea> root = criteria.from(WorkspaceForumArea.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.equal(root.get(WorkspaceForumArea_.archived), Boolean.FALSE)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+	
   public List<WorkspaceForumArea> listByWorkspace(WorkspaceEntity workspace) {
     EntityManager entityManager = getEntityManager(); 
     
@@ -43,7 +57,10 @@ public class WorkspaceForumAreaDAO extends CorePluginsDAO<WorkspaceForumArea> {
     Root<WorkspaceForumArea> root = criteria.from(WorkspaceForumArea.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.equal(root.get(WorkspaceForumArea_.workspace), workspace.getId())
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceForumArea_.workspace), workspace.getId()),
+            criteriaBuilder.equal(root.get(WorkspaceForumArea_.archived), Boolean.FALSE)
+        )
     );
     
     return entityManager.createQuery(criteria).getResultList();
