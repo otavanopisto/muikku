@@ -999,11 +999,16 @@
           .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"))
           .find("span")
           .text(getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"));
-        } else {
+        } else if ($(node).closest('.workspace-materials-view-page').attr('data-correct-answers') == 'NEVER') {
           $(correctAnswersElem)
           .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"))
           .find("span")
           .text(getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"));
+        } else {
+          $(correctAnswersElem)
+          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"))
+          .find("span")
+          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
         }
       }
     });
