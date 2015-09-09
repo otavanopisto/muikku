@@ -1,5 +1,228 @@
 (function() {
   'use strict';
+  
+  $.widget("custom.muikkuMaterialPage", {
+    options: {
+      states: [{
+        'assignment-type': 'EXERCISE',
+        'state': '',
+        'button-class': 'muikku-check-exercises',
+        'button-text': "plugin.workspace.materialsLoader.checkExerciseButton",
+        'success-state': 'SUBMITTED',
+        'fields-read-only': false
+      }, {
+        'assignment-type': 'EXERCISE',
+        'state': 'SUBMITTED',
+        'button-class': 'muikku-check-exercises',
+        'button-text': "plugin.workspace.materialsLoader.checkExerciseButton",
+        'success-state': 'SUBMITTED',
+        'fields-read-only': false
+      }, {
+        'assignment-type': 'EVALUATED',
+        'state': '',
+        'button-class': 'muikku-submit-assignment',
+        'button-text': "plugin.workspace.materialsLoader.submitAssignmentButton",
+        'success-text': "plugin.workspace.materialsLoader.assignmentSubmitted",
+        'success-state': 'SUBMITTED',
+        'fields-read-only': false
+      }, {
+        'assignment-type': 'EVALUATED',
+        'state': 'SUBMITTED',
+        'button-class': 'muikku-withdraw-assignment',
+        'button-text': "plugin.workspace.materialsLoader.withdrawAssignmentButton",
+        'success-text': "plugin.workspace.materialsLoader.assignmentWithdrawn",
+        'success-state': 'WITHDRAWN',
+        'fields-read-only': true
+      }, {
+        'assignment-type': 'EVALUATED',
+        'state': 'WITHDRAWN',
+        'button-class': 'muikku-update-assignment',
+        'button-text': "plugin.workspace.materialsLoader.updateAssignmentButton",
+        'success-text': "plugin.workspace.materialsLoader.assignmentUpdated",
+        'success-state': 'SUBMITTED',
+        'fields-read-only': false
+      }]
+    },
+    
+    _create : function() {
+      var assignmentType = this.assignmentType();
+      if (assignmentType) {
+        var buttonWrapper = $('<div>')
+          .addClass('muikku-save-page-wrapper')
+          .appendTo(this.element);
+        
+        $('<button>')
+          .addClass('muikku-assignment-button')
+          .appendTo(buttonWrapper)
+          .click($.proxy(this._onAssignmentButtonClick, this));
+
+        this._applyState(assignmentType, this.workspaceMaterialState());
+      }
+    },
+    
+    _getStateOptions: function (assignmentType, state) {
+      var result = null;
+      
+      $.each(this.options.states, function (index, value) {
+        if ((value['state'] == state) && (value['assignment-type'] == assignmentType)) {
+          result = value;
+        }
+      });
+      
+      return result;
+    },
+    
+    workspaceMaterialState: function (val) {
+      if (val !== undefined) {
+        this.element.attr('data-workspace-material-state', val);
+      } else {
+        return this.element.attr('data-workspace-material-state')||'';
+      }
+    },
+    
+    assignmentType: function () {
+      return this.element.attr('data-workspace-material-assigment-type');
+    },
+    
+    workspaceMaterialId: function () {
+      return $(this.element).attr('data-workspace-material-id');  
+    },
+    
+    workspaceEntityId: function () {
+      return this.options.workspaceEntityId;
+    },
+    
+    _applyState: function (assignmentType, state) {
+      var stateOptions = this._getStateOptions(assignmentType, state);
+      var removeClasses = $.map(this.options.states, function (value) {
+        return value['button-class'];
+      });
+      
+      this.element.find('.muikku-assignment-button')
+        .removeClass(removeClasses.join(' '))
+        .text(getLocaleText(stateOptions['button-text']));
+      
+      this.workspaceMaterialState(state);
+      this.element.find('.muikku-field').muikkuField('readonly', stateOptions['fields-read-only']);
+    },
+    
+    _createWorkspcaeMaterialReply: function (state, callback) {
+      mApi().workspace.workspaces.materials.replies
+        .create(this.workspaceEntityId(), this.workspaceMaterialId(), {
+          state: state
+        }) 
+        .callback($.proxy(function (err, reply) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
+          } else {
+            if ($.isFunction(callback)) {
+              callback(reply);
+            }
+          }
+        }, this));
+    },
+    
+    _updateWorkspaceMaterialReply: function (id, state, callback) {
+      mApi().workspace.workspaces.materials.replies
+        .update(this.workspaceEntityId(), this.workspaceMaterialId(), id, {
+          state: state
+        }) 
+        .callback($.proxy(function (err, reply) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
+          } else {
+            if ($.isFunction(callback)) {
+              callback();
+            }
+          }
+        }, this));
+    },
+    
+    _findWorkspaceMaterialReply: function (callback) {
+      mApi().workspace.workspaces.materials.replies
+        .read(this.workspaceEntityId(), this.workspaceMaterialId(), {
+          userEntityId: MUIKKU_LOGGED_USER_ID
+        }) 
+        .callback($.proxy(function (err, replies) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
+          } else {
+            if ($.isFunction(callback)) {
+              callback(replies.length ? replies[0] : null);
+            }
+          }
+        }, this));
+    },
+    
+    _saveWorkspaceMaterialReply: function (state, callback) {
+      this._findWorkspaceMaterialReply($.proxy(function (reply) {
+        if (reply) {
+          this._updateWorkspaceMaterialReply(reply.id, state, function () {
+            if ($.isFunction(callback)) {
+              callback(reply);
+            }
+          });
+        } else {
+          this._createWorkspcaeMaterialReply(state, function (createdReply) {
+            if ($.isFunction(callback)) {
+              callback(createdReply);
+            }
+          });
+        }
+      }, this));
+      
+    },
+    
+    _checkExercises: function () {
+      this.element.find('.muikku-field-examples').remove();
+      this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+      this.element.find('.muikku-field').each(function (index, field) {
+        if ($(field).muikkuField('canCheckAnswer')) {
+          $(field).addClass($(field).muikkuField('isCorrectAnswer') ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
+        } else {
+          if ($(field).muikkuField('hasExamples')) {
+            var exampleDetails = $('<span>')
+              .addClass('muikku-field-examples')
+              .attr('data-for-field', $(field).attr('name'));
+            
+            exampleDetails.append( 
+              $('<span>')
+                .addClass('muikku-field-examples-title')
+                .text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
+            );
+            
+            $.each($(field).muikkuField('getExamples'), function (index, example) {
+              exampleDetails.append(
+                $('<span>') 
+                  .addClass('muikku-field-example')
+                  .text(example)    
+              );
+            });
+
+            $(field).after(exampleDetails);
+          }
+        }
+      });
+    },
+    
+    _onAssignmentButtonClick: function (event) {
+      var assignmentType = this.assignmentType();
+      var stateOptions = this._getStateOptions(assignmentType, this.workspaceMaterialState());
+      
+      this._saveWorkspaceMaterialReply(stateOptions['success-state'], $.proxy(function (reply) {
+        this._applyState(assignmentType, stateOptions['success-state']);
+        
+        if (assignmentType == 'EXERCISE') {
+          this._checkExercises();
+        }
+        
+        if (stateOptions['success-text']) {
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText(stateOptions['success-text']));
+        }
+      }, this));
+    }
+    
+  });
 
   $.widget("custom.muikkuField", {
     options : {

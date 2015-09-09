@@ -180,6 +180,9 @@
             // actual loading of pages
             $(pageElements).each($.proxy(function (index, page) {
               this.loadMaterial(page, fieldAnswers);
+              $(page).muikkuMaterialPage({
+                workspaceEntityId: this.options.workspaceEntityId
+              });
             }, this));
           }       
         }, this));
@@ -724,68 +727,6 @@
     /* If last element inside article is floating this prevents mentioned element from overlapping its parent container */
     $(data.pageElement)
       .append($('<div>').addClass('clear'));
-
-    var assignmentType = $(data.pageElement).attr('data-workspace-material-assigment-type');
-
-    // Exercise save support 
-    if (assignmentType) {
-      var state = $(data.pageElement).attr('data-workspace-material-state');
-
-      var saveButtonWrapper = $('<div>')
-        .addClass('muikku-save-page-wrapper')
-        .appendTo(data.pageElement);
-      
-      switch (assignmentType) {
-        case 'EXERCISE':
-          $('<button>')
-            .addClass('muikku-check-exercises')
-            .attr({
-              'data-state': 'SUBMITTED',
-              'data-default-text': getLocaleText("plugin.workspace.materialsLoader.checkExerciseButton"),
-              'data-done-text': getLocaleText("plugin.workspace.materialsLoader.exerciseCheckedButton")
-            })
-            .text(getLocaleText("plugin.workspace.materialsLoader.checkExerciseButton"))
-            .appendTo(saveButtonWrapper);
-        break;
-        case 'EVALUATED':
-          switch (state) {
-            case 'SUBMITTED':
-              $('<button>')
-                .addClass('muikku-withdraw-assignment')
-                .attr({
-                  'data-state': 'WITHDRAWN',
-                  'data-default-text': getLocaleText("plugin.workspace.materialsLoader.withdrawAssignmentButton"),
-                  'data-done-text': getLocaleText("plugin.workspace.materialsLoader.assignmentWithdrawnButton")
-                })
-                .text(getLocaleText("plugin.workspace.materialsLoader.withdrawAssignmentButton"))
-                .appendTo(saveButtonWrapper);
-            break;
-            case 'WITHDRAWN':
-              $('<button>')
-                .addClass('muikku-update-assignment')
-                .attr({
-                  'data-state': 'SUBMITTED',
-                  'data-default-text': getLocaleText("plugin.workspace.materialsLoader.updateAssignmentButton"),
-                  'data-done-text': getLocaleText("plugin.workspace.materialsLoader.assignmentUpdatedButton") 
-                })
-                .text(getLocaleText("plugin.workspace.materialsLoader.updateAssignmentButton"))
-                .appendTo(saveButtonWrapper);
-            break;
-            default:
-              $('<button>')
-                .addClass('muikku-submit-assignment')
-                .attr({
-                  'data-state': 'SUBMITTED',
-                  'data-default-text': getLocaleText("plugin.workspace.materialsLoader.submitAssignmentButton"),
-                  'data-done-text': getLocaleText("plugin.workspace.materialsLoader.assignmentSubmittedButton")
-                })
-                .text(getLocaleText("plugin.workspace.materialsLoader.submitAssignmentButton"))
-                .appendTo(saveButtonWrapper);
-            break;
-          }
-        break;
-      }
-    }
     
     // Connect field support
     jsPlumb.ready(function() {
