@@ -959,7 +959,7 @@
     dust.preload('workspace/materials-management-page-html.dust');
     dust.preload('workspace/materials-management-page-binary.dust');
     dust.preload('workspace/materials-management-page-folder.dust');
-    
+
     $(document).muikkuMaterialLoader({
       workspaceEntityId: $('.workspaceEntityId').val(),
       dustTemplate: 'workspace/materials-management-page.dust',
@@ -982,6 +982,30 @@
     
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
       enableFileUploader(element);
+    });
+
+    $('.correct-answers-settings').each(function(index, node) {
+      if ($(node).closest('.workspace-materials-view-page').attr('data-assignment-type') != 'EXERCISE') {
+        $(node).hide();
+      } else {
+        var correctAnswersElem = $(node).find('.correct-answers');
+        if ($(node).closest('.workspace-materials-view-page').attr('data-correct-answers') == 'ALWAYS') {
+          $(correctAnswersElem)
+          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"))
+          .find("span")
+          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
+        } else if ($(node).closest('.workspace-materials-view-page').attr('data-correct-answers') == 'ON_REQUEST') {
+          $(correctAnswersElem)
+          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"))
+          .find("span")
+          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"));
+        } else {
+          $(correctAnswersElem)
+          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"))
+          .find("span")
+          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"));
+        }
+      }
     });
 
     $('.muikku-connect-field').muikkuConnectField('refresh');
@@ -1237,12 +1261,24 @@
     switch (correctAnswers) {
       case "ALWAYS":
         correctAnswers = "ON_REQUEST";
+        $(this)
+        .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"))
+        .find("span")
+        .text(getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"));
         break;
       case "ON_REQUEST":
         correctAnswers = "NEVER";
+        $(this)
+        .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"))
+        .find("span")
+        .text(getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"));
         break;
       default:
         correctAnswers = "ALWAYS";
+        $(this)
+        .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"))
+        .find("span")
+        .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
         break;
     }
     changeCorrectAnswers(workspaceId, workspaceMaterialId, correctAnswers, $.proxy(function (err) {
@@ -1278,7 +1314,7 @@
                 }
               }, this));
             }
-            $(page).find('.correct-answers-show-rule').show();
+            $(page).find('.correct-answers-settings').hide();
           }
         }, this));
       break;
@@ -1288,7 +1324,7 @@
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
             $(page).removeAttr('data-assignment-type');
-            $(page).find('.correct-answers-show-rule').hide();
+            $(page).find('.correct-answers-settings').hide();
           }
         }, this));
       break;
@@ -1308,7 +1344,7 @@
                 }
               }, this));
             }
-            $(page).find('.correct-answers-show-rule').show();
+            $(page).find('.correct-answers-settings').show();
           }
         }, this));
       break;
@@ -1423,6 +1459,7 @@
                 }
                 newPage.empty();
                 $(document).muikkuMaterialLoader('loadMaterial', newPage);
+                $(newPage).find('.correct-answers-settings').hide();
                 // TODO Concurrency? Has the material been loaded before edit?
                 editPage(newPage);
               } 
