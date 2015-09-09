@@ -23,7 +23,6 @@ import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.muikku.users.UserEntityController;
 
 public class SaveFieldAnswerWebSocketMessageHandler {
