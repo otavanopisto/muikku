@@ -148,25 +148,40 @@
     
     loadMaterials: function(pageElements, fieldAnswers) {
       if (this.options.loadAnswers === true) {
-        mApi().workspace.workspaces.materialreplies.read(this.options.workspaceEntityId).callback($.proxy(function (err, reply) {
+        mApi().workspace.workspaces.compositeReplies.read(this.options.workspaceEntityId).callback($.proxy(function (err, replies) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
-          }
-          else {
+          } else {
             // answers array
             var fieldAnswers = {};
-            if (reply && reply.answers.length) {
-              for (var i = 0, l = reply.answers.length; i < l; i++) {
-                var answer = reply.answers[i];
-                var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
-                fieldAnswers[answerKey] = answer.value;
+            
+            $.each(replies, $.proxy(function (index, reply) {
+              if (reply && reply.answers.length) {
+                for (var i = 0, l = reply.answers.length; i < l; i++) {
+                  var answer = reply.answers[i];
+                  var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+                  fieldAnswers[answerKey] = answer.value;
+                }
+                
+                if (reply.state || reply.workspaceMaterialReplyId) {
+                  var page = $(pageElements).filter('*[data-workspace-material-id="' + reply.workspaceMaterialId + '"]');
+                  
+                  if (reply.state) { 
+                    page.attr('data-workspace-material-state', reply.state);
+                  }
+
+                  if (reply.workspaceMaterialReplyId) { 
+                    page.attr('data-workspace-reply-id', reply.workspaceMaterialReplyId);
+                  }
+                }
               }
-            }
-          }
-          // actual loading of pages
-          $(pageElements).each($.proxy(function (index, page) {
-            this.loadMaterial(page, fieldAnswers);
-          }, this));
+            }, this));
+
+            // actual loading of pages
+            $(pageElements).each($.proxy(function (index, page) {
+              this.loadMaterial(page, fieldAnswers);
+            }, this));
+          }       
         }, this));
       }
       else {
@@ -710,20 +725,66 @@
     $(data.pageElement)
       .append($('<div>').addClass('clear'));
 
+    var assignmentType = $(data.pageElement).attr('data-workspace-material-assigment-type');
+
     // Exercise save support 
-    if ($(data.pageElement).data('workspace-material-assigment-type')) {
-      var buttonText = $(data.pageElement).data('workspace-material-assigment-type') == "EXERCISE" 
-        ? getLocaleText("plugin.workspace.materialsLoader.saveExerciseButton")
-        : getLocaleText("plugin.workspace.materialsLoader.saveAssignmentButton");
-      var saveButtonWrapper = $('<div>');
-      $(data.pageElement)
-        .append(saveButtonWrapper
-          .addClass('muikku-save-page-wrapper'));
-      $(saveButtonWrapper)
-        .append($('<button>')
-          .addClass('muikku-save-page')
-          .text(buttonText)
-          .data('unsaved-text', buttonText));
+    if (assignmentType) {
+      var state = $(data.pageElement).attr('data-workspace-material-state');
+
+      var saveButtonWrapper = $('<div>')
+        .addClass('muikku-save-page-wrapper')
+        .appendTo(data.pageElement);
+      
+      switch (assignmentType) {
+        case 'EXERCISE':
+          $('<button>')
+            .addClass('muikku-check-exercises')
+            .attr({
+              'data-state': 'SUBMITTED',
+              'data-default-text': getLocaleText("plugin.workspace.materialsLoader.checkExerciseButton"),
+              'data-done-text': getLocaleText("plugin.workspace.materialsLoader.exerciseCheckedButton")
+            })
+            .text(getLocaleText("plugin.workspace.materialsLoader.checkExerciseButton"))
+            .appendTo(saveButtonWrapper);
+        break;
+        case 'EVALUATED':
+          switch (state) {
+            case 'SUBMITTED':
+              $('<button>')
+                .addClass('muikku-withdraw-assignment')
+                .attr({
+                  'data-state': 'WITHDRAWN',
+                  'data-default-text': getLocaleText("plugin.workspace.materialsLoader.withdrawAssignmentButton"),
+                  'data-done-text': getLocaleText("plugin.workspace.materialsLoader.assignmentWithdrawnButton")
+                })
+                .text(getLocaleText("plugin.workspace.materialsLoader.withdrawAssignmentButton"))
+                .appendTo(saveButtonWrapper);
+            break;
+            case 'WITHDRAWN':
+              $('<button>')
+                .addClass('muikku-update-assignment')
+                .attr({
+                  'data-state': 'SUBMITTED',
+                  'data-default-text': getLocaleText("plugin.workspace.materialsLoader.updateAssignmentButton"),
+                  'data-done-text': getLocaleText("plugin.workspace.materialsLoader.assignmentUpdatedButton") 
+                })
+                .text(getLocaleText("plugin.workspace.materialsLoader.updateAssignmentButton"))
+                .appendTo(saveButtonWrapper);
+            break;
+            default:
+              $('<button>')
+                .addClass('muikku-submit-assignment')
+                .attr({
+                  'data-state': 'SUBMITTED',
+                  'data-default-text': getLocaleText("plugin.workspace.materialsLoader.submitAssignmentButton"),
+                  'data-done-text': getLocaleText("plugin.workspace.materialsLoader.assignmentSubmittedButton")
+                })
+                .text(getLocaleText("plugin.workspace.materialsLoader.submitAssignmentButton"))
+                .appendTo(saveButtonWrapper);
+            break;
+          }
+        break;
+      }
     }
     
     // Connect field support

@@ -23,6 +23,7 @@ import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.muikku.users.UserEntityController;
 
 public class SaveFieldAnswerWebSocketMessageHandler {
@@ -114,7 +115,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       
       fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
       if (reply == null) {
-        reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, userEntity, 1l, now, now);
+        reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, null, userEntity, 1l, now, now);
       } else {
         workspaceMaterialReplyController.incWorkspaceMaterialReplyTries(reply);
       }

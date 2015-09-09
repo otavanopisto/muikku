@@ -1,9 +1,7 @@
 (function() {
   'use strict';
   
-  
-
-  function scrollToPage(workspaceMaterialId, animate) {
+   function scrollToPage(workspaceMaterialId, animate) {
     var topOffset = 100;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
     if (animate) {
@@ -92,7 +90,90 @@
         .text(saveButton.data('unsaved-text'));
     }
   });
+  
+  function createWorkspcaeMaterialReply(workspaceEntityId, workspaceMaterialId, state, callback) {
+    mApi().workspace.workspaces.materials.replies
+      .create(workspaceEntityId, workspaceMaterialId, {
+        state: state
+      }) 
+      .callback(function (err, reply) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
+        } else {
+          if ($.isFunction(callback)) {
+            callback(reply);
+          }
+        }
+      });
+  }
+  
+  function updateWorkspaceMaterialReply(workspaceEntityId, workspaceMaterialId, id, state, callback) {
+    mApi().workspace.workspaces.materials.replies
+      .update(workspaceEntityId, workspaceMaterialId, id, {
+        state: state
+      }) 
+      .callback(function (err, reply) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
+        } else {
+          if ($.isFunction(callback)) {
+            callback();
+          }
+        }
+      });
+  }
+  
+  function findWorkspaceMaterialReply(workspaceEntityId, workspaceMaterialId, callback) {
+    mApi().workspace.workspaces.materials.replies
+      .read(workspaceEntityId, workspaceMaterialId, {
+        userEntityId: MUIKKU_LOGGED_USER_ID
+      }) 
+      .callback(function (err, replies) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
+        } else {
+          if ($.isFunction(callback)) {
+            callback(replies.length ? replies[0] : null);
+          }
+        }
+      });
+  }
+  
+  function saveWorkspaceMaterialReply(workspaceEntityId, workspaceMaterialId, state, callback) {
+    findWorkspaceMaterialReply(workspaceEntityId, workspaceMaterialId, function (reply) {
+      if (reply) {
+        updateWorkspaceMaterialReply(workspaceEntityId, workspaceMaterialId, reply.id, state, function () {
+          if ($.isFunction(callback)) {
+            callback(reply);
+          }
+        });
+      } else {
+        createWorkspcaeMaterialReply(workspaceEntityId, workspaceMaterialId, state, function (createdReply) {
+          if ($.isFunction(callback)) {
+            callback(createdReply);
+          }
+        });
+      }
+    });
+  }
 
+  $(document).on('click', '.muikku-check-exercises, .muikku-withdraw-assignment, .muikku-update-assignment, .muikku-submit-assignment', function (event, data) {
+    var button = $(event.target);
+    var page = $(this).closest('.workspace-materials-view-page');
+    var workspaceEntityId = $('.workspaceEntityId').val(); //  TODO: data?
+    var workspaceMaterialId = $(page).data('workspace-material-id');
+    var button.attr('data-state');
+
+    saveWorkspaceMaterialReply(workspaceEntityId, workspaceMaterialId, state, function (reply) {
+      button.text(button.attr('data-done-text'));
+      page.attr({
+        'data-workspace-material-state': state,
+        'data-workspace-reply-id': reply.id
+      });
+    });
+  });
+  
+/**
   $(document).on('click', '.muikku-save-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-view-page');
     var workspaceEntityId = $('.workspaceEntityId').val(); //  TODO: data?
@@ -113,6 +194,8 @@
     });
     
     mApi().workspace.workspaces.materials.replies.create(workspaceEntityId, workspaceMaterialId, {
+      workspaceMaterialId: workspaceMaterialId,
+      state: 'SUBMITTED',
       answers: reply
     })
     .callback($.proxy(function (err) {
@@ -158,5 +241,5 @@
       } 
     }, this));
   });
-
+**/
 }).call(this);
