@@ -992,7 +992,7 @@ body.workspace-materials-management {
         display: none !important;
       }
       
-      /* If page is in attachment edit-mode then we hide everything else inclusing ckeditor */  
+      /* If page is in attachment edit-mode then we hide everything else including ckeditor */  
       &.workspace-materials-management-editing-attachments {
       
         .workspace-material-html-editor-title-wrapper,
@@ -1005,7 +1005,8 @@ body.workspace-materials-management {
         .workspace-materials-management-view-page-controls {
         
           a,
-          span.assignment-type {
+          span.assignment-type,
+          span.correct-answers-show-rule {
             display: none !important;
           }
         
@@ -1021,7 +1022,8 @@ body.workspace-materials-management {
         display: inline-block !important;
       }   
       
-      .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
+      .workspace-materials-management-view-page-controls span.assignment-type,
+      .workspace-materials-management-view-page-controls span.correct-answers-show-rule { /* Special case for assignment type link */
         height:25px;
         width:25px;
         padding:2px;
@@ -1067,6 +1069,45 @@ body.workspace-materials-management {
           top:-3px;
           left:-1px;
           font-size:17px;
+        }
+      
+      }
+
+      &[data-correct-answers="ALWAYS"] .workspace-materials-management-view-page-controls span.correct-answers-show-rule { /* Special case for assignment type link */
+        background: $exerciseCorrectAnswersAlways;
+        
+        a.correct-answers {
+          margin:0;
+          position:relative;
+          top:-2px;
+          left:0px;
+          font-size:16px;
+        }
+      
+      }
+      
+      &[data-correct-answers="NEVER"] .workspace-materials-management-view-page-controls span.correct-answers-show-rule { /* Special case for assignment type link */
+        background: $exerciseCorrectAnswersNever;
+        
+        a.correct-answers {
+          margin:0;
+          position:relative;
+          top:-2px;
+          left:0px;
+          font-size:16px;
+        }
+        
+      }
+      
+      &[data-correct-answers="ON_REQUEST"] .workspace-materials-management-view-page-controls span.correct-answers-show-rule { /* Special case for assignment type link */
+        background: $exerciseCorrectAnswersOnRequest;
+        
+        a.correct-answers {
+          margin:0;
+          position:relative;
+          top:-2px;
+          left:0px;
+          font-size:16px;
         }
       
       }

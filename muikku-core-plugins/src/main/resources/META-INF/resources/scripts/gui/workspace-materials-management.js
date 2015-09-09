@@ -1278,7 +1278,7 @@
                 }
               }, this));
             }
-            $(page).find('.correct-answers').show();
+            $(page).find('.correct-answers-show-rule').show();
           }
         }, this));
       break;
@@ -1288,7 +1288,7 @@
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
             $(page).removeAttr('data-assignment-type');
-            $(page).find('.correct-answers').hide();
+            $(page).find('.correct-answers-show-rule').hide();
           }
         }, this));
       break;
@@ -1308,7 +1308,7 @@
                 }
               }, this));
             }
-            $(page).find('.correct-answers').show();
+            $(page).find('.correct-answers-show-rule').show();
           }
         }, this));
       break;
