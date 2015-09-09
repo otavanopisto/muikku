@@ -190,15 +190,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     }
     
     &.muikku-field-saving {
-      animation: saving 4s ease infinite;
+      animation: saving-fields 4s ease infinite;
       box-shadow:0 0 1px 3px rgba(202,225,252,0.25);
-    }
-    
-    @keyframes saving {
-      0% { border-color:#e4e630 }
-      25% { border-color:#ffffff } 
-      50% { border-color:#e4e630 }
-      100% { border-color:#ffffff }
     }
 
     &.muikku-field-saved {
@@ -234,17 +227,10 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
       input[type="checkbox"],
       input[type="radio"] {
-        animation: savingSelect 4s ease infinite;
+        animation: saving-checkbox-radio 4s ease infinite;
         box-shadow:0 0 0px 3px #e4e630;
       }
       
-    }
-    
-    @keyframes savingSelect {
-      0% { box-shadow:0 0 0px 3px #e4e630 }
-      25% { box-shadow:0 0 0px 3px #ffffff }
-      50% { box-shadow:0 0 0px 3px #e4e630 }
-      100% { box-shadow:0 0 0px 3px #ffffff }
     }
 
     &.muikku-field-saved {
