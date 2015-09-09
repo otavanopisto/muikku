@@ -10,8 +10,8 @@
       <div class="mf-content">
           <div class="ca-event-create-body">
             <div class="mf-fieldRow">
-              <div class="mf-textfield">
-                <div class="mf-textfield-subcontainer">
+              <div class="mf-textfield ca-form-row-container">
+                <div class="mf-textfield-subcontainer ca-form-row-subcontainer">
                  <div class="mf-textfield-title mf-textfield-subelement"><input id="startTime" class="mf-textfield-time" type="time" name="startTime" data-time-format="H:i"></input></div>
                  <div class="mf-textfield-title mf-textfield-subelement"><input id="startDate" class="mf-textfield-date" type="date" name="startDate"></input></div>
                  <div class="mf-textfield-title mf-textfield-subelement"><input id="endTime" class="mf-textfield-time" type="time" name="endTime" data-time-format="H:i"></input></div>
@@ -21,8 +21,8 @@
               </div>      
             </div>
             <div class="mf-fieldRow">
-              <div class="mf-textfield">
-               <div class="mf-textfield-subcontainer">
+              <div class="mf-textfield ca-form-row-container">
+               <div class="mf-textfield-subcontainer ca-form-row-subcontainer">
                  <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.summary"/}</span><input class="mf-textfield-title" type="text" name="summary"></input>
                  <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.calendar"/}</span><select id="eventCalendar" class="mf-textfield-calendar" name="eventCalendar"><option>No calendar</option></select>
                  <span class="mf-textfield-title">{#localize key="plugin.calendar.recurrenceInput.label"/}</span><input class="mf-textfield-title" type="checkbox" name="repeatable"><span class="ca-repeatable-info"></span></input>
@@ -30,18 +30,15 @@
               </div>      
             </div>
             <div class="mf-fieldRow hidden" id="eventRecurrence">
-              <div class="mf-textfield">
-               <div class="mf-textfield-subcontainer">
-<!--                  <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.summary"/}</span><input class="mf-textfield-title" type="text" name="summary"></input> -->
-<!--                  <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.calendar"/}</span><select id="eventCalendar" class="mf-textfield-calendar" name="eventCalendar"><option>No calendar</option></select> -->
-<!--                  <span class="mf-textfield-title">{#localize key="plugin.calendar.recurrenceInput.label"/}</span><input class="mf-textfield-title" type="checkbox" name="repeatable"></input> -->
-               </div>  
+              <div class="mf-textfield ca-form-row-container">
+               <div class="mf-textfield-subcontainer ca-form-row-subcontainer">
+             </div>  
               </div>      
             </div>
             <div class="mf-fieldRow">
-              <div class="cm-message-create-content">
-                <div class="mf-textarea">
-                 <textarea id="textContent" name="description"></textarea>
+              <div class="mf-textfield ca-form-row-container">
+               <div class="mf-textfield-subcontainer ca-form-row-subcontainer">
+                 <span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.description"/}</span><input class="mf-textfield-content" type="text" name="description"></input>
                 </div>
               </div>
              </div> 

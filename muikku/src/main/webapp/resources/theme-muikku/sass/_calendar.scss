@@ -62,11 +62,24 @@
   color: #fff;
 }
 
+.recurrence-controls-row{} 
+
+.recurrence-controls-subelement{
+  
+  display:inline-block;
+}
+
+.recurrence-input-interval{
+  display:inline-block;
+}
+.ca-form-row-container{
+  width:100%;
+  
+}
+
 #eventRecurrence div.recurrence-input-controls {
   background-color: #FFF !important;
   color: #000 !important;
-  border: 1px solid #DDD;
-  padding: 15px;
 }
 
 #eventRecurrence label,
@@ -78,7 +91,12 @@
   margin: 0px;
   padding-top: 0px;
   padding-bottom: 0px;
+  margin-left:5px;
+  display: inline;
 }
+
+
+
 
 /* TODO clean up after Fullcalendar implementation */
 
