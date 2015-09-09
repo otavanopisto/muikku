@@ -959,7 +959,7 @@
     dust.preload('workspace/materials-management-page-html.dust');
     dust.preload('workspace/materials-management-page-binary.dust');
     dust.preload('workspace/materials-management-page-folder.dust');
-    
+
     $(document).muikkuMaterialLoader({
       workspaceEntityId: $('.workspaceEntityId').val(),
       dustTemplate: 'workspace/materials-management-page.dust',
@@ -982,6 +982,12 @@
     
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
       enableFileUploader(element);
+    });
+
+    $('.correct-answers').each(function(index, node) {
+      if ($(node).closest('.workspace-materials-view-page').attr('data-assignment-type') != 'EXERCISE') {
+        $(node).hide();
+      }
     });
 
     $('.muikku-connect-field').muikkuConnectField('refresh');
@@ -1268,17 +1274,7 @@
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
             $(page).attr('data-assignment-type', 'EVALUATED');
-            if (!correctAnswers) {
-              changeCorrectAnswers(workspaceId, workspaceMaterialId, 'ALWAYS', $.proxy(function (err) {
-                if (err) {
-                  $('.notification-queue').notificationQueue('notification', 'error', err);
-                }
-                else {
-                  $(page).attr('data-correct-answers', 'ALWAYS');
-                }
-              }, this));
-            }
-            $(page).find('.correct-answers').show();
+            $(page).find('.correct-answers').hide();
           }
         }, this));
       break;
@@ -1423,6 +1419,7 @@
                 }
                 newPage.empty();
                 $(document).muikkuMaterialLoader('loadMaterial', newPage);
+                $(newPage).find('.correct-answers').hide();
                 // TODO Concurrency? Has the material been loaded before edit?
                 editPage(newPage);
               } 
