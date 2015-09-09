@@ -121,7 +121,6 @@
 							data-parent-id="#{articleNode.parentId}"
 							data-material-type="#{articleNode.type}"
 							data-material-title="#{articleNode.title}"
-							data-assignment-type="#{articleNode.assignmentType}"
 							class="workspace-materials-view-page material-management-view folder #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"></h2>
 					</ui:fragment>
 
@@ -136,6 +135,7 @@
 							data-material-current-revision="#{articleNode.currentRevision}"
 							data-material-published-revision="#{articleNode.publishedRevision}"
 							data-assignment-type="#{articleNode.assignmentType}"
+                            data-correct-answers="#{articleNode.correctAnswers}"
 							class="workspace-materials-view-page material-management-view #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}" />
 					</ui:fragment>
 
@@ -160,6 +160,7 @@
 					data-material-current-revision="#{node.currentRevision}"
 					data-material-published-revision="#{node.publishedRevision}"
 					data-assignment-type="#{node.assignmentType}"
+                    data-correct-answers="#{node.correctAnswers}"
 					class="workspace-materials-view-page material-management-view #{node.hidden ? 'item-hidden' : ''}" />
 				<div class="workspace-materials-management-add">
 					<span class="workspace-materials-management-line-separator"></span><a

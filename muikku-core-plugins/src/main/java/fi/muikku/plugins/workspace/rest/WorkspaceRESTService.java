@@ -586,7 +586,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     ;
 
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, entity.getAssignmentType());
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, entity.getAssignmentType(), entity.getCorrectAnswers());
     if (entity.getNextSiblingId() != null) {
       WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeById(entity.getNextSiblingId());
       if (nextSibling == null) {
@@ -887,7 +887,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     return new fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(), 
-        workspaceMaterial.getAssignmentType(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
+        workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
   }
 
   private List<fi.muikku.plugins.workspace.rest.model.WorkspaceUser> createRestModel(WorkspaceUserEntity... entries) {
@@ -1136,7 +1136,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode nextSibling = workspaceMaterial.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getNextSiblingId());
     String title = workspaceMaterial.getTitle();
     Boolean hidden = workspaceMaterial.getHidden();
-    workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden, workspaceMaterial.getAssignmentType(), title);
+    workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden,
+        workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), title);
     return Response.noContent().build();
   }
   
