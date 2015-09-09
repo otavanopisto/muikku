@@ -57,6 +57,8 @@
           .click($.proxy(this._onAssignmentButtonClick, this));
 
         this._applyState(assignmentType, this.workspaceMaterialState());
+        
+        this.element.on('change', '.muikku-field', $.proxy(this._onFieldChange, this));
       }
     },
     
@@ -220,6 +222,10 @@
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText(stateOptions['success-text']));
         }
       }, this));
+    },
+
+    _onFieldChange: function (event, data) {
+      this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
     }
     
   });
@@ -311,9 +317,9 @@
         .removeClass('muikku-field-unsaved')
         .addClass('muikku-field-saving');
       
-      // TODO: THESE VALUES CAN NOT BE RETRIEVED LIKE THIS!!!!
-      var workspaceEntityId = $('.workspaceEntityId').val(); 
-      var workspaceMaterialId = $(this.element).closest('.workspace-materials-view-page').data('workspace-material-id');
+      var page = $(this.element).closest('.workspace-materials-view-page');
+      var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
+      var workspaceMaterialId =  page.muikkuMaterialPage('workspaceMaterialId'); 
       
       mSocket().sendMessage('workspace:field-answer-save', JSON.stringify({
         'answer': this.answer(),
