@@ -8,7 +8,9 @@
   template="/jsf/workspace/templates/workspace-materials-view.xhtml">
 
   <ui:define name="workspace.content.top.static">
- 
+   <form style="display: none;">
+      <input type="hidden" name="max-file-size" value="#{workspaceMaterialsBackingBean.maxFileSize}" />
+    </form>
   </ui:define>
   
   <ui:define name="workspace.content">

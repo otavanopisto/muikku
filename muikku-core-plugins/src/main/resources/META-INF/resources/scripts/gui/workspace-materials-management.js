@@ -14,8 +14,14 @@
   }
   
   function enableFileUploader(element) {
+    
+    var maxFileSize = null;
+    if ($("input[name='max-file-size']").length) {
+      maxFileSize = Number($("input[name='max-file-size']").val());
+    }
+    
     $(element)
-      .workspaceMaterialUpload()
+      .workspaceMaterialUpload({maxFileSize: maxFileSize})
       .on('fileUploaded', function (event, data) {
         var newPage = $('<section>')
           .addClass('workspace-materials-view-page material-management-view')
@@ -234,14 +240,14 @@
           'text': dialog.data('button-delete-text'),
           'class': 'delete-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             confirmCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
@@ -260,14 +266,14 @@
           'text': dialog.data('button-delete-text'),
           'class': 'delete-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             confirmCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
@@ -514,14 +520,14 @@
             'text': dialog.data('button-remove-text'),
             'class': 'delete-button',
             'click': function(event) {
-              $(this).dialog("close");
+              $(this).dialog().remove();
               confirmCallback();
             }
           }, {
             'text': dialog.data('button-cancel-text'),
             'class': 'cancel-button',
             'click': function(event) {
-              $(this).dialog("close");
+              $(this).dialog().remove();
             }
           }]
         });
@@ -1437,14 +1443,14 @@
           'text': dialog.data('button-publish-text'),
           'class': 'publish-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             confirmCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
@@ -1463,14 +1469,14 @@
           'text': dialog.data('button-confirm-text'),
           'class': 'confirm-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             confirmCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
@@ -1489,14 +1495,14 @@
           'text': dialog.data('button-confirm-text'),
           'class': 'confirm-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             confirmCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });
@@ -1583,14 +1589,14 @@
           'text': dialog.data('button-revert-text'),
           'class': 'revert-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             revertCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });

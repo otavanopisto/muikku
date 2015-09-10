@@ -498,6 +498,11 @@ div[class*="wi-dock-static-navi"] {
   position:relative;
   float:right;
   margin-top:10px;
+  
+  .loginWidgetButton {
+    @include buttonShadow;
+  }
+  
 }
 
 .loginWidgetWrapper {

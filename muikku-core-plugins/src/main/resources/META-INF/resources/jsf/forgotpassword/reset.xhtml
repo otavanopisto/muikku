@@ -5,27 +5,40 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
     template="/WEB-INF/templates/main-view.xhtml">
     
-  <ui:define name="content.center.widget">
+  <ui:define name="sitebody">
   
-    <h:form>
-      
-      <h:panelGroup layout="block" styleClass="formElementRow">
-        <h:outputLabel for="password1" styleClass="formLabel" value="#{i18n.text['plugin.forgotpassword.resetPassword.password']}" />
-        <h:inputSecret id="password1" redisplay="false" required="true" value="#{resetPasswordBackingBean.password1}"/>
-      </h:panelGroup>
-
-      <h:panelGroup layout="block" styleClass="formElementRow">
-        <h:outputLabel for="password2" styleClass="formLabel" value="#{i18n.text['plugin.forgotpassword.resetPassword.passwordAgain']}" />
-        <h:inputSecret id="password2" redisplay="false" required="true" value="#{resetPasswordBackingBean.password2}"/>
-      </h:panelGroup>
-  
-      <h:panelGroup layout="block" styleClass="formElementRow">
-        <h:commandButton action="#{resetPasswordBackingBean.savePassword}" value="#{i18n.text['plugin.forgotpassword.resetPassword.save']}" />
-      </h:panelGroup>
+    <div class="reset-password-overlay"></div>
     
-    </h:form>
+    <div class="reset-password-wrapper">
+    
+      <div class="muikku-logo"></div>
+    
+      <div class="reset-password-container">
+      
+        <h1>#{i18n.text['plugin.forgotpassword.resetPassword.title']}</h1>
+      
+        <h:form>
+          <h:panelGroup layout="block" styleClass="formElementRow">
+            <h:outputLabel for="password1" styleClass="formLabel" value="#{i18n.text['plugin.forgotpassword.resetPassword.password']}" />
+            <h:inputSecret id="password1" redisplay="false" required="true" value="#{resetPasswordBackingBean.password1}"/>
+          </h:panelGroup>
+          <h:panelGroup layout="block" styleClass="formElementRow">
+            <h:outputLabel for="password2" styleClass="formLabel" value="#{i18n.text['plugin.forgotpassword.resetPassword.passwordAgain']}" />
+            <h:inputSecret id="password2" redisplay="false" required="true" value="#{resetPasswordBackingBean.password2}"/>
+          </h:panelGroup>
+          <h:panelGroup layout="block" styleClass="formElementRow">
+            <h:commandButton styleClass="reset-password-reset-button" action="#{resetPasswordBackingBean.savePassword}" value="#{i18n.text['plugin.forgotpassword.resetPassword.save']}" />
+            <a class="reset-password-cancel-button" jsf:outcome="/index.jsf">#{i18n.text['plugin.forgotpassword.resetPassword.cancel']}</a>
+          </h:panelGroup>
+        </h:form>
+        <div class="clear"></div>
+      </div>
+    
+    </div>
+    
 
   </ui:define>
 

@@ -164,7 +164,7 @@
         buttons: [{
           'text': this.options.okButtonText,
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
             var contentType = 'image/png';
             var imageData = $(this).find('.image-dialog-preview').get(0).toDataURL(contentType);
             if (_this.options.formField !== null) {
@@ -178,7 +178,7 @@
         }, {
           'text': this.options.cancelButtonText,
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog().remove();
           }
         }]
       });

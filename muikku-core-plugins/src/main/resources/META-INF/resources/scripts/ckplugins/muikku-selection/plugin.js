@@ -222,7 +222,7 @@
   CKEDITOR.dialog.add('muikkuSelectionDialog', function(editor) {
     return {
       title: editor.lang['muikku-selection'].propertiesDialogTitle,
-      minWidth: 400,
+      minWidth: 420,
       minHeight: 200,
       contents: [
         {

@@ -14,6 +14,7 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import fi.muikku.controller.SystemSettingsController;
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
@@ -48,6 +49,9 @@ public class WorkspaceMaterialsBackingBean {
   
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private SystemSettingsController systemSettingsController;
 
   @RequestAction
   public String init() {
@@ -117,6 +121,15 @@ public class WorkspaceMaterialsBackingBean {
 
   public List<ContentNode> getContentNodes() {
     return contentNodes;
+  }
+  
+  public Long getMaxFileSize() {
+    String setting = systemSettingsController.getSetting("uploadFileSizeLimit");
+    if (setting == null) {
+      return null;
+    } else {
+      return Long.parseLong(setting, 10);
+    }
   }
 
   private WorkspaceRootFolder rootFolder;

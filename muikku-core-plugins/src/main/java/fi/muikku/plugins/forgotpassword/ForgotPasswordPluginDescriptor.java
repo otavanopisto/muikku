@@ -27,6 +27,8 @@ public class ForgotPasswordPluginDescriptor implements PluginDescriptor, Localiz
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
     bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.forgotpassword.ForgotPasswordPluginMessages", LocaleUtils.toLocale("fi"))));
     bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.forgotpassword.ForgotPasswordPluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.forgotpassword.ForgotPasswordJsPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.forgotpassword.ForgotPasswordJsPluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
   }
 
