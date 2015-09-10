@@ -117,7 +117,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       
       fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
       if (reply == null) {
-        reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, null, userEntity, 1l, now, now);
+        reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.ANSWERED, userEntity, 1l, now, now);
       } else {
         workspaceMaterialReplyController.incWorkspaceMaterialReplyTries(reply);
       }

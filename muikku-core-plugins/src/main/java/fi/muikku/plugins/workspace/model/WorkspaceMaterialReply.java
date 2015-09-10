@@ -61,6 +61,22 @@ public class WorkspaceMaterialReply  {
     this.lastModified = lastModified;
   }
   
+  public Date getSubmitted() {
+    return submitted;
+  }
+  
+  public void setSubmitted(Date submitted) {
+    this.submitted = submitted;
+  }
+  
+  public Date getWithdrawn() {
+    return withdrawn;
+  }
+  
+  public void setWithdrawn(Date withdrawn) {
+    this.withdrawn = withdrawn;
+  }
+  
   public WorkspaceMaterialReplyState getState() {
     return state;
   }
@@ -93,7 +109,16 @@ public class WorkspaceMaterialReply  {
   @Column (nullable = false)
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date lastModified;
+
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date submitted;
   
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date withdrawn;
+  
+  @NotNull
+  @Column (nullable = false)
   @Enumerated (EnumType.STRING)
   private WorkspaceMaterialReplyState state;
+  
 }

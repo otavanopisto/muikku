@@ -18,7 +18,7 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
 	
   private static final long serialVersionUID = -4395949418454232657L;
 
-  public WorkspaceMaterialReply create(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, Long userEntityId, Long numberOfTries, Date created, Date lastModified) {
+  public WorkspaceMaterialReply create(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, Long userEntityId, Long numberOfTries, Date created, Date lastModified, Date submitted, Date withdrawn) {
 		WorkspaceMaterialReply workspaceMaterialReply = new WorkspaceMaterialReply();
 		
 		workspaceMaterialReply.setWorkspaceMaterial(workspaceMaterial);
@@ -27,6 +27,8 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
 		workspaceMaterialReply.setCreated(created);
 		workspaceMaterialReply.setLastModified(lastModified);
 		workspaceMaterialReply.setState(state);
+		workspaceMaterialReply.setSubmitted(submitted);
+		workspaceMaterialReply.setWithdrawn(withdrawn);
 		
 		return persist(workspaceMaterialReply);
 	}
@@ -80,6 +82,16 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
   
   public WorkspaceMaterialReply updateLastModified(WorkspaceMaterialReply workspaceMaterialReply, Date lastModified) {
     workspaceMaterialReply.setLastModified(lastModified);
+    return persist(workspaceMaterialReply);
+  }
+
+  public WorkspaceMaterialReply updateSubmitted(WorkspaceMaterialReply workspaceMaterialReply, Date lastModified) {
+    workspaceMaterialReply.setSubmitted(lastModified);
+    return persist(workspaceMaterialReply);
+  }
+
+  public WorkspaceMaterialReply updateWithdrawn(WorkspaceMaterialReply workspaceMaterialReply, Date withdrawn) {
+    workspaceMaterialReply.setWithdrawn(withdrawn);
     return persist(workspaceMaterialReply);
   }
   
