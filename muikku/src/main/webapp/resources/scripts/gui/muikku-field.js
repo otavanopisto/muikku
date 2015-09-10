@@ -300,7 +300,12 @@
     },
 
     _onFieldChange: function (event, data) {
-      this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+      if (this.assignmentType() == 'EXERCISE') {
+        this._saveWorkspaceMaterialReply('ANSWERED', $.proxy(function (reply) {
+          this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+          this._applyState('EXERCISE', 'ANSWERED');
+        }, this));
+      }
     }
     
   });
