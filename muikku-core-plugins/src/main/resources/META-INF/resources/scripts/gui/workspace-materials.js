@@ -120,6 +120,8 @@
         $('.notification-queue').notificationQueue('notification', 'error',getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
       } else {
         if (exercise) {
+          // ALWAYS|ON_REQUEST|NEVER
+          var correctAnswers = $(page).attr('data-correct-answers') ? $(page).attr('data-correct-answers') : 'ALWAYS';
           // Correct answer checking
           page.find('.muikku-field').each(function (index, field) {
             if ($(field).muikkuField('canCheckAnswer')) {
