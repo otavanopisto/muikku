@@ -48,23 +48,21 @@ import fi.muikku.webhooks.WebhookStudentCreatePayload;
 public class CoursePickerTestsBase extends AbstractUITest {
   
   @Test
-//  @SqlBefore("sql/workspace1Setup.sql")
-//  @SqlAfter("sql/workspace1Delete.sql")
+  @SqlBefore("sql/workspace1Setup.sql")
+  @SqlAfter("sql/workspace1Delete.sql")
   public void coursePickerExistsTest() throws Exception {
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     PyramusMocks.workspace1PyramusMock();
-    asAdmin().get("/test/reindex");
+    
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload((long) 1));
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    asAdmin().get("/test/createcourse");
+    asAdmin().get("/test/reindex");
+    
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
-    waitForElementToBePresent(By.className("workspace-title"));
-    getWebDriver().findElementByClassName("workspace-publish-button").click();
-    waitForElementToBePresent(By.className("workspace-title"));
     getWebDriver().get(getAppUrl(true) + "/coursepicker");
     waitForElementToBePresent(By.className("bt-mainFunction-content"));
     takeScreenshot();

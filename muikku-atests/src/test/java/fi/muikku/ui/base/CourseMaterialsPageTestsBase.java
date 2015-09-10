@@ -26,73 +26,77 @@ import fi.pyramus.webhooks.WebhookCourseUpdatePayload;
 
 public class CourseMaterialsPageTestsBase extends AbstractUITest {
 
-//  @Test
-//  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql"})
-//  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql"})
-//  public void courseMaterialExistsTest() throws Exception {
-//    PyramusMocks.adminLoginMock();
-//    PyramusMocks.personsPyramusMocks();
-//    PyramusMocks.workspace1PyramusMock();
-//
-//    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-//    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-//  payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
-//  webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-//    asAdmin().get("/test/reindex");
-//    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-//    waitForElementToBePresent(By.className("index"));
-//    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
-//    waitForElementToBePresent(By.cssSelector(".material-view"));
-//    takeScreenshot();
-//    boolean elementExists = getWebDriver().findElements(By.cssSelector("article p")).size() > 0;
-//    WireMock.reset();
-//    assertTrue(elementExists);
-//  }
-//  
-//  @Test
-//  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql"})
-//  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql"})
-//  public void courseFullscreenReadingButtonExistsTest() throws Exception {
-//    PyramusMocks.adminLoginMock();
-//    PyramusMocks.personsPyramusMocks();
-//    PyramusMocks.workspace1PyramusMock();
-//    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-//    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);  
-//    asAdmin().get("/test/reindex");
-//    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-//    waitForElementToBePresent(By.className("index"));
-//    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
-//    waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
-//    takeScreenshot();
-//    boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-materials-reading")).size() > 0;
-//    WireMock.reset();
-//    assertTrue(elementExists);
-//  }
-//Admin käyttäjällä ei ole oikeutta materiaalien ylläpitoon!
+  @Test
+  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql"})
+  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql"})
+  public void courseMaterialExistsTest() throws Exception {
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    PyramusMocks.workspace1PyramusMock();
+
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    asAdmin().get("/test/createcourse");
+    asAdmin().get("/test/reindex");
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
+    waitForElementToBePresent(By.cssSelector(".material-view"));
+    takeScreenshot();
+    boolean elementExists = getWebDriver().findElements(By.cssSelector("article p")).size() > 0;
+    WireMock.reset();
+    assertTrue(elementExists);
+  }
+  
+  @Test
+  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql"})
+  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql"})
+  public void courseFullscreenReadingButtonExistsTest() throws Exception {
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    PyramusMocks.workspace1PyramusMock();
+    
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    asAdmin().get("/test/createcourse");
+    asAdmin().get("/test/reindex");
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
+    waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
+    takeScreenshot();
+    boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-materials-reading")).size() > 0;
+    WireMock.reset();
+    assertTrue(elementExists);
+  }
+
   @Test
   @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql"})
   @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql"})
   public void courseMaterialManagementButtonExistsTest() throws Exception {
+    PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
-    PyramusMocks.teacherLoginMock();
     PyramusMocks.workspace1PyramusMock();
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 2));
+   
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
 
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 2));
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
 
-    payload = objectMapper.writeValueAsString(new WebhookCourseUpdatePayload((long) 1));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);    
-    
-    payload = objectMapper.writeValueAsString(new WebhookCourseStaffMemberCreatePayload((long) 2, (long) 1, (long) 2));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    
-//    asAdmin().get("/test/reindex");
+    asAdmin().get("/test/createcourse");
+    asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
@@ -103,92 +107,117 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     assertTrue(elementExists);
   }
  
-//  @Test
-//  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql", "sql/workspace1Material2Setup.sql"})
-//  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql", "sql/workspace1Material2Delete.sql"})
-//  public void courseTOCExistsTest() throws Exception {
-//    PyramusMocks.adminLoginMock();
-//    PyramusMocks.personsPyramusMocks();
-//    PyramusMocks.workspace1PyramusMock();
-//    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-//    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);   
-//    asAdmin().get("/test/reindex");
-//    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-//    waitForElementToBePresent(By.className("index"));
-//    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
-//    waitForElementToBePresent(By.cssSelector("#contentWorkspaceMaterials"));
-//    takeScreenshot();
-//    boolean elementExists = getWebDriver().findElements(By.cssSelector("#workspaceMaterialsTOCWrapper")).size() > 0;
-//    WireMock.reset();
-//    assertTrue(elementExists);
-//  }
-//   
-//  @Test
-//  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql", "sql/workspace1Material2Setup.sql"})
-//  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql", "sql/workspace1Material2Delete.sql"})
-//  public void courseMaterialTOCHighlightTest() throws Exception {
-//    PyramusMocks.adminLoginMock();
-//    PyramusMocks.personsPyramusMocks();
-//    PyramusMocks.workspace1PyramusMock();
-//    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-//    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-//    asAdmin().get("/test/reindex");
-//    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-//    waitForElementToBePresent(By.className("index"));
-//    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
-//    waitForElementToBePresent(By.linkText("Test material 2.0"));
-//    getWebDriver().findElementByLinkText("Test material 2.0").click();
-//    waitForElementToBePresent(By.linkText("Test material 2.0"));
-//    String actual = getWebDriver().findElementByLinkText("Test material 2.0").getAttribute("class");
-//    String expected = new String("active");
-//    assertEquals(expected, actual);
-//    WireMock.reset();
-//  }
-//
-//  @Test
-//  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1EvaluatedMaterialSetup.sql"})
-//  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1EvaluatedMaterialDelete.sql"})
-//  public void courseMaterialEvaluatedClassTest() throws Exception {
-//    PyramusMocks.adminLoginMock();
-//    PyramusMocks.personsPyramusMocks();
-//    PyramusMocks.workspace1PyramusMock();
-//    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-//    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-//    asAdmin().get("/test/reindex");
-//    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-//    waitForElementToBePresent(By.className("index"));
-//    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
-//    waitForElementToBePresent(By.id("contentWorkspaceMaterials"));
-//    String actual = getWebDriver().findElementByCssSelector("#page-45>div").getAttribute("class");
-//    String expected = new String("muikku-page-assignment-type evaluated");
-//    assertEquals(expected, actual);
-//    WireMock.reset();
-//  }
-//  
-//  @Test
-//  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1ExerciseMaterialSetup.sql"})
-//  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1ExerciseMaterialDelete.sql"})
-//  public void courseMaterialExerciseClassTest() throws Exception {
-//    PyramusMocks.adminLoginMock();
-//    PyramusMocks.personsPyramusMocks();
-//    PyramusMocks.workspace1PyramusMock();
-//    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-//    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-//    payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload((long) 1));
-//    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-//    asAdmin().get("/test/reindex");
-//    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-//    waitForElementToBePresent(By.className("index"));
-//    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
-//    waitForElementToBePresent(By.id("contentWorkspaceMaterials"));
-//    String actual = getWebDriver().findElementByCssSelector("#page-46>div").getAttribute("class");
-//    String expected = new String("muikku-page-assignment-type exercise");
-//    assertEquals(expected, actual);
-//    WireMock.reset();
-//  }
+  @Test
+  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql", "sql/workspace1Material2Setup.sql"})
+  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql", "sql/workspace1Material2Delete.sql"})
+  public void courseTOCExistsTest() throws Exception {
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    PyramusMocks.workspace1PyramusMock();
+
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    asAdmin().get("/test/createcourse");
+    asAdmin().get("/test/reindex");
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
+    waitForElementToBePresent(By.cssSelector("#contentWorkspaceMaterials"));
+    takeScreenshot();
+    boolean elementExists = getWebDriver().findElements(By.cssSelector("#workspaceMaterialsTOCWrapper")).size() > 0;
+    WireMock.reset();
+    assertTrue(elementExists);
+  }
+   
+  @Test
+  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql", "sql/workspace1Material2Setup.sql"})
+  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql", "sql/workspace1Material2Delete.sql"})
+  public void courseMaterialTOCHighlightTest() throws Exception {
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    PyramusMocks.workspace1PyramusMock();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    asAdmin().get("/test/createcourse");
+    asAdmin().get("/test/reindex");
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
+    waitForElementToBePresent(By.linkText("Test material 2.0"));
+    getWebDriver().findElementByLinkText("Test material 2.0").click();
+    waitForElementToBePresent(By.linkText("Test material 2.0"));
+    sleep(1000);
+    String actual = getWebDriver().findElementByLinkText("Test material 2.0").getAttribute("class");
+    String expected = new String("active");
+    assertEquals(expected, actual);
+    WireMock.reset();
+  }
+
+  @Test
+  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1EvaluatedMaterialSetup.sql"})
+  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1EvaluatedMaterialDelete.sql"})
+  public void courseMaterialEvaluatedClassTest() throws Exception {
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    PyramusMocks.workspace1PyramusMock();
+    
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    asAdmin().get("/test/createcourse");
+    asAdmin().get("/test/reindex");
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
+    waitForElementToBePresent(By.id("contentWorkspaceMaterials"));
+    String actual = getWebDriver().findElementByCssSelector("#page-45>div").getAttribute("class");
+    String expected = new String("muikku-page-assignment-type evaluated");
+    assertEquals(expected, actual);
+    WireMock.reset();
+  }
+  
+  @Test
+  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1ExerciseMaterialSetup.sql"})
+  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1ExerciseMaterialDelete.sql"})
+  public void courseMaterialExerciseClassTest() throws Exception {
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    PyramusMocks.workspace1PyramusMock();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    asAdmin().get("/test/createcourse");
+    asAdmin().get("/test/reindex");
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
+    waitForElementToBePresent(By.id("contentWorkspaceMaterials"));
+    String actual = getWebDriver().findElementByCssSelector("#page-46>div").getAttribute("class");
+    String expected = new String("muikku-page-assignment-type exercise");
+    assertEquals(expected, actual);
+    WireMock.reset();
+  }
   
 }

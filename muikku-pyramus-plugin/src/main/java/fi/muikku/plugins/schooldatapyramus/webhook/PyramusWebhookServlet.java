@@ -74,7 +74,7 @@ public class PyramusWebhookServlet extends HttpServlet {
       resp.sendError(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
-    System.out.println("SECRET PASSED: were are here 'cause were here");
+    System.out.println("SECRET PASSED: were are here 'cause we're here");
     ObjectMapper objectMapper = new ObjectMapper();
     System.out.println("Tein object mapperin");
     PyramusWebhookPayload payload = objectMapper.readValue(req.getInputStream(), PyramusWebhookPayload.class);
@@ -84,7 +84,7 @@ public class PyramusWebhookServlet extends HttpServlet {
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
-    System.out.println("GOT PAYLOAD: were are here 'cause were here");
+    System.out.println("GOT PAYLOAD: were are here 'cause we're here");
     if (StringUtils.isBlank(payload.getData())) {
       logger.log(Level.WARNING, "Invalid webhook payload (data is missing)");
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
