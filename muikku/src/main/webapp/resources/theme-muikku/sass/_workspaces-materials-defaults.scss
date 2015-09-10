@@ -373,15 +373,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   .workspace-materials-view-page {
   
-    &[data-workspace-material-assigment-type="EXERCISE"] {
-      
-    }
-    
-    &[data-workspace-material-assigment-type="EVALUATED"] {
-      
-    }
-  
-    button.muikku-save-page {
+    /* Material's Assignment Submit Buttons */
+    button.muikku-assignment-button {
       color:#fff;
       background:#71bced;
       box-shadow:none;
@@ -390,7 +383,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       font-weight:300;
       text-transform:uppercase;
       padding:12px;
-      transition:background 0.3s ease-in-out;
+      transition:background 0.8s ease-in-out;
       margin:0 5px 0 5px;
       min-width:120px;
       outline:none;
@@ -399,17 +392,29 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       cursor:pointer;
       display:inline-block;
       
-      &:hover {
-        background:#53afec;
+      /* Check Exercise */
+      &.muikku-check-exercises {
+        background: $exerciseAssignment;
       }
       
-      &.save-successful {
-        background:#1ec30c;
-        cursor:default;
+      /* Submit Assignment */
+      &.muikku-submit-assignment {
+        background: $evaluatedAssignment;
+      }
+      
+      /* Withdraw Assingment */
+      &.muikku-withdraw-assignment {
+        background: darken($evaluatedAssignment,5%);
+      }
+      
+      /* Update Assignment */
+      &.muikku-update-assignment {
+        background: lighten($evaluatedAssignment,5%);
       }
 
     }
-    
+      
+
     .muikku-field-correct-answer {
       box-shadow:0 0 1px 3px rgba(0,255,42,0.3) !important;
       border:3px solid #00ff2a !important;
@@ -458,13 +463,14 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     }
 
     .muikku-page-assignment-type {
-      padding:2px 8px;
+      padding:0px 8px;
       border-radius:2px;
       color: #fff;
       text-align: center;
       text-transform:uppercase;
       display:inline-block;
       margin:15px 0 0 -36px;
+      font-weight:400;
       
       &.evaluated {
         background: $evaluatedAssignment;
@@ -487,7 +493,7 @@ body.workspace-materials #contentWorkspaceMaterials {
   /* Save answers button's font-size under basic view */
   .workspace-materials-view-page {
   
-    button.muikku-save-page {
+    button.muikku-assignment-button {
       font-size:14px;
     }
   
@@ -500,7 +506,7 @@ body.workspace-materials #contentWorkspaceMaterials {
   
   /* Assigment type indicators under basic view */
   .muikku-page-assignment-type {
-    font-size: 14px;
+    font-size: 12px;
   }
   
 }
@@ -510,7 +516,7 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
   /* Save answers button's font-size under reading view view */
   .workspace-materials-view-page {
   
-    button.muikku-save-page {
+    button.muikku-assignment-button {
       font-size:16px;
     }
   
@@ -523,7 +529,7 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
 
   /* Assigment type indicators under reading view */
   .muikku-page-assignment-type {
-    font-size: 16px;
+    font-size: 14px;
   }
   
 }
