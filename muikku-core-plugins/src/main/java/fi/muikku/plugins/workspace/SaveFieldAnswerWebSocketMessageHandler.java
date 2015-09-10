@@ -23,6 +23,7 @@ import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.muikku.users.UserEntityController;
 
 public class SaveFieldAnswerWebSocketMessageHandler {
@@ -64,6 +65,8 @@ public class SaveFieldAnswerWebSocketMessageHandler {
   }
   
   public void handleMessage(@Observes @MuikkuWebSocketEvent("workspace:field-answer-save") WebSocketMessageEvent event) {
+    // TODO: Localize error messages
+    
     WebSocketMessage webSocketMessage = event.getMessage();
     
     ObjectMapper mapper = new ObjectMapper();
@@ -119,12 +122,17 @@ public class SaveFieldAnswerWebSocketMessageHandler {
         workspaceMaterialReplyController.incWorkspaceMaterialReplyTries(reply);
       }
       
-      try {
-        workspaceMaterialFieldController.storeFieldValue(materialField, reply, message.getAnswer());
-      } catch (WorkspaceFieldIOException e) {
-        logger.log(Level.SEVERE, "Could not store field value");
-        handleError("Could not store field value", event.getTicket());
+      if ((reply.getState() != null) && (reply.getState() == WorkspaceMaterialReplyState.SUBMITTED)) {
+        handleError("Assignment is already submitted thus can not be modified", event.getTicket());
         return;
+      } else {
+        try {
+          workspaceMaterialFieldController.storeFieldValue(materialField, reply, message.getAnswer());
+        } catch (WorkspaceFieldIOException e) {
+          logger.log(Level.SEVERE, "Could not store field value");
+          handleError("Could not store field value", event.getTicket());
+          return;
+        }
       }
       
       message.setOriginTicket(event.getTicket());
