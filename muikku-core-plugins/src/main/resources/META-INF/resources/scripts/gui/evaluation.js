@@ -132,17 +132,24 @@
                 wrapper.append($('<div>').addClass('evaluation-assignment-date').text(formatDate(new Date(studentAssignmentData.lastModified))));
               }
               
-              switch (studentAssignmentData.status) {
-                case 'DONE':
-                  wrapper.addClass('assignment-done');
+              switch (studentAssignmentData.state) {
+                case 'UNANSWERED':
+                  wrapper.addClass('assignment-unaswered');
+                break;
+                case 'ANSWERED':
+                  wrapper.addClass('assignment-aswered');
+                break;
+                case 'SUBMITTED':
+                  wrapper.addClass('assignment-submitted');
+                break;
+                case 'WITHDRAWN':
+                  wrapper.addClass('assignment-withdrawn');
                 break;
                 case 'EVALUATED':
                   wrapper.addClass('assignment-evaluated');
                 break;
-                case 'EVALUATION_CRITICAL':
-                  wrapper.addClass('assignment-evaluation-critical');
-                break;
               } 
+              
             });
             parsed.find('.evaluation-student-assignment-listing-wrapper').append(row);
           });
@@ -454,7 +461,7 @@
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
                 } else {
-                  assigmentElement.removeClass('assignment-done assignment-evaluation-critical');
+                  assigmentElement.removeClass('assignment-unaswered assignment-aswered assignment-submitted assignment-withdrawn assignment-evaluated');
                   assigmentElement.addClass('assignment-evaluated');
                   assigmentElement.attr('data-workspace-material-evaluation-id', result.id);
                   $(this).dialog("destroy").remove();
@@ -475,7 +482,7 @@
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
                 } else {
-                  assigmentElement.removeClass('assignment-done assignment-evaluation-critical');
+                  assigmentElement.removeClass('assignment-unaswered assignment-aswered assignment-submitted assignment-withdrawn assignment-evaluated');
                   assigmentElement.addClass('assignment-evaluated');
                   assigmentElement.attr('data-workspace-material-evaluation-id', result.id);
                   $(this).dialog("destroy").remove();
@@ -580,8 +587,7 @@
       openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName, studentStudyProgrammeName, evaluated, evaluationData, $(this));
     });
     
-    /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
-    $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
+    $(document).on('click', '.assignment-submitted', function (event) {
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceMaterialId = $(this).attr('data-workspace-material-id');
       var studentEntityId = $(this).attr('data-student-entity-id');

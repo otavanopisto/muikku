@@ -2,7 +2,6 @@ package fi.muikku.plugins.workspace.rest;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -46,7 +45,6 @@ import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.evaluation.EvaluationController;
 import fi.muikku.plugins.material.MaterialController;
-import fi.muikku.plugins.material.QueryFieldController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.search.WorkspaceIndexer;
 import fi.muikku.plugins.workspace.WorkspaceJournalController;
@@ -94,7 +92,6 @@ import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
-import fi.otavanopisto.security.LoggedIn;
 
 @RequestScoped
 @Path("/workspace")
@@ -142,9 +139,6 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private MaterialController materialController;
-
-  @Inject
-  private QueryFieldController queryFieldController;
   
   @Inject
   private WorkspaceMaterialFieldController workspaceMaterialFieldController;
@@ -810,7 +804,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (payload == null) {
       return Response.status(Status.BAD_REQUEST).entity("Payload is missing").build(); 
     }
-    
+
+    if (payload.getState() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("State is missing").build(); 
+    }
+
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     if (loggedUser == null) {
       return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build(); 
@@ -834,10 +832,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (!workspaceRootFolder.getWorkspaceEntityId().equals(workspaceEntity.getId())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build(); 
     }
-
-    Date now = new Date();
     
-    fi.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser, 1l, now, now);
+    fi.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser);
     
     return Response.ok(createRestModel(workspaceMaterialReply)).build();
   }
