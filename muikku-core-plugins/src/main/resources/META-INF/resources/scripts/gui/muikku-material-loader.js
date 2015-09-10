@@ -155,7 +155,7 @@
             // answers array
             var fieldAnswers = {};
             
-            $.each(replies, $.proxy(function (index, reply) {
+            $.each(replies||[], $.proxy(function (index, reply) {
               if (reply && reply.answers.length) {
                 for (var i = 0, l = reply.answers.length; i < l; i++) {
                   var answer = reply.answers[i];
