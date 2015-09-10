@@ -9,6 +9,7 @@
       viewRender: function(view, element) {
         element.find('.fc-day-header').html('');
        }
+    
     });
     
     $('#fpWeekView').fullCalendar({
