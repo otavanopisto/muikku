@@ -5,9 +5,18 @@
     options: {
       states: [{
         'assignment-type': 'EXERCISE',
-        'state': '',
+        'state': 'UNANSWERED',
         'button-class': 'muikku-check-exercises',
         'button-text': "plugin.workspace.materialsLoader.checkExerciseButton",
+        'button-disabled': false,
+        'success-state': 'SUBMITTED',
+        'fields-read-only': false
+      }, {
+        'assignment-type': 'EXERCISE',
+        'state': 'ANSWERED',
+        'button-class': 'muikku-check-exercises',
+        'button-text': "plugin.workspace.materialsLoader.checkExerciseButton",
+        'button-disabled': false,
         'success-state': 'SUBMITTED',
         'fields-read-only': false
       }, {
@@ -15,14 +24,25 @@
         'state': 'SUBMITTED',
         'button-class': 'muikku-check-exercises',
         'button-text': "plugin.workspace.materialsLoader.checkExerciseButton",
+        'button-disabled': false,
         'success-state': 'SUBMITTED',
         'fields-read-only': false
       }, {
         'assignment-type': 'EVALUATED',
-        'state': '',
+        'state': 'UNANSWERED',
         'button-class': 'muikku-submit-assignment',
         'button-text': "plugin.workspace.materialsLoader.submitAssignmentButton",
         'success-text': "plugin.workspace.materialsLoader.assignmentSubmitted",
+        'button-disabled': false,
+        'success-state': 'SUBMITTED',
+        'fields-read-only': false
+      }, {
+        'assignment-type': 'EVALUATED',
+        'state': 'ANSWERED',
+        'button-class': 'muikku-submit-assignment',
+        'button-text': "plugin.workspace.materialsLoader.submitAssignmentButton",
+        'success-text': "plugin.workspace.materialsLoader.assignmentSubmitted",
+        'button-disabled': false,
         'success-state': 'SUBMITTED',
         'fields-read-only': false
       }, {
@@ -31,6 +51,7 @@
         'button-class': 'muikku-withdraw-assignment',
         'button-text': "plugin.workspace.materialsLoader.withdrawAssignmentButton",
         'success-text': "plugin.workspace.materialsLoader.assignmentWithdrawn",
+        'button-disabled': false,
         'success-state': 'WITHDRAWN',
         'fields-read-only': true
       }, {
@@ -39,8 +60,18 @@
         'button-class': 'muikku-update-assignment',
         'button-text': "plugin.workspace.materialsLoader.updateAssignmentButton",
         'success-text': "plugin.workspace.materialsLoader.assignmentUpdated",
+        'button-disabled': false,
         'success-state': 'SUBMITTED',
         'fields-read-only': false
+      }, {
+        'assignment-type': 'EVALUATED',
+        'state': 'EVALUATED',
+        'button-class': 'muikku-evaluated-assignment',
+        'button-text': "plugin.workspace.materialsLoader.evaluatedAssignmentButton",
+        'button-disabled': true,
+        'success-text': "",
+        'success-state': '',
+        'fields-read-only': true
       }]
     },
     
@@ -71,6 +102,10 @@
         }
       });
       
+      if (!result) {
+        console.error("Could not find state for " + assignmentType + ' / ' + state);
+      }
+      
       return result;
     },
     
@@ -78,7 +113,7 @@
       if (val !== undefined) {
         this.element.attr('data-workspace-material-state', val);
       } else {
-        return this.element.attr('data-workspace-material-state')||'';
+        return this.element.attr('data-workspace-material-state')||'UNANSWERED';
       }
     },
     
@@ -103,7 +138,8 @@
       this.element.find('.muikku-assignment-button')
         .removeClass(removeClasses.join(' '))
         .addClass(stateOptions['button-class'])
-        .text(getLocaleText(stateOptions['button-text']));
+        .text(getLocaleText(stateOptions['button-text']))
+        .prop('disabled', stateOptions['button-disabled']);
       
       this.workspaceMaterialState(state);
       this.element.find('.muikku-field').muikkuField('readonly', stateOptions['fields-read-only']);
