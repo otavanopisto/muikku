@@ -681,7 +681,13 @@
       display:inline-block;
       box-sizing:border-box;
     }
-    
+ 
+    .mf-textfield-time{
+      width:50px;
+    }
+    .mf-textfield-date{
+     width:80px;
+    }
     .mf-textfield {
       position:relative;
       top:0;
