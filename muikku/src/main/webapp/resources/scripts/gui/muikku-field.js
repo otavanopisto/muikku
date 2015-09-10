@@ -1,5 +1,14 @@
 (function() {
   'use strict';
+
+  $(document).on('workspace:field-answer-error', function (event, data) {
+    try {
+      var message = $.parseJSON(data);
+      $('.notification-queue').notificationQueue('notification', 'error', message.error);
+    } catch (e) {
+      $('.notification-queue').notificationQueue('notification', 'error', 'Internal error occurred');
+    }
+  });
   
   $.widget("custom.muikkuMaterialPage", {
     options: {
@@ -24,6 +33,7 @@
       }, {
         'assignment-type': 'EXERCISE',
         'state': 'SUBMITTED',
+        'check-answers': true,
         'button-class': 'muikku-check-exercises',
         'button-text': "plugin.workspace.materialsLoader.exerciseSentButton",
         'button-check-text': "plugin.workspace.materialsLoader.exerciseCheckedButton",
@@ -167,6 +177,10 @@
       
       this.workspaceMaterialState(state);
       this.element.find('.muikku-field').muikkuField('readonly', stateOptions['fields-read-only']);
+      
+      if (stateOptions['check-answers']) {
+        this._checkExercises();
+      }
     },
     
     _createWorkspcaeMaterialReply: function (state, callback) {
@@ -333,7 +347,6 @@
       $(this.element).on("keyup", $.proxy(this._onKeyUp, this));
       
       $(document).on('workspace:field-answer-saved', $.proxy(this._onFieldAnswerSaved, this));
-      $(document).on('workspace:field-answer-error', $.proxy(this._onFieldAnswerSaveError, this));
       
       this.readonly(this.options.readonly);
     },
@@ -435,15 +448,6 @@
             .addClass('muikku-field-saved');
           this.answer(message.answer);
         }
-      }
-    },
-    
-    _onFieldAnswerSaveError: function(event, data) {
-      var message = $.parseJSON(data);
-  
-      // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
-      if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
-        $('.notification-queue').notificationQueue('notification', 'error', message.error);
       }
     }
     
