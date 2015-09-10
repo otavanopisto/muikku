@@ -313,22 +313,24 @@
     },
     
     _saveField: function () {
-      $(this.element)
-        .removeClass('muikku-field-unsaved')
-        .addClass('muikku-field-saving');
-      
-      var page = $(this.element).closest('.workspace-materials-view-page');
-      var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
-      var workspaceMaterialId =  page.muikkuMaterialPage('workspaceMaterialId'); 
-      
-      mSocket().sendMessage('workspace:field-answer-save', JSON.stringify({
-        'answer': this.answer(),
-        'embedId': this.embedId(),
-        'materialId': this.materialId(),
-        'fieldName':this.fieldName(),
-        'workspaceEntityId': workspaceEntityId,
-        'workspaceMaterialId': workspaceMaterialId
-      }));
+      if (!this.readonly()) {
+        $(this.element)
+          .removeClass('muikku-field-unsaved')
+          .addClass('muikku-field-saving');
+        
+        var page = $(this.element).closest('.workspace-materials-view-page');
+        var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
+        var workspaceMaterialId =  page.muikkuMaterialPage('workspaceMaterialId'); 
+        
+        mSocket().sendMessage('workspace:field-answer-save', JSON.stringify({
+          'answer': this.answer(),
+          'embedId': this.embedId(),
+          'materialId': this.materialId(),
+          'fieldName':this.fieldName(),
+          'workspaceEntityId': workspaceEntityId,
+          'workspaceMaterialId': workspaceMaterialId
+        }));
+      }
     },
     
     _onChange: function (event) {
@@ -359,7 +361,8 @@
     
     _onFieldAnswerSaved: function (event, data) {
       var message = $.parseJSON(data);
-      
+
+      // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
       if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
         if (message.originTicket == mSocket().getTicket()) {
           $(this.element)
@@ -376,7 +379,11 @@
     
     _onFieldAnswerSaveError: function(event, data) {
       var message = $.parseJSON(data);
-      $('.notification-queue').notificationQueue('notification', 'error', message.error);
+  
+      // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
+      if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
+        $('.notification-queue').notificationQueue('notification', 'error', message.error);
+      }
     }
     
   });
