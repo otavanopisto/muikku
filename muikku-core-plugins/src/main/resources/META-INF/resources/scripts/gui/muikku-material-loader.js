@@ -148,25 +148,43 @@
     
     loadMaterials: function(pageElements, fieldAnswers) {
       if (this.options.loadAnswers === true) {
-        mApi().workspace.workspaces.materialreplies.read(this.options.workspaceEntityId).callback($.proxy(function (err, reply) {
+        mApi().workspace.workspaces.compositeReplies.read(this.options.workspaceEntityId).callback($.proxy(function (err, replies) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
-          }
-          else {
+          } else {
             // answers array
             var fieldAnswers = {};
-            if (reply && reply.answers.length) {
-              for (var i = 0, l = reply.answers.length; i < l; i++) {
-                var answer = reply.answers[i];
-                var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
-                fieldAnswers[answerKey] = answer.value;
+            
+            $.each(replies||[], $.proxy(function (index, reply) {
+              if (reply && reply.answers.length) {
+                for (var i = 0, l = reply.answers.length; i < l; i++) {
+                  var answer = reply.answers[i];
+                  var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+                  fieldAnswers[answerKey] = answer.value;
+                }
+                
+                if (reply.state || reply.workspaceMaterialReplyId) {
+                  var page = $(pageElements).filter('*[data-workspace-material-id="' + reply.workspaceMaterialId + '"]');
+                  
+                  if (reply.state) { 
+                    page.attr('data-workspace-material-state', reply.state);
+                  }
+
+                  if (reply.workspaceMaterialReplyId) { 
+                    page.attr('data-workspace-reply-id', reply.workspaceMaterialReplyId);
+                  }
+                }
               }
-            }
-          }
-          // actual loading of pages
-          $(pageElements).each($.proxy(function (index, page) {
-            this.loadMaterial(page, fieldAnswers);
-          }, this));
+            }, this));
+
+            // actual loading of pages
+            $(pageElements).each($.proxy(function (index, page) {
+              this.loadMaterial(page, fieldAnswers);
+              $(page).muikkuMaterialPage({
+                workspaceEntityId: this.options.workspaceEntityId
+              });
+            }, this));
+          }       
         }, this));
       }
       else {
@@ -523,8 +541,13 @@
             embedId: data.embedId,
             meta: meta,
             readonly: data.readOnlyFields||false,
-            answer: function() {
-              return $(this.element).find('input:checked').val();
+            answer: function(val) {
+              if (val) {
+                $(this.element).find('input').prop('checked', false);
+                $(this.element).find('input[value="' + val + '"]').prop('checked', true);
+              } else {
+                return $(this.element).find('input:checked').val();
+              }
             },
             canCheckAnswer: function() {
               for (var i = 0, l = meta.options.length; i < l; i++) {
@@ -591,12 +614,21 @@
         embedId: data.embedId,
         meta: meta,
         readonly: data.readOnlyFields||false,
-        answer: function() {
-          var values = [];
-          $(this.element).find('input:checked').each(function() {
-            values.push($(this).val());
-          });
-          return JSON.stringify(values); 
+        answer: function(val) {
+          if (val) {
+            $(this.element).find('input').prop('checked', false);
+            $.each($.isArray(val) ? val : $.parseJSON(val), $.proxy(function (index, value) {
+              $(this.element).find('input[value="' + value + '"]').prop('checked', true);
+            }, this));
+            
+          } else {
+            var values = [];
+            $(this.element).find('input:checked').each(function() {
+              values.push($(this).val());
+            });
+
+            return JSON.stringify(values); 
+          }
         },
         canCheckAnswer: function() {
           for (var i = 0, l = meta.options.length; i < l; i++) {
@@ -665,75 +697,6 @@
     }
   });
   
-  $.widget("custom.muikkuField", {
-    options : {
-      answer: function () {
-        return $(this.element).val();
-      },
-      canCheckAnswer: function () {
-        return false;
-      },
-      isCorrectAnswer: function () {
-        return false;
-      },
-      hasExamples: function () {
-        return false;
-      },
-      getExamples: function () {
-        return [];
-      },
-      isReadonly: function () {
-        return $(this.element).attr('readonly') == 'readonly';
-      },
-      setReadonly: function (readonly) {
-        if (readonly) {
-          $(this.element).attr('readonly', 'readonly')
-        } else {
-          $(this.element).removeAttr('readonly');
-        } 
-      },
-      readonly: false
-    },
-    _create : function() {
-      $(this.element).addClass('muikku-field');
-      this.readonly(this.options.readonly);
-    },
-    answer: function () {
-      return this.options.answer.call(this)||'';
-    },
-    hasExamples: function () {
-      return this.options.hasExamples.call(this);
-    },
-    getExamples: function () {
-      return this.options.getExamples.call(this);
-    },
-    canCheckAnswer: function() {
-      return this.options.canCheckAnswer.call(this)||false;
-    },
-    isCorrectAnswer: function() {
-      return this.options.isCorrectAnswer.call(this)||false;
-    },
-    fieldName: function () {
-      return this.options.fieldName;
-    },
-    materialId: function () {
-      return this.options.materialId;
-    },
-    embedId: function () {
-      return this.options.embedId||'';
-    },
-    meta: function () {
-      return this.options.meta;
-    },
-    readonly: function (readonly) {
-      if (readonly === undefined) {
-        return this.options.isReadonly.call(this);
-      } else {
-        this.options.setReadonly.call(this, readonly);
-      }
-    }
-  });
-  
   function createEmbedId(parentIds) {
     return (parentIds.length ? parentIds.join(':') : null);
   }
@@ -764,22 +727,6 @@
     /* If last element inside article is floating this prevents mentioned element from overlapping its parent container */
     $(data.pageElement)
       .append($('<div>').addClass('clear'));
-
-    // Exercise save support 
-    if ($(data.pageElement).data('workspace-material-assigment-type')) {
-      var buttonText = $(data.pageElement).data('workspace-material-assigment-type') == "EXERCISE" 
-        ? getLocaleText("plugin.workspace.materialsLoader.saveExerciseButton")
-        : getLocaleText("plugin.workspace.materialsLoader.saveAssignmentButton");
-      var saveButtonWrapper = $('<div>');
-      $(data.pageElement)
-        .append(saveButtonWrapper
-          .addClass('muikku-save-page-wrapper'));
-      $(saveButtonWrapper)
-        .append($('<button>')
-          .addClass('muikku-save-page')
-          .text(buttonText)
-          .data('unsaved-text', buttonText));
-    }
     
     // Connect field support
     jsPlumb.ready(function() {
@@ -815,7 +762,8 @@
           embedId: $(field).data('embed-id'),
           materialId: $(field).data('material-id'),
           readonly: data.readOnlyFields||false,
-          answer: function () {
+          answer: function (val) {
+            // TODO: Support setter for files
             return JSON.stringify($(this.element).muikkuFileField('files'));
           },
           isReadonly: function () {

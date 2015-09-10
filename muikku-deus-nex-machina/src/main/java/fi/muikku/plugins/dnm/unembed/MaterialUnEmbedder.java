@@ -40,6 +40,7 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 
 @Singleton
@@ -177,7 +178,8 @@ public class MaterialUnEmbedder {
       }
       
       for (HtmlMaterial pieceHtmlMaterial : pieceHtmlMaterials) {
-        WorkspaceNode newNode = workspaceMaterialController.createWorkspaceMaterial(parent, pieceHtmlMaterial, assignmentTypes.get(pieceHtmlMaterial.getId()));
+        WorkspaceNode newNode = workspaceMaterialController.createWorkspaceMaterial(parent, pieceHtmlMaterial,
+            assignmentTypes.get(pieceHtmlMaterial.getId()), WorkspaceMaterialCorrectAnswersDisplay.ALWAYS);
         workspaceMaterialController.moveAbove(newNode, workspaceMaterial);
       }
     }

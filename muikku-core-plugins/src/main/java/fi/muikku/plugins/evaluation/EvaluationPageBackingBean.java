@@ -33,6 +33,7 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialException;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
@@ -187,33 +188,30 @@ public class EvaluationPageBackingBean {
 
           try {
             for (ContentNode assignmentNode : assignmentNodes) {
-              StudentAssignmentStatus assignmentStatus = StudentAssignmentStatus.UNANSWERED;
+              WorkspaceMaterialReplyState replyState = WorkspaceMaterialReplyState.UNANSWERED;
+              Date submitted = null;
+              Date withdrawn = null;
+              Date created = null;
+              Date lastModified = null;
+              Long numOfTries = 0l;
+              
               WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(assignmentNode.getWorkspaceMaterialId());
               WorkspaceMaterialEvaluation assignmentEvaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
-
-              Long numOfTries = 0l;
-              Date replyCreated = null;
-              Date replyModified = null;
               
-              if (assignmentEvaluation == null) {
-                WorkspaceMaterialReply assignmentReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-                if (assignmentReply != null) {
-                  assignmentStatus = StudentAssignmentStatus.DONE;
-                  replyCreated = assignmentReply.getCreated();
-                  replyModified = assignmentReply.getLastModified();
-                }
-              } else {
-                assignmentStatus = StudentAssignmentStatus.EVALUATED;
-                WorkspaceMaterialReply assignmentReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-                if (assignmentReply != null) {
-                  replyCreated = assignmentReply.getCreated();
-                  replyModified = assignmentReply.getLastModified();
-                }
+              WorkspaceMaterialReply assignmentReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+              if (assignmentReply != null) {
+                replyState = assignmentReply.getState();
+                submitted = assignmentReply.getSubmitted();
+                withdrawn = assignmentReply.getWithdrawn();
+                created = assignmentReply.getCreated();
+                lastModified = assignmentReply.getLastModified();
               }
-
-              studentAssignments.add(new StudentAssignment(workspaceMaterial.getId(), assignmentEvaluation != null ? assignmentEvaluation.getId() : null, assignmentStatus,
-                  numOfTries, replyCreated, replyModified));
+              
+              studentAssignments.add(new StudentAssignment(workspaceMaterial.getId(), assignmentEvaluation != null ? assignmentEvaluation.getId() : null, replyState, numOfTries, 
+                  created, lastModified, submitted, withdrawn));
+                    
             }
+
           } catch (Exception e) {
             logger.log(Level.SEVERE, "Failed to load student workspace assignments", e);
             return NavigationRules.INTERNAL_ERROR;
@@ -397,21 +395,23 @@ public class EvaluationPageBackingBean {
 
   public static class StudentAssignment {
 
-    public StudentAssignment(Long workspaceMaterialId, Long workspaceMaterialEvaluationId, StudentAssignmentStatus status, Long numOfTries, Date created, Date lastModified) {
+    public StudentAssignment(Long workspaceMaterialId, Long workspaceMaterialEvaluationId, WorkspaceMaterialReplyState state, Long numOfTries, Date created, Date lastModified, Date submitted, Date withdrawn) {
       this.workspaceMaterialId = workspaceMaterialId;
       this.workspaceMaterialEvaluationId = workspaceMaterialEvaluationId;
-      this.status = status;
+      this.state = state;
       this.numOfTries = numOfTries;
       this.created = created;
       this.lastModified = lastModified;
+      this.submitted = submitted;
+      this.withdrawn = withdrawn;
     }
 
     public Long getWorkspaceMaterialId() {
       return workspaceMaterialId;
     }
 
-    public StudentAssignmentStatus getStatus() {
-      return status;
+    public WorkspaceMaterialReplyState getState() {
+      return state;
     }
 
     public Long getWorkspaceMaterialEvaluationId() {
@@ -429,25 +429,23 @@ public class EvaluationPageBackingBean {
     public Date getLastModified() {
       return lastModified;
     }
+    
+    public Date getSubmitted() {
+      return submitted;
+    }
+    
+    public Date getWithdrawn() {
+      return withdrawn;
+    }
 
     private final Long workspaceMaterialId;
-    private final StudentAssignmentStatus status;
+    private final WorkspaceMaterialReplyState state;
     private final Long workspaceMaterialEvaluationId;
     private final Long numOfTries;
     private final Date created;
     private final Date lastModified;
-  }
-
-  public static enum StudentAssignmentStatus {
-
-    UNANSWERED,
-
-    DONE,
-
-    EVALUATED,
-
-    EVALUATION_CRITICAL
-
+    private final Date submitted;
+    private final Date withdrawn;
   }
 
 }

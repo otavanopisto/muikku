@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    alter table WorkspaceMaterialReply add state varchar(255) not null;
+    alter table WorkspaceMaterialReply add submitted datetime;
+    alter table WorkspaceMaterialReply add withdrawn datetime;
+    update WorkspaceMaterialReply set state = 'SUBMITTED', submitted = lastModified; 
+    update WorkspaceMaterialReply r, WorkspaceMaterialEvaluation e set state = 'EVALUATED' where r.workspaceMaterial_id = e.workspaceMaterialId and r.userEntityId = e.studentEntityId; 
+  </sql>
+  
+</update>

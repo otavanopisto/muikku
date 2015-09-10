@@ -2,7 +2,6 @@
 @import "_workspaces-materials-defaults.scss";
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
-@import "_spinner.scss"; /* Generic loading animation */
 
 body.evaluation {
   background:#4f6677;
@@ -396,20 +395,18 @@ body.evaluation {
                   box-shadow:0 0 0 5px #8cd1fa;
                 }
                 
-                &.assignment-done {
-                  opacity:1;
-                  cursor:pointer;
+                &.assignment-unaswered {
                 }
                 
-                &.assignment-evaluation-critical {
+                &.assignment-aswered {
+                }
+                
+                &.assignment-withdrawn {
+                }
+                
+                &.assignment-submitted {
                   opacity:1;
-                  box-shadow:0 0 0 5px #c43549;
                   cursor:pointer;
-                  
-                  &:hover {
-                    box-shadow:0 0 0 5px #8cd1fa;
-                  }
-                  
                 }
                 
                 &.assignment-evaluated {
@@ -420,7 +417,6 @@ body.evaluation {
                   &:hover {
                     box-shadow:0 0 0 5px #8cd1fa;
                   }
-                  
                 }
                 
                 .evaluation-assignment-picture {

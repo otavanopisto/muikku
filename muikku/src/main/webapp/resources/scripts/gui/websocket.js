@@ -103,6 +103,9 @@
       }
       
       return false;
+    },
+    getTicket: function () {
+      return this._ticket;
     }
   });
       

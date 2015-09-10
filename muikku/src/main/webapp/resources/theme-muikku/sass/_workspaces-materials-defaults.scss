@@ -50,7 +50,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     @include rounded(3px);
     display:inline-block;
     padding:4px 8px;
-    transition:border,box-shadow 0.1s,0.2s ease-in-out;
+    transition:border,box-shadow 0.2s,0.2s ease-in-out;
     outline:none;
     font-size:17px;
     color:#0061a2;
@@ -59,12 +59,11 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     box-sizing:border-box;
     margin:4px 3px;
     
-
-    
     &:focus,
     &:hover {
       border:3px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+      
       span.muikku-text-field-hint {
         display:block;
         border-bottom-left-radius:3px;
@@ -73,9 +72,9 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
         color:#fff;
         font-size:12px;
       }
-      
-    }
 
+    }
+    
     &::-webkit-input-placeholder {
       color:#b4b4b4;
       font-style:italic;
@@ -126,6 +125,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       border:3px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
     }
+
   }
 
   /* Select and Option field overrides */
@@ -174,6 +174,79 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       border:3px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
     }
+  }
+  
+  input[type="text"],
+  textarea,
+  select {
+  
+    &.muikku-field-unsaved {
+      border:3px solid #e4e630;
+      box-shadow:0 0 1px 3px rgba(202,225,252,0.25);
+      
+      &:hover {
+        border:3px solid #e4e630;
+      }
+    }
+    
+    &.muikku-field-saving {
+      animation: saving-fields 4s ease infinite;
+      box-shadow:0 0 1px 3px rgba(202,225,252,0.25);
+    }
+
+    &.muikku-field-saved {
+      border:3px solid #9cf3c7;
+      box-shadow:0 0 1px 3px rgba(202,225,252,0.25);
+      
+      &:hover {
+        border:3px solid #9cf3c7;
+      }
+      
+    }
+
+  }
+  
+  .muikku-select-field,
+  .muikku-checkbox-field {
+  
+    &.muikku-field-unsaved {
+    
+      input[type="checkbox"],
+      input[type="radio"] {
+        box-shadow:0 0 0px 3px #e4e630;
+        
+        &:hover {
+          box-shadow:0 0 0px 3px #e4e630;
+        }
+      
+      }
+      
+    }
+    
+    &.muikku-field-saving {
+    
+      input[type="checkbox"],
+      input[type="radio"] {
+        animation: saving-checkbox-radio 4s ease infinite;
+        box-shadow:0 0 0px 3px #e4e630;
+      }
+      
+    }
+
+    &.muikku-field-saved {
+    
+      input[type="checkbox"],
+      input[type="radio"] {
+        box-shadow:0 0 0px 3px #9cf3c7;
+      
+        &:hover {
+          box-shadow:0 0 0px 3px #9cf3c7;
+        }
+        
+      }
+      
+    }
+
   }
   
   blockquote {
@@ -300,15 +373,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   .workspace-materials-view-page {
   
-    &[data-workspace-material-assigment-type="EXERCISE"] {
-      
-    }
-    
-    &[data-workspace-material-assigment-type="EVALUATED"] {
-      
-    }
-  
-    button.muikku-save-page {
+    /* Material's Assignment Submit Buttons */
+    button.muikku-assignment-button {
       color:#fff;
       background:#71bced;
       box-shadow:none;
@@ -317,7 +383,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       font-weight:300;
       text-transform:uppercase;
       padding:12px;
-      transition:background 0.3s ease-in-out;
+      transition:background 0.8s ease-in-out;
       margin:0 5px 0 5px;
       min-width:120px;
       outline:none;
@@ -326,29 +392,84 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       cursor:pointer;
       display:inline-block;
       
-      &:hover {
-        background:#53afec;
+      /* Check Exercise */
+      &.muikku-check-exercises {
+        background: $exerciseAssignment;
       }
       
-      &.save-successful {
-        background:#1ec30c;
-        cursor:default;
+      /* Submit Assignment */
+      &.muikku-submit-assignment {
+        background: $evaluatedAssignment;
+      }
+      
+      /* Withdraw Assingment */
+      &.muikku-withdraw-assignment {
+        background: darken($evaluatedAssignment,10%);
+      }
+      
+      /* Update Assignment */
+      &.muikku-update-assignment {
+        background: lighten($evaluatedAssignment,5%);
       }
 
     }
-    
+      
+
     .muikku-field-correct-answer {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
-      border:1px solid #00ff2a;
+      box-shadow:0 0 1px 3px rgba(0,255,42,0.3) !important;
+      border:3px solid #00ff2a !important;
       @include rounded(3px);
-      padding-bottom:2px; /* This is only for div containers that are used to wrap checkbox/radio lists */
+      
+      &:hover {
+        box-shadow:0 0 2px 3px rgba(0,255,42,0.3) !important;
+        border:3px solid #00ff2a !important;
+      }
+      
     }
     
     .muikku-field-incorrect-answer {
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-      border:1px solid #f64e4e;
+      border:3px solid #f64e4e !important;
+      box-shadow:0 0 1px 3px rgba(255,0,0,0.3) !important;
       @include rounded(3px);
-      padding-bottom:2px; /* This is only for div containers that are used to wrap checkbox/radio lists */
+      
+      &:hover {
+        border:3px solid #f64e4e !important;
+        box-shadow:0 0 1px 3px rgba(255,0,0,0.3) !important;
+      }
+      
+    }
+    
+    /* For checkbox/radio checks */
+    div.muikku-field-correct-answer {
+      box-shadow:none !important;
+      border:none !important;
+      
+      input[type="checkbox"],
+      input[type="radio"] {
+        box-shadow:0 0 0 3px rgba(0,255,42,0.9) !important;
+      }
+      
+      &:hover {
+        box-shadow:none !important;
+        border:none !important;  
+      }
+      
+    }
+    
+    div.muikku-field-incorrect-answer {
+      box-shadow:none !important;
+      border:none !important;
+      
+      input[type="checkbox"],
+      input[type="radio"] {
+        box-shadow:0 0 0 3px rgba(255,0,0,0.6) !important;
+      }
+      
+      &:hover {
+        box-shadow:none !important;
+        border:none !important;  
+      }
+      
     }
     
     span.muikku-field-examples {
@@ -371,15 +492,16 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       }
       
     }
-    
+
     .muikku-page-assignment-type {
-      padding:2px 8px;
+      padding:0px 8px;
       border-radius:2px;
       color: #fff;
       text-align: center;
       text-transform:uppercase;
       display:inline-block;
       margin:15px 0 0 -36px;
+      font-weight:400;
       
       &.evaluated {
         background: $evaluatedAssignment;
@@ -402,7 +524,7 @@ body.workspace-materials #contentWorkspaceMaterials {
   /* Save answers button's font-size under basic view */
   .workspace-materials-view-page {
   
-    button.muikku-save-page {
+    button.muikku-assignment-button {
       font-size:14px;
     }
   
@@ -415,7 +537,7 @@ body.workspace-materials #contentWorkspaceMaterials {
   
   /* Assigment type indicators under basic view */
   .muikku-page-assignment-type {
-    font-size: 14px;
+    font-size: 12px;
   }
   
 }
@@ -425,7 +547,7 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
   /* Save answers button's font-size under reading view view */
   .workspace-materials-view-page {
   
-    button.muikku-save-page {
+    button.muikku-assignment-button {
       font-size:16px;
     }
   
@@ -438,7 +560,7 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
 
   /* Assigment type indicators under reading view */
   .muikku-page-assignment-type {
-    font-size: 16px;
+    font-size: 14px;
   }
   
 }

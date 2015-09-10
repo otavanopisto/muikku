@@ -1,9 +1,7 @@
 (function() {
   'use strict';
   
-  
-
-  function scrollToPage(workspaceMaterialId, animate) {
+   function scrollToPage(workspaceMaterialId, animate) {
     var topOffset = 100;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
     if (animate) {
@@ -91,72 +89,6 @@
         .removeClass('save-successful')          
         .text(saveButton.data('unsaved-text'));
     }
-  });
-
-  $(document).on('click', '.muikku-save-page', function (event, data) {
-    var page = $(this).closest('.workspace-materials-view-page');
-    var workspaceEntityId = $('.workspaceEntityId').val(); //  TODO: data?
-    var workspaceMaterialId = $(page).data('workspace-material-id');
-    var reply = [];
-    var exercise = $(page).data('workspace-material-assigment-type') == "EXERCISE" ;
-      
-    page.find('.muikku-field-examples').remove();
-    page.find('.muikku-field').each(function (index, field) {
-      $(field).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
-      
-      reply.push({
-        value: $(field).muikkuField('answer'),
-        embedId: $(field).muikkuField('embedId'),
-        materialId: $(field).muikkuField('materialId'),
-        fieldName: $(field).muikkuField('fieldName')
-      });
-    });
-    
-    mApi().workspace.workspaces.materials.replies.create(workspaceEntityId, workspaceMaterialId, {
-      answers: reply
-    })
-    .callback($.proxy(function (err) {
-      if (err) {
-        $('.notification-queue').notificationQueue('notification', 'error',getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
-      } else {
-        if (exercise) {
-          // Correct answer checking
-          page.find('.muikku-field').each(function (index, field) {
-            if ($(field).muikkuField('canCheckAnswer')) {
-              $(field).addClass($(field).muikkuField('isCorrectAnswer') ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
-            }
-            else {
-              if ($(field).muikkuField('hasExamples')) {
-                var exampleDetails = $('<span>')
-                  .addClass('muikku-field-examples')
-                  .attr('data-for-field', $(field).attr('name'));
-                
-                exampleDetails.append( 
-                  $('<span>')
-                    .addClass('muikku-field-examples-title')
-                    .text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
-                );
-                
-                $.each($(field).muikkuField('getExamples'), function (index, example) {
-                  exampleDetails.append(
-                    $('<span>') 
-                      .addClass('muikku-field-example')
-                      .text(example)    
-                  );
-                });
-
-                $(field).after(exampleDetails);
-              }
-            }
-          });
-        } 
-        
-        // Save button
-        $(this)
-          .addClass("save-successful")
-          .text(exercise ? getLocaleText('plugin.workspace.materials.exerciseSaved') : getLocaleText('plugin.workspace.materials.assignmentSaved'));
-      } 
-    }, this));
   });
 
 }).call(this);
