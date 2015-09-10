@@ -102,6 +102,7 @@
       
       this.element.find('.muikku-assignment-button')
         .removeClass(removeClasses.join(' '))
+        .addClass(stateOptions['button-class'])
         .text(getLocaleText(stateOptions['button-text']));
       
       this.workspaceMaterialState(state);
