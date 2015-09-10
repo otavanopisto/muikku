@@ -1,13 +1,16 @@
 package fi.muikku.plugins.workspace.rest.model;
 
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 
 public class WorkspaceMaterial {
 
   public WorkspaceMaterial() {
   }
 
-  public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, String path, String title) {
+  public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, Boolean hidden,
+      WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
+      String path, String title) {
     super();
     this.id = id;
     this.materialId = materialId;
@@ -15,6 +18,7 @@ public class WorkspaceMaterial {
     this.nextSiblingId = nextSiblingId;
     this.hidden = hidden;
     this.assignmentType = assignmentType;
+    this.correctAnswers = correctAnswers;
     this.path = path;
     this.title = title;
   }
@@ -84,12 +88,22 @@ public class WorkspaceMaterial {
   }
 
 
+  public WorkspaceMaterialCorrectAnswersDisplay getCorrectAnswers() {
+    return correctAnswers;
+  }
+
+  public void setCorrectAnswers(WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+    this.correctAnswers = correctAnswers;
+  }
+
+
   private Long id;
   private Long materialId;
   private Long parentId;
   private Long nextSiblingId;
   private Boolean hidden;
   private WorkspaceMaterialAssignmentType assignmentType;
+  private WorkspaceMaterialCorrectAnswersDisplay correctAnswers;
   private String path;
   private String title;
 }

@@ -11,6 +11,7 @@ import javax.persistence.criteria.Root;
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial_;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 
@@ -23,19 +24,20 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
   }
 
   public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, Boolean hidden) {
-    return create(parent, materialId, urlName, orderNumber, hidden, null);
+    return create(parent, materialId, urlName, orderNumber, hidden, null, null);
   }
-  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, WorkspaceMaterialAssignmentType assignmentType) {
-    return create(parent, materialId, urlName, orderNumber, false, assignmentType);
-  }
-
-  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber,
-      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType) {
-    return create(parent, materialId, urlName, orderNumber, hidden, assignmentType, "Untitled");
+  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+    return create(parent, materialId, urlName, orderNumber, false, assignmentType, correctAnswers);
   }
 
   public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber,
-      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, String title) {
+      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+    return create(parent, materialId, urlName, orderNumber, hidden, assignmentType, correctAnswers, "Untitled");
+  }
+
+  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber,
+      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
+      String title) {
     WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
     workspaceMaterial.setParent(parent);
     workspaceMaterial.setMaterialId(materialId);
@@ -43,6 +45,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     workspaceMaterial.setOrderNumber(orderNumber);
     workspaceMaterial.setHidden(hidden);
     workspaceMaterial.setAssignmentType(assignmentType);
+    workspaceMaterial.setCorrectAnswers(correctAnswers);
     workspaceMaterial.setTitle(title);
 
     return persist(workspaceMaterial);
@@ -144,6 +147,11 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
   
   public WorkspaceMaterial updateAssignmentType(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialAssignmentType assignmentType) {
     workspaceMaterial.setAssignmentType(assignmentType);
+    return persist(workspaceMaterial);
+  }
+
+  public WorkspaceMaterial updateCorrectAnswers(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+    workspaceMaterial.setCorrectAnswers(correctAnswers);
     return persist(workspaceMaterial);
   }
 
