@@ -67,6 +67,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
+import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
@@ -724,6 +725,50 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/compositeMaterialReplies")
+  @RESTPermitUnimplemented
+  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("userEntityId") Long userEntityId) {
+    // TODO: Correct workspace entity?, 
+    // TODO: Security
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
+    
+    // TODO Return everyone's answers
+    if (userEntityId == null) {
+      return Response.status(Status.NOT_IMPLEMENTED).build();
+    }
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace material could not be found").build();
+    }
+    
+    List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
+    
+    try {
+      fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+      if (reply != null) {
+        List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
+        for (WorkspaceMaterialField field : fields) {
+          String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
+          Material material = field.getQueryField().getMaterial();
+          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(workspaceMaterial.getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+          answers.add(answer);
+        }
+      }
+    } catch (WorkspaceFieldIOException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error occurred while retrieving field answers: " + e.getMessage()).build();
+    }
+    
+    WorkspaceMaterialCompositeReply result = new WorkspaceMaterialCompositeReply(answers);
+    
+    return Response.ok(result).build();
+  }
+
+  @GET
   @Path("/fileanswer/{FILEID}")
   @RESTPermitUnimplemented
   public Response getFileAnswer(@PathParam("FILEID") String fileId) {
@@ -882,116 +927,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     return Response.noContent().build();
   }
-
-  // 
   
-//  @GET
-//  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/allAnswers")
-//  @RESTPermitUnimplemented
-//  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("userEntityId") Long userEntityId) {
-//    // TODO: Correct workspace entity?, 
-//    // TODO: Security
-//    if (!sessionController.isLoggedIn()) {
-//      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
-//    }
-//    
-//    // TODO Return everyone's answers
-//    if (userEntityId == null) {
-//      return Response.status(Status.NOT_IMPLEMENTED).build();
-//    }
-//    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-//    
-//    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-//    if (workspaceMaterial == null) {
-//      return Response.status(Status.NOT_FOUND).entity("Workspace material could not be found").build();
-//    }
-//    
-//    List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
-//    
-//    try {
-//      fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-//      if (reply != null) {
-//        List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
-//        for (WorkspaceMaterialField field : fields) {
-//          String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
-//          Material material = field.getQueryField().getMaterial();
-//          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(workspaceMaterial.getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
-//          answers.add(answer);
-//        }
-//      }
-//      
-//      WorkspaceMaterialReply result = new WorkspaceMaterialReply(reply.getWorkspaceMaterial().getId(), reply.getState(), answers);
-//      return Response.ok(new WorkspaceMaterialAllAnswers(answers)).build();
-//    } catch (WorkspaceFieldIOException e) {
-//      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error occurred while retrieving field answers: " + e.getMessage()).build();
-//    }
-//  }
-//  
-//  
-  
-//  POST
-//  
-//  
-//  
-//  {
-//    state: ''
-//  }
-  
-
-//  @POST
-//  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
-//  @RESTPermitUnimplemented
-//  public Response createWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply reply) {
-//    // TODO: Correct workspace entity?
-//    // TODO: Available to all logged-in users?
-//    
-//    if (!sessionController.isLoggedIn()) {
-//      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
-//    }
-//    
-//    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-//    if (workspaceMaterial == null) {
-//      return Response.status(Status.NOT_FOUND).entity("Workspace material could not be found").build();
-//    }
-//    
-//    fi.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, sessionController.getLoggedUserEntity());
-//    if (workspaceMaterialReply == null) {
-//      Date d = new Date();
-//      workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, reply.getState(), sessionController.getLoggedUserEntity(),
-//          1l, d, d);
-//    } else {
-//      workspaceMaterialReplyController.updateWorkspaceMaterialReplyState(workspaceMaterialReply, reply.getState());
-//      workspaceMaterialReplyController.incWorkspaceMaterialReplyTries(workspaceMaterialReply);
-//    }
-//    
-//    try {
-//      for (WorkspaceMaterialFieldAnswer answer : reply.getAnswers()) {
-//        String fieldName = answer.getFieldName();
-//        if (StringUtils.isBlank(fieldName)) {
-//          return Response.status(Status.BAD_REQUEST).entity("fieldName is empty").build();
-//        }
-//        
-//        Material material = materialController.findMaterialById(answer.getMaterialId());
-//        if (material == null) {
-//          return Response.status(Status.BAD_REQUEST).entity("material id is invalid").build();
-//        }
-//        
-//        QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, fieldName);
-//        
-//        WorkspaceMaterialField materialField = workspaceMaterialFieldController.findWorkspaceMaterialFieldByWorkspaceMaterialAndQueryFieldAndEmbedId(workspaceMaterial, queryField, answer.getEmbedId());
-//        if (materialField == null) {
-//          materialField = workspaceMaterialFieldController.createWorkspaceMaterialField(workspaceMaterial, queryField, answer.getEmbedId());
-//        }
-//        
-//        workspaceMaterialFieldController.storeFieldValue(materialField, workspaceMaterialReply, answer.getValue());
-//      }
-//    } catch (WorkspaceFieldIOException e) {
-//      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error occurred while storing field answers: " + e.getMessage()).build();
-//    }
-//    
-//    return Response.noContent().build();
-//  }
-
   private List<WorkspaceMaterialReply> createRestModel(fi.muikku.plugins.workspace.model.WorkspaceMaterialReply... entries) {
     List<fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply> result = new ArrayList<>();
 

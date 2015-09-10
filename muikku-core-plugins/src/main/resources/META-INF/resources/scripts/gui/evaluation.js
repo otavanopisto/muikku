@@ -238,7 +238,7 @@
           });
          
           var batchCalls = $.map(workspaceMaterialIds, function (workspaceMaterialId) {
-            return mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId, {
+            return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(workspaceEntityId, workspaceMaterialId, {
               userEntityId: studentEntityId
             });
           });
@@ -410,8 +410,8 @@
                       { name: 'tools', items: [ 'Maximize' ] }
                     ]
           });
-            
-          mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId, {
+          
+          mApi().workspace.workspaces.materials.compositeMaterialReplies.read(workspaceEntityId, workspaceMaterialId, {
             userEntityId: studentEntityId
           }).callback(function (err, reply) {
             if (err) {
