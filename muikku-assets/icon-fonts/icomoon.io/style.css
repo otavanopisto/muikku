@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?-fojxln');
-	src:url('fonts/muikku.eot?#iefix-fojxln') format('embedded-opentype'),
-		url('fonts/muikku.ttf?-fojxln') format('truetype'),
-		url('fonts/muikku.woff?-fojxln') format('woff'),
-		url('fonts/muikku.svg?-fojxln#muikku') format('svg');
+	src:url('fonts/muikku.eot?d835dl');
+	src:url('fonts/muikku.eot?#iefixd835dl') format('embedded-opentype'),
+		url('fonts/muikku.ttf?d835dl') format('truetype'),
+		url('fonts/muikku.woff?d835dl') format('woff'),
+		url('fonts/muikku.svg?d835dl#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -24,13 +24,16 @@
 }
 
 .icon-edit-index:before {
-	content: "\e637";
+	content: "\e640";
 }
 .icon-edit-help:before {
-	content: "\e63e";
+	content: "\e641";
 }
 .icon-forgotpassword:before {
 	content: "\e63f";
+}
+.icon-correct-answers:before {
+	content: "\e642";
 }
 .icon-download:before {
 	content: "\f019";

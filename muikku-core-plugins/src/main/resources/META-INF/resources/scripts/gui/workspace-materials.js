@@ -90,5 +90,5 @@
         .text(saveButton.data('unsaved-text'));
     }
   });
-  
+
 }).call(this);

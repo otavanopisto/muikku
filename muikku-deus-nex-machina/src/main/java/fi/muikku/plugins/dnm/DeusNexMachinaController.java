@@ -62,6 +62,7 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialUtils;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
 
@@ -595,7 +596,8 @@ public class DeusNexMachinaController {
             assignmentType = determineEmbeddedAssignmentType((HtmlMaterial) material);
           }
 
-          WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName(), assignmentType);
+          WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(
+              parent, material, resource.getName(), assignmentType, WorkspaceMaterialCorrectAnswersDisplay.ALWAYS);
 
           try {
             setResourceWorkspaceNodeId(resource.getNo(), workspaceMaterial.getId());

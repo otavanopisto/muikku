@@ -959,7 +959,7 @@
     dust.preload('workspace/materials-management-page-html.dust');
     dust.preload('workspace/materials-management-page-binary.dust');
     dust.preload('workspace/materials-management-page-folder.dust');
-    
+
     $(document).muikkuMaterialLoader({
       workspaceEntityId: $('.workspaceEntityId').val(),
       dustTemplate: 'workspace/materials-management-page.dust',
@@ -982,6 +982,35 @@
     
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
       enableFileUploader(element);
+    });
+
+    $('.correct-answers-settings').each(function(index, node) {
+      if ($(node).closest('.workspace-materials-view-page').attr('data-assignment-type') != 'EXERCISE') {
+        $(node).hide();
+      } else {
+        var correctAnswersElem = $(node).find('.correct-answers');
+        if ($(node).closest('.workspace-materials-view-page').attr('data-correct-answers') == 'ALWAYS') {
+          $(correctAnswersElem)
+          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"))
+          .find("span")
+          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
+        } else if ($(node).closest('.workspace-materials-view-page').attr('data-correct-answers') == 'ON_REQUEST') {
+          $(correctAnswersElem)
+          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"))
+          .find("span")
+          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"));
+        } else if ($(node).closest('.workspace-materials-view-page').attr('data-correct-answers') == 'NEVER') {
+          $(correctAnswersElem)
+          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"))
+          .find("span")
+          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"));
+        } else {
+          $(correctAnswersElem)
+          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"))
+          .find("span")
+          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
+        }
+      }
     });
 
     $('.muikku-connect-field').muikkuConnectField('refresh');
@@ -1165,6 +1194,20 @@
       }
     });
   }
+
+  function changeCorrectAnswers(workspaceId, workspaceMaterialId, correctAnswers, callback) {
+    mApi().workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback(function (err, workspaceMaterial) {
+      if (err) {
+        callback(err);
+      } else {
+        mApi().workspace.workspaces.materials
+          .update(workspaceId, workspaceMaterialId, $.extend(workspaceMaterial, { correctAnswers: correctAnswers }))
+          .callback(function (err) {
+            callback(err);
+          });
+      }
+    });
+  }
   
   function setupSortableSection(node) {
     $(node).sortable({
@@ -1215,13 +1258,50 @@
     });
   }
   
+  $(document).on('click', '.correct-answers', function (event, data) {
+    var page = $(this).closest('.workspace-materials-view-page');
+    var correctAnswers = $(page).attr('data-correct-answers');
+    var workspaceId = $('.workspaceEntityId').val();
+    var workspaceMaterialId = $(page).attr('data-workspace-material-id');
+    switch (correctAnswers) {
+      case "ALWAYS":
+        correctAnswers = "ON_REQUEST";
+        $(this)
+        .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"))
+        .find("span")
+        .text(getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"));
+        break;
+      case "ON_REQUEST":
+        correctAnswers = "NEVER";
+        $(this)
+        .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"))
+        .find("span")
+        .text(getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"));
+        break;
+      default:
+        correctAnswers = "ALWAYS";
+        $(this)
+        .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"))
+        .find("span")
+        .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
+        break;
+    }
+    changeCorrectAnswers(workspaceId, workspaceMaterialId, correctAnswers, $.proxy(function (err) {
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', err);
+      }
+      else {
+        $(page).attr('data-correct-answers', correctAnswers);
+      }
+    }, this));
+  });
+  
   $(document).on('click', '.change-assignment', function (event, data) {
-    // TODO: Actually do something AND DO IT BETTER!
     var page = $(this).closest('.workspace-materials-view-page');
     var assignmentType = $(page).attr('data-assignment-type');
     var workspaceId = $('.workspaceEntityId').val();
     var workspaceMaterialId = $(page).attr('data-workspace-material-id');
-    
+    var correctAnswers = $(page).attr('data-correct-answers');
     switch (assignmentType) {
       case "EXERCISE":
         changeAssignmentType(workspaceId, workspaceMaterialId, "EVALUATED", $.proxy(function (err) {
@@ -1229,6 +1309,17 @@
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
             $(page).attr('data-assignment-type', 'EVALUATED');
+            if (!correctAnswers) {
+              changeCorrectAnswers(workspaceId, workspaceMaterialId, 'ALWAYS', $.proxy(function (err) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                }
+                else {
+                  $(page).attr('data-correct-answers', 'ALWAYS');
+                }
+              }, this));
+            }
+            $(page).find('.correct-answers-settings').hide();
           }
         }, this));
       break;
@@ -1238,6 +1329,7 @@
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
             $(page).removeAttr('data-assignment-type');
+            $(page).find('.correct-answers-settings').hide();
           }
         }, this));
       break;
@@ -1247,6 +1339,17 @@
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
             $(page).attr('data-assignment-type', 'EXERCISE');
+            if (!correctAnswers) {
+              changeCorrectAnswers(workspaceId, workspaceMaterialId, 'ALWAYS', $.proxy(function (err) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                }
+                else {
+                  $(page).attr('data-correct-answers', 'ALWAYS');
+                }
+              }, this));
+            }
+            $(page).find('.correct-answers-settings').show();
           }
         }, this));
       break;
@@ -1361,6 +1464,7 @@
                 }
                 newPage.empty();
                 $(document).muikkuMaterialLoader('loadMaterial', newPage);
+                $(newPage).find('.correct-answers-settings').hide();
                 // TODO Concurrency? Has the material been loaded before edit?
                 editPage(newPage);
               } 
