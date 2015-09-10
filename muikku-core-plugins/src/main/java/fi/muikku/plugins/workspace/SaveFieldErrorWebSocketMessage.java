@@ -2,6 +2,19 @@ package fi.muikku.plugins.workspace;
 
 public class SaveFieldErrorWebSocketMessage {
 
+  public SaveFieldErrorWebSocketMessage() {
+  }
+  
+  public SaveFieldErrorWebSocketMessage(String error, String embedId, Long materialId, String fieldName, Long workspaceMaterialId, Long workspaceEntityId) {
+    super();
+    this.error = error;
+    this.embedId = embedId;
+    this.materialId = materialId;
+    this.fieldName = fieldName;
+    this.workspaceMaterialId = workspaceMaterialId;
+    this.workspaceEntityId = workspaceEntityId;
+  }
+
   public String getError() {
     return error;
   }

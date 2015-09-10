@@ -22,6 +22,7 @@ import fi.muikku.plugins.websocket.WebSocketMessageEvent;
 import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.muikku.users.UserEntityController;
@@ -52,10 +53,10 @@ public class SaveFieldAnswerWebSocketMessageHandler {
   @Inject
   private QueryFieldController queryFieldController;
   
-  public void handleError(String error, String ticket){
+  public void handleError(String error, String embedId, Long materialId, String fieldName, Long workspaceMaterialId, Long workspaceEntityId, String ticket){
     ObjectMapper mapper = new ObjectMapper();
-    SaveFieldErrorWebSocketMessage message = new SaveFieldErrorWebSocketMessage();
-    message.setError(error);
+    SaveFieldErrorWebSocketMessage message = new SaveFieldErrorWebSocketMessage(error, embedId, materialId, fieldName, workspaceMaterialId, workspaceEntityId);
+
     try {
       String data = mapper.writeValueAsString(message);
       webSocketMessenger.sendMessage("workspace:field-answer-error", data, ticket);
@@ -79,34 +80,34 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       Material material = materialController.findMaterialById(message.getMaterialId());
       if (material == null) {
         logger.log(Level.SEVERE, "Could not find material");
-        handleError("Could not find material", event.getTicket());
+        handleError("Could not find material", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
         return;
       }
       
       UserEntity userEntity = userEntityController.findUserEntityById(event.getUserEntityId());
       if (userEntity == null) {
         logger.log(Level.SEVERE, "Could not find user");
-        handleError("Could not find user", event.getTicket());
+        handleError("Could not find user", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
         return;
       }
       
       WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(message.getWorkspaceMaterialId());
       if (workspaceMaterial == null) {
         logger.log(Level.SEVERE, "Could not find workspace material");
-        handleError("Could not find workspace material", event.getTicket());
+        handleError("Could not find workspace material", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
         return;
       }
 
       if (!workspaceMaterial.getMaterialId().equals(material.getId())) {
         logger.log(Level.SEVERE, "Invalid materialId or workspaceMaterialId");
-        handleError("Invalid materialId or workspaceMaterialId", event.getTicket());
+        handleError("Invalid materialId or workspaceMaterialId", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
         return;
       }
       
       QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, message.getFieldName());
       if (queryField == null) {
         logger.log(Level.SEVERE, "Could not find query field");
-        handleError("Could not find query field", event.getTicket());
+        handleError("Could not find query field", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
         return;
       }
 
@@ -122,17 +123,23 @@ public class SaveFieldAnswerWebSocketMessageHandler {
         workspaceMaterialReplyController.incWorkspaceMaterialReplyTries(reply);
       }
       
-      if ((reply.getState() != null) && (reply.getState() == WorkspaceMaterialReplyState.SUBMITTED)) {
-        handleError("Assignment is already submitted thus can not be modified", event.getTicket());
-        return;
-      } else {
-        try {
-          workspaceMaterialFieldController.storeFieldValue(materialField, reply, message.getAnswer());
-        } catch (WorkspaceFieldIOException e) {
-          logger.log(Level.SEVERE, "Could not store field value");
-          handleError("Could not store field value", event.getTicket());
-          return;
+      if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
+        switch (reply.getState()) {
+          case EVALUATED:
+          case SUBMITTED:
+            handleError("Assignment is already submitted thus can not be modified", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+            return;
+          default:
+          break;
         }
+      }
+      
+      try {
+        workspaceMaterialFieldController.storeFieldValue(materialField, reply, message.getAnswer());
+      } catch (WorkspaceFieldIOException e) {
+        logger.log(Level.SEVERE, "Could not store field value");
+        handleError("Could not store field value", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+        return;
       }
       
       message.setOriginTicket(event.getTicket());
