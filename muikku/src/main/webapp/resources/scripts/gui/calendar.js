@@ -50,17 +50,23 @@
          delete values.recurrenceObject;
          delete values.endRecurrence;
          delete values.repeatable;
+         
          if(values.recurrenceInputWeekday){
            delete values.recurrenceInputWeekday;
          }
-         
+         if(values.allDay == 'on'){
+           delete values.allDay;         
+           values.allDay = 'true';
+         }else{
+           delete values.allDay;           
+           values.allDay = 'false';           
+         }         
          values.recurrence = recurrence;
          values.start = eventStart;
          values.end = eventStop;
          values.status = 'CONFIRMED';
          values.startTimeZone = 'GMT+3';
          values.endTimeZone = 'GMT+3';        
-         values.allDay = 'false';
    
 
 
@@ -156,17 +162,27 @@
           .timepicker('setTime', end);
         
         $('input[name="repeatable"]').click(function () {
-        if ($(this).is(':checked')){          
-
-
-            $('#eventRecurrence').recurrenceInput('show');
-          } else {
-            $('#eventRecurrence').hide();;      
-
-            $('#eventRecurrence').recurrenceInput('rrule', null);  
-            $('#eventRecurrence').recurrenceInput('hide');  
-          }
+          if ($(this).is(':checked')){          
+  
+  
+              $('#eventRecurrence').recurrenceInput('show');
+            } else {
+              $('#eventRecurrence').hide();;      
+  
+              $('#eventRecurrence').recurrenceInput('rrule', null);  
+              $('#eventRecurrence').recurrenceInput('hide');  
+            }
         });
+ 
+        $('input[name="allDay"]').click(function () {
+          var timeInputs = $('.mf-textfield-time').parent('.mf-textfield-subelement');
+          if ($(this).is(':checked')){          
+              timeInputs.hide();
+            } else {
+              timeInputs.show();
+            }
+          });
+        
         
         $('#eventRecurrence').on("show", function () {
           $('input[name="repeatable"]')

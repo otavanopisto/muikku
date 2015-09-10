@@ -16,6 +16,7 @@
                  <div class="mf-textfield-title mf-textfield-subelement"><input id="startDate" class="mf-textfield-date" type="date" name="startDate"></input></div>
                  <div class="mf-textfield-title mf-textfield-subelement"><input id="endTime" class="mf-textfield-time" type="time" name="endTime" data-time-format="H:i"></input></div>
                  <div class="mf-textfield-title mf-textfield-subelement"><input id="endDate" class="mf-textfield-date" type="date" name="endDate"></input></div>
+                 <div class="mf-textfield-title mf-textfield-subelement"><span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.allDay"/}</span><input class="mf-textfield-title" type="checkbox" name="allDay"></input></div>
                  <div class="clear"></div>
                 </div>
               </div>      
