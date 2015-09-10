@@ -7,7 +7,8 @@
         'assignment-type': 'EXERCISE',
         'state': 'UNANSWERED',
         'button-class': 'muikku-check-exercises',
-        'button-text': "plugin.workspace.materialsLoader.checkExerciseButton",
+        'button-text': "plugin.workspace.materialsLoader.sendExerciseButton",
+        'button-check-text': "plugin.workspace.materialsLoader.checkExerciseButton",
         'button-disabled': false,
         'success-state': 'SUBMITTED',
         'fields-read-only': false
@@ -15,7 +16,8 @@
         'assignment-type': 'EXERCISE',
         'state': 'ANSWERED',
         'button-class': 'muikku-check-exercises',
-        'button-text': "plugin.workspace.materialsLoader.checkExerciseButton",
+        'button-text': "plugin.workspace.materialsLoader.sendExerciseButton",
+        'button-check-text': "plugin.workspace.materialsLoader.checkExerciseButton",
         'button-disabled': false,
         'success-state': 'SUBMITTED',
         'fields-read-only': false
@@ -23,7 +25,8 @@
         'assignment-type': 'EXERCISE',
         'state': 'SUBMITTED',
         'button-class': 'muikku-check-exercises',
-        'button-text': "plugin.workspace.materialsLoader.checkExerciseButton",
+        'button-text': "plugin.workspace.materialsLoader.exerciseSentButton",
+        'button-check-text': "plugin.workspace.materialsLoader.exerciseCheckedButton",
         'button-disabled': false,
         'success-state': 'SUBMITTED',
         'fields-read-only': false
@@ -76,7 +79,7 @@
     },
     
     _create : function() {
-      var assignmentType = this.assignmentType();
+      var assignmentType = this.assignmentType();      
       if (assignmentType) {
         var buttonWrapper = $('<div>')
           .addClass('muikku-save-page-wrapper')
@@ -91,6 +94,26 @@
         
         this.element.on('change', '.muikku-field', $.proxy(this._onFieldChange, this));
       }
+    },
+    
+    _checkableExercise: function () {
+      var assignmentType = this.assignmentType();
+      
+      if (assignmentType == 'EXERCISE') {
+        var fields = this.element.find('.muikku-field');
+        
+        for (var i = 0, l = fields.length; i < l; i++) {
+          if ($(fields[0]).muikkuField('canCheckAnswer')) {
+            return true;
+          }
+          
+          if ($(fields[0]).muikkuField('hasExamples')) {
+            return true;
+          }
+        }
+      } 
+      
+      return false;
     },
     
     _getStateOptions: function (assignmentType, state) {
@@ -135,10 +158,11 @@
         return value['button-class'];
       });
       
+      var text = stateOptions['button-check-text'] && this._checkableExercise() ? stateOptions['button-check-text'] : stateOptions['button-text'];
       this.element.find('.muikku-assignment-button')
         .removeClass(removeClasses.join(' '))
         .addClass(stateOptions['button-class'])
-        .text(getLocaleText(stateOptions['button-text']))
+        .text(getLocaleText(text))
         .prop('disabled', stateOptions['button-disabled']);
       
       this.workspaceMaterialState(state);
