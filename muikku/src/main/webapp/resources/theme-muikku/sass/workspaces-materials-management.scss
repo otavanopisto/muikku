@@ -1075,6 +1075,7 @@ body.workspace-materials-management {
 
       &[data-correct-answers="ALWAYS"] .workspace-materials-management-view-page-controls span.correct-answers-settings { /* Special case for assignment type link */
         background: $exerciseCorrectAnswersAlways;
+        display:none !important;
         
         a.correct-answers {
           margin:0;

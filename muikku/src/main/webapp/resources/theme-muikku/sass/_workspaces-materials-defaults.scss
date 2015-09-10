@@ -404,7 +404,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       
       /* Withdraw Assingment */
       &.muikku-withdraw-assignment {
-        background: darken($evaluatedAssignment,5%);
+        background: darken($evaluatedAssignment,10%);
       }
       
       /* Update Assignment */
@@ -419,7 +419,6 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       box-shadow:0 0 1px 3px rgba(0,255,42,0.3) !important;
       border:3px solid #00ff2a !important;
       @include rounded(3px);
-      padding-bottom:4px; /* This is only for div containers that are used to wrap checkbox/radio lists */
       
       &:hover {
         box-shadow:0 0 2px 3px rgba(0,255,42,0.3) !important;
@@ -432,11 +431,43 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       border:3px solid #f64e4e !important;
       box-shadow:0 0 1px 3px rgba(255,0,0,0.3) !important;
       @include rounded(3px);
-      padding-bottom:4px; /* This is only for div containers that are used to wrap checkbox/radio lists */
       
       &:hover {
         border:3px solid #f64e4e !important;
         box-shadow:0 0 1px 3px rgba(255,0,0,0.3) !important;
+      }
+      
+    }
+    
+    /* For checkbox/radio checks */
+    div.muikku-field-correct-answer {
+      box-shadow:none !important;
+      border:none !important;
+      
+      input[type="checkbox"],
+      input[type="radio"] {
+        box-shadow:0 0 0 3px rgba(0,255,42,0.9) !important;
+      }
+      
+      &:hover {
+        box-shadow:none !important;
+        border:none !important;  
+      }
+      
+    }
+    
+    div.muikku-field-incorrect-answer {
+      box-shadow:none !important;
+      border:none !important;
+      
+      input[type="checkbox"],
+      input[type="radio"] {
+        box-shadow:0 0 0 3px rgba(255,0,0,0.6) !important;
+      }
+      
+      &:hover {
+        box-shadow:none !important;
+        border:none !important;  
       }
       
     }
