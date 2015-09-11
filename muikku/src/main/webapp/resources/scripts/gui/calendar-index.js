@@ -29,13 +29,14 @@
         week : 'ddd'
       },
       dayClick: function(date, turha1, turha2) {
-        var clickedTime = date.toISOString();
+        var clickedTime = date.format('YYYY-MM-DD[T]HH:mm:ss.SSS');
+//        var clickedToIso = clickedTime.toISOString();
         var clickedDate = clickedTime.substring(5, 7) + "/"
                         + clickedTime.substring(8, 10) + "/"
                         + clickedTime.substring(0, 4);
                 
         var clickedMinutes = clickedTime.substring(14, 16);
-        var clickedHour = String(parseInt(clickedTime.substring(11, 13)) + 3);
+        var clickedHour = String(parseInt(clickedTime.substring(11, 13)));
         var clickedClock = clickedHour + ":" + clickedMinutes;
         
         var n = parseInt(clickedHour) + 1;
