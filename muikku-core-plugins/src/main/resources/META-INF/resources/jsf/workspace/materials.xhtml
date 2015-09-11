@@ -75,14 +75,14 @@
                 </ui:fragment>
               </ui:fragment>
               <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                <article id="page-#{articleNode.workspaceMaterialId}" data-workspace-material-assigment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" class="workspace-materials-view-page material-view"/>
+                <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-workspace-material-assigment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" class="workspace-materials-view-page material-view"/>
               </ui:fragment>
             </ui:repeat>
           </section>
         </ui:fragment>  
         
         <ui:fragment rendered="#{node.type ne 'folder'}">
-          <article id="page-#{node.workspaceMaterialId}" data-workspace-material-assigment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" class="workspace-materials-view-page material-view"/>
+          <article id="page-#{node.workspaceMaterialId}" data-correct-answers="#{node.correctAnswers}" data-workspace-material-assigment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" class="workspace-materials-view-page material-view"/>
         </ui:fragment>  
       </ui:repeat>
     </article>

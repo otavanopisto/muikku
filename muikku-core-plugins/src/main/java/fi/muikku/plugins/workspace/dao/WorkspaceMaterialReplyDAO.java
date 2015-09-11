@@ -11,13 +11,14 @@ import javax.persistence.criteria.Root;
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply_;
 
 public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialReply> {
 	
   private static final long serialVersionUID = -4395949418454232657L;
 
-  public WorkspaceMaterialReply create(WorkspaceMaterial workspaceMaterial, Long userEntityId, Long numberOfTries, Date created, Date lastModified) {
+  public WorkspaceMaterialReply create(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, Long userEntityId, Long numberOfTries, Date created, Date lastModified, Date submitted, Date withdrawn) {
 		WorkspaceMaterialReply workspaceMaterialReply = new WorkspaceMaterialReply();
 		
 		workspaceMaterialReply.setWorkspaceMaterial(workspaceMaterial);
@@ -25,6 +26,9 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
 		workspaceMaterialReply.setNumberOfTries(numberOfTries);
 		workspaceMaterialReply.setCreated(created);
 		workspaceMaterialReply.setLastModified(lastModified);
+		workspaceMaterialReply.setState(state);
+		workspaceMaterialReply.setSubmitted(submitted);
+		workspaceMaterialReply.setWithdrawn(withdrawn);
 		
 		return persist(workspaceMaterialReply);
 	}
@@ -69,6 +73,26 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
     getEntityManager().persist(workspaceMaterialReply);
     
     return workspaceMaterialReply;
+  }
+  
+  public WorkspaceMaterialReply updateState(WorkspaceMaterialReply workspaceMaterialReply, WorkspaceMaterialReplyState state) {
+    workspaceMaterialReply.setState(state);
+    return persist(workspaceMaterialReply);
+  }
+  
+  public WorkspaceMaterialReply updateLastModified(WorkspaceMaterialReply workspaceMaterialReply, Date lastModified) {
+    workspaceMaterialReply.setLastModified(lastModified);
+    return persist(workspaceMaterialReply);
+  }
+
+  public WorkspaceMaterialReply updateSubmitted(WorkspaceMaterialReply workspaceMaterialReply, Date lastModified) {
+    workspaceMaterialReply.setSubmitted(lastModified);
+    return persist(workspaceMaterialReply);
+  }
+
+  public WorkspaceMaterialReply updateWithdrawn(WorkspaceMaterialReply workspaceMaterialReply, Date withdrawn) {
+    workspaceMaterialReply.setWithdrawn(withdrawn);
+    return persist(workspaceMaterialReply);
   }
   
   public void delete(WorkspaceMaterialReply workspaceMaterialReply) {

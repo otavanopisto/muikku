@@ -11,6 +11,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.websocket.MuikkuWebSocketEvent;
 import fi.muikku.plugins.websocket.WebSocketMessage;
+import fi.muikku.plugins.websocket.WebSocketMessageEvent;
 import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.users.UserEntityController;
 
@@ -23,7 +24,9 @@ public class ChatMessageHandler {
   @Inject
   private UserEntityController userEntityController; 
   
-  public void handleMessage(@Observes @MuikkuWebSocketEvent("Chat:message") WebSocketMessage message) {
+  public void handleMessage(@Observes @MuikkuWebSocketEvent("Chat:message") WebSocketMessageEvent event) {
+    WebSocketMessage message = event.getMessage();
+    
     ObjectMapper mapper = new ObjectMapper();
 
     ChatMessage msg = mapper.convertValue(message.getData(), ChatMessage.class);

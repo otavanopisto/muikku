@@ -32,6 +32,14 @@ public class WorkspaceMaterial extends WorkspaceNode {
   public void setAssignmentType(WorkspaceMaterialAssignmentType assignmentType) {
     this.assignmentType = assignmentType;
   }
+  
+  public WorkspaceMaterialCorrectAnswersDisplay getCorrectAnswers() {
+    return correctAnswers;
+  }
+
+  public void setCorrectAnswers(WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+    this.correctAnswers = correctAnswers;
+  }
 
   @NotNull
   @Column(nullable = false)
@@ -39,5 +47,8 @@ public class WorkspaceMaterial extends WorkspaceNode {
   
   @Enumerated (EnumType.STRING)
   private WorkspaceMaterialAssignmentType assignmentType;
+  
+  @Enumerated (EnumType.STRING)
+  private WorkspaceMaterialCorrectAnswersDisplay correctAnswers;
   
 }

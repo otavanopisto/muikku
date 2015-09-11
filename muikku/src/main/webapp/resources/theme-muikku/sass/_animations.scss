@@ -1,9 +1,9 @@
 /* Animations keyframes */
 
 @keyframes flash {
-    0%   {background-color: #fff;}
-    50%  {background-color: $hlBgr; }
-    100% {background-color: fff;}
+  0% { background-color: #fff; }
+  50% { background-color: $hlBgr; }
+  100% { background-color: fff; }
 }
 
 @-webkit-keyframes bouncedelay {
@@ -11,12 +11,70 @@
   40% { -webkit-transform: scale(1.0) }
 }
 
+@-moz-keyframes bouncedelay {
+  0%, 80%, 100% { -moz-transform: scale(0.0) }
+  40% { -moz-transform: scale(1.0) }
+}
+
 @keyframes bouncedelay {
-  0%, 80%, 100% { 
-    transform: scale(0.0);
-    -webkit-transform: scale(0.0);
-  } 40% { 
-    transform: scale(1.0);
-    -webkit-transform: scale(1.0);
-  }
+  0%, 80%, 100% { transform: scale(0.0);  } 
+  40% { transform: scale(1.0); }
+}
+
+/* Evaluation Spinner Animations */
+@-webkit-keyframes spinner {
+  0% { -webkit-transform: rotate(0deg); }
+  10% { -webkit-transform: rotate(360deg);}
+}
+@-moz-keyframes spinner {
+  0% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg); }
+}
+@keyframes spinner {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Workspace Material's select, textfield, textarea autosave animations */
+@-webkit-keyframes saving-fields {
+  0% { border-color:#e4e630 }
+  25% { border-color:#ffffff } 
+  50% { border-color:#e4e630 }
+  100% { border-color:#ffffff }
+}
+
+@-moz-keyframes saving-fields {
+  0% { border-color:#e4e630 }
+  25% { border-color:#ffffff } 
+  50% { border-color:#e4e630 }
+  100% { border-color:#ffffff }
+}
+
+@keyframes saving-fields {
+  0% { border-color:#e4e630 }
+  25% { border-color:#ffffff } 
+  50% { border-color:#e4e630 }
+  100% { border-color:#ffffff }
+}
+
+/* Workspace Material's checkbox and radio animations */
+@-webkit-keyframes saving-checkbox-radio {
+  0% { box-shadow:0 0 0px 3px #e4e630 }
+  25% { box-shadow:0 0 0px 3px #ffffff }
+  50% { box-shadow:0 0 0px 3px #e4e630 }
+  100% { box-shadow:0 0 0px 3px #ffffff }
+}
+
+@-moz-keyframes saving-checkbox-radio {
+  0% { box-shadow:0 0 0px 3px #e4e630 }
+  25% { box-shadow:0 0 0px 3px #ffffff }
+  50% { box-shadow:0 0 0px 3px #e4e630 }
+  100% { box-shadow:0 0 0px 3px #ffffff }
+}
+
+@keyframes saving-checkbox-radio {
+  0% { box-shadow:0 0 0px 3px #e4e630 }
+  25% { box-shadow:0 0 0px 3px #ffffff }
+  50% { box-shadow:0 0 0px 3px #e4e630 }
+  100% { box-shadow:0 0 0px 3px #ffffff }
 }
