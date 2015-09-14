@@ -39,7 +39,8 @@
         'button-check-text': "plugin.workspace.materialsLoader.exerciseCheckedButton",
         'button-disabled': false,
         'success-state': 'SUBMITTED',
-        'fields-read-only': false
+        'fields-read-only': false,
+        'show-answers-button-visible': true
       }, {
         'assignment-type': 'EVALUATED',
         'state': 'UNANSWERED',
@@ -100,6 +101,12 @@
           .appendTo(buttonWrapper)
           .click($.proxy(this._onAssignmentButtonClick, this));
 
+        $('<button>')
+          .addClass('muikku-show-answers-button')
+          .appendTo(buttonWrapper)
+          .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'))
+          .click($.proxy(this._onShowAnswersButtonClick, this));
+
         this._applyState(assignmentType, this.workspaceMaterialState());
         
         this.element.on('change', '.muikku-field', $.proxy(this._onFieldChange, this));
@@ -154,6 +161,10 @@
       return this.element.attr('data-workspace-material-assigment-type');
     },
     
+    correctAnswers: function() {
+      return this.element.attr('data-correct-answers');
+    },
+    
     workspaceMaterialId: function () {
       return $(this.element).attr('data-workspace-material-id');  
     },
@@ -175,12 +186,27 @@
         .text(getLocaleText(text))
         .prop('disabled', stateOptions['button-disabled']);
       
+      console.log(stateOptions['show-answers-button-visible']);
+      console.log(this.correctAnswers());
+      console.log(this._hasDisplayableAnswers());
+      
+      var showAnswersButton = stateOptions['show-answers-button-visible'] && this.correctAnswers() == 'ON_REQUEST' && this._hasDisplayableAnswers();
+      if (showAnswersButton) {
+        this.element.find('.muikku-show-answers-button').show();
+      } else {
+        this.element.find('.muikku-show-answers-button').hide();
+      }
+      
       this.workspaceMaterialState(state);
       this.element.find('.muikku-field').muikkuField('readonly', stateOptions['fields-read-only']);
       
       if (stateOptions['check-answers']) {
         this._checkExercises();
       }
+    },
+    
+    _hasDisplayableAnswers: function() {
+      return true;
     },
     
     _createWorkspcaeMaterialReply: function (state, callback) {
@@ -250,33 +276,57 @@
       
     },
     
-    _checkExercises: function () {
+    _checkExercises: function (requestAnswers) {
+      var correctAnswersDisplay = this.correctAnswers();
       this.element.find('.muikku-field-examples').remove();
       this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
       this.element.find('.muikku-field').each(function (index, field) {
         if ($(field).muikkuField('canCheckAnswer')) {
-          $(field).addClass($(field).muikkuField('isCorrectAnswer') ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
-        } else {
-          if ($(field).muikkuField('hasExamples')) {
-            var exampleDetails = $('<span>')
-              .addClass('muikku-field-examples')
-              .attr('data-for-field', $(field).attr('name'));
-            
-            exampleDetails.append( 
-              $('<span>')
-                .addClass('muikku-field-examples-title')
-                .text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
-            );
-            
-            $.each($(field).muikkuField('getExamples'), function (index, example) {
-              exampleDetails.append(
-                $('<span>') 
-                  .addClass('muikku-field-example')
-                  .text(example)    
+          var correctAnswer = $(field).muikkuField('isCorrectAnswer');
+          $(field).addClass(correctAnswer ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
+          // TODO classes are not examples but correct answers?
+          if (!correctAnswer && (correctAnswersDisplay == 'ALWAYS' || (correctAnswersDisplay == 'ON_REQUEST' && requestAnswers))) {
+            var correctAnswers = $(field).muikkuField('getCorrectAnswers');
+            if (correctAnswers.length > 0) {
+              var exampleDetails = $('<span>')
+                .addClass('muikku-field-examples')
+                .attr('data-for-field', $(field).attr('name'));
+              exampleDetails.append( 
+                $('<span>')
+                  .addClass('muikku-field-examples-title')
+                  .text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
               );
-            });
-
-            $(field).after(exampleDetails);
+              $.each(correctAnswers, function (index, example) {
+                exampleDetails.append(
+                  $('<span>') 
+                    .addClass('muikku-field-example')
+                    .text(example)    
+                );
+              });
+              $(field).after(exampleDetails);
+            }
+          }
+        }
+        else {
+          if (correctAnswersDisplay == 'ALWAYS' || (correctAnswersDisplay == 'ON_REQUEST' && requestAnswers)) {
+            if ($(field).muikkuField('hasExamples')) {
+              var exampleDetails = $('<span>')
+                .addClass('muikku-field-examples')
+                .attr('data-for-field', $(field).attr('name'));
+              exampleDetails.append( 
+                $('<span>')
+                  .addClass('muikku-field-examples-title')
+                  .text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
+              );
+              $.each($(field).muikkuField('getExamples'), function (index, example) {
+                exampleDetails.append(
+                  $('<span>') 
+                    .addClass('muikku-field-example')
+                    .text(example)    
+                );
+              });
+              $(field).after(exampleDetails);
+            }
           }
         }
       });
@@ -298,7 +348,11 @@
         }
       }, this));
     },
-
+    
+    _onShowAnswersButtonClick: function (event) {
+      this._checkExercises(true);
+    },
+    
     _onFieldChange: function (event, data) {
       if (this.assignmentType() == 'EXERCISE') {
         this._saveWorkspaceMaterialReply('ANSWERED', $.proxy(function (reply) {
@@ -324,6 +378,12 @@
       },
       isCorrectAnswer: function () {
         return false;
+      },
+      hasDisplayableAnswers: function () {
+        return false;
+      },
+      getCorrectAnswers: function () {
+        return [];
       },
       hasExamples: function () {
         return false;
@@ -369,6 +429,12 @@
     },
     isCorrectAnswer: function() {
       return this.options.isCorrectAnswer.call(this)||false;
+    },
+    getCorrectAnswers: function () {
+      return this.options.getCorrectAnswers.call(this)||false;
+    },
+    hasDisplayableAnswers: function () {
+      return this.options.hasDisplayableAnswers.call(this)||false;
     },
     fieldName: function () {
       return this.options.fieldName;
