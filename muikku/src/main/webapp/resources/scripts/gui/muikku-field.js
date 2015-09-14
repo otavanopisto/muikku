@@ -183,7 +183,7 @@
       }
     },
     
-    _createWorkspcaeMaterialReply: function (state, callback) {
+    _createWorkspaceMaterialReply: function (state, callback) {
       mApi().workspace.workspaces.materials.replies
         .create(this.workspaceEntityId(), this.workspaceMaterialId(), {
           state: state
@@ -240,7 +240,7 @@
             }
           });
         } else {
-          this._createWorkspcaeMaterialReply(state, function (createdReply) {
+          this._createWorkspaceMaterialReply(state, function (createdReply) {
             if ($.isFunction(callback)) {
               callback(createdReply);
             }

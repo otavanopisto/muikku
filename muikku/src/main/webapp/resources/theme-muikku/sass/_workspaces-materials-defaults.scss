@@ -59,6 +59,19 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     box-sizing:border-box;
     margin:4px 3px;
     
+    &[readonly="readonly"] {
+      background: #fcfcfc !important;
+      border: 3px dotted #eaeaea !important;
+      box-shadow: none !important;
+      color: #b0b0b0 !important;
+      
+      &:hover {
+        border: 3px dotted #eee;
+        box-shadow:none;
+      }
+
+    }
+    
     &:focus,
     &:hover {
       border:3px solid #97bfed;
@@ -120,6 +133,18 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     margin:0;
     line-height:1.7em;
     
+    &[readonly="readonly"] {
+      background: #fcfcfc !important;
+      border: 3px dotted #eaeaea !important;
+      box-shadow: none !important;
+      color: #b0b0b0 !important;
+      
+      &:hover {
+        border: 3px dotted #eee !important;
+        box-shadow:none !important;
+      }
+    }
+    
     &:focus,
     &:hover {
       border:3px solid #97bfed;
@@ -141,6 +166,18 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     @include rounded(3px);
     max-width:100%;
     word-wrap:break-word;
+    
+    &[readonly="readonly"] {
+      background: #fcfcfc !important;
+      border: 3px dotted #eaeaea !important;
+      box-shadow: none !important;
+      color: #b0b0b0 !important;
+      
+      &:hover {
+        border: 3px dotted #eee !important;
+        box-shadow:none !important;
+      }
+    }
     
     &:focus,
     &:hover {
@@ -167,6 +204,14 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
     @include rounded(3px);
     display:inline-block;
+    
+    &[readonly="readonly"] {
+      box-shadow:0 0 0px 3px rgba(234,234,234,1) !important;
+      
+      &:hover {
+        box-shadow:0 0 0px 3px rgba(234,234,234,1) !important;
+      }
+    }
     
     &:focus,
     &:hover,
