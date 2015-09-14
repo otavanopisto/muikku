@@ -419,7 +419,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   .workspace-materials-view-page {
   
     /* Material's Assignment Submit Buttons */
-    button.muikku-assignment-button {
+    button {
       color:#fff;
       background:#71bced;
       box-shadow:none;
@@ -436,29 +436,38 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       line-height:1;
       cursor:pointer;
       display:inline-block;
-      
-      /* Check Exercise */
-      &.muikku-check-exercises {
-        background: $exerciseAssignment;
+    
+      &.muikku-assignment-button {
+        
+        /* Check Exercise */
+        &.muikku-check-exercises {
+          background: $exerciseAssignment;
+        }
+        
+        /* Submit Assignment */
+        &.muikku-submit-assignment {
+          background: $evaluatedAssignment;
+        }
+        
+        /* Withdraw Assingment */
+        &.muikku-withdraw-assignment {
+          background: darken($evaluatedAssignment,10%);
+        }
+        
+        /* Update Assignment */
+        &.muikku-update-assignment {
+          background: lighten($evaluatedAssignment,5%);
+        }
+        
       }
       
-      /* Submit Assignment */
-      &.muikku-submit-assignment {
-        background: $evaluatedAssignment;
+      /* Show Correct Answers */
+      &.muikku-show-correct-answers-button {
+        background: $exerciseCorrectAnswersOnRequest;
       }
       
-      /* Withdraw Assingment */
-      &.muikku-withdraw-assignment {
-        background: darken($evaluatedAssignment,10%);
-      }
-      
-      /* Update Assignment */
-      &.muikku-update-assignment {
-        background: lighten($evaluatedAssignment,5%);
-      }
-
     }
-      
+
 
     .muikku-field-correct-answer {
       box-shadow:0 0 1px 3px rgba(0,255,42,0.3) !important;
@@ -572,6 +581,10 @@ body.workspace-materials #contentWorkspaceMaterials {
     button.muikku-assignment-button {
       font-size:14px;
     }
+    
+    button.muikku-show-correct-answers-button {
+      font-size:14px;
+    }
   
   }
 
@@ -593,6 +606,10 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
   .workspace-materials-view-page {
   
     button.muikku-assignment-button {
+      font-size:16px;
+    }
+    
+    button.muikku-show-correct-answers-button {
       font-size:16px;
     }
   

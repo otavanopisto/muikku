@@ -102,7 +102,7 @@
           .click($.proxy(this._onAssignmentButtonClick, this));
 
         $('<button>')
-          .addClass('muikku-show-answers-button')
+          .addClass('muikku-show-correct-answers-button')
           .appendTo(buttonWrapper)
           .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'))
           .click($.proxy(this._onShowAnswersButtonClick, this));
