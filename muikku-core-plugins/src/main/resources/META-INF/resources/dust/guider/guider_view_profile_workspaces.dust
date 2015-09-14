@@ -1,6 +1,4 @@
 {#.}
- 
- 
   <div id="crsId-{id}" class="cp-course ft-01">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
@@ -20,21 +18,16 @@
                       <div class="cp-teacher-picture-default"></div>
                     {/hasPicture}
                   </div>
-  
-
                   <div class="clear"></div>
                 </div>
-  
               {/teachers}
             {:else}
               {#localize key="plugin.coursepicker.course.noteachers" /}
             {/teachers}
           </div>
-  
           {?hasCourseFee}      
             <div class="cp-course-details-fee">{#localize key="plugin.coursepicker.course.coursehasfee" /}</div>
           {/hasCourseFee}
-  
           {?hasAssessmentFee}      
             <div class="cp-course-details-assessmentFee">{#localize key="plugin.coursepicker.course.assessmenthasfee" /}</div>
           {/hasAssessmentFee}
@@ -44,13 +37,11 @@
            <span class="cp-course-short"></span>
            <span class="cp-course-long">{name}</span>
           </div>
-          
           <div class="cp-course-header-details">
            {?ratingCount}<span class="cp-course-rating">{rating} ({ratingCount})</span>{/ratingCount}
            <span class="cp-course-len"></span>
            <span class="cp-course-age"></span>
           </div>
-         
           <div id="detailsCrs-{id}" class="cp-course-content-details" style="display:none;">     
             <div class="cp-course-description-picture"></div>
             <div class="cp-course-description-text">{description}</div>          
@@ -59,9 +50,7 @@
                 value='{#localize key="plugin.coursepicker.course.checkout" /}' />
             </div>
           </div>
-
         </div>       
-
         <div class="clear"></div>
     </div>
   </div>
