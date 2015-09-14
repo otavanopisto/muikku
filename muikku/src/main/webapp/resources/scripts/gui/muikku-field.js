@@ -186,10 +186,6 @@
         .text(getLocaleText(text))
         .prop('disabled', stateOptions['button-disabled']);
       
-      console.log(stateOptions['show-answers-button-visible']);
-      console.log(this.correctAnswers());
-      console.log(this._hasDisplayableAnswers());
-      
       var showAnswersButton = stateOptions['show-answers-button-visible'] && this.correctAnswers() == 'ON_REQUEST' && this._hasDisplayableAnswers();
       if (showAnswersButton) {
         this.element.find('.muikku-show-answers-button').show();
