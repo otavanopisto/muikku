@@ -192,9 +192,9 @@
       
       var showAnswersButton = stateOptions['show-answers-button-visible'] && this.correctAnswers() == 'ON_REQUEST' && this._hasDisplayableAnswers();
       if (showAnswersButton) {
-        this.element.find('.muikku-show-answers-button').show();
+        this.element.find('.muikku-show-correct-answers-button').show();
       } else {
-        this.element.find('.muikku-show-answers-button').hide();
+        this.element.find('.muikku-show-correct-answers-button').hide();
       }
       
       this.workspaceMaterialState(state);
