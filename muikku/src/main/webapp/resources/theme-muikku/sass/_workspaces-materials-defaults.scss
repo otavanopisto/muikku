@@ -411,12 +411,27 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   .muikku-save-page-wrapper {
     text-align:center;
-    margin:20px auto 15px auto;
-    display:table;
+    margin:20px -15px 15px -15px;
     clear:both;
   }
   
   .workspace-materials-view-page {
+  
+    .correct-answers-count-container {
+      display:block;
+      margin:5px;
+      
+      .correct-answers-count-label {
+        padding:0px 5px;
+        display:inline-block;
+      }
+      
+      .correct-answers-count-data {
+        padding:0px 5px;
+        display:inline-block;
+        font-size:1.4em;
+      }
+    }
   
     /* Material's Assignment Submit Buttons */
     button {
@@ -493,7 +508,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       
     }
     
-    /* For checkbox/radio checks */
+    /* For checkbox/radio/connectfields checks */
     div.muikku-field-correct-answer {
       box-shadow:none !important;
       border:none !important;
@@ -506,6 +521,11 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       &:hover {
         box-shadow:none !important;
         border:none !important;  
+      }
+      
+      .muikku-connect-field-counterpart, 
+      .muikku-connect-field-term {
+        background:#55fc70;
       }
       
     }
@@ -522,6 +542,11 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       &:hover {
         box-shadow:none !important;
         border:none !important;  
+      }
+      
+      .muikku-connect-field-counterpart, 
+      .muikku-connect-field-term {
+        background:#f64e4e;
       }
       
     }

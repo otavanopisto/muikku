@@ -106,6 +106,10 @@
           .appendTo(buttonWrapper)
           .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'))
           .click($.proxy(this._onShowAnswersButtonClick, this));
+        
+        $("<div>")
+          .addClass("correct-answers-count-container")
+          .appendTo(buttonWrapper);
 
         this._applyState(assignmentType, this.workspaceMaterialState());
         
@@ -275,6 +279,7 @@
     _checkExercises: function (requestAnswers) {
       var correctAnswersDisplay = this.correctAnswers();
       this.element.find('.muikku-field-examples').remove();
+      var correctAnswersCountContainer = this.element.find('.correct-answers-count-container');
       
       var fields = this.element.find('.muikku-field');
       var correctAnswerCount = 0;
@@ -336,8 +341,19 @@
           }
         }
       });
-      console.log('Oikein ' + correctAnswerCount);
-      console.log('Väärin ' + wrongAnswerCount);
+      
+      if ((correctAnswerCount + wrongAnswerCount) > 0) {
+        correctAnswersCountContainer.append(
+          $('<span>')
+            .addClass('correct-answers-count-label')
+            .text(getLocaleText('plugin.workspace.materialsLoader.correctAnswersCountLabel'))
+        );
+        correctAnswersCountContainer.append(
+            $('<span>')
+              .addClass('correct-answers-count-data')
+              .text(correctAnswerCount + ' / ' + (correctAnswerCount + wrongAnswerCount))
+          );
+      }
     },
     
     _onAssignmentButtonClick: function (event) {
