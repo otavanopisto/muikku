@@ -110,6 +110,7 @@
         this._applyState(assignmentType, this.workspaceMaterialState());
         
         this.element.on('change', '.muikku-field', $.proxy(this._onFieldChange, this));
+        this.element.on('keyup', '.muikku-field', $.proxy(this._onFieldChange, this));
       }
     },
     
@@ -198,6 +199,10 @@
       
       if (stateOptions['check-answers']) {
         this._checkExercises();
+      }
+      else {
+        this.element.find('.muikku-field-examples').remove();
+        this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
       }
     },
     
