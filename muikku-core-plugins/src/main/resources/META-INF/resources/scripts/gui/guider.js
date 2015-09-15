@@ -14,10 +14,59 @@ $(document).ready(function(){
           
           $(window).on("hashchange", $.proxy(this._onHashChange, this));
           $(window).trigger("hashchange");          
-          
+
+          var guiderSearchUsersInput = $("#content").find("input[name='guiderSearch']")
+          this._searchInput = guiderSearchUsersInput;
+          guiderSearchUsersInput.keyup($.proxy(this._onSearchUsersChange, this));                
     	},
     	
-    	
+      _refreshList: function () {
+        var _this = this;
+        var term = this._searchInput.val();
+        
+        this._loadUsers(term);
+
+      },
+          	
+      _refreshListTimer: function () {
+        var _this = this;
+        
+        clearTimeout(_this.listReloadTimer);
+        _this.listReloadTimer = setTimeout(
+            function () {
+              _this._refreshList();
+            }, 500);
+      },    	
+      _onSearchUsersChange : function (event) {
+        this._refreshListTimer();
+      },
+      _loadUsers : function(params){
+        var _this = this;
+        _this._clearUsers();
+        _this._addLoading($(GuideImpl.guideContainer));
+        var search = $(".gt-search");
+        var searchVisible = search.is(":visible");
+        
+        if(searchVisible == false ){
+          search.show("slide");
+        }
+        
+        mApi().user.users.read({searchString : params, archetype : 'STUDENT', maxResults: 25 })
+        .callback(function (err, users) {
+          
+          if( err ){
+                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
+          }else{        
+  
+           renderDustTemplate('guider/guider_items.dust', users, function(text) {
+             _this._clearLoading();
+            $(GuideImpl.guideContainer).append($.parseHTML(text));
+             
+            });
+          }
+        });   
+    
+  },      
     	_refreshUsers : function(){
             var _this = this;
             _this._clearUsers();
