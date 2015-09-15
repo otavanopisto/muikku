@@ -280,6 +280,7 @@
       var correctAnswersDisplay = this.correctAnswers();
       this.element.find('.muikku-field-examples').remove();
       var correctAnswersCountContainer = this.element.find('.correct-answers-count-container');
+      correctAnswersCountContainer.empty();
       
       var fields = this.element.find('.muikku-field');
       var correctAnswerCount = 0;
