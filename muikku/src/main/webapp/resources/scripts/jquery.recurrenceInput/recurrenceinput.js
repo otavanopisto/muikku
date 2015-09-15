@@ -38,6 +38,8 @@
     },
     _create: function () {
       this.element.addClass('recurrence-input');
+      var controlsContainer = this.element.find('.mf-textfield-subcontainer');
+      var repeatebleSelect = $(":input[name='repeatable']").parent('.mf-textfield-subcontainer').find('.ca-repeatable-info');
       
       var showControlsLink = $('<a>')
         .addClass('recurrence-input-show-link')
@@ -46,10 +48,26 @@
         .click($.proxy(this._onShowControlsLinkClick, this));
 
       var controls = $('<div>')
-        .addClass('recurrence-input-controls')
-        .hide();
+        .addClass('recurrence-input-controls');
       
-      controls.append($('<label>').text(this.options.texts.label));
+      var controlsRowFreq = $('<div>')
+        .addClass('recurrence-controls-row recurrence-frequencies')
+        .appendTo(controls);
+      
+
+      var controlsRowEnd = $('<div>')
+      .addClass('recurrence-controls-row recurrence-end')
+      .appendTo(controls);
+      
+      
+      var controlsFreqSelect = $('<div>')
+      .addClass('recurrence-controls-subelement ')
+      .appendTo(controlsRowFreq);
+      controlsFreqSelect.append($('<label>').text(this.options.texts.label));
+      
+      var controlsEndSelect = $('<div>')
+      .addClass('recurrence-controls-subelement ')
+      .appendTo(controlsRowEnd);
       
       var freqSelect = $('<select>')
         .attr({
@@ -63,16 +81,18 @@
       freqSelect.append($('<option>').attr('value', 'MONTHLY').text(this.options.texts.freq['MONTHLY']));
       freqSelect.append($('<option>').attr('value', 'YEARLY').text(this.options.texts.freq['YEARLY']));
       
-      controls.append(freqSelect);
-      controls.append($('<div>').addClass('recurrence-input-control-details'));
+      controlsFreqSelect.append(freqSelect);
+      controlsRowFreq.append($('<div>').addClass('recurrence-controls-subelement recurrence-input-control-details'));
       
-      $('<button>')
+      $('<div>')
         .text('Save')
+        .addClass('mf-item-tool-btn')
         .click($.proxy(this._onSaveButtonClick, this))
         .appendTo(controls);
       
-      $('<button>')
+      $('<div>')
         .text('Cancel')
+        .addClass('mf-item-tool-btn')
         .click($.proxy(this._onCancelButtonClick, this))
         .appendTo(controls);
       
@@ -84,8 +104,8 @@
         .val('')
         .appendTo(controls);
       
-      this.element.append(showControlsLink);
-      this.element.append(controls);
+      repeatebleSelect.append(showControlsLink);
+      controlsContainer.append(controls);
       
       freqSelect.change($.proxy(this._onRecurrenceFreqChange, this));
       freqSelect.keyup($.proxy(this._onRecurrenceFreqKeyUp, this));
@@ -95,7 +115,7 @@
     
     show: function () {
       var offset = this.element.offset();      
-      this.element.find('.recurrence-input-controls').show();
+      this.element.show();
       this._updateRecurrenceCtrl(this.val()||{freq:'DAILY'});
       this.element.trigger("show");
     },
@@ -105,8 +125,9 @@
     },
     
     hide: function () {
-      this.element.find('.recurrence-input-controls').hide();
+      this.element.hide();
       this.element.trigger("hide");
+      this._refreshText();
     },
     
     rrule: function (rrule) {
@@ -152,20 +173,23 @@
     },
     
     _updateRecurrenceCtrl: function(json) { 
+
       var recurrenceControls = this.element.find('.recurrence-input-control-details');
+      var endControls = this.element.find('.recurrence-end .recurrence-controls-subelement')
       recurrenceControls.empty();
+      endControls.empty();
       switch (json.freq) {
         case "DAILY":
-          this._buildDailyCtrls(recurrenceControls, json.freq, json.interval, json.count, json.until);
+          this._buildDailyCtrls(recurrenceControls, endControls, json.freq, json.interval, json.count, json.until);
         break;
         case "WEEKLY":
-          this._buildWeeklyCtrls(recurrenceControls, json.freq, json.interval, json.count, json.until, json.weekdays);
+          this._buildWeeklyCtrls(recurrenceControls, endControls, json.freq, json.interval, json.count, json.until, json.weekdays);
         break;
         case "MONTHLY":
-          this._buildMonthlyCtrls(recurrenceControls, json.freq, json.interval, json.count, json.until, json.monthDay);
+          this._buildMonthlyCtrls(recurrenceControls, endControls, json.freq, json.interval, json.count, json.until, json.monthDay);
         break;
         case "YEARLY":
-          this._buildYearlyCtrls(recurrenceControls, json.freq, json.interval, json.count, json.until, json.monthDay, json.month);
+          this._buildYearlyCtrls(recurrenceControls, endControls, json.freq, json.interval, json.count, json.until, json.monthDay, json.month);
         break;
       }
     },
@@ -190,12 +214,12 @@
       return interval;
     },
     
-    _buildDailyCtrls: function (recurrenceControls, freq, interval, count, until) {
+    _buildDailyCtrls: function (recurrenceControls, endControls, freq, interval, count, until) {
       recurrenceControls.append(this._buildIntervalCtrls(interval, this.options.texts.intervalDays));
-      recurrenceControls.append(this._buildRecurrenceCtrls(freq, count, until));
+      endControls.append(this._buildRecurrenceCtrls(freq, count, until));
     },
 
-    _buildWeeklyCtrls: function (recurrenceControls, freq, interval, count, until, weekdays) {
+    _buildWeeklyCtrls: function (recurrenceControls, endControls, freq, interval, count, until, weekdays) {
       recurrenceControls.append(this._buildIntervalCtrls(interval, this.options.texts.intervalWeeks));
       recurrenceControls.append($('<label>').text(this.options.texts.weekdaysLabel));
       
@@ -207,9 +231,10 @@
         
         var weekdayInput = $('<input>')
           .attr({
-            'name': "recurrence-input-weekday",
+            'name': "recurrenceInputWeekday",
             'data-value': code,
-            'type': 'checkbox'
+            'type': 'checkbox',
+            'data-serialize': 'false'
           });
         
         if ($.isArray(weekdays) && (weekdays.indexOf(code) != -1)) {
@@ -221,20 +246,21 @@
       }
       
       recurrenceControls.append(container);
-      recurrenceControls.append(this._buildRecurrenceCtrls(freq, count, until));
+      endControls.append(this._buildRecurrenceCtrls(freq, count, until));
     },
     
-    _buildMonthlyCtrls: function (recurrenceControls, freq, interval, count, until, monthDay) {
+    _buildMonthlyCtrls: function (recurrenceControls, endControls, freq, interval, count, until, monthDay) {
       recurrenceControls.append(this._buildIntervalCtrls(interval, this.options.texts.intervalMonths));
-      recurrenceControls.append(this._buildRecurrenceCtrls(freq, count, until));
+      endControls.append(this._buildRecurrenceCtrls(freq, count, until));
     },
     
-    _buildYearlyCtrls: function (recurrenceControls, freq, interval, count, until, monthDay, month) {
+    _buildYearlyCtrls: function (recurrenceControls, endControls, freq, interval, count, until, monthDay, month) {
       recurrenceControls.append(this._buildIntervalCtrls(interval, this.options.texts.intervalYears));
-      recurrenceControls.append(this._buildRecurrenceCtrls(freq, count, until));
+      endControls.append(this._buildRecurrenceCtrls(freq, count, until));
     },
     
     _buildRecurrenceCtrls: function (freq, count, until) {
+      
       var recurrence = $('<div>').addClass('recurrence-input-recurrence');
       recurrence.append($('<label>').text(this.options.texts.recurrenceLabel));
       
@@ -327,7 +353,9 @@
     },
     
     _refreshText: function () {
-      this.element.find('span[name="humanReadableRecurrence"]').text(this.humanReadable());
+      var txContainer = $(":input[name='repeatable']").parent('.mf-textfield-subcontainer');
+      
+      txContainer.find('span[name="humanReadableRecurrence"]').text(this.humanReadable());
     },
     
     _jsonToRRule: function (json) {
@@ -404,7 +432,7 @@
       });
     
       var weekdays = [];
-      this.element.find('input[name="recurrence-input-weekday"]').each(function(){
+      this.element.find('input[name="recurrenceInputWeekday"]').each(function(){
         if($(this).is(':checked')){
           weekdays.push($(this).data('value'));
         }
@@ -420,12 +448,12 @@
     _onSaveButtonClick: function(e) {
       e.preventDefault();
       this.applyValues();
-      this.hide();
+      this.element.hide();
     },
     
     _onCancelButtonClick: function (event) {
       event.preventDefault();
-      this.hide();
+      this.element.hide();
     },
     
     _onRecurrenceFreqChange: function (event) {
@@ -438,7 +466,7 @@
     
     _onShowControlsLinkClick: function (event) {
       event.preventDefault();
-      this.show();
+      this.element.show();
     },
     
     _destroy: function () {

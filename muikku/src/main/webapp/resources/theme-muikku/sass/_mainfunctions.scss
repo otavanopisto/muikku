@@ -673,11 +673,21 @@
     position:relative;
     margin:2px 0 3px 0;
     
+    &.hidden{
+      display:none;
+    }
+    
     > div {
       display:inline-block;
       box-sizing:border-box;
     }
-    
+ 
+    .mf-textfield-time{
+      width:50px;
+    }
+    .mf-textfield-date{
+     width:80px;
+    }
     .mf-textfield {
       position:relative;
       top:0;
@@ -699,6 +709,12 @@
         .mf-textfield-title {
           color:$formTitle;
           padding:6px 5px;
+        }
+        
+         .mf-textfield-content {
+          color:$formTitle;
+          padding:6px 5px;
+          width:500px;
         }
         
       }

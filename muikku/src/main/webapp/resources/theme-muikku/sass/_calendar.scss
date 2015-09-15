@@ -49,24 +49,37 @@
 
 /* recurrence */
 
-input[name="repeat"] {
-  margin-right: 4px;
-}
+/* input[name="repeat"] { */
+/*   margin-right: 4px; */
+/* } */
 
-#eventRecurrence {
-  display: inline-block;
-  margin-left: 4px;
-}
+/* #eventRecurrence { */
+/*   display: inline-block; */
+/*   margin-left: 4px; */
+/* } */
 
 .recurrence-input .recurrence-input-show-link {
   color: #fff;
 }
 
+.recurrence-controls-row{} 
+
+.recurrence-controls-subelement{
+  
+  display:inline-block;
+}
+
+.recurrence-input-interval{
+  display:inline-block;
+}
+.ca-form-row-container{
+  width:100%;
+  
+}
+
 #eventRecurrence div.recurrence-input-controls {
   background-color: #FFF !important;
   color: #000 !important;
-  border: 1px solid #DDD;
-  padding: 15px;
 }
 
 #eventRecurrence label,
@@ -78,7 +91,12 @@ input[name="repeat"] {
   margin: 0px;
   padding-top: 0px;
   padding-bottom: 0px;
+  margin-left:5px;
+  display: inline;
 }
+
+
+
 
 /* TODO clean up after Fullcalendar implementation */
 

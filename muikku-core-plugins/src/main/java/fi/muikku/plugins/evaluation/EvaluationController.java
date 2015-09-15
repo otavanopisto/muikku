@@ -13,21 +13,31 @@ import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.ContentNode;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialException;
+import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
+import fi.muikku.users.UserEntityController;
 
 public class EvaluationController {
 
+  @Inject
+  private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+  
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
   
   @Inject
   private WorkspaceMaterialEvaluationDAO workspaceMaterialEvaluationDAO;
+  
+  @Inject
+  private UserEntityController userEntityController;
 
   public WorkspaceMaterialEvaluation createWorkspaceMaterialEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
-    return workspaceMaterialEvaluationDAO.create(student.getId(), 
+    WorkspaceMaterialEvaluation evaluation = workspaceMaterialEvaluationDAO.create(student.getId(), 
         workspaceMaterial.getId(),  
         gradingScale.getIdentifier(), 
         gradingScale.getSchoolDataSource(), 
@@ -36,6 +46,15 @@ public class EvaluationController {
         assessor.getId(), 
         evaluated, 
         verbalAssessment);
+    
+    WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
+    if (reply == null) {
+      workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.EVALUATED, student);
+    } else {
+      workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.EVALUATED);
+    }
+    
+    return evaluation;
   }
   
   public WorkspaceMaterialEvaluation findWorkspaceMaterialEvaluation(Long id) {
@@ -54,6 +73,17 @@ public class EvaluationController {
     workspaceMaterialEvaluationDAO.updateGradeSchoolDataSource(workspaceMaterialEvaluation, grade.getSchoolDataSource());
     workspaceMaterialEvaluationDAO.updateAssessorEntityId(workspaceMaterialEvaluation, assessor.getId());
     workspaceMaterialEvaluationDAO.updateEvaluated(workspaceMaterialEvaluation, evaluated);
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialEvaluation.getWorkspaceMaterialId());
+    UserEntity student = userEntityController.findUserEntityById(workspaceMaterialEvaluation.getStudentEntityId());
+    
+    WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
+    if (reply == null) {
+      workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.EVALUATED, student);
+    } else {
+      workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.EVALUATED);
+    }
+    
     return workspaceMaterialEvaluation;
   }
 

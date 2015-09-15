@@ -15,6 +15,7 @@ import fi.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
@@ -31,13 +32,22 @@ public class WorkspaceMaterialReplyController {
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
   
-  public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial, UserEntity userEntity, 
-      Long numberOfTries, Date created, Date lastModified) {
-    return workspaceMaterialReplyDAO.create(workspaceMaterial, userEntity.getId(), numberOfTries, created, lastModified);
+  public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, 
+      UserEntity userEntity, Long numberOfTries, Date created, Date lastModified) {
+    return workspaceMaterialReplyDAO.create(workspaceMaterial, state, userEntity.getId(), numberOfTries, created, lastModified, null, null);
+  }
+  
+  public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, UserEntity userEntity) {
+    Date now = new Date();
+    return createWorkspaceMaterialReply(workspaceMaterial, state, userEntity, 1l, now, now);
   }
 
-  public WorkspaceMaterialReply findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(WorkspaceMaterial morkspaceMaterial, UserEntity userEntity) {
-    return workspaceMaterialReplyDAO.findByWorkspaceMaterialAndUserEntityId(morkspaceMaterial, userEntity.getId());
+  public WorkspaceMaterialReply findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(WorkspaceMaterial workspaceMaterial, UserEntity userEntity) {
+    return workspaceMaterialReplyDAO.findByWorkspaceMaterialAndUserEntityId(workspaceMaterial, userEntity.getId());
+  }
+
+  public fi.muikku.plugins.workspace.model.WorkspaceMaterialReply findWorkspaceMaterialReplyById(Long workspaceMaterialReplyId) {
+    return workspaceMaterialReplyDAO.findById(workspaceMaterialReplyId);
   }
 
   public List<WorkspaceMaterialReply> listVisibleWorkspaceMaterialRepliesByWorkspaceEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
@@ -76,5 +86,24 @@ public class WorkspaceMaterialReplyController {
 
   public void incWorkspaceMaterialReplyTries(WorkspaceMaterialReply workspaceMaterialReply) {
     workspaceMaterialReplyDAO.update(workspaceMaterialReply, workspaceMaterialReply.getNumberOfTries() + 1, new Date());
+  }
+
+  public WorkspaceMaterialReply updateWorkspaceMaterialReplyModified(fi.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply, Date lastModified) {
+    return workspaceMaterialReplyDAO.updateLastModified(workspaceMaterialReply, lastModified);
+  }
+  
+  public WorkspaceMaterialReply updateWorkspaceMaterialReply(fi.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply, WorkspaceMaterialReplyState state) {
+    switch (state) {
+      case SUBMITTED:
+        workspaceMaterialReplyDAO.updateSubmitted(workspaceMaterialReply, new Date());
+      break;
+      case WITHDRAWN:
+        workspaceMaterialReplyDAO.updateWithdrawn(workspaceMaterialReply, new Date());
+      break;
+      default:
+      break;
+    }
+    
+    return workspaceMaterialReplyDAO.updateState(workspaceMaterialReply, state);
   }
 }

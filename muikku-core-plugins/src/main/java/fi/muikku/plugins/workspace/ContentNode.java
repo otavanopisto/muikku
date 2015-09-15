@@ -5,12 +5,13 @@ import java.util.List;
 
 import fi.muikku.plugins.workspace.ContentNode;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 
 public class ContentNode {
 
   public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId, int level, 
-      WorkspaceMaterialAssignmentType assignmentType, Long parentId, Boolean hidden, String html,
-      Long currentRevision, Long publishedRevision) {
+      WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
+      Long parentId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -19,6 +20,7 @@ public class ContentNode {
     this.materialId = materialId;
     this.level = level;
     this.assignmentType = assignmentType;
+    this.correctAnswers = correctAnswers;
     this.parentId = parentId;
     this.hidden = hidden;
     this.html = html;
@@ -106,6 +108,14 @@ public class ContentNode {
     this.publishedRevision = publishedRevision;
   }
 
+  public WorkspaceMaterialCorrectAnswersDisplay getCorrectAnswers() {
+    return correctAnswers;
+  }
+
+  public void setCorrectAnswers(WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+    this.correctAnswers = correctAnswers;
+  }
+
   private String title;
   private String type;
   private List<ContentNode> children;
@@ -113,6 +123,7 @@ public class ContentNode {
   private Long materialId;
   private int level;
   private WorkspaceMaterialAssignmentType assignmentType;
+  private WorkspaceMaterialCorrectAnswersDisplay correctAnswers;
   private Boolean hidden;
   private Long parentId;
   private String html;
