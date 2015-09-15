@@ -110,7 +110,6 @@
         this._applyState(assignmentType, this.workspaceMaterialState());
         
         this.element.on('change', '.muikku-field', $.proxy(this._onFieldChange, this));
-        this.element.on('keyup', '.muikku-field', $.proxy(this._onFieldChange, this));
       }
     },
     
@@ -200,10 +199,6 @@
       if (stateOptions['check-answers']) {
         this._checkExercises();
       }
-      else {
-        this.element.find('.muikku-field-examples').remove();
-        this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
-      }
     },
     
     _hasDisplayableAnswers: function() {
@@ -280,10 +275,20 @@
     _checkExercises: function (requestAnswers) {
       var correctAnswersDisplay = this.correctAnswers();
       this.element.find('.muikku-field-examples').remove();
-      this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
-      this.element.find('.muikku-field').each(function (index, field) {
+      
+      var fields = this.element.find('.muikku-field');
+      var correctAnswerCount = 0;
+      var wrongAnswerCount = 0;
+
+      $(fields).each(function (index, field) {
+        $(field).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
         if ($(field).muikkuField('canCheckAnswer')) {
           var correctAnswer = $(field).muikkuField('isCorrectAnswer');
+          if (correctAnswer) {
+            correctAnswerCount++;
+          } else  {
+            wrongAnswerCount++;
+          }
           $(field).addClass(correctAnswer ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
           // TODO classes are not examples but correct answers?
           if (!correctAnswer && (correctAnswersDisplay == 'ALWAYS' || (correctAnswersDisplay == 'ON_REQUEST' && requestAnswers))) {
@@ -331,6 +336,8 @@
           }
         }
       });
+      console.log('Oikein ' + correctAnswerCount);
+      console.log('Väärin ' + wrongAnswerCount);
     },
     
     _onAssignmentButtonClick: function (event) {
@@ -339,10 +346,6 @@
       
       this._saveWorkspaceMaterialReply(stateOptions['success-state'], $.proxy(function (reply) {
         this._applyState(assignmentType, stateOptions['success-state']);
-        
-        if (assignmentType == 'EXERCISE') {
-          this._checkExercises();
-        }
         
         if (stateOptions['success-text']) {
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText(stateOptions['success-text']));
