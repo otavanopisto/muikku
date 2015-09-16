@@ -18,6 +18,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.joda.time.DateTime;
+
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.rest.AbstractRESTService;
@@ -99,7 +101,9 @@ public class UserRESTService extends AbstractRESTService {
 								(String) o.get("nationality"), (String) o
 										.get("language"), (String) o
 										.get("municipality"), (String) o
-										.get("school"), emailAddress));
+										.get("school"), emailAddress,
+										(DateTime) o.get("studyStartDate"),
+										(DateTime) o.get("studyTimeEnd")));
 					}
 				}
 
@@ -207,7 +211,8 @@ public class UserRESTService extends AbstractRESTService {
 		return new fi.muikku.rest.model.User(userEntity.getId(),
 				user.getFirstName(), user.getLastName(), hasImage,
 				user.getNationality(), user.getLanguage(),
-				user.getMunicipality(), user.getSchool(), emailAddress);
+				user.getMunicipality(), user.getSchool(), emailAddress,
+				user.getStudyStartDate(), user.getStudyTimeEnd());
 	}
 
 	//
