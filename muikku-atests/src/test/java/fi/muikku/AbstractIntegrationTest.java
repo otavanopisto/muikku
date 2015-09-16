@@ -155,6 +155,22 @@ public abstract class AbstractIntegrationTest {
   protected String getKeystorePass() {
     return System.getProperty("it.keystore.storepass");
   }
+  
+  protected String getSauceUsername() {
+    return System.getProperty("it.sauce.username");
+  }
+
+  protected String getSauceAccessKey() {
+    return System.getProperty("it.sauce.accessKey");
+  }
+
+  protected String getSauceTunnelId() {
+    return System.getProperty("it.sauce.tunnelId");
+  }
+  
+  public String getProjectVersion() {
+    return System.getProperty("it.project.version");
+  }
 
   protected DateTime getDate(int year, int monthOfYear, int dayOfMonth) {
     return new DateTime(year, monthOfYear, dayOfMonth, 0, 0, 0, 0);

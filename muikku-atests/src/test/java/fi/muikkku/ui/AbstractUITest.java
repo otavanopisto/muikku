@@ -6,7 +6,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +26,8 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -39,13 +44,16 @@ import com.jayway.restassured.config.RestAssuredConfig;
 import com.jayway.restassured.mapper.factory.Jackson2ObjectMapperFactory;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
+import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
 import fi.muikku.webhooks.WebhookStaffMemberCreatePayload;
 import fi.muikku.webhooks.WebhookStudentCreatePayload;
 
-public class AbstractUITest extends AbstractIntegrationTest {
-
+public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
+  
+  private static final long TEST_START_TIME = System.currentTimeMillis();
+  
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
 
@@ -76,10 +84,57 @@ public class AbstractUITest extends AbstractIntegrationTest {
 
     String adminAccessToken = response.getCookie("JSESSIONID");
     setAdminAccessToken(adminAccessToken);
-
-    // System.out.println("Admin accesstoken: " + adminAccessToken);
+    
   }
   
+  @Override
+  public String getSessionId() {
+    return sessionId;
+  }
+  
+  protected void setWebDriver(RemoteWebDriver webDriver) {
+    this.webDriver = webDriver;
+    this.sessionId = webDriver.getSessionId().toString();
+  }
+  
+  protected RemoteWebDriver getWebDriver() {
+    webDriver.manage().window().maximize();
+    return webDriver;
+  }
+  
+  protected RemoteWebDriver createSauceWebDriver(String browser, String version, String platform) throws MalformedURLException {
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    
+    capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
+    capabilities.setCapability(CapabilityType.VERSION, version);
+    capabilities.setCapability(CapabilityType.PLATFORM, platform);
+    capabilities.setCapability("name", getClass().getSimpleName() + ':' + testName.getMethodName());
+    capabilities.setCapability("tags", Arrays.asList( String.valueOf( getTestStartTime() ) ) );
+    capabilities.setCapability("build", getProjectVersion());
+    capabilities.setCapability("video-upload-on-pass", false);
+    capabilities.setCapability("capture-html", true);
+    capabilities.setCapability("timeZone", "Universal");
+    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+    capabilities.setCapability("chrome.switches", Arrays.asList("--ignore-certificate-errors"));
+    
+    if (getSauceTunnelId() != null) {
+      capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
+    }
+    
+    return new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
+  }
+  
+  public static List<String[]> getDefaultSauceBrowsers() {
+    return Arrays.asList(new String[][] {
+    // ((String[]) new String[] { "firefox", "36.0", "Windows 8.1" }),
+    // ((String[]) new String[] { "safari", "8.0", "OS X 10.10" }),
+    ((String[]) new String[] { "chrome", "41.0", "Linux" }) });
+  }
+  
+  public static long getTestStartTime() {
+    return TEST_START_TIME;
+  }
+
   public String getAdminAccessToken() {
     return adminAccessToken;
   }
@@ -96,15 +151,6 @@ public class AbstractUITest extends AbstractIntegrationTest {
     }
 
     return reSpect;
-  }
-
-  protected void setWebDriver(RemoteWebDriver webDriver) {
-    this.webDriver = webDriver;
-  }
-
-  protected RemoteWebDriver getWebDriver() {
-    webDriver.manage().window().maximize();
-    return webDriver;
   }
 
   protected void testTitle(String path, String expected) {
@@ -224,4 +270,6 @@ public class AbstractUITest extends AbstractIntegrationTest {
   private String adminAccessToken;
 
   private RemoteWebDriver webDriver;
+  private String sessionId;
+
 }

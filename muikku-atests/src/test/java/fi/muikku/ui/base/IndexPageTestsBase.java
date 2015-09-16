@@ -22,7 +22,7 @@ public class IndexPageTestsBase extends AbstractUITest {
   @Test
   public void IndexPageTest() throws IOException {
     getWebDriver().get(getAppUrl());
-    boolean elementExists = getWebDriver().findElements(By.className("index")).size() > 0;
+    boolean elementExists = getWebDriver().findElements(By.className("index")).size() > 0;;
     assertTrue(elementExists);
   }
   
