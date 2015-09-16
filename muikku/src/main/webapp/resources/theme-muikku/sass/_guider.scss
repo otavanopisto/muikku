@@ -153,6 +153,11 @@
   width:100%;
   
 }
+
+.gt-email-field{
+  color:$dimmest;
+  font-size:10px;
+}
 .gt-user-picture{
   
    float:left;
@@ -160,8 +165,14 @@
    width:100px; 
    &.default{
     @extend .co-user-picture;     
+    border-radius: 53px;
    }
-   
+   &.small{
+    height: 20px;
+    width: 20px;    
+    margin-left: 6px;
+    margin-top: 6px;
+   }
 }
 
 .gt-user-details-container {
