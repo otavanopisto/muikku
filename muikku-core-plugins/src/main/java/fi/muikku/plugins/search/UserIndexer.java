@@ -58,9 +58,10 @@ public class UserIndexer {
             archetype = eu.getRole().getArchetype();
         }
         
-        if (archetype != null) {
+        if ((archetype != null) && (userEntity != null)) {
           Map<String, Object> extra = new HashMap<>();
           extra.put("archetype", archetype);
+          extra.put("userEntityId", userEntity.getId());
           
           indexer.index(User.class.getSimpleName(), user, extra);
         } else
