@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.joda.time.DateTime;
 
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
@@ -81,6 +82,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     List<String> languages = new ArrayList<>();
     List<String> municipalities = new ArrayList<>();
     List<String> schools = new ArrayList<>();
+    List<DateTime> studyStartDates = new ArrayList<>();
+    List<DateTime> studyTimeEnds = new ArrayList<>();
 
     for (Student student : students) {
       if (student.getStudyProgrammeId() != null) {
@@ -144,6 +147,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       } else {
         schools.add(null);
       }
+
+      studyStartDates.add(student.getStudyStartDate());
+      studyTimeEnds.add(student.getStudyTimeEnd());
      
     }
 
@@ -152,7 +158,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         nationalities.toArray(new String[0]),
         languages.toArray(new String[0]),
         municipalities.toArray(new String[0]),
-        schools.toArray(new String[0]));
+        schools.toArray(new String[0]),
+        studyStartDates.toArray(new DateTime[0]),
+        studyTimeEnds.toArray(new DateTime[0]));
   }
 
   private User createStudentEntity(Student student) {

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTime;
 
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
@@ -78,7 +79,10 @@ public class PyramusSchoolDataEntityFactory {
                            null,
                            null,
                            null,
+                           null,
+                           null,
                            null);
+
   }
   
   public List<User> createEntity(fi.pyramus.rest.model.StaffMember ... staffMembers) {
@@ -92,10 +96,17 @@ public class PyramusSchoolDataEntityFactory {
   }
   
   public User createEntity(fi.pyramus.rest.model.Student student, fi.pyramus.rest.model.StudyProgramme studyProgramme) {
-    return createEntity(student, studyProgramme, null, null, null, null);
+    return createEntity(student, studyProgramme, null, null, null, null, null, null);
   }
 
-  public User createEntity(fi.pyramus.rest.model.Student student, fi.pyramus.rest.model.StudyProgramme studyProgramme, String nationality, String language, String municipality, String school) {
+  public User createEntity(fi.pyramus.rest.model.Student student,
+                           fi.pyramus.rest.model.StudyProgramme studyProgramme,
+                           String nationality,
+                           String language,
+                           String municipality,
+                           String school,
+                           DateTime studyStartDate,
+                           DateTime studyTimeEnd) {
     StringBuilder displayName = new StringBuilder();
     
     displayName
@@ -117,7 +128,9 @@ public class PyramusSchoolDataEntityFactory {
                            nationality,
                            language,
                            municipality,
-                           school);
+                           school,
+                           studyStartDate,
+                           studyTimeEnd);
   }
   
   public List<User> createEntity(fi.pyramus.rest.model.Student[] students, fi.pyramus.rest.model.StudyProgramme[] studyProgrammes) {
@@ -126,7 +139,9 @@ public class PyramusSchoolDataEntityFactory {
                         new String[students.length],
                         new String[students.length],
                         new String[students.length],
-                        new String[students.length]);
+                        new String[students.length],
+                        new DateTime[students.length],
+                        new DateTime[students.length]);
   }
   
   private boolean allEqual(int... values) {
@@ -140,13 +155,22 @@ public class PyramusSchoolDataEntityFactory {
     return true;
   }
 
-  public List<User> createEntity(fi.pyramus.rest.model.Student[] students, fi.pyramus.rest.model.StudyProgramme[] studyProgrammes, String[] nationalities, String[] languages, String[] municipalities, String[] schools) {
+  public List<User> createEntity(fi.pyramus.rest.model.Student[] students,
+                                 fi.pyramus.rest.model.StudyProgramme[] studyProgrammes,
+                                 String[] nationalities,
+                                 String[] languages,
+                                 String[] municipalities,
+                                 String[] schools,
+                                 DateTime[] studyStartDates,
+                                 DateTime[] studyTimeEnds) {
     if (!allEqual(students.length,
                   studyProgrammes.length,
                   nationalities.length,
                   languages.length,
                   municipalities.length,
-                  schools.length)) {
+                  schools.length,
+                  studyStartDates.length,
+                  studyTimeEnds.length)) {
       throw new RuntimeException("createEntity parameters not all equal length");
     }
     
@@ -158,7 +182,9 @@ public class PyramusSchoolDataEntityFactory {
                               nationalities[i],
                               languages[i],
                               municipalities[i],
-                              schools[i]));
+                              schools[i],
+                              studyStartDates[i],
+                              studyTimeEnds[i]));
     }
     
     return result;
