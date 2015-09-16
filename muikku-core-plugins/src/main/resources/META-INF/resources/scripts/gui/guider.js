@@ -7,7 +7,7 @@ $(document).ready(function(){
     	    $(GuideImpl.guideContainer).on("click", '.gt-user:not(.open)', $.proxy(this._showUser,this));  
           $(GuideImpl.guideContainer).on("click", '.gt-user.open .gt-user-name', $.proxy(this._hideUser,this));  
     	    $(GuideImpl.guideContainer).on("click", '.gt-tool-view-profile', $.proxy(this._onShowProfileClick,this));
-    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-send-mail', $.proxy(this.messageToUser,this));
+//    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-send-mail', $.proxy(this.messageToUser,this));
           $(GuideImpl.guideContainer).on("click", '.gt-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));    	    
     	    
           dust.preload("guider/guider_item.dust");
@@ -153,7 +153,7 @@ $(document).ready(function(){
 						  	var cont1 = $(".gt-data-container-1 div.gt-data");
 
 			          mApi().workspace.workspaces.read({ userId: uId}).callback(function(err, wps){						  	
-							  	renderDustTemplate('guider/guider_view_profile_workspaces.dust',wps,function(text){
+							  	renderDustTemplate('coursepicker/coursepickercourse.dust',wps,function(text){
 							  		$(cont1).append($.parseHTML(text));
 							  		
 							  	});
@@ -167,6 +167,7 @@ $(document).ready(function(){
 				
 	    },    	
 	    _showUser : function(event){
+	      
         var _this = this;
 	    	var element = $(event.target); 
 	      element = element.parents(".gt-user");
@@ -177,9 +178,6 @@ $(document).ready(function(){
 	    	$(element).addClass("open");
 	    	_this._addLoading(detCont);
 	    	$(det).show();	   
-	    	
-
-		    
         mApi().user.users.read(uId).callback(function(err, user){
 				    if( err ){
 				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
