@@ -453,6 +453,13 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       display:inline-block;
     
       &.muikku-assignment-button {
+      
+        &.muikku-evaluated-assignment {
+          background:#fff;
+          color:#666;
+          font-style:italic;
+          cursor:default;
+        }
         
         /* Check Exercise */
         &.muikku-check-exercises {
