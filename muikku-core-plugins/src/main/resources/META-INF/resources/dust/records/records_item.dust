@@ -1,5 +1,5 @@
 
-<div class="mf-item tr-item ft-01" data-workspace-entity-grade="{grade}"  data-workspace-entity-name="{name}"  data-workspace-entity-description="{description|s}" data-workspace-entity-id="{id}" data-workspace-entity-url-name="{urlName}" data-workspace-verbal-assessment="{verbalAssessment}" data-workspace-grade="{grade}" data-workspace-grading-scale="{gradingScale}" data-workspace-evaluated="{evaluated}">
+<div class="mf-item tr-item ft-01" data-workspace-entity-grade="{grade}"  data-workspace-entity-name="{name|s}"  data-workspace-entity-description="{description|s}" data-workspace-entity-id="{id}" data-workspace-entity-url-name="{urlName}" data-workspace-verbal-assessment="{verbalAssessment|s}" data-workspace-grade="{grade}" data-workspace-grading-scale="{gradingScale}" data-workspace-evaluated="{evaluated}">
     <div class="tr-item-details">
 
       <div class="tr-item-details-container">       
