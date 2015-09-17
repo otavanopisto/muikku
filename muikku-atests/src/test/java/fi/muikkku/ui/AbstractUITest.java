@@ -47,8 +47,6 @@ import com.jayway.restassured.specification.RequestSpecification;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
-import fi.muikku.webhooks.WebhookStaffMemberCreatePayload;
-import fi.muikku.webhooks.WebhookStudentCreatePayload;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -81,7 +79,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   @Before
   public void createAdminAccessToken() {
     Response response = given().contentType("application/json").get("/test/login?role=" + getFullRoleName(RoleType.ENVIRONMENT, "ADMINISTRATOR"));
-
     String adminAccessToken = response.getCookie("JSESSIONID");
     setAdminAccessToken(adminAccessToken);
     

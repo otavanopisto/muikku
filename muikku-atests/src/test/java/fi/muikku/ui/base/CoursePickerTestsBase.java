@@ -2,31 +2,6 @@ package fi.muikku.ui.base;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
-import net.sourceforge.htmlunit.corejs.javascript.ast.CatchClause;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
@@ -39,11 +14,7 @@ import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
-import fi.muikku.plugins.schooldatapyramus.webhook.PyramusWebhookPayload;
-import fi.muikku.webhooks.WebhookCourseCreatePayload;
-import fi.muikku.webhooks.WebhookCourseUpdatePayload;
-import fi.muikku.webhooks.WebhookStaffMemberCreatePayload;
-import fi.muikku.webhooks.WebhookStudentCreatePayload;
+import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
 public class CoursePickerTestsBase extends AbstractUITest {
   

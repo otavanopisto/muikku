@@ -3,8 +3,6 @@ package fi.muikku.ui.base;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 
@@ -17,12 +15,8 @@ import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
-import fi.muikku.webhooks.WebhookCourseStaffMemberCreatePayload;
-import fi.muikku.webhooks.WebhookPersonCreatePayload;
-import fi.pyramus.webhooks.WebhookCourseCreatePayload;
+import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
-import fi.pyramus.webhooks.WebhookCourseUpdatePayload;
-
 
 public class CourseMaterialsPageTestsBase extends AbstractUITest {
 

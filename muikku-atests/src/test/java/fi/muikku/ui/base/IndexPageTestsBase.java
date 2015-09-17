@@ -14,8 +14,8 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
-import fi.muikku.webhooks.WebhookStaffMemberCreatePayload;
-import fi.muikku.webhooks.WebhookStudentCreatePayload;
+import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
+import fi.pyramus.webhooks.WebhookStudentCreatePayload;
 
 public class IndexPageTestsBase extends AbstractUITest {
 

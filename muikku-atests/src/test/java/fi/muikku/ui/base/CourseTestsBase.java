@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
@@ -13,7 +14,7 @@ import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
-import fi.muikku.webhooks.WebhookStaffMemberCreatePayload;
+import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
 public class CourseTestsBase extends AbstractUITest {
   
