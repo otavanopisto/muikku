@@ -1,6 +1,8 @@
 package fi.muikku.rest.user;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.UserEntity;
@@ -102,8 +105,14 @@ public class UserRESTService extends AbstractRESTService {
 										.get("language"), (String) o
 										.get("municipality"), (String) o
 										.get("school"), emailAddress,
-										(DateTime) o.get("studyStartDate"),
-										(DateTime) o.get("studyTimeEnd")));
+										new Date(
+										    (Long)
+                                                ((HashMap<String, Object>)o.get("studyStartDate"))
+                                                    .get("millis")),
+										new Date(
+										    (Long)
+                                                ((HashMap<String, Object>)o.get("studyTimeEnd"))
+                                                    .get("millis"))));
 					}
 				}
 
@@ -212,7 +221,7 @@ public class UserRESTService extends AbstractRESTService {
 				user.getFirstName(), user.getLastName(), hasImage,
 				user.getNationality(), user.getLanguage(),
 				user.getMunicipality(), user.getSchool(), emailAddress,
-				user.getStudyStartDate(), user.getStudyTimeEnd());
+				user.getStudyStartDate().toDate(), user.getStudyTimeEnd().toDate());
 	}
 
 	//
