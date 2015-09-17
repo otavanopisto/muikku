@@ -27,7 +27,7 @@ public class IndexPageTestsIT extends IndexPageTestsBase {
     return getDefaultSauceBrowsers();
   }
 
-  public void IndexTestsIT(String browser, String version, String platform) {
+  public IndexPageTestsIT(String browser, String version, String platform) {
     this.browser = browser;
     this.version = version;
     this.platform = platform;
