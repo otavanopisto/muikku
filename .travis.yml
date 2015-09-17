@@ -1,6 +1,6 @@
 sudo: false
 language: java
-script: mvn test
+script: mvn verify -Ptravis,mongo-log-plugin,dummy-mail-plugin,pyramus-plugins,atests-plugin
 jdk:
 - openjdk7
 cache:
@@ -10,6 +10,7 @@ branches:
   only:
   - devel
   - master
+  - FTR-48-ui-tests
 env:
   global:
   - secure: CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A=
@@ -17,28 +18,34 @@ env:
   - secure: adbMocvLB0LZo7WyS3BsMyYAhKIUHUEapkIbZ0PgfZmG1BLLKwNpMvhhlOT5e8g1HkC2CPSlFQyfR5wNv4nH5kR0BwbiScA/QZK/Z3dLUWvSp+GvaKhRfW3G6BDPmyfwlDbjyewlG0fchd3gDqrNgiw3nI5asWyyQADkFPaFWU8=
   - secure: MHUFp5/FFXS8kW2iCl5G5Pr122QmN9FvbRGQX1GwDuNqOtTQHNMsYmcpEit0B5dhLnjl85nuF3IMhYyuw85MJaLlJrRCP1lcWWB5eNCyxsWgWdESmZ17erIifsK0i7QD8ai/yYGf8xtE5kys62T3URqzaK7P2Vyxhv6vgFSd7eI=
   - secure: cc3anD5A6j9z7m0srEOma8PdZjIkkyGjqKBWB0YorT38yOq1D5A+Tt4dReTxurVdiO6DYiJpcwZQ2kxwzPOgjTnydf+e4fOjxn7KrhKSd491vFtu7lfc2RYyVEYHu9XEE7T10hIqXuTNFRslwBSWq6RQLCJAIKL1CUKrBYyaNb8=
+  - secure: M42u24iv0SCErRMdx8m59k3dp2bC1jRWtaeXXBWd+iK/SZWO3TrA0efUpGm3rP4/1vqTmulQ8WL0G1VkSX2dMXL7iD8SpN/4gORqkC/B7y4zG0/7cjVxsHLCG1ndcuvCIIiCupO9S8f+qWZVv4Kqcf+l2PvXR06mcxNrRB2O8GM=
+  - secure: LZViiGyq2B/NfKRByoaA5AumTd0tpS0AaH03sRebV6MF9kcyeWJC+Idv8EyYttyed9GLQM0Qk6aVvvop3dguJNNOMnrKAFoxN4u09QDG+o8IuQiCzFQmEtXBipP+08lqsgn7wfVBD4MyhWHrmJeatq1C/So4IkaMwaYvq6eo7A4=
+addons:
+  sauce_connect: true
+  hosts:
+    - dev.muikku.fi
 before_install:
 - unset GEM_PATH
-after_success:
-- python travis-upload-reports.py
-- python travis-prepare-maven.py
-- pushd .
-- cd muikku
-- mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=otavanopisto
-- mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=janakkala
-- popd
-notifications:
-  irc:
-    channels:
-    - chat.freenode.net#otavanopisto-muikku
-    use_notice: true
-    skip_join: true
-    template:
-    - ! '%{repository} (%{commit}) : %{message} %{foo} '
-    - ! 'Build details: %{build_url}'
-  webhooks:
-    urls:
-    - http://build.staging.fi/travis.php
-    on_success: always
-    on_failure: never
-    on_start: false
+#after_success:
+#- python travis-upload-reports.py
+#- python travis-prepare-maven.py
+#- pushd .
+#- cd muikku
+#- mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=otavanopisto
+#- mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=janakkala
+#- popd
+#notifications:
+#  irc:
+#    channels:
+#    - chat.freenode.net#otavanopisto-muikku
+#    use_notice: true
+#    skip_join: true
+#    template:
+#    - ! '%{repository} (%{commit}) : %{message} %{foo} '
+#    - ! 'Build details: %{build_url}'
+# webhooks:
+#    urls:
+#    - http://build.staging.fi/travis.php
+#    on_success: always
+#    on_failure: never
+#    on_start: false
