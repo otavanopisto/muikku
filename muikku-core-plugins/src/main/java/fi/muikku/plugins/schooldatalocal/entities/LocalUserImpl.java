@@ -1,5 +1,7 @@
 package fi.muikku.plugins.schooldatalocal.entities;
 
+import org.joda.time.DateTime;
+
 import fi.muikku.plugins.schooldatalocal.LocalUserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 
@@ -102,6 +104,22 @@ public class LocalUserImpl implements User {
     this.school = school;
   }
 
+  public DateTime getStudyStartDate() {
+    return studyStartDate;
+  }
+
+  public void setStudyStartDate(DateTime studyStartDate) {
+    this.studyStartDate = studyStartDate;
+  }
+
+  public DateTime getStudyTimeEnd() {
+    return studyTimeEnd;
+  }
+
+  public void setStudyTimeEnd(DateTime studyTimeEnd) {
+    this.studyTimeEnd = studyTimeEnd;
+  }
+
   private String identifier;
   private String firstName;
   private String lastName;
@@ -111,4 +129,6 @@ public class LocalUserImpl implements User {
   private String language;
   private String municipality;
   private String school;
+  private DateTime studyStartDate;
+  private DateTime studyTimeEnd;
 }

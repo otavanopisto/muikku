@@ -54,7 +54,6 @@
     }
 }
 
-
 .gt-side-header{
   @extend .co-mainFunction-sub-header;
   padding:3px;
@@ -63,8 +62,6 @@
 .gt-side-content{
  padding:5px;
 }
-
-
 
 .gt-filter{
   margin-top:5px;
@@ -79,9 +76,8 @@
 }
 
 .gt-filter-disabled{
- background-color:#cecece !important;
- color:#fff !important;
-  
+  background-color:#cecece !important;
+  color:#fff !important;
 }
 
 .gt-side-header > span{
@@ -91,9 +87,7 @@
 .gt-side-tools{
   height:inherit;
   margin-bottom:0;
-  }
-
-
+}
 
 .gt-students-view-container{
   min-height:400px;
@@ -151,7 +145,12 @@
 }
 .gt-user-name{
   width:100%;
-  
+  cursor:pointer;
+}
+
+.gt-email-field{
+  color:$dimmest;
+  font-size:10px;
 }
 .gt-user-picture{
   
@@ -160,8 +159,14 @@
    width:100px; 
    &.default{
     @extend .co-user-picture;     
+    border-radius: 53px;
    }
-   
+   &.small{
+    height: 20px;
+    width: 20px;    
+    margin-left: 6px;
+    margin-top: 6px;
+   }
 }
 
 .gt-user-details-container {

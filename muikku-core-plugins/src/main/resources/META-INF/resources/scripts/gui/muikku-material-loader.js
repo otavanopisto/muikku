@@ -230,6 +230,18 @@
             
             return false;
           },
+          getCorrectAnswers: function() {
+            var result = [];
+            var meta = this.options.meta;
+            if (meta.rightAnswers && meta.rightAnswers.length > 0) {
+              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                if (meta.rightAnswers[i].correct) {
+                  result.push(meta.rightAnswers[i].text);
+                }
+              }
+            }
+            return result;
+          },
           getExamples: function () {
             var result = [];
             
@@ -241,6 +253,9 @@
             }
             
             return result;
+          },
+          hasDisplayableAnswers: function() {
+            return this.options.meta.rightAnswers && this.options.meta.rightAnswers.length > 0; 
           },
           canCheckAnswer: function() {
             var meta = this.options.meta;
@@ -343,9 +358,18 @@
           materialId: data.materialId,
           embedId: data.embedId,
           readonly: data.readOnlyFields||false,
+          canCheckAnswer: function() {
+            return false;
+          },
+          hasDisplayableAnswers: function() {
+            return this.hasExamples();
+          },
           hasExamples: function () {
             var meta = this.options.meta;
             return meta.example && meta.example != '';
+          },
+          getCorrectAnswers: function() {
+            return [];
           },
           getExamples: function () {
             var meta = this.options.meta;
@@ -484,6 +508,9 @@
               embedId: data.embedId,
               meta: meta,
               readonly: data.readOnlyFields||false,
+              hasDisplayableAnswers: function() {
+                return this.canCheckAnswer(); 
+              },
               canCheckAnswer: function() {
                 for (var i = 0, l = meta.options.length; i < l; i++) {
                   if (meta.options[i].correct == true) {
@@ -500,6 +527,15 @@
                   }
                 }
                 return false; 
+              },
+              getCorrectAnswers: function() {
+                var result = [];
+                for (var i = 0, l = meta.options.length; i < l; i++) {
+                  if (meta.options[i].correct == true) {
+                    result.push(meta.options[i].text);
+                  }
+                }
+                return result;
               }
             });
           
@@ -549,6 +585,9 @@
                 return $(this.element).find('input:checked').val();
               }
             },
+            hasDisplayableAnswers: function() {
+              return this.canCheckAnswer(); 
+            },
             canCheckAnswer: function() {
               for (var i = 0, l = meta.options.length; i < l; i++) {
                 if (meta.options[i].correct == true) {
@@ -565,6 +604,15 @@
                 }
               }
               return false; 
+            },
+            getCorrectAnswers: function() {
+              var result = [];
+              for (var i = 0, l = meta.options.length; i < l; i++) {
+                if (meta.options[i].correct == true) {
+                  result.push(meta.options[i].text);
+                }
+              }
+              return result;
             }
           });
           $(object).replaceWith(container);
@@ -630,6 +678,9 @@
             return JSON.stringify(values); 
           }
         },
+        hasDisplayableAnswers: function() {
+          return this.canCheckAnswer(); 
+        },
         canCheckAnswer: function() {
           for (var i = 0, l = meta.options.length; i < l; i++) {
             if (meta.options[i].correct == true) {
@@ -657,6 +708,15 @@
               return false;
           }
           return true;
+        },
+        getCorrectAnswers: function() {
+          var result = [];
+          for (var i = 0, l = meta.options.length; i < l; i++) {
+            if (meta.options[i].correct == true) {
+              result.push(meta.options[i].text);
+            }
+          }
+          return result;
         }
       });
       $(object).replaceWith(container);

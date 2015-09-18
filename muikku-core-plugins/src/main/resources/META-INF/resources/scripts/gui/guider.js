@@ -7,17 +7,66 @@ $(document).ready(function(){
     	    $(GuideImpl.guideContainer).on("click", '.gt-user:not(.open)', $.proxy(this._showUser,this));  
           $(GuideImpl.guideContainer).on("click", '.gt-user.open .gt-user-name', $.proxy(this._hideUser,this));  
     	    $(GuideImpl.guideContainer).on("click", '.gt-tool-view-profile', $.proxy(this._onShowProfileClick,this));
-    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-send-mail', $.proxy(this.messageToUser,this));
+//    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-send-mail', $.proxy(this.messageToUser,this));
           $(GuideImpl.guideContainer).on("click", '.gt-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));    	    
     	    
           dust.preload("guider/guider_item.dust");
           
           $(window).on("hashchange", $.proxy(this._onHashChange, this));
           $(window).trigger("hashchange");          
-          
+
+          var guiderSearchUsersInput = $("#content").find("input[name='guiderSearch']")
+          this._searchInput = guiderSearchUsersInput;
+          guiderSearchUsersInput.keyup($.proxy(this._onSearchUsersChange, this));                
     	},
     	
-    	
+      _refreshList: function () {
+        var _this = this;
+        var term = this._searchInput.val();
+        
+        this._loadUsers(term);
+
+      },
+          	
+      _refreshListTimer: function () {
+        var _this = this;
+        
+        clearTimeout(_this.listReloadTimer);
+        _this.listReloadTimer = setTimeout(
+            function () {
+              _this._refreshList();
+            }, 500);
+      },    	
+      _onSearchUsersChange : function (event) {
+        this._refreshListTimer();
+      },
+      _loadUsers : function(params){
+        var _this = this;
+        _this._clearUsers();
+        _this._addLoading($(GuideImpl.guideContainer));
+        var search = $(".gt-search");
+        var searchVisible = search.is(":visible");
+        
+        if(searchVisible == false ){
+          search.show("slide");
+        }
+        
+        mApi().user.users.read({searchString : params, archetype : 'STUDENT', maxResults: 25 })
+        .callback(function (err, users) {
+          
+          if( err ){
+                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
+          }else{        
+  
+           renderDustTemplate('guider/guider_items.dust', users, function(text) {
+             _this._clearLoading();
+            $(GuideImpl.guideContainer).append($.parseHTML(text));
+             
+            });
+          }
+        });   
+    
+  },      
     	_refreshUsers : function(){
             var _this = this;
             _this._clearUsers();
@@ -104,7 +153,7 @@ $(document).ready(function(){
 						  	var cont1 = $(".gt-data-container-1 div.gt-data");
 
 			          mApi().workspace.workspaces.read({ userId: uId}).callback(function(err, wps){						  	
-							  	renderDustTemplate('guider/guider_view_profile_workspaces.dust',wps,function(text){
+							  	renderDustTemplate('coursepicker/coursepickercourse.dust',wps,function(text){
 							  		$(cont1).append($.parseHTML(text));
 							  		
 							  	});
@@ -118,6 +167,7 @@ $(document).ready(function(){
 				
 	    },    	
 	    _showUser : function(event){
+	      
         var _this = this;
 	    	var element = $(event.target); 
 	      element = element.parents(".gt-user");
@@ -128,9 +178,6 @@ $(document).ready(function(){
 	    	$(element).addClass("open");
 	    	_this._addLoading(detCont);
 	    	$(det).show();	   
-	    	
-
-		    
         mApi().user.users.read(uId).callback(function(err, user){
 				    if( err ){
 				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));

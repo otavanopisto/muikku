@@ -1,5 +1,6 @@
 package fi.muikku.plugins.schooldatapyramus.entities;
 
+import org.joda.time.DateTime;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.entity.User;
 
@@ -13,7 +14,9 @@ public class PyramusUser implements User {
                      String nationality,
                      String language,
                      String municipality,
-                     String school) {
+                     String school,
+                     DateTime studyStartDate,
+                     DateTime studyTimeEnd) {
     this.identifier = identifier;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -23,6 +26,8 @@ public class PyramusUser implements User {
     this.municipality = municipality;
     this.language = language;
     this.school = school;
+    this.studyStartDate = studyStartDate;
+    this.studyTimeEnd = studyTimeEnd;
   }
 
   @Override
@@ -70,6 +75,7 @@ public class PyramusUser implements User {
     return getIdentifier() + "/" + getSchoolDataSource();
   }
 
+  @Override
   public String getNationality() {
     return nationality;
   }
@@ -78,6 +84,7 @@ public class PyramusUser implements User {
     this.nationality = nationality;
   }
 
+  @Override
   public String getLanguage() {
     return language;
   }
@@ -86,6 +93,7 @@ public class PyramusUser implements User {
     this.language = language;
   }
 
+  @Override
   public String getMunicipality() {
     return municipality;
   }
@@ -94,12 +102,31 @@ public class PyramusUser implements User {
     this.municipality = municipality;
   }
 
+  @Override
   public String getSchool() {
     return school;
   }
 
   public void setSchool(String school) {
     this.school = school;
+  }
+
+  @Override
+  public DateTime getStudyStartDate() {
+    return studyStartDate;
+  }
+
+  public void setStudyStartDate(DateTime studyStartDate) {
+    this.studyStartDate = studyStartDate;
+  }
+
+  @Override
+  public DateTime getStudyTimeEnd() {
+    return studyTimeEnd;
+  }
+
+  public void setStudyTimeEnd(DateTime studyTimeEnd) {
+    this.studyTimeEnd = studyTimeEnd;
   }
 
   private String identifier;
@@ -111,4 +138,6 @@ public class PyramusUser implements User {
   private String language;
   private String municipality;
   private String school;
+  private DateTime studyStartDate;
+  private DateTime studyTimeEnd;
 }
