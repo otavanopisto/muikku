@@ -20,9 +20,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
-
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.rest.AbstractRESTService;
@@ -64,6 +61,7 @@ public class UserRESTService extends AbstractRESTService {
 	@GET
 	@Path("/users")
 	@RESTPermitUnimplemented
+	@SuppressWarnings("unchecked")
 	public Response searchUsers(
 			@QueryParam("searchString") String searchString,
 			@QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
@@ -98,6 +96,19 @@ public class UserRESTService extends AbstractRESTService {
 
 					  emailAddress = secret(emailAddress);
 					  
+					  HashMap<String, Object> studyStartDate = (HashMap<String, Object>)o.get("studyStartDate");
+					  HashMap<String, Object> studyTimeEnd = (HashMap<String, Object>)o.get("studyTimeEnd");
+					  Date studyStartDateDate = null;
+					  Date studyTimeEndDate = null;
+					  
+					  if (studyStartDate != null) {
+					    studyStartDateDate = new Date((Long)studyStartDate.get("millis"));
+					  }
+					  
+					  if (studyTimeEnd != null) {
+					    studyTimeEndDate = new Date((Long)studyTimeEnd.get("millis"));
+					  }
+					  
 						ret.add(new fi.muikku.rest.model.User(userEntity
 								.getId(), (String) o.get("firstName"),
 								(String) o.get("lastName"), hasImage,
@@ -105,14 +116,8 @@ public class UserRESTService extends AbstractRESTService {
 										.get("language"), (String) o
 										.get("municipality"), (String) o
 										.get("school"), emailAddress,
-										new Date(
-										    (Long)
-                                                ((HashMap<String, Object>)o.get("studyStartDate"))
-                                                    .get("millis")),
-										new Date(
-										    (Long)
-                                                ((HashMap<String, Object>)o.get("studyTimeEnd"))
-                                                    .get("millis"))));
+										studyStartDateDate,
+										studyTimeEndDate));
 					}
 				}
 
