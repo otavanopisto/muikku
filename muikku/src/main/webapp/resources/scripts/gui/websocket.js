@@ -4,7 +4,7 @@
   $.widget("custom.muikkuWebSocket", {
     
     options: {
-      reconnectInterval: 2000
+      reconnectInterval: 200
     },
     
     _create : function() {
@@ -118,7 +118,7 @@
       this._socketOpen = false;
       clearTimeout(this._reconnectTimeout);
       
-      this._retryTimeout = setTimeout(function () {
+      this._retryTimeout = setTimeout($.proxy(function () {
         try {
           if (this._webSocket) {
             this._webSocket.onclose = function () {};
@@ -136,7 +136,7 @@
           }
         }, this));
         
-      }, this.options.reconnectInterval);
+      }, this), this.options.reconnectInterval);
     },
 
     _onWebSocketOpen: function (event, data) {
