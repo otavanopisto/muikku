@@ -489,7 +489,7 @@
         var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
         var workspaceMaterialId =  page.muikkuMaterialPage('workspaceMaterialId'); 
         
-        mSocket().sendMessage('workspace:field-answer-save', JSON.stringify({
+        $(document).muikkuWebSocket("sendMessage", 'workspace:field-answer-save', JSON.stringify({
           'answer': this.answer(),
           'embedId': this.embedId(),
           'materialId': this.materialId(),
@@ -531,7 +531,7 @@
 
       // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
       if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
-        if (message.originTicket == mSocket().getTicket()) {
+        if (message.originTicket == $(document).muikkuWebSocket("ticket")) {
           $(this.element)
             .removeClass('muikku-field-unsaved muikku-field-saving')
             .addClass('muikku-field-saved');

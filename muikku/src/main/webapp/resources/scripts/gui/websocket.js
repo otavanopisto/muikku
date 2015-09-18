@@ -1,21 +1,110 @@
 (function() {
-
-  MuikkuWebSocketImpl = $.klass({
-    init: function () {
-      var _this = this;
-      this._retryTimeout = undefined;
-      this._retryTimeoutInterval = 5000;
-
-      $(window).on('beforeunload', function() {
-        if (_this._webSocket) {
-          _this._webSocket.onclose = function () {};
-          _this._webSocket.close();
-        }
-      });
-
-      this._connect();
+  'use strict';
+  
+  $.widget("custom.muikkuWebSocket", {
+    
+    options: {
+      reconnectInterval: 2000
     },
-    _openWebSocket: function (url) {
+    
+    _create : function() {
+      this._ticket = null;
+      this._webSocket = null;
+      this._socketOpen = false;
+      this._messagesPending = [];
+      
+      this._getTicket($.proxy(function (ticket) {
+        if (this._ticket) {
+          this._openWebSocket();
+        } else {
+          $('.notification-queue').notificationQueue('notification', 'error', "Could not open WebSocket because ticket was missing");
+        }
+      }, this));
+
+      this.element.on("webSocketConnected", $.proxy(this._onWebSocketConnected, this));
+      this.element.on("webSocketDisconnected", $.proxy(this._onWebSocketDisconnected, this));
+    },
+    
+    sendMessage: function (eventType, data) {
+      var message = {
+        eventType: eventType,
+        data: data
+      };
+      
+      if (this._socketOpen) {
+        this._webSocket.send(JSON.stringify(message));
+      } else {
+        this._messagesPending.push({
+          eventType: eventType,
+          data: data
+        });
+      }
+    },
+    
+    ticket: function () {
+      return this._ticket;
+    },
+    
+    _getTicket: function (callback) {
+      if (this._ticket) {
+        // We have a ticket, so we need to validate it before using it
+        mApi().websocket.ticket.check.read(this._ticket).callback($.proxy(function (err, response) {
+          if (err) {
+            // Ticket did not pass validation, so we need to create a new one
+            this._createTicket($.proxy(function (ticket) {
+              this._ticket = ticket;
+              callback(ticket);
+            }, this));
+          } else {
+            // Ticket passed validation, so we use it
+            callback(this._ticket);
+          }
+        }, this));
+      } else {
+        // Create new ticket
+        this._createTicket($.proxy(function (ticket) {
+          this._ticket = ticket;
+          callback(ticket);
+        }, this));
+      }
+    },
+    
+    _createTicket: function (callback) {
+      mApi().websocket.ticket.read().callback($.proxy(function (err, ticket) {
+        if (!err) {
+          callback(ticket.ticket);
+        } else {
+          $('.notification-queue').notificationQueue('notification', 'error', "Could not create WebSocket ticket");
+        }
+      }, this));
+    },
+    
+    _openWebSocket: function () {
+      var host = window.location.host;
+      var secure = location.protocol == 'https:';
+      this._webSocket = this._createWebSocket((secure ? 'wss://' : 'ws://') + host + '/ws/socket/' + this._ticket);
+      
+      if (this._webSocket) {
+        this._webSocket.onmessage = $.proxy(this._onWebSocketMessage, this);
+        this._webSocket.onerror = $.proxy(this._onWebSocketError, this);
+        this._webSocket.onclose = $.proxy(this._onWebSocketClose, this);
+        switch (this._webSocket.readyState) {
+          case this._webSocket.CONNECTING:
+            this._webSocket.onopen = $.proxy(this._onWebSocketOpen, this);
+          break;
+          case this._webSocket.OPEN:
+            this.element.trigger("webSocketConnected"); 
+          break;
+          default:
+            $('.notification-queue').notificationQueue('notification', 'error', "WebSocket connection failed");
+          break;
+        }
+      } else {
+        $('.notification-queue').notificationQueue('notification', 'error', "Could not open WebSocket connection");
+      }
+    },
+    
+    _createWebSocket: function (url) {
       if ((typeof window.WebSocket) !== 'undefined') {
         return new WebSocket(url);
       } else if ((typeof window.MozWebSocket) !== 'undefined') {
@@ -24,101 +113,73 @@
       
       return null;
     },
-    _connect: function () {
-      var _this = this;
+    
+    _reconnect: function () {
+      this._socketOpen = false;
+      clearTimeout(this._reconnectTimeout);
       
-      clearTimeout(this._retryTimeout);
-      this._retryTimeout = undefined;
-
-      if (this._ticket) {
-        // Validate existing ticket and if it fails, reset it
-        mApi().websocket.ticket.check.read(this._ticket).callback(function (err, response) {
-          if (err) {
-            _this._ticket = undefined;
+      this._retryTimeout = setTimeout(function () {
+        try {
+          if (this._webSocket) {
+            this._webSocket.onclose = function () {};
+            this._webSocket.close();
           }
-        });
-      }
-      
-      if (!this._ticket) {
-        // Fetch new ticket if none exists
-        mApi().websocket.ticket.read().callback(function (err, ticket) {
-          if (!err)
-            _this._ticket = ticket.ticket;
-          else 
-            _this._ticket = undefined;
-        });
-      }
-
-      if (this._ticket) {
-        var host = window.location.host;
-        var secure = location.protocol == 'https:';
-        this._webSocket = this._openWebSocket((secure ? 'wss://' : 'ws://')  + host + '/ws/socket/' + this._ticket);
-        this._webSocket.onopen = this._onWebSocketOpen;
-        this._webSocket.onmessage = this._onWebSocketMessage;
-        this._webSocket.onclose = this._onWebSocketClose;
-        this._webSocket.onerror = this._onWebSocketError;
-      } else {
-        this._tryReconnect();
-      }
-    },
-    _onWebSocketOpen: function (event) {
-      $(document).trigger("mSocket:connected");
-    },
-    _onWebSocketClose: function (event) {
-      $(document).trigger("mSocket:disconnected");
-
-      mSocket()._tryReconnect();
-    },
-    _onWebSocketError: function () {
-      if (this._webSocket) {
-        if (this._webSocket.readyState == 3) {
-          mSocket()._tryReconnect();
+        } catch (e) {
+          
         }
+        
+        this._getTicket($.proxy(function (ticket) {
+          if (this._ticket) {
+            this._openWebSocket();
+          } else {
+            $('.notification-queue').notificationQueue('notification', 'error', "Could not open WebSocket because ticket was missing");
+          }
+        }, this));
+        
+      }, this.options.reconnectInterval);
+    },
+
+    _onWebSocketOpen: function (event, data) {
+      this.element.trigger("webSocketConnected"); 
+    },
+    
+    _onWebSocketError: function () {
+      this._reconnect();
+    },
+    
+    _onWebSocketClose: function () {
+      this.element.trigger("webSocketDisconnected"); 
+      this._reconnect();
+    },
+    
+    _onWebSocketConnected: function () {
+      this._socketOpen = true;
+      
+      while (this._messagesPending.length) {
+        var message = this._messagesPending.shift();
+        this.sendMessage(message.eventType, message.data);
       }
     },
+    
+    _onWebSocketDisconnected: function () {
+      this._socketOpen = false;
+    },
+   
     _onWebSocketMessage: function (event) {
       var message = JSON.parse(event.data);
       var eventType = message.eventType;
       
-      $(document).trigger(eventType, message.data);
+      this.element.trigger(eventType, message.data);
     },
-    _tryReconnect: function () {
-      var _this = this;
-
-      clearTimeout(this._retryTimeout);
-      
-      this._retryTimeout = setTimeout(function () {
-        _this._connect();
-      }, this._retryTimeoutInterval);
-    },
-    sendMessage: function (eventType, data) {
-      var message = {
-        eventType: eventType,
-        data: data
-      };
-      
-      if (this._webSocket.readyState == 1) {
-        this._webSocket.send(JSON.stringify(message));
-        return true;
+    
+    _onBeforeWindowUnload: function () {
+      if (this._webSocket) {
+        this._webSocket.onclose = function () {};
+        this._webSocket.close();
       }
-      
-      return false;
-    },
-    getTicket: function () {
-      return this._ticket;
     }
   });
-      
-  function getWebSocket() {
-    if (!window.mWebSocket) {
-      window.mWebSocket = new MuikkuWebSocketImpl();
-    }
-    
-    return window.mWebSocket;
-  };
+
+  $(document).muikkuWebSocket();
   
-  window.mSocket = getWebSocket;
-  
-  mSocket();
-})(window);      
-      
+}).call(this);

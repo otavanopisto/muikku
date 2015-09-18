@@ -14,7 +14,7 @@
           text: $('.chatBox').find("input[name='chatBoxText']").val()
         };
 
-        mSocket().sendMessage('Chat:message', data);
+        $(document).muikkuWebSocket("sendMessage", 'Chat:message', data);
       }
       
       
