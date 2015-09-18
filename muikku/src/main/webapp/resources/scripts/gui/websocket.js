@@ -118,7 +118,7 @@
       this._socketOpen = false;
       clearTimeout(this._reconnectTimeout);
       
-      this._retryTimeout = setTimeout($.proxy(function () {
+      this._reconnectTimeout = setTimeout($.proxy(function () {
         try {
           if (this._webSocket) {
             this._webSocket.onclose = function () {};
