@@ -177,6 +177,15 @@
       return this.options.workspaceEntityId;
     },
     
+    autosave: function () {
+      if (this.assignmentType() == 'EXERCISE') {
+        this._saveWorkspaceMaterialReply('ANSWERED', $.proxy(function (reply) {
+          this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+          this._applyState('EXERCISE', 'ANSWERED');
+        }, this));
+      }
+    },
+    
     _applyState: function (assignmentType, state) {
       var stateOptions = this._getStateOptions(assignmentType, state);
       var removeClasses = $.map(this.options.states, function (value) {
@@ -376,12 +385,7 @@
     },
     
     _onFieldChange: function (event, data) {
-      if (this.assignmentType() == 'EXERCISE') {
-        this._saveWorkspaceMaterialReply('ANSWERED', $.proxy(function (reply) {
-          this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
-          this._applyState('EXERCISE', 'ANSWERED');
-        }, this));
-      }
+      this.autosave(); 
     }
     
   });

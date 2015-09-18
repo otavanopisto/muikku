@@ -95,7 +95,11 @@ public class WebSocketMessenger {
         session.getUserProperties().put("UserId", ticket1.getUser());
         sessions.put(ticket, session);
       } else {
-        session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Ticket could not be validated."));
+        try {
+          session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Ticket could not be validated."));
+        } catch (Exception e) {
+          // Closing failed, ignore
+        }
       }
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to open WebSocket session", e);
