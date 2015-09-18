@@ -1,6 +1,8 @@
 package fi.muikku.rest.user;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +19,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.joda.time.DateTime;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.UserEntity;
@@ -61,6 +61,7 @@ public class UserRESTService extends AbstractRESTService {
 	@GET
 	@Path("/users")
 	@RESTPermitUnimplemented
+	@SuppressWarnings("unchecked")
 	public Response searchUsers(
 			@QueryParam("searchString") String searchString,
 			@QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
@@ -95,6 +96,19 @@ public class UserRESTService extends AbstractRESTService {
 
 					  emailAddress = secret(emailAddress);
 					  
+					  HashMap<String, Object> studyStartDate = (HashMap<String, Object>)o.get("studyStartDate");
+					  HashMap<String, Object> studyTimeEnd = (HashMap<String, Object>)o.get("studyTimeEnd");
+					  Date studyStartDateDate = null;
+					  Date studyTimeEndDate = null;
+					  
+					  if (studyStartDate != null) {
+					    studyStartDateDate = new Date((Long)studyStartDate.get("millis"));
+					  }
+					  
+					  if (studyTimeEnd != null) {
+					    studyTimeEndDate = new Date((Long)studyTimeEnd.get("millis"));
+					  }
+					  
 						ret.add(new fi.muikku.rest.model.User(userEntity
 								.getId(), (String) o.get("firstName"),
 								(String) o.get("lastName"), hasImage,
@@ -102,8 +116,8 @@ public class UserRESTService extends AbstractRESTService {
 										.get("language"), (String) o
 										.get("municipality"), (String) o
 										.get("school"), emailAddress,
-										(DateTime) o.get("studyStartDate"),
-										(DateTime) o.get("studyTimeEnd")));
+										studyStartDateDate,
+										studyTimeEndDate));
 					}
 				}
 
@@ -212,7 +226,7 @@ public class UserRESTService extends AbstractRESTService {
 				user.getFirstName(), user.getLastName(), hasImage,
 				user.getNationality(), user.getLanguage(),
 				user.getMunicipality(), user.getSchool(), emailAddress,
-				user.getStudyStartDate(), user.getStudyTimeEnd());
+				user.getStudyStartDate().toDate(), user.getStudyTimeEnd().toDate());
 	}
 
 	//
