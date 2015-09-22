@@ -192,17 +192,11 @@
       <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
-    <!-- Wiremock tuplana? 
-    <dependency>
-      <groupId>com.github.tomakehurst</groupId>
-      <artifactId>wiremock</artifactId>
-      <version>1.53</version>
-      <scope>test</scope>
-    </dependency>  -->
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>persistence</artifactId>
     </dependency>
+    <!-- 
      <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>calendar-plugin</artifactId>
@@ -224,7 +218,7 @@
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>core</artifactId>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
