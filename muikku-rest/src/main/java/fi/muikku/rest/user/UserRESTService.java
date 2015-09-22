@@ -23,14 +23,11 @@ import javax.ws.rs.core.Response.Status;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
-import fi.muikku.model.users.UserGroupUserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.rest.model.UserBasicInfo;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
-import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
@@ -65,9 +62,6 @@ public class UserRESTService extends AbstractRESTService {
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 	
   @Inject
-  private WorkspaceEntityController workspaceEntityController;
-  
-  @Inject
   private WorkspaceUserEntityController workspaceUserEntityController; 
   
 	@Inject
@@ -95,79 +89,48 @@ public class UserRESTService extends AbstractRESTService {
 	  
 	  EnvironmentRoleArchetype roleArchetype = archetype != null ? EnvironmentRoleArchetype.valueOf(archetype) : null;
 
-    Set<Long> userGroupUserFilters = null;
-    Set<Long> workspaceUserFilters = null;
+    Set<Long> userGroupFilters = null;
+    Set<Long> workspaceFilters = null;
 	  
 	  if ((myUserGroups != null) && myUserGroups) {
-	    userGroupUserFilters = new HashSet<Long>();
+	    userGroupFilters = new HashSet<Long>();
 
 	    // Groups where user is a member
 	    
 	    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUser(loggedUser);
 	    for (UserGroupEntity userGroup : userGroups) {
-	      List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroup);
-	      for (UserGroupUserEntity groupUser : groupUsers) {
-	        userGroupUserFilters.add(groupUser.getUserSchoolDataIdentifier().getUserEntity().getId());
-	      }
+	      userGroupFilters.add(userGroup.getId());
 	    }
 	  } else if ((userGroupIds != null) && !userGroupIds.isEmpty()) {
-	    userGroupUserFilters = new HashSet<Long>();
+	    userGroupFilters = new HashSet<Long>();
 	    
       // Defined user groups
       
-      for (Long userGroupId : userGroupIds) {
-        UserGroupEntity userGroup = userGroupEntityController.findUserGroupEntityById(userGroupId);
-        
-        List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroup);
-        for (UserGroupUserEntity groupUser : groupUsers) {
-          userGroupUserFilters.add(groupUser.getUserSchoolDataIdentifier().getUserEntity().getId());
-        }
-      }
+	    userGroupFilters.addAll(userGroupIds);
 	  }
 
     if ((myWorkspaces != null) && myWorkspaces) {
-      workspaceUserFilters = new HashSet<Long>();
+      workspaceFilters = new HashSet<Long>();
       
       // Workspaces where user is a member
       
       List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(loggedUser);
       for (WorkspaceEntity workspace : workspaces) {
-        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntities(workspace);
-        
-        for (WorkspaceUserEntity workspaceUser : workspaceUsers) {
-          workspaceUserFilters.add(workspaceUser.getUserSchoolDataIdentifier().getUserEntity().getId());
-        }
+        workspaceFilters.add(workspace.getId());
       }
     } else if ((workspaceIds != null) && !workspaceIds.isEmpty()) {
-      workspaceUserFilters = new HashSet<Long>();
+      workspaceFilters = new HashSet<Long>();
       
       // Defined workspaces
       
-      for (Long workspaceId : workspaceIds) {
-        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
-        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
-        
-        for (WorkspaceUserEntity workspaceUser : workspaceUsers) {
-          workspaceUserFilters.add(workspaceUser.getUserSchoolDataIdentifier().getUserEntity().getId());
-        }
-      }
+      workspaceFilters.addAll(workspaceIds);
     }
 
-    Set<Long> userFilters;
-    
-    if (userGroupUserFilters != null) {
-      userFilters = userGroupUserFilters;
-      
-      if (workspaceUserFilters != null)
-        userFilters.retainAll(workspaceUserFilters);
-    } else
-      userFilters = workspaceUserFilters;
-    
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
 		if (elasticSearchProvider != null) {
 			String[] fields = new String[] { "firstName", "lastName" };
 			
-			SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, roleArchetype, userFilters, firstResult, maxResults);
+			SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, roleArchetype, userGroupFilters, workspaceFilters, firstResult, maxResults);
 			
 			List<Map<String, Object>> results = result.getResults();
 			boolean hasImage = false;

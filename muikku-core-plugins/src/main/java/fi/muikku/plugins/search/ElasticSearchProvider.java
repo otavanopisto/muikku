@@ -48,8 +48,16 @@ public class ElasticSearchProvider implements SearchProvider {
     elasticClient.close();
   }
   
+  private boolean isEmptyCollection(Collection<?> c) {
+    if (c == null)
+      return true;
+    
+    return c.isEmpty();
+  }
+  
   @Override
-  public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, Collection<Long> acceptedUserEntities, int start, int maxResults) {
+  public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, 
+      Collection<Long> groups, Collection<Long> workspaces, int start, int maxResults) {
     try {
       // TODO: query_string search for case insensitive searches??
       // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
@@ -57,7 +65,7 @@ public class ElasticSearchProvider implements SearchProvider {
 
       QueryBuilder query = null;
 
-      if ((archetype == null) && StringUtils.isBlank(text) && ((acceptedUserEntities == null) || (acceptedUserEntities.isEmpty()))) {
+      if ((archetype == null) && StringUtils.isBlank(text) && isEmptyCollection(groups) && isEmptyCollection(workspaces)) {
         query = QueryBuilders.matchAllQuery();
       } else {
         query = QueryBuilders.boolQuery();
@@ -66,8 +74,12 @@ public class ElasticSearchProvider implements SearchProvider {
           ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("archetype", archetype.name().toLowerCase()));
         }
     
-        if (acceptedUserEntities != null) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("userEntityId", acceptedUserEntities));
+        if (!isEmptyCollection(groups)) {
+          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("groups", groups));
+        }
+
+        if (!isEmptyCollection(workspaces)) {
+          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("workspaces", workspaces));
         }
     
         if (StringUtils.isNotBlank(text)) {

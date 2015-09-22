@@ -16,5 +16,5 @@ public interface SearchProvider {
   public void deinit();
   
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults);
-  SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, Collection<Long> acceptedUserEntities, int start, int maxResults);
+  SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, Collection<Long> groups, Collection<Long> workspaces, int start, int maxResults);
 }
