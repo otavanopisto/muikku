@@ -59,6 +59,19 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     box-sizing:border-box;
     margin:4px 3px;
     
+    &[readonly="readonly"] {
+      background: #fcfcfc !important;
+      border: 3px dotted #eaeaea !important;
+      box-shadow: none !important;
+      color: #b0b0b0 !important;
+      
+      &:hover {
+        border: 3px dotted #eee;
+        box-shadow:none;
+      }
+
+    }
+    
     &:focus,
     &:hover {
       border:3px solid #97bfed;
@@ -120,6 +133,18 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     margin:0;
     line-height:1.7em;
     
+    &[readonly="readonly"] {
+      background: #fcfcfc !important;
+      border: 3px dotted #eaeaea !important;
+      box-shadow: none !important;
+      color: #b0b0b0 !important;
+      
+      &:hover {
+        border: 3px dotted #eee !important;
+        box-shadow:none !important;
+      }
+    }
+    
     &:focus,
     &:hover {
       border:3px solid #97bfed;
@@ -142,6 +167,18 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     max-width:100%;
     word-wrap:break-word;
     
+    &[readonly="readonly"] {
+      background: #fcfcfc !important;
+      border: 3px dotted #eaeaea !important;
+      box-shadow: none !important;
+      color: #b0b0b0 !important;
+      
+      &:hover {
+        border: 3px dotted #eee !important;
+        box-shadow:none !important;
+      }
+    }
+    
     &:focus,
     &:hover {
       border:3px solid #97bfed;
@@ -160,19 +197,25 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   input[type="checkbox"] {
     margin:0 10px;
     background:#fff;
-    border:3px solid #c9e0fb;
     transition:border,box-shadow 0.1s,0.2s ease-in-out;
     outline:none;
     display:inline-block;
-    box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    box-shadow:0 0 1px 3px rgba(215,215,215,0.15);
     @include rounded(3px);
     display:inline-block;
+    
+    &[readonly="readonly"] {
+      box-shadow:0 0 1px 3px rgba(234,234,234,1) !important;
+      
+      &:hover {
+        box-shadow:0 0 1px 3px rgba(234,234,234,1) !important;
+      }
+    }
     
     &:focus,
     &:hover,
     &:checked {
-      border:3px solid #97bfed;
-      box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
+      box-shadow:0 0 1px 3px rgba(202,225,252,0.85);
     }
   }
   
@@ -213,10 +256,10 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
       input[type="checkbox"],
       input[type="radio"] {
-        box-shadow:0 0 0px 3px #e4e630;
+        box-shadow:0 0 1px 3px #e4e630;
         
         &:hover {
-          box-shadow:0 0 0px 3px #e4e630;
+          box-shadow:0 0 1px 3px #e4e630;
         }
       
       }
@@ -228,7 +271,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       input[type="checkbox"],
       input[type="radio"] {
         animation: saving-checkbox-radio 4s ease infinite;
-        box-shadow:0 0 0px 3px #e4e630;
+        box-shadow:0 0 1px 3px #e4e630;
       }
       
     }
@@ -237,10 +280,10 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
       input[type="checkbox"],
       input[type="radio"] {
-        box-shadow:0 0 0px 3px #9cf3c7;
+        box-shadow:0 0 1px 3px #9cf3c7;
       
         &:hover {
-          box-shadow:0 0 0px 3px #9cf3c7;
+          box-shadow:0 0 1px 3px #9cf3c7;
         }
         
       }
@@ -366,15 +409,30 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   .muikku-save-page-wrapper {
     text-align:center;
-    margin:20px auto 15px auto;
-    display:table;
+    margin:20px -15px 15px -15px;
     clear:both;
   }
   
   .workspace-materials-view-page {
   
+    .correct-answers-count-container {
+      display:block;
+      margin:5px;
+      
+      .correct-answers-count-label {
+        padding:0px 5px;
+        display:inline-block;
+      }
+      
+      .correct-answers-count-data {
+        padding:0px 5px;
+        display:inline-block;
+        font-size:1.4em;
+      }
+    }
+  
     /* Material's Assignment Submit Buttons */
-    button.muikku-assignment-button {
+    button {
       color:#fff;
       background:#71bced;
       box-shadow:none;
@@ -384,36 +442,52 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       text-transform:uppercase;
       padding:12px;
       transition:background 0.8s ease-in-out;
-      margin:0 5px 0 5px;
+      margin:0 5px 5px 5px;
       min-width:120px;
       outline:none;
       position:relative;
       line-height:1;
       cursor:pointer;
       display:inline-block;
+    
+      &.muikku-assignment-button {
       
-      /* Check Exercise */
-      &.muikku-check-exercises {
-        background: $exerciseAssignment;
+        &.muikku-evaluated-assignment {
+          background:#fff;
+          color:#666;
+          font-style:italic;
+          cursor:default;
+        }
+        
+        /* Check Exercise */
+        &.muikku-check-exercises {
+          background: $exerciseAssignment;
+        }
+        
+        /* Submit Assignment */
+        &.muikku-submit-assignment {
+          background: $evaluatedAssignment;
+        }
+        
+        /* Withdraw Assingment */
+        &.muikku-withdraw-assignment {
+          background: darken($evaluatedAssignment,10%);
+        }
+        
+        /* Update Assignment */
+        &.muikku-update-assignment {
+          background: lighten($evaluatedAssignment,5%);
+        }
+        
       }
       
-      /* Submit Assignment */
-      &.muikku-submit-assignment {
-        background: $evaluatedAssignment;
+      /* Show Correct Answers */
+      &.muikku-show-correct-answers-button {
+        background: $exerciseCorrectAnswersOnRequest;
       }
       
-      /* Withdraw Assingment */
-      &.muikku-withdraw-assignment {
-        background: darken($evaluatedAssignment,10%);
-      }
-      
-      /* Update Assignment */
-      &.muikku-update-assignment {
-        background: lighten($evaluatedAssignment,5%);
-      }
-
     }
-      
+
 
     .muikku-field-correct-answer {
       box-shadow:0 0 1px 3px rgba(0,255,42,0.3) !important;
@@ -439,19 +513,24 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       
     }
     
-    /* For checkbox/radio checks */
+    /* For checkbox/radio/connectfields checks */
     div.muikku-field-correct-answer {
       box-shadow:none !important;
       border:none !important;
       
       input[type="checkbox"],
       input[type="radio"] {
-        box-shadow:0 0 0 3px rgba(0,255,42,0.9) !important;
+        box-shadow:0 0 1px 3px rgba(0,255,42,0.9) !important;
       }
       
       &:hover {
         box-shadow:none !important;
         border:none !important;  
+      }
+      
+      .muikku-connect-field-counterpart, 
+      .muikku-connect-field-term {
+        background:#55fc70;
       }
       
     }
@@ -462,12 +541,17 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       
       input[type="checkbox"],
       input[type="radio"] {
-        box-shadow:0 0 0 3px rgba(255,0,0,0.6) !important;
+        box-shadow:0 0 1px 3px rgba(255,0,0,0.6) !important;
       }
       
       &:hover {
         box-shadow:none !important;
         border:none !important;  
+      }
+      
+      .muikku-connect-field-counterpart, 
+      .muikku-connect-field-term {
+        background:#f64e4e;
       }
       
     }
@@ -478,7 +562,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       width:auto;
       background:#e2ffe2;
       font-style:italic;
-      margin:1px 3px 1px -2px;
+      margin:1px 3px 1px 3px;
       display:inline-block;
       
       span.muikku-field-examples-title {
@@ -527,6 +611,10 @@ body.workspace-materials #contentWorkspaceMaterials {
     button.muikku-assignment-button {
       font-size:14px;
     }
+    
+    button.muikku-show-correct-answers-button {
+      font-size:14px;
+    }
   
   }
 
@@ -548,6 +636,10 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
   .workspace-materials-view-page {
   
     button.muikku-assignment-button {
+      font-size:16px;
+    }
+    
+    button.muikku-show-correct-answers-button {
       font-size:16px;
     }
   

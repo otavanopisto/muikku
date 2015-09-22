@@ -561,7 +561,9 @@ div[class*="wi-dock-static-navi"] {
     .lu-user-picture {
       @incude border(2px,#fff,solid);
       height:48px;
-      width:48px;      
+      width:48px; 
+      position:relative;
+      top:0;     
       box-sizing:border-box; 
       display:inline-block;
       border-radius:24px;
