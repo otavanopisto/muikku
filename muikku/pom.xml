@@ -220,7 +220,7 @@
       <dependencies>
         <dependency>
           <groupId>fi.muikku</groupId>
-          <artifactId>school-data-pyramus</artifactId>
+          <artifactId>muikku-school-data-pyramus</artifactId>
           <version>1.0.66-SNAPSHOT</version>
         </dependency>
 

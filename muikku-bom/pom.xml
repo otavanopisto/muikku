@@ -183,7 +183,7 @@
 
 			<dependency>
 				<groupId>fi.muikku</groupId>
-				<artifactId>muikku-schooldata-pyramus</artifactId>
+				<artifactId>muikku-school-data-pyramus</artifactId>
 				<version>${muikku.version}</version>
 			</dependency>
 

@@ -197,19 +197,16 @@
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>persistence</artifactId>
-      <version>1.0.66-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>core-plugins-persistence</artifactId>
-      <version>1.0.66-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>muikku-school-data-pyramus-persistence</artifactId>
-      <version>1.0.66-SNAPSHOT</version>
     </dependency>
     
     <!-- 

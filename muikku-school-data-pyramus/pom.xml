@@ -9,12 +9,13 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>school-data-pyramus</artifactId>
+  <artifactId>muikku-school-data-pyramus</artifactId>
   <packaging>jar</packaging>
   <name>Muikku Pyramus plugin</name>
   <description>Plugin that provides support for using Pyramus as school data source for Muikku</description>
   
   <dependencies>
+  
     <!-- Servlet -->
 
     <dependency>
