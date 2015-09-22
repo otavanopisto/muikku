@@ -175,6 +175,12 @@
 				<version>${muikku.version}</version>
 			</dependency>
 
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>core-plugins-persistence</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+
 			<dependency>
 				<groupId>fi.muikku</groupId>
 				<artifactId>muikku-schooldata-pyramus</artifactId>

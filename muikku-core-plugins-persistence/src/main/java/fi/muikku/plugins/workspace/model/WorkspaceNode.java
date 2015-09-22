@@ -13,7 +13,6 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -53,10 +52,13 @@ public class WorkspaceNode {
   public String getPath() {
   	if (getParent() != null) {
   		StringBuilder result = new StringBuilder();
-  		if (StringUtils.isNotBlank(getParent().getPath())) {
+  		String parentPath = getParent().getPath();
+  		
+  		if ((parentPath != null) && (!"".equals(parentPath.trim()))) {
   			result.append(getParent().getPath());
   			result.append('/');
   		}
+  		
   		result.append(getUrlName());
   		return result.toString();
   	} else {

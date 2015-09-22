@@ -183,6 +183,11 @@
 			<artifactId>plugin</artifactId>
 		</dependency>
 
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core-plugins-persistence</artifactId>
+    </dependency>
+
 		<!-- Test -->
 
 		<dependency>
