@@ -63,13 +63,13 @@
 		<module>muikku-persistence</module>
 		<module>muikku-plugin</module>
 		<module>muikku-rest</module>
-		<module>muikku-pyramus-plugin</module>
+		<module>muikku-school-data-pyramus</module>
 		<module>muikku-dummy-mail-bridge-plugin</module>
 		<module>muikku-jndi-mail-bridge-plugin</module>
 		<module>muikku-deus-nex-machina</module>
 		<module>muikku</module>
 		<module>muikku-atests</module>
-        <module>muikku-atests-plugin</module>
+    <module>muikku-atests-plugin</module>
 	</modules>
 
 	<properties>
