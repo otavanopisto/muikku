@@ -33,8 +33,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -204,10 +202,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void takeScreenshot() throws IOException {
-    Date dNow = new Date();
-    SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd-hh:mm:ss");
-    File screenshot = ((TakesScreenshot) getWebDriver()).getScreenshotAs(OutputType.FILE);
-    FileUtils.copyFile(screenshot, new File(System.getProperty("it.report.directory") + ft.format(dNow) + "-" + testName.getMethodName() + ".png"));
+    if (getWebDriver() instanceof TakesScreenshot) {
+      Date dNow = new Date();
+      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd-hh:mm:ss");
+      File screenshot = ((TakesScreenshot) getWebDriver()).getScreenshotAs(OutputType.FILE);
+      FileUtils.copyFile(screenshot, new File(System.getProperty("it.report.directory") + ft.format(dNow) + "-" + testName.getMethodName() + ".png"));
+    }
   }
 
   protected void sleep(long millis) {
