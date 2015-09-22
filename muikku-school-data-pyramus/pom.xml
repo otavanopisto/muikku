@@ -152,6 +152,11 @@
       <artifactId>plugin</artifactId>
     </dependency>
     
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>muikku-school-data-pyramus-persistence</artifactId>
+    </dependency>
+    
   </dependencies>
   
     <build>

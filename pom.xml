@@ -63,7 +63,8 @@
 		<module>muikku-persistence</module>
 		<module>muikku-plugin</module>
 		<module>muikku-rest</module>
-		<module>muikku-school-data-pyramus</module>
+    <module>muikku-school-data-pyramus</module>
+    <module>muikku-school-data-pyramus-persistence</module>
 		<module>muikku-dummy-mail-bridge-plugin</module>
 		<module>muikku-jndi-mail-bridge-plugin</module>
 		<module>muikku-deus-nex-machina</module>
