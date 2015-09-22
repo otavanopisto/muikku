@@ -41,12 +41,13 @@
       <artifactId>sauce_junit</artifactId>
       <version>2.1.18</version>
       <scope>test</scope>
+      <!-- 
       <exclusions>
         <exclusion>
           <artifactId>httpclient</artifactId>
           <groupId>org.apache.httpcomponents</groupId>
         </exclusion>
-      </exclusions>
+      </exclusions> -->
     </dependency>
 
     <dependency>
@@ -192,10 +193,25 @@
       <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
+    
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>persistence</artifactId>
+      <version>1.0.66-SNAPSHOT</version>
     </dependency>
+    
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core-plugins-persistence</artifactId>
+      <version>1.0.66-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>muikku-school-data-pyramus-persistence</artifactId>
+      <version>1.0.66-SNAPSHOT</version>
+    </dependency>
+    
     <!-- 
      <dependency>
       <groupId>fi.muikku</groupId>
@@ -226,6 +242,24 @@
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
       <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+    </dependency>
+    
+    <dependency>
+      <artifactId>httpclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <version>4.3.1</version>
+    </dependency>
+    
+    <dependency>
+      <artifactId>httpmime</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <version>4.3.1</version>
+    </dependency>
+    
+    <dependency>
+      <artifactId>httpcore</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <version>4.3.1</version>
     </dependency>
   </dependencies>
 
@@ -587,6 +621,9 @@
         <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
+        <it.sauce.username>${env.SAUCE_USERNAME}</it.sauce.username>
+        <it.sauce.accessKey>${env.SAUCE_ACCESS_KEY}</it.sauce.accessKey>
+        <it.sauce.tunnelId>${env.TRAVIS_JOB_NUMBER}</it.sauce.tunnelId>
       </properties>
 
       <dependencies>
@@ -638,8 +675,7 @@
                 <it.build.directory>${it.build.directory}</it.build.directory>
                 <it.sauce.username>${it.sauce.username}</it.sauce.username>
                 <it.sauce.accessKey>${it.sauce.accessKey}</it.sauce.accessKey>
-                <it.sauce.host>${it.sauce.host}</it.sauce.host>
-                <it.sauce.port>${it.sauce.port}</it.sauce.port>
+                <it.sauce.tunnelId>${it.sauce.tunnelId}</it.sauce.tunnelId>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -877,6 +913,34 @@
               </execution>
             </executions>
           </plugin>
+          
+          <plugin>
+            <groupId>com.saucelabs.maven.plugin</groupId>
+            <artifactId>sauce-connect-plugin</artifactId>
+            <version>2.1.13</version>
+            <configuration>
+              <sauceUsername>${it.sauce.username}</sauceUsername>
+              <sauceAccessKey>${it.sauce.accessKey}</sauceAccessKey>
+              <quietMode>true</quietMode>
+              <options>-i ${it.sauce.tunnelId}</options>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-sauceconnct</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start-sauceconnect</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-sauceconnect</id>
+                  <phase>post-integration-test</phase>
+                  <goals>
+                    <goal>stop-sauceconnect</goal>
+                  </goals>
+              </execution>
+            </executions>
+          </plugin>
 
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
@@ -926,6 +990,9 @@
         <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
+        <it.sauce.username>${env.SAUCE_USERNAME}</it.sauce.username>
+        <it.sauce.accessKey>${env.SAUCE_ACCESS_KEY}</it.sauce.accessKey>
+        <it.sauce.tunnelId>${env.TRAVIS_JOB_NUMBER}</it.sauce.tunnelId>
       </properties>
 
       <dependencies>
@@ -975,9 +1042,9 @@
                 <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
                 <it.report.directory>${it.report.directory}</it.report.directory>
                 <it.build.directory>${it.build.directory}</it.build.directory>
-                <it.sauce.username>${env.SAUCE_USERNAME}</it.sauce.username>
-                <it.sauce.accessKey>${env.SAUCE_ACCESS_KEY}</it.sauce.accessKey>
-                <it.sauce.tunnelId>${env.TRAVIS_JOB_NUMBER}</it.sauce.tunnelId>
+                <it.sauce.username>${it.sauce.username}</it.sauce.username>
+                <it.sauce.accessKey>${it.sauce.accessKey}</it.sauce.accessKey>
+                <it.sauce.tunnelId>${it.sauce.tunnelId}</it.sauce.tunnelId>
               </systemPropertyVariables>
             </configuration>
             <executions>
