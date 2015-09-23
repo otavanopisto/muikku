@@ -1,18 +1,14 @@
 package fi.muikku.rest.test.plugins.forum;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.Test;
 
-import fi.muikku.AbstractRESTPermissionsTest;
+import com.jayway.restassured.response.Response;
 
+import fi.muikku.AbstractRESTTest;
+import fi.muikku.plugins.forum.rest.ForumAreaGroupRESTModel;
 
-@RunWith(Parameterized.class)
-public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
-//  
-//  FORUM_CREATEFORUMAREAGROUP
-//  FORUM_LIST_FORUMAREAGROUPS
-//  FORUM_FIND_FORUMAREAGROUP
-//  FORUM_DELETE_FORUMAREAGROUP
+public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
+
 //
 //  private Long areaGroupId = null;
 //  
@@ -97,23 +93,81 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
 ////    }
 ////  }
 //  
-//  @Test
-//  public void testDeleteAreaGroup() throws NoSuchFieldException {
-//    ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_forumareagroup");
-//    
-//    Response response = asAdmin()
-//      .contentType("application/json")
-//      .body(areaGroup)
-//      .post("/forum/areagroups");
-//    
-//    Long id = new Long(response.body().jsonPath().getInt("id"));
-//
-//    Response deleteResponse = asRole()
-//      .delete("/forum/areagroups/{ID}", id);
-//    assertOk(deleteResponse, forumPermissions, FORUM_DELETE_FORUMAREAGROUP, 204);
-//    
-//    if (deleteResponse.statusCode() == 403) {
-//      asAdmin().delete("/forum/areagroups/{ID}?permanent=true", id);
-//    }
-//  }
+  
+  @Test
+  public void testDeleteAreaEnvironmentAdmin() throws NoSuchFieldException {
+    ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_forumareagroup");
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(areaGroup)
+      .post("/forum/areagroups");
+    
+    Long id = new Long(response.body().jsonPath().getInt("id"));
+
+    asAdmin()
+      .delete("/forum/areagroups/{ID}", id)
+      .then()
+      .statusCode(204);
+    
+    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", id);
+  }
+  
+  @Test
+  public void testDeleteAreaEnvironmentStudent() throws NoSuchFieldException {
+    ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_forumareagroup");
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(areaGroup)
+      .post("/forum/areagroups");
+    
+    Long id = new Long(response.body().jsonPath().getInt("id"));
+
+    asStudent()
+      .delete("/forum/areagroups/{ID}", id)
+      .then()
+      .statusCode(403);
+    
+    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", id);
+  }
+  
+  @Test
+  public void testDeleteAreaEnvironmentManager() throws NoSuchFieldException {
+    ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_forumareagroup");
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(areaGroup)
+      .post("/forum/areagroups");
+    
+    Long id = new Long(response.body().jsonPath().getInt("id"));
+
+    asManager()
+      .delete("/forum/areagroups/{ID}", id)
+      .then()
+      .statusCode(403);
+    
+    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", id);
+  }
+  
+  @Test
+  public void testDeleteAreaEnvironmentTeacher() throws NoSuchFieldException {
+    ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_forumareagroup");
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(areaGroup)
+      .post("/forum/areagroups");
+    
+    Long id = new Long(response.body().jsonPath().getInt("id"));
+
+    asTeacher()
+      .delete("/forum/areagroups/{ID}", id)
+      .then()
+      .statusCode(403);
+    
+    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", id);
+  }
+  
 }

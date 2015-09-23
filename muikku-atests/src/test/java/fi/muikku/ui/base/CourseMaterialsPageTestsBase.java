@@ -95,10 +95,12 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
     waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
-    takeScreenshot();
-    boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-materials-management")).size() > 0;
+    assertExists(".wi-workspace-dock-navi-button-materials-management");
     WireMock.reset();
-    assertTrue(elementExists);
+  }
+  
+  protected void assertExists(String selector) {
+    assertTrue(String.format("Could not find element %s", selector), getWebDriver().findElements(By.cssSelector(selector)).size() > 0);
   }
  
   @Test

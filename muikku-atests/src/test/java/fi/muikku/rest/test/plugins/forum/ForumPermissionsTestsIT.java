@@ -1,13 +1,8 @@
 package fi.muikku.rest.test.plugins.forum;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import fi.muikku.AbstractRESTTest;
 
-import fi.muikku.AbstractRESTPermissionsTest;
-
-
-@RunWith(Parameterized.class)
-public class ForumPermissionsTestsIT extends AbstractRESTPermissionsTest {
+public class ForumPermissionsTestsIT extends AbstractRESTTest {
 //
 //  private ForumResourcePermissionCollection forumPermissions = new ForumResourcePermissionCollection();
 //  private Long areaId = null;

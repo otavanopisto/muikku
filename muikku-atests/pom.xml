@@ -209,29 +209,11 @@
       <artifactId>muikku-school-data-pyramus-persistence</artifactId>
     </dependency>
     
-    <!-- 
-     <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>calendar-plugin</artifactId>
-      <version>1.0.66-SNAPSHOT</version>
-    </dependency>
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>school-data-pyramus</artifactId>
-      <version>1.0.66-SNAPSHOT</version>
+      <artifactId>forum-plugin-rest-model</artifactId>
     </dependency>
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>rest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>plugin</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>core</artifactId>
-    </dependency> -->
+    
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
