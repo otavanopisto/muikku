@@ -15,6 +15,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.node.Node;
 
 import fi.muikku.search.SearchIndexUpdater;
@@ -28,13 +29,21 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
 
   @Override
   public void init() {
-    Node node = nodeBuilder().local(true).node();
+    Builder settings = nodeBuilder().settings();
+    settings.put("cluster.routing.allocation.disk.watermark.high", "99%");
+    
+    node = nodeBuilder()
+      .settings(settings)
+      .local(true)
+      .node();
+    
     elasticClient = node.client();
   }
   
   @Override
   public void deinit() {
     elasticClient.close();
+    node.close();
   }
   
   @Override
@@ -57,11 +66,12 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id).execute().actionGet();
   }
 
-  private Client elasticClient;
-
   @Override
   public String getName() {
     return "elastic-search";
   }
-
+  
+  private Client elasticClient;
+  private Node node;
+  
 }

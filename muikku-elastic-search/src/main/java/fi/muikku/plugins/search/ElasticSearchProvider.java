@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -37,13 +38,21 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public void init() {
-    Node node = nodeBuilder().local(true).node();
+    Builder settings = nodeBuilder().settings();
+    settings.put("cluster.routing.allocation.disk.watermark.high", "99%");
+    
+    node = nodeBuilder()
+      .settings(settings)
+      .local(true)
+      .node();
+    
     elasticClient = node.client();
   }
   
   @Override
   public void deinit() {
     elasticClient.close();
+    node.close();
   }
   
   @Override
@@ -291,11 +300,11 @@ public class ElasticSearchProvider implements SearchProvider {
     }
   }
 
-  private Client elasticClient;
-
   @Override
   public String getName() {
     return "elastic-search";
   }
 
+  private Client elasticClient;
+  private Node node;
 }
