@@ -1,6 +1,10 @@
 sudo: false
 language: java
-script: mvn verify -Ptravis,mongo-log-plugin,dummy-mail-plugin,pyramus-plugins,atests-plugin
+script: 
+- pushd
+- cd muikku-atests
+- mvn clean verify -Ptravis
+- popd
 jdk:
 - openjdk7
 cache:
@@ -26,6 +30,7 @@ addons:
     - dev.muikku.fi
 before_install:
 - unset GEM_PATH
+- mvn install -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin
 #after_success:
 #- python travis-upload-reports.py
 #- python travis-prepare-maven.py
