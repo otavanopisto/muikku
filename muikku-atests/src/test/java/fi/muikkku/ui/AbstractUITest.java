@@ -14,10 +14,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -235,10 +235,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected Boolean webhookCall(String url, String payload) throws Exception {
+    String signature = "38c6cbd28bf165070d070980dd1fb595";
+    CloseableHttpClient client = HttpClients.createDefault();
     try {
-      String signature = "38c6cbd28bf165070d070980dd1fb595";
-      HttpClient client = new DefaultHttpClient();
-
       HttpPost httpPost = new HttpPost(url);
       try {
         StringEntity dataEntity = new StringEntity(payload);
@@ -253,11 +252,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       } finally {
         httpPost.releaseConnection();
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+    } finally {
+      client.close();
     }
-    
-    return false;
   }
   
   enum RoleType {
