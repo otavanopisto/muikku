@@ -178,6 +178,12 @@
         <version>${muikku.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>forum-plugin-rest-model</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+
 			<dependency>
 				<groupId>fi.muikku</groupId>
 				<artifactId>muikku-school-data-pyramus</artifactId>

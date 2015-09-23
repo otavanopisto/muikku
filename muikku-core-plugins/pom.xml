@@ -179,6 +179,11 @@
       <artifactId>core-plugins-persistence</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>forum-plugin-rest-model</artifactId>
+    </dependency>
+
 		<!-- Test -->
 
 		<dependency>
