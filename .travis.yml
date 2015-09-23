@@ -1,7 +1,7 @@
 sudo: false
 language: java
 script: 
-- pushd
+- pushd .
 - cd muikku-atests
 - mvn clean verify -Ptravis
 - popd
