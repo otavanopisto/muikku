@@ -15,7 +15,8 @@
 	<description>Muikku Elasic Search plugin</description>
 
 	<properties>
-		<elasticsearch.version>1.4.0</elasticsearch.version>
+		<elasticsearch.version>1.7.2</elasticsearch.version>
+    <lucene.version>4.10.4</lucene.version>
 	</properties>
   
   <dependencies>
@@ -62,6 +63,31 @@
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
       <version>${elasticsearch.version}</version>
+      
+      <exclusions>
+        <exclusion>
+          <artifactId>lucene-core</artifactId>
+          <groupId>org.apache.lucene</groupId>
+        </exclusion>
+
+        <exclusion>
+          <artifactId>lucene-memory</artifactId>
+          <groupId>org.apache.lucene</groupId>
+        </exclusion>
+      </exclusions>
+      
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>${lucene.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-memory</artifactId>
+      <version>${lucene.version}</version>
     </dependency>
     
     <!-- Muikku -->
