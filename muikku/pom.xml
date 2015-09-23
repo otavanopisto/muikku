@@ -233,6 +233,17 @@
     </profile>
     
     <profile>
+      <id>elastic-search-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>elastic-search-plugin</artifactId>
+          <version>1.0.66-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
       <id>dummy-mail-plugin</id>
       <dependencies>
         <dependency>

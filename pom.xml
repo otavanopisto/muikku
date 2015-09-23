@@ -51,6 +51,7 @@
 		<module>muikku-core</module>
     <module>muikku-debug</module>
     <module>muikku-core-plugins</module>
+    <module>muikku-elastic-search</module>
     <module>muikku-core-plugins-persistence</module>
     <module>muikku-calendar</module>
 		<module>muikku-hsqldb-plugin</module>

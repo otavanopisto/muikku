@@ -190,7 +190,10 @@ public class ElasticSearchProvider implements SearchProvider {
         boolQuery.should(QueryBuilders.prefixQuery(field, query));
       }
   
-      SearchResponse response = requestBuilder.setQuery(boolQuery).execute().actionGet();
+      SearchResponse response = requestBuilder
+          .setQuery(boolQuery)
+          .execute()
+          .actionGet();
       
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHit[] results = response.getHits().getHits();
