@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -166,7 +165,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Path("/createcourse")
   @Produces("text/plain")
   @RESTPermit (handling = Handling.UNSECURED)
-  @Transactional
   public Response test_createcourse() {
     System.out.println("Copy-pasting rolepermissions for workspace 1");
 
