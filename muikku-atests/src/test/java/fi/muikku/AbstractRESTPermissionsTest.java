@@ -13,9 +13,6 @@ import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
-import fi.muikku.model.users.SystemRoleType;
-import fi.muikku.model.workspace.WorkspaceRoleArchetype;
-import fi.muikku.security.MuikkuPermissionCollection;
 
 public abstract class AbstractRESTPermissionsTest extends AbstractRESTTest {
   
@@ -54,89 +51,89 @@ public abstract class AbstractRESTPermissionsTest extends AbstractRESTTest {
     
     return reSpect;
   }
-
-  public boolean roleIsAllowed(MuikkuPermissionCollection permissionCollection, String permission) throws NoSuchFieldException {
-    boolean roleIsAllowed = hasEveryonePermission(permissionCollection, permission);
-    
-    if (!roleIsAllowed) {
-      switch (getRoleType()) {
-        case PSEUDO:
-          String[] defaultPseudoRoles = permissionCollection.getDefaultPseudoRoles(permission);
-          
-          if (defaultPseudoRoles != null) {
-            for (String dpr : defaultPseudoRoles) {
-              if (dpr.equals(getRole())) {
-                roleIsAllowed = true;
-                break;
-              }
-            }
-          }
-        break;
-        
-        case ENVIRONMENT:
-          List<fi.muikku.model.users.EnvironmentRoleArchetype> allowedRoles = asList(permissionCollection.getDefaultEnvironmentRoles(permission));
-  
-          EnvironmentRoleArchetype environmentRoleArchetype = EnvironmentRoleArchetype.valueOf(getRole());
-          
-          if (allowedRoles != null) {
-            for (fi.muikku.model.users.EnvironmentRoleArchetype str : allowedRoles) {
-              if (str.equals(environmentRoleArchetype)) {
-                roleIsAllowed = true;
-                break;
-              }
-            }
-          }
-        break;
-        
-        case WORKSPACE:
-          WorkspaceRoleArchetype[] defaultWorkspaceRoles = permissionCollection.getDefaultWorkspaceRoles(permission);
-  
-          WorkspaceRoleArchetype workspaceRoleArchetype = WorkspaceRoleArchetype.valueOf(getRole());
-          
-          if (defaultWorkspaceRoles != null) {
-            for (WorkspaceRoleArchetype dwr : defaultWorkspaceRoles) {
-              if (dwr.equals(workspaceRoleArchetype)) {
-                roleIsAllowed = true;
-                break;
-              }
-            }
-          }
-        break;
-      }
-    }
-    
-    return roleIsAllowed;
-  }
-
-  public void assertOk(Response response, MuikkuPermissionCollection permissionCollection, String permission) throws NoSuchFieldException {
-    assertOk(response, permissionCollection, permission, 200);
-  }
-  
-  public void assertOk(Response response, MuikkuPermissionCollection permissionCollection, String permission, int successStatusCode) throws NoSuchFieldException {
-    boolean roleIsAllowed = roleIsAllowed(permissionCollection, permission);
-
-    if (roleIsAllowed) {
-//      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be " + successStatusCode + " was " + response.statusCode());
-      response.then().assertThat().statusCode(successStatusCode);
-    } else {
-//      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be 403 was " + response.statusCode());
-      response.then().assertThat().statusCode(403);
-    }
-  }
-  
-  private boolean hasEveryonePermission(MuikkuPermissionCollection permissionCollection, String permission) throws NoSuchFieldException {
-    String[] defaultPseudoRoles = permissionCollection.getDefaultPseudoRoles(permission);
-    
-    if (defaultPseudoRoles != null) {
-      for (String dpr : defaultPseudoRoles) {
-        if (SystemRoleType.EVERYONE.name().equals(dpr)) {
-          return true;
-        }
-      }
-    }
-    
-    return false;
-  }
+//
+//  public boolean roleIsAllowed(MuikkuPermissionCollection permissionCollection, String permission) throws NoSuchFieldException {
+//    boolean roleIsAllowed = hasEveryonePermission(permissionCollection, permission);
+//    
+//    if (!roleIsAllowed) {
+//      switch (getRoleType()) {
+//        case PSEUDO:
+//          String[] defaultPseudoRoles = permissionCollection.getDefaultPseudoRoles(permission);
+//          
+//          if (defaultPseudoRoles != null) {
+//            for (String dpr : defaultPseudoRoles) {
+//              if (dpr.equals(getRole())) {
+//                roleIsAllowed = true;
+//                break;
+//              }
+//            }
+//          }
+//        break;
+//        
+//        case ENVIRONMENT:
+//          List<fi.muikku.model.users.EnvironmentRoleArchetype> allowedRoles = asList(permissionCollection.getDefaultEnvironmentRoles(permission));
+//  
+//          EnvironmentRoleArchetype environmentRoleArchetype = EnvironmentRoleArchetype.valueOf(getRole());
+//          
+//          if (allowedRoles != null) {
+//            for (fi.muikku.model.users.EnvironmentRoleArchetype str : allowedRoles) {
+//              if (str.equals(environmentRoleArchetype)) {
+//                roleIsAllowed = true;
+//                break;
+//              }
+//            }
+//          }
+//        break;
+//        
+//        case WORKSPACE:
+//          WorkspaceRoleArchetype[] defaultWorkspaceRoles = permissionCollection.getDefaultWorkspaceRoles(permission);
+//  
+//          WorkspaceRoleArchetype workspaceRoleArchetype = WorkspaceRoleArchetype.valueOf(getRole());
+//          
+//          if (defaultWorkspaceRoles != null) {
+//            for (WorkspaceRoleArchetype dwr : defaultWorkspaceRoles) {
+//              if (dwr.equals(workspaceRoleArchetype)) {
+//                roleIsAllowed = true;
+//                break;
+//              }
+//            }
+//          }
+//        break;
+//      }
+//    }
+//    
+//    return roleIsAllowed;
+//  }
+//
+//  public void assertOk(Response response, MuikkuPermissionCollection permissionCollection, String permission) throws NoSuchFieldException {
+//    assertOk(response, permissionCollection, permission, 200);
+//  }
+//  
+//  public void assertOk(Response response, MuikkuPermissionCollection permissionCollection, String permission, int successStatusCode) throws NoSuchFieldException {
+//    boolean roleIsAllowed = roleIsAllowed(permissionCollection, permission);
+//
+//    if (roleIsAllowed) {
+////      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be " + successStatusCode + " was " + response.statusCode());
+//      response.then().assertThat().statusCode(successStatusCode);
+//    } else {
+////      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be 403 was " + response.statusCode());
+//      response.then().assertThat().statusCode(403);
+//    }
+//  }
+//  
+//  private boolean hasEveryonePermission(MuikkuPermissionCollection permissionCollection, String permission) throws NoSuchFieldException {
+//    String[] defaultPseudoRoles = permissionCollection.getDefaultPseudoRoles(permission);
+//    
+//    if (defaultPseudoRoles != null) {
+//      for (String dpr : defaultPseudoRoles) {
+//        if (SystemRoleType.EVERYONE.name().equals(dpr)) {
+//          return true;
+//        }
+//      }
+//    }
+//    
+//    return false;
+//  }
 
   @SafeVarargs
   private static <T> List<T> asList(T... stuff) {
