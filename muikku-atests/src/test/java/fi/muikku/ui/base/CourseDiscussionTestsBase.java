@@ -17,6 +17,7 @@ import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
+import fi.muikku.atests.Workspace;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
 public class CourseDiscussionTestsBase extends AbstractUITest {
@@ -56,36 +57,20 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   }
   
   @Test
-  @SqlBefore(value = {"sql/workspace1Setup.sql"})
-  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/courseDiscussionAdminCreateAreaTestCleanup.sql"})
+  @SqlAfter(value = {"sql/courseDiscussionAdminCreateAreaTestCleanup.sql"})
   public void courseDiscussionAdminCreateAreaTest() throws Exception {
-    PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    PyramusMocks.workspace1PyramusMock();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-
-    asAdmin().get("/test/createcourse");
-    asAdmin().get("/test/reindex");
-    
-    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-    getWebDriver().manage().window().maximize();
-    waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/discussions");
-    waitForElementToBePresent(By.className("workspace-discussions"));
-    getWebDriver().findElementByClassName("di-new-area-button").click();
-    sleep(500);
-    getWebDriver().findElementByCssSelector(".mf-textfield input").sendKeys("Test area");
-    getWebDriver().findElementByName("send").click();
-    sleep(500);
-    WebElement wElement = getWebDriver().findElement(By.id("discussionAreaSelect"));
-    List<WebElement> options = wElement.findElements(By.tagName("option"));
-    boolean found = inWebElements(options, "Test area");
-    WireMock.reset();
-    assertTrue(found);
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    navigate(String.format("/workspace/%s/discussions", workspace.getUrlName()), true);
+    waitForPresent(".workspace-discussions");
+    click(".di-new-area-button");
+    sendKeys(".mf-textfield input", "Test area");
+    click("*[name='send']");
+    waitForPresent("#discussionAreaSelect option:nth-child(2)");
+    assertText("#discussionAreaSelect option:nth-child(2)", "Test area");
+    deleteWorkspace(workspace.getId());
   }
-  
+
   @Test
   @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/courseDiscussionReplyTestSetup.sql"})
   @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/courseDiscussionReplyTestCleanup.sql"})

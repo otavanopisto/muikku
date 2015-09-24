@@ -1,7 +1,7 @@
 package fi.muikku.ui.base;
 
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -15,6 +15,7 @@ import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
+import fi.muikku.atests.Workspace;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
@@ -27,7 +28,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     PyramusMocks.workspace1PyramusMock();
-
+    
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
@@ -75,34 +76,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
 
   @Test
-  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql"})
-  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql"})
   public void courseMaterialManagementButtonExistsTest() throws Exception {
-    PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    PyramusMocks.workspace1PyramusMock();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-   
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-
-    asAdmin().get("/test/createcourse");
-    asAdmin().get("/test/reindex");
-    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-    waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
-    waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
-    assertExists(".wi-workspace-dock-navi-button-materials-management");
-    WireMock.reset();
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+    waitForPresent("#contentWorkspaceMaterials");
+    assertPresent(".wi-workspace-dock-navi-button-materials-management");
+    deleteWorkspace(workspace.getId());
   }
-  
-  protected void assertExists(String selector) {
-    assertTrue(String.format("Could not find element %s", selector), getWebDriver().findElements(By.cssSelector(selector)).size() > 0);
-  }
- 
+
   @Test
   @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql", "sql/workspace1Material2Setup.sql"})
   @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql", "sql/workspace1Material2Delete.sql"})

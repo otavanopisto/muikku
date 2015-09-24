@@ -400,11 +400,15 @@ public class PyramusMocks{
   }
   
   public static void workspace1PyramusMock() throws JsonProcessingException {
+    workspacePyramusMock(1l);
+  }
+  
+  public static void workspacePyramusMock(Long id) throws JsonProcessingException {
       DateTime created = new DateTime(1990, 2, 2, 0, 0, 0, 0);
       DateTime begin = new DateTime(2000, 1, 1, 0, 0, 0, 0);
       DateTime end = new DateTime(2050, 1, 1, 0, 0, 0, 0);
 
-      Course course = new Course((long) 1, "testCourse", created, created, "test course for testing", false, 1, 
+      Course course = new Course(id, "testCourse", created, created, "test course for testing", false, 1, 
         (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
         (double) 15, (double) 45, (double) 45, end, (long) 1,
         (long) 1, (long) 1, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
@@ -413,7 +417,7 @@ public class PyramusMocks{
       ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
       String courseJson = objectMapper.writeValueAsString(course);
       
-      stubFor(get(urlEqualTo("/1/courses/courses/1"))
+      stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", id)))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(courseJson)
@@ -427,7 +431,6 @@ public class PyramusMocks{
           .withHeader("Content-Type", "application/json")
           .withBody(courseArrayJson)
           .withStatus(200)));
-//      stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
       stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")

@@ -3,6 +3,8 @@ package fi.muikkku.ui;
 import static com.jayway.restassured.RestAssured.certificate;
 import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,11 +16,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.openqa.selenium.By;
@@ -33,8 +37,11 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.ObjectMapperConfig;
@@ -45,6 +52,9 @@ import com.jayway.restassured.specification.RequestSpecification;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
+import fi.muikku.atests.Workspace;
+import fi.pyramus.webhooks.WebhookPersonCreatePayload;
+import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -79,7 +89,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     Response response = given().contentType("application/json").get("/test/login?role=" + getFullRoleName(RoleType.ENVIRONMENT, "ADMINISTRATOR"));
     String adminAccessToken = response.getCookie("JSESSIONID");
     setAdminAccessToken(adminAccessToken);
-    
+  }
+  
+  @After
+  public void resetWireMock() {
+    WireMock.reset();
   }
   
   @Override
@@ -141,7 +155,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   public RequestSpecification asAdmin() {
     RequestSpecification reSpect = RestAssured.given();
     if (adminAccessToken != null) {
-      // System.out.println("Setting request cookie: " + adminAccessToken);
       reSpect = reSpect.cookie("JSESSIONID", adminAccessToken);
     }
 
@@ -255,6 +268,91 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     } finally {
       client.close();
     }
+  }
+  
+  protected void assertPresent(String selector) {
+    assertTrue(String.format("Could not find element %s", selector), getWebDriver().findElements(By.cssSelector(selector)).size() > 0);
+  }
+  
+  protected void assertNotPresent(String selector) {
+    assertTrue(String.format("Could not find element %s", selector), getWebDriver().findElements(By.cssSelector(selector)).size() == 0);
+  }
+  
+  protected void assertVisible(String selector) {
+    assertPresent(selector);
+    assertTrue(String.format("Element %s not visible", selector), getWebDriver().findElement(By.cssSelector(selector)).isDisplayed());
+  }
+  
+  protected void assertNotVisible(String selector) {
+    List<WebElement> elements = getWebDriver().findElements(By.cssSelector(selector));
+    if (elements.size() > 0) {
+      for (WebElement element : elements) {
+        if (element.isDisplayed()) {
+          throw new AssertionError(String.format("Element %s is visible", selector));
+        }
+      }
+    }
+  }
+  
+  protected void navigate(String path, boolean secure) {
+    getWebDriver().get(String.format("%s%s", getAppUrl(secure), path));
+  }
+  
+  protected void waitForPresent(String selector) {
+    waitForElementToBePresent(By.cssSelector(selector));
+  }
+  
+  protected void click(String selector) {
+    getWebDriver().findElement(By.cssSelector(selector)).click();
+  }
+  
+  protected void assertText(String selector, String text) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    assertEquals(text, element.getText());
+  }
+
+  protected void sendKeys(String selector, String keysToSend) {
+    getWebDriver().findElement(By.cssSelector(selector)).sendKeys(keysToSend);
+  }
+  
+  protected void loginAdmin() throws JsonProcessingException, Exception {
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    navigate("/login?authSourceId=1", true);
+    waitForPresent(".index");
+  }
+  
+  protected Workspace createWorkspace(String name, String identifier, Boolean published) throws IOException {
+    PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier));
+
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    Workspace payload = new Workspace(null, name, null, "PYRAMUS", identifier, published);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces");
+    
+    response.then()
+      .statusCode(200);
+      
+    Workspace workspace = objectMapper.readValue(response.asString(), Workspace.class);
+    assertNotNull(workspace);
+    assertNotNull(workspace.getId());
+    
+    return workspace;
+  }
+  
+  protected void deleteWorkspace(Long id) {
+    asAdmin()
+      .delete("/test/workspaces/{WORKSPACEID}", id)
+      .then()
+      .statusCode(204);
   }
   
   enum RoleType {

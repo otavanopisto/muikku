@@ -213,6 +213,12 @@
       <groupId>fi.muikku</groupId>
       <artifactId>forum-plugin-rest-model</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>atests-plugin-rest-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>    
     
     <dependency>
       <groupId>javax.enterprise</groupId>
@@ -362,7 +368,7 @@
                 <configuration>
                   <type>CREATE</type>
                 </configuration>
-              </execution>
+              </execution><!-- 
               <execution>
                 <id>drop-db-after-test</id>
                 <phase>post-integration-test</phase>
@@ -373,7 +379,7 @@
                   <type>DROP</type>
                   <force>true</force>
                 </configuration>
-              </execution>
+              </execution> -->
             </executions>
           </plugin>
 

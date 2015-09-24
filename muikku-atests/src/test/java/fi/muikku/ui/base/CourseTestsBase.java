@@ -14,6 +14,7 @@ import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
+import fi.muikku.atests.Workspace;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
 public class CourseTestsBase extends AbstractUITest {
@@ -144,31 +145,18 @@ public class CourseTestsBase extends AbstractUITest {
   }
   
   @Test
-  @SqlBefore("sql/workspace1Setup.sql")
-  @SqlAfter("sql/workspace1Delete.sql")
   public void courseUnpublishTest() throws Exception {
-    PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    PyramusMocks.workspace1PyramusMock();  
-
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-
-    asAdmin().get("/test/createcourse");
-    asAdmin().get("/test/reindex");
-    
-    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-    waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
-    waitForElementToBePresent(By.className("workspace-title"));
-    takeScreenshot();
-    getWebDriver().findElementByClassName("workspace-unpublish-button").click();
-    waitForElementToBePresent(By.className("workspace-title"));
-    takeScreenshot();
-    boolean elementExists = getWebDriver().findElementsByClassName("workspace-publish-button").size() > 0;
-    WireMock.reset();
-    assertTrue(elementExists);
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+    waitForPresent(".workspace-title");
+    assertVisible(".workspace-unpublish-button");
+    assertNotVisible(".workspace-publish-button");
+    click(".workspace-unpublish-button");
+    waitForPresent(".workspace-title");
+    assertNotVisible(".workspace-unpublish-button");
+    assertVisible(".workspace-publish-button");
+    deleteWorkspace(workspace.getId());
   }
   
 }
