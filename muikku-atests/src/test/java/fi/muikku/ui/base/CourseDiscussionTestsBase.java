@@ -1,12 +1,9 @@
 package fi.muikku.ui.base;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -33,7 +30,6 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
@@ -83,7 +79,6 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
@@ -118,7 +113,6 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
      
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
 
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");

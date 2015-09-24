@@ -35,7 +35,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
@@ -63,7 +62,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
@@ -101,7 +99,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
@@ -128,7 +125,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
@@ -159,7 +155,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
@@ -186,7 +181,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));

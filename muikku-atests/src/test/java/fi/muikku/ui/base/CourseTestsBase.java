@@ -31,7 +31,6 @@ public class CourseTestsBase extends AbstractUITest {
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
@@ -56,7 +55,6 @@ public class CourseTestsBase extends AbstractUITest {
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
 
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
@@ -81,7 +79,6 @@ public class CourseTestsBase extends AbstractUITest {
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
 
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
@@ -106,7 +103,6 @@ public class CourseTestsBase extends AbstractUITest {
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
 
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
@@ -131,7 +127,6 @@ public class CourseTestsBase extends AbstractUITest {
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
-    asAdmin().get("/test/createcourse");
     asAdmin().get("/test/reindex");
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
