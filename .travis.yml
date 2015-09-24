@@ -40,6 +40,8 @@ after_success:
 - mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,dummy-mail-plugin,elastic-search-plugin,pyramus-plugins -Dclassifier=otavanopisto
 - mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,dummy-mail-plugin,elastic-search-plugin,pyramus-plugins -Dclassifier=janakkala
 - popd
+after_failure:
+- cat muikku-atests/target/cargo/configurations/wildfly8x/log/server.log
 notifications:
   irc:
     channels:
