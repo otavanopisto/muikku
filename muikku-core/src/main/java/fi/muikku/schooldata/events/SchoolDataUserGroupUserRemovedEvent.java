@@ -20,14 +20,6 @@ public class SchoolDataUserGroupUserRemovedEvent {
     return identifier;
   }
 
-  public Long getRemovedUserGroupUserEntityId() {
-    return removedUserGroupUserEntityId;
-  }
-
-  public void setRemovedUserGroupUserEntityId(Long discoveredUserGroupUserEntityId) {
-    this.removedUserGroupUserEntityId = discoveredUserGroupUserEntityId;
-  }
-
   public String getUserGroupDataSource() {
     return userGroupDataSource;
   }
@@ -48,5 +40,4 @@ public class SchoolDataUserGroupUserRemovedEvent {
   private String identifier;
   private String userGroupDataSource;
   private String userGroupIdentifier;
-  private Long removedUserGroupUserEntityId;
 }

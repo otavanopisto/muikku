@@ -17,15 +17,6 @@ public class SchoolDataUserGroupUserUpdatedEvent {
     return identifier;
   }
 
-  public Long getDiscoveredUserGroupUserEntityId() {
-    return discoveredUserGroupUserEntityId;
-  }
-
-  public void setDiscoveredUserGroupUserEntityId(Long discoveredUserGroupUserEntityId) {
-    this.discoveredUserGroupUserEntityId = discoveredUserGroupUserEntityId;
-  }
-
   private String dataSource;
   private String identifier;
-  private Long discoveredUserGroupUserEntityId;
 }
