@@ -105,8 +105,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Produces("text/plain")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response test_login(@QueryParam ("role") String role) {
-    System.out.println("Acceptance tests logging in with role " + role);
-    
     switch (role) {
       case "ENVIRONMENT-STUDENT":
         localSessionController.login("PYRAMUS", "STUDENT-1");
@@ -136,17 +134,12 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response test_reindex() {
     List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntities();
-    System.out.println("workspaceEntities size: " + workspaceEntities.size());
-    System.out.println("-- workspaceEntity ---" + workspaceEntities.toString());
     for (int i = 0; i < workspaceEntities.size(); i++) {
       WorkspaceEntity workspaceEntity = workspaceEntities.get(i);
-      System.out.println("-- workspaceEntity ---" + workspaceEntity.toString());
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
       if (workspace != null) {
         try {
-          System.out.println("-- Indexing workspace ---");
           indexer.index(Workspace.class.getSimpleName(), workspace);
-          System.out.println("-- Finished indexing workspace ---");
         } catch (Exception e) {
           logger.log(Level.WARNING, "could not index WorkspaceEntity #" + workspaceEntity.getId(), e);
         }
@@ -156,7 +149,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     logger.log(Level.INFO, "Reindexed workspaces )");
    
     List<UserEntity> users = userEntityController.listUserEntities();
-    System.out.println("users size: " + users.size());
     for (int i = 0; i < users.size(); i++) {
       UserEntity userEntity = users.get(i);
       List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
@@ -164,9 +156,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       for (UserSchoolDataIdentifier identifier : identifiers) {
         User user = userController.findUserByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
         try {
-          System.out.println("-- Indexing users ---");
           indexer.index(User.class.getSimpleName(), user);
-          System.out.println("-- Finished indexing users ---");
         } catch (Exception e) {
           logger.log(Level.WARNING, "could not index User #" + user.getSchoolDataSource() + '/' + user.getIdentifier(), e);
         }
@@ -182,8 +172,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Produces("text/plain")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response test_importmock() {
-    System.out.println("Importing mock");
-
     pyramusUpdater.updateUserRoles();
     pyramusUpdater.updateCourses(0, 100);
     pyramusUpdater.updateStaffMembers(0, 100);

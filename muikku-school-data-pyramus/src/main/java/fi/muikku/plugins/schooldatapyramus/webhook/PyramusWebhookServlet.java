@@ -52,14 +52,13 @@ public class PyramusWebhookServlet extends HttpServlet {
   
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    System.out.println("START: were are here 'cause were here");
     String requestSignature = req.getHeader("X-Pyramus-Signature");
     if (StringUtils.isBlank(requestSignature)) {
       logger.log(Level.WARNING, "Invalid webhook requrest (no X-Pyramus-Signature header found)");
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
-    System.out.println("SECRET: were are here 'cause were here");
+    
     String webhookSecret = pluginSettingsController.getPluginSetting("school-data-pyramus", "webhook.secret");
     if (StringUtils.isBlank(webhookSecret)) {
       logger.log(Level.WARNING, "Webhook secret is not configured");
@@ -68,29 +67,25 @@ public class PyramusWebhookServlet extends HttpServlet {
     }
     
     String expectedSignature = DigestUtils.md5Hex(webhookSecret);
-    System.out.println("SC hash:" + expectedSignature);
     if (!StringUtils.equals(requestSignature, expectedSignature)) {
       logger.log(Level.WARNING, "Could not authorize webhook (expected signature does not match request signature)");
       resp.sendError(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
-    System.out.println("SECRET PASSED: were are here 'cause we're here");
+    
     ObjectMapper objectMapper = new ObjectMapper();
-    System.out.println("Tein object mapperin");
     PyramusWebhookPayload payload = objectMapper.readValue(req.getInputStream(), PyramusWebhookPayload.class);
-    System.out.println("Kasasin payloadin striimistä");
     if (payload.getType() == null) {
-      logger.log(Level.WARNING, "Invalid webhook payload (type is missing or is invalid)");
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
-    System.out.println("GOT PAYLOAD: were are here 'cause we're here");
+
     if (StringUtils.isBlank(payload.getData())) {
       logger.log(Level.WARNING, "Invalid webhook payload (data is missing)");
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
-    System.out.println("GOT PAYLOAD DATA: were are here 'cause were here");
+    
     schoolDataBridgeSessionController.startSystemSession();
     try {
       logger.log(Level.INFO, String.format("Received a webhook notification of type %s", payload.getType().toString()));
