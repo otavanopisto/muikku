@@ -12,7 +12,6 @@ import com.jayway.restassured.config.ObjectMapperConfig;
 import com.jayway.restassured.config.RestAssuredConfig;
 import com.jayway.restassured.mapper.factory.Jackson2ObjectMapperFactory;
 import com.jayway.restassured.response.Response;
-import com.jayway.restassured.specification.RequestSenderOptions;
 import com.jayway.restassured.specification.RequestSpecification;
 
 public abstract class AbstractRESTTest extends AbstractIntegrationTest {
@@ -45,7 +44,7 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
     return request.cookie("JSESSIONID", adminSessionId);
   }
   
-  protected RequestSenderOptions<Response> asManager() {
+  protected RequestSpecification asManager() {
     RequestSpecification request = RestAssured.given();
     if (managerSessionId == null) {
       managerSessionId = loginAs(RoleType.ENVIRONMENT, "MANAGER");
@@ -54,7 +53,7 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
     return request.cookie("JSESSIONID", managerSessionId);
   }
 
-  protected RequestSenderOptions<Response> asTeacher() {
+  protected RequestSpecification asTeacher() {
     RequestSpecification request = RestAssured.given();
     if (teacherSessionId == null) {
       teacherSessionId = loginAs(RoleType.ENVIRONMENT, "TEACHER");
