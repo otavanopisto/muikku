@@ -40,5 +40,9 @@ public class WorkspaceRootFolderDAO extends CorePluginsDAO<WorkspaceRootFolder> 
    
     return getSingleResult(entityManager.createQuery(criteria));
 	}
+	
+	public void delete(WorkspaceRootFolder workspaceRootFolder) {
+	  super.delete(workspaceRootFolder);
+	}
 
 }

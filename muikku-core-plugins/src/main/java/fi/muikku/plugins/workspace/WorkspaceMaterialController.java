@@ -273,6 +273,31 @@ public class WorkspaceMaterialController {
     return nodes;
   }
 
+  public void deleteAllWorkspaceNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialContainsAnswersExeption {
+    WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+    deleteAllChildNodes(rootFolder);
+  }
+  
+  private void deleteAllChildNodes(WorkspaceNode node) throws WorkspaceMaterialContainsAnswersExeption {
+    List<WorkspaceNode> childNodes = listWorkspaceNodesByParent(node);
+    for (WorkspaceNode childNode : childNodes) {
+      deleteAllChildNodes(childNode);
+    }
+
+    switch (node.getType()) {
+      case FRONT_PAGE_FOLDER:
+      case FOLDER:
+        deleteWorkspaceFolder((WorkspaceFolder) node);
+      break;
+      case MATERIAL:
+        deleteWorkspaceMaterial((WorkspaceMaterial) node, true);
+      break;
+      case ROOT_FOLDER:
+        deleteWorkspaceRootFolder((WorkspaceRootFolder) node);
+      break;
+    }
+  }
+
   public Material getMaterialForWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
     return materialController.findMaterialById(workspaceMaterial.getMaterialId());
   }
@@ -544,6 +569,11 @@ public class WorkspaceMaterialController {
     }
 
     return (WorkspaceRootFolder) node;
+  }
+
+
+  public void deleteWorkspaceRootFolder(WorkspaceRootFolder workspaceRootFolder) {
+    workspaceRootFolderDAO.delete(workspaceRootFolder);
   }
 
   /* Folder */
