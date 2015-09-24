@@ -49,7 +49,7 @@ $(document).ready(function() {
     _refreshLatest : function() {
       var _this = this;
       _this._clearMessages();       
-      _this._addLoading();  
+      _this._addLoading(DiscImpl.msgContainer);  
 
       mApi().forum.latest.read().on('$', function(msgs, msgsCallback) {
         mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
