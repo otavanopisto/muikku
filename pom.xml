@@ -73,6 +73,7 @@
 		<module>muikku</module>
 		<module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
+    <module>muikku-atests-plugin-rest-model</module>
 	</modules>
 
 	<properties>
@@ -81,6 +82,7 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<hibernate-jpamodelgen.version>4.3.6.Final</hibernate-jpamodelgen.version>
+    <findbugs.skip>true</findbugs.skip>
 	</properties>
 
 	<dependencyManagement>

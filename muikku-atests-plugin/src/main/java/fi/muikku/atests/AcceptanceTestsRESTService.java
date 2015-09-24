@@ -4,36 +4,55 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
+import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
+import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.plugins.material.HtmlMaterialController;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
+import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
+import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.search.SearchIndexer;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
+import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
-
-@Path("/test")
-@Produces("application/json")
 @RequestScoped
+@Path("/test")
+@Stateful
+@Produces("application/json")
+@Consumes("application/json")
 public class AcceptanceTestsRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 4192161644908642797L;
@@ -50,6 +69,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
   private UserController userController;
@@ -61,13 +83,22 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController; 
   
   @Inject
-  private AtestController atestController;
-  
-  @Inject
   private SearchIndexer indexer;
    
   @Inject
   private PyramusUpdater pyramusUpdater;
+  
+  @Inject
+  private HtmlMaterialController htmlMaterialController; 
+
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController; 
+
+  @Inject
+  private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
+  
+  @Inject
+  private Event<SchoolDataWorkspaceDiscoveredEvent> schoolDataWorkspaceDiscoveredEvent;
 
   @GET
   @Path("/login")
@@ -161,16 +192,82 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.ok().build();
   }
   
-  @GET
-  @Path("/createcourse")
-  @Produces("text/plain")
+  @POST
+  @Path("/workspaces")
   @RESTPermit (handling = Handling.UNSECURED)
-  public Response test_createcourse() {
-    System.out.println("Copy-pasting rolepermissions for workspace 1");
-
-    atestController.createWorkspacePermissions(1l);
+  public Response createWorkspace(fi.muikku.atests.Workspace payload) {
+    SchoolDataWorkspaceDiscoveredEvent event = new SchoolDataWorkspaceDiscoveredEvent(payload.getSchoolDataSource(), payload.getIdentifier(), payload.getName(), null);
+    schoolDataWorkspaceDiscoveredEvent.fire(event);
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(event.getDiscoveredWorkspaceEntityId());
     
-    return Response.ok().build();
-  }  
+    if (payload.getPublished() != null) {
+      workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
+    }
+    
+    return Response.ok(createRestEntity(workspaceEntity, payload.getName())).build();
+  }
+  
+  @DELETE
+  @Path("/workspaces/{WORKSPACEENTITYID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(404).entity("Not found").build();
+    }
+    
+    List<WorkspaceRolePermission> permissions = workspaceRolePermissionDAO.listByWorkspaceEntity(workspaceEntity);
+    for (WorkspaceRolePermission permission : permissions) {
+      workspaceRolePermissionDAO.delete(permission);
+    }
+    
+    try {
+      workspaceMaterialController.deleteAllWorkspaceNodes(workspaceEntity);
+    } catch (WorkspaceMaterialContainsAnswersExeption e) {
+      return Response.status(500).entity(e.getMessage()).build();
+    }
+    
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
+    }
+    
+    workspaceEntityController.deleteWorkspaceEntity(workspaceEntity);
+    
+    return Response.noContent().build();
+  }
+
+  @POST
+  @Path("/workspaces/{WORKSPACEID}/htmlmaterials")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createWorkspaceMaterial(fi.muikku.atests.WorkspaceHtmlMaterial payload) {
+    HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(payload.getTitle(), payload.getHtml(), payload.getContentType(), payload.getRevisionNumber());
+    WorkspaceNode parent = workspaceMaterialController.findWorkspaceNodeById(payload.getParentId());
+    if (parent == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid parentId").build();
+    }
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, htmlMaterial);
+
+    return Response.ok(createRestEntity(workspaceMaterial, htmlMaterial)).build();
+  }
+  
+  private fi.muikku.atests.Workspace createRestEntity(WorkspaceEntity workspaceEntity, String name) {
+    return new fi.muikku.atests.Workspace(workspaceEntity.getId(), name, workspaceEntity.getUrlName(), workspaceEntity.getDataSource().getIdentifier(), workspaceEntity.getIdentifier(), workspaceEntity.getPublished());
+  }
+
+  private fi.muikku.atests.WorkspaceHtmlMaterial createRestEntity(WorkspaceMaterial workspaceMaterial, HtmlMaterial htmlMaterial) {
+    return new fi.muikku.atests.WorkspaceHtmlMaterial(workspaceMaterial.getId(), 
+        workspaceMaterial.getParent().getId(), 
+        workspaceMaterial.getTitle(), 
+        htmlMaterial.getRevisionNumber(), 
+        htmlMaterial.getId(), 
+        htmlMaterial.getOriginMaterial() != null ? htmlMaterial.getOriginMaterial().getId() : null, 
+        htmlMaterial.getContentType(), 
+        htmlMaterial.getHtml(), 
+        htmlMaterial.getRevisionNumber(), 
+        workspaceMaterial.getAssignmentType().toString());
+  }
+
   
 }
