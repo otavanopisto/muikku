@@ -368,7 +368,7 @@
                 <configuration>
                   <type>CREATE</type>
                 </configuration>
-              </execution><!-- 
+              </execution>
               <execution>
                 <id>drop-db-after-test</id>
                 <phase>post-integration-test</phase>
@@ -379,7 +379,7 @@
                   <type>DROP</type>
                   <force>true</force>
                 </configuration>
-              </execution> -->
+              </execution>
             </executions>
           </plugin>
 
