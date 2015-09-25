@@ -76,6 +76,7 @@ public class PyramusWebhookServlet extends HttpServlet {
     ObjectMapper objectMapper = new ObjectMapper();
     PyramusWebhookPayload payload = objectMapper.readValue(req.getInputStream(), PyramusWebhookPayload.class);
     if (payload.getType() == null) {
+      logger.log(Level.WARNING, "Invalid webhook payload (type is missing or is invalid)");
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
