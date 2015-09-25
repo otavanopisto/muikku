@@ -1,7 +1,6 @@
 package fi.muikkku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
-import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -48,7 +47,6 @@ import com.jayway.restassured.config.ObjectMapperConfig;
 import com.jayway.restassured.config.RestAssuredConfig;
 import com.jayway.restassured.mapper.factory.Jackson2ObjectMapperFactory;
 import com.jayway.restassured.response.Response;
-import com.jayway.restassured.specification.RequestSpecification;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
@@ -84,13 +82,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
           return objectMapper;
         }
       }));
-  }
-
-  @Before
-  public void createAdminAccessToken() {
-    Response response = given().contentType("application/json").get("/test/login?role=" + getFullRoleName(RoleType.ENVIRONMENT, "ADMINISTRATOR"));
-    String adminAccessToken = response.getCookie("JSESSIONID");
-    setAdminAccessToken(adminAccessToken);
   }
   
   @After
@@ -144,23 +135,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   public static long getTestStartTime() {
     return TEST_START_TIME;
-  }
-
-  public String getAdminAccessToken() {
-    return adminAccessToken;
-  }
-
-  public void setAdminAccessToken(String adminAccesToken) {
-    this.adminAccessToken = adminAccesToken;
-  }
-
-  public RequestSpecification asAdmin() {
-    RequestSpecification reSpect = RestAssured.given();
-    if (adminAccessToken != null) {
-      reSpect = reSpect.cookie("JSESSIONID", adminAccessToken);
-    }
-
-    return reSpect;
   }
 
   protected void testTitle(String path, String expected) {
@@ -410,8 +384,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   enum RoleType {
     PSEUDO, ENVIRONMENT, WORKSPACE
   }
-
-  private String adminAccessToken;
 
   private RemoteWebDriver webDriver;
   private String sessionId;
