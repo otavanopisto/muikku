@@ -118,16 +118,12 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     getWebDriver().manage().window().maximize();
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/discussions");
-    waitForElementToBePresent(By.className("workspace-discussions"));
-    getWebDriver().findElementByCssSelector(".di-message-meta-topic>span").click();
-    waitForElementToBePresent(By.className("di-remove-thread-link"));
-    getWebDriver().findElementByClassName("di-remove-thread-link").click();
-    waitForElementToBePresent(By.className("delete-button"));
-    getWebDriver().findElementByCssSelector(".delete-button>span").click();
-    waitForElementToBePresent(By.className("workspace-discussions"));
-    String content = getWebDriver().findElement(By.cssSelector(".mf-content-empty>h3")).getText();
-    WireMock.reset();
-    assertEquals(new String("No ongoing discussions"), content);
+    
+    navigate("/workspace/testcourse/discussions", true);
+    waitAndClick(".di-message-meta-topic>span");
+    waitAndClick(".di-remove-thread-link");
+    waitAndClick(".delete-button>span");
+    waitForPresent(".mf-content-empty>h3");
+    assertText(".mf-content-empty>h3", "No ongoing discussions");
   }  
 }
