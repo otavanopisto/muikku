@@ -5,15 +5,12 @@ public class WorkspaceHtmlMaterial {
   public WorkspaceHtmlMaterial() {
   }
 
-  public WorkspaceHtmlMaterial(Long id, Long parentId, String title, Long version, Long materialId, Long originalMaterialId, String contentType, String html,
+  public WorkspaceHtmlMaterial(Long id, Long parentId, String title, String contentType, String html,
       Long revisionNumber, String assignmentType) {
     super();
     this.id = id;
     this.parentId = parentId;
     this.title = title;
-    this.version = version;
-    this.materialId = materialId;
-    this.originalMaterialId = originalMaterialId;
     this.contentType = contentType;
     this.html = html;
     this.revisionNumber = revisionNumber;
@@ -43,31 +40,7 @@ public class WorkspaceHtmlMaterial {
   public void setTitle(String title) {
     this.title = title;
   }
-
-  public Long getVersion() {
-    return version;
-  }
-
-  public void setVersion(Long version) {
-    this.version = version;
-  }
-
-  public Long getMaterialId() {
-    return materialId;
-  }
-
-  public void setMaterialId(Long materialId) {
-    this.materialId = materialId;
-  }
-
-  public Long getOriginalMaterialId() {
-    return originalMaterialId;
-  }
-
-  public void setOriginalMaterialId(Long originalMaterialId) {
-    this.originalMaterialId = originalMaterialId;
-  }
-
+  
   public String getContentType() {
     return contentType;
   }
@@ -103,9 +76,6 @@ public class WorkspaceHtmlMaterial {
   private Long id;
   private Long parentId;
   private String title;
-  private Long version;
-  private Long materialId;
-  private Long originalMaterialId;
   private String contentType;
   private String html;
   private Long revisionNumber;

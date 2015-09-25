@@ -5,11 +5,12 @@ public class WorkspaceFolder {
   public WorkspaceFolder() {
   }
 
-  public WorkspaceFolder(Long id, Boolean hidden, Long orderNumber, String title, Long parentId) {
+  public WorkspaceFolder(Long id, Boolean hidden, Integer orderNumber, String urlName, String title, Long parentId) {
     super();
     this.id = id;
     this.hidden = hidden;
     this.orderNumber = orderNumber;
+    this.urlName = urlName;
     this.title = title;
     this.parentId = parentId;
   }
@@ -30,11 +31,11 @@ public class WorkspaceFolder {
     this.hidden = hidden;
   }
 
-  public Long getOrderNumber() {
+  public Integer getOrderNumber() {
     return orderNumber;
   }
 
-  public void setOrderNumber(Long orderNumber) {
+  public void setOrderNumber(Integer orderNumber) {
     this.orderNumber = orderNumber;
   }
 
@@ -44,6 +45,14 @@ public class WorkspaceFolder {
 
   public void setTitle(String title) {
     this.title = title;
+  }
+  
+  public String getUrlName() {
+    return urlName;
+  }
+  
+  public void setUrlName(String urlName) {
+    this.urlName = urlName;
   }
 
   public Long getParentId() {
@@ -56,7 +65,8 @@ public class WorkspaceFolder {
 
   private Long id;
   private Boolean hidden;
-  private Long orderNumber;
+  private Integer orderNumber;
   private String title;
+  private String urlName;
   private Long parentId;
 }

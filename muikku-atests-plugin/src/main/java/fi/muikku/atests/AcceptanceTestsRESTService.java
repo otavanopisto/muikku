@@ -31,8 +31,10 @@ import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.User;
@@ -186,8 +188,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   public Response createWorkspace(fi.muikku.atests.Workspace payload) {
     SchoolDataWorkspaceDiscoveredEvent event = new SchoolDataWorkspaceDiscoveredEvent(payload.getSchoolDataSource(), payload.getIdentifier(), payload.getName(), null);
     schoolDataWorkspaceDiscoveredEvent.fire(event);
+
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(event.getDiscoveredWorkspaceEntityId());
-    
     if (payload.getPublished() != null) {
       workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
@@ -226,9 +228,44 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   }
 
   @POST
+  @Path("/workspaces/{WORKSPACEENTITYID}/folders")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createWorkspaceMaterial(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, fi.muikku.atests.WorkspaceFolder payload) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build(); 
+    }
+
+    WorkspaceNode parentNode = null;
+    
+    if (payload.getParentId() != null) {
+      parentNode = workspaceMaterialController.findWorkspaceNodeById(payload.getParentId());
+      if (parentNode == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid parentId").build(); 
+      }
+    } else {
+      parentNode = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+      if (parentNode == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find workspace root entity").build(); 
+      }
+    }
+    
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentNode, payload.getTitle());
+    if (workspaceFolder == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not create workspace folder").build(); 
+    }
+    
+    return Response.ok(createRestEntity(workspaceFolder)).build();
+  }
+
+  @POST
   @Path("/workspaces/{WORKSPACEID}/htmlmaterials")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response createWorkspaceMaterial(fi.muikku.atests.WorkspaceHtmlMaterial payload) {
+    if (payload.getParentId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Mandatory parentId is missing").build(); 
+    }
+
     HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(payload.getTitle(), payload.getHtml(), payload.getContentType(), payload.getRevisionNumber());
     WorkspaceNode parent = workspaceMaterialController.findWorkspaceNodeById(payload.getParentId());
     if (parent == null) {
@@ -239,23 +276,58 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
     return Response.ok(createRestEntity(workspaceMaterial, htmlMaterial)).build();
   }
+
+  @DELETE
+  @Path("/workspaces/{WORKSPACEENTITYID}/htmlmaterials/{WORKSPACEMATERIALID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteWorkspaceMaterial(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("WORKSPACEMATERIALID") Long workspaceMaterialId) {
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("Not Found").build();
+    }
+    
+    HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(workspaceMaterial.getMaterialId());
+    if (htmlMaterial == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Not a html material").build();
+    }
+    
+    try {
+      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, true);
+    } catch (WorkspaceMaterialContainsAnswersExeption e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+    
+    htmlMaterialController.deleteHtmlMaterial(htmlMaterial);
+    
+    return Response.noContent().build();
+  }
   
   private fi.muikku.atests.Workspace createRestEntity(WorkspaceEntity workspaceEntity, String name) {
-    return new fi.muikku.atests.Workspace(workspaceEntity.getId(), name, workspaceEntity.getUrlName(), workspaceEntity.getDataSource().getIdentifier(), workspaceEntity.getIdentifier(), workspaceEntity.getPublished());
+    return new fi.muikku.atests.Workspace(workspaceEntity.getId(), 
+        name, 
+        workspaceEntity.getUrlName(), 
+        workspaceEntity.getDataSource().getIdentifier(), 
+        workspaceEntity.getIdentifier(), 
+        workspaceEntity.getPublished());
   }
 
   private fi.muikku.atests.WorkspaceHtmlMaterial createRestEntity(WorkspaceMaterial workspaceMaterial, HtmlMaterial htmlMaterial) {
     return new fi.muikku.atests.WorkspaceHtmlMaterial(workspaceMaterial.getId(), 
-        workspaceMaterial.getParent().getId(), 
+        workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, 
         workspaceMaterial.getTitle(), 
-        htmlMaterial.getRevisionNumber(), 
-        htmlMaterial.getId(), 
-        htmlMaterial.getOriginMaterial() != null ? htmlMaterial.getOriginMaterial().getId() : null, 
         htmlMaterial.getContentType(), 
         htmlMaterial.getHtml(), 
         htmlMaterial.getRevisionNumber(), 
-        workspaceMaterial.getAssignmentType().toString());
+        workspaceMaterial.getAssignmentType() != null ? workspaceMaterial.getAssignmentType().toString() : null);
   }
 
+  private fi.muikku.atests.WorkspaceFolder createRestEntity(WorkspaceFolder workspaceFolder) {
+    return new fi.muikku.atests.WorkspaceFolder(workspaceFolder.getId(), 
+        workspaceFolder.getHidden(),
+        workspaceFolder.getOrderNumber(),
+        workspaceFolder.getUrlName(),
+        workspaceFolder.getTitle(),
+        workspaceFolder.getParent() != null ? workspaceFolder.getParent().getId() : null);
+  }
   
 }
