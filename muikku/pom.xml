@@ -9,7 +9,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.65-SNAPSHOT</version>
+    <version>1.0.66-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -211,7 +211,6 @@
       <groupId>fi.muikku</groupId>
       <artifactId>core-plugins</artifactId>
     </dependency>
-    
   </dependencies>
 
   <profiles>
@@ -220,14 +219,44 @@
       <dependencies>
         <dependency>
           <groupId>fi.muikku</groupId>
-          <artifactId>school-data-pyramus</artifactId>
-          <version>1.0.65-SNAPSHOT</version>
+          <artifactId>muikku-school-data-pyramus</artifactId>
+          <version>1.0.66-SNAPSHOT</version>
         </dependency>
 
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>pyramus-oauth-plugin</artifactId>
-          <version>1.0.65-SNAPSHOT</version>
+          <version>1.0.66-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
+      <id>elastic-search-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>elastic-search-plugin</artifactId>
+          <version>1.0.66-SNAPSHOT</version>
+        </dependency>
+        
+        <!-- 
+            FIXME: 
+            Lucene versions need to be overridden because 
+            Wildfly bom specifies lucene versions 3.6.2 which does 
+            not work with elastic search
+        -->
+
+        <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-core</artifactId>
+          <version>4.10.4</version>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-memory</artifactId>
+          <version>4.10.4</version>
         </dependency>
       </dependencies>
     </profile>
@@ -238,7 +267,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>dummy-mail-bridge-plugin</artifactId>
-          <version>1.0.65-SNAPSHOT</version>
+          <version>1.0.66-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -249,7 +278,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>mongo-log-plugin</artifactId>
-          <version>1.0.65-SNAPSHOT</version>
+          <version>1.0.66-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -260,7 +289,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>google-calendar-plugin</artifactId>
-          <version>1.0.65-SNAPSHOT</version>
+          <version>1.0.66-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -271,7 +300,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>atests-plugin</artifactId>
-          <version>1.0.65-SNAPSHOT</version>
+          <version>1.0.66-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -282,7 +311,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>h2db-plugin</artifactId>
-          <version>1.0.65-SNAPSHOT</version>
+          <version>1.0.66-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -293,7 +322,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>google-oauth-plugin</artifactId>
-          <version>1.0.65-SNAPSHOT</version>
+          <version>1.0.66-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -304,7 +333,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>facebook-oauth-plugin</artifactId>
-          <version>1.0.65-SNAPSHOT</version>
+          <version>1.0.66-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -315,7 +344,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>calendar-plugin</artifactId>
-          <version>1.0.65-SNAPSHOT</version>
+          <version>1.0.66-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -326,7 +355,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>deus-nex-machina</artifactId>
-          <version>1.0.65-SNAPSHOT</version>
+          <version>1.0.66-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -397,5 +426,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

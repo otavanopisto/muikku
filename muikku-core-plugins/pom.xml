@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fi.muikku</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0.65-SNAPSHOT</version>
+		<version>1.0.66-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -15,7 +15,6 @@
 	<description>Muikku Core Plugins</description>
 
 	<properties>
-		<elasticsearch.version>1.4.0</elasticsearch.version>
 		<google-diff-match-patch.version>1.1.11</google-diff-match-patch.version>
 	</properties>
 
@@ -122,14 +121,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Elastic Search -->
-
-		<dependency>
-			<groupId>org.elasticsearch</groupId>
-			<artifactId>elasticsearch</artifactId>
-			<version>${elasticsearch.version}</version>
-		</dependency>
-
 		<!-- Jackson -->
 
 		<dependency>
@@ -182,6 +173,16 @@
 			<groupId>fi.muikku</groupId>
 			<artifactId>plugin</artifactId>
 		</dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core-plugins-persistence</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>forum-plugin-rest-model</artifactId>
+    </dependency>
 
 		<!-- Test -->
 

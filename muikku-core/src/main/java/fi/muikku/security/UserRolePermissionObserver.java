@@ -1,6 +1,8 @@
 package fi.muikku.security;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
@@ -10,10 +12,8 @@ import javax.inject.Inject;
 
 import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
-import fi.muikku.dao.security.UserGroupRolePermissionDAO;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
-import fi.muikku.dao.users.UserGroupEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
@@ -30,6 +30,9 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRoleDiscoveredEvent;
 
 public class UserRolePermissionObserver {
+  
+  @Inject
+  private Logger logger;
 
   @Inject
   private PermissionDAO permissionDAO;
@@ -140,11 +143,14 @@ public class UserRolePermissionObserver {
   public void onWorkspaceDiscoveredEvent(@Observes (during = TransactionPhase.BEFORE_COMPLETION) SchoolDataWorkspaceDiscoveredEvent event) {
     WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l);
     List<WorkspaceSettingsTemplateRolePermission> roleTemplate = workspaceSettingsTemplateRolePermissionDAO.listByTemplate(workspaceSettingsTemplate);
-
-    WorkspaceEntity workspace = workspaceEntityDAO.findById(event.getDiscoveredWorkspaceEntityId());
-
-    for (WorkspaceSettingsTemplateRolePermission rp : roleTemplate) {
-      workspaceRolePermissionDAO.create(workspace, rp.getRole(), rp.getPermission());
+    if (event.getDiscoveredWorkspaceEntityId() != null) {
+      WorkspaceEntity workspace = workspaceEntityDAO.findById(event.getDiscoveredWorkspaceEntityId());
+  
+      for (WorkspaceSettingsTemplateRolePermission rp : roleTemplate) {
+        workspaceRolePermissionDAO.create(workspace, rp.getRole(), rp.getPermission());
+      }
+    } else {
+      logger.log(Level.SEVERE, "Could not create workspace role permissions because workspaceEntityiId was not defined");
     }
   }
   
