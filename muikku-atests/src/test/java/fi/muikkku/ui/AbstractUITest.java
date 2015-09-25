@@ -100,7 +100,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected RemoteWebDriver getWebDriver() {
-    webDriver.manage().window().maximize();
     return webDriver;
   }
   
