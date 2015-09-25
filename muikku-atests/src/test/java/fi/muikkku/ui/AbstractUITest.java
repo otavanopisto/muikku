@@ -53,6 +53,8 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
 import fi.muikku.atests.Workspace;
+import fi.muikku.atests.WorkspaceFolder;
+import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
@@ -306,6 +308,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.cssSelector(selector)).click();
   }
   
+  protected void waitAndClick(String selector) {
+    waitForPresent(selector);
+    click(selector);
+  }
+
   protected void assertText(String selector, String text) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(text, element.getText());
@@ -351,6 +358,51 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void deleteWorkspace(Long id) {
     asAdmin()
       .delete("/test/workspaces/{WORKSPACEID}", id)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected WorkspaceFolder createWorkspaceFolder(Long workspaceEntityId, Long parentId, Boolean hidden, Integer orderNumber, String title, String folderType) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    WorkspaceFolder payload = new WorkspaceFolder(null, hidden, orderNumber, null, title, parentId);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces/{WORKSPACEENTITYIID}/folders", workspaceEntityId);
+    
+    response.then()
+      .statusCode(200);
+      
+    WorkspaceFolder result = objectMapper.readValue(response.asString(), WorkspaceFolder.class);
+    assertNotNull(result);
+    assertNotNull(result.getId());
+    
+    return result;
+  }
+  
+  protected WorkspaceHtmlMaterial createWorkspaceHtmlMaterial(Long workspaceEntityId, Long parentId, String title, String contentType, String html, Long revisionNumber, String assignmentType) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    WorkspaceHtmlMaterial payload = new WorkspaceHtmlMaterial(null, parentId, title, contentType, html, revisionNumber, assignmentType);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces/{WORKSPACEENTITYIID}/htmlmaterials", workspaceEntityId);
+    
+    response.then()
+      .statusCode(200);
+      
+    WorkspaceHtmlMaterial result = objectMapper.readValue(response.asString(), WorkspaceHtmlMaterial.class);
+    assertNotNull(result);
+    assertNotNull(result.getId());
+    
+    return result;
+  }
+
+  protected void deleteWorkspaceHtmlMaterial(Long workspaceEntityId, Long id) {
+    asAdmin()
+      .delete("/test/workspaces/{WORKSPACEID}/htmlmaterials/{WORKSPACEMATERIALID}", workspaceEntityId, id)
       .then()
       .statusCode(204);
   }
