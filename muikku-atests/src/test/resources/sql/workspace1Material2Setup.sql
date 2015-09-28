@@ -11,14 +11,14 @@ insert into htmlmaterial (id, contentType, html, revisionNumber) values
                   </p>
                </body></html>', 1);
 
-insert into workspacenode (id, hidden, orderNumber, urlName, parent_id) values 
-  (4, false, 2, 'Test matherial node', 1);
+insert into workspacenode (id, hidden, orderNumber, urlName, parent_id, title) values 
+  (4, false, 2, 'Test matherial node', 1, 'Test material 2.0');
   
-insert into workspacefolder(id, defaultMaterial_id, folderType, title) values 
-  (4, null, 'DEFAULT', 'Test folderah');
+insert into workspacefolder(id, defaultMaterial_id, folderType) values 
+  (4, null, 'DEFAULT');
 
-insert into workspacenode (id, hidden, orderNumber, urlName, parent_id) values 
-  (43, false, 2, 'Test matherial node', 4);
+insert into workspacenode (id, hidden, orderNumber, urlName, parent_id, title) values 
+  (43, false, 2, 'Test matherial node', 4, 'Test material 2.0');
   
 insert into workspacematerial(id, materialId, assignmentType) values 
   (43, 6, null);
@@ -33,9 +33,9 @@ insert into htmlmaterial (id, contentType, html, revisionNumber) values
                      Senim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem
                   </p>
                </body></html>', 1);  
- 
-insert into workspacenode (id, hidden, orderNumber, urlName, parent_id) values 
-  (44, false, 2, 'Test material node3', 4);
+
+insert into workspacenode (id, hidden, orderNumber, urlName, parent_id, title) values 
+  (44, false, 2, 'Test material node3', 4, 'Test material');
   
 insert into workspacematerial(id, materialId, assignmentType) values 
   (44, 7, null);

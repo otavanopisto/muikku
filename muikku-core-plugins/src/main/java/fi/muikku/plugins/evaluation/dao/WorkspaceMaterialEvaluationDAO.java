@@ -7,12 +7,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation_;
-import fi.muikku.schooldata.entity.GradingScale;
-import fi.muikku.schooldata.entity.GradingScaleItem;
 
 public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMaterialEvaluation> {
 

@@ -110,6 +110,10 @@ public class WorkspaceUserEntityController {
   public void archiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
     workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.TRUE);
   }
+
+  public void deleteWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
+    workspaceUserEntityDAO.delete(workspaceUserEntity);
+  }
   
   public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
