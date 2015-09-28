@@ -272,6 +272,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void navigate(String path, boolean secure) {
     getWebDriver().get(String.format("%s%s", getAppUrl(secure), path));
   }
+
+  protected void maximizeWindow() {
+    getWebDriver().manage().window().maximize();
+  }
   
   protected void waitForPresent(String selector) {
     waitForElementToBePresent(By.cssSelector(selector));
@@ -293,6 +297,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void sendKeys(String selector, String keysToSend) {
     getWebDriver().findElement(By.cssSelector(selector)).sendKeys(keysToSend);
+  }
+  
+  protected void waitAndSendKeys(String selector, String keysToSend) {
+    waitForPresent(selector);
+    sendKeys(selector, keysToSend);
   }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {

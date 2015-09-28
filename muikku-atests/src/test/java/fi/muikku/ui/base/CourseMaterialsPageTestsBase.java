@@ -1,22 +1,15 @@
 package fi.muikku.ui.base;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-
-import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.jayway.restassured.response.Response;
 
 import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
@@ -120,6 +113,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
    
   @Test
   public void courseMaterialTOCHighlightTest() throws Exception {
+    maximizeWindow();
+    
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
     try {
