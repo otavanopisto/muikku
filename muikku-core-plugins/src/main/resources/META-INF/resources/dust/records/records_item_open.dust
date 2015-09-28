@@ -34,7 +34,7 @@
   
   <div class="mf-item tr-evaluation-verbal">
     <div class="topic"><h3>{#localize key="plugin.records.workspace.evaluated.verbal.topic" /}</h3></div>
-    <div class="content">{workspaceVerbalAssessment}</div>
+    <div class="content">{workspaceVerbalAssessment|s}</div>
   </div>
   
   <div class="mf-item tr-tasklist">

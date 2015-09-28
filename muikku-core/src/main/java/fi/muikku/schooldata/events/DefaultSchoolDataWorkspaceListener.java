@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -22,7 +21,6 @@ import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
 
-@ApplicationScoped
 public class DefaultSchoolDataWorkspaceListener {
   
   private static final int MAX_URL_NAME_LENGTH = 30;

@@ -25,6 +25,9 @@
                 return JSON.stringify(this.pairs());
               }
             }, this),
+            hasDisplayableAnswers: $.proxy(function() {
+              return this.options.meta.connections.length > 0;
+            }, this), 
             canCheckAnswer: $.proxy(function() {
               var meta = this.options.meta;
               return meta.connections.length > 0;
@@ -45,6 +48,14 @@
               }
 
               return true; 
+            }, this),
+            getCorrectAnswers: $.proxy(function() {
+              var result = [];
+              var meta = this.options.meta;
+              for (var i = 0, l = meta.connections.length; i < l; i++) {
+                result.push(meta.connections[i].field + ' = ' + meta.connections[i].counterpart);
+              }
+              return result;
             }, this)
           });
         

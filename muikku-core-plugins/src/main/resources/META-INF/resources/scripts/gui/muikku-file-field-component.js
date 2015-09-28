@@ -6,7 +6,6 @@
         maxFileSize: undefined
       },
     _create : function() {
-      
       this._readonly = false;
       this._fieldName = this.element.attr("name");
       this._multiple = this.element.attr("multiple") == 'multiple';
@@ -88,6 +87,7 @@
     
     reset: function () {
       this._uploaderContainer.find('.muikku-file-input-field-file').remove();
+      this.element.trigger("change");
     },
     
     _findFileElementByIndex: function (index) {
@@ -201,6 +201,7 @@
       file.addClass('muikku-file-input-field-file-removed');
       file.find('.muikku-file-input-field-file-remove').hide();
       file.find('.muikku-file-input-field-file-restore').show();
+      this.element.trigger("change");
     },
     
     _onFileRestoreClick: function (event) {
@@ -208,6 +209,7 @@
       file.removeClass('muikku-file-input-field-file-removed');
       file.find('.muikku-file-input-field-file-restore').hide();
       file.find('.muikku-file-input-field-file-remove').show();
+      this.element.trigger("change");
     },
 
     _onFileUploadDone : function(e, data) {
@@ -241,6 +243,7 @@
         name: fileName,
         contentType: contentType
       });
+      this.element.trigger("change");
     },
     
     _onFileUploadAlways: function () {

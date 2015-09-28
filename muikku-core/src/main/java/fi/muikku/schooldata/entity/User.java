@@ -1,5 +1,7 @@
 package fi.muikku.schooldata.entity;
 
+import org.joda.time.DateTime;
+
 import fi.muikku.search.annotations.IndexId;
 import fi.muikku.search.annotations.Indexable;
 
@@ -38,5 +40,9 @@ public interface User extends SchoolDataEntity {
 
   @IndexId
   public String getSearchId();
+
+  DateTime getStudyStartDate();
+
+  DateTime getStudyTimeEnd();
 
 }
