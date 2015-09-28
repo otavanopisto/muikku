@@ -1,8 +1,11 @@
 package fi.muikku.plugins.search;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -10,14 +13,18 @@ import javax.inject.Inject;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchIndexer;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
+import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
+import fi.muikku.users.WorkspaceUserEntityController;
 
 public class UserIndexer {
   
@@ -38,6 +45,12 @@ public class UserIndexer {
   
   @Inject
   private EnvironmentUserController environmentUserController;
+  
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
   
   @Inject
   private SearchIndexer indexer;
@@ -63,15 +76,30 @@ public class UserIndexer {
           extra.put("archetype", archetype);
           extra.put("userEntityId", userEntity.getId());
           
+          Set<Long> workspaceEntityIds = new HashSet<Long>();
+          Set<Long> userGroupIds = new HashSet<Long>();
+
+          List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+          for (WorkspaceEntity workspace : workspaces)
+            workspaceEntityIds.add(workspace.getId());
+          extra.put("workspaces", workspaceEntityIds);
+          
+          List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUser(userEntity);
+          for (UserGroupEntity userGroup : userGroups)
+            userGroupIds.add(userGroup.getId());
+          extra.put("groups", userGroupIds);
+          
           indexer.index(User.class.getSimpleName(), user, extra);
         } else
           indexer.index(User.class.getSimpleName(), user);
       } else {
         logger.warning("could not index user because user '" + identifier + '/' + dataSource +  "' could not be found");
       }
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, "Indexing of user identifier " + identifier + " failed.", ex);
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
-    }
+    } 
   }
   
   public void indexUser(UserEntity userEntity) {
