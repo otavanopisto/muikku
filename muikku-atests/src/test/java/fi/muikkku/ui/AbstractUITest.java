@@ -136,6 +136,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     ((String[]) new String[] { "chrome", "41.0", "Linux" }) });
   }
   
+  public static List<String[]> getAllSauceBrowsers() {
+    return Arrays.asList(new String[][] {
+      ((String[]) new String[] { "firefox", "36.0", "Windows 8.1" }),
+      ((String[]) new String[] { "safari", "8.0", "OS X 10.10" }),
+      ((String[]) new String[] { "chrome", "41.0", "Linux" }) });
+  }
+  
   public static long getTestStartTime() {
     return TEST_START_TIME;
   }
