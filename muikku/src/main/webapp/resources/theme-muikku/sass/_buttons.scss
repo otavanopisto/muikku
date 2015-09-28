@@ -4,7 +4,6 @@
   text-transform:uppercase;
   border-radius:3px;
   display:inline-block;
-  padding:11px 12px;
   line-height:1.5em;
   color:#ffffff;
   cursor:pointer;
@@ -21,9 +20,21 @@
     font-size:1.1em;
     background: rgb(107,187,105);
     @include gradient-top-bottom(rgba(107,187,105,1),rgba(76,163,74,1),#52b050);
+    position:relative;
+    
+    &:before {
+      position:absolute;
+      top:12px;
+      left:12px;
+      z-index:1;
+    }
     
     a {
       color:#fff;
+      position:relative;
+      padding:11px 12px 11px 28px;
+      display:inline-block;
+      z-index:2;
     }
     
   }

@@ -197,27 +197,25 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   input[type="checkbox"] {
     margin:0 10px;
     background:#fff;
-    border:3px solid #c9e0fb;
     transition:border,box-shadow 0.1s,0.2s ease-in-out;
     outline:none;
     display:inline-block;
-    box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    box-shadow:0 0 1px 3px rgba(215,215,215,0.15);
     @include rounded(3px);
     display:inline-block;
     
     &[readonly="readonly"] {
-      box-shadow:0 0 0px 3px rgba(234,234,234,1) !important;
+      box-shadow:0 0 1px 3px rgba(234,234,234,1) !important;
       
       &:hover {
-        box-shadow:0 0 0px 3px rgba(234,234,234,1) !important;
+        box-shadow:0 0 1px 3px rgba(234,234,234,1) !important;
       }
     }
     
     &:focus,
     &:hover,
     &:checked {
-      border:3px solid #97bfed;
-      box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
+      box-shadow:0 0 1px 3px rgba(202,225,252,0.85);
     }
   }
   
@@ -258,10 +256,10 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
       input[type="checkbox"],
       input[type="radio"] {
-        box-shadow:0 0 0px 3px #e4e630;
+        box-shadow:0 0 1px 3px #e4e630;
         
         &:hover {
-          box-shadow:0 0 0px 3px #e4e630;
+          box-shadow:0 0 1px 3px #e4e630;
         }
       
       }
@@ -273,7 +271,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       input[type="checkbox"],
       input[type="radio"] {
         animation: saving-checkbox-radio 4s ease infinite;
-        box-shadow:0 0 0px 3px #e4e630;
+        box-shadow:0 0 1px 3px #e4e630;
       }
       
     }
@@ -282,10 +280,10 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
       input[type="checkbox"],
       input[type="radio"] {
-        box-shadow:0 0 0px 3px #9cf3c7;
+        box-shadow:0 0 1px 3px #9cf3c7;
       
         &:hover {
-          box-shadow:0 0 0px 3px #9cf3c7;
+          box-shadow:0 0 1px 3px #9cf3c7;
         }
         
       }
@@ -453,6 +451,13 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       display:inline-block;
     
       &.muikku-assignment-button {
+      
+        &.muikku-evaluated-assignment {
+          background:#fff;
+          color:#666;
+          font-style:italic;
+          cursor:default;
+        }
         
         /* Check Exercise */
         &.muikku-check-exercises {
@@ -515,7 +520,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       
       input[type="checkbox"],
       input[type="radio"] {
-        box-shadow:0 0 0 3px rgba(0,255,42,0.9) !important;
+        box-shadow:0 0 1px 3px rgba(0,255,42,0.9) !important;
       }
       
       &:hover {
@@ -536,7 +541,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       
       input[type="checkbox"],
       input[type="radio"] {
-        box-shadow:0 0 0 3px rgba(255,0,0,0.6) !important;
+        box-shadow:0 0 1px 3px rgba(255,0,0,0.6) !important;
       }
       
       &:hover {
@@ -557,7 +562,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       width:auto;
       background:#e2ffe2;
       font-style:italic;
-      margin:1px 3px 1px -2px;
+      margin:1px 3px 1px 3px;
       display:inline-block;
       
       span.muikku-field-examples-title {

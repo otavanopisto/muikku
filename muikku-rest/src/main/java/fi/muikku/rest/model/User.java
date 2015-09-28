@@ -1,5 +1,7 @@
 package fi.muikku.rest.model;
 
+import java.util.Date;
+
 public class User {
 
   public User() {
@@ -13,7 +15,10 @@ public class User {
               String language,
               String municipality,
               String school,
-              String email) {
+              String email,
+              Date studyStartDate,
+              Date studyTimeEnd
+              ) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -24,6 +29,8 @@ public class User {
     this.municipality = municipality;
     this.school = school;
     this.email = email;
+    this.studyStartDate = studyStartDate;
+    this.studyTimeEnd = studyTimeEnd;
   }
 
   public Long getId() {
@@ -98,6 +105,22 @@ public class User {
     this.email = email;
   }
 
+  public Date getStudyStartDate() {
+    return studyStartDate;
+  }
+
+  public void setStudyStartDate(Date studyStartDate) {
+    this.studyStartDate = studyStartDate;
+  }
+
+  public Date getStudyTimeEnd() {
+    return studyTimeEnd;
+  }
+
+  public void setStudyTimeEnd(Date studyTimeEnd) {
+    this.studyTimeEnd = studyTimeEnd;
+  }
+
   private Long id;
   private String firstName;
   private String lastName;
@@ -107,4 +130,6 @@ public class User {
   private String municipality;
   private String school;
   private String email;
+  private Date studyStartDate;
+  private Date studyTimeEnd;
 }
