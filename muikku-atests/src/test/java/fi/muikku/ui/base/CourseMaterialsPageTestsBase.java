@@ -34,11 +34,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
           "EXERCISE");
       
-      navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-      waitForPresent(".material-view");
-      assertVisible("article p");
-
-      deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(".material-view");
+        assertVisible("article p");
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+      }
+      
     } finally {
       deleteWorkspace(workspace.getId());
     }
@@ -55,12 +58,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "1.0 Testimateriaali", "text/html;editor=CKEditor", 
           "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
           "EXERCISE");
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(".wi-workspace-dock-navi-button-materials-reading");
+        assertVisible(".wi-workspace-dock-navi-button-materials-reading");
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+      }
       
-      navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-      waitForPresent(".wi-workspace-dock-navi-button-materials-reading");
-      assertVisible(".wi-workspace-dock-navi-button-materials-reading");
-
-      deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
     } finally {
       deleteWorkspace(workspace.getId());
     }
@@ -92,20 +97,24 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "1.0 Testimateriaali", "text/html;editor=CKEditor", 
           "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
           "EXERCISE");
-
-      WorkspaceFolder workspaceFolder2 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 2, "Test material 2.0", "DEFAULT");
-
-      WorkspaceHtmlMaterial htmlMaterial2 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder2.getId(), 
-          "2.0 Testmaterial", "text/html;editor=CKEditor", 
-          "<html><body><p>Test Matherial:  Lorem ipsum dolor sit amet </p><p>Senim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
-          "EXERCISE");
+      try {
+        WorkspaceFolder workspaceFolder2 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 2, "Test material 2.0", "DEFAULT");
+  
+        WorkspaceHtmlMaterial htmlMaterial2 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder2.getId(), 
+            "2.0 Testmaterial", "text/html;editor=CKEditor", 
+            "<html><body><p>Test Matherial:  Lorem ipsum dolor sit amet </p><p>Senim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+            "EXERCISE");
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent("#contentWorkspaceMaterials");
+          assertVisible("#workspaceMaterialsTOCWrapper");
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial2.getId());
+        }
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+      }
       
-      navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-      waitForPresent("#contentWorkspaceMaterials");
-      assertVisible("#workspaceMaterialsTOCWrapper");
-
-      deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
-      deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial2.getId());
     } finally {
       deleteWorkspace(workspace.getId());
     }
@@ -124,21 +133,25 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "1.0 Testimateriaali", "text/html;editor=CKEditor", 
           "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
           "EXERCISE");
-
-      WorkspaceFolder workspaceFolder2 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 2, "Test material 2.0", "DEFAULT");
-
-      WorkspaceHtmlMaterial htmlMaterial2 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder2.getId(), 
-          "2.0 Testmaterial", "text/html;editor=CKEditor", 
-          "<html><body><p>Test Matherial:  Lorem ipsum dolor sit amet </p><p>Senim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
-          "EXERCISE");
+      try {
+        WorkspaceFolder workspaceFolder2 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 2, "Test material 2.0", "DEFAULT");
+  
+        WorkspaceHtmlMaterial htmlMaterial2 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder2.getId(), 
+            "2.0 Testmaterial", "text/html;editor=CKEditor", 
+            "<html><body><p>Test Matherial:  Lorem ipsum dolor sit amet </p><p>Senim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+            "EXERCISE");
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitAndClick(String.format("a[href='#page-%d']", htmlMaterial2.getId()));
+          waitForPresent(String.format("a.active[href='#page-%d']", htmlMaterial2.getId()));
+          assertVisible(String.format("a.active[href='#page-%d']", htmlMaterial2.getId()));
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial2.getId());
+        }
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+      }
       
-      navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-      waitAndClick(String.format("a[href='#page-%d']", htmlMaterial2.getId()));
-      waitForPresent(String.format("a.active[href='#page-%d']", htmlMaterial2.getId()));
-      assertVisible(String.format("a.active[href='#page-%d']", htmlMaterial2.getId()));
-
-      deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
-      deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial2.getId());
     } finally {
       deleteWorkspace(workspace.getId());
     }
