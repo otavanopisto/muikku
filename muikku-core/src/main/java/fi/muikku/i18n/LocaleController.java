@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -22,7 +21,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 @ApplicationScoped
-@Stateful
 public class LocaleController {
 
 	@Inject
@@ -122,5 +120,4 @@ public class LocaleController {
   private Map<String, Map<String, String>> localeMaps = new HashMap<String, Map<String, String>>();
   private Map<String, Map<String, String>> jsLocaleMaps = new HashMap<String, Map<String, String>>();
   private Map<String, Date> jsLastModified = new HashMap<String, Date>();
-
 }
