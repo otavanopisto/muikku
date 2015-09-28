@@ -60,7 +60,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     navigate(String.format("/workspace/%s/discussions", workspace.getUrlName()), true);
     waitForPresent(".workspace-discussions");
     click(".di-new-area-button");
-    sendKeys(".mf-textfield input", "Test area");
+    waitAndSendKeys(".mf-textfield input", "Test area");
     click("*[name='send']");
     waitForPresent("#discussionAreaSelect option:nth-child(2)");
     assertText("#discussionAreaSelect option:nth-child(2)", "Test area");
