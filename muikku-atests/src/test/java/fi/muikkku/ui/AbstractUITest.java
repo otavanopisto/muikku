@@ -2,6 +2,7 @@ package fi.muikkku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -35,6 +37,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import wiremock.org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -302,6 +306,39 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void waitAndSendKeys(String selector, String keysToSend) {
     waitForPresent(selector);
     sendKeys(selector, keysToSend);
+  }
+
+  protected void waitClassPresent(final String selector, final String className) {
+    WebDriver driver = getWebDriver();
+    new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        List<WebElement> elements = getWebDriver().findElements(By.cssSelector(selector));
+        if (!elements.isEmpty()) {
+          WebElement element = elements.get(0);
+          String[] classes = StringUtils.split(element.getAttribute("class"), " ");
+          return ArrayUtils.contains(classes, className);
+        }
+        
+        return false;
+      }
+    });
+  }
+
+  protected void assertClassNotPresent(String selector, String className) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    String[] classes = StringUtils.split(element.getAttribute("class"), " ");
+    assertFalse(String.format("Class %s present in %s", className, selector), ArrayUtils.contains(classes, className));
+  }
+
+  protected void assertClassPresent(String selector, String className) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    String[] classes = StringUtils.split(element.getAttribute("class"), " ");
+    assertTrue(String.format("Class %s is not present in %s", className, selector), ArrayUtils.contains(classes, className));
+  }
+  
+  protected void assertValue(String selector, String value) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    assertEquals(value, element.getAttribute("value"));
   }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
