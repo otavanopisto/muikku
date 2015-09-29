@@ -525,7 +525,7 @@
                 </goals>
                 <configuration>
                   <execute-commands>
-                    <batch>false</batch>
+                    <batch>true</batch>
                     <commands>
                       <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
@@ -1235,7 +1235,7 @@
                 </goals>
                 <configuration>
                   <execute-commands>
-                    <batch>true</batch>
+                    <batch>false</batch>
                     <commands>
                       <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
