@@ -27,8 +27,8 @@ env:
   - secure: QmDnYj3Lb3nMzyKDkGShAU2N3TOt1Bn0ku2KokVD+y3Q7lTdcfdvMCeBiFI7qPDrWU9bPaiTRh0+/sMWLM7J0aFg8e7OljqJrArKSB+i3leTl+/L/x9cplESMjV5u5cjtsUCmGX3ywSfhpwlGzkILVFl3ZE2eI2e2+OoOfZrezY=
 addons:
   sauce_connect:
-    direct_domains: cdnjs.cloudflare.com
-    no_ssl_bump_domains: atest.muikkuverkko.fi
+#    direct_domains: cdnjs.cloudflare.com
+#    no_ssl_bump_domains: atest.muikkuverkko.fi
   hosts:
   - atest.muikkuverkko.fi
 before_install:
