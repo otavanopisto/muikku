@@ -962,7 +962,7 @@
         <h2.version>1.4.177</h2.version>
         <it.port.http>8080</it.port.http>
         <it.port.https>8443</it.port.https>
-        <it.host>dev.muikku.fi</it.host>
+        <it.host>atest.muikkuverkko.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
         <it.jdbc.driver>org.h2.Driver</it.jdbc.driver>
         <it.jdbc.url>jdbc:h2:file:${project.build.directory}/h2;AUTO_SERVER=TRUE</it.jdbc.url>
