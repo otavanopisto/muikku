@@ -1,6 +1,8 @@
 package fi.muikku.rest.user;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -71,6 +73,7 @@ public class UserRESTService extends AbstractRESTService {
 	@GET
 	@Path("/users")
 	@RESTPermitUnimplemented
+	@SuppressWarnings("unchecked")
 	public Response searchUsers(
 			@QueryParam("searchString") String searchString,
 			@QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
@@ -149,13 +152,28 @@ public class UserRESTService extends AbstractRESTService {
 
 					  emailAddress = secret(emailAddress);
 					  
+					  HashMap<String, Object> studyStartDate = (HashMap<String, Object>)o.get("studyStartDate");
+					  HashMap<String, Object> studyTimeEnd = (HashMap<String, Object>)o.get("studyTimeEnd");
+					  Date studyStartDateDate = null;
+					  Date studyTimeEndDate = null;
+					  
+					  if (studyStartDate != null) {
+					    studyStartDateDate = new Date((Long)studyStartDate.get("millis"));
+					  }
+					  
+					  if (studyTimeEnd != null) {
+					    studyTimeEndDate = new Date((Long)studyTimeEnd.get("millis"));
+					  }
+					  
 						ret.add(new fi.muikku.rest.model.User(userEntity
 								.getId(), (String) o.get("firstName"),
 								(String) o.get("lastName"), hasImage,
 								(String) o.get("nationality"), (String) o
 										.get("language"), (String) o
 										.get("municipality"), (String) o
-										.get("school"), emailAddress));
+										.get("school"), emailAddress,
+										studyStartDateDate,
+										studyTimeEndDate));
 					}
 				}
 
@@ -263,7 +281,8 @@ public class UserRESTService extends AbstractRESTService {
 		return new fi.muikku.rest.model.User(userEntity.getId(),
 				user.getFirstName(), user.getLastName(), hasImage,
 				user.getNationality(), user.getLanguage(),
-				user.getMunicipality(), user.getSchool(), emailAddress);
+				user.getMunicipality(), user.getSchool(), emailAddress,
+				user.getStudyStartDate().toDate(), user.getStudyTimeEnd().toDate());
 	}
 
 	//

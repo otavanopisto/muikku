@@ -1108,6 +1108,20 @@ body.evaluation {
       
     }
     
+   .ui-dialog-content {
+      
+      label.muikku-file-input-field-file-label {
+        font-weight:400 !important;
+        position:absolute;
+        margin-top:-35px;
+        margin-left:10px;
+        color:#fff;
+        font-size:16px;
+        line-height:27px;
+      }
+      
+    }
+    
     .ui-dialog-buttonpane {
       text-align:center;
       width:100%;
