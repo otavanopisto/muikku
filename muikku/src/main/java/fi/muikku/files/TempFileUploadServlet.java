@@ -28,26 +28,25 @@ public class TempFileUploadServlet extends HttpServlet {
 
   private static final long serialVersionUID = -4689635910226270913L;
 
+  private static final long DEFAULT_MAX_FILE_SIZE = 10_485_760; // 10 mb
+
   @Inject
   private SystemSettingsController systemSettingsController;
-  
-  @Inject
-  private Logger logger;
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     Part file = req.getPart("file");
 
     String fileSizeLimitString = systemSettingsController.getSetting("uploadFileSizeLimit");
+    long fileSizeLimit = DEFAULT_MAX_FILE_SIZE;
 
     if (fileSizeLimitString != null) {
-      
-      long fileSizeLimit = Long.parseLong(fileSizeLimitString, 10);
+      fileSizeLimit = Long.parseLong(fileSizeLimitString, 10);
+    }
 
-      if (file.getSize() > fileSizeLimit) {
-        resp.setStatus(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
-        return;
-      }
+    if (file.getSize() > fileSizeLimit) {
+      resp.setStatus(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+      return;
     }
 
     File tempFile = TempFileUtils.createTempFile();

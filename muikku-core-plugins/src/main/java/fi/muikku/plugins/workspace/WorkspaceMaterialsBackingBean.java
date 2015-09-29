@@ -30,6 +30,8 @@ import fi.otavanopisto.security.LoggedIn;
 @Join(path = "/workspace/{workspaceUrlName}/materials", to = "/jsf/workspace/materials.jsf")
 @LoggedIn
 public class WorkspaceMaterialsBackingBean {
+  
+  private static final long DEFAULT_MAX_FILE_SIZE = 10_485_760; // 10 mb
 
   @Inject
   private Logger logger;
@@ -131,9 +133,14 @@ public class WorkspaceMaterialsBackingBean {
   public Long getMaxFileSize() {
     String setting = systemSettingsController.getSetting("uploadFileSizeLimit");
     if (setting == null) {
-      return null;
+      return DEFAULT_MAX_FILE_SIZE;
     } else {
-      return Long.parseLong(setting, 10);
+      Long longSetting = Long.parseLong(setting, 10);
+      if (longSetting == null) {
+        return DEFAULT_MAX_FILE_SIZE;
+      } else {
+        return longSetting;
+      }
     }
   }
 
