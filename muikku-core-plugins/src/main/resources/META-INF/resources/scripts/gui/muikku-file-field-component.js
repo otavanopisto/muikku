@@ -185,8 +185,7 @@
       var i, l;
       for (i=0, l=data.originalFiles.length; i<l; i++) {
         if (data.originalFiles[i].size && data.originalFiles[i].size > this.options.maxFileSize) {
-          // TODO localize
-          $('.notification-queue').notificationQueue('notification', 'error', "File size too large");
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsManagement.fileFieldUpload.fileSizeTooLarge', this.options.maxFileSize));
           return;
         }
       }
