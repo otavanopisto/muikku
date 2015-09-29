@@ -178,19 +178,20 @@
 
       data.context = this._findFileElementByIndex(this._fileIndex);
       
-      if (data.context.length == 0) {
-        data.context = this._createFileElement(this._fileIndex);
-      }
-      
       var i, l;
       for (i=0, l=data.originalFiles.length; i<l; i++) {
         if (data.originalFiles[i].size && data.originalFiles[i].size > this.options.maxFileSize) {
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsManagement.fileFieldUpload.fileSizeTooLarge', this.options.maxFileSize));
+          var maxFileSizeConvertToKB = this.options.maxFileSize / 1024;
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsManagement.fileFieldUpload.fileSizeTooLarge', maxFileSizeConvertToKB));
           return;
+        } else {
+          if (data.context.length == 0) {
+            data.context = this._createFileElement(this._fileIndex);
+          }
+          
+          $(this.element).trigger('uploadStart');
         }
       }
-      
-      $(this.element).trigger('uploadStart');
       
       data.submit();
     },
