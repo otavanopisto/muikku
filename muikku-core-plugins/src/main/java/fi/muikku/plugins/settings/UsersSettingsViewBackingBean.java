@@ -1,8 +1,5 @@
 package fi.muikku.plugins.settings;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -11,10 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.model.users.RoleEntity;
 import fi.muikku.schooldata.RoleController;
-import fi.muikku.schooldata.entity.Role;
-import fi.muikku.schooldata.entity.User;
 import fi.muikku.users.UserController;
 
 @Named

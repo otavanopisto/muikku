@@ -11,14 +11,14 @@ insert into htmlmaterial (id, contentType, html, revisionNumber) values
             </p>
          </body></html>', 1);
 
-insert into workspacenode (id, hidden, orderNumber, urlName, parent_id) values 
-  (8, false, 2, 'Test matherial node', 1);
+insert into workspacenode (id, hidden, orderNumber, urlName, parent_id, title) values 
+  (8, false, 2, 'Test matherial node', 1, 'Test material');
   
-insert into workspacefolder(id, defaultMaterial_id, folderType, title) values 
-  (8, null, 'DEFAULT', 'Test folderah');
+insert into workspacefolder(id, defaultMaterial_id, folderType) values 
+  (8, null, 'DEFAULT');
 
-insert into workspacenode (id, hidden, orderNumber, urlName, parent_id) values 
-  (45, false, 2, 'Test matherial node', 8);
+insert into workspacenode (id, hidden, orderNumber, urlName, parent_id, title) values 
+  (45, false, 2, 'Test matherial node', 8, 'Test material');
   
 insert into workspacematerial(id, materialId, assignmentType) values 
   (45, 7, 'EVALUATED');

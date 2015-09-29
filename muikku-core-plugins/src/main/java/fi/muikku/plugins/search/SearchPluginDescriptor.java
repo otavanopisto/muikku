@@ -44,11 +44,18 @@ public class SearchPluginDescriptor implements PluginDescriptor {
   
   @PreDestroy
   public void deinit() {
-    Iterator<SearchProvider> i = searchProviders.iterator();
-    while(i.hasNext()){
-      SearchProvider provider = i.next();
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    while(searchProviderIterator.hasNext()){
+      SearchProvider provider = searchProviderIterator.next();
       logger.info("Deinitializing search provider: " + provider.getName());
       provider.deinit();
+    }
+    
+    Iterator<SearchIndexUpdater> updaterProviderIterator = searchIndexUpdaters.iterator();
+    while(updaterProviderIterator.hasNext()){
+      SearchIndexUpdater updater = updaterProviderIterator.next();
+      logger.info("Deinitializing search index updater: " + updater.getName());
+      updater.deinit();
     }
   }
   

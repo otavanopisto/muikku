@@ -23,7 +23,7 @@ public class WorkspaceEntityController {
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
-	private WorkspaceEntityDAO workspaceEntityDAO;
+  private WorkspaceEntityDAO workspaceEntityDAO;
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
@@ -106,6 +106,10 @@ public class WorkspaceEntityController {
 
   public WorkspaceEntity archiveWorkspaceEntity(WorkspaceEntity workspaceEntity) {
     return workspaceEntityDAO.updateArchived(workspaceEntity, Boolean.TRUE);
+  }
+
+  public void deleteWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    workspaceEntityDAO.delete(workspaceEntity);
   }
 
   public List<WorkspaceEntity> listWorkspaceEntitiesByWorkspaceUser(UserEntity userEntity) {

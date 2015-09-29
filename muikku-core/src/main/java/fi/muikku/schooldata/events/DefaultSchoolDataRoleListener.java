@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -18,7 +17,6 @@ import fi.muikku.users.EnvironmentRoleEntityController;
 import fi.muikku.users.RoleSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceRoleEntityController;
 
-@ApplicationScoped
 public class DefaultSchoolDataRoleListener {
   
   @Inject

@@ -1,8 +1,6 @@
 package fi.muikku.plugins.data;
 
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import fi.muikku.plugin.AfterPluginsInitEvent;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.PrioritizedPluginDescriptor;

@@ -5,7 +5,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.wall.model.WorkspaceWall;

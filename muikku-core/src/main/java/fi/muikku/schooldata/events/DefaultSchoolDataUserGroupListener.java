@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -15,7 +14,6 @@ import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 
-@ApplicationScoped
 public class DefaultSchoolDataUserGroupListener {
   
   @Inject
