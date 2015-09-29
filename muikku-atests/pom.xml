@@ -382,7 +382,6 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>keytool-maven-plugin</artifactId>
@@ -443,7 +442,6 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
@@ -970,8 +968,8 @@
         <it.jdbc.username>sa</it.jdbc.username>
         <it.jdbc.password>sa</it.jdbc.password>
         <it.hibernate.dialect>org.hibernate.dialect.H2Dialect</it.hibernate.dialect>
-        <it.keystore.alias>atest.muikkuverkko.fi</it.keystore.alias>
-        <it.keystore.pass>storepass</it.keystore.pass>
+        <it.keystore.alias>muikkuverkko.fi</it.keystore.alias>
+        <it.keystore.pass>changeit</it.keystore.pass>
         <it.keystore.file>/home/travis/build/otavanopisto/muikku/muikku-atests/atest.muikkuverkko.fi.keystore</it.keystore.file>
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
@@ -1153,7 +1151,7 @@
               </execution>
             </executions>
           </plugin>
- -->
+-->
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
