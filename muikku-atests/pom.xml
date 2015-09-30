@@ -22,13 +22,6 @@
 
   <dependencies>
 
-   <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>muikku</artifactId>
-      <type>war</type>
-      <version>${project.version}</version>
-    </dependency>
-
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
@@ -480,25 +473,13 @@
               </configuration>
 
             </configuration>
-            <executions>
+            <executions> 
               <execution>
                 <id>start-cargo</id>
                 <phase>pre-integration-test</phase>
                 <goals>
                   <goal>start</goal>
                 </goals>
-                <configuration>
-                  <deployables>
-                    <deployable>
-                      <groupId>${project.groupId}</groupId>
-                      <artifactId>muikku</artifactId>
-                      <type>war</type>
-                      <properties>
-                        <context />
-                      </properties>
-                    </deployable>
-                  </deployables>
-                </configuration>
               </execution>
               <execution>
                 <id>stop-cargo</id>
@@ -525,7 +506,6 @@
                   <execute-commands>
                     <batch>true</batch>
                     <commands>
-                      <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
@@ -538,19 +518,15 @@
                   </execute-commands>
                 </configuration>
               </execution>
-
+              
               <execution>
-                <id>reload-wildfly</id>
+                <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>execute-commands</goal>
+                  <goal>deploy</goal>
                 </goals>
                 <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
-                    </commands>
-                  </execute-commands>
+                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
                 </configuration>
               </execution>
             </executions>
@@ -828,18 +804,6 @@
                 <goals>
                   <goal>start</goal>
                 </goals>
-                <configuration>
-                  <deployables>
-                    <deployable>
-                      <groupId>${project.groupId}</groupId>
-                      <artifactId>muikku</artifactId>
-                      <type>war</type>
-                      <properties>
-                        <context />
-                      </properties>
-                    </deployable>
-                  </deployables>
-                </configuration>
               </execution>
               <execution>
                 <id>stop-cargo</id>
@@ -866,7 +830,6 @@
                   <execute-commands>
                     <batch>true</batch>
                     <commands>
-                      <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
@@ -881,17 +844,13 @@
               </execution>
 
               <execution>
-                <id>reload-wildfly</id>
+                <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>execute-commands</goal>
+                  <goal>deploy</goal>
                 </goals>
                 <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
-                    </commands>
-                  </execute-commands>
+                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
                 </configuration>
               </execution>
             </executions>
@@ -1193,18 +1152,6 @@
                 <goals>
                   <goal>start</goal>
                 </goals>
-                <configuration>
-                  <deployables>
-                    <deployable>
-                      <groupId>${project.groupId}</groupId>
-                      <artifactId>muikku</artifactId>
-                      <type>war</type>
-                      <properties>
-                        <context />
-                      </properties>
-                    </deployable>
-                  </deployables>
-                </configuration>
               </execution>
               <execution>
                 <id>stop-cargo</id>
@@ -1231,7 +1178,6 @@
                   <execute-commands>
                     <batch>true</batch>
                     <commands>
-                      <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
@@ -1246,17 +1192,13 @@
               </execution>
 
               <execution>
-                <id>reload-wildfly</id>
+                <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>execute-commands</goal>
+                  <goal>deploy</goal>
                 </goals>
                 <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
-                    </commands>
-                  </execute-commands>
+                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
                 </configuration>
               </execution>
             </executions>
@@ -1528,18 +1470,6 @@
                 <goals>
                   <goal>start</goal>
                 </goals>
-                <configuration>
-                  <deployables>
-                    <deployable>
-                      <groupId>${project.groupId}</groupId>
-                      <artifactId>muikku</artifactId>
-                      <type>war</type>
-                      <properties>
-                        <context />
-                      </properties>
-                    </deployable>
-                  </deployables>
-                </configuration>
               </execution>
               <execution>
                 <id>stop-cargo</id>
@@ -1566,7 +1496,6 @@
                   <execute-commands>
                     <batch>true</batch>
                     <commands>
-                      <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
@@ -1581,17 +1510,13 @@
               </execution>
 
               <execution>
-                <id>reload-wildfly</id>
+                <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>execute-commands</goal>
+                  <goal>deploy</goal>
                 </goals>
                 <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
-                    </commands>
-                  </execute-commands>
+                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
                 </configuration>
               </execution>
             </executions>
