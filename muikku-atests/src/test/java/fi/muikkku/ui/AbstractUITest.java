@@ -141,11 +141,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       ((String[]) new String[] { "microsoftedge", "20.10240", "Windows 10" }),
       ((String[]) new String[] { "internet explorer", "11.0", "Windows 10" }),
       ((String[]) new String[] { "internet explorer", "10.0", "Windows 8" }),
-      ((String[]) new String[] { "internet explorer", "9.0", "Windows 7" }),
       ((String[]) new String[] { "firefox", "36.0", "Windows 8.1" }),
       ((String[]) new String[] { "safari", "8.0", "OS X 10.10" }),
       ((String[]) new String[] { "safari", "8.1", "OS X 10.11" }),
-      ((String[]) new String[] { "chrome", "45.0", "Linux" }) });
+      ((String[]) new String[] { "chrome", "45.0", "Linux" }) 
+      });
   }
   
   public static long getTestStartTime() {
