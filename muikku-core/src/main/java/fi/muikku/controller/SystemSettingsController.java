@@ -6,6 +6,8 @@ import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import fi.muikku.dao.base.SystemSettingDAO;
 import fi.muikku.model.base.SystemSetting;
 
@@ -46,10 +48,10 @@ public class SystemSettingsController {
       return DEFAULT_UPLOAD_FILE_SIZE_LIMIT;
     }
     
-    try {
-      return Long.parseLong(uploadFileSizeLimitString);
-    } catch (NumberFormatException nfe) {
-      logger.severe(String.format("Invalid uploadFileSizeLimit: {0}", nfe.getMessage()));
+    if (NumberUtils.isDigits(uploadFileSizeLimitString)) {
+      return Long.parseLong(uploadFileSizeLimitString, 10);
+    } else {
+      logger.severe("Invalid upload file size limit: " + uploadFileSizeLimitString);
       return DEFAULT_UPLOAD_FILE_SIZE_LIMIT;
     }
   }
