@@ -166,7 +166,7 @@
     },
     
     correctAnswers: function() {
-      return this.element.attr('data-correct-answers');
+      return this.element.attr('data-correct-answers')||'ALWAYS';
     },
     
     workspaceMaterialId: function () {
