@@ -90,6 +90,10 @@
   cursor: pointer;
 }
 
+.muikku-file-input-field-file-uploader-container input[type="file"][disabled="disabled"] {
+  cursor: default;
+}
+
 .muikku-file-input-field-file-uploader-container span {
   text-align: center;  
   display: block;
