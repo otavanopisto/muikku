@@ -135,12 +135,8 @@ public class WorkspaceMaterialsBackingBean {
     if (setting == null) {
       return DEFAULT_MAX_FILE_SIZE;
     } else {
-      Long longSetting = Long.parseLong(setting, 10);
-      if (longSetting == null) {
-        return DEFAULT_MAX_FILE_SIZE;
-      } else {
-        return longSetting;
-      }
+      long longSetting = Long.parseLong(setting, 10);
+      return longSetting;
     }
   }
 
