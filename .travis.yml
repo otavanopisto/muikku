@@ -8,6 +8,7 @@ after_script:
 script:
 - pushd .
 - cd muikku-atests
+- mvn clean verify -Prest-it
 - mvn clean verify -Ptravis
 - popd
 jdk:
