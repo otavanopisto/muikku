@@ -31,9 +31,6 @@ addons:
   hosts:
   - atest.muikkuverkko.fi
 before_install:
-- openssl aes-256-cbc -K $encrypted_2cfe55977b0a_key -iv $encrypted_2cfe55977b0a_iv
-  -in atest.muikkuverkko.fi.keystore.enc -out muikku-atests/atest.muikkuverkko.fi.keystore
-  -d
 - unset GEM_PATH
 - mvn install -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin
   -Dfindbugs.skip=false
