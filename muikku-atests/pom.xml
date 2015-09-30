@@ -520,6 +520,21 @@
               </execution>
               
               <execution>
+                <id>reload-wildfly</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute-commands</goal>
+                </goals>
+                <configuration>
+                  <execute-commands>
+                    <commands>
+                      <command>:reload</command>
+                    </commands>
+                  </execute-commands>
+                </configuration>
+              </execution>
+              
+              <execution>
                 <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
                 <goals>
@@ -838,6 +853,21 @@
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
+                    </commands>
+                  </execute-commands>
+                </configuration>
+              </execution>
+              
+              <execution>
+                <id>reload-wildfly</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute-commands</goal>
+                </goals>
+                <configuration>
+                  <execute-commands>
+                    <commands>
+                      <command>:reload</command>
                     </commands>
                   </execute-commands>
                 </configuration>
@@ -1190,6 +1220,21 @@
                   </execute-commands>
                 </configuration>
               </execution>
+              
+              <execution>
+                <id>reload-wildfly</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute-commands</goal>
+                </goals>
+                <configuration>
+                  <execute-commands>
+                    <commands>
+                      <command>:reload</command>
+                    </commands>
+                  </execute-commands>
+                </configuration>
+              </execution>
 
               <execution>
                 <id>deploy-muikku</id>
@@ -1504,6 +1549,21 @@
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
+                    </commands>
+                  </execute-commands>
+                </configuration>
+              </execution>
+              
+              <execution>
+                <id>reload-wildfly</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute-commands</goal>
+                </goals>
+                <configuration>
+                  <execute-commands>
+                    <commands>
+                      <command>:reload</command>
                     </commands>
                   </execute-commands>
                 </configuration>
