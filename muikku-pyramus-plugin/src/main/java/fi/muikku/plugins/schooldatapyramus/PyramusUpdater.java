@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -74,6 +75,7 @@ import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.StudyProgramme;
 import fi.pyramus.rest.model.UserRole;
 
+@Stateless
 public class PyramusUpdater {
 
   @Inject
