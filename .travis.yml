@@ -1,5 +1,10 @@
 sudo: false
 language: java
+before_script:
+- curl -sS https://saucelabs.com/downloads/sc-4.3.11-linux.tar.gz|tar -xzC /tmp/
+- /tmp/sc-4.3.11-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid
+after_script:
+- kill `cat /tmp/sc.pid`
 script:
 - pushd .
 - cd muikku-atests
@@ -25,11 +30,8 @@ env:
   - secure: M42u24iv0SCErRMdx8m59k3dp2bC1jRWtaeXXBWd+iK/SZWO3TrA0efUpGm3rP4/1vqTmulQ8WL0G1VkSX2dMXL7iD8SpN/4gORqkC/B7y4zG0/7cjVxsHLCG1ndcuvCIIiCupO9S8f+qWZVv4Kqcf+l2PvXR06mcxNrRB2O8GM=
   - secure: LZViiGyq2B/NfKRByoaA5AumTd0tpS0AaH03sRebV6MF9kcyeWJC+Idv8EyYttyed9GLQM0Qk6aVvvop3dguJNNOMnrKAFoxN4u09QDG+o8IuQiCzFQmEtXBipP+08lqsgn7wfVBD4MyhWHrmJeatq1C/So4IkaMwaYvq6eo7A4=
 addons:
-  sauce_connect:
-    direct_domains: cdnjs.cloudflare.com
-    no_ssl_bump_domains: atest.muikkuverkko.fi
   hosts:
-  - atest.muikkuverkko.fi
+  - dev.muikku.fi
 before_install:
 - unset GEM_PATH
 - mvn install -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin
