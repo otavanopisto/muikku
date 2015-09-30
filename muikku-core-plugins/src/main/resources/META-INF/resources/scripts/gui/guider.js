@@ -51,6 +51,13 @@ $(document).ready(function(){
           search.show("slide");
         }
         
+//      mApi().user.users.read({searchString : params, archetype : 'STUDENT', 
+//      myUserGroups: true, 
+//      myWorkspaces: true,
+//      userGroupIds: [620],
+//      workspaceIds: [620],
+//      maxResults: 25 })
+        
         mApi().user.users.read({searchString : params, archetype : 'STUDENT', maxResults: 25 })
         .callback(function (err, users) {
           

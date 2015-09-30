@@ -1,11 +1,17 @@
 package fi.muikku.plugins.search;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 
+import fi.muikku.model.users.UserGroupUserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserGroup;
@@ -16,14 +22,22 @@ import fi.muikku.schooldata.events.SchoolDataUserEnvironmentRoleRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupUpdatedEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupUserDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupUserRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataUserGroupUserUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUpdatedEvent;
+import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataWorkspaceUserUpdatedEvent;
 import fi.muikku.search.SearchIndexer;
 import fi.muikku.users.UserGroupController;
+import fi.muikku.users.UserGroupEntityController;
 
+@Stateless
 public class SchoolDataIndexListeners {
   
   @Inject
@@ -34,6 +48,9 @@ public class SchoolDataIndexListeners {
 
   @Inject
   private UserGroupController userGroupController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
   
   @Inject
   private SearchIndexer indexer;
@@ -54,6 +71,21 @@ public class SchoolDataIndexListeners {
   
   public void onSchoolDataWorkspaceRemovedEvent(@Observes SchoolDataWorkspaceRemovedEvent event) {
     indexer.remove(Workspace.class.getSimpleName(), event.getSearchId());
+  }
+  
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+  public void onSchoolDataWorkspaceUserDiscoveredEvent(@Observes (during = TransactionPhase.AFTER_SUCCESS) SchoolDataWorkspaceUserDiscoveredEvent event) {
+    userIndexer.indexUser(event.getUserDataSource(), event.getUserIdentifier());
+  }
+  
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+  public void onSchoolDataWorkspaceUserUpdatedEvent(@Observes (during = TransactionPhase.AFTER_SUCCESS) SchoolDataWorkspaceUserUpdatedEvent event) {
+    userIndexer.indexUser(event.getUserDataSource(), event.getUserIdentifier());
+  }
+  
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+  public void onSchoolDataWorkspaceUserRemovedEvent(@Observes (during = TransactionPhase.AFTER_SUCCESS) SchoolDataWorkspaceUserRemovedEvent event) {
+    userIndexer.indexUser(event.getUserDataSource(), event.getUserIdentifier());
   }
   
   public void onSchoolDataUserDiscoveredEvent(@Observes (during = TransactionPhase.BEFORE_COMPLETION) SchoolDataUserDiscoveredEvent event) {
@@ -107,5 +139,36 @@ public class SchoolDataIndexListeners {
       schoolDataBridgeSessionController.endSystemSession();
     }
   }  
-  
+
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+  public void onSchoolDataUserGroupUserDiscoveredEvent(@Observes (during = TransactionPhase.AFTER_SUCCESS) SchoolDataUserGroupUserDiscoveredEvent event) {
+    userIndexer.indexUser(event.getUserDataSource(), event.getUserIdentifier());
+  }  
+
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+  public void onSchoolDataUserGroupUserUpdatedEvent(@Observes (during = TransactionPhase.AFTER_SUCCESS) SchoolDataUserGroupUserUpdatedEvent event) {
+    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(
+        event.getDataSource(), event.getIdentifier());
+    
+    if (userGroupUserEntity != null) {
+      UserSchoolDataIdentifier usdi = userGroupUserEntity.getUserSchoolDataIdentifier();
+      
+      userIndexer.indexUser(usdi.getDataSource().getIdentifier(), usdi.getIdentifier());
+    } else 
+      logger.log(Level.WARNING, "User group user was updated but user couldn't be reindexed.");
+  }
+
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+  public void onSchoolDataUserGroupUserRemovedEvent(@Observes (during = TransactionPhase.AFTER_SUCCESS) SchoolDataUserGroupUserRemovedEvent event) {
+    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(
+        event.getDataSource(), event.getIdentifier());
+    
+    if (userGroupUserEntity != null) {
+      UserSchoolDataIdentifier usdi = userGroupUserEntity.getUserSchoolDataIdentifier();
+      
+      userIndexer.indexUser(usdi.getDataSource().getIdentifier(), usdi.getIdentifier());
+    } else 
+      logger.log(Level.WARNING, "User group user was removed but user couldn't be reindexed.");
+  }  
+
 }
