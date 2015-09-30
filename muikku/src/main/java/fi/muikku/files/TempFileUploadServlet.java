@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -28,8 +27,6 @@ public class TempFileUploadServlet extends HttpServlet {
 
   private static final long serialVersionUID = -4689635910226270913L;
 
-  private static final long DEFAULT_MAX_FILE_SIZE = 10_485_760; // 10 mb
-
   @Inject
   private SystemSettingsController systemSettingsController;
 
@@ -37,12 +34,7 @@ public class TempFileUploadServlet extends HttpServlet {
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     Part file = req.getPart("file");
 
-    String fileSizeLimitString = systemSettingsController.getSetting("uploadFileSizeLimit");
-    long fileSizeLimit = DEFAULT_MAX_FILE_SIZE;
-
-    if (fileSizeLimitString != null) {
-      fileSizeLimit = Long.parseLong(fileSizeLimitString, 10);
-    }
+    long fileSizeLimit = systemSettingsController.getUploadFileSizeLimit();
 
     if (file.getSize() > fileSizeLimit) {
       resp.setStatus(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
