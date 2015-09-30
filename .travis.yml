@@ -14,7 +14,7 @@ jdk:
 - openjdk7
 cache:
   directories:
-  - "$HOME/.m2"
+  - $HOME/.m2
 branches:
   only:
   - devel
@@ -55,7 +55,7 @@ notifications:
     use_notice: true
     skip_join: true
     template:
-    - "%{repository} (%{commit}) : %{message} %{foo} "
+    - '%{repository} (%{commit}) : %{message} %{foo} '
     - 'Build details: %{build_url}'
 webhooks:
   urls:
