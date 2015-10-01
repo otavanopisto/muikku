@@ -53,8 +53,6 @@
       stuckClass : 'stuckStNav'
     });
   
-    var contentContainer = ($('#contentWorkspaceMaterials').length > 0 ? contentContainer = $('#contentWorkspaceMaterials') : contentContainer = $('#content'));
-    
     // Workspace navigation
     if ($('#workspaceNavigationWrapper').length > 0) {
       refreshNavigationWrapperPosition();
