@@ -85,7 +85,8 @@
   $(window).load(function () {
     // Workspace's material's TOC
     if ($('#workspaceMaterialsTOCWrapper').length > 0) {
-      
+
+      var contentContainer = ($('#contentWorkspaceMaterials').length > 0 ? contentContainer = $('#contentWorkspaceMaterials') : contentContainer = $('#content'));
       var tocWrapper = $('#workspaceMaterialsTOCWrapper');
       var cOffset = contentContainer.offset();
       var tocLeftPos = cOffset.left + contentContainer.width() - tocWrapper.width();
