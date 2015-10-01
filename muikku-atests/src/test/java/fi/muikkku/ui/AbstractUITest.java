@@ -2,6 +2,7 @@ package fi.muikkku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -36,6 +38,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import wiremock.org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -55,6 +59,7 @@ import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
+import fi.pyramus.webhooks.WebhookStudentCreatePayload;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -130,6 +135,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     // ((String[]) new String[] { "firefox", "36.0", "Windows 8.1" }),
     // ((String[]) new String[] { "safari", "8.0", "OS X 10.10" }),
     ((String[]) new String[] { "chrome", "41.0", "Linux" }) });
+  }
+  
+  public static List<String[]> getAllSauceBrowsers() {
+    return Arrays.asList(new String[][] {
+      ((String[]) new String[] { "microsoftedge", "20.10240", "Windows 10" }),
+      ((String[]) new String[] { "internet explorer", "11.0", "Windows 10" }),
+      ((String[]) new String[] { "internet explorer", "10.0", "Windows 8" }),
+      ((String[]) new String[] { "firefox", "36.0", "Windows 8.1" }),
+      ((String[]) new String[] { "safari", "8.0", "OS X 10.10" }),
+      ((String[]) new String[] { "safari", "8.1", "OS X 10.11" }),
+      ((String[]) new String[] { "chrome", "45.0", "Linux" }) 
+      });
   }
   
   public static long getTestStartTime() {
@@ -274,7 +291,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void maximizeWindow() {
-    getWebDriver().manage().window().maximize();
+    // getWebDriver().manage().window().maximize();
   }
   
   protected void waitForPresent(String selector) {
@@ -303,6 +320,39 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForPresent(selector);
     sendKeys(selector, keysToSend);
   }
+
+  protected void waitClassPresent(final String selector, final String className) {
+    WebDriver driver = getWebDriver();
+    new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        List<WebElement> elements = getWebDriver().findElements(By.cssSelector(selector));
+        if (!elements.isEmpty()) {
+          WebElement element = elements.get(0);
+          String[] classes = StringUtils.split(element.getAttribute("class"), " ");
+          return ArrayUtils.contains(classes, className);
+        }
+        
+        return false;
+      }
+    });
+  }
+
+  protected void assertClassNotPresent(String selector, String className) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    String[] classes = StringUtils.split(element.getAttribute("class"), " ");
+    assertFalse(String.format("Class %s present in %s", className, selector), ArrayUtils.contains(classes, className));
+  }
+
+  protected void assertClassPresent(String selector, String className) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    String[] classes = StringUtils.split(element.getAttribute("class"), " ");
+    assertTrue(String.format("Class %s is not present in %s", className, selector), ArrayUtils.contains(classes, className));
+  }
+  
+  protected void assertValue(String selector, String value) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    assertEquals(value, element.getAttribute("value"));
+  }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
@@ -311,6 +361,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    navigate("/login?authSourceId=1", true);
+    waitForPresent(".index");
+  }
+  
+  protected void loginStudent1() throws JsonProcessingException, Exception {
+    PyramusMocks.student1LoginMock();
+    PyramusMocks.personsPyramusMocks();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");

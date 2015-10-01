@@ -24,7 +24,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Parameterized.Parameters
   public static List<String[]> browsers() throws Exception {
-    return getDefaultSauceBrowsers();
+    return getAllSauceBrowsers();
   }
 
   public CourseMaterialsPageTestsIT(String browser, String version, String platform) {
