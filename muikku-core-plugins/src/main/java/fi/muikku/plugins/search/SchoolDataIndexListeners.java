@@ -147,28 +147,12 @@ public class SchoolDataIndexListeners {
 
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
   public void onSchoolDataUserGroupUserUpdatedEvent(@Observes (during = TransactionPhase.AFTER_SUCCESS) SchoolDataUserGroupUserUpdatedEvent event) {
-    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(
-        event.getDataSource(), event.getIdentifier());
-    
-    if (userGroupUserEntity != null) {
-      UserSchoolDataIdentifier usdi = userGroupUserEntity.getUserSchoolDataIdentifier();
-      
-      userIndexer.indexUser(usdi.getDataSource().getIdentifier(), usdi.getIdentifier());
-    } else 
-      logger.log(Level.WARNING, "User group user was updated but user couldn't be reindexed.");
+    userIndexer.indexUser(event.getUserDataSource(), event.getUserIdentifier());
   }
 
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
   public void onSchoolDataUserGroupUserRemovedEvent(@Observes (during = TransactionPhase.AFTER_SUCCESS) SchoolDataUserGroupUserRemovedEvent event) {
-    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(
-        event.getDataSource(), event.getIdentifier());
-    
-    if (userGroupUserEntity != null) {
-      UserSchoolDataIdentifier usdi = userGroupUserEntity.getUserSchoolDataIdentifier();
-      
-      userIndexer.indexUser(usdi.getDataSource().getIdentifier(), usdi.getIdentifier());
-    } else 
-      logger.log(Level.WARNING, "User group user was removed but user couldn't be reindexed.");
+    userIndexer.indexUser(event.getUserDataSource(), event.getUserIdentifier());
   }  
 
 }

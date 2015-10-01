@@ -39,9 +39,6 @@
 
 		<muikku.version>1.0.66-SNAPSHOT</muikku.version>
 
-		<!-- Lucene -->
-		<lucene.version>4.10.2</lucene.version>
-
 		<!-- Coops -->
 		<coops-spec.version>1.0.0</coops-spec.version>
 		<coops-ws-spec.version>1.0.0</coops-ws-spec.version>
@@ -175,25 +172,29 @@
 				<version>${muikku.version}</version>
 			</dependency>
 
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>core-plugins-persistence</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>forum-plugin-rest-model</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+
 			<dependency>
 				<groupId>fi.muikku</groupId>
-				<artifactId>muikku-schooldata-pyramus</artifactId>
+				<artifactId>muikku-school-data-pyramus</artifactId>
 				<version>${muikku.version}</version>
 			</dependency>
 
-			<!-- Force lucene version to comply with ElasticSearch -->
-
-			<dependency>
-				<groupId>org.apache.lucene</groupId>
-				<artifactId>lucene-core</artifactId>
-				<version>${lucene.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.lucene</groupId>
-				<artifactId>lucene-memory</artifactId>
-				<version>${lucene.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>muikku-school-data-pyramus-persistence</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
 
 			<!-- Coops -->
 			<dependency>
@@ -231,8 +232,9 @@
 				<artifactId>javax.mail-api</artifactId>
 				<version>${mail-api.version}</version>
 			</dependency>
+      
 		</dependencies>
-
+    
 	</dependencyManagement>
 
 	<distributionManagement>

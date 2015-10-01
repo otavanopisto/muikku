@@ -77,6 +77,11 @@ public class WorkspaceMaterialsBackingBean {
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspace == null) {
+      logger.log(Level.SEVERE, String.format("Could not find workspace for workspace entity (%d)", workspaceEntity.getId()));
+      return NavigationRules.NOT_FOUND;
+    }
+    
     workspaceName = workspace.getName();
     workspaceEntityId = workspaceEntity.getId();
 
@@ -87,7 +92,7 @@ public class WorkspaceMaterialsBackingBean {
       logger.log(Level.SEVERE, "Error loading materials", e);
       return NavigationRules.INTERNAL_ERROR;
     }
-
+      
     return null;
   }
 

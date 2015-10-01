@@ -1,5 +1,7 @@
 package fi.muikku;
 
+import static com.jayway.restassured.RestAssured.given;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +19,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+
+import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.response.Response;
+import com.jayway.restassured.specification.RequestSpecification;
 
 public abstract class AbstractIntegrationTest {
 
@@ -155,8 +161,82 @@ public abstract class AbstractIntegrationTest {
   protected String getKeystorePass() {
     return System.getProperty("it.keystore.storepass");
   }
+  
+  protected String getSauceUsername() {
+    return System.getProperty("it.sauce.username");
+  }
+
+  protected String getSauceAccessKey() {
+    return System.getProperty("it.sauce.accessKey");
+  }
+
+  protected String getSauceTunnelId() {
+    return System.getProperty("it.sauce.tunnelId");
+  }
+  
+  public String getProjectVersion() {
+    return System.getProperty("it.project.version");
+  }
 
   protected DateTime getDate(int year, int monthOfYear, int dayOfMonth) {
     return new DateTime(year, monthOfYear, dayOfMonth, 0, 0, 0, 0);
   }
+  
+  protected RequestSpecification asAdmin() {
+    RequestSpecification request = RestAssured.given();
+    if (adminSessionId == null) {
+      adminSessionId = loginAs(RoleType.ENVIRONMENT, "ADMINISTRATOR");
+    }
+    
+    return request.cookie("JSESSIONID", adminSessionId);
+  }
+  
+  protected RequestSpecification asManager() {
+    RequestSpecification request = RestAssured.given();
+    if (managerSessionId == null) {
+      managerSessionId = loginAs(RoleType.ENVIRONMENT, "MANAGER");
+    }
+    
+    return request.cookie("JSESSIONID", managerSessionId);
+  }
+
+  protected RequestSpecification asTeacher() {
+    RequestSpecification request = RestAssured.given();
+    if (teacherSessionId == null) {
+      teacherSessionId = loginAs(RoleType.ENVIRONMENT, "TEACHER");
+    }
+    
+    return request.cookie("JSESSIONID", teacherSessionId);
+  }
+
+  protected RequestSpecification asStudent() {
+    RequestSpecification request = RestAssured.given();
+    if (studentSessionId == null) {
+      studentSessionId = loginAs(RoleType.ENVIRONMENT, "STUDENT");
+    }
+    
+    return request.cookie("JSESSIONID", studentSessionId);
+  }
+  
+  private static String loginAs(RoleType type, String role) {
+    Response response = given()
+      .contentType("application/json")
+      .get("/test/login?role=" + getFullRoleName(type, role));
+    return response.getCookie("JSESSIONID");
+  }
+
+  private static String getFullRoleName(RoleType roleType, String role) {
+    return roleType.name() + "-" + role;
+  }
+  
+  enum RoleType {
+    PSEUDO,
+    ENVIRONMENT,
+    WORKSPACE
+  }
+
+  private String adminSessionId;
+  private String managerSessionId;
+  private String teacherSessionId;
+  private String studentSessionId;
 }

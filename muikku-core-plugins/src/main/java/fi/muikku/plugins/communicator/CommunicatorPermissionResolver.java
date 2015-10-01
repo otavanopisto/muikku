@@ -13,7 +13,6 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.security.AbstractPermissionResolver;
-import fi.muikku.security.PermissionScope;
 import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
 import fi.otavanopisto.security.User;

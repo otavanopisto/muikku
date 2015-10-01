@@ -1,6 +1,5 @@
 package fi.muikku.plugins.workspace.dao;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -8,8 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Order;
-
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.CorePluginsDAO;

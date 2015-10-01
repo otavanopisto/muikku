@@ -182,7 +182,7 @@ public class UserRESTService extends AbstractRESTService {
 				return Response.noContent().build();
 		}
 
-		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 	}
 
   @GET

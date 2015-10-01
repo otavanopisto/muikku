@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -16,7 +15,6 @@ import fi.muikku.model.grading.GradingScaleEntity;
 import fi.muikku.model.grading.GradingScaleItemEntity;
 import fi.muikku.workspaces.CourseIdentifierEntityController;
 
-@ApplicationScoped
 public class DefaultSchoolDataMetaListener {
   
   @Inject

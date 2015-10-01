@@ -11,8 +11,6 @@ insert into RoleEntity (id, name) values
   (9, 'Course Student');
 
 insert into EnvironmentRoleEntity (id, archetype) values 
-  (2, 'CUSTOM'),
-  (3, 'CUSTOM'),
   (4, 'TEACHER'),
   (5, 'MANAGER'),
   (6, 'ADMINISTRATOR'),
