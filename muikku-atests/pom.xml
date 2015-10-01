@@ -381,7 +381,7 @@
             <version>1.5</version>
             <executions>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>keyclean</id>
                 <goals>
                   <goal>clean</goal>
@@ -391,7 +391,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>genkey</id>
                 <goals>
                   <goal>generateKeyPair</goal>
@@ -406,7 +406,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>exportkey</id>
                 <goals>
                   <goal>exportCertificate</goal>
@@ -419,7 +419,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>importkey</id>
                 <goals>
                   <goal>importCertificate</goal>
@@ -514,21 +514,6 @@
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
-                    </commands>
-                  </execute-commands>
-                </configuration>
-              </execution>
-              
-              <execution>
-                <id>reload-wildfly</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>execute-commands</goal>
-                </goals>
-                <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
                     </commands>
                   </execute-commands>
                 </configuration>
@@ -719,7 +704,7 @@
             <version>1.5</version>
             <executions>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>keyclean</id>
                 <goals>
                   <goal>clean</goal>
@@ -729,7 +714,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>genkey</id>
                 <goals>
                   <goal>generateKeyPair</goal>
@@ -744,7 +729,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>exportkey</id>
                 <goals>
                   <goal>exportCertificate</goal>
@@ -757,7 +742,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>importkey</id>
                 <goals>
                   <goal>importCertificate</goal>
@@ -858,21 +843,6 @@
                 </configuration>
               </execution>
               
-              <execution>
-                <id>reload-wildfly</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>execute-commands</goal>
-                </goals>
-                <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
-                    </commands>
-                  </execute-commands>
-                </configuration>
-              </execution>
-
               <execution>
                 <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
@@ -1083,7 +1053,7 @@
             <version>1.5</version>
             <executions>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>keyclean</id>
                 <goals>
                   <goal>clean</goal>
@@ -1093,7 +1063,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>genkey</id>
                 <goals>
                   <goal>generateKeyPair</goal>
@@ -1108,7 +1078,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>exportkey</id>
                 <goals>
                   <goal>exportCertificate</goal>
@@ -1121,7 +1091,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>importkey</id>
                 <goals>
                   <goal>importCertificate</goal>
@@ -1221,21 +1191,6 @@
                 </configuration>
               </execution>
               
-              <execution>
-                <id>reload-wildfly</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>execute-commands</goal>
-                </goals>
-                <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
-                    </commands>
-                  </execute-commands>
-                </configuration>
-              </execution>
-
               <execution>
                 <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
@@ -1415,7 +1370,7 @@
             <version>1.5</version>
             <executions>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>keyclean</id>
                 <goals>
                   <goal>clean</goal>
@@ -1425,7 +1380,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>genkey</id>
                 <goals>
                   <goal>generateKeyPair</goal>
@@ -1440,7 +1395,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>exportkey</id>
                 <goals>
                   <goal>exportCertificate</goal>
@@ -1453,7 +1408,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>importkey</id>
                 <goals>
                   <goal>importCertificate</goal>
@@ -1554,21 +1509,6 @@
                 </configuration>
               </execution>
               
-              <execution>
-                <id>reload-wildfly</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>execute-commands</goal>
-                </goals>
-                <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
-                    </commands>
-                  </execute-commands>
-                </configuration>
-              </execution>
-
               <execution>
                 <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
