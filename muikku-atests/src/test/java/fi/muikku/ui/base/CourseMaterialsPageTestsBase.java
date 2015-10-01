@@ -276,4 +276,69 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       deleteWorkspace(workspace.getId());
     }
   }
+  
+  @Test
+  public void answerRadioButtonsTestAdmin() throws Exception {
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB&quot;,&quot;listType&quot;:&quot;radio-vertical&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Koi&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Koppis&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Muurahainen&quot;,&quot;correct&quot;:true}]}\" /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"1\" /><label>Koi</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"2\" /><label>Koppis</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"3\" /><label>Muurahainen</label><br /></object></p><p>&nbsp;</p>", 1l, 
+          "EXERCISE");
+      
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        
+        assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
+        assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+        waitAndClick(".muikku-select-field input[value=\"1\"]");
+        waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), "true");
+        
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
+  }
+  
+  @Test
+  public void answerRadioButtonsTestStudent() throws Exception {
+    loginStudent1();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB&quot;,&quot;listType&quot;:&quot;radio-vertical&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Koi&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Koppis&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Muurahainen&quot;,&quot;correct&quot;:true}]}\" /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"1\" /><label>Koi</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"2\" /><label>Koppis</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"3\" /><label>Muurahainen</label><br /></object></p><p>&nbsp;</p>", 1l, 
+          "EXERCISE");
+      
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        
+        assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
+        assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+        waitAndClick(".muikku-select-field input[value=\"1\"]");
+        waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), "true");
+        
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
+  }
+  
 }
