@@ -210,4 +210,70 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     WireMock.reset();
   }
   
+  @Test
+  public void answerTextFieldTestAdmin() throws Exception {
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+          "EXERCISE");
+      
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        
+        assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
+        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
+        assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+        
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
+  }
+  
+  @Test
+  public void answerTextFieldTestStudent() throws Exception {
+    loginStudent1();
+    
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+          "EXERCISE");
+      
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        
+        assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
+        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
+        assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+        
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
+  }
 }

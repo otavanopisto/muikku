@@ -129,12 +129,7 @@ public class WorkspaceMaterialsBackingBean {
   }
   
   public Long getMaxFileSize() {
-    String setting = systemSettingsController.getSetting("uploadFileSizeLimit");
-    if (setting == null) {
-      return null;
-    } else {
-      return Long.parseLong(setting, 10);
-    }
+    return systemSettingsController.getUploadFileSizeLimit();
   }
 
   private WorkspaceRootFolder rootFolder;

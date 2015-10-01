@@ -22,13 +22,6 @@
 
   <dependencies>
 
-   <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>muikku</artifactId>
-      <type>war</type>
-      <version>${project.version}</version>
-    </dependency>
-
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
@@ -388,14 +381,13 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>keytool-maven-plugin</artifactId>
             <version>1.5</version>
             <executions>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>keyclean</id>
                 <goals>
                   <goal>clean</goal>
@@ -405,7 +397,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>genkey</id>
                 <goals>
                   <goal>generateKeyPair</goal>
@@ -420,7 +412,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>exportkey</id>
                 <goals>
                   <goal>exportCertificate</goal>
@@ -433,7 +425,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>importkey</id>
                 <goals>
                   <goal>importCertificate</goal>
@@ -449,7 +441,6 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
@@ -488,25 +479,13 @@
               </configuration>
 
             </configuration>
-            <executions>
+            <executions> 
               <execution>
                 <id>start-cargo</id>
                 <phase>pre-integration-test</phase>
                 <goals>
                   <goal>start</goal>
                 </goals>
-                <configuration>
-                  <deployables>
-                    <deployable>
-                      <groupId>${project.groupId}</groupId>
-                      <artifactId>muikku</artifactId>
-                      <type>war</type>
-                      <properties>
-                        <context />
-                      </properties>
-                    </deployable>
-                  </deployables>
-                </configuration>
               </execution>
               <execution>
                 <id>stop-cargo</id>
@@ -533,32 +512,27 @@
                   <execute-commands>
                     <batch>true</batch>
                     <commands>
-                      <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["dev.muikku.fi"])</command>
+                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
                     </commands>
                   </execute-commands>
                 </configuration>
               </execution>
-
+              
               <execution>
-                <id>reload-wildfly</id>
+                <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>execute-commands</goal>
+                  <goal>deploy</goal>
                 </goals>
                 <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
-                    </commands>
-                  </execute-commands>
+                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
                 </configuration>
               </execution>
             </executions>
@@ -736,7 +710,7 @@
             <version>1.5</version>
             <executions>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>keyclean</id>
                 <goals>
                   <goal>clean</goal>
@@ -746,7 +720,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>genkey</id>
                 <goals>
                   <goal>generateKeyPair</goal>
@@ -761,7 +735,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>exportkey</id>
                 <goals>
                   <goal>exportCertificate</goal>
@@ -774,7 +748,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>importkey</id>
                 <goals>
                   <goal>importCertificate</goal>
@@ -836,18 +810,6 @@
                 <goals>
                   <goal>start</goal>
                 </goals>
-                <configuration>
-                  <deployables>
-                    <deployable>
-                      <groupId>${project.groupId}</groupId>
-                      <artifactId>muikku</artifactId>
-                      <type>war</type>
-                      <properties>
-                        <context />
-                      </properties>
-                    </deployable>
-                  </deployables>
-                </configuration>
               </execution>
               <execution>
                 <id>stop-cargo</id>
@@ -874,46 +836,40 @@
                   <execute-commands>
                     <batch>true</batch>
                     <commands>
-                      <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["dev.muikku.fi"])</command>
+                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
                     </commands>
                   </execute-commands>
                 </configuration>
               </execution>
-
+              
               <execution>
-                <id>reload-wildfly</id>
+                <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>execute-commands</goal>
+                  <goal>deploy</goal>
                 </goals>
                 <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
-                    </commands>
-                  </execute-commands>
+                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
                 </configuration>
               </execution>
             </executions>
           </plugin>
-          
           <plugin>
             <groupId>com.saucelabs.maven.plugin</groupId>
             <artifactId>sauce-connect-plugin</artifactId>
-            <version>2.1.13</version>
+            <version>2.1.20</version>
             <configuration>
               <sauceUsername>${it.sauce.username}</sauceUsername>
               <sauceAccessKey>${it.sauce.accessKey}</sauceAccessKey>
               <quietMode>true</quietMode>
-              <options>-i ${it.sauce.tunnelId}</options>
+              <options>-i ${it.sauce.tunnelId} --vm-version dev-varnish</options>
             </configuration>
             <executions>
               <execution>
@@ -932,7 +888,6 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>wait-maven-plugin</artifactId>
@@ -1098,14 +1053,13 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>keytool-maven-plugin</artifactId>
             <version>1.5</version>
             <executions>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>keyclean</id>
                 <goals>
                   <goal>clean</goal>
@@ -1115,7 +1069,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>genkey</id>
                 <goals>
                   <goal>generateKeyPair</goal>
@@ -1130,7 +1084,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>exportkey</id>
                 <goals>
                   <goal>exportCertificate</goal>
@@ -1143,7 +1097,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>importkey</id>
                 <goals>
                   <goal>importCertificate</goal>
@@ -1159,7 +1113,6 @@
               </execution>
             </executions>
           </plugin>
-
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
@@ -1205,18 +1158,6 @@
                 <goals>
                   <goal>start</goal>
                 </goals>
-                <configuration>
-                  <deployables>
-                    <deployable>
-                      <groupId>${project.groupId}</groupId>
-                      <artifactId>muikku</artifactId>
-                      <type>war</type>
-                      <properties>
-                        <context />
-                      </properties>
-                    </deployable>
-                  </deployables>
-                </configuration>
               </execution>
               <execution>
                 <id>stop-cargo</id>
@@ -1243,32 +1184,27 @@
                   <execute-commands>
                     <batch>true</batch>
                     <commands>
-                      <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["dev.muikku.fi"])</command>
+                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
                     </commands>
                   </execute-commands>
                 </configuration>
               </execution>
-
+              
               <execution>
-                <id>reload-wildfly</id>
+                <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>execute-commands</goal>
+                  <goal>deploy</goal>
                 </goals>
                 <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
-                    </commands>
-                  </execute-commands>
+                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
                 </configuration>
               </execution>
             </executions>
@@ -1440,7 +1376,7 @@
             <version>1.5</version>
             <executions>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>keyclean</id>
                 <goals>
                   <goal>clean</goal>
@@ -1450,7 +1386,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>genkey</id>
                 <goals>
                   <goal>generateKeyPair</goal>
@@ -1465,7 +1401,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>exportkey</id>
                 <goals>
                   <goal>exportCertificate</goal>
@@ -1478,7 +1414,7 @@
                 </configuration>
               </execution>
               <execution>
-                <phase>generate-resources</phase>
+                <phase>pre-integration-test</phase>
                 <id>importkey</id>
                 <goals>
                   <goal>importCertificate</goal>
@@ -1540,18 +1476,6 @@
                 <goals>
                   <goal>start</goal>
                 </goals>
-                <configuration>
-                  <deployables>
-                    <deployable>
-                      <groupId>${project.groupId}</groupId>
-                      <artifactId>muikku</artifactId>
-                      <type>war</type>
-                      <properties>
-                        <context />
-                      </properties>
-                    </deployable>
-                  </deployables>
-                </configuration>
               </execution>
               <execution>
                 <id>stop-cargo</id>
@@ -1578,32 +1502,27 @@
                   <execute-commands>
                     <batch>true</batch>
                     <commands>
-                      <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["dev.muikku.fi"])</command>
+                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
                     </commands>
                   </execute-commands>
                 </configuration>
               </execution>
-
+              
               <execution>
-                <id>reload-wildfly</id>
+                <id>deploy-muikku</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>execute-commands</goal>
+                  <goal>deploy</goal>
                 </goals>
                 <configuration>
-                  <execute-commands>
-                    <commands>
-                      <command>:reload</command>
-                    </commands>
-                  </execute-commands>
+                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
                 </configuration>
               </execution>
             </executions>
