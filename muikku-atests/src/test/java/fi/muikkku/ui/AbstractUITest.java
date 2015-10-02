@@ -314,7 +314,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void maximizeWindow() {
-    // getWebDriver().manage().window().maximize();
+    getWebDriver().manage().window().maximize();
   }
   
   protected void waitForPresent(String selector) {
