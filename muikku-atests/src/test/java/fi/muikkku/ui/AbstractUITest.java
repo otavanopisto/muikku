@@ -120,7 +120,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return webDriver;
   }
   
-  protected RemoteWebDriver createSauceWebDriver(String browser, String version, String platform) throws MalformedURLException {
+  protected RemoteWebDriver createSauceWebDriver(String browser, String version, String platform, String resolution) throws MalformedURLException {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     
     capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
@@ -134,7 +134,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     capabilities.setCapability("timeZone", "Universal");
     capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
     capabilities.setCapability("chrome.switches", Arrays.asList("--ignore-certificate-errors"));
-    capabilities.setCapability("screenResolution", "1280x1024");
+    
+    if (resolution != null) {
+      capabilities.setCapability("screenResolution", resolution);
+    }
     
     if (getSauceTunnelId() != null) {
       capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
@@ -154,18 +157,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return Arrays.asList(new String[][] {
     // ((String[]) new String[] { "firefox", "36.0", "Windows 8.1" }),
     // ((String[]) new String[] { "safari", "8.0", "OS X 10.10" }),
-    ((String[]) new String[] { "chrome", "41.0", "Linux" }) });
+    ((String[]) new String[] { "chrome", "41.0", "Linux", null }) });
   }
   
   public static List<String[]> getAllSauceBrowsers() {
     return Arrays.asList(new String[][] {
-      ((String[]) new String[] { "microsoftedge", "20.10240", "Windows 10" }),
-      ((String[]) new String[] { "internet explorer", "11.0", "Windows 10" }),
-      ((String[]) new String[] { "internet explorer", "10.0", "Windows 8" }),
-      ((String[]) new String[] { "firefox", "36.0", "Windows 8.1" }),
-      ((String[]) new String[] { "safari", "8.0", "OS X 10.10" }),
-      ((String[]) new String[] { "safari", "8.1", "OS X 10.11" }),
-      ((String[]) new String[] { "chrome", "45.0", "Linux" }) 
+      ((String[]) new String[] { "microsoftedge", "20.10240", "Windows 10", null }),
+      ((String[]) new String[] { "internet explorer", "11.0", "Windows 10", null }),
+      ((String[]) new String[] { "internet explorer", "10.0", "Windows 8", "1280x1024"}),
+      ((String[]) new String[] { "firefox", "36.0", "Windows 8.1", "1280x1024"}),
+      ((String[]) new String[] { "safari", "8.0", "OS X 10.10", "1280x1024" }),
+      ((String[]) new String[] { "safari", "8.1", "OS X 10.11", null }),
+      ((String[]) new String[] { "chrome", "45.0", "Linux", null }) 
       });
   }
   
