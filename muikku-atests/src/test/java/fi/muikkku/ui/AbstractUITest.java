@@ -162,8 +162,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   public static List<String[]> getAllSauceBrowsers() {
     return Arrays.asList(new String[][] {
-      ((String[]) new String[] { "microsoftedge", "20.10240", "Windows 10", null }),
-      ((String[]) new String[] { "internet explorer", "11.0", "Windows 10", null }),
+      ((String[]) new String[] { "microsoftedge", "20.10240", "Windows 10", "1280x1024"}),
+      ((String[]) new String[] { "internet explorer", "11.0", "Windows 10", "1280x1024"}),
       ((String[]) new String[] { "internet explorer", "10.0", "Windows 8", "1280x1024"}),
       ((String[]) new String[] { "firefox", "36.0", "Windows 8.1", "1280x1024"}),
       ((String[]) new String[] { "safari", "8.0", "OS X 10.10", "1280x1024" }),
