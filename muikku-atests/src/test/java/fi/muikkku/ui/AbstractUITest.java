@@ -134,6 +134,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     capabilities.setCapability("timeZone", "Universal");
     capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
     capabilities.setCapability("chrome.switches", Arrays.asList("--ignore-certificate-errors"));
+    capabilities.setCapability("screenResolution", "1280x1024");
     
     if (getSauceTunnelId() != null) {
       capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
