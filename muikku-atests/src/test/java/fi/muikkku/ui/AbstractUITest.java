@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.Description;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -314,7 +315,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void maximizeWindow() {
-    getWebDriver().manage().window().maximize();
+    try {
+      getWebDriver().manage().window().maximize();
+    } catch (Exception e) {
+      // FIXME: Remove this workaround when Edge supports maximizeWindow
+      ((JavascriptExecutor) getWebDriver()).executeScript("window.resizeTo(1280, 1024);");
+    };
   }
   
   protected void waitForPresent(String selector) {
