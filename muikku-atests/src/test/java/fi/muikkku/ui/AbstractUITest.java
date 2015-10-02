@@ -31,6 +31,8 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -128,6 +130,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
     
     return new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
+  }
+  
+  protected RemoteWebDriver createChromeDriver() {
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--lang=en_US");
+    ChromeDriver chromeDriver = new ChromeDriver(options);
+    return chromeDriver;
   }
   
   public static List<String[]> getDefaultSauceBrowsers() {

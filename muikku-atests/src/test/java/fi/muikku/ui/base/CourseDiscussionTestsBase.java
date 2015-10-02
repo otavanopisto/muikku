@@ -46,7 +46,6 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     getWebDriver().findElementByName("send").click();
 
     sleep(500);
-    takeScreenshot();
     String discussionText = getWebDriver().findElement(By.cssSelector(".di-message-meta-content>span>p")).getText();
     WireMock.reset();
     assertEquals(new String("Test text for discussion."), discussionText);
