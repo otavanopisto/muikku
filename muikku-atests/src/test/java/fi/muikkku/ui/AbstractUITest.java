@@ -26,6 +26,7 @@ import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.runner.Description;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -94,6 +95,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   @After
   public void resetWireMock() {
     WireMock.reset();
+  }
+  
+  @Override
+  protected void failed(Throwable e, Description description) {
+    try {
+      takeScreenshot();
+    } catch (IOException e1) {
+      throw new RuntimeException(e);
+    }
   }
   
   @Override
