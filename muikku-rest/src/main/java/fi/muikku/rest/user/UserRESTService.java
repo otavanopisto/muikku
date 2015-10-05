@@ -3,9 +3,11 @@ package fi.muikku.rest.user;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -22,6 +24,8 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserGroupEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.rest.model.UserBasicInfo;
@@ -33,6 +37,8 @@ import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
+import fi.muikku.users.UserGroupEntityController;
+import fi.muikku.users.WorkspaceUserEntityController;
 
 @Path("/user")
 @Produces("application/json")
@@ -45,6 +51,9 @@ public class UserRESTService extends AbstractRESTService {
 	@Inject
 	private UserEntityController userEntityController;
 
+  @Inject
+  private UserGroupEntityController userGroupEntityController; 
+  
 	@Inject
 	private UserEmailEntityController userEmailEntityController;
 	
@@ -54,6 +63,9 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 	
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController; 
+  
 	@Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
@@ -66,18 +78,62 @@ public class UserRESTService extends AbstractRESTService {
 			@QueryParam("searchString") String searchString,
 			@QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
 			@QueryParam("maxResults") @DefaultValue("10") Integer maxResults,
+			@QueryParam("userGroupIds") List<Long> userGroupIds,
+      @QueryParam("myUserGroups") Boolean myUserGroups,
+			@QueryParam("workspaceIds") List<Long> workspaceIds,
+      @QueryParam("myWorkspaces") Boolean myWorkspaces,
 			@QueryParam("archetype") String archetype) {
 	  
 	  if (!sessionController.isLoggedIn()) {
 	    return Response.status(Status.FORBIDDEN).build();
 	  }
 
+	  UserEntity loggedUser = sessionController.getLoggedUserEntity();
+	  
 	  EnvironmentRoleArchetype roleArchetype = archetype != null ? EnvironmentRoleArchetype.valueOf(archetype) : null;
 
-		SearchProvider elasticSearchProvider = getProvider("elastic-search");
+    Set<Long> userGroupFilters = null;
+    Set<Long> workspaceFilters = null;
+	  
+	  if ((myUserGroups != null) && myUserGroups) {
+	    userGroupFilters = new HashSet<Long>();
+
+	    // Groups where user is a member
+	    
+	    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUser(loggedUser);
+	    for (UserGroupEntity userGroup : userGroups) {
+	      userGroupFilters.add(userGroup.getId());
+	    }
+	  } else if ((userGroupIds != null) && !userGroupIds.isEmpty()) {
+	    userGroupFilters = new HashSet<Long>();
+	    
+      // Defined user groups
+      
+	    userGroupFilters.addAll(userGroupIds);
+	  }
+
+    if ((myWorkspaces != null) && myWorkspaces) {
+      workspaceFilters = new HashSet<Long>();
+      
+      // Workspaces where user is a member
+      
+      List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(loggedUser);
+      for (WorkspaceEntity workspace : workspaces) {
+        workspaceFilters.add(workspace.getId());
+      }
+    } else if ((workspaceIds != null) && !workspaceIds.isEmpty()) {
+      workspaceFilters = new HashSet<Long>();
+      
+      // Defined workspaces
+      
+      workspaceFilters.addAll(workspaceIds);
+    }
+
+    SearchProvider elasticSearchProvider = getProvider("elastic-search");
 		if (elasticSearchProvider != null) {
 			String[] fields = new String[] { "firstName", "lastName" };
-			SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, roleArchetype, firstResult, maxResults);
+			
+			SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, roleArchetype, userGroupFilters, workspaceFilters, firstResult, maxResults);
 			
 			List<Map<String, Object>> results = result.getResults();
 			boolean hasImage = false;
@@ -126,7 +182,7 @@ public class UserRESTService extends AbstractRESTService {
 				return Response.noContent().build();
 		}
 
-		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 	}
 
   @GET

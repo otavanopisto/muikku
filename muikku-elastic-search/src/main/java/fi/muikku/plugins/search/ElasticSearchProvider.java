@@ -3,6 +3,7 @@ package fi.muikku.plugins.search;
 import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -24,6 +25,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.search.SearchProvider;
@@ -55,8 +57,16 @@ public class ElasticSearchProvider implements SearchProvider {
     node.close();
   }
   
+  private boolean isEmptyCollection(Collection<?> c) {
+    if (c == null)
+      return true;
+    
+    return c.isEmpty();
+  }
+  
   @Override
-  public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, int start, int maxResults) {
+  public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, 
+      Collection<Long> groups, Collection<Long> workspaces, int start, int maxResults) {
     try {
       // TODO: query_string search for case insensitive searches??
       // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
@@ -64,7 +74,7 @@ public class ElasticSearchProvider implements SearchProvider {
 
       QueryBuilder query = null;
 
-      if ((archetype == null) && StringUtils.isBlank(text)) {
+      if ((archetype == null) && StringUtils.isBlank(text) && isEmptyCollection(groups) && isEmptyCollection(workspaces)) {
         query = QueryBuilders.matchAllQuery();
       } else {
         query = QueryBuilders.boolQuery();
@@ -73,7 +83,14 @@ public class ElasticSearchProvider implements SearchProvider {
           ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("archetype", archetype.name().toLowerCase()));
         }
     
-        
+        if (!isEmptyCollection(groups)) {
+          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("groups", groups));
+        }
+
+        if (!isEmptyCollection(workspaces)) {
+          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("workspaces", workspaces));
+        }
+    
         if (StringUtils.isNotBlank(text)) {
           StringTokenizer tokenizer = new StringTokenizer(text, " ");
 
@@ -91,8 +108,14 @@ public class ElasticSearchProvider implements SearchProvider {
         .setTypes("User")
         .setFrom(start)
         .setSize(maxResults);
-      
-      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+
+      SearchResponse response = requestBuilder
+          .setQuery(query)
+          .addSort("_score", SortOrder.DESC)
+          .addSort("lastName", SortOrder.ASC)
+          .addSort("firstName", SortOrder.ASC)
+          .execute()
+          .actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHit[] results = response.getHits().getHits();
       for (SearchHit hit : results) {

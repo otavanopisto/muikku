@@ -3,10 +3,16 @@ package fi.muikku.schooldata.events;
 
 public class SchoolDataUserGroupUserUpdatedEvent {
 
-  public SchoolDataUserGroupUserUpdatedEvent(String dataSource, String identifier) {
+  public SchoolDataUserGroupUserUpdatedEvent(String dataSource, String identifier,
+      String userGroupDataSource, String userGroupIdentifier, 
+      String userDataSource, String userIdentifier) {
     super();
     this.dataSource = dataSource;
     this.identifier = identifier;
+    this.userGroupDataSource = userGroupDataSource;
+    this.userGroupIdentifier = userGroupIdentifier;
+    this.userDataSource = userDataSource;
+    this.userIdentifier = userIdentifier;
   }
 
   public String getDataSource() {
@@ -17,15 +23,26 @@ public class SchoolDataUserGroupUserUpdatedEvent {
     return identifier;
   }
 
-  public Long getDiscoveredUserGroupUserEntityId() {
-    return discoveredUserGroupUserEntityId;
+  public String getUserGroupDataSource() {
+    return userGroupDataSource;
   }
 
-  public void setDiscoveredUserGroupUserEntityId(Long discoveredUserGroupUserEntityId) {
-    this.discoveredUserGroupUserEntityId = discoveredUserGroupUserEntityId;
+  public String getUserGroupIdentifier() {
+    return userGroupIdentifier;
+  }
+
+  public String getUserDataSource() {
+    return userDataSource;
+  }
+  
+  public String getUserIdentifier() {
+    return userIdentifier;
   }
 
   private String dataSource;
   private String identifier;
-  private Long discoveredUserGroupUserEntityId;
+  private String userGroupDataSource;
+  private String userGroupIdentifier;
+  private String userDataSource;
+  private String userIdentifier;
 }

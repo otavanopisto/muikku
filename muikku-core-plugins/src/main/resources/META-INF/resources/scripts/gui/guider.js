@@ -51,6 +51,13 @@ $(document).ready(function(){
           search.show("slide");
         }
         
+//      mApi().user.users.read({searchString : params, archetype : 'STUDENT', 
+//      myUserGroups: true, 
+//      myWorkspaces: true,
+//      userGroupIds: [620],
+//      workspaceIds: [620],
+//      maxResults: 25 })
+        
         mApi().user.users.read({searchString : params, archetype : 'STUDENT', maxResults: 25 })
         .callback(function (err, users) {
           
@@ -78,7 +85,7 @@ $(document).ready(function(){
             	search.show("slide");
             }
             
-    	    mApi().user.users.read({ archetype : 'STUDENT', maxResults: 25 })
+    	    mApi().user.users.read({archetype : 'STUDENT', maxResults: 25 })
     	    .callback(function (err, users) {
     	  	  
     		    if( err ){
@@ -115,7 +122,7 @@ $(document).ready(function(){
         var fRes = usrsCount;
         
 
-          mApi().user.users.read({archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, threads) {
+          mApi().user.users.read({ archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, threads) {
     
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
