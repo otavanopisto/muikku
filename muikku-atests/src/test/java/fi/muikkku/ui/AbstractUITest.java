@@ -355,10 +355,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertEquals(value, element.getAttribute("value"));
   }
   
-  protected void assertSelected(String selector){
+  protected void assertSelectedOption(String selector, String expected){
     Select select = new Select(getWebDriver().findElementByCssSelector(selector));
     WebElement option = select.getFirstSelectedOption();
-    assertTrue(option.isSelected());
+    String optionText = option.getText();
+    assertEquals(expected, optionText);
   }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
