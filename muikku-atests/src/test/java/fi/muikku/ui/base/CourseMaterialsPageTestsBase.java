@@ -242,6 +242,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
         waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
         assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
         
       } finally {
@@ -276,8 +277,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
         waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
         assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-        
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
