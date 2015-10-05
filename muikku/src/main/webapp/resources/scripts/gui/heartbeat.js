@@ -1,8 +1,9 @@
 $(function() {
+  "use strict";
 
   function isObject(obj) {
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
-    return obj === Object(obj)
+    return obj === Object(obj);
   }
 
   if (mApi) {
