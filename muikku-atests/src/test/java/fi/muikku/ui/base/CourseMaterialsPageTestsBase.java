@@ -302,7 +302,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .muikku-select-field option[value=\"2\"]", htmlMaterial.getId()));
         waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        assertSelected(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
+        assertSelectedOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "dos");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
@@ -336,7 +336,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .muikku-select-field option[value=\"2\"]", htmlMaterial.getId()));
         waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        assertSelected(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));        
+        assertSelectedOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "dos");        
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
