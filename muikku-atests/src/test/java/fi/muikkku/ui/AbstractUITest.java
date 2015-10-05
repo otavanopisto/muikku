@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import wiremock.org.apache.commons.lang.StringUtils;
@@ -352,6 +353,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void assertValue(String selector, String value) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(value, element.getAttribute("value"));
+  }
+  
+  protected void assertSelected(String selector){
+    Select select = new Select(getWebDriver().findElementByCssSelector(selector));
+    WebElement option = select.getFirstSelectedOption();
+    assertTrue(option.isSelected());
   }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
