@@ -22,6 +22,7 @@
             student: #{sessionBackingBean.studentLoggedIn}
           };
       </script>
+      <script type="text/javascript" src="#{request.contextPath}/rest/meta/resources?format=js"></script>
       
       <script type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
       <h:outputScript name="scripts/gui/locales.js" target="head" />
