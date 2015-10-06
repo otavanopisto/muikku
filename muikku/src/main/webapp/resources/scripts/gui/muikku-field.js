@@ -428,11 +428,13 @@
       },
       readonly: false,
       saveTimeout: 300,
+      saveFailedTimeout: 1000,
       trackChange: true,
       trackKeyUp: true
     },
     _create : function() {
       this._saveTimeoutId = null;
+      this._saveFailedTimeoutId = null;
       
       $(this.element).addClass('muikku-field');
       if (this.trackChange()) {
@@ -510,7 +512,15 @@
           'workspaceEntityId': workspaceEntityId,
           'workspaceMaterialId': workspaceMaterialId
         }));
+        
+        if (this._saveFailedTimeoutId == null) {
+            this._saveFailedTimeoutId = setTimeout($.proxy(this._saveFailed, this), this.options.saveFailedTimeout);
+        }
       }
+    },
+    
+    _saveFailed: function() {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingTimedOut'));
     },
     
     _propagateChange: function () {
@@ -542,6 +552,11 @@
     
     _onFieldAnswerSaved: function (event, data) {
       var message = $.parseJSON(data);
+      
+      if (this._saveFailedTimeoutId != null) {
+          clearTimeout(this._saveFailedTimeoutId);
+      }
+      this._saveFailedTimeoutId = null;
 
       // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
       if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
