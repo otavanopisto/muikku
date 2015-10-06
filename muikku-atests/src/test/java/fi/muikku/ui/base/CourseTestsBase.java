@@ -37,7 +37,6 @@ public class CourseTestsBase extends AbstractUITest {
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
     waitForElementToBePresent(By.className("workspace-title"));
-    takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.className("workspace-title")).size() > 0;
     WireMock.reset();
     assertTrue(elementExists);
@@ -61,7 +60,6 @@ public class CourseTestsBase extends AbstractUITest {
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
     waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
-    takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-home")).size() > 0;
     WireMock.reset();
     assertTrue(elementExists);
@@ -85,7 +83,6 @@ public class CourseTestsBase extends AbstractUITest {
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
     waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
-    takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-guides")).size() > 0;
     WireMock.reset();
     assertTrue(elementExists);
@@ -109,7 +106,6 @@ public class CourseTestsBase extends AbstractUITest {
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
     waitForElementToBePresent(By.className("workspace-title"));
-    takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-materials")).size() > 0;
     WireMock.reset();
     assertTrue(elementExists);
@@ -133,7 +129,6 @@ public class CourseTestsBase extends AbstractUITest {
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
     waitForElementToBePresent(By.className("workspace-title"));
-    takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-discussions")).size() > 0;
     WireMock.reset();
     assertTrue(elementExists);
