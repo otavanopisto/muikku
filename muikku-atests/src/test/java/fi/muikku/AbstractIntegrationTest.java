@@ -19,12 +19,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.junit.rules.TestWatcher;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
-public abstract class AbstractIntegrationTest {
+public abstract class AbstractIntegrationTest extends TestWatcher {
 
   @Rule
   public TestName testName = new TestName();
