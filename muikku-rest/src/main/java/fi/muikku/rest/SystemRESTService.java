@@ -20,5 +20,4 @@ public class SystemRESTService extends AbstractRESTService {
   public Response ping() {
     return Response.ok("pong").build();
   }
-
 }
