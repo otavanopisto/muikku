@@ -553,7 +553,9 @@
     _onFieldAnswerSaved: function (event, data) {
       var message = $.parseJSON(data);
       
-      clearTimeout(this._saveFailedTimeoutId);
+      if (this._saveFailedTimeoutId != null) {
+          clearTimeout(this._saveFailedTimeoutId);
+      }
       this._saveFailedTimeoutId = null;
 
       // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
