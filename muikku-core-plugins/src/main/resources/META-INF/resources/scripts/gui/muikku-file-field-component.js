@@ -273,13 +273,8 @@
     setReadonly: function (readonly) {
       this._readonly = readonly;
       if (readonly) {
-        $(this._uploader).attr("disabled", "disabled").css({
-          cursor: 'default'
-        });
+        $(this._uploader).attr("disabled", "disabled");
         $('.muikku-file-input-field-file-remove').hide();
-        $('.muikku-file-input-field-description').css({
-          opacity: 0.4
-        });
       }
       else {
         $(this._uploader).removeAttr("disabled");

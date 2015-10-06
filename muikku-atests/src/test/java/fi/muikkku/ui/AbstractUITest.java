@@ -2,6 +2,7 @@ package fi.muikkku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -24,11 +26,16 @@ import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.runner.Description;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -55,6 +62,8 @@ import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
+import fi.pyramus.webhooks.WebhookStudentCreatePayload;
+import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -90,6 +99,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   @Override
+  protected void failed(Throwable e, Description description) {
+    try {
+      takeScreenshot();
+    } catch (IOException e1) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  @Override
   public String getSessionId() {
     return sessionId;
   }
@@ -103,7 +121,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return webDriver;
   }
   
-  protected RemoteWebDriver createSauceWebDriver(String browser, String version, String platform) throws MalformedURLException {
+  protected RemoteWebDriver createSauceWebDriver(String browser, String version, String platform, String resolution) throws MalformedURLException {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     
     capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
@@ -118,6 +136,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
     capabilities.setCapability("chrome.switches", Arrays.asList("--ignore-certificate-errors"));
     
+    if (resolution != null) {
+      capabilities.setCapability("screenResolution", resolution);
+    }
+    
     if (getSauceTunnelId() != null) {
       capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
     }
@@ -125,11 +147,37 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
   }
   
+  protected RemoteWebDriver createChromeDriver() {
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--lang=en_US");
+    ChromeDriver chromeDriver = new ChromeDriver(options);
+    return chromeDriver;
+  }
+
+  protected RemoteWebDriver createFirefoxDriver() {
+    FirefoxProfile firefoxProfile = new FirefoxProfile();
+    firefoxProfile.setPreference("intl.accept_languages", "en");
+    FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxProfile);
+    return firefoxDriver;
+  }
+  
   public static List<String[]> getDefaultSauceBrowsers() {
     return Arrays.asList(new String[][] {
     // ((String[]) new String[] { "firefox", "36.0", "Windows 8.1" }),
     // ((String[]) new String[] { "safari", "8.0", "OS X 10.10" }),
-    ((String[]) new String[] { "chrome", "41.0", "Linux" }) });
+    ((String[]) new String[] { "chrome", "41.0", "Linux", null }) });
+  }
+  
+  public static List<String[]> getAllSauceBrowsers() {
+    return Arrays.asList(new String[][] {
+      ((String[]) new String[] { "microsoftedge", "20.10240", "Windows 10", "1280x1024"}),
+      ((String[]) new String[] { "internet explorer", "11.0", "Windows 10", "1280x1024"}),
+      ((String[]) new String[] { "internet explorer", "10.0", "Windows 8", "1280x1024"}),
+      ((String[]) new String[] { "firefox", "41.0", "Windows 8.1", "1280x1024"}),
+      ((String[]) new String[] { "safari", "8.0", "OS X 10.10", "1280x1024" }),
+      ((String[]) new String[] { "safari", "8.1", "OS X 10.11", null }),
+      ((String[]) new String[] { "chrome", "45.0", "Linux", null }) 
+      });
   }
   
   public static long getTestStartTime() {
@@ -303,6 +351,39 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForPresent(selector);
     sendKeys(selector, keysToSend);
   }
+
+  protected void waitClassPresent(final String selector, final String className) {
+    WebDriver driver = getWebDriver();
+    new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        List<WebElement> elements = getWebDriver().findElements(By.cssSelector(selector));
+        if (!elements.isEmpty()) {
+          WebElement element = elements.get(0);
+          String[] classes = StringUtils.split(element.getAttribute("class"), " ");
+          return ArrayUtils.contains(classes, className);
+        }
+        
+        return false;
+      }
+    });
+  }
+
+  protected void assertClassNotPresent(String selector, String className) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    String[] classes = StringUtils.split(element.getAttribute("class"), " ");
+    assertFalse(String.format("Class %s present in %s", className, selector), ArrayUtils.contains(classes, className));
+  }
+
+  protected void assertClassPresent(String selector, String className) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    String[] classes = StringUtils.split(element.getAttribute("class"), " ");
+    assertTrue(String.format("Class %s is not present in %s", className, selector), ArrayUtils.contains(classes, className));
+  }
+  
+  protected void assertValue(String selector, String value) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    assertEquals(value, element.getAttribute("value"));
+  }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
@@ -311,6 +392,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    navigate("/login?authSourceId=1", true);
+    waitForPresent(".index");
+  }
+  
+  protected void loginStudent1() throws JsonProcessingException, Exception {
+    PyramusMocks.student1LoginMock();
+    PyramusMocks.personsPyramusMocks();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");

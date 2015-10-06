@@ -113,7 +113,7 @@
 
         this._applyState(assignmentType, this.workspaceMaterialState());
         
-        this.element.on('change', '.muikku-field', $.proxy(this._onFieldChange, this));
+        this.element.on('fieldAnswerSaved', '.muikku-field', $.proxy(this._onFieldAnswerSaved, this));
       }
     },
     
@@ -166,7 +166,7 @@
     },
     
     correctAnswers: function() {
-      return this.element.attr('data-correct-answers');
+      return this.element.attr('data-correct-answers')||'ALWAYS';
     },
     
     workspaceMaterialId: function () {
@@ -176,21 +176,18 @@
     workspaceEntityId: function () {
       return this.options.workspaceEntityId;
     },
-    
-    autosave: function () {
-      if (this.assignmentType() == 'EXERCISE') {
-        this._saveWorkspaceMaterialReply('ANSWERED', $.proxy(function (reply) {
-          this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
-          this._applyState('EXERCISE', 'ANSWERED');
-        }, this));
-      }
-    },
-    
+
     _applyState: function (assignmentType, state) {
       var stateOptions = this._getStateOptions(assignmentType, state);
       var removeClasses = $.map(this.options.states, function (value) {
         return value['button-class'];
       });
+      
+      if (assignmentType == 'EXERCISE') {
+        this.element.find('.muikku-field-examples').remove();
+        this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+        this.element.find('.correct-answers-count-container').empty();
+      }
       
       var text = stateOptions['button-check-text'] && this._checkableExercise() ? stateOptions['button-check-text'] : stateOptions['button-text'];
       this.element.find('.muikku-assignment-button')
@@ -287,9 +284,7 @@
     
     _checkExercises: function (requestAnswers) {
       var correctAnswersDisplay = this.correctAnswers();
-      this.element.find('.muikku-field-examples').remove();
       var correctAnswersCountContainer = this.element.find('.correct-answers-count-container');
-      correctAnswersCountContainer.empty();
       
       var fields = this.element.find('.muikku-field');
       var correctAnswerCount = 0;
@@ -384,10 +379,14 @@
       this._checkExercises(true);
     },
     
-    _onFieldChange: function (event, data) {
-      this.autosave(); 
+    _onFieldAnswerSaved: function (event, data) {
+      if (this.assignmentType() == 'EXERCISE') {
+        this._saveWorkspaceMaterialReply('ANSWERED', $.proxy(function (reply) {
+          this._applyState('EXERCISE', 'ANSWERED');
+        }, this));
+      }
     }
-    
+
   });
 
   $.widget("custom.muikkuField", {
@@ -418,28 +417,40 @@
         return [];
       },
       isReadonly: function () {
-        return $(this.element).attr('readonly') == 'readonly';
+        return $(this.element).attr('disabled') == 'disabled';
       },
       setReadonly: function (readonly) {
         if (readonly) {
-          $(this.element).attr('readonly', 'readonly')
+          $(this.element).attr('disabled', 'disabled')
         } else {
-          $(this.element).removeAttr('readonly');
+          $(this.element).removeAttr('disabled');
         } 
       },
       readonly: false,
-      saveTimeout: 300
+      saveTimeout: 300,
+      trackChange: true,
+      trackKeyUp: true
     },
     _create : function() {
       this._saveTimeoutId = null;
       
       $(this.element).addClass('muikku-field');
-      $(this.element).on("change", $.proxy(this._onChange, this));
-      $(this.element).on("keyup", $.proxy(this._onKeyUp, this));
+      if (this.trackChange()) {
+        $(this.element).on("change", $.proxy(this._onChange, this));
+      }
+      if (this.trackKeyUp()) {
+        $(this.element).on("keyup", $.proxy(this._onKeyUp, this));
+      }
       
       $(document).on('workspace:field-answer-saved', $.proxy(this._onFieldAnswerSaved, this));
       
       this.readonly(this.options.readonly);
+    },
+    trackChange: function() {
+      return this.options.trackChange;
+    },
+    trackKeyUp: function() {
+      return this.options.trackKeyUp;
     },
     answer: function (val) {
       return this.options.answer.call(this, val)||'';
@@ -474,7 +485,6 @@
     meta: function () {
       return this.options.meta;
     },
-    
     readonly: function (readonly) {
       if (readonly === undefined) {
         return this.options.isReadonly.call(this);
@@ -482,7 +492,6 @@
         this.options.setReadonly.call(this, readonly);
       }
     },
-    
     _saveField: function () {
       if (!this.readonly()) {
         $(this.element)
@@ -504,30 +513,31 @@
       }
     },
     
-    _onChange: function (event) {
+    _propagateChange: function () {
       $(this.element)
         .removeClass('muikku-field-saved muikku-field-saving')
         .addClass('muikku-field-unsaved');
-    
+  
       if (this._saveTimeoutId) {
         clearTimeout(this._saveTimeoutId);
         this._saveTimeoutId = null;
       }
       
-      this._saveTimeoutId = setTimeout($.proxy(this._saveField, this), this.options.saveTimeout);
+      var _this = this;
+      this._saveTimeoutId = setTimeout(function() {
+        _this._saveField();
+      }, this.options.saveTimeout);
+    },
+    
+    _onChange: function (event) {
+      this._propagateChange();
     },
     
     _onKeyUp: function (event) {
-      $(this.element)
-        .removeClass('muikku-field-saved muikku-field-saving')
-        .addClass('muikku-field-unsaved');
-      
-      if (this._saveTimeoutId) {
-        clearTimeout(this._saveTimeoutId);
-        this._saveTimeoutId = null;
+      // Arrow keys, PgUp, PgDn, Home, End, Ctrl, Shift, Alt  
+      if ((event.keyCode < 33 || event.keyCode > 40) && (event.keyCode < 16 || event.keyCode > 20)) {
+        this._propagateChange();
       }
-      
-      this._saveTimeoutId = setTimeout($.proxy(this._saveField, this), this.options.saveTimeout);
     },
     
     _onFieldAnswerSaved: function (event, data) {
@@ -545,6 +555,7 @@
             .addClass('muikku-field-saved');
           this.answer(message.answer);
         }
+        $(this.element).trigger('fieldAnswerSaved');
       }
     }
     

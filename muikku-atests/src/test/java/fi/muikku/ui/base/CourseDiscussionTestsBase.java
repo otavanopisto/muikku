@@ -1,14 +1,11 @@
 package fi.muikku.ui.base;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
@@ -41,15 +38,11 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     waitForElementToBePresent(By.cssSelector(".mf-textfield-subcontainer input"));
     getWebDriver().findElementByCssSelector(".mf-textfield-subcontainer input").click();
     getWebDriver().findElementByCssSelector(".mf-textfield-subcontainer input").sendKeys("Test title for discussion");
-    getWebDriver().findElement(By.id("cke_1_contents")).click();
+    waitAndClick("#cke_1_contents");
     getWebDriver().switchTo().activeElement().sendKeys("Test text for discussion.");
     getWebDriver().findElementByName("send").click();
-
-    sleep(500);
-    takeScreenshot();
-    String discussionText = getWebDriver().findElement(By.cssSelector(".di-message-meta-content>span>p")).getText();
-    WireMock.reset();
-    assertEquals(new String("Test text for discussion."), discussionText);
+    waitForPresent(".di-message-meta-content>span>p");
+    assertText(".di-message-meta-content>span>p", "Test text for discussion.");
   }
   
   @Test
@@ -93,12 +86,8 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     getWebDriver().findElement(By.id("cke_1_contents")).click();
     getWebDriver().switchTo().activeElement().sendKeys("Test reply for test.");
     getWebDriver().findElementByName("send").click();
-    waitForElementToBePresent(By.className("mf-subitem-content-text"));
-    String reply = getWebDriver().findElementByCssSelector(".mf-subitem-content-text>p").getText();
-    sleep(500);
-    takeScreenshot();
-    WireMock.reset();
-    assertEquals(new String("Test reply for test."), reply);
+    waitForPresent(".mf-subitem-content-text>p");
+    assertText(".mf-subitem-content-text>p", "Test reply for test.");
   }
 
   @Test

@@ -206,7 +206,6 @@
           'type': "text",
           'size':data.meta.columns,
           'placeholder': data.meta.hint,
-//          'title': data.meta.hint,
           'name': data.name
         })
         .val(data.value)
@@ -216,6 +215,7 @@
           embedId: data.embedId,
           meta: data.meta,
           readonly: data.readOnlyFields||false,
+          trackChange: false,
           hasExamples: function () {
             var meta = this.options.meta;
             if (meta.rightAnswers && meta.rightAnswers.length > 0) {
@@ -358,6 +358,7 @@
           materialId: data.materialId,
           embedId: data.embedId,
           readonly: data.readOnlyFields||false,
+          trackChange: false,
           canCheckAnswer: function() {
             return false;
           },
