@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -13,6 +15,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 import fi.muikku.model.base.SchoolDataSource;
 
 @Entity
+@Table (
+  uniqueConstraints = {
+    @UniqueConstraint (columnNames = { "dataSource_id", "identifier" } )   
+  }    
+)
 public class RoleSchoolDataIdentifier {
 
 	public Long getId() {

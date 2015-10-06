@@ -279,43 +279,37 @@
   function getApi() {
     if (!window.muikkuApi) {
       window.muikkuApi = new ApiImpl();
+
+      var resources = new Array();
       
-      $.ajax(CONTEXTPATH + '/rest/meta/resources', {
-        async: false,
-        success: function (data, textStatus, jqXHR) {
-          var resources = new Array();
-          
-          for (var i = 0, l = data.length; i < l; i++) {
-            var resource = data[i].replace(/\/\{[a-zA-Z0-9_.]*\}/g, '');
-            if (resource[0] == '/') {
-              resource = resource.substring(1);
-            }
-            
-            if (resource[resource.length - 1] == '/') {
-              resource = resource.substring(0, resource.length - 1);
-            }
-            
-            if (resources.indexOf(resource) == -1) {
-              resources.push(resource);
-            }
-          }
-        
-          for (var i = 0, l = resources.length; i < l; i++) {
-            var resource = resources[i];
-            
-            var serviceIndex = resource.indexOf('/');
-            var serviceName = resource.substring(0, serviceIndex);
-            var service = window.muikkuApi[serviceName];
-            if (!service) {
-              service = new ServiceImpl(serviceName);
-              window.muikkuApi.add(serviceName, service);
-            }
-            
-            service.add(resource.substring(serviceIndex + 1).split('/'));
-          }
-          
+      for (var i = 0, l = META_RESOURCES.length; i < l; i++) {
+        var resource = META_RESOURCES[i].replace(/\/\{[a-zA-Z0-9_.]*\}/g, '');
+        if (resource[0] == '/') {
+          resource = resource.substring(1);
         }
-      });
+        
+        if (resource[resource.length - 1] == '/') {
+          resource = resource.substring(0, resource.length - 1);
+        }
+        
+        if (resources.indexOf(resource) == -1) {
+          resources.push(resource);
+        }
+      }
+    
+      for (var i = 0, l = resources.length; i < l; i++) {
+        var resource = resources[i];
+        
+        var serviceIndex = resource.indexOf('/');
+        var serviceName = resource.substring(0, serviceIndex);
+        var service = window.muikkuApi[serviceName];
+        if (!service) {
+          service = new ServiceImpl(serviceName);
+          window.muikkuApi.add(serviceName, service);
+        }
+        
+        service.add(resource.substring(serviceIndex + 1).split('/'));
+      }
     }
     
     return window.muikkuApi;
