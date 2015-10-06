@@ -34,6 +34,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -150,6 +152,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     options.addArguments("--lang=en_US");
     ChromeDriver chromeDriver = new ChromeDriver(options);
     return chromeDriver;
+  }
+
+  protected RemoteWebDriver createFirefoxDriver() {
+    FirefoxProfile firefoxProfile = new FirefoxProfile();
+    firefoxProfile.setPreference("intl.accept_languages", "en");
+    FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxProfile);
+    return firefoxDriver;
   }
   
   public static List<String[]> getDefaultSauceBrowsers() {
