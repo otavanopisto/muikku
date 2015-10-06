@@ -6,11 +6,7 @@ before_script:
 after_script:
 - kill `cat /tmp/sc.pid`
 script:
-- pushd .
-- cd muikku-atests
-- mvn clean verify -Prest-it
-- mvn clean verify -Ptravis
-- popd
+- if [ $TRAVIS_BRANCH != 'master' ]; then pushd .; cd muikku-atests; mvn clean verify -Prest-it; mvn clean verify -Ptravis; popd; fi;
 jdk:
 - openjdk7
 cache:
