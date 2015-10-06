@@ -22,6 +22,7 @@
             student: #{sessionBackingBean.studentLoggedIn}
           };
       </script>
+      <script type="text/javascript" src="#{request.contextPath}/rest/meta/resources?format=js"></script>
       
       <script type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
       <h:outputScript name="scripts/gui/locales.js" target="head" />
@@ -103,6 +104,10 @@
 
       <!-- Screen CSS -->
       <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/screen.css" />
+      
+      <!--  Heartbeat -->
+      <h:outputScript name="scripts/gui/heartbeat.js" target="head" />
+      
 
       <ui:insert name="mainfunctionScripts"></ui:insert> 
       <ui:insert name="viewScripts"></ui:insert> 
