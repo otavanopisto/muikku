@@ -35,7 +35,6 @@ public class IndexPageTestsBase extends AbstractUITest {
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
     boolean elementExists = getWebDriver().findElements(By.className("index")).size() > 0;
-    takeScreenshot();
     WireMock.reset();
     assertTrue(elementExists);
   }
@@ -50,7 +49,6 @@ public class IndexPageTestsBase extends AbstractUITest {
     
     getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
     boolean elementExists = getWebDriver().findElements(By.className("index")).size() > 0;
-    takeScreenshot();
     WireMock.reset();
     assertTrue(elementExists);
   }
