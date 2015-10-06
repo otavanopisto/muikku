@@ -59,6 +59,22 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
       super.courseMaterialTOCHighlightTest();
     }
   }
+
+  @Override
+  public void answerDropdownTestAdmin() throws Exception {
+    if (!"microsoftedge".equals(browser)) {
+      // FIXME: this test does not work because ms edge does not support window maximization yet
+      super.answerDropdownTestAdmin();
+    }
+  }
+  
+  @Override
+  public void answerDropdownTestStudent() throws Exception {
+    if (!"microsoftedge".equals(browser)) {
+      // FIXME: this test does not work because ms edge does not support window maximization yet
+      super.answerDropdownTestStudent();
+    }
+  }
   
   private String platform;
   private String browser;
