@@ -23,6 +23,7 @@
 
       this.element.on("webSocketConnected", $.proxy(this._onWebSocketConnected, this));
       this.element.on("webSocketDisconnected", $.proxy(this._onWebSocketDisconnected, this));
+      $(window).on("beforeunload", $.proxy(this._onBeforeWindowUnload, this));
     },
     
     sendMessage: function (eventType, data) {
@@ -46,26 +47,30 @@
     },
     
     _getTicket: function (callback) {
-      if (this._ticket) {
-        // We have a ticket, so we need to validate it before using it
-        mApi().websocket.ticket.check.read(this._ticket).callback($.proxy(function (err, response) {
-          if (err) {
-            // Ticket did not pass validation, so we need to create a new one
-            this._createTicket($.proxy(function (ticket) {
-              this._ticket = ticket;
-              callback(ticket);
-            }, this));
-          } else {
-            // Ticket passed validation, so we use it
-            callback(this._ticket);
-          }
-        }, this));
-      } else {
-        // Create new ticket
-        this._createTicket($.proxy(function (ticket) {
-          this._ticket = ticket;
-          callback(ticket);
-        }, this));
+      try {
+        if (this._ticket) {
+          // We have a ticket, so we need to validate it before using it
+          mApi().websocket.ticket.check.read(this._ticket).callback($.proxy(function (err, response) {
+            if (err) {
+              // Ticket did not pass validation, so we need to create a new one
+              this._createTicket($.proxy(function (ticket) {
+                this._ticket = ticket;
+                callback(ticket);
+              }, this));
+            } else {
+              // Ticket passed validation, so we use it
+              callback(this._ticket);
+            }
+          }, this));
+        } else {
+          // Create new ticket
+          this._createTicket($.proxy(function (ticket) {
+            this._ticket = ticket;
+            callback(ticket);
+          }, this));
+        }
+      } catch (e) {
+        $('.notification-queue').notificationQueue('notification', 'error', "Ticket creation failed on an internal error");
       }
     },
     
@@ -180,6 +185,8 @@
     }
   });
 
-  $(document).muikkuWebSocket();
+  $(document).ready(function () {
+    $(document).muikkuWebSocket();
+  });
   
 }).call(this);
