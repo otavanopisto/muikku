@@ -61,10 +61,12 @@ $(document).ready(function(){
           mApi().workspace.workspaces
           .read({ userId: MUIKKU_LOGGED_USER_ID })
           .callback( function (err, workspaces) {
-            workspaces.filtersTitle = getLocaleText('plugin.guider.filters.workspaces');
-            workspaces.filterType = "workspace";
+            if(workspaces){
+              workspaces.filtersTitle = getLocaleText('plugin.guider.filters.workspaces');
+              workspaces.filterType = "workspace";
+            }
             if( err ){
-                  $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
+               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
             }else{
               renderDustTemplate('guider/guider_user_filters.dust', workspaces, function (text) {
                 filterContainer.append($.parseHTML(text));
@@ -96,7 +98,7 @@ $(document).ready(function(){
         
         mApi().user.users.read({searchString : params, archetype : 'STUDENT', maxResults: 25 })
         .callback(function (err, users) {
-//          users.userCount = users.length;         
+          users.userCount = users.length;         
           if( err ){
                 $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
           }else{        
