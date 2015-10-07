@@ -1,22 +1,27 @@
 sudo: false
 language: java
 before_script:
-- curl -sS https://saucelabs.com/downloads/sc-4.3.11-linux.tar.gz|tar -xzC /tmp/
-- /tmp/sc-4.3.11-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid
+- if [ $TRAVIS_BRANCH != 'master' ]; then 
+    curl -sS https://saucelabs.com/downloads/sc-4.3.11-linux.tar.gz|tar -xzC /tmp/;
+    /tmp/sc-4.3.11-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid;
+  fi
 after_script:
-- kill `cat /tmp/sc.pid`
+- if [ $TRAVIS_BRANCH != 'master' ]; then
+    kill `cat /tmp/sc.pid`;
+  fi;
 script:
-- if [ $TRAVIS_BRANCH != 'master' ]; then pushd .; cd muikku-atests; mvn clean verify -Prest-it; mvn clean verify -Ptravis; popd; fi;
+- if [ $TRAVIS_BRANCH != 'master' ]; then
+    pushd .;
+    cd muikku-atests;
+    mvn clean verify -Prest-it;
+    mvn clean verify -Ptravis;
+    popd;
+  fi
 jdk:
 - openjdk7
 cache:
   directories:
   - $HOME/.m2
-branches:
-  only:
-  - devel
-  - master
-  - FTR-431_text_field_tests
 env:
   global:
   - secure: CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A=
@@ -35,15 +40,7 @@ before_install:
 - mvn install -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin
   -Dfindbugs.skip=false
 after_success:
-- python travis-upload-reports.py
-- python travis-prepare-maven.py
-- pushd .
-- cd muikku
-- mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,dummy-mail-plugin,elastic-search-plugin,pyramus-plugins
-  -Dclassifier=otavanopisto
-- mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,dummy-mail-plugin,elastic-search-plugin,pyramus-plugins
-  -Dclassifier=janakkala
-- popd
+- bash travis-after-success.sh
 after_failure:
 - cat muikku-atests/target/cargo/configurations/wildfly8x/log/server.log
 notifications:
