@@ -4,6 +4,7 @@ import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -20,6 +21,9 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
@@ -72,37 +76,56 @@ public class ElasticSearchProvider implements SearchProvider {
       // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
       text = text != null ? text.toLowerCase() : null;
 
-      QueryBuilder query = null;
+      QueryBuilder query = QueryBuilders.matchAllQuery();
 
-      if ((archetype == null) && StringUtils.isBlank(text) && isEmptyCollection(groups) && isEmptyCollection(workspaces)) {
-        query = QueryBuilders.matchAllQuery();
-      } else {
-        query = QueryBuilders.boolQuery();
-        
-        if (archetype != null) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("archetype", archetype.name().toLowerCase()));
-        }
-    
-        if (!isEmptyCollection(groups)) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("groups", groups));
-        }
-
-        if (!isEmptyCollection(workspaces)) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("workspaces", workspaces));
-        }
-    
+      List<FilterBuilder> filters = new ArrayList<FilterBuilder>();
+      
+      if (!StringUtils.isBlank(text)) {
         if (StringUtils.isNotBlank(text)) {
           StringTokenizer tokenizer = new StringTokenizer(text, " ");
 
           while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
 
+            List<FilterBuilder> fieldFilters = new ArrayList<FilterBuilder>();
+            
             for (String textField : textFields)
-              ((BoolQueryBuilder) query).should(QueryBuilders.prefixQuery(textField, token));
+              fieldFilters.add(FilterBuilders.prefixFilter(textField, token));
+            
+            if (!fieldFilters.isEmpty()) {
+              if (fieldFilters.size() > 1)
+                filters.add(FilterBuilders.orFilter(fieldFilters.toArray(new FilterBuilder[0])));
+              else
+                filters.add(fieldFilters.get(0));
+            }
           }
         }
       }
       
+      if (archetype != null) {
+        filters.add(FilterBuilders.termsFilter("archetype", archetype.name().toLowerCase())); 
+      }
+      
+      if (!isEmptyCollection(groups)) {
+        filters.add(FilterBuilders.inFilter("groups", toLongArr(groups)));
+      }
+      
+      if (!isEmptyCollection(workspaces)) {
+        filters.add(FilterBuilders.inFilter("workspaces", toLongArr(workspaces)));
+      }
+      
+      FilterBuilder filter;
+      
+      if (!filters.isEmpty()) {
+        if (filters.size() > 1)
+          filter = FilterBuilders.andFilter(filters.toArray(new FilterBuilder[0]));
+        else
+          filter = filters.get(0);
+      } else
+        filter = FilterBuilders.matchAllFilter();
+      
+      FilteredQueryBuilder filteredQuery = QueryBuilders.filteredQuery(query, filter);
+
       SearchRequestBuilder requestBuilder = elasticClient
         .prepareSearch("muikku")
         .setTypes("User")
@@ -110,7 +133,7 @@ public class ElasticSearchProvider implements SearchProvider {
         .setSize(maxResults);
 
       SearchResponse response = requestBuilder
-          .setQuery(query)
+          .setQuery(filteredQuery)
           .addSort("_score", SortOrder.DESC)
           .addSort("lastName", SortOrder.ASC)
           .addSort("firstName", SortOrder.ASC)
@@ -132,6 +155,18 @@ public class ElasticSearchProvider implements SearchProvider {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
     }
+  }
+
+  private long[] toLongArr(Collection<Long> longs) {
+    long[] r = new long[longs.size()];
+    
+    int i = 0;
+    for (Long l : longs) {
+      r[i] = l;
+      i++;
+    }
+    
+    return r;
   }
   
   @Override
