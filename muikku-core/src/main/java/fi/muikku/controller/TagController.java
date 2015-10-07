@@ -3,17 +3,11 @@ package fi.muikku.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import fi.muikku.dao.base.TagDAO;
 import fi.muikku.model.base.Tag;
 
-@RequestScoped
-@Stateful
-@Named("Tags")
 public class TagController {
 
   @Inject

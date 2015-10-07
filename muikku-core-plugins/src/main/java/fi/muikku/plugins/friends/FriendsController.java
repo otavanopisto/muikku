@@ -3,19 +3,13 @@ package fi.muikku.plugins.friends;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserEntityController;
 import fi.otavanopisto.security.LoggedIn;
 
-@Dependent
-@Stateful
-@Named("Friends")
 public class FriendsController {
 
   @Inject
