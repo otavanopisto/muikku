@@ -27,15 +27,16 @@ public class CourseDiscussionTestsIT extends CourseDiscussionTestsBase {
     return getDefaultSauceBrowsers();
   }
 
-  public CourseDiscussionTestsIT(String browser, String version, String platform) {
+  public CourseDiscussionTestsIT(String browser, String version, String platform, String resolution) {
     this.browser = browser;
     this.version = version;
     this.platform = platform;
+    this.resolution = resolution;
   }
   
   @Before
   public void setUp() throws MalformedURLException {
-    setWebDriver(createSauceWebDriver(browser, version, platform));
+    setWebDriver(createSauceWebDriver(browser, version, platform, resolution));
   }
   
   @After
@@ -46,4 +47,5 @@ public class CourseDiscussionTestsIT extends CourseDiscussionTestsBase {
   private String platform;
   private String browser;
   private String version;  
+  private String resolution;
 }

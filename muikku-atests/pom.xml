@@ -5,10 +5,10 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.66-SNAPSHOT</version>
+    <version>1.0.67-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-
+  
   <artifactId>atests</artifactId>
   <packaging>jar</packaging>
   <name>Muikku atests</name>
@@ -16,7 +16,7 @@
 
   <properties>
     <!-- Selenium -->
-    <selenium-java.version>2.35.0</selenium-java.version>
+    <selenium-java.version>2.47.2</selenium-java.version>
     <wiremock.version>1.53</wiremock.version>
   </properties>
 
@@ -520,6 +520,7 @@
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
+                      <command>/subsystem=logging/logger=fi.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
                     </commands>
                   </execute-commands>
                 </configuration>
@@ -844,6 +845,7 @@
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
+                      <command>/subsystem=logging/logger=fi.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
                     </commands>
                   </execute-commands>
                 </configuration>
@@ -1192,6 +1194,7 @@
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
+                      <command>/subsystem=logging/logger=fi.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
                     </commands>
                   </execute-commands>
                 </configuration>
@@ -1510,6 +1513,7 @@
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
+                      <command>/subsystem=logging/logger=fi.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
                     </commands>
                   </execute-commands>
                 </configuration>

@@ -1,14 +1,11 @@
 package fi.muikku.ui.base;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
@@ -44,12 +41,8 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     waitAndClick("#cke_1_contents");
     getWebDriver().switchTo().activeElement().sendKeys("Test text for discussion.");
     getWebDriver().findElementByName("send").click();
-
-    sleep(500);
-    takeScreenshot();
-    String discussionText = getWebDriver().findElement(By.cssSelector(".di-message-meta-content>span>p")).getText();
-    WireMock.reset();
-    assertEquals(new String("Test text for discussion."), discussionText);
+    waitForPresent(".di-message-meta-content>span>p");
+    assertText(".di-message-meta-content>span>p", "Test text for discussion.");
   }
   
   @Test
