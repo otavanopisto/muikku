@@ -132,7 +132,7 @@ public class UserRESTService extends AbstractRESTService {
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
 		if (elasticSearchProvider != null) {
 			String[] fields = new String[] { "firstName", "lastName" };
-			
+
 			SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, roleArchetype, userGroupFilters, workspaceFilters, firstResult, maxResults);
 			
 			List<Map<String, Object>> results = result.getResults();
@@ -278,11 +278,14 @@ public class UserRESTService extends AbstractRESTService {
 		
 		emailAddress = secret(emailAddress);
 		
+		Date startDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
+		Date endDate = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;
+		
 		return new fi.muikku.rest.model.User(userEntity.getId(),
 				user.getFirstName(), user.getLastName(), hasImage,
 				user.getNationality(), user.getLanguage(),
 				user.getMunicipality(), user.getSchool(), emailAddress,
-				user.getStudyStartDate().toDate(), user.getStudyTimeEnd().toDate());
+				startDate, endDate);
 	}
 
 	//
