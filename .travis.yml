@@ -10,7 +10,8 @@ after_script:
     kill `cat /tmp/sc.pid`;
   fi;
 script:
-- if [ $TRAVIS_BRANCH != 'master' ]; then
+- set -e
+  if [ $TRAVIS_BRANCH != 'master' ]; then
     pushd .;
     cd muikku-atests;
     mvn clean verify -Prest-it;
