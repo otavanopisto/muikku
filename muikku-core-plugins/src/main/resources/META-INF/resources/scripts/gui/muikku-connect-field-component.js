@@ -92,9 +92,6 @@
             .appendTo(this._element);
         }
         
-        //this._taskInstance = jsPlumb.getInstance();
-        
-        
         this.element.find('.muikku-connect-field-term-cell').each($.proxy(function (index, term) {
           var fieldName = $(term).closest('tr').find('.muikku-connect-field-value').attr('name');
            
@@ -132,36 +129,6 @@
         this.element
           .after(this._element)
           .hide();
-        
-        /*this._element.find('.muikku-connect-field-term').each($.proxy(function (index, element) {
-          this._taskInstance.addEndpoint(
-            $(element), {
-              connector: this.options.connector,
-              endpoint: this.options.endpoint,
-              connectorStyle: this.options.connectorStyle,
-              isSource: true,
-              isTarget: false,
-              maxConnections: 1,    
-              anchor:"Right",
-              scope: [this.options.materialId, this.options.embedId, this.options.fieldName].join('-')
-            }
-          );
-        }, this));*/
-
-        /*this._element.find('.muikku-connect-field-counterpart').each($.proxy(function (index, element) {
-          this._taskInstance.addEndpoint(
-            $(element), {
-              connector: this.options.connector,
-              endpoint: this.options.endpoint,
-              connectorStyle: this.options.connectorStyle,
-              isSource: false,
-              isTarget: true,
-              maxConnections: 1,    
-              anchor:"Left",
-              scope: [this.options.materialId, this.options.embedId, this.options.fieldName].join('-')
-            }
-          );
-        }, this));*/
 
         this.element.find('.muikku-connect-field-value').each($.proxy(function (index, valueField) {
           var name = $(valueField).attr('name');
@@ -178,6 +145,8 @@
             var term = this._element.find('.muikku-connect-field-term[data-field-name="' + name + '"]');
             var counterpart = this._element.find('.muikku-connect-field-counterpart[data-field-value="' + val + '"]');
             
+            
+            //TODO: organize correctly
             /*this._taskInstance.connect({
               source: term, 
               target: counterpart,
@@ -197,9 +166,6 @@
         //this._taskInstance.bind("connection", $.proxy(this._onConnection, this));
         //this._taskInstance.bind("connectionDetached", $.proxy(this._onConnectionDetached, this));
         
-        /*$(window).resize($.proxy(function () {
-          this.refresh();
-        }, this));*/
       },
       
       refresh: function () {
@@ -208,32 +174,20 @@
       
       pairs: function(val) {
         if (val !== undefined) {
-          /*this._taskInstance.unbind("connection");
-          this._taskInstance.unbind("connectionDetached");
-
-          $(this._element).find('.muikku-connect-field-input').val('');
-          this._taskInstance.detachEveryConnection();
           
-          $.each(val||{}, $.proxy(function (name, value) {
+          $(this._element).find('.muikku-connect-field-input').val('');
+          
+          $.each(val || {}, $.proxy(function (name, value) {
             $(this._element).find('.muikku-connect-field-input[name="' + name + '"]').val(value);
             
             if (value) {
               var term = this._element.find('.muikku-connect-field-term[data-field-name="' + name + '"]');
               var counterpart = this._element.find('.muikku-connect-field-counterpart[data-field-value="' + value + '"]');
               
-              this._taskInstance.connect({
-                source: term, 
-                target: counterpart,
-                anchors: ["Right", "Left" ],  
-                endpoint: this.options.endpoint,
-                connector: this.options.connector,
-                paintStyle: this.options.connectorStyle
-              });
+              this._createConnection(term, counterpart);
             }
           }, this));
           
-          this._taskInstance.bind("connection", $.proxy(this._onConnection, this));
-          this._taskInstance.bind("connectionDetached", $.proxy(this._onConnectionDetached, this));
         } else {
           var pairs = {};
           
@@ -241,17 +195,17 @@
             pairs[$(input).attr('name')] = $(input).val();
           });
           
-          return pairs;*/
+          return pairs;
         }
       },
       
-      _onConnection: function (info) {
-        this._element.find('input[name="' + $(info.source).data('field-name') + '"]').val($(info.target).data('field-value'));
+      _createConnection: function (term, counterpart) {
+        this._element.find('input[name="' + $(term).data('field-name') + '"]').val($(counterpart).data('field-value'));
         this._element.trigger("change");
       },
       
-      _onConnectionDetached: function (info) {
-        this._element.find('input[name="' + $(info.source).data('field-name') + '"]').val('');
+      _detachConnection: function (term) {
+        this._element.find('input[name="' + $(term).data('field-name') + '"]').val('');
         this._element.trigger("change");
       },
       _swapElements: function(term, counterpart){
@@ -266,6 +220,7 @@
           term.addClass('muikku-connect-field-edited');
           counterpart.addClass('muikku-connect-field-edited');
         }
+        this._createConnection(term, counterpart);
         this._element.find('.muikku-connect-field-term').removeClass('muikku-connect-field-term-selected');
         this.options.meta.selectedTerm = null;
       },
