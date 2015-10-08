@@ -14,12 +14,12 @@
           .append($('<div>').addClass('muikku-connect-field-counterparts').sortable({
             placeholder: "ui-sortable-placeholder",
             update: function(event, ui){
-              console.log('triggered');
               var counterPartElement = ui.item;
               var elementIndex = counterPartElement.parent().find('.muikku-connect-field-counterpart').index(counterPartElement);
               var termElement = _this._element.find( '.muikku-connect-field-term:eq( '+elementIndex+' )' );
               counterPartElement.addClass('muikku-connect-field-edited');
               termElement.addClass('muikku-connect-field-edited');
+              _this._createConnection(termElement, counterPartElement);
             }
           }).disableSelection())
           .muikkuField({
@@ -106,7 +106,6 @@
             _this.options.meta.selectedTerm = termElement;
             _this._element.find($('.muikku-connect-field-term')).removeClass('muikku-connect-field-term-selected');
             $(termElement).addClass('muikku-connect-field-term-selected');
-            console.log(termElement);
           });
           
           this._element.find('.muikku-connect-field-terms').append(termElement);
@@ -146,17 +145,7 @@
           if (val) {
             var term = this._element.find('.muikku-connect-field-term[data-field-name="' + name + '"]');
             var counterpart = this._element.find('.muikku-connect-field-counterpart[data-field-value="' + val + '"]');
-            
-            
-            //TODO: organize correctly
-            /*this._taskInstance.connect({
-              source: term, 
-              target: counterpart,
-              anchors: ["Right", "Left" ],  
-              endpoint: this.options.endpoint,
-              connector: this.options.connector,
-              paintStyle: this.options.connectorStyle
-            });*/
+            this._createConnection(term, counterpart);
           }
 
         }, this));
@@ -164,14 +153,7 @@
         this.element
           .addClass('muikku-connect-field')
           .hide();
-
-        //this._taskInstance.bind("connection", $.proxy(this._onConnection, this));
-        //this._taskInstance.bind("connectionDetached", $.proxy(this._onConnectionDetached, this));
         
-      },
-      
-      refresh: function () {
-        //this._taskInstance.repaintEverything();
       },
       
       pairs: function(val) {
@@ -200,9 +182,12 @@
           return pairs;
         }
       },
-      
       _createConnection: function (term, counterpart) {
-        this._element.find('input[name="' + $(term).data('field-name') + '"]').val($(counterpart).data('field-value'));
+        var termInput = this._element.find('input[name="' + $(term).data('field-name') + '"]');
+        if(typeof(termInput.val()) !== 'undefined' && termInput.val() !== ''){
+          this._detachConnection(term); 
+        }
+        termInput.val($(counterpart).data('field-value'));
         this._element.trigger("change");
       },
       
