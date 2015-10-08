@@ -8,9 +8,11 @@
       _create : function() {
         var _this = this;
         this._element = $('<div>')
+          .addClass("muikku-connect-field")
           .append($('<div>').addClass('muikku-connect-field-terms'))
           .append($('<div>').addClass('muikku-connect-field-gap'))
           .append($('<div>').addClass('muikku-connect-field-counterparts').sortable({
+            placeholder: "ui-sortable-placeholder",
             update: function(event, ui){
               console.log('triggered');
               var counterPartElement = ui.item;
