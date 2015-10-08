@@ -10,14 +10,14 @@ after_script:
     kill `cat /tmp/sc.pid`;
   fi;
 script:
-- set -e
+- set -e;
   if [ $TRAVIS_BRANCH != 'master' ]; then
     pushd .;
     cd muikku-atests;
     mvn clean verify -Prest-it;
     mvn clean verify -Ptravis;
     popd;
-  fi
+  fi;
 jdk:
 - openjdk7
 cache:
