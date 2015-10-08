@@ -58,6 +58,9 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
 import fi.muikku.atests.Workspace;
+import fi.muikku.atests.WorkspaceDiscussion;
+import fi.muikku.atests.WorkspaceDiscussionGroup;
+import fi.muikku.atests.WorkspaceDiscussionThread;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
@@ -430,6 +433,84 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return workspace;
   }
   
+  protected WorkspaceDiscussionGroup createWorkspaceDiscussionGroup(Long workspaceEntityId, String name) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    WorkspaceDiscussionGroup payload = new WorkspaceDiscussionGroup(null, name);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups", workspaceEntityId);
+    
+    response.then()
+      .statusCode(200);
+      
+    WorkspaceDiscussionGroup workspaceDiscussionGroup = objectMapper.readValue(response.asString(), WorkspaceDiscussionGroup.class);
+    assertNotNull(workspaceDiscussionGroup);
+    assertNotNull(workspaceDiscussionGroup.getId());
+    
+    return workspaceDiscussionGroup;
+  }
+  
+  protected void deleteWorkspaceDiscussionGroup(Long workspaceEntityId, Long groupId) {
+    asAdmin()
+      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}", groupId, workspaceEntityId)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected WorkspaceDiscussion createWorkspaceDiscussion(Long workspaceEntityId, Long groupId, String name) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    WorkspaceDiscussion payload = new WorkspaceDiscussion(null, name, groupId);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions", workspaceEntityId, groupId);
+    
+    response.then()
+      .statusCode(200);
+      
+    WorkspaceDiscussion workspaceDiscussion = objectMapper.readValue(response.asString(), WorkspaceDiscussion.class);
+    assertNotNull(workspaceDiscussion);
+    assertNotNull(workspaceDiscussion.getId());
+    
+    return workspaceDiscussion;
+  }
+
+  protected void deleteWorkspaceDiscussion(Long workspaceEntityId, Long groupId, Long id) {
+    asAdmin()
+      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{ID}", groupId, workspaceEntityId, id)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected WorkspaceDiscussionThread createWorkspaceDiscussionThread(Long workspaceEntityId, Long groupId, Long discussionId, String title, String message, Boolean sticky, Boolean locked) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    WorkspaceDiscussionThread payload = new WorkspaceDiscussionThread(null, title, message, sticky, locked);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads", workspaceEntityId, groupId, discussionId);
+    
+    response.then()
+      .statusCode(200);
+      
+    WorkspaceDiscussionThread workspaceDiscussionThread = objectMapper.readValue(response.asString(), WorkspaceDiscussionThread.class);
+    assertNotNull(workspaceDiscussionThread);
+    assertNotNull(workspaceDiscussionThread.getId());
+    
+    return workspaceDiscussionThread;
+  }
+
+  protected void deleteWorkspaceDiscussionThread(Long workspaceEntityId, Long groupId, Long discussionId, Long id) {
+    asAdmin()
+      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}", groupId, workspaceEntityId, discussionId, id)
+      .then()
+      .statusCode(204);
+  }
+  
   protected void deleteWorkspace(Long id) {
     asAdmin()
       .delete("/test/workspaces/{WORKSPACEID}", id)
@@ -474,7 +555,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
     return result;
   }
-
+  
   protected void deleteWorkspaceHtmlMaterial(Long workspaceEntityId, Long id) {
     asAdmin()
       .delete("/test/workspaces/{WORKSPACEID}/htmlmaterials/{WORKSPACEMATERIALID}", workspaceEntityId, id)
