@@ -480,7 +480,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void deleteWorkspaceDiscussion(Long workspaceEntityId, Long groupId, Long id) {
     asAdmin()
-      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{ID}", groupId, workspaceEntityId, id)
+      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{ID}", workspaceEntityId, groupId, id)
       .then()
       .statusCode(204);
   }
@@ -506,7 +506,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void deleteWorkspaceDiscussionThread(Long workspaceEntityId, Long groupId, Long discussionId, Long id) {
     asAdmin()
-      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}", groupId, workspaceEntityId, discussionId, id)
+      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}", workspaceEntityId, groupId, discussionId, id)
       .then()
       .statusCode(204);
   }
