@@ -1,30 +1,42 @@
-.muikku-connect-field-counterparts,.muikku-connect-field-gap,.muikku-connect-field-terms
-	{
-	display: table-cell
+.muikku-connect-field {
+  position:relative;
+}
+
+.muikku-connect-field-counterparts,
+.muikku-connect-field-gap,
+.muikku-connect-field-terms {
+	display: inline-block;
+	  vertical-align:top;
 }
 
 .muikku-connect-field-gap {
 	width: 40px;
 }
 
-.muikku-connect-field-counterpart,.muikku-connect-field-term {
+.muikku-connect-field-counterpart,
+.muikku-connect-field-term {
   padding:8px 21px;
-	background:#e1f3ff;
+	background:#e1f7fc;
 	margin: 4px;
 	@include rounded(3px);
-/* 	white-space:nowrap; */ /* By removing this connect field looks like a potato */
 	transition:background 0.3s ease-in-out;
-	text-shadow: 0 0 1px #ffffff;
-	
-	&:hover {
-	  background: #ceebff;
-	}
+/* 	white-space:nowrap; */ /* By removing this connect field looks like a potato */
+}
+
+.ui-sortable-placeholder {
+  padding:8px 21px;
+  background:#e1f7fc;
+  margin: 4px;
+  @include rounded(3px);
+  background:#f8f8f8;
+  height:1.7em;
 }
 
 .workspace-materials-reading,
 .workspace-materials-management {
   
-  .muikku-connect-field-counterpart,.muikku-connect-field-term {
+  .muikku-connect-field-counterpart,
+  .muikku-connect-field-term {
     width:250px;
   }
 
@@ -32,16 +44,39 @@
 
 .workspace-materials {
   
-  .muikku-connect-field-counterpart,.muikku-connect-field-term {
+  .muikku-connect-field-counterpart,
+  .muikku-connect-field-term {
     width:230px;
   }
 
 }
 
 .muikku-connect-field-term {
-	text-align: right
+	text-align: right;
+	cursor:pointer;
+	
+	&.muikku-connect-field-edited {
+	  background:#b1e8fe;
+	}
+	
+	&.muikku-connect-field-term-selected {
+	  background:#3dc7ff;
+	  color:#fff;
+	  font-weight:400;
+	}
+	
 }
 
 .muikku-connect-field-counterpart {
-	text-align: left
+	text-align: left;
+  cursor:pointer;
+	
+	 &.muikku-connect-field-edited {
+     background:#b1e8fe;
+  }
+  
+  &.ui-sortable-helper {
+    cursor:grab;
+  }
+  
 }
