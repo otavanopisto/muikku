@@ -454,7 +454,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void deleteWorkspaceDiscussionGroup(Long workspaceEntityId, Long groupId) {
     asAdmin()
-      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}", groupId, workspaceEntityId)
+      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}", workspaceEntityId, groupId)
       .then()
       .statusCode(204);
   }
