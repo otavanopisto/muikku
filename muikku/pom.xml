@@ -271,6 +271,17 @@
         </dependency>
       </dependencies>
     </profile>
+
+    <profile>
+      <id>jndi-mail-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>jndi-mail-bridge-plugin</artifactId>
+          <version>1.0.66-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
     
     <profile>
       <id>mongo-log-plugin</id>
