@@ -342,6 +342,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     click(selector);
   }
 
+  protected void selectOption(String selector, String value){
+    Select selectField = new Select(getWebDriver().findElementByCssSelector(selector));
+    selectField.selectByValue(value);
+    
+  }
+  
   protected void assertText(String selector, String text) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(text, element.getText());

@@ -299,8 +299,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
         assertValue(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "");
         assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
-        click(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        waitAndClick(String.format("#page-%d .muikku-select-field option[value=\"2\"]", htmlMaterial.getId()));
+        selectOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "2");
         waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
@@ -334,8 +333,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
         assertValue(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "");
         assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
-        click(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        waitAndClick(String.format("#page-%d .muikku-select-field option[value=\"2\"]", htmlMaterial.getId()));
+        selectOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "2");
         waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
