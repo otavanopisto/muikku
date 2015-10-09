@@ -2,12 +2,8 @@ package fi.muikku.plugins.websocket;
 
 import java.util.Date;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-@Dependent
-@Stateful
 public class WebSocketTicketController {
    
   @Inject

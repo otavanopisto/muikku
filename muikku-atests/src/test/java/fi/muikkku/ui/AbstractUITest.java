@@ -395,6 +395,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String optionText = option.getText();
     assertEquals(expected, optionText);
   }
+  protected void assertChecked(String selector, String expected) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    assertEquals(expected, element.getAttribute("checked"));
+  }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();

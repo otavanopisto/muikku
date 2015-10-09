@@ -1,7 +1,5 @@
 package fi.muikku.controller;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.security.PermissionDAO;
@@ -11,8 +9,6 @@ import fi.muikku.model.security.WorkspaceGroupPermission;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 
-@Dependent
-@Stateful
 public class PermissionController {
 
   @Inject
