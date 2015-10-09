@@ -10,8 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -29,8 +27,6 @@ import org.xml.sax.SAXException;
 
 import fi.muikku.plugins.data.dao.ProcessedScriptDAO;
 
-@Dependent
-@Stateful
 public class DataPluginController {
 	
 	@Inject
@@ -38,7 +34,6 @@ public class DataPluginController {
 	private Instance<DataPluginScriptHandler> scriptHandlers;  
 	
 	@Inject
-	
 	private ProcessedScriptDAO processedScriptDAO;
 	
 	public void processScripts(File file) throws ParserConfigurationException, SAXException, IOException {

@@ -3,8 +3,6 @@ package fi.muikku.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.widgets.DefaultWidgetDAO;
@@ -18,8 +16,6 @@ import fi.muikku.model.widgets.Widget;
 import fi.muikku.model.widgets.WidgetSpace;
 import fi.muikku.model.widgets.WidgetVisibility;
 
-@Dependent
-@Stateful
 public class WidgetController {
 
   @Inject

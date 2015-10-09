@@ -5,7 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -29,8 +30,9 @@ import fi.muikku.search.SearchResult;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserGroupEntityController;
 
+@Stateful
+@RequestScoped
 @Path("/usergroup")
-@Stateless
 @Produces ("application/json")
 public class UserGroupRESTService extends AbstractRESTService {
   

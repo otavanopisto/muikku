@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Stateful;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -34,6 +36,8 @@ import fi.muikku.users.UserController;
 import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
 
+@Stateful
+@RequestScoped
 @Path("/user")
 @Produces("application/json")
 @Consumes("application/json")

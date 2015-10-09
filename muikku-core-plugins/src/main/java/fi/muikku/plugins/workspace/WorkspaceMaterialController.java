@@ -10,8 +10,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.xml.transform.OutputKeys;
@@ -64,8 +62,6 @@ import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.session.SessionController;
 
-@Dependent
-@Stateful
 // TODO Should probably be split or renamed WorkspaceNodeController
 public class WorkspaceMaterialController {
 
