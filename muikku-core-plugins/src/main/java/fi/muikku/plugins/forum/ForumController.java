@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -47,8 +45,6 @@ import fi.muikku.users.UserEntityController;
 import fi.otavanopisto.security.Permit;
 import fi.otavanopisto.security.PermitContext;
 
-@Dependent
-@Stateful
 public class ForumController {
   
   @Inject

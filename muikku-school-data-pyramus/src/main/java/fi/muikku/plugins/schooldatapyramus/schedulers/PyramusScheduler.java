@@ -54,7 +54,6 @@ public class PyramusScheduler {
   
   public void onContextInitialized(@Observes ContextInitializedEvent event) {
     contextInitialized = true;
-
     startTimer(INITIAL_TIMEOUT);
   }
 
@@ -118,6 +117,10 @@ public class PyramusScheduler {
   private void startTimer(int duration) {
     if (!contextInitialized)
       return;
+    
+    if ("true".equals(System.getProperty("tests.running"))) { 
+        return;
+    }
     
     if (this.timer != null) {
       this.timer.cancel();

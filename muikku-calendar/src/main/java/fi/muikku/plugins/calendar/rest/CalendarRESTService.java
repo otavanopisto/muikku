@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
@@ -38,6 +39,7 @@ import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.rest.types.DateTimeParameter;
 import fi.muikku.session.SessionController;
 
+@Stateful
 @RequestScoped
 @Path ("/calendar")
 @Produces ("application/json")
