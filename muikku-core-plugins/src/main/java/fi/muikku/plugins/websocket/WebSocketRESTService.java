@@ -3,6 +3,7 @@ package fi.muikku.plugins.websocket;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.session.SessionController;
 
+@Stateful
 @Path("/websocket")
 @RequestScoped
 @Produces ("application/json")

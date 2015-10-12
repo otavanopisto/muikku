@@ -9,9 +9,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.xml.transform.OutputKeys;
@@ -64,10 +63,11 @@ import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.session.SessionController;
 
-@Dependent
-@Stateful
 // TODO Should probably be split or renamed WorkspaceNodeController
 public class WorkspaceMaterialController {
+
+  @Inject
+  private Logger logger;
 
   @Inject
   private LocaleController localeController;
@@ -940,21 +940,25 @@ public class WorkspaceMaterialController {
   private WorkspaceFolder findWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
     List<WorkspaceFolder> frontPageFolders = workspaceFolderDAO.listByParentAndFolderType(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity),
         WorkspaceFolderType.FRONT_PAGE);
-    if (frontPageFolders.size() == 1) {
-      return frontPageFolders.get(0);
+    if (frontPageFolders.isEmpty()) {
+      return null;
     }
-    // TODO: report error if more than one
-    return null;
+    if (frontPageFolders.size() > 1) {
+      logger.warning("Workspace " + workspaceEntity.getId() + " has multiple front page folders");
+    }
+    return frontPageFolders.get(0);
   }
 
   private WorkspaceFolder findWorkspaceHelpPageFolder(WorkspaceEntity workspaceEntity) {
     List<WorkspaceFolder> helpPageFolders = workspaceFolderDAO.listByParentAndFolderType(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity),
         WorkspaceFolderType.HELP_PAGE);
-    if (helpPageFolders.size() == 1) {
-      return helpPageFolders.get(0);
+    if (helpPageFolders.isEmpty()) {
+      return null;
     }
-    // TODO: report error if more than one
-    return null;
+    if (helpPageFolders.size() > 1) {
+      logger.warning("Workspace " + workspaceEntity.getId() + " has multiple help page folders");
+    }
+    return helpPageFolders.get(0);
   }
 
   private List<WorkspaceMaterial> listFrontPages(WorkspaceEntity workspaceEntity) {

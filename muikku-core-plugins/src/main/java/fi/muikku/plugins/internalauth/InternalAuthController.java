@@ -1,7 +1,5 @@
 package fi.muikku.plugins.internalauth;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -12,8 +10,6 @@ import fi.muikku.plugins.internalauth.dao.InternalAuthDAO;
 import fi.muikku.plugins.internalauth.model.InternalAuth;
 import fi.muikku.users.UserEmailEntityController;
 
-@Dependent
-@Stateful
 public class InternalAuthController {
 
   @Inject
