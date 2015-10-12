@@ -41,6 +41,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -341,6 +342,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     click(selector);
   }
 
+  protected void selectOption(String selector, String value){
+    Select selectField = new Select(getWebDriver().findElementByCssSelector(selector));
+    selectField.selectByValue(value);
+    
+  }
+  
   protected void assertText(String selector, String text) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(text, element.getText());
@@ -388,6 +395,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertEquals(value, element.getAttribute("value"));
   }
   
+  protected void assertSelectedOption(String selector, String expected){
+    Select select = new Select(getWebDriver().findElementByCssSelector(selector));
+    WebElement option = select.getFirstSelectedOption();
+    String optionText = option.getText();
+    assertEquals(expected, optionText);
+  }
   protected void assertChecked(String selector, String expected) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(expected, element.getAttribute("checked"));
