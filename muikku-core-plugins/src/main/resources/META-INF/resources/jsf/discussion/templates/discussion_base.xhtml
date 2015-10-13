@@ -26,6 +26,7 @@
   <ui:define name="content.tools.center"> 
     <m:widget name="discussion-browse-areas" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
     <m:widget name="discussion-new-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/>
+    <m:widget name="discussion-delete-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/>
   </ui:define>
 <!--    <ui:define name="content.tools.right">  -->
 

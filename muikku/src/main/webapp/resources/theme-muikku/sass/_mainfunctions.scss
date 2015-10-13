@@ -362,7 +362,31 @@
     }
     
   }
+
+.mf-tool-container {
+    background: #0099ff none repeat scroll 0 0;
+    border-radius: 20px;
+    float: left;
+    height: 24px;
+    margin: 21px 0 0 10px;
+    padding: 6px 0;
+    text-align: center;
+    width: 37px;
+   
+  .mf-tool {
+    cursor:pointer;
+  }
+    
+  div { 
+    
+    &:before {
+     font-size:23px;
+     color:#fff;
+    }
+    
+  }
   
+}  
   .mf-content-main{
     @extend .co-mainFunction-content-main;
     min-height:450px;
@@ -666,7 +690,13 @@
 /*   } */
   
 /* } */
-
+.mf-option-name{
+  font-weight:700;
+}
+.mf-option-definition{
+  margin-left:10px;
+  color:$dimmest;
+}
 .mf-content {
       
   .mf-fieldRow {

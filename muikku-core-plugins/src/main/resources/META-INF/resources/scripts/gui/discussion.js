@@ -698,4 +698,27 @@ $(document).ready(function() {
     });
 
   });
+  
+  $(".di-delete-area-button").click(function() {
+
+    var deleteArea = function(values) {
+      var areaId = values.forumAreaId;
+      
+      mApi().forum.areas.del(areaId).callback(function(err, result) {
+      });
+
+      window.discussion._refreshLatest();
+      window.discussion._refreshAreas();
+      $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.areadeleted'));
+    }
+
+    mApi().forum.areas.read().callback(function(err, areas) {
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
+      } else {
+        openInSN('/discussion/discussion_delete_area.dust', areas, deleteArea);
+      }
+    });
+
+  });  
 });
