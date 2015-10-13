@@ -107,11 +107,16 @@ public class DefaultSchoolDataWorkspaceListener {
       if (workspaceUserRole != null) {
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
         if (userSchoolDataIdentifier != null) {
-          // TODO: Does the find method actually check for the same entity that the create would create? (constraint violations)
-          if (workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifier(workspaceEntity, userSchoolDataIdentifier) == null) {
-            WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.createWorkspaceUserEntity(userSchoolDataIdentifier, workspaceEntity, event.getIdentifier(), workspaceUserRole);
+          WorkspaceUserEntity workspaceUserEntity = 
+              workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(
+                  workspaceEntity,
+                  userSchoolDataIdentifier);
+          if (workspaceUserEntity == null) {
+            workspaceUserEntity = workspaceUserEntityController.createWorkspaceUserEntity(userSchoolDataIdentifier, workspaceEntity, event.getIdentifier(), workspaceUserRole);
             discoveredWorkspaceUsers.put(discoverId, workspaceUserEntity.getId());
             event.setDiscoveredWorkspaceUserEntityId(workspaceUserEntity.getId());
+          } else {
+            workspaceUserEntityController.unArchiveWorkspaceUserEntity(workspaceUserEntity);
           }
         } else {
           logger.warning("could not add workspace user because userSchoolDataIdentifier #" + event.getUserIdentifier() + '/' + event.getUserDataSource() +  " could not be found");
