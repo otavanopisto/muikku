@@ -2,8 +2,6 @@ package fi.muikku.plugins.schooldatalocal;
 
 import java.util.List;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -22,8 +20,6 @@ import fi.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserProperty;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserPropertyKey;
 
-@Dependent
-@Stateful
 public class LocalUserSchoolDataController {
 	
 	public static final String SCHOOL_DATA_SOURCE = "LOCAL";

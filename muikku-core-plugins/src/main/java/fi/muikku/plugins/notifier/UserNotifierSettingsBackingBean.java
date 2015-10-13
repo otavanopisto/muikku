@@ -12,7 +12,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.notifier.NotifierAction;
 import fi.muikku.notifier.NotifierController;
@@ -27,9 +26,6 @@ public class UserNotifierSettingsBackingBean {
 
   @Inject
   private SessionController sessionController;
-  
-  @Inject
-  private LocaleController localeController;
   
   @Inject
   private NotifierController notifierController;
