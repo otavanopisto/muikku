@@ -3,6 +3,8 @@ package fi.muikku.plugins.dnm.translator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
 import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
@@ -48,11 +50,29 @@ public class FieldTranslator {
   public MemoFieldMeta translateMemoField(String name, Integer columns, Integer rows, String help, String hint) {
     return new MemoFieldMeta(name, columns, rows, help, hint, "" /* no example */);
   }
+
+  private String generateUniqueName(List<SelectFieldOptionMeta> options) {
+    int i = 0;
+    String name = String.valueOf(i);
+    for (int j = 0; j < options.size(); j++) {
+      if (name.equals(options.get(j).getName())) {
+        name = String.valueOf(++i);
+        j = -1;
+      }
+    }
+    return name;
+  }
   
   public SelectFieldMeta translateOptionList(String name, String listType, List<OptionListOption> options) {
     List<SelectFieldOptionMeta> translatedOptions = new ArrayList<>();
     for (OptionListOption option : options) {
       translatedOptions.add(new SelectFieldOptionMeta(option.getName(), option.getPoints() != null && option.getPoints() > 0, option.getText()));
+    }
+    // Fix for bug #499; generate unique values for empty option names 
+    for (SelectFieldOptionMeta translatedOption : translatedOptions) {
+      if (StringUtils.isEmpty(translatedOption.getName())) {
+        translatedOption.setName(generateUniqueName(translatedOptions));
+      }
     }
     // Nexus:  dropdown | list | radio | radio_horz
     // Muikku: dropdown | list | radio-vertical | radio-horizontal
