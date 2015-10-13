@@ -3,6 +3,8 @@ package fi.muikku.plugins.dnm.translator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
 import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
@@ -85,6 +87,13 @@ public class FieldTranslator {
       ConnectFieldOption option = options.get(i);
       String fieldName = String.valueOf(i+1);
       String counterpartName = getExcelStyleLetterIndex(i);
+
+      if (StringUtils.length(option.getTerm()) > 255) {
+        option.setTerm(option.getTerm().substring(0, 254));
+      }
+      if (StringUtils.length(option.getEquivalent()) > 255) {
+        option.setEquivalent(option.getEquivalent().substring(0, 254));
+      }
       
       connectFieldOptionMetas.add(new ConnectFieldOptionMeta(fieldName, option.getTerm()));
       counterparts.add(new ConnectFieldOptionMeta(counterpartName, option.getEquivalent()));
