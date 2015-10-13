@@ -206,6 +206,9 @@
           this._element.find( '.muikku-connect-field-counterpart:eq( '+elementIndex+' )' ).before(counterpart);
           term.addClass('muikku-connect-field-edited');
           counterpart.addClass('muikku-connect-field-edited');
+        }else{
+            term.addClass('muikku-connect-field-edited');
+            counterpart.addClass('muikku-connect-field-edited');	
         }
         this._createConnection(term, counterpart);
         this._element.find('.muikku-connect-field-term').removeClass('muikku-connect-field-term-selected');
