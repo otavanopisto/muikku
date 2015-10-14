@@ -232,7 +232,7 @@ $(document).ready(function(){
     _onRecipientFocus:function(event){
       $(event.target).autocomplete({
        create: function(event, ui){
-        $('.ui-autocomplete').perfectScrollbar();
+        $('.ui-autocomplete').perfectScrollbar(); 
        },  
       source: function (request, response) {
         response(mCommunicator._doSearch(request.term));
@@ -315,10 +315,14 @@ $(document).ready(function(){
   },    
       
   _doSearch: function (searchTerm) {
+
+    var workspaces = this._searchWorkspaces(searchTerm);
     var groups = this._searchGroups(searchTerm);
     var users = this._searchUsers(searchTerm);
+    var userContainers = $.merge(groups, workspaces)
     
-    return $.merge(groups, users);
+    
+    return $.merge(users, userContainers);
 //      return this._searchUsers(searchTerm);
   },      
 
@@ -354,6 +358,52 @@ $(document).ready(function(){
     });
     
   },
+
+  _searchWorkspaces: function (searchTerm) {
+    var _this = this;
+    var workspaces = new Array();
+    mApi().coursepicker.workspaces.read({
+      search: searchTerm,
+      myWorkspaces: true,
+    })
+    .callback($.proxy(function (err, result) {
+      if (result != undefined) {
+        for (var i = 0, l = result.length; i < l; i++) {
+          var img = undefined;
+          if (result[i].hasImage)
+            img = CONTEXTPATH + "/picture?userId=" + result[i].id;
+    
+          workspaces.push({
+            category : getLocaleText("plugin.communicator.workspaces"),
+            label : result[i].name,
+            id : result[i].id,
+            type : "GROUP"
+          });
+        }
+      }      
+
+    }, this));        
+//      mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
+//        if (result != undefined) {
+//          for (var i = 0, l = result.length; i < l; i++) {
+//            var img = undefined;
+//            if (result[i].hasImage)
+//              img = CONTEXTPATH + "/picture?userId=" + result[i].id;
+//  
+//            users.push({
+//              category : getLocaleText("plugin.communicator.usergroups"),
+//              label : result[i].name + " (" + result[i].userCount + ")",
+//              id : result[i].id,
+//              image : img,
+//              type : "GROUP"
+//            });
+//          }
+//        }
+//      });
+
+    
+    return workspaces;
+  },  
   _searchGroups: function (searchTerm) {
     var _this = this;
     var users = new Array();
