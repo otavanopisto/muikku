@@ -17,6 +17,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
@@ -75,7 +76,6 @@ public class WorkspaceJournalBackingBean {
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceEntityId = workspaceEntity.getId();
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
     
     if (studentId != null && !sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)){
       return NavigationRules.ACCESS_DENIED;
@@ -151,8 +151,23 @@ public class WorkspaceJournalBackingBean {
   public Long getStudentId() {
     return studentId;
   }
-
-  private Long workspaceEntityId;
+  
+  public boolean isMyJournal() {
+    return studentId != null;
+  }
+  
+  public boolean isCanListAllEntries() {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    return sessionController.hasCoursePermission(
+        MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
+  }
+  
+  public List<User> getWorkspaceStudents() {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    return workspaceController.listUsersByWorkspaceEntityAndRoleArchetype(
+        workspaceEntity,
+        WorkspaceRoleArchetype.STUDENT);
+  }
 
   public List<WorkspaceJournalEntry> getJournalEntries() {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -174,6 +189,7 @@ public class WorkspaceJournalBackingBean {
 
   }
 
+  private Long workspaceEntityId;
   private String workspaceJournalEntryTitle;
   private String workspaceJournalEntryHtml;
   private Long workspaceJournalEntryId;
