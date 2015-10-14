@@ -27,6 +27,47 @@ body[class^='workspace'] {
 
   }
   
+  .workspace-journal-teacher-tools-container {
+    padding:10px;
+    background:#b5f4ff;
+    position:relative;
+  
+    .workspace-journal-select-student-container {
+      @include flexbox();
+      flex-flow:row wrap;
+      align-content:center;
+      align-items:center;
+      line-height:normal;
+      
+      .journal-select-student-label,
+      .journal-select-student-selection {
+        padding:0.5em;
+      }
+      
+      .journal-select-student-label {
+        color:#0a4853;
+        text-transform:uppercase;
+      }
+      
+      .journal-select-student-selection {
+       @include flex(0 1 200px);
+       max-width:250px;
+       border:1px solid #67e1f7;
+       border-radius:5px;
+       
+       &:hover,
+       &:focus {
+         border:1px solid #67e1f7;
+         outline:none;
+       }
+      }
+      
+    }
+  
+  }
+  
+  
+  
   .workspace-journal-content-wrapper {
     min-height:500px;
     background:#fff;

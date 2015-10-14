@@ -12,9 +12,28 @@
     <form style="display: none;">
     <input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
     </form>
-    <div class="workspace-journal-new-entry-container" style="height:auto;">
-      <div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
-    </div>
+    <c:choose>
+      <c:when test="#{workspaceJournalBackingBean.myJournal}">
+        <div class="workspace-journal-new-entry-container" style="height:auto;">
+          <div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
+        </div>
+      </c:when>
+      <c:otherwise>
+        <div class="workspace-journal-teacher-tools-container">
+          <div class="workspace-journal-select-student-container">
+            <span class="journal-select-student-label">Opiskelija:</span>
+            <select class="journal-select-student-selection">
+              <option>Näytä kaikki</option>
+              <option>Kärppä Jänis</option>
+              <option>Pena</option>
+              <option>Tane</option>
+              <option>Rane</option>
+              <option>Kyösti</option>
+            </select>
+          </div>
+        </div>
+      </c:otherwise>
+    </c:choose>
   </ui:define>
   
   <ui:define name="workspace.content">
@@ -27,20 +46,32 @@
             <h:commandButton class="delete-entry-#{entry.id}" actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
         </h:form>
         <div class="workspace-journal-entry-view">
-          <div class="workspace-journal-poster">#{workspaceJournalBackingBean.posterOf(entry)}</div>
-	        <div class="workspace-journal-title">#{entry.title}</div>
-	        <div class="workspace-journal-entry-meta">
-	          <div class="workspace-journal-dateTime">#{entry.created}</div>
-	        </div>
+          <c:choose>
+            <c:when test="#{workspaceJournalBackingBean.myJournal}">
+              <div class="workspace-journal-title">#{entry.title}</div>
+              <div class="workspace-journal-entry-meta">
+                <div class="workspace-journal-dateTime">#{entry.created}</div>
+              </div>
+            </c:when>
+            <c:otherwise>
+              <div class="workspace-journal-poster">#{workspaceJournalBackingBean.posterOf(entry)}</div>
+              <div class="workspace-journal-title">#{entry.title}</div>
+              <div class="workspace-journal-entry-meta">
+                <div class="workspace-journal-dateTime">#{entry.created}</div>
+              </div>
+            </c:otherwise>
+          </c:choose>
 	        <div class="workspace-journal-content">
 	          <p><h:outputText value="#{entry.html}" escape="false"/></p>
 	        </div>
         </div>
-        <div class="workspace-journal-footer">
-			<button class="journal-edit-button">#{i18n.text['plugin.workspace.journal.editEntryButton.label']}</button>
-			<button data-entry-id="#{entry.id}" class="journal-delete-button">#{i18n.text['plugin.workspace.journal.deleteEntryButton.label']}</button>
-			<ui:remove><button class="journal-permanent-url-button">#{i18n.text['plugin.workspace.journal.copyUrlEntryButton.label']}</button></ui:remove>
-        </div>
+        <c:if test="#{workspaceJournalBackingBean.myJournal}">
+          <div class="workspace-journal-footer">
+      			<button class="journal-edit-button">#{i18n.text['plugin.workspace.journal.editEntryButton.label']}</button>
+      			<button data-entry-id="#{entry.id}" class="journal-delete-button">#{i18n.text['plugin.workspace.journal.deleteEntryButton.label']}</button>
+      			<ui:remove><button class="journal-permanent-url-button">#{i18n.text['plugin.workspace.journal.copyUrlEntryButton.label']}</button></ui:remove>
+          </div>
+        </c:if>
       </div>
       
     </ui:repeat>
