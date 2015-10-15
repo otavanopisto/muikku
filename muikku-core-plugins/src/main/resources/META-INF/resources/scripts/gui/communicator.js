@@ -266,6 +266,10 @@ $(document).ready(function(){
         renderDustTemplate('communicator/communicator_messagerecipientgroup.dust', prms, function (text) {
           recipientListElement.prepend($.parseHTML(text));
         });
+      } else if (item.type == "WORKSPACE") {
+        renderDustTemplate('communicator/communicator_messagerecipientworkspace.dust', prms, function (text) {
+          recipientListElement.prepend($.parseHTML(text));
+        });
       }
   },
   _refreshView: function(){
@@ -345,7 +349,7 @@ $(document).ready(function(){
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage.success'));
          }
         });
-    }   
+     }   
      mApi().communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback) {
        mApi().communicator.communicatormessages.sender.read(eId).callback(function(err, user) {
          reply.senderFullName = user.firstName + ' ' + user.lastName;
@@ -362,6 +366,7 @@ $(document).ready(function(){
   _searchWorkspaces: function (searchTerm) {
     var _this = this;
     var workspaces = new Array();
+
     mApi().coursepicker.workspaces.read({
       search: searchTerm,
       myWorkspaces: true,
@@ -377,36 +382,18 @@ $(document).ready(function(){
             category : getLocaleText("plugin.communicator.workspaces"),
             label : result[i].name,
             id : result[i].id,
-            type : "GROUP"
+            type : "WORKSPACE"
           });
         }
       }      
 
     }, this));        
-//      mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
-//        if (result != undefined) {
-//          for (var i = 0, l = result.length; i < l; i++) {
-//            var img = undefined;
-//            if (result[i].hasImage)
-//              img = CONTEXTPATH + "/picture?userId=" + result[i].id;
-//  
-//            users.push({
-//              category : getLocaleText("plugin.communicator.usergroups"),
-//              label : result[i].name + " (" + result[i].userCount + ")",
-//              id : result[i].id,
-//              image : img,
-//              type : "GROUP"
-//            });
-//          }
-//        }
-//      });
-
     
     return workspaces;
   },  
   _searchGroups: function (searchTerm) {
     var _this = this;
-    var users = new Array();
+    var groups = new Array();
   
     if (MUIKKU_LOGGEDINROLES.admin || MUIKKU_LOGGEDINROLES.manager || MUIKKU_LOGGEDINROLES.teacher) {
       mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
@@ -416,7 +403,7 @@ $(document).ready(function(){
             if (result[i].hasImage)
               img = CONTEXTPATH + "/picture?userId=" + result[i].id;
   
-            users.push({
+            groups.push({
               category : getLocaleText("plugin.communicator.usergroups"),
               label : result[i].name + " (" + result[i].userCount + ")",
               id : result[i].id,
@@ -428,7 +415,7 @@ $(document).ready(function(){
       });
     }
     
-    return users;
+    return groups;
   },
 
   _searchUsers: function (searchTerm) {

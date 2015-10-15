@@ -6,14 +6,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CommunicatorMessageRESTModel {
+public class CommunicatorNewMessageRESTModel {
 
-  public CommunicatorMessageRESTModel() {
+  public CommunicatorNewMessageRESTModel() {
     
   }
   
-  public CommunicatorMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, String categoryName, String caption, 
-      String content, Date created, Set<String> tags, List<Long> recipientIds) {
+  public CommunicatorNewMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, String categoryName, String caption, 
+      String content, Date created, Set<String> tags, List<Long> recipientIds, List<Long> recipientGroupIds, 
+      List<Long> recipientTeachersWorkspaceIds, List<Long> recipientStudentsWorkspaceIds) {
     this.id = id;
     this.communicatorMessageId = communicatorMessageId;
     this.senderId = senderId;
@@ -23,6 +24,9 @@ public class CommunicatorMessageRESTModel {
     this.created = created;
     this.tags = tags;
     this.recipientIds = recipientIds;
+    this.recipientGroupIds = recipientGroupIds;
+    this.recipientStudentsWorkspaceIds = recipientStudentsWorkspaceIds;
+    this.recipientTeachersWorkspaceIds = recipientTeachersWorkspaceIds;
   }
   
   public Long getId() {
@@ -97,6 +101,30 @@ public class CommunicatorMessageRESTModel {
     this.recipientIds = recipientIds;
   }
 
+  public List<Long> getRecipientGroupIds() {
+    return recipientGroupIds;
+  }
+
+  public void setRecipientGroupIds(List<Long> recipientGroupIds) {
+    this.recipientGroupIds = recipientGroupIds;
+  }
+
+  public List<Long> getRecipientStudentsWorkspaceIds() {
+    return recipientStudentsWorkspaceIds;
+  }
+
+  public void setRecipientStudentsWorkspaceIds(List<Long> recipientStudentsWorkspaceIds) {
+    this.recipientStudentsWorkspaceIds = recipientStudentsWorkspaceIds;
+  }
+
+  public List<Long> getRecipientTeachersWorkspaceIds() {
+    return recipientTeachersWorkspaceIds;
+  }
+
+  public void setRecipientTeachersWorkspaceIds(List<Long> recipientTeachersWorkspaceIds) {
+    this.recipientTeachersWorkspaceIds = recipientTeachersWorkspaceIds;
+  }
+
   private Long id;
 
   private Long communicatorMessageId;
@@ -114,4 +142,10 @@ public class CommunicatorMessageRESTModel {
   private Set<String> tags = new HashSet<String>();
   
   private List<Long> recipientIds = new ArrayList<Long>();
+
+  private List<Long> recipientGroupIds = new ArrayList<Long>();
+  
+  private List<Long> recipientStudentsWorkspaceIds = new ArrayList<Long>();
+
+  private List<Long> recipientTeachersWorkspaceIds = new ArrayList<Long>();
 }

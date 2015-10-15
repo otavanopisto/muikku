@@ -1,0 +1,8 @@
+<div class="mf-item-user cm-message-recipient">
+  <!-- recipientStudentsWorkspaceIds tai recipientTeachersWorkspaceIds, riippuen kummalle ryhmälle lähetetään -->
+  <input type="hidden" data-array="true" name="recipientStudentsWorkspaceIds" value="{id}" />
+  <div class="cm-message-recipient-name">{name}</div>
+  <div class="clear"></div>
+</div>
+
+
