@@ -95,6 +95,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Produces("text/plain")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response test_login(@QueryParam ("role") String role) {
+    logger.log(Level.INFO, "Acceptance tests plugin logging in with role " + role);
+    
     switch (role) {
       case "ENVIRONMENT-STUDENT":
         localSessionController.login("PYRAMUS", "STUDENT-1");
@@ -107,6 +109,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       break;
       case "ENVIRONMENT-ADMINISTRATOR":
         localSessionController.login("PYRAMUS", "STAFF-4");
+      break;
+      case "ENVIRONMENT-TRUSTED_SYSTEM":
+        localSessionController.login("PYRAMUS", "STAFF-5");
       break;
       
       case "PSEUDO-EVERYONE":
@@ -123,6 +128,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Produces("text/plain")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response test_reindex() {
+    logger.log(Level.INFO, "Acceptance tests plugin reindex task started.");
+
     List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntities();
     for (int i = 0; i < workspaceEntities.size(); i++) {
       WorkspaceEntity workspaceEntity = workspaceEntities.get(i);

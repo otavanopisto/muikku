@@ -7,5 +7,5 @@
   <script
     run="ONCE"
     handler="MySQL"
-    url="test/test-users.sql" />
+    url="test/test-trustedsystem.sql" />
 </data>

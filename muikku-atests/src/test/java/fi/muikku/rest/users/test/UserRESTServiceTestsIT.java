@@ -74,8 +74,8 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
   }
 
   @Test
-  @SqlBefore("sql/userSearchUserGroupSetup.sql")
-  @SqlAfter("sql/userSearchUserGroupDelete.sql")
+//  @SqlBefore("sql/userSearchUserGroupSetup.sql")
+//  @SqlAfter("sql/userSearchUserGroupDelete.sql")
   public void testSearchUsersWithUserGroups() throws NoSuchFieldException {
     Long userGroupId = 1l;
     
@@ -92,8 +92,8 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
   }
 
   @Test
-  @SqlBefore("sql/userSearchUserGroupSetup.sql")
-  @SqlAfter("sql/userSearchUserGroupDelete.sql")
+//  @SqlBefore("sql/userSearchUserGroupSetup.sql")
+//  @SqlAfter("sql/userSearchUserGroupDelete.sql")
   public void testSearchUsersWithMyUserGroups() throws NoSuchFieldException {
     Response response = asAdmin()
         .param("myUserGroups", true)
@@ -108,8 +108,8 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
   }
   
   @Test
-  @SqlBefore("sql/userSearchWorkspaceSetup.sql")
-  @SqlAfter("sql/userSearchWorkspaceDelete.sql")
+//  @SqlBefore("sql/userSearchWorkspaceSetup.sql")
+//  @SqlAfter("sql/userSearchWorkspaceDelete.sql")
   public void testSearchUsersWithWorkspaces() throws NoSuchFieldException {
     Long workspaceId = 1l;
     
@@ -126,8 +126,8 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
   }
 
   @Test
-  @SqlBefore("sql/userSearchWorkspaceSetup.sql")
-  @SqlAfter("sql/userSearchWorkspaceDelete.sql")
+//  @SqlBefore("sql/userSearchWorkspaceSetup.sql")
+//  @SqlAfter("sql/userSearchWorkspaceDelete.sql")
   public void testSearchUsersWithMyWorkspaces() throws NoSuchFieldException {
     Response response = asAdmin()
         .param("myWorkspaces", true)
