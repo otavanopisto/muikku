@@ -1,7 +1,8 @@
-<div class="mf-item-user cm-message-recipient">
-  <!-- recipientStudentsWorkspaceIds tai recipientTeachersWorkspaceIds, riippuen kummalle ryhmälle lähetetään -->
+<div class="mf-item-user  cm-message-recipient">
+  <!-- recipientStudentsWorkspaceIds tai recipientTeachersWorkspaceIds, riippuen kummalle ryhmï¿½lle lï¿½hetetï¿½ï¿½n -->
   <input type="hidden" data-array="true" name="recipientStudentsWorkspaceIds" value="{id}" />
-  <div class="cm-message-recipient-name">{name}</div>
+  <input type="hidden" data-array="true" name="recipientTeachersWorkspaceIds" value="{id}" />
+  <div class="cm-message-recipient-name workspace">{name}</div>
   <div class="clear"></div>
 </div>
 
