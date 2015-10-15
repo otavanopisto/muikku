@@ -1,81 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"  
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-  template="./templates/workspace-journal-view.xhtml">
-  
-  <ui:define name="workspace.content.top.static">
-    <form style="display: none;">
-    <input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
-    </form>
-    <c:choose>
-      <c:when test="#{workspaceJournalBackingBean.myJournal}">
-        <div class="workspace-journal-new-entry-container" style="height:auto;">
-          <div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
-        </div>
-      </c:when>
-      <c:otherwise>
-        <div class="workspace-journal-teacher-tools-container">
-          <div class="workspace-journal-select-student-container">
-            <span class="journal-select-student-label">Opiskelija:</span>
-            <select class="journal-select-student-selection">
-              <option>Näytä kaikki</option>
-              <option>Kärppä Jänis</option>
-              <option>Pena</option>
-              <option>Tane</option>
-              <option>Rane</option>
-              <option>Kyösti</option>
-            </select>
-          </div>
-        </div>
-      </c:otherwise>
-    </c:choose>
-  </ui:define>
-  
-  <ui:define name="workspace.content">
-    <div class="workspace-journal-content-wrapper">
-    <ui:repeat var="entry" value="#{workspaceJournalBackingBean.journalEntries}">
-    
-      <!-- Start of da Loopa-Loop for single journal entry -->
-      <div class="workspace-single-journal-entry" data-entry-id="#{entry.id}">
-        <h:form>
-            <h:commandButton class="delete-entry-#{entry.id}" actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
-        </h:form>
-        <div class="workspace-journal-entry-view">
-          <c:choose>
-            <c:when test="#{workspaceJournalBackingBean.myJournal}">
-              <div class="workspace-journal-title">#{entry.title}</div>
-              <div class="workspace-journal-entry-meta">
-                <div class="workspace-journal-dateTime">#{entry.created}</div>
-              </div>
-            </c:when>
-            <c:otherwise>
-              <div class="workspace-journal-poster">#{workspaceJournalBackingBean.posterOf(entry)}</div>
-              <div class="workspace-journal-title">#{entry.title}</div>
-              <div class="workspace-journal-entry-meta">
-                <div class="workspace-journal-dateTime">#{entry.created}</div>
-              </div>
-            </c:otherwise>
-          </c:choose>
-	        <div class="workspace-journal-content">
-	          <p><h:outputText value="#{entry.html}" escape="false"/></p>
-	        </div>
-        </div>
-        <c:if test="#{workspaceJournalBackingBean.myJournal}">
-          <div class="workspace-journal-footer">
-      			<button class="journal-edit-button">#{i18n.text['plugin.workspace.journal.editEntryButton.label']}</button>
-      			<button data-entry-id="#{entry.id}" class="journal-delete-button">#{i18n.text['plugin.workspace.journal.deleteEntryButton.label']}</button>
-      			<ui:remove><button class="journal-permanent-url-button">#{i18n.text['plugin.workspace.journal.copyUrlEntryButton.label']}</button></ui:remove>
-          </div>
-        </c:if>
-      </div>
-      
-    </ui:repeat>
-    </div>
-  </ui:define>
-  
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	template="./templates/workspace-journal-view.xhtml">
+
+	<ui:define name="workspace.content.top.static">
+		<form style="display: none;">
+			<input name="workspaceEntityId" type="hidden"
+				value="#{workspaceJournalBackingBean.workspaceEntityId}" />
+		</form>
+			<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal}">
+				<div class="workspace-journal-new-entry-container"
+					style="height: auto;">
+					<div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
+				</div>
+			</ui:fragment>
+		<form method="get" id="studentSelectForm">
+			<ui:fragment
+				rendered="#{workspaceJournalBackingBean.canListAllEntries}">
+				<div class="workspace-journal-teacher-tools-container">
+					<div class="workspace-journal-select-student-container">
+						<span class="journal-select-student-label">Opiskelija:</span>
+						<select
+						  id="studentSelectField"
+							class="journal-select-student-selection"
+							name="studentId">
+							<option value="">Näytä kaikki</option>
+							<ui:repeat value="#{workspaceJournalBackingBean.workspaceStudents}" var="student">
+                <option value="${student.identifier}">#{student.firstName} #{student.lastName}</option>
+							</ui:repeat>
+						</select>
+					</div>
+				</div>
+			</ui:fragment>
+		</form>
+	</ui:define>
+
+	<ui:define name="workspace.content">
+		<div class="workspace-journal-content-wrapper">
+			<ui:repeat var="entry"
+				value="#{workspaceJournalBackingBean.journalEntries}">
+
+				<!-- Start of da Loopa-Loop for single journal entry -->
+				<div class="workspace-single-journal-entry"
+					data-entry-id="#{entry.id}">
+					<h:form>
+						<h:commandButton class="delete-entry-#{entry.id}"
+							actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}"
+							style="display: none;" />
+					</h:form>
+					<div class="workspace-journal-entry-view">
+						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal}">
+							<div class="workspace-journal-title">#{entry.title}</div>
+							<div class="workspace-journal-entry-meta">
+								<div class="workspace-journal-dateTime">#{entry.created}</div>
+							</div>
+						</ui:fragment>
+						<ui:fragment
+							rendered="#{not workspaceJournalBackingBean.myJournal}">
+							<div class="workspace-journal-poster">#{workspaceJournalBackingBean.posterOf(entry)}</div>
+							<div class="workspace-journal-title">#{entry.title}</div>
+							<div class="workspace-journal-entry-meta">
+								<div class="workspace-journal-dateTime">#{entry.created}</div>
+							</div>
+						</ui:fragment>
+						<div class="workspace-journal-content">
+							<p>
+								<h:outputText value="#{entry.html}" escape="false" />
+							</p>
+						</div>
+					</div>
+					<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal}">
+						<div class="workspace-journal-footer">
+							<button class="journal-edit-button">#{i18n.text['plugin.workspace.journal.editEntryButton.label']}</button>
+							<button data-entry-id="#{entry.id}" class="journal-delete-button">#{i18n.text['plugin.workspace.journal.deleteEntryButton.label']}</button>
+							<ui:remove>
+								<button class="journal-permanent-url-button">#{i18n.text['plugin.workspace.journal.copyUrlEntryButton.label']}</button>
+							</ui:remove>
+						</div>
+					</ui:fragment>
+				</div>
+
+			</ui:repeat>
+		</div>
+	</ui:define>
+
 </ui:composition>

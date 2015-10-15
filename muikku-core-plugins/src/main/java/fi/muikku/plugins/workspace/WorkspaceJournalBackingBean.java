@@ -153,7 +153,7 @@ public class WorkspaceJournalBackingBean {
   }
   
   public boolean isMyJournal() {
-    return studentId != null;
+    return studentId == null;
   }
   
   public boolean isCanListAllEntries() {

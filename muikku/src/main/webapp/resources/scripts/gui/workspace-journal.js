@@ -94,4 +94,8 @@
     editJournalEntry($(this).parent().parent());
   });
 
+  $(document).on('change', '#studentSelectField', function() {
+    $("#studentSelectForm")[0].submit();
+  })
+
 }).call(this);
