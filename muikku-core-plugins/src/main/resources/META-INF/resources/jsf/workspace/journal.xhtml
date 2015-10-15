@@ -52,18 +52,29 @@
               <div class="workspace-journal-entry-meta">
                 <div class="workspace-journal-dateTime">#{entry.created}</div>
               </div>
+              <div class="workspace-journal-content">
+                <h:outputText value="#{entry.html}" escape="false"/>
+              </div>
             </c:when>
             <c:otherwise>
-              <div class="workspace-journal-poster">#{workspaceJournalBackingBean.posterOf(entry)}</div>
-              <div class="workspace-journal-title">#{entry.title}</div>
-              <div class="workspace-journal-entry-meta">
-                <div class="workspace-journal-dateTime">#{entry.created}</div>
+              <div class="workspace-journal-header-container">
+                <div class="workspace-journal-poster-container">
+                  <div class="workspace-journal-poster-image"><img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/></div>
+                  <div class="workspace-journal-poster-name">#{workspaceJournalBackingBean.posterOf(entry)}</div>
+                  <div class="workspace-journal-entry-meta">
+                    <div class="workspace-journal-dateTime">#{entry.created}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="workspace-journal-content-container">
+                <div class="workspace-journal-title">#{entry.title}</div>
+                <div class="workspace-journal-content">
+                  <h:outputText value="#{entry.html}" escape="false"/>
+                </div>
               </div>
             </c:otherwise>
           </c:choose>
-	        <div class="workspace-journal-content">
-	          <p><h:outputText value="#{entry.html}" escape="false"/></p>
-	        </div>
+	        
         </div>
         <c:if test="#{workspaceJournalBackingBean.myJournal}">
           <div class="workspace-journal-footer">

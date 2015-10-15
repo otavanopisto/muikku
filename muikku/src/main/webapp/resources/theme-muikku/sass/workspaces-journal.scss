@@ -96,14 +96,14 @@ body[class^='workspace'] {
       
         .workspace-journal-dateTime {
           font-style:italic;
-          color:#31638d;
+          color:#aaa;
           font-weight:400;
           display:inline-block;
           margin:0 10px 0 0;
         }
         
       }
-      
+
       .workspace-journal-content {
       
       }
@@ -134,6 +134,76 @@ body[class^='workspace'] {
         
         .journal-permanent-url-button {
           background:#7391a7;
+        }
+      
+      }
+      
+      .workspace-journal-header-container {
+        margin:0 0 10px 0;
+        padding:5px;
+        border-bottom:2px solid #f8f8f8;
+      
+        .workspace-journal-poster-container {
+          @include flexbox();
+          flex-flow:row wrap;
+          align-content:center;
+          align-items:center;
+          line-height:normal;
+          margin:0 0 10px 0;
+        
+          .workspace-journal-poster-image {
+            @include flex(0 0 48px); 
+            @incude border(2px,#fff,solid);
+            box-shadow:0 0 1px rgba(0, 0, 0, 0.2);
+            height:48px;   
+            box-sizing:border-box; 
+            display:inline-block;
+            border-radius:24px;
+            margin:0 15px 0 0;
+            z-index:15;
+            background-size:100% auto;
+            border:2px solid #fff;
+            overflow:hidden;
+          
+            img {
+              width:100%;
+              border:0;
+            }
+            
+          }
+        
+          .workspace-journal-poster-name {
+            @include flex(1 1 auto);
+            font-size:20px;
+          }
+          
+          .workspace-journal-entry-meta {
+             @include flex(0 0 300pxauto);
+             margin:0;
+          
+            .workspace-journal-dateTime {
+              font-style:italic;
+              color:#aaa;
+              font-weight:400;
+              margin:0;
+            }
+            
+          }
+        
+        }
+        
+      
+      }
+      
+      .workspace-journal-content-container {
+        padding-top:0.01em;
+      
+        .workspace-journal-title {
+          margin:10px 0 20px 0;
+        }
+      
+        .workspace-journal-content {
+
         }
       
       }
