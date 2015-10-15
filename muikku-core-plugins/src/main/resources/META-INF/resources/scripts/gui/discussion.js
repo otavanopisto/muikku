@@ -682,11 +682,12 @@ $(document).ready(function() {
 
     var createArea = function(values) {
       mApi().forum.areas.create(values).callback(function(err, result) {
+        window.discussion._refreshLatest();
+        window.discussion._refreshAreas();
+        $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newarea'));
       });
 
-      window.discussion._refreshLatest();
-      window.discussion._refreshAreas();
-      $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newarea'));
+
     }
 
     mApi().forum.areas.read().callback(function(err, areas) {
@@ -705,11 +706,13 @@ $(document).ready(function() {
       var areaId = values.forumAreaId;
       
       mApi().forum.areas.del(areaId).callback(function(err, result) {
+        window.discussion._refreshLatest();
+        window.discussion._refreshAreas();
+        $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.areadeleted'));
+        
       });
 
-      window.discussion._refreshLatest();
-      window.discussion._refreshAreas();
-      $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.areadeleted'));
+
     }
 
     mApi().forum.areas.read().callback(function(err, areas) {
