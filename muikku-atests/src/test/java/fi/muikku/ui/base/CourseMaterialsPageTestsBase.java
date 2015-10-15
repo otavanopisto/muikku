@@ -487,7 +487,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @Test
   public void answerMemoTestAdmin() throws Exception {
     loginAdmin();
-    maximizeWindow();
+
     Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -522,7 +522,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @Test
   public void answerMemoTestStudent() throws Exception {
     loginStudent1();
-    maximizeWindow();
+
     Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
