@@ -19,6 +19,9 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
@@ -117,39 +120,47 @@ public class ElasticSearchProvider implements SearchProvider {
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>());
     }
     
-    QueryBuilder query = null;
+    QueryBuilder query = QueryBuilders.matchAllQuery();
     
     try {
-      if (StringUtils.isBlank(schoolDataSource) && (subjects == null || subjects.isEmpty()) && StringUtils.isBlank(freeText)) {
-        if (includeUnpublished) {
-          query = QueryBuilders.matchAllQuery();
-        } else {
-          query = QueryBuilders.matchQuery("published", Boolean.TRUE);
-        }
-      } else {
-        query = QueryBuilders.boolQuery();
-        
-        if (!includeUnpublished) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.matchQuery("published",Boolean.TRUE));
-        }
-        
-        if (StringUtils.isNotBlank(schoolDataSource)) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.matchQuery("schoolDataSource", schoolDataSource));
-        }
-        
-        if (subjects != null && !subjects.isEmpty()) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("subjectIdentifier", subjects));
-        }
-        
-        if (identifiers != null) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("identifier", identifiers));
-        }
-    
-        if (StringUtils.isNotBlank(freeText)) {
-          ((BoolQueryBuilder) query).should(QueryBuilders.prefixQuery("name", freeText));
-          ((BoolQueryBuilder) query).should(QueryBuilders.prefixQuery("description", freeText));
-        }
+      List<FilterBuilder> filters = new ArrayList<FilterBuilder>();
+      
+      if (!includeUnpublished) {
+        filters.add(FilterBuilders.termFilter("published", Boolean.TRUE));
       }
+      
+      if (StringUtils.isNotBlank(schoolDataSource)) {
+        filters.add(FilterBuilders.termFilter("schoolDataSource", schoolDataSource.toLowerCase()));
+      }
+      
+      if (subjects != null && !subjects.isEmpty()) {
+        filters.add(FilterBuilders.termsFilter("subjectIdentifier", subjects));
+      }
+      
+      if (identifiers != null) {
+        filters.add(FilterBuilders.termsFilter("identifier", identifiers));
+      }
+  
+      if (StringUtils.isNotBlank(freeText)) {
+        FilterBuilder[] fieldFilters = {
+            FilterBuilders.prefixFilter("name", freeText),
+            FilterBuilders.prefixFilter("description", freeText)
+        };
+
+        filters.add(FilterBuilders.orFilter(fieldFilters));
+      }
+      
+      FilterBuilder filter;
+
+      if (!filters.isEmpty()) {
+        if (filters.size() > 1)
+          filter = FilterBuilders.andFilter(filters.toArray(new FilterBuilder[0]));
+        else
+          filter = filters.get(0);
+      } else
+        filter = FilterBuilders.matchAllFilter();
+      
+      FilteredQueryBuilder filteredQuery = QueryBuilders.filteredQuery(query, filter);
       
       SearchRequestBuilder requestBuilder = elasticClient
         .prepareSearch("muikku")
@@ -157,7 +168,7 @@ public class ElasticSearchProvider implements SearchProvider {
         .setFrom(start)
         .setSize(maxResults);
       
-      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+      SearchResponse response = requestBuilder.setQuery(filteredQuery).execute().actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHit[] results = response.getHits().getHits();
       for (SearchHit hit : results) {
