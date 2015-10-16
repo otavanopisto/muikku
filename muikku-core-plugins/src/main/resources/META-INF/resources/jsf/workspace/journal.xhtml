@@ -29,8 +29,8 @@
 							<ui:repeat
 								value="#{workspaceJournalBackingBean.workspaceStudents}"
 								var="student">
-								<option value="${student.identifier}">#{student.firstName}
-									#{student.lastName}</option>
+								<option value="${student.entity.id}">#{student.user.firstName}
+									#{student.user.lastName}</option>
 							</ui:repeat>
 						</select>
 					</div>

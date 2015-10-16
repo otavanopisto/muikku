@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +34,25 @@ import fi.otavanopisto.security.LoggedIn;
 @Join(path = "/workspace/{workspaceUrlName}/journal", to = "/jsf/workspace/journal.jsf")
 @LoggedIn
 public class WorkspaceJournalBackingBean {
+  
+  public static final class UserWithUserEntity {
+    private final User user;
+    private final UserEntity entity;
+    
+    public UserWithUserEntity(User user, UserEntity entity) {
+      this.user = user;
+      this.entity = entity;
+    }
+    
+    public User getUser() {
+      return user;
+    }
+    
+    public UserEntity getUserEntity() {
+      return entity;
+    }
+    
+  }
 
   @Parameter
   private String workspaceUrlName;
@@ -162,11 +182,24 @@ public class WorkspaceJournalBackingBean {
         MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
   }
   
-  public List<User> getWorkspaceStudents() {
+  public List<UserWithUserEntity> getWorkspaceStudents() {
+    ArrayList<UserWithUserEntity> result = new ArrayList<>();
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    return workspaceController.listUsersByWorkspaceEntityAndRoleArchetype(
+    List<User> userList = workspaceController.listUsersByWorkspaceEntityAndRoleArchetype(
         workspaceEntity,
         WorkspaceRoleArchetype.STUDENT);
+    
+    for (User user : userList) {
+      UserEntity userEntity =
+          userEntityController.findUserEntityByDataSourceAndIdentifier(
+              user.getSchoolDataSource(),
+              user.getIdentifier());
+      result.add(
+          new UserWithUserEntity(user, userEntity)
+      );
+    }
+    
+    return result;
   }
 
   public List<WorkspaceJournalEntry> getJournalEntries() {
