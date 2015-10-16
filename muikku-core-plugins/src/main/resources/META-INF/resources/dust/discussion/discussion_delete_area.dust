@@ -16,7 +16,7 @@
                   {@eq key=numThreads value=0}
                     <option value="{id}">{name}</option>
                   {:else}
-                    <option disabled>{name} ({#localize key="plugin.discussion.deletearea.noremove" arg0=numThreads /})</option>
+                    <option disabled="disabled">{name} ({#localize key="plugin.discussion.deletearea.noremove" arg0=numThreads /})</option>
                   {/eq}
                  {:else}
                    <option>{#localize key="plugin.discussion.selectarea.empty" /}</option>

@@ -681,10 +681,15 @@ $(document).ready(function() {
   $(".di-new-area-button").click(function() {
 
     var createArea = function(values) {
+      
       mApi().forum.areas.create(values).callback(function(err, result) {
-        window.discussion._refreshLatest();
-        window.discussion._refreshAreas();
-        $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newarea'));
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.newarea', err));
+        } else {        
+          window.discussion._refreshLatest();
+          window.discussion._refreshAreas();
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newarea'));
+        }  
       });
 
 
@@ -705,11 +710,14 @@ $(document).ready(function() {
     var deleteArea = function(values) {
       var areaId = values.forumAreaId;
       
-      mApi().forum.areas.del(areaId).callback(function(err, result) {
-        window.discussion._refreshLatest();
-        window.discussion._refreshAreas();
-        $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.areadeleted'));
-        
+      mApi().forum.areas.del(areaId).callback(function(err, result) 
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.areadelete', err));
+        } else {                  
+          window.discussion._refreshLatest();
+          window.discussion._refreshAreas();
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.areadeleted'));
+        } 
       });
 
 
