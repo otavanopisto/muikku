@@ -323,11 +323,13 @@ $(document).ready(function(){
     var workspaces = this._searchWorkspaces(searchTerm);
     var groups = this._searchGroups(searchTerm);
     var users = this._searchUsers(searchTerm);
-    var userContainers = $.merge(groups, workspaces)
+    var recipients = users.concat(workspaces, groups);
     
     
-    return $.merge(users, userContainers);
-//      return this._searchUsers(searchTerm);
+ 
+    
+    
+    return recipients;
   },      
 
   
