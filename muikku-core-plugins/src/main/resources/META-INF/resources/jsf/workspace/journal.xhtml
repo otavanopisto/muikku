@@ -8,29 +8,22 @@
 
 	<ui:define name="workspace.content.top.static">
 		<form style="display: none;">
-			<input name="workspaceEntityId" type="hidden"
-				value="#{workspaceJournalBackingBean.workspaceEntityId}" />
+			<input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
 		</form>
-		<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal}">
-			<div class="workspace-journal-new-entry-container"
-				style="height: auto;">
+		<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal} and #{not workspaceJournalBackingBean.canListAllEntries}">
+			<div class="workspace-journal-new-entry-container" style="height:auto;">
 				<div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
 			</div>
 		</ui:fragment>
 		<form method="get" id="studentSelectForm">
-			<ui:fragment
-				rendered="#{workspaceJournalBackingBean.canListAllEntries}">
+			<ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
 				<div class="workspace-journal-teacher-tools-container">
 					<div class="workspace-journal-select-student-container">
-						<span class="journal-select-student-label">Opiskelija:</span> <select
-							id="studentSelectField" class="journal-select-student-selection"
-							name="studentId">
-							<option value="">Näytä kaikki</option>
-							<ui:repeat
-								value="#{workspaceJournalBackingBean.workspaceStudents}"
-								var="student">
-								<option value="${student.identifier}">#{student.firstName}
-									#{student.lastName}</option>
+						<span class="journal-select-student-label">#{i18n.text['plugin.workspace.journal.studentFilter.label']}</span>
+            <select id="studentSelectField" class="journal-select-student-selection" name="studentId">
+							<option>#{i18n.text['plugin.workspace.journal.studentFilter.showAll']}</option>
+							<ui:repeat value="#{workspaceJournalBackingBean.workspaceStudents}" var="student">
+								<option value="${student.identifier}">#{student.firstName} #{student.lastName}</option>
 							</ui:repeat>
 						</select>
 					</div>
@@ -41,39 +34,42 @@
 
 	<ui:define name="workspace.content">
 		<div class="workspace-journal-content-wrapper">
-			<ui:repeat var="entry"
-				value="#{workspaceJournalBackingBean.journalEntries}">
+			<ui:repeat var="entry" value="#{workspaceJournalBackingBean.journalEntries}">
 
 				<!-- Start of da Loopa-Loop for single journal entry -->
-				<div class="workspace-single-journal-entry"
-					data-entry-id="#{entry.id}">
+				<div class="workspace-single-journal-entry" data-entry-id="#{entry.id}">
 					<h:form>
-						<h:commandButton class="delete-entry-#{entry.id}"
-							actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}"
-							style="display: none;" />
+						<h:commandButton class="delete-entry-#{entry.id}" actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
 					</h:form>
 					<div class="workspace-journal-entry-view">
-						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal}">
+						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal} and #{not workspaceJournalBackingBean.canListAllEntries}">
 							<div class="workspace-journal-title">#{entry.title}</div>
-							<div class="workspace-journal-entry-meta">
-								<div class="workspace-journal-dateTime">#{entry.created}</div>
-							</div>
+              <div class="workspace-journal-entry-meta">
+                <div class="workspace-journal-dateTime">#{entry.created}</div>
+              </div>
+              <div class="workspace-journal-content">
+                <h:outputText value="#{entry.html}" escape="false"/>
+              </div>
 						</ui:fragment>
-						<ui:fragment
-							rendered="#{not workspaceJournalBackingBean.myJournal}">
-							<div class="workspace-journal-poster">#{workspaceJournalBackingBean.posterOf(entry)}</div>
-							<div class="workspace-journal-title">#{entry.title}</div>
-							<div class="workspace-journal-entry-meta">
-								<div class="workspace-journal-dateTime">#{entry.created}</div>
-							</div>
+						<ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
+							<div class="workspace-journal-header-container">
+                <div class="workspace-journal-poster-container">
+                  <div class="workspace-journal-poster-image"><img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/></div>
+                  <div class="workspace-journal-poster-name">#{workspaceJournalBackingBean.posterOf(entry)}</div>
+                  <div class="workspace-journal-entry-meta">
+                    <div class="workspace-journal-dateTime">#{entry.created}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="workspace-journal-content-container">
+                <div class="workspace-journal-title">#{entry.title}</div>
+                <div class="workspace-journal-content">
+                  <h:outputText value="#{entry.html}" escape="false"/>
+                </div>
+              </div>
 						</ui:fragment>
-						<div class="workspace-journal-content">
-							<p>
-								<h:outputText value="#{entry.html}" escape="false" />
-							</p>
-						</div>
 					</div>
-					<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal}">
+					<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal} and #{not workspaceJournalBackingBean.canListAllEntries}">
 						<div class="workspace-journal-footer">
 							<button class="journal-edit-button">#{i18n.text['plugin.workspace.journal.editEntryButton.label']}</button>
 							<button data-entry-id="#{entry.id}" class="journal-delete-button">#{i18n.text['plugin.workspace.journal.deleteEntryButton.label']}</button>
