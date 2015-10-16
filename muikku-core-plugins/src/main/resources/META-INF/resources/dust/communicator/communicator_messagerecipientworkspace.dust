@@ -1,5 +1,4 @@
 <div class="mf-item-user  cm-message-recipient">
-  <!-- recipientStudentsWorkspaceIds tai recipientTeachersWorkspaceIds, riippuen kummalle ryhm�lle l�hetet��n -->
   <input type="hidden" data-array="true" name="recipientStudentsWorkspaceIds" value="{id}" />
   <input type="hidden" data-array="true" name="recipientTeachersWorkspaceIds" value="{id}" />
   <div class="cm-message-recipient-name workspace">{name}</div>
