@@ -3,18 +3,22 @@ package fi.muikku.plugins.evaluation.dao;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.plugins.CorePluginsDAO;
+import fi.muikku.dao.PluginDAO;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation_;
 
-public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMaterialEvaluation> {
+public class WorkspaceMaterialEvaluationDAO extends PluginDAO<WorkspaceMaterialEvaluation> {
 
+  @PersistenceContext (unitName = "muikku-evaluation-plugin")
+  private EntityManager entityManager;
+  
   private static final long serialVersionUID = 3327224161244826382L;
-
+  
   public WorkspaceMaterialEvaluation create(Long studentEntityId, Long workspaceMaterialId, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, Long assessorEntityId, Date evaluated, String verbalAssessment) {
     WorkspaceMaterialEvaluation workspaceMaterialEvaluation = new WorkspaceMaterialEvaluation();
     workspaceMaterialEvaluation.setAssessorEntityId(assessorEntityId);
@@ -80,6 +84,11 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
   public WorkspaceMaterialEvaluation updateVerbalAssessment(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, String verbalAssessment) {
     workspaceMaterialEvaluation.setVerbalAssessment(verbalAssessment);
     return persist(workspaceMaterialEvaluation);
+  }
+
+  @Override
+  protected EntityManager getEntityManager() {
+    return entityManager;
   }
 
  
