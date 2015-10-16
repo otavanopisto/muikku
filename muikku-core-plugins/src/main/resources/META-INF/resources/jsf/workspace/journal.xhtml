@@ -23,7 +23,7 @@
             <select id="studentSelectField" class="journal-select-student-selection" name="studentId">
 							<option>#{i18n.text['plugin.workspace.journal.studentFilter.showAll']}</option>
 							<ui:repeat value="#{workspaceJournalBackingBean.workspaceStudents}" var="student">
-								<option value="${student.identifier}">#{student.firstName} #{student.lastName}</option>
+								<option value="${student.userEntity.id}">#{student.user.firstName} #{student.user.lastName}</option>
 							</ui:repeat>
 						</select>
 					</div>
