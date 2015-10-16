@@ -51,21 +51,42 @@
     float:left;
     padding:6px 0;
     margin-top:0 !important;
-    
-    
-       &:hover{   
-          color:red;
-          &:before{
-           color:red;
-/*            @extend .icon-delete; */
-          }
-         }   
-        &:before{
-         margin-right:5px;
-         font-family: 'muikku';
-         color:orange;
+    &:hover{   
+    color:red;
+      &:before{
+       color:red;
+  /*            @extend .icon-delete; */
+      }
+    }   
+
+    &:before{
+      margin-right:5px;
+      font-family: 'muikku';
+      
+    }     
+
+
+    &.user{
+
+      &:before{
          @extend .icon-user;
-        }           
+         color:orange;
+        }     
+      }
+    &.usergroup{
+
+      &:before{
+         @extend .icon-members;
+         color:green;
+        }     
+      }
+    &.workspace{
+
+      &:before{
+         @extend .icon-books;
+         color:blue;
+        }     
+      }      
    }  
   .cm-message-recipient-remove{
     float:right;    
