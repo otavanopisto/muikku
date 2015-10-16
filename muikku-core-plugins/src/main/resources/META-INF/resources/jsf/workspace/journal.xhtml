@@ -10,7 +10,7 @@
 		<form style="display: none;">
 			<input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
 		</form>
-		<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal} and #{not workspaceJournalBackingBean.canListAllEntries}">
+		<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
 			<div class="workspace-journal-new-entry-container" style="height:auto;">
 				<div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
 			</div>
@@ -42,7 +42,7 @@
 						<h:commandButton class="delete-entry-#{entry.id}" actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
 					</h:form>
 					<div class="workspace-journal-entry-view">
-						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal} and #{not workspaceJournalBackingBean.canListAllEntries}">
+						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
 							<div class="workspace-journal-title">#{entry.title}</div>
               <div class="workspace-journal-entry-meta">
                 <div class="workspace-journal-dateTime">#{entry.created}</div>
@@ -69,7 +69,7 @@
               </div>
 						</ui:fragment>
 					</div>
-					<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal} and #{not workspaceJournalBackingBean.canListAllEntries}">
+					<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
 						<div class="workspace-journal-footer">
 							<button class="journal-edit-button">#{i18n.text['plugin.workspace.journal.editEntryButton.label']}</button>
 							<button data-entry-id="#{entry.id}" class="journal-delete-button">#{i18n.text['plugin.workspace.journal.deleteEntryButton.label']}</button>
