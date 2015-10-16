@@ -37,11 +37,11 @@ public class WorkspaceJournalBackingBean {
   
   public static final class UserWithUserEntity {
     private final User user;
-    private final UserEntity entity;
+    private final UserEntity userEntity;
     
     public UserWithUserEntity(User user, UserEntity entity) {
       this.user = user;
-      this.entity = entity;
+      this.userEntity = entity;
     }
     
     public User getUser() {
@@ -49,7 +49,7 @@ public class WorkspaceJournalBackingBean {
     }
     
     public UserEntity getUserEntity() {
-      return entity;
+      return userEntity;
     }
     
   }
