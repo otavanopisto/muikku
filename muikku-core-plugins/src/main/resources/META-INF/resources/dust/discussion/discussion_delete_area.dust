@@ -13,13 +13,11 @@
                  {#.}
                 <!--  TODO: removing an area with threads -->
                 <!-- <option value="{id}">{name} ( {@ne key=numThreads value=0}{#localize key="plugin.discussion.deletearea.threads" arg0=numThreads /}{:else}{#localize key="plugin.discussion.deletearea.nothreads" /}{/ne} )</option> -->
-
                   {@eq key=numThreads value=0}
-                    <option value="{id}">{name} </option>
+                    <option value="{id}">{name}</option>
                   {:else}
                     <option disabled>{name} ({#localize key="plugin.discussion.deletearea.noremove" arg0=numThreads /})</option>
                   {/eq}
-                  
                  {:else}
                    <option>{#localize key="plugin.discussion.selectarea.empty" /}</option>
                  {/.}
