@@ -4,7 +4,6 @@ import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -15,6 +14,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -80,24 +80,22 @@ public class ElasticSearchProvider implements SearchProvider {
 
       List<FilterBuilder> filters = new ArrayList<FilterBuilder>();
       
-      if (!StringUtils.isBlank(text)) {
-        if (StringUtils.isNotBlank(text)) {
-          StringTokenizer tokenizer = new StringTokenizer(text, " ");
+      if (StringUtils.isNotBlank(text)) {
+        StringTokenizer tokenizer = new StringTokenizer(text, " ");
 
-          while (tokenizer.hasMoreTokens()) {
-            String token = tokenizer.nextToken();
+        while (tokenizer.hasMoreTokens()) {
+          String token = tokenizer.nextToken();
 
-            List<FilterBuilder> fieldFilters = new ArrayList<FilterBuilder>();
-            
-            for (String textField : textFields)
-              fieldFilters.add(FilterBuilders.prefixFilter(textField, token));
-            
-            if (!fieldFilters.isEmpty()) {
-              if (fieldFilters.size() > 1)
-                filters.add(FilterBuilders.orFilter(fieldFilters.toArray(new FilterBuilder[0])));
-              else
-                filters.add(fieldFilters.get(0));
-            }
+          List<FilterBuilder> fieldFilters = new ArrayList<FilterBuilder>();
+          
+          for (String textField : textFields)
+            fieldFilters.add(FilterBuilders.prefixFilter(textField, token));
+          
+          if (!fieldFilters.isEmpty()) {
+            if (fieldFilters.size() > 1)
+              filters.add(FilterBuilders.orFilter(fieldFilters.toArray(new FilterBuilder[0])));
+            else
+              filters.add(fieldFilters.get(0));
           }
         }
       }
@@ -107,11 +105,11 @@ public class ElasticSearchProvider implements SearchProvider {
       }
       
       if (!isEmptyCollection(groups)) {
-        filters.add(FilterBuilders.inFilter("groups", toLongArr(groups)));
+        filters.add(FilterBuilders.inFilter("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
       }
       
       if (!isEmptyCollection(workspaces)) {
-        filters.add(FilterBuilders.inFilter("workspaces", toLongArr(workspaces)));
+        filters.add(FilterBuilders.inFilter("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
       }
       
       FilterBuilder filter;
@@ -155,18 +153,6 @@ public class ElasticSearchProvider implements SearchProvider {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
     }
-  }
-
-  private long[] toLongArr(Collection<Long> longs) {
-    long[] r = new long[longs.size()];
-    
-    int i = 0;
-    for (Long l : longs) {
-      r[i] = l;
-      i++;
-    }
-    
-    return r;
   }
   
   @Override
