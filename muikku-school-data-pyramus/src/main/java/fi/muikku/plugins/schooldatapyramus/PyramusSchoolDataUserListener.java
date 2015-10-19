@@ -94,7 +94,7 @@ public class PyramusSchoolDataUserListener {
               StudentGroupType studentGroupType = identifierMapper.getStudentGroupType(userGroup.getIdentifier());
               if (studentGroupType == StudentGroupType.STUDYPROGRAMME) {
                 if ((!isActive) || (!userGroup.getIdentifier().equals(userGroupIdentifier)))
-                  fireUserGroupUserRemoved(userGroupUser.getIdentifier(), userGroup.getIdentifier());
+                  fireUserGroupUserRemoved(userGroupUser.getIdentifier(), userGroup.getIdentifier(), event.getIdentifier());
                 else
                   found = true;
               }
@@ -123,7 +123,7 @@ public class PyramusSchoolDataUserListener {
         UserGroupEntity userGroup = userGroupUser.getUserGroupEntity();
         StudentGroupType studentGroupType = identifierMapper.getStudentGroupType(userGroup.getIdentifier());
         if (studentGroupType == StudentGroupType.STUDYPROGRAMME) {
-          fireUserGroupUserRemoved(userGroupUser.getIdentifier(), userGroup.getIdentifier());
+          fireUserGroupUserRemoved(userGroupUser.getIdentifier(), userGroup.getIdentifier(), event.getIdentifier());
         }
       }
     }
@@ -136,14 +136,17 @@ public class PyramusSchoolDataUserListener {
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userEntityIdentifier));
   }
 
-  private void fireUserGroupUserUpdated(String userGroupUserIdentifier) {
+  private void fireUserGroupUserUpdated(String userGroupUserIdentifier, String userGroupIdentifier, String userIdentifier) {
     schoolDataUserGroupUserUpdatedEvent.fire(new SchoolDataUserGroupUserUpdatedEvent(
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier));
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier,
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier,
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
   }
   
-  private void fireUserGroupUserRemoved(String userGroupUserIdentifier, String userGroupIdentifier) {
+  private void fireUserGroupUserRemoved(String userGroupUserIdentifier, String userGroupIdentifier, String userIdentifier) {
     schoolDataUserGroupUserRemovedEvent.fire(new SchoolDataUserGroupUserRemovedEvent(
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier,
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier));
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier,
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
   }
 }
