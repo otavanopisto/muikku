@@ -382,6 +382,55 @@ public class PyramusMocks{
         .withBody(studentArrayJson)
         .withStatus(200)));
     
+    /* Student #2 for workspace #2*/
+    Student student2 = new Student((long) 5, (long) 5, "Second", "User", null, null, null, null, null, null, null, null,
+      null, null, null, (long) 1, null, null,
+      false, null, null, null, null, variables, tags, false);
+    
+    String student2Json = objectMapper.writeValueAsString(student2);
+    
+    stubFor(get(urlEqualTo("/1/students/students/2"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(student2Json)
+        .withStatus(200)));
+
+    Email email2 = new Email((long) 5, (long) 2, true, "seconduser@made.up");
+    Email[] emails2 = {email2};
+    String email2Json = objectMapper.writeValueAsString(emails2);
+    
+    stubFor(get(urlEqualTo("/1/students/students/2/emails"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(email2Json).withStatus(200)));
+
+    Student[] student2Array = { student2 };
+    String student2ArrayJson = objectMapper.writeValueAsString(student2Array);
+    
+    stubFor(get(urlEqualTo("/1/students/students?email=seconduser@made.up"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(student2ArrayJson)
+        .withStatus(200)));
+
+    DateTime birthday2 = new DateTime(1992, 2, 2, 0, 0, 0, 0);
+
+    Person person2 = new Person((long) 5, birthday2, "021092-2112", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 5);
+    String person2Json = objectMapper.writeValueAsString(person2);
+    
+    stubFor(get(urlEqualTo("/1/persons/persons/5"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(person2Json)
+        .withStatus(200)));
+
+    stubFor(get(urlMatching("/1/courses/courses/2/students?filterArchived=.*"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(student2ArrayJson)
+        .withStatus(200)));
+    /* Student #2 for workspace #2 */
+    
     ContactType contactType = new ContactType((long)1, "Koti", false, false);
     ContactType[] contactTypes = { contactType };
     String contactTypeJson = objectMapper.writeValueAsString(contactType);
@@ -692,5 +741,96 @@ public class PyramusMocks{
        .withHeader("Content-Type", "application/json")
        .withBody(studentGroupsJson)
        .withStatus(200)));
- } 
+ }
+ 
+ public static void guiderPyramusMocks() throws JsonProcessingException {
+   ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    
+   
+   Map<String, String> variables = null;
+   List<String> tags = null;
+   /* Student #1 */
+   Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null,
+     null, null, null, (long) 1, null, null,
+     false, null, null, null, null, variables, tags, false);
+   
+   String studentJson = objectMapper.writeValueAsString(student);
+   
+   stubFor(get(urlEqualTo("/1/students/students/1"))
+     .willReturn(aResponse()
+       .withHeader("Content-Type", "application/json")
+       .withBody(studentJson)
+       .withStatus(200)));
+
+   Email email = new Email((long) 1, (long) 2, true, "testuser@made.up");
+   Email[] emails = {email};
+   String emailJson = objectMapper.writeValueAsString(emails);
+   
+   stubFor(get(urlEqualTo("/1/students/students/1/emails"))
+     .willReturn(aResponse()
+       .withHeader("Content-Type", "application/json")
+       .withBody(emailJson).withStatus(200)));
+
+   Student[] studentArray = { student };
+   String studentArrayJson = objectMapper.writeValueAsString(studentArray);
+   
+   stubFor(get(urlEqualTo("/1/students/students?email=testuser@made.up"))
+   // .withQueryParam("email", matching(".*"))
+     .willReturn(aResponse()
+       .withHeader("Content-Type", "application/json")
+       .withBody(studentArrayJson)
+       .withStatus(200)));
+
+   DateTime birthday = new DateTime(1990, 2, 2, 0, 0, 0, 0);
+
+   Person person = new Person((long) 1, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 1);
+   String personJson = objectMapper.writeValueAsString(person);
+   
+   stubFor(get(urlEqualTo("/1/persons/persons/1"))
+     .willReturn(aResponse()
+       .withHeader("Content-Type", "application/json")
+       .withBody(personJson)
+       .withStatus(200)));
+
+   stubFor(get(urlMatching("/1/courses/courses/1/students?filterArchived=.*"))
+     .willReturn(aResponse()
+       .withHeader("Content-Type", "application/json")
+       .withBody(studentArrayJson)
+       .withStatus(200)));
+   /* Student #1 */
+   
+  
+   
+   /* Teacher */
+   Person staff1 = new Person((long) 2, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 2);
+   String staff1Json = objectMapper.writeValueAsString(staff1);
+   
+   stubFor(get(urlEqualTo("/1/persons/persons/2"))
+     .willReturn(aResponse()
+       .withHeader("Content-Type", "application/json")
+       .withBody(staff1Json)
+       .withStatus(200)));
+   
+   Person[] personArray = {person, staff1};
+   String personArrayJson = objectMapper.writeValueAsString(personArray);
+   
+   stubFor(get(urlMatching("/1/persons/persons?filterArchived=.*"))
+     .willReturn(aResponse()
+       .withHeader("Content-Type", "application/json")
+       .withBody(personArrayJson)
+       .withStatus(200)));
+
+   stubFor(get(urlEqualTo("/1/persons/persons"))
+     .willReturn(aResponse()
+       .withHeader("Content-Type", "application/json")
+       .withBody(personArrayJson)
+       .withStatus(200)));
+   /* Teacher */
+   stubFor(get(urlMatching("/1/students/students?filterArchived=false&firstResult=.*&maxResults=.*"))
+     .willReturn(aResponse()
+       .withHeader("Content-Type", "application/json")
+       .withBody(studentArrayJson)
+       .withStatus(200)));
+
+ }
+ 
 }
