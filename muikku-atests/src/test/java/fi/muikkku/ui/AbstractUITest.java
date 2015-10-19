@@ -430,8 +430,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForPresent(".index");
   }
   
-  protected Workspace createWorkspace(String name, String identifier, Boolean published) throws IOException {
-    PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier));
+  protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws IOException {
+    PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier), name, description);
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     

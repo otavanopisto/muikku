@@ -137,7 +137,7 @@ public class CourseTestsBase extends AbstractUITest {
   @Test
   public void courseUnpublishTest() throws Exception {
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
     waitForPresent(".workspace-title");
     assertVisible(".workspace-unpublish-button");

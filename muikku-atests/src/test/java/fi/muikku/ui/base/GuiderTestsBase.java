@@ -10,8 +10,8 @@ public class GuiderTestsBase extends AbstractUITest {
   @Test
   public void workspaceFilterTest() throws Exception {
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
-    createWorkspace("diffentcourse", "2", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    createWorkspace("diffentcourse", "Second test course", "2", Boolean.TRUE);
     try {  
       navigate("/guider", true);
       sendKeys(".gt-search .search", "different");

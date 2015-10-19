@@ -449,15 +449,15 @@ public class PyramusMocks{
   }
   
   public static void workspace1PyramusMock() throws JsonProcessingException {
-    workspacePyramusMock(1l);
+    workspacePyramusMock(1l, "testCourse", "test course for testing");
   }
   
-  public static void workspacePyramusMock(Long id) throws JsonProcessingException {
+  public static void workspacePyramusMock(Long id, String name, String description) throws JsonProcessingException {
       DateTime created = new DateTime(1990, 2, 2, 0, 0, 0, 0);
       DateTime begin = new DateTime(2000, 1, 1, 0, 0, 0, 0);
       DateTime end = new DateTime(2050, 1, 1, 0, 0, 0, 0);
 
-      Course course = new Course(id, "testCourse", created, created, "test course for testing", false, 1, 
+      Course course = new Course(id, name, created, created, description, false, 1, 
         (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
         (double) 15, (double) 45, (double) 45, end, (long) 1,
         (long) 1, (long) 1, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
