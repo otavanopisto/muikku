@@ -285,10 +285,13 @@
     _checkExercises: function (requestAnswers) {
       var correctAnswersDisplay = this.correctAnswers();
       var correctAnswersCountContainer = this.element.find('.correct-answers-count-container');
+      correctAnswersCountContainer.empty();
       
       var fields = this.element.find('.muikku-field');
       var correctAnswerCount = 0;
       var wrongAnswerCount = 0;
+
+      this.element.find('.muikku-field-examples').remove();
 
       $(fields).each(function (index, field) {
         $(field).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');

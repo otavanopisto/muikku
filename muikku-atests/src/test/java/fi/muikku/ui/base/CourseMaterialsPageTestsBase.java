@@ -283,6 +283,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @Test
   public void answerDropdownTestAdmin() throws Exception {
     loginAdmin();
+    maximizeWindow();
     Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -316,7 +317,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @Test
   public void answerDropdownTestStudent() throws Exception {
     loginStudent1();
-    
+    maximizeWindow();    
     Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -350,6 +351,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @Test
   public void answerRadioButtonsTestAdmin() throws Exception {
     loginAdmin();
+    maximizeWindow();
     Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -369,7 +371,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), "true");
+        assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), true);
         
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -383,6 +385,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @Test
   public void answerRadioButtonsTestStudent() throws Exception {
     loginStudent1();
+    maximizeWindow();
     Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -402,7 +405,75 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), "true");
+        assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), true);
+        
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
+  }
+  
+  @Test
+  public void answerCheckboxTestAdmin() throws Exception {
+    loginAdmin();
+    maximizeWindow();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.multiselect\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nKTdumfsakZc5wFgru1LJoPs&quot;,&quot;listType&quot;:&quot;checkbox-horizontal&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;test1&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;test2&quot;,&quot;correct&quot;:false}]}\" /><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"1\" /><label>test1</label><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"2\" /><label>test2</label></object></p>", 1l, 
+          "EXERCISE");
+      
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        
+        assertVisible(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
+        assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
+        waitAndClick(".muikku-checkbox-field input[value=\"1\"]");
+        waitClassPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
+        assertChecked(String.format("#page-%d .muikku-checkbox-field input[value=\"1\"]", htmlMaterial.getId()), true);
+        
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
+  }
+  
+  @Test
+  public void answerCheckboxTestStudent() throws Exception {
+    loginStudent1();
+    maximizeWindow();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+        "Test", "text/html;editor=CKEditor", 
+        "<p><object type=\"application/vnd.muikku.field.multiselect\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nKTdumfsakZc5wFgru1LJoPs&quot;,&quot;listType&quot;:&quot;checkbox-horizontal&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;test1&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;test2&quot;,&quot;correct&quot;:false}]}\" /><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"1\" /><label>test1</label><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"2\" /><label>test2</label></object></p>", 1l, 
+        "EXERCISE");
+      
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        
+        assertVisible(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
+        assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
+        waitAndClick(".muikku-checkbox-field input[value=\"1\"]");
+        waitClassPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
+        assertChecked(String.format("#page-%d .muikku-checkbox-field input[value=\"1\"]", htmlMaterial.getId()), true);
         
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());

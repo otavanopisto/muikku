@@ -21,7 +21,6 @@ import org.apache.commons.io.IOUtils;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageAttachmentDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
-import fi.muikku.session.SessionController;
 
 @WebServlet (
     name = "CommunicatorAttachmentUploadServlet",
@@ -40,9 +39,6 @@ public class CommunicatorAttachmentUploadServlet extends HttpServlet {
 
   @Inject
   private CommunicatorMessageAttachmentDAO communicatorMessageAttachmentDAO;
-  
-  @Inject
-  private SessionController sessionController;
   
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
