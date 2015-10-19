@@ -44,7 +44,11 @@
 						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
 							<div class="workspace-journal-title">#{entry.title}</div>
               <div class="workspace-journal-entry-meta">
-                <div class="workspace-journal-dateTime">#{entry.created}</div>
+                <div class="workspace-journal-dateTime">
+                  <h:outputText value="#{entry.created}" >
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                  </h:outputText>
+                </div>
               </div>
               <div class="workspace-journal-content">
                 <h:outputText value="#{entry.html}" escape="false"/>
@@ -56,7 +60,11 @@
                   <div class="workspace-journal-poster-image"><img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/></div>
                   <div class="workspace-journal-poster-name">#{workspaceJournalBackingBean.posterOf(entry)}</div>
                   <div class="workspace-journal-entry-meta">
-                    <div class="workspace-journal-dateTime">#{entry.created}</div>
+                  <div class="workspace-journal-dateTime">
+                    <h:outputText value="#{entry.created}" >
+                      <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                    </h:outputText>
+                  </div>
                   </div>
                 </div>
               </div>
