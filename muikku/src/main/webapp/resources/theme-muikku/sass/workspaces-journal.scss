@@ -74,6 +74,15 @@ body[class^='workspace'] {
     background:#fff;
     padding:30px;
     
+    .workspace-journal-no-entries {
+      margin:50px;
+      box-sizing:border-box;
+      font-size:22px;
+      font-style:italic;
+      color:#666;
+      text-align:center;
+    }
+    
     .workspace-single-journal-entry {
       position:relative;
       margin:0 0 30px 0;
