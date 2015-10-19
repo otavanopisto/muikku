@@ -36,7 +36,6 @@
 		<div class="workspace-journal-content-wrapper">
 			<ui:repeat var="entry" value="#{workspaceJournalBackingBean.journalEntries}">
 
-				<!-- Start of da Loopa-Loop for single journal entry -->
 				<div class="workspace-single-journal-entry" data-entry-id="#{entry.id}">
 					<h:form>
 						<h:commandButton class="delete-entry-#{entry.id}" actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
