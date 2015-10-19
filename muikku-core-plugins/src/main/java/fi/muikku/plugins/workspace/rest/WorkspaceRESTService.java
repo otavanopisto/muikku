@@ -95,6 +95,7 @@ import fi.muikku.users.WorkspaceUserEntityController;
 @RequestScoped
 @Stateful
 @Produces("application/json")
+@Path ("/workspace")
 public class WorkspaceRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -5286350366083446537L;
@@ -171,7 +172,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   private WorkspaceJournalController workspaceJournalController;
   
   @GET
-  @Path("/workspace/workspaces/")
+  @Path("/workspaces/")
   @RESTPermitUnimplemented
   public Response listWorkspaces(
         @QueryParam("userId") Long userId,
@@ -274,7 +275,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/workspace/workspaces/{ID}")
+  @Path("/workspaces/{ID}")
   @RESTPermitUnimplemented
   public Response getWorkspace(@PathParam("ID") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -299,7 +300,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @PUT
-  @Path("/workspace/workspaces/{WORKSPACEENTITYID}")
+  @Path("/workspaces/{WORKSPACEENTITYID}")
   @RESTPermitUnimplemented
   public Response updateWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, fi.muikku.plugins.workspace.rest.model.Workspace payload) {
     if (!sessionController.isLoggedIn()) {
@@ -364,7 +365,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @GET
-  @Path("/workspace/workspaces/{ID}/users")
+  @Path("/workspaces/{ID}/users")
   @RESTPermitUnimplemented
   public Response getWorkspaceUsers(@PathParam("ID") Long workspaceEntityId, @QueryParam("roleArchtype") String roleArchetype,
       @QueryParam("userId") Long userId) {
@@ -441,7 +442,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
 
   @GET
-  @Path("/workspace/workspaces/{WORKSPACEENTITYID}/users/{WORKSPACEUSERENTITYID}")
+  @Path("/workspaces/{WORKSPACEENTITYID}/users/{WORKSPACEUSERENTITYID}")
   @RESTPermitUnimplemented
   public Response findWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
     // TODO: Security
@@ -460,7 +461,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @POST
-  @Path("/workspace/workspaces/{ID}/users")
+  @Path("/workspaces/{ID}/users")
   @RESTPermitUnimplemented
   public Response createWorkspaceUser(@PathParam("ID") Long workspaceEntityId, fi.muikku.plugins.workspace.rest.model.WorkspaceUser entity) {
     // TODO: Security
@@ -530,7 +531,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @POST
-  @Path("/workspace/workspaces/{ID}/signups")
+  @Path("/workspaces/{ID}/signups")
   @RESTPermitUnimplemented
   public Response createWorkspaceUserSignup(@PathParam("ID") Long workspaceEntityId,
       fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
@@ -564,7 +565,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @POST
-  @Path("/workspace/workspaces/{ID}/materials/")
+  @Path("/workspaces/{ID}/materials/")
   @RESTPermitUnimplemented
   public Response createWorkspaceMaterial(@PathParam("ID") Long workspaceEntityId,
       fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial entity) {
@@ -617,7 +618,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/workspace/workspaces/{WORKSPACEENTITYID}/materials/")
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/")
   @RESTPermitUnimplemented
   public Response listWorkspaceMaterials(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("parentId") Long parentId, @QueryParam ("assignmentType") String assignmentType) {
     // TODO: SecuritY???
@@ -676,7 +677,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   } 
 
   @GET
-  @Path("/workspace/workspaces/{WORKSPACEENTITYID}/materials/{ID}")
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{ID}")
   @RESTPermitUnimplemented
   public Response getWorkspaceMaterial(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") Long workspaceMaterialId) {
     // TODO: Security
@@ -704,7 +705,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/workspace/workspaces/{WORKSPACEENTITYID}/compositeReplies")
+  @Path("/workspaces/{WORKSPACEENTITYID}/compositeReplies")
   @RESTPermitUnimplemented
   public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
     // TODO: Correct workspace entity?
@@ -749,7 +750,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @GET
-  @Path("/workspace/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/compositeMaterialReplies")
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/compositeMaterialReplies")
   @RESTPermitUnimplemented
   public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("userEntityId") Long userEntityId) {
     // TODO: Correct workspace entity?, 
@@ -799,7 +800,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @GET
-  @Path("/workspace/fileanswer/{FILEID}")
+  @Path("/fileanswer/{FILEID}")
   @RESTPermitUnimplemented
   public Response getFileAnswer(@PathParam("FILEID") String fileId) {
     if (!sessionController.isLoggedIn()) {

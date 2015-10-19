@@ -19,11 +19,11 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.evaluation.rest.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.muikku.plugins.workspace.rest.WorkspaceRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.WorkspaceEntityController;
@@ -36,7 +36,7 @@ import fi.muikku.users.UserEntityController;
 @RequestScoped
 @Stateful
 @Produces("application/json")
-public class EvaluationRESTService extends PluginRESTService {
+public class EvaluationRESTService extends WorkspaceRESTService {
 
   private static final long serialVersionUID = -2380108419567067263L;
 
@@ -59,7 +59,7 @@ public class EvaluationRESTService extends PluginRESTService {
   private EvaluationController evaluationController;
   
   @POST
-  @Path("/workspace/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")
   @RESTPermitUnimplemented
   public Response createWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialEvaluation payload) {
     if (!sessionController.isLoggedIn()) {
@@ -146,7 +146,7 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/workspace/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")
   @RESTPermitUnimplemented
   public Response listWorkspaceMaterialEvaluations(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam("userEntityId") Long userEntityId) {
     if (!sessionController.isLoggedIn()) {
@@ -206,7 +206,7 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/workspace/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
   @RESTPermitUnimplemented
   public Response findWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("ID") Long workspaceMaterialEvaluationId) {
     if (!sessionController.isLoggedIn()) {
@@ -251,7 +251,7 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   @PUT
-  @Path("/workspace/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
   @RESTPermitUnimplemented
   public Response updateWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("ID") Long workspaceMaterialEvaluationId, WorkspaceMaterialEvaluation payload) {
     if (!sessionController.isLoggedIn()) {
