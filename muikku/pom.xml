@@ -278,7 +278,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>jndi-mail-bridge-plugin</artifactId>
-          <version>1.0.66-SNAPSHOT</version>
+          <version>1.0.68-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
