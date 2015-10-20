@@ -825,7 +825,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   // @Path ("/workspaces/{WORKSPACEENTITYID:[0-9]*}/materials/{WORKSPACEMATERIALID:[0-9]*}/replies")
-  @Path ("/workspace/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
+  @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
   @RESTPermitUnimplemented
   public Response listWorkspaceMaterialReplies(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("userEntityId") Long userEntityId) {
     // TODO: Security!
@@ -872,7 +872,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @POST
   // @Path ("/workspaces/{WORKSPACEENTITYID:[0-9]*}/materials/{WORKSPACEMATERIALID:[0-9]*}/replies")
-  @Path ("/workspace/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
+  @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
   @RESTPermitUnimplemented
   public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply payload) {
     // TODO: Security!
@@ -916,7 +916,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @PUT
   // @Path ("/workspaces/{WORKSPACEENTITYID:[0-9]*}/materials/{WORKSPACEMATERIALID:[0-9]*}/replies/{REPLYID:[0-9]*}")
-  @Path ("/workspace/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies/{REPLYID}")
+  @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies/{REPLYID}")
   @RESTPermitUnimplemented
   public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam ("REPLYID") Long workspaceMaterialReplyId, WorkspaceMaterialReply payload) {
     // TODO: Security!
