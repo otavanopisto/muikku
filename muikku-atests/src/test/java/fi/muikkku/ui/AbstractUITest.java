@@ -409,7 +409,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
   }
