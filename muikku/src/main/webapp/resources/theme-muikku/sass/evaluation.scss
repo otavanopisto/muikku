@@ -3,282 +3,991 @@
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 
-.prevPage {
-  position:absolute;
-  top:0;
-  bottom:0;
-  left:0;
-  z-index: 9999;
-  
-  &:hover {
-    opacity:0.9;
-    background:#576e7f;
-  }
-}
+body.evaluation {
+  background:#4f6677;
+  padding:0.01em; /* Prevent margin collapsing  */
+  min-height:100%;
+  line-height:1.7em;
+  font-size:18px;
 
-.nextPage {
-  position:absolute;
-  top:0;
-  bottom:0;
-  right:0;
-  z-index: 9999;
-  
-  &:hover {
-    opacity:0.9;
-    background:#576e7f;
-  }
-}
-
-.evaluation-students {
-  overflow: hidden;
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  height: 150px;
-  white-space: nowrap;
-  transition:margin 0.2s ease-in-out;
-  
-  .evaluation-student-wrapper {
-    width:160px;
-    height:130px;
-    box-sizing:border-box;
-    margin:10px;
-    display:inline-block;
-    text-align:center;
-    transition:opacity 1s ease-in-out, transform 1s ease-in-out;
-    
-    &.evaluation-student-pending {
-      opacity: 0.5;
-      // transform: rotate(-180deg) scale(2, 2);
-    }
-    
-    &.evaluation-student-loaded {
-      opacity: 1;
-      transform: rotate(0deg) scale(1, 1);
-    }
-    
-    /* Workspace has been evaluated by teacher */
-    &.workspace-evaluated {
-    
-      .evaluation-assessment-request-date {
-        width:100%;
-        box-sizing:border-box;
-        padding:3px 4px;
-        background:#fff;
-        border-radius:3px;
-        font-size:16px;
-        line-height:1.3em;
-        white-space:normal;
-        position:absolute;
-        font-size:0.9em;
-        top:5px;
-        background:#3cdd2a;
-        color:#fff;
-      }
-    
-      .evaluation-student-picture {
-        box-shadow:0 0 0 5px #3cdd2a;
-      }
-  
-    }
-    
-    /* Student has sent workspace assessment request */
-    &.workspace-assessment-requested {
-    
-     .evaluation-assessment-request-date {
-        width:100%;
-        box-sizing:border-box;
-        padding:3px 4px;
-        background:#fff;
-        border-radius:3px;
-        font-size:16px;
-        line-height:1.3em;
-        white-space:normal;
-        position:absolute;
-        font-size:0.9em;
-        top:5px;
-        background:#00ccff;
-        color:#fff;
-      }
-    
-      .evaluation-student-picture {
-        box-shadow:0 0 0 5px #0099ff;
-      }
-    
-    }
-    
-    /* Workspace hasn't been evaluated in time and TIME IS RUNNING OUT */
-    &.workspace-assessment-critical {
-    
-     .evaluation-assessment-request-date {
-        width:100%;
-        box-sizing:border-box;
-        padding:3px 4px;
-        background:#fff;
-        border-radius:3px;
-        font-size:16px;
-        line-height:1.3em;
-        white-space:normal;
-        position:absolute;
-        font-size:0.9em;
-        top:5px;
-        background:#de5500;
-        color:#fff;
-      }
-    
-      .evaluation-student-picture {
-        box-shadow:0 0 0 5px #de0000;
-      }
-    
-    }
-    
-    /* Workspace has been reviewed and needs more input from student */
-    &.workspace-reviewed-but-not-evaluated {
-    
-      .evaluation-assessment-request-date {
-        width:100%;
-        box-sizing:border-box;
-        padding:3px 4px;
-        background:#fff;
-        border-radius:3px;
-        font-size:16px;
-        line-height:1.3em;
-        white-space:normal;
-        position:absolute;
-        font-size:0.9em;
-        top:5px;
-        background:#ea7401;
-        color:#fff;
-      }
-    
-      .evaluation-student-picture {
-        box-shadow:0 0 0 5px #ea7401;
-      }
-  
-    }
-    
-    .evaluation-assessment-request-date {
-      width:100%;
-      box-sizing:border-box;
-      padding:3px 4px;
-      background:#fff;
-      border-radius:3px;
-      font-size:16px;
-      line-height:1.3em;
-      white-space:normal;
-      position:absolute;
-      font-size:0.9em;
-      top:5px;
-      background:#fff;
-      color:#000;
-    }
-  
-    .evaluation-student-picture {
-      width:120px;
-      height:120px;
-      margin:0 auto;  
-      box-sizing:border-box;
-      @include background-image('gfx/default-user-picture.jpg');
-      background-size:cover;
-      border-radius:75px;
-      background-position:center center;
-      cursor:pointer;
-      
-      &:hover {
-        box-shadow:0 0 0 5px #8cd1fa;
-      }
-    }
-    
-    .evaluation-student-name {
-      width:100%;
-      box-sizing:border-box;
-      background:#fff;
-      border-radius:3px;
-      font-size:16px;
-      white-space:normal;
-    }
-  
-  }
-}
-
-.evaluation-assignments {
-  overflow: hidden;
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 150px;
-  bottom: 0px;
-  white-space: nowrap;
-  transition:margin 0.2s ease-in-out;
-  
-  .evaluation-assignment-wrapper {
-    width:160px;
-    box-sizing:border-box;
-    margin:10px;
-    display:inline-block;
-    text-align:center;
-    background:#617e94;
-    opacity:0.15;
-    position:relative;
+  .prevPage {
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    z-index: 9999;
     
     &:hover {
-      box-shadow:0 0 0 5px #8cd1fa;
+      opacity:0.9;
+      background:#576e7f;
     }
+  }
+  
+  .nextPage {
+    position:absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    z-index: 9999;
     
-    &.assignment-unaswered {
+    &:hover {
+      opacity:0.9;
+      background:#576e7f;
     }
+  }
+  
+  .evaluation-students {
+    overflow: hidden;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    height: 150px;
+    white-space: nowrap;
+    transition:margin 0.2s ease-in-out;
     
-    &.assignment-aswered {
+    .evaluation-student-wrapper {
+      width:160px;
+      height:130px;
+      box-sizing:border-box;
+      margin:10px;
+      display:inline-block;
+      text-align:center;
+      transition:opacity 1s ease-in-out, transform 1s ease-in-out;
+      
+      &.evaluation-student-pending {
+        opacity: 0.5;
+        // transform: rotate(-180deg) scale(2, 2);
+      }
+      
+      &.evaluation-student-loaded {
+        opacity: 1;
+        transform: rotate(0deg) scale(1, 1);
+      }
+      
+      /* Workspace has been evaluated by teacher */
+      &.workspace-evaluated {
+      
+        .evaluation-assessment-request-date {
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+          position:absolute;
+          font-size:0.9em;
+          top:5px;
+          background:#3cdd2a;
+          color:#fff;
+        }
+      
+        .evaluation-student-picture {
+          box-shadow:0 0 0 5px #3cdd2a;
+        }
+    
+      }
+      
+      /* Student has sent workspace assessment request */
+      &.workspace-assessment-requested {
+      
+       .evaluation-assessment-request-date {
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+          position:absolute;
+          font-size:0.9em;
+          top:5px;
+          background:#00ccff;
+          color:#fff;
+        }
+      
+        .evaluation-student-picture {
+          box-shadow:0 0 0 5px #0099ff;
+        }
+      
+      }
+      
+      /* Workspace hasn't been evaluated in time and TIME IS RUNNING OUT */
+      &.workspace-assessment-critical {
+      
+       .evaluation-assessment-request-date {
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+          position:absolute;
+          font-size:0.9em;
+          top:5px;
+          background:#de5500;
+          color:#fff;
+        }
+      
+        .evaluation-student-picture {
+          box-shadow:0 0 0 5px #de0000;
+        }
+      
+      }
+      
+      /* Workspace has been reviewed and needs more input from student */
+      &.workspace-reviewed-but-not-evaluated {
+      
+        .evaluation-assessment-request-date {
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+          position:absolute;
+          font-size:0.9em;
+          top:5px;
+          background:#ea7401;
+          color:#fff;
+        }
+      
+        .evaluation-student-picture {
+          box-shadow:0 0 0 5px #ea7401;
+        }
+    
+      }
+      
+      .evaluation-assessment-request-date {
+        width:100%;
+        box-sizing:border-box;
+        padding:3px 4px;
+        background:#fff;
+        border-radius:3px;
+        font-size:16px;
+        line-height:1.3em;
+        white-space:normal;
+        position:absolute;
+        font-size:0.9em;
+        top:5px;
+        background:#fff;
+        color:#000;
+      }
+    
+      .evaluation-student-picture {
+        width:120px;
+        height:120px;
+        margin:0 auto;  
+        box-sizing:border-box;
+        @include background-image('gfx/default-user-picture.jpg');
+        background-size:cover;
+        border-radius:75px;
+        background-position:center center;
+        cursor:pointer;
+        
+        &:hover {
+          box-shadow:0 0 0 5px #8cd1fa;
+        }
+      }
+      
+      .evaluation-student-name {
+        width:100%;
+        box-sizing:border-box;
+        background:#fff;
+        border-radius:3px;
+        font-size:16px;
+        white-space:normal;
+      }
+    
     }
+  }
+  
+  .evaluation-assignments {
+    overflow: hidden;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 150px;
+    bottom: 0px;
+    white-space: nowrap;
+    transition:margin 0.2s ease-in-out;
     
-    &.assignment-withdrawn {
-    }
-    
-    &.assignment-submitted {
-      opacity:1;
-      cursor:pointer;
-    }
-    
-    &.assignment-evaluated {
-      opacity:1;
-      box-shadow:0 0 0 5px #3cdd2a;
-      cursor:pointer;
+    .evaluation-assignment-wrapper {
+      width:160px;
+      box-sizing:border-box;
+      margin:10px;
+      display:inline-block;
+      text-align:center;
+      background:#617e94;
+      opacity:0.15;
+      position:relative;
       
       &:hover {
         box-shadow:0 0 0 5px #8cd1fa;
       }
-    }
+      
+      &.assignment-unaswered {
+      }
+      
+      &.assignment-aswered {
+      }
+      
+      &.assignment-withdrawn {
+      }
+      
+      &.assignment-submitted {
+        opacity:1;
+        cursor:pointer;
+      }
+      
+      &.assignment-evaluated {
+        opacity:1;
+        box-shadow:0 0 0 5px #3cdd2a;
+        cursor:pointer;
+        
+        &:hover {
+          box-shadow:0 0 0 5px #8cd1fa;
+        }
+      }
+      
+      .evaluation-assignment-picture {
+        height:100px;  
+        width:100%;
+        box-sizing:border-box;
+      }
+      
+      .evaluation-assignment-date {
+        width:100%;
+        box-sizing:border-box;
+        padding:2px 4px;
+        color:#fff;
+        text-align:right;
+        position:absolute;
+        top:0;
+        font-size:14px;
+        line-height:1.3em;
+        white-space:normal;
+      }
+      
+      .evaluation-assignment-title {
+        width:100%;
+        box-sizing:border-box;
+        padding:3px 4px;
+        background:#fff;
+        margin:-25px 0 0 0;
+        font-size:14px;
+        line-height:1.3em;
+        white-space:normal;
+      }
     
-    .evaluation-assignment-picture {
-      height:100px;  
-      width:100%;
-      box-sizing:border-box;
     }
-    
-    .evaluation-assignment-date {
-      width:100%;
-      box-sizing:border-box;
-      padding:2px 4px;
-      color:#fff;
-      text-align:right;
+  }
+
+/* COPY FROM OLD */
+
+  .evaluation-evaluate-modal-wrapper {
+    position:absolute;
+    left:0;
+    top:72px;
+    bottom:0;
+    right:0;
+    padding:0;
+    margin:0;
+    border:0px;
+
+    #evaluationStudentAssignmentWrapper {
+      padding:0 20px 0 10px;
+      min-width:500px;
       position:absolute;
       top:0;
-      font-size:14px;
-      line-height:1.3em;
-      white-space:normal;
+      right:50%;
+      bottom:0;
+      left:10px;
+      overflow:auto;
+      
+      .evaluation-modal-student-wrapper {
+        
+        .evaluation-modal-workspace-info-wrapper {
+          padding:10px 20px;
+          font-size:13px;
+          background:#ebf7ff;
+          position:relative;
+          
+          .evaluation-modal-workspace-title {
+            font-size:20px;
+            color:#000;
+          }
+          
+          .evaluation-modal-workspace-educationtype,
+          .evaluation-modal-workspace-subject,
+          .evaluation-modal-workspace-length {
+            text-transform:uppercase;
+            display:inline-block;
+          
+            .title {
+              color:#727272;
+              display:inline-block;
+              margin:0 5px 0 0;
+            }
+            
+            .desc {
+              color:#000;
+              display:inline-block;
+              margin:0 10px 0 0;
+            }
+            
+            .symbol {
+              text-transform:none;
+            }
+          
+          }
+  
+        }
+        
+        .evaluation-modal-workspace-assignment-info {
+          
+          /* ASSIGNMENT EVALUATION */
+          .evaluation-modal-workspace-assignment-wrapper {
+            margin:20px 0 0 0;
+            font-size:14px;
+            
+            .evaluation-modal-workspace-single-assignment {
+              margin:10px 0;
+              
+              article {
+                border-bottom:5px solid #eee;
+                padding:0 0 30px 0;
+                margin:0 0 30px 0;
+                clear:both;
+              
+                h2,h3,h4,h5,h6 {
+                  color:#000;
+                  font-weight:300;
+                  padding:0 0 0 5px;
+                  
+                }
+                
+                h2 {
+                  font-size:24px;
+                  margin-left:-20px;
+                  border-left:20px solid #ce01bd;
+                }
+                
+                h3 {
+                  font-size:22px;
+                }
+                
+                h4 {
+                  font-size:20px;
+                }
+                
+                h5 {
+                  font-size:18px;
+                }
+                
+                h6 {
+                  font-size:16px;
+                }
+                
+                p {
+                  line-height:22px;
+                  margin:10px 0;
+                }
+                
+                textarea,
+                input[type="text"] {
+                  font-family:'Open Sans',Verdana, sans-serif;
+                  border-radius:3px;
+                  background:#ebf7ff;
+                  padding:5px 10px;
+                  margin:0;
+                  font-weight:300;
+                  font-style:italic;
+                  border:0px;
+                  color:#000;
+                  resize:none;
+                  box-sizing:border-box;
+                  
+                  &:focus {
+                    box-shadow:none;
+                    outline:none;
+                  }
+                  
+                }
+                
+                input[type="text"] {
+                  width:auto;
+                  margin:2px 0;
+                }
+                
+                input[type="checkbox"],
+                input[type="radio"] {
+                  background:#fff;
+                  border:3px solid #c9e0fb;
+                  border-radius:3px;
+                  box-shadow:0 0 0 3px rgba(215, 215, 215, 0.15);
+                  display:inline-block;
+                  margin:0 10px;
+                  outline:none; 
+                }
+                
+                label {
+                  display:inline;
+                  font-weight:400;
+                }
+                
+              }
+              
+            }
+          
+          }
+          
+          /* EXERCISE EVALUATION */
+          .evaluation-modal-workspace-exercise-wrapper {
+            margin:20px 0 0 0;
+            
+            .evaluation-modal-workspace-single-exercise {
+              margin:10px 0;
+              
+              article {
+                border-bottom:5px solid #eee;
+                padding:0 0 30px 0;
+                margin:0 0 30px 0;
+                clear:both;
+
+                h2,h3,h4,h5,h6 {
+                  color:#000;
+                  font-weight:300;
+                  padding:0 0 0 5px;
+                  
+                }
+                
+                h2 {
+                  font-size:24px;
+                  margin-left:-20px;
+                  border-left:20px solid #ff9900;
+                }
+                
+                h3 {
+                  font-size:22px;
+                }
+                
+                h4 {
+                  font-size:20px;
+                }
+                
+                h5 {
+                  font-size:18px;
+                }
+                
+                h6 {
+                  font-size:16px;
+                }
+                
+                p {
+                  line-height:22px;
+                  margin:10px 0;
+                }
+                
+                textarea {
+                  font-family:'Open Sans',Verdana, sans-serif;
+                  border-radius:3px;
+                  background:#ebf7ff;
+                  padding:5px 10px;
+                  margin:0;
+                  font-weight:300;
+                  font-style:italic;
+                  border:0px; 
+                  color:#000;
+                  resize:none;
+                  box-sizing:border-box;
+                  
+                  &:focus {
+                    box-shadow:none;
+                    outline:none;
+                  }
+                  
+                }
+                
+              }
+            
+            }
+          
+          }
+  
+        }
+        
+      }
     }
     
-    .evaluation-assignment-title {
-      width:100%;
-      box-sizing:border-box;
-      padding:3px 4px;
+    #evaluationEvaluateFormWrapper {
+      position:absolute;
+      padding:0 10px;
+      min-width:400px;
       background:#fff;
-      margin:-25px 0 0 0;
-      font-size:14px;
-      line-height:1.3em;
-      white-space:normal;
-    }
+      top:0;
+      bottom:0;
+      right:10px;
+      left:51%;
+      overflow:hidden;
+      z-index:10;
+      
+      header {
+        overflow-x: hidden;
+        overflow-y: auto;
+        max-height:100px;
+        padding:0 20px;
+      
+        .evaluation-modal-evaluateForm-title {
+          width:auto;
+          margin:0 auto 0 auto; 
+          font-weight:300;
+          color:#000;
+          font-size:24px;
+          padding:20px 0 10px 0;
+          text-transform:uppercase;
+          line-height:1.3em;
+          position:relative;
+        }
+        
+        .evaluation-modal-evaluateForm-meta-wrapper {
+          padding:0;
+        
+          .meta-education-type,
+          .meta-workspace {
+            padding:0px 20px 0 0;
+            text-transform:uppercase;
+            font-size:14px;
+            display:inline-block;
+          
+            .title {
+              color:#727272;
+              display:inline-block;
+              margin:0 5px 0 0;
+            }
+            
+            .desc {
+              color:#000;
+              display:inline-block;
+            }
+          
+          }
+    
+        }
+      
+      }
   
+      .evaluation-modal-evaluateForm-content {
+        padding:10px 20px;
+        overflow-x:hidden;
+        overflow-y:auto;
+        position:absolute;
+        bottom:65px;
+        top:100px;
+        right:10px;
+        left:10px;
+        border-top:1px solid #eee;
+        border-bottom:1px solid #eee;
+        
+        label {
+          text-transform:uppercase;
+          padding:0 0 3px 0;
+          font-weight:300;
+          font-size:16px;
+        }
+        
+        textarea,
+        input[type="text"],
+        select {
+          border:0;
+          border-radius:3px;
+          box-sizing:border-box;
+          border:5px solid #c3e6fb;
+          font-size:16px;
+          color:#000;
+          outline:none;
+          transition:border 0.15s ease-in-out;
+          font-family:'Open Sans',Verdana, sans-serif;
+          font-weight:300;
+          
+          &:hover,
+          &:focus,
+          &:active {
+            border:5px solid #9cd3f5;
+          }
+        }
+
+        textarea {
+          width:100%;
+          height:200px;
+          padding:10px;
+        }
+      
+        .evaluation-modal-evaluateForm-literal-eval-wrapper {
+
+        }
+        
+        .evaluation-modal-evaluateForm-date-wrapper {
+          margin:10px 0;
+          
+        }
+        
+        .evaluation-modal-evaluateForm-grade-wrapper {
+          margin:10px 0;
+        }
+        
+        .evaluation-modal-evaluateForm-basedOfPhenomenon-wrapper {
+          margin:10px 0;
+        }
+        
+        .evaluation-modal-evaluateForm-valuer-wrapper {
+          margin:10px 0;
+        }
+        
+      }
+      
+      .evaluation-modal-evaluationFormAction-wrapper {
+        text-align:center;
+        width:100%;
+        bottom:10px;
+        position:absolute;
+      
+        .evaluation-modal-evaluationForm-button {
+          border-radius:0px;
+          border:0;
+          color:#fff;
+          font-weight:400;
+          padding:5px 15px;
+          text-transform:uppercase;
+          margin:5px;
+          outline:none;
+          font-family:'Open Sans',Verdana, sans-serif;
+          min-width:90px;
+          font-size:18px;
+        }
+        
+        #evaluateFormCancelButton {
+          background:#7391a7;
+        }
+        
+        #evaluateFormSaveButton {
+          background:#27b91c;
+        }
+        
+      }
+    }
+    
   }
+
+  .evaluation-evaluate-modal {
+    background:#fff;
+    font-family: 'Open Sans',Verdana, sans-serif;
+    font-size:16px;
+    padding:0;
+    border:2px solid #000;;
+    z-index:9999;
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+    min-width:990px;
+    text-transform:none;
+    
+    .ui-dialog-titlebar {
+      width:auto;
+      margin:0 auto 0 auto; 
+      font-weight:300;
+      color:#000;
+      font-size:28px;
+      text-transform:uppercase;
+      line-height:1.3em;
+      position:relative;
+      height:50px;
+      border:0;
+      background:#657e90;
+      
+      .ui-dialog-title {
+        background-size:cover;
+        display:inline-block;
+        position:absolute;
+        margin:0;
+        top:12px;
+        left:10px;
+        color:#fff;
+        
+        span.modal-title-workspace-evaluation,
+        span.modal-title-assignment-evaluation {
+          display:inline-block;
+          padding:0 10px;
+          font-size:26px;
+          margin:0 50px 0 0;
+        }
+        
+        span.modal-title-student-name {
+          font-size:24px;
+          display:inline-block;
+          margin:0 20px 0 0;
+          padding:0 0 0 40px;
+          @include background-image('gfx/default-user-picture.jpg');
+          background-repeat:no-repeat;
+          background-position:left center;
+          background-size:contain;
+          color:#c9e1f2;
+        }
+        
+        span.modal-title-workspace-name {
+          display:inline-block;
+          font-size:24px;
+          border-left:1px solid #fff;
+          padding:0 0 0 20px;
+          color:#c9e1f2;
+        }
+        
+      }
+      
+      .ui-dialog-titlebar-close {
+        position:absolute;
+        right:0px;
+        top:20px;
+        border:0px;
+        background:transparent;
+        z-index:999;
+        width:50px;
+        height:50px;
+        
+        span {
+          display:none;
+        }
+        
+        &:before {
+          color:#fff;
+          border-bottom-left-radius:10px;
+          cursor:pointer;
+          content: "\e63b";
+          color:#fff;
+          font-size:30px;
+          font-weight:normal;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          
+          /* Better Font Rendering =========== */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+      }
+      
+    }
+    
+   .ui-dialog-content {
+      
+      label.muikku-file-input-field-file-label {
+        font-weight:400 !important;
+        position:absolute;
+        margin-top:-35px;
+        margin-left:10px;
+        color:#fff;
+        font-size:16px;
+        line-height:27px;
+      }
+      
+    }
+    
+    .ui-dialog-buttonpane {
+      text-align:center;
+      width:100%;
+      max-width:50%;
+      min-width:400px;
+      bottom:10px;
+      right:0;
+      position:absolute;
+      z-index:999;
+      margin:0;
+      padding:0;
+      border:0px;
+      
+      .ui-dialog-buttonset {
+        float:none;
+        position:relative;
+        
+        button {
+          border-radius:0px;
+          border:0;
+          color:#fff;
+          font-weight:400;
+          padding:5px 15px;
+          text-transform:uppercase;
+          margin:5px;
+          outline:none;
+          font-family:'Open Sans',Verdana, sans-serif;
+          min-width:90px;
+          font-size:18px;
+          float:none;
+          
+          span {
+            padding:0;
+          }
+        }
+        
+        button.cancel-evaluation-button {
+          background:#7391a7;
+        }
+        
+        button.save-evaluation-button {
+          background:#27b91c;
+        }
+
+      
+      }
+    }
+  }
+  
+  #ui-datepicker-div {
+    font-family:'Open Sans',Verdana, sans-serif;
+    font-size:13px;
+    box-shadow:0 0 30px 5px rgba(0,0,0,0.3);
+    border:0;
+    width:20em;
+    padding:0;
+    
+    .ui-widget-header {
+      border:0;
+      background:#7391a7;
+      padding:4px 0px;
+
+      .ui-datepicker-prev {
+        color:#fff;
+        position:absolute;
+        height:24px;
+        top:0;
+        left:0;
+        padding:8px 4px;
+        
+        span {
+          display:none;
+        }
+        
+        &:hover {
+          background:transparent;
+          border:0px;
+        }
+      
+        &:before {
+          cursor:pointer;
+          content: "\e605";
+          color:#fff;
+          font-size:24px;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-weight: normal;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          
+          /* Better Font Rendering =========== */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+      
+      }
+
+      .ui-datepicker-next {
+        color:#fff;
+        position:absolute;
+        height:24px;
+        top:0;
+        right:0;
+        padding:8px 4px;
+        
+        span {
+          display:none;
+        }
+        
+        &:hover {
+          background:transparent;
+          border:0px;
+        }
+        
+        &:before {
+          cursor:pointer;
+          content: "\e608";
+          color:#fff;
+          font-size:24px;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-weight: normal;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          
+          /* Better Font Rendering =========== */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+      }
+      
+      .ui-datepicker-title {
+        color:#fff;
+        text-transform:uppercase;
+        font-weight:300;
+        font-size:18px;
+      }
+      
+    }
+    
+    table.ui-datepicker-calendar {
+      box-sizing:border-box;
+      border:2px solid #fff;
+      margin:0;
+    
+      td {
+      
+        a {
+          border:0;
+          padding:0 6px 2px 0;
+          background:#d4edff;
+          
+          &:hover {
+            background:#9cd5f8;
+          }
+          
+          &.ui-state-highlight {
+            background:#6991aa;
+            color:#fff;
+          }
+          
+          &.ui-state-active {
+            background:#3baae3;
+            color:#fff;
+          }
+          
+        }
+      
+      }
+    
+    }
+    
+  }
+
 }
