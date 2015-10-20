@@ -104,10 +104,10 @@
     },
     _onItemClick: function (event) {
       var item = $(event.target).hasClass('tr-item') ? $(event.target) : $(event.target).closest('.tr-item');
-
+      
       var workspaceEntityId = $(item).attr('data-workspace-entity-id');
       var workspaceEntityName =  $(item).attr('data-workspace-entity-name');
-      var workspaceEntityDescription = $(item).attr('data-workspace-entity-description');
+      var workspaceEntityDescription = $(item).find('#description').html();
       var workspaceEntityGrade =  $(item).attr('data-workspace-entity-grade');
       var verbalAssessment = $(item).attr('data-workspace-verbal-assessment');
       var grade = $(item).attr('data-workspace-grade');
