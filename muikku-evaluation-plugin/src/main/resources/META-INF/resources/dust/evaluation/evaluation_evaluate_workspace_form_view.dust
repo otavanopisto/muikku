@@ -1,4 +1,5 @@
 <section class="evaluation-modal-evaluateFormWrapper" id="evaluationEvaluateFormWrapper">
+  <!--
   <header class="evaluation-modal-evaluateForm-header">
     <h2 class="evaluation-modal-evaluateForm-title">Työtilan arviointi</h2>
     <div class="evaluation-modal-evaluateForm-meta-wrapper">
@@ -10,17 +11,18 @@
       </div>
     </div>
   </header>
+  -->
   <div class="evaluation-modal-evaluateForm-content"> 
     <div class="evaluation-modal-evaluateForm-literal-eval-wrapper">
-      <label for="evaluateFormLiteralEvaluation">Sanallinen arviointi</label>
+      <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.literalAssessment"/}</label>
       <textarea id="evaluateFormLiteralEvaluation"></textarea>
     </div>
     <div class="evaluation-modal-evaluateForm-date-wrapper">
-      <label for="evaluationDate">Päivämäärä</label>
+      <label for="evaluationDate">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentDate"/}</label>
       <input required="required" type="date" name="evaluationDate" id="evaluationDate"/>
     </div>
     <div class="evaluation-modal-evaluateForm-grade-wrapper">
-      <label for="grade">Arvosana</label>
+      <label for="grade">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentGrade"/}</label>
       <select name="grade" id="grade">
         {#gradingScales}
           <optgroup label="{name}">
@@ -40,7 +42,7 @@
     </div>
     -->
     <div class="evaluation-modal-evaluateForm-valuer-wrapper">
-      <label for="evaluateFormLiteralEvaluation">Arvioija</label>
+      <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentAssessor"/}</label>
       <select name="assessor">
       {#assessors}
         {@eq key=selected value="true" type="boolean"}

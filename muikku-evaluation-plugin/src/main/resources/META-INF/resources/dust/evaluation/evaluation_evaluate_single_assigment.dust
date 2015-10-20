@@ -1,4 +1,4 @@
-<div class="evaluation-modal-workspace-single-assignment">
+<div class="evaluation-modal-single-assignment">
   <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" class="evaluation-assignment">
   </article>
   <div class="clear"></div>

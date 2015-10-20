@@ -1,7 +1,7 @@
 <section class="evaluation-modal-studentAssignmentWrapper" id="evaluationStudentAssignmentWrapper">
   <article class="evaluation-modal-student-wrapper">
-    <div class="evaluation-modal-workspace-assignment-info">
-      <div class="evaluation-modal-workspace-assignment-wrapper">
+    <div class="evaluation-modal-assignment-info">
+      <div class="evaluation-modal-assignment-wrapper">
         {#assignments}
           {>"evaluation/evaluation_evaluate_single_assigment.dust"/}
         {/assignments}
