@@ -36,14 +36,14 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   @Inject
   private HttpServletRequest httpServletRequest;
 
+  @Inject
+  private UserEntityDAO userEntityDAO;
+
   @PostConstruct
   private void init() {
     representedUserId = null;
     locale = httpServletRequest.getLocale();
   }
-
-  @Inject
-  private UserEntityDAO userEntityDAO;
 
   @Override
   public void logout() {

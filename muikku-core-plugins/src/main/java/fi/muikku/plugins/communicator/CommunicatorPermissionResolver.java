@@ -5,10 +5,6 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import fi.muikku.controller.ResourceRightsController;
-import fi.muikku.dao.security.PermissionDAO;
-import fi.muikku.dao.security.ResourceRolePermissionDAO;
-import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
@@ -21,22 +17,10 @@ import fi.otavanopisto.security.User;
 public class CommunicatorPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
 
   @Inject
-  private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
-  
-  @Inject
-  private EnvironmentUserDAO environmentUserDAO;
-
-  @Inject
   private CommunicatorController communicatorController;
   
   @Inject
   private CommunicatorPermissionCollection permissionCollection;
-  
-  @Inject
-  private PermissionDAO permissionDAO;
-  
-  @Inject
-  private ResourceRightsController resourceRightsController;
   
   @Override
   public boolean handlesPermission(String permission) {

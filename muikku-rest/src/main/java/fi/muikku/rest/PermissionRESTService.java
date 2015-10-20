@@ -1,6 +1,7 @@
 package fi.muikku.rest;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.FormParam;
@@ -13,10 +14,8 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.controller.EnvironmentSettingsController;
 import fi.muikku.controller.PermissionController;
-import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
-import fi.muikku.dao.security.ResourceRolePermissionDAO;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
 import fi.muikku.model.security.EnvironmentRolePermission;
@@ -34,8 +33,9 @@ import fi.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.Admin;
 import fi.otavanopisto.security.AuthorizationException;
 
+@Stateful
+@RequestScoped
 @Path("/permission")
-@Stateless
 @Produces ("application/json")
 public class PermissionRESTService extends AbstractRESTService {
 
@@ -52,13 +52,7 @@ public class PermissionRESTService extends AbstractRESTService {
   private PermissionDAO permissionDAO;
   
   @Inject
-  private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
-
-  @Inject
   private WorkspaceController workspaceController;
-  
-  @Inject
-  private ResourceRightsController resourceRightsController;
   
   @Inject
   private EnvironmentSettingsController environmentSettingsController;

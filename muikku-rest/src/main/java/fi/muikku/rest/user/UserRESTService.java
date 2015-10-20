@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ejb.Stateful;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -21,6 +23,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.UserEntity;
@@ -40,6 +44,8 @@ import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
 
+@Stateful
+@RequestScoped
 @Path("/user")
 @Produces("application/json")
 @Consumes("application/json")
@@ -88,6 +94,12 @@ public class UserRESTService extends AbstractRESTService {
 	    return Response.status(Status.FORBIDDEN).build();
 	  }
 
+	  if (CollectionUtils.isNotEmpty(userGroupIds) && Boolean.TRUE.equals(myUserGroups))
+	    return Response.status(Status.BAD_REQUEST).build();
+	  
+    if (CollectionUtils.isNotEmpty(workspaceIds) && Boolean.TRUE.equals(myWorkspaces))
+      return Response.status(Status.BAD_REQUEST).build();
+    
 	  UserEntity loggedUser = sessionController.getLoggedUserEntity();
 	  
 	  EnvironmentRoleArchetype roleArchetype = archetype != null ? EnvironmentRoleArchetype.valueOf(archetype) : null;
@@ -104,11 +116,10 @@ public class UserRESTService extends AbstractRESTService {
 	    for (UserGroupEntity userGroup : userGroups) {
 	      userGroupFilters.add(userGroup.getId());
 	    }
-	  } else if ((userGroupIds != null) && !userGroupIds.isEmpty()) {
+	  } else if (!CollectionUtils.isEmpty(userGroupIds)) {
 	    userGroupFilters = new HashSet<Long>();
 	    
       // Defined user groups
-      
 	    userGroupFilters.addAll(userGroupIds);
 	  }
 
@@ -121,11 +132,10 @@ public class UserRESTService extends AbstractRESTService {
       for (WorkspaceEntity workspace : workspaces) {
         workspaceFilters.add(workspace.getId());
       }
-    } else if ((workspaceIds != null) && !workspaceIds.isEmpty()) {
+    } else if (!CollectionUtils.isEmpty(workspaceIds)) {
       workspaceFilters = new HashSet<Long>();
       
       // Defined workspaces
-      
       workspaceFilters.addAll(workspaceIds);
     }
 

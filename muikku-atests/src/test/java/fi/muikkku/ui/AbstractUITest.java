@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import wiremock.org.apache.commons.lang.StringUtils;
@@ -55,6 +56,9 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
 import fi.muikku.atests.Workspace;
+import fi.muikku.atests.WorkspaceDiscussion;
+import fi.muikku.atests.WorkspaceDiscussionGroup;
+import fi.muikku.atests.WorkspaceDiscussionThread;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
@@ -311,6 +315,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     click(selector);
   }
 
+  protected void selectOption(String selector, String value){
+    Select selectField = new Select(getWebDriver().findElementByCssSelector(selector));
+    selectField.selectByValue(value);
+    
+  }
+  
   protected void assertText(String selector, String text) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(text, element.getText());
@@ -358,6 +368,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertEquals(value, element.getAttribute("value"));
   }
   
+  protected void assertSelectedOption(String selector, String expected){
+    Select select = new Select(getWebDriver().findElementByCssSelector(selector));
+    WebElement option = select.getFirstSelectedOption();
+    String optionText = option.getText();
+    assertEquals(expected, optionText);
+  }
+  protected void assertChecked(String selector, Boolean expected) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    assertEquals(expected, element.isSelected());
+  }
+  
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
@@ -401,6 +422,84 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertNotNull(workspace.getId());
     
     return workspace;
+  }
+  
+  protected WorkspaceDiscussionGroup createWorkspaceDiscussionGroup(Long workspaceEntityId, String name) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    WorkspaceDiscussionGroup payload = new WorkspaceDiscussionGroup(null, name);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups", workspaceEntityId);
+    
+    response.then()
+      .statusCode(200);
+      
+    WorkspaceDiscussionGroup workspaceDiscussionGroup = objectMapper.readValue(response.asString(), WorkspaceDiscussionGroup.class);
+    assertNotNull(workspaceDiscussionGroup);
+    assertNotNull(workspaceDiscussionGroup.getId());
+    
+    return workspaceDiscussionGroup;
+  }
+  
+  protected void deleteWorkspaceDiscussionGroup(Long workspaceEntityId, Long groupId) {
+    asAdmin()
+      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}", workspaceEntityId, groupId)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected WorkspaceDiscussion createWorkspaceDiscussion(Long workspaceEntityId, Long groupId, String name) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    WorkspaceDiscussion payload = new WorkspaceDiscussion(null, name, groupId);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions", workspaceEntityId, groupId);
+    
+    response.then()
+      .statusCode(200);
+      
+    WorkspaceDiscussion workspaceDiscussion = objectMapper.readValue(response.asString(), WorkspaceDiscussion.class);
+    assertNotNull(workspaceDiscussion);
+    assertNotNull(workspaceDiscussion.getId());
+    
+    return workspaceDiscussion;
+  }
+
+  protected void deleteWorkspaceDiscussion(Long workspaceEntityId, Long groupId, Long id) {
+    asAdmin()
+      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{ID}", workspaceEntityId, groupId, id)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected WorkspaceDiscussionThread createWorkspaceDiscussionThread(Long workspaceEntityId, Long groupId, Long discussionId, String title, String message, Boolean sticky, Boolean locked) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    WorkspaceDiscussionThread payload = new WorkspaceDiscussionThread(null, title, message, sticky, locked);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads", workspaceEntityId, groupId, discussionId);
+    
+    response.then()
+      .statusCode(200);
+      
+    WorkspaceDiscussionThread workspaceDiscussionThread = objectMapper.readValue(response.asString(), WorkspaceDiscussionThread.class);
+    assertNotNull(workspaceDiscussionThread);
+    assertNotNull(workspaceDiscussionThread.getId());
+    
+    return workspaceDiscussionThread;
+  }
+
+  protected void deleteWorkspaceDiscussionThread(Long workspaceEntityId, Long groupId, Long discussionId, Long id) {
+    asAdmin()
+      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}", workspaceEntityId, groupId, discussionId, id)
+      .then()
+      .statusCode(204);
   }
   
   protected void deleteWorkspace(Long id) {
@@ -447,7 +546,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
     return result;
   }
-
+  
   protected void deleteWorkspaceHtmlMaterial(Long workspaceEntityId, Long id) {
     asAdmin()
       .delete("/test/workspaces/{WORKSPACEID}/htmlmaterials/{WORKSPACEMATERIALID}", workspaceEntityId, id)

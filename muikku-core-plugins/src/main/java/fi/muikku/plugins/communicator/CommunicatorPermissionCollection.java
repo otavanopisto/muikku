@@ -8,6 +8,7 @@ import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.security.AbstractMuikkuPermissionCollection;
 import fi.muikku.security.DefaultEnvironmentPermissionRoles;
+import fi.muikku.security.DefaultWorkspacePermissionRoles;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
@@ -26,6 +27,11 @@ public class CommunicatorPermissionCollection extends AbstractMuikkuPermissionCo
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER })
   public static final String COMMUNICATOR_GROUP_MESSAGING = "COMMUNICATOR_GROUP_MESSAGING";
+  
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultWorkspacePermissionRoles ({ WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER })
+  public static final String COMMUNICATOR_WORKSPACE_MESSAGING = "COMMUNICATOR_WORKSPACE_MESSAGING";
   
   @Override
   public List<String> listPermissions() {

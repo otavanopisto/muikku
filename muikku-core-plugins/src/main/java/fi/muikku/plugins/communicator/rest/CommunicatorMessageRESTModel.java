@@ -13,7 +13,7 @@ public class CommunicatorMessageRESTModel {
   }
   
   public CommunicatorMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, String categoryName, String caption, 
-      String content, Date created, Set<String> tags, List<Long> recipientIds, List<Long> recipientGroupIds) {
+      String content, Date created, Set<String> tags, List<Long> recipientIds) {
     this.id = id;
     this.communicatorMessageId = communicatorMessageId;
     this.senderId = senderId;
@@ -23,7 +23,6 @@ public class CommunicatorMessageRESTModel {
     this.created = created;
     this.tags = tags;
     this.recipientIds = recipientIds;
-    this.recipientGroupIds = recipientGroupIds;
   }
   
   public Long getId() {
@@ -98,14 +97,6 @@ public class CommunicatorMessageRESTModel {
     this.recipientIds = recipientIds;
   }
 
-  public List<Long> getRecipientGroupIds() {
-    return recipientGroupIds;
-  }
-
-  public void setRecipientGroupIds(List<Long> recipientGroupIds) {
-    this.recipientGroupIds = recipientGroupIds;
-  }
-
   private Long id;
 
   private Long communicatorMessageId;
@@ -123,6 +114,4 @@ public class CommunicatorMessageRESTModel {
   private Set<String> tags = new HashSet<String>();
   
   private List<Long> recipientIds = new ArrayList<Long>();
-
-  private List<Long> recipientGroupIds = new ArrayList<Long>();
 }
