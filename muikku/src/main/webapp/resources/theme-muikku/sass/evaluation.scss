@@ -9,6 +9,25 @@ body.evaluation {
   min-height:100%;
   line-height:1.7em;
   font-size:18px;
+  
+  .evaluation-navigation-wrapper {
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:50px;
+    box-sizing:border-box;
+    padding:5px;
+    background:#5991a8;
+  }
+  
+  .evaluation-content-wrapper {
+    position:absolute;
+    top:50px;
+    left:0;
+    right:0;
+    bottom:0;
+  }
 
   .prevPage {
     position:absolute;
@@ -16,6 +35,8 @@ body.evaluation {
     bottom:0;
     left:0;
     z-index: 9999;
+    border:0;
+    width:40px;
     
     &:hover {
       opacity:0.9;
@@ -29,6 +50,8 @@ body.evaluation {
     bottom:0;
     right:0;
     z-index: 9999;
+    border:0;
+    width:40px;
     
     &:hover {
       opacity:0.9;
@@ -39,8 +62,8 @@ body.evaluation {
   .evaluation-students {
     overflow: hidden;
     position: absolute;
-    left: 0px;
-    right: 0px;
+    left: 40px;
+    right: 40px;
     top: 0px;
     height: 150px;
     white-space: nowrap;
@@ -212,8 +235,8 @@ body.evaluation {
   .evaluation-assignments {
     overflow: hidden;
     position: absolute;
-    left: 0px;
-    right: 0px;
+    left: 40px;
+    right: 40px;
     top: 150px;
     bottom: 0px;
     white-space: nowrap;

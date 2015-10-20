@@ -8,7 +8,8 @@
   template="/jsf/evaluation/templates/evaluation-view.xhtml">
   
   <ui:define name="evaluation.content.studentAssignmentListing">
-    <div id="evaluation" data-workspace-entity-id="#{evaluationIndexBackingBean.workspaceEntityId}" data-workspace-name="#{evaluationIndexBackingBean.workspaceName}"></div>
+    <div class="evaluation-navigation-wrapper"></div>
+    <div class="evaluation-content-wrapper" id="evaluation" data-workspace-entity-id="#{evaluationIndexBackingBean.workspaceEntityId}" data-workspace-name="#{evaluationIndexBackingBean.workspaceName}"></div>
   </ui:define>
   
 </ui:composition>
