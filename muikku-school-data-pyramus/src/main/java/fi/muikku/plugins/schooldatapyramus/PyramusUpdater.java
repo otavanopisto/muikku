@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -74,6 +75,7 @@ import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.StudyProgramme;
 import fi.pyramus.rest.model.UserRole;
 
+@Stateless
 public class PyramusUpdater {
 
   @Inject
@@ -281,10 +283,10 @@ public class PyramusUpdater {
           String userEntityIdentifier = identifierMapper.getStudentIdentifier(student.getId());
           fireUserGroupUserDiscovered(studyProgrammeStudentIdentifier, studyProgrammeIdentifier, userEntityIdentifier);
         } else
-          fireUserGroupUserUpdated(studyProgrammeStudentIdentifier);
+          fireUserGroupUserUpdated(studyProgrammeStudentIdentifier, studyProgrammeIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
       } else {
         if (userGroupUserEntity != null)
-          fireUserGroupUserRemoved(studyProgrammeStudentIdentifier, studyProgrammeIdentifier);
+          fireUserGroupUserRemoved(studyProgrammeStudentIdentifier, studyProgrammeIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
       }
     }
   }
@@ -378,7 +380,9 @@ public class PyramusUpdater {
       existingGroupUserIds.removeAll(foundGroupUserIds);
       
       for (String identifier : existingGroupUserIds) {
-        fireUserGroupUserRemoved(identifier, userGroupIdentifier);
+        UserGroupUserEntity ugu = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+        if (ugu != null)
+          fireUserGroupUserRemoved(identifier, userGroupIdentifier, ugu.getUserSchoolDataIdentifier().getIdentifier());
       }
       
       return count;
@@ -399,13 +403,13 @@ public class PyramusUpdater {
 
     if (studentGroupStudent == null) {
       if (userGroupUserEntity != null)
-        fireUserGroupUserRemoved(identifier, userGroupIdentifier);
+        fireUserGroupUserRemoved(identifier, userGroupIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     } else {
       if (userGroupUserEntity == null) {
         String studentIdentifier = identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId());
         fireUserGroupUserDiscovered(identifier, userGroupIdentifier, studentIdentifier);
       } else {
-        fireUserGroupUserUpdated(identifier);
+        fireUserGroupUserUpdated(identifier, userGroupIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
       }
     }
   }
@@ -420,13 +424,13 @@ public class PyramusUpdater {
 
     if (studentGroupStaffMember == null) {
       if (userGroupUserEntity != null)
-        fireUserGroupUserRemoved(identifier, userGroupIdentifier);
+        fireUserGroupUserRemoved(identifier, userGroupIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     } else {
       if (userGroupUserEntity == null) {
         String staffMemberIdentifier = identifierMapper.getStaffIdentifier(studentGroupStaffMember.getStaffMemberId());
         fireUserGroupUserDiscovered(identifier, userGroupIdentifier, staffMemberIdentifier);
       } else {
-        fireUserGroupUserUpdated(identifier);
+        fireUserGroupUserUpdated(identifier, userGroupIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
       }
     }
   }
@@ -1149,15 +1153,18 @@ public class PyramusUpdater {
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userEntityIdentifier));
   }
 
-  private void fireUserGroupUserUpdated(String userGroupUserIdentifier) {
+  private void fireUserGroupUserUpdated(String userGroupUserIdentifier, String userGroupIdentifier, String userIdentifier) {
     schoolDataUserGroupUserUpdatedEvent.fire(new SchoolDataUserGroupUserUpdatedEvent(
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier));
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier,
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier,
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
   }
   
-  private void fireUserGroupUserRemoved(String userGroupUserIdentifier, String userGroupIdentifier) {
+  private void fireUserGroupUserRemoved(String userGroupUserIdentifier, String userGroupIdentifier, String userIdentifier) {
     schoolDataUserGroupUserRemovedEvent.fire(new SchoolDataUserGroupUserRemovedEvent(
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier,
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier));
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier,
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
   }
 
 }
