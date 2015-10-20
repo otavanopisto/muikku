@@ -65,18 +65,17 @@
 
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
             
-            this._studentAnswers = {};
+            var fieldAnswers = {};
             
             if (this.options.studentAnswers) {
               for (var i = 0, l = this.options.studentAnswers.length; i < l; i++) {
                 var answer = this.options.studentAnswers[i];
                 var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
-                this._studentAnswers[answerKey] = answer.value;
+                fieldAnswers[answerKey] = answer.value;
               }
             }
             
-            // TODO: Load answers to material view
-
+            $(document).muikkuMaterialLoader('loadMaterials', $(this._dialog).find('.evaluation-assignment'), fieldAnswers);
           }, this),
           buttons: [{
             'text': this._dialog.attr('data-button-save-text'),
@@ -578,9 +577,13 @@
   });
 
   $(document).ready(function () {
+    var workspaceEntityId = $('#evaluation').attr('data-workspace-entity-id');
+    
+    $(document).muikkuMaterialLoader({});
+    
     $('#evaluation').evaluationLoader();
     $('#evaluation').evaluation({
-      workspaceEntityId: $('#evaluation').attr('data-workspace-entity-id')
+      workspaceEntityId: workspaceEntityId
     }); 
   });
 
