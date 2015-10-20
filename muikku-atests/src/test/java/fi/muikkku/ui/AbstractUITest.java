@@ -154,6 +154,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected RemoteWebDriver createChromeDriver() {
     ChromeOptions options = new ChromeOptions();
     options.addArguments("--lang=en_US");
+    options.addArguments("start-maximized"); // Too narrow window causes test to fail
     ChromeDriver chromeDriver = new ChromeDriver(options);
     return chromeDriver;
   }
