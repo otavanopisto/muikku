@@ -180,7 +180,7 @@ public class UserRESTService extends AbstractRESTService {
 
       // TODO: User image
       boolean hasImage = false;
-      return Response.ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), hasImage )).build();
+      return Response.ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getStudyProgrammeName(), hasImage )).build();
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
