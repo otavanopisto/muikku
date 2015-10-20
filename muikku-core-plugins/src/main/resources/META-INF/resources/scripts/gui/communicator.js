@@ -216,15 +216,23 @@ $(document).ready(function(){
     },    
     
     _deleteMessages : function(ids){
+
       var _this = this;
+      var messages = ids.length;
+      var lastMessage = messages - 1;
+      $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
+      
       for (i = 0; i < ids.length; i++){ 
         mApi().communicator.messages.del(ids[i]).callback(function (err, result){
          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
           } else {
+            if( i == lastMessage){
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
+             _this._refreshView();
+            }
           }         
-          _this._refreshView();
+
         });
       } 
     },
