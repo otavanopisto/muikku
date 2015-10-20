@@ -44,6 +44,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import wiremock.org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -65,9 +67,7 @@ import fi.muikku.atests.WorkspaceDiscussionThread;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
-import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
-import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -274,7 +274,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return false;
   }
 
-  protected Boolean webhookCall(String url, String payload) throws Exception {
+  public static Boolean webhookCall(String url, String payload) throws Exception {
     String signature = "38c6cbd28bf165070d070980dd1fb595";
     CloseableHttpClient client = HttpClients.createDefault();
     try {
@@ -410,10 +410,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
   }
@@ -421,11 +417,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void loginStudent1() throws JsonProcessingException, Exception {
     PyramusMocks.student1LoginMock();
     PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
   }
