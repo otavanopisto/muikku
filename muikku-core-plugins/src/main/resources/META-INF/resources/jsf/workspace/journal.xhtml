@@ -4,6 +4,7 @@
 	xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	template="./templates/workspace-journal-view.xhtml">
 
 	<ui:define name="workspace.content.top.static">
@@ -34,9 +35,20 @@
 
 	<ui:define name="workspace.content">
 		<div class="workspace-journal-content-wrapper">
+    
+      <ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
+        <ui:fragment rendered="#{fn:length(workspaceJournalBackingBean.journalEntries) lt 1}">
+          <div class="workspace-journal-no-entries">#{i18n.text['plugin.workspace.journal.noEntries']}</div>
+        </ui:fragment>
+      </ui:fragment>
+      <ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
+        <ui:fragment rendered="#{fn:length(workspaceJournalBackingBean.journalEntries) lt 1}">
+          <div class="workspace-journal-no-entries">#{i18n.text['plugin.workspace.journal.studentHasNoEntries']}</div>
+        </ui:fragment>
+      </ui:fragment>
+
 			<ui:repeat var="entry" value="#{workspaceJournalBackingBean.journalEntries}">
 
-				<!-- Start of da Loopa-Loop for single journal entry -->
 				<div class="workspace-single-journal-entry" data-entry-id="#{entry.id}">
 					<h:form>
 						<h:commandButton class="delete-entry-#{entry.id}" actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
@@ -45,7 +57,11 @@
 						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
 							<div class="workspace-journal-title">#{entry.title}</div>
               <div class="workspace-journal-entry-meta">
-                <div class="workspace-journal-dateTime">#{entry.created}</div>
+                <div class="workspace-journal-dateTime">
+                  <h:outputText value="#{entry.created}" >
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                  </h:outputText>
+                </div>
               </div>
               <div class="workspace-journal-content">
                 <h:outputText value="#{entry.html}" escape="false"/>
@@ -57,7 +73,11 @@
                   <div class="workspace-journal-poster-image"><img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/></div>
                   <div class="workspace-journal-poster-name">#{workspaceJournalBackingBean.posterOf(entry)}</div>
                   <div class="workspace-journal-entry-meta">
-                    <div class="workspace-journal-dateTime">#{entry.created}</div>
+                  <div class="workspace-journal-dateTime">
+                    <h:outputText value="#{entry.created}" >
+                      <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                    </h:outputText>
+                  </div>
                   </div>
                 </div>
               </div>
