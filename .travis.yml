@@ -14,7 +14,13 @@ script:
   if [ $TRAVIS_BRANCH != 'master' ]; then
     pushd .;
     cd muikku-atests;
-    mvn clean verify -P$it_profile;
+    mvn clean verify \
+      -Dit.sauce.browser=$browser \
+      -Dit.sauce.browser.version=$browser_version \
+      -Dit.sauce.browser.resolution=$browser_resolution \
+      -Dit.sauce.platform=$platform \
+      -Dit.package=$package \
+      -P$it_profile;
     popd;
   fi;
 jdk:
@@ -33,8 +39,8 @@ env:
   - secure: LZViiGyq2B/NfKRByoaA5AumTd0tpS0AaH03sRebV6MF9kcyeWJC+Idv8EyYttyed9GLQM0Qk6aVvvop3dguJNNOMnrKAFoxN4u09QDG+o8IuQiCzFQmEtXBipP+08lqsgn7wfVBD4MyhWHrmJeatq1C/So4IkaMwaYvq6eo7A4=
   - secure: QmDnYj3Lb3nMzyKDkGShAU2N3TOt1Bn0ku2KokVD+y3Q7lTdcfdvMCeBiFI7qPDrWU9bPaiTRh0+/sMWLM7J0aFg8e7OljqJrArKSB+i3leTl+/L/x9cplESMjV5u5cjtsUCmGX3ywSfhpwlGzkILVFl3ZE2eI2e2+OoOfZrezY=
   matrix:
-  - it_profile: rest-it use_sc=false
-  - it_profile: travis use_sc=true
+  - it_profile=rest-it use_sc=false
+  - it_profile=travis use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=course
 addons:
   hosts:
   - dev.muikku.fi

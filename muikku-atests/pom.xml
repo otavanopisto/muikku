@@ -945,6 +945,11 @@
         <it.sauce.username>${env.SAUCE_USERNAME}</it.sauce.username>
         <it.sauce.accessKey>${env.SAUCE_ACCESS_KEY}</it.sauce.accessKey>
         <it.sauce.tunnelId>${env.TRAVIS_JOB_NUMBER}</it.sauce.tunnelId>
+        <it.sauce.browser></it.sauce.browser>
+        <it.sauce.browser.version></it.sauce.browser.version>
+        <it.sauce.browser.resolution></it.sauce.browser.resolution>
+        <it.sauce.platform></it.sauce.platform>
+        <it.package>**</it.package>
       </properties>
 
       <dependencies>
@@ -976,7 +981,7 @@
               </dependenciesToScan>
 
               <includes>
-                <include>fi/muikku/ui/sauce/*IT.java</include>
+                <include>fi/muikku/ui/sauce/${it.package}/*IT.java</include>
               </includes>
               <systemPropertyVariables>
                 <it.project.version>${project.version}</it.project.version>
@@ -997,6 +1002,10 @@
                 <it.sauce.username>${it.sauce.username}</it.sauce.username>
                 <it.sauce.accessKey>${it.sauce.accessKey}</it.sauce.accessKey>
                 <it.sauce.tunnelId>${it.sauce.tunnelId}</it.sauce.tunnelId>
+                <it.sauce.browser>${it.sauce.browser}</it.sauce.browser>
+                <it.sauce.browser.version>${it.sauce.browser.version}</it.sauce.browser.version>
+                <it.sauce.browser.resolution>${it.sauce.browser.resolution}</it.sauce.browser.resolution>
+                <it.sauce.platform>${it.sauce.platform}</it.sauce.platform>
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
               </systemPropertyVariables>
             </configuration>
