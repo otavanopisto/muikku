@@ -366,7 +366,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>evaluation-plugin</artifactId>
-          <version>1.0.69-SNAPSHOT</version>
+          <version>1.0.72-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
