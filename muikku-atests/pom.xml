@@ -16,7 +16,7 @@
 
   <properties>
     <!-- Selenium -->
-    <selenium-java.version>2.47.2</selenium-java.version>
+    <selenium-java.version>2.47.1</selenium-java.version>
     <wiremock.version>1.53</wiremock.version>
   </properties>
 
@@ -319,6 +319,7 @@
                 <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
                 <it.report.directory>${it.report.directory}</it.report.directory>
                 <it.build.directory>${it.build.directory}</it.build.directory>
+                <it.selenium.version>${selenium-java.version}</it.selenium.version>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -643,6 +644,7 @@
                 <it.sauce.username>${it.sauce.username}</it.sauce.username>
                 <it.sauce.accessKey>${it.sauce.accessKey}</it.sauce.accessKey>
                 <it.sauce.tunnelId>${it.sauce.tunnelId}</it.sauce.tunnelId>
+                <it.selenium.version>${selenium-java.version}</it.selenium.version>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -995,6 +997,7 @@
                 <it.sauce.username>${it.sauce.username}</it.sauce.username>
                 <it.sauce.accessKey>${it.sauce.accessKey}</it.sauce.accessKey>
                 <it.sauce.tunnelId>${it.sauce.tunnelId}</it.sauce.tunnelId>
+                <it.selenium.version>${selenium-java.version}</it.selenium.version>
               </systemPropertyVariables>
             </configuration>
             <executions>

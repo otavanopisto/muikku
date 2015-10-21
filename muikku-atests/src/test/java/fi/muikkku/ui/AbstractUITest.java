@@ -127,6 +127,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected RemoteWebDriver createSauceWebDriver(String browser, String version, String platform, String resolution) throws MalformedURLException {
     DesiredCapabilities capabilities = new DesiredCapabilities();
+    String seleniumVersion = System.getProperty("it.selenium.version");
     
     capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
     capabilities.setCapability(CapabilityType.VERSION, version);
@@ -139,6 +140,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     capabilities.setCapability("timeZone", "Universal");
     capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
     capabilities.setCapability("chrome.switches", Arrays.asList("--ignore-certificate-errors"));
+    capabilities.setCapability("seleniumVersion", seleniumVersion);
     
     if (resolution != null) {
       capabilities.setCapability("screenResolution", resolution);
