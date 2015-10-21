@@ -29,15 +29,13 @@
     if(result != null && result.actionType == "edit"){
       var textContent = result.message;
       var topic = result.title;
+      
+      $(textfields).each(function(index,textfield){        
+        $(textfield).val(topic);
+      });  
+      
     }
 
-     $(textfields).each(function(index,textfield){
-       
-       $(textfield).val(topic);
-
-       
-     });     
-     
      if(ckeditor == undefined){
        var ckeditor = true;
      }

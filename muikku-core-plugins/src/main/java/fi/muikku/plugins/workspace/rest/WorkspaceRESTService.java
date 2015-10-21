@@ -91,6 +91,7 @@ import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
 
 @RequestScoped
 @Stateful

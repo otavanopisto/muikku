@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -43,12 +42,11 @@ import fi.pyramus.rest.model.StudentGroup;
 import fi.pyramus.rest.model.StudentGroupStudent;
 import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.StudyProgramme;
-import fi.pyramus.rest.model.UserCredentials;
 import fi.pyramus.rest.model.UserCredentialReset;
+import fi.pyramus.rest.model.UserCredentials;
 import fi.pyramus.rest.model.UserRole;
 
 @Dependent
-@Stateful
 public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Inject

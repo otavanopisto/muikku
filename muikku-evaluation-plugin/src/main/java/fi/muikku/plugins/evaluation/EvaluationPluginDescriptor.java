@@ -28,6 +28,8 @@ public class EvaluationPluginDescriptor implements PluginDescriptor, LocalizedPl
 
     bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.evaluation.EvaluationPluginMessages", LocaleUtils.toLocale("fi"))));
     bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.evaluation.EvaluationPluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.evaluation.EvaluationJsPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.evaluation.EvaluationJsPluginMessages", LocaleUtils.toLocale("en"))));
 
     return bundles;
   }
