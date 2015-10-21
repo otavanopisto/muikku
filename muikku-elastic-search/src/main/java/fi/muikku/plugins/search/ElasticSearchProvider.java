@@ -3,6 +3,7 @@ package fi.muikku.plugins.search;
 import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -13,17 +14,22 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.search.SearchProvider;
@@ -55,44 +61,82 @@ public class ElasticSearchProvider implements SearchProvider {
     node.close();
   }
   
+  private boolean isEmptyCollection(Collection<?> c) {
+    if (c == null)
+      return true;
+    
+    return c.isEmpty();
+  }
+  
   @Override
-  public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, int start, int maxResults) {
+  public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, 
+      Collection<Long> groups, Collection<Long> workspaces, int start, int maxResults) {
     try {
       // TODO: query_string search for case insensitive searches??
       // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
       text = text != null ? text.toLowerCase() : null;
 
-      QueryBuilder query = null;
+      QueryBuilder query = QueryBuilders.matchAllQuery();
 
-      if ((archetype == null) && StringUtils.isBlank(text)) {
-        query = QueryBuilders.matchAllQuery();
-      } else {
-        query = QueryBuilders.boolQuery();
-        
-        if (archetype != null) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("archetype", archetype.name().toLowerCase()));
-        }
-    
-        
-        if (StringUtils.isNotBlank(text)) {
-          StringTokenizer tokenizer = new StringTokenizer(text, " ");
+      List<FilterBuilder> filters = new ArrayList<FilterBuilder>();
+      
+      if (StringUtils.isNotBlank(text)) {
+        StringTokenizer tokenizer = new StringTokenizer(text, " ");
 
-          while (tokenizer.hasMoreTokens()) {
-            String token = tokenizer.nextToken();
+        while (tokenizer.hasMoreTokens()) {
+          String token = tokenizer.nextToken();
 
-            for (String textField : textFields)
-              ((BoolQueryBuilder) query).should(QueryBuilders.prefixQuery(textField, token));
+          List<FilterBuilder> fieldFilters = new ArrayList<FilterBuilder>();
+          
+          for (String textField : textFields)
+            fieldFilters.add(FilterBuilders.prefixFilter(textField, token));
+          
+          if (!fieldFilters.isEmpty()) {
+            if (fieldFilters.size() > 1)
+              filters.add(FilterBuilders.orFilter(fieldFilters.toArray(new FilterBuilder[0])));
+            else
+              filters.add(fieldFilters.get(0));
           }
         }
       }
       
+      if (archetype != null) {
+        filters.add(FilterBuilders.termsFilter("archetype", archetype.name().toLowerCase())); 
+      }
+      
+      if (!isEmptyCollection(groups)) {
+        filters.add(FilterBuilders.inFilter("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
+      }
+      
+      if (!isEmptyCollection(workspaces)) {
+        filters.add(FilterBuilders.inFilter("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
+      }
+      
+      FilterBuilder filter;
+      
+      if (!filters.isEmpty()) {
+        if (filters.size() > 1)
+          filter = FilterBuilders.andFilter(filters.toArray(new FilterBuilder[0]));
+        else
+          filter = filters.get(0);
+      } else
+        filter = FilterBuilders.matchAllFilter();
+      
+      FilteredQueryBuilder filteredQuery = QueryBuilders.filteredQuery(query, filter);
+
       SearchRequestBuilder requestBuilder = elasticClient
         .prepareSearch("muikku")
         .setTypes("User")
         .setFrom(start)
         .setSize(maxResults);
-      
-      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+
+      SearchResponse response = requestBuilder
+          .setQuery(filteredQuery)
+          .addSort("_score", SortOrder.DESC)
+          .addSort("lastName", SortOrder.ASC)
+          .addSort("firstName", SortOrder.ASC)
+          .execute()
+          .actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHit[] results = response.getHits().getHits();
       for (SearchHit hit : results) {
@@ -117,39 +161,47 @@ public class ElasticSearchProvider implements SearchProvider {
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>());
     }
     
-    QueryBuilder query = null;
+    QueryBuilder query = QueryBuilders.matchAllQuery();
     
     try {
-      if (StringUtils.isBlank(schoolDataSource) && (subjects == null || subjects.isEmpty()) && StringUtils.isBlank(freeText)) {
-        if (includeUnpublished) {
-          query = QueryBuilders.matchAllQuery();
-        } else {
-          query = QueryBuilders.matchQuery("published", Boolean.TRUE);
-        }
-      } else {
-        query = QueryBuilders.boolQuery();
-        
-        if (!includeUnpublished) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.matchQuery("published",Boolean.TRUE));
-        }
-        
-        if (StringUtils.isNotBlank(schoolDataSource)) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.matchQuery("schoolDataSource", schoolDataSource));
-        }
-        
-        if (subjects != null && !subjects.isEmpty()) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("subjectIdentifier", subjects));
-        }
-        
-        if (identifiers != null) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("identifier", identifiers));
-        }
-    
-        if (StringUtils.isNotBlank(freeText)) {
-          ((BoolQueryBuilder) query).should(QueryBuilders.prefixQuery("name", freeText));
-          ((BoolQueryBuilder) query).should(QueryBuilders.prefixQuery("description", freeText));
-        }
+      List<FilterBuilder> filters = new ArrayList<FilterBuilder>();
+      
+      if (!includeUnpublished) {
+        filters.add(FilterBuilders.termFilter("published", Boolean.TRUE));
       }
+      
+      if (StringUtils.isNotBlank(schoolDataSource)) {
+        filters.add(FilterBuilders.termFilter("schoolDataSource", schoolDataSource.toLowerCase()));
+      }
+      
+      if (subjects != null && !subjects.isEmpty()) {
+        filters.add(FilterBuilders.termsFilter("subjectIdentifier", subjects));
+      }
+      
+      if (identifiers != null) {
+        filters.add(FilterBuilders.termsFilter("identifier", identifiers));
+      }
+  
+      if (StringUtils.isNotBlank(freeText)) {
+        FilterBuilder[] fieldFilters = {
+            FilterBuilders.prefixFilter("name", freeText),
+            FilterBuilders.prefixFilter("description", freeText)
+        };
+
+        filters.add(FilterBuilders.orFilter(fieldFilters));
+      }
+      
+      FilterBuilder filter;
+
+      if (!filters.isEmpty()) {
+        if (filters.size() > 1)
+          filter = FilterBuilders.andFilter(filters.toArray(new FilterBuilder[0]));
+        else
+          filter = filters.get(0);
+      } else
+        filter = FilterBuilders.matchAllFilter();
+      
+      FilteredQueryBuilder filteredQuery = QueryBuilders.filteredQuery(query, filter);
       
       SearchRequestBuilder requestBuilder = elasticClient
         .prepareSearch("muikku")
@@ -157,7 +209,7 @@ public class ElasticSearchProvider implements SearchProvider {
         .setFrom(start)
         .setSize(maxResults);
       
-      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+      SearchResponse response = requestBuilder.setQuery(filteredQuery).execute().actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHit[] results = response.getHits().getHits();
       for (SearchHit hit : results) {

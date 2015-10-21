@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
@@ -37,6 +36,8 @@ import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
+import fi.muikku.plugins.search.UserIndexer;
+import fi.muikku.plugins.search.WorkspaceIndexer;
 import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -45,15 +46,10 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
-import fi.muikku.schooldata.entity.User;
-import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
-import fi.muikku.search.SearchIndexer;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
-import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
-import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -75,26 +71,14 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   private Logger logger;
   
   @Inject
-  private WorkspaceController workspaceController;
-  
-  @Inject
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
-  private UserController userController;
-
-  @Inject
   private UserEntityController userEntityController;
   
-  @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController; 
-  
-  @Inject
-  private SearchIndexer indexer;
-   
   @Inject
   private PyramusUpdater pyramusUpdater;
   
@@ -113,6 +97,12 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Inject
   private Event<SchoolDataWorkspaceDiscoveredEvent> schoolDataWorkspaceDiscoveredEvent;
 
+  @Inject
+  private UserIndexer userIndexer;
+  
+  @Inject
+  private WorkspaceIndexer workspaceIndexer;
+  
   @GET
   @Path("/login")
   @Produces("text/plain")
@@ -149,35 +139,29 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntities();
     for (int i = 0; i < workspaceEntities.size(); i++) {
       WorkspaceEntity workspaceEntity = workspaceEntities.get(i);
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      if (workspace != null) {
-        try {
-          indexer.index(Workspace.class.getSimpleName(), workspace);
-        } catch (Exception e) {
-          logger.log(Level.WARNING, "could not index WorkspaceEntity #" + workspaceEntity.getId(), e);
-        }
-      }
+      
+      workspaceIndexer.indexWorkspace(workspaceEntity);
     }
 
-    logger.log(Level.INFO, "Reindexed workspaces )");
+    logger.log(Level.INFO, "Reindexed " + workspaceEntities.size() + " workspaces");
    
     List<UserEntity> users = userEntityController.listUserEntities();
     for (int i = 0; i < users.size(); i++) {
       UserEntity userEntity = users.get(i);
-      List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
-
-      for (UserSchoolDataIdentifier identifier : identifiers) {
-        User user = userController.findUserByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
-        try {
-          indexer.index(User.class.getSimpleName(), user);
-        } catch (Exception e) {
-          logger.log(Level.WARNING, "could not index User #" + user.getSchoolDataSource() + '/' + user.getIdentifier(), e);
-        }
-      }
+      
+      userIndexer.indexUser(userEntity);
     }
-    logger.log(Level.INFO, "Reindexed users");
     
-   return Response.ok().build();
+    logger.log(Level.INFO, "Reindexed " + users.size() + " users");
+    
+    try {
+      Thread.sleep(10000);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    return Response.ok().build();
   }
 
   @GET
