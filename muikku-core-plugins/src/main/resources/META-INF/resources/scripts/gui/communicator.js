@@ -32,8 +32,6 @@ $(document).ready(function(){
       $("#socialNavigation").on("click", ".cm-message-recipient-name", $.proxy(this._onRemoveRecipientClick, this));
       $('*[data-message-type="inbox"]').addClass('selected');      
 
-      dust.preload("communicator/communicator_item.dust");
-
       $(window).on("hashchange", $.proxy(this._onHashChange, this));
       
       $(window).trigger("hashchange");

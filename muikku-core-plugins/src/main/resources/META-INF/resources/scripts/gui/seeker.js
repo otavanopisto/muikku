@@ -15,8 +15,6 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
     });
   },
   _renderItem: function(ul, item) {
-    dust.preload(item.template);
-
     var inner_html = undefined;
     var listItem = $( "<li></li>" ).data( "item.autocomplete", item );
     

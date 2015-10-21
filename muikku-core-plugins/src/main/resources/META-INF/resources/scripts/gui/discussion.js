@@ -31,9 +31,6 @@ $(document).ready(function() {
     init : function() {
       // todo: parse url
 
-      dust.preload("discussion/discussion_item.dust");
-      dust.preload("discussion/discussion_reply.dust");
-      
       this._refreshAreas();
 
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this._onMessageClick, this));
