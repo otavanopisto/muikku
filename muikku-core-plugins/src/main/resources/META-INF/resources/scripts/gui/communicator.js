@@ -108,9 +108,6 @@ $(document).ready(function(){
           mCont.empty();
           _this._clearLoading();
           mCont.append($.parseHTML(text));
-          
-
-     
         });
 
         mApi().communicator.messages.markasread.create(communicatorMessageId).callback(function (err, result) {
