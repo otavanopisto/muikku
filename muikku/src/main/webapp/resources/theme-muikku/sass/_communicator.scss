@@ -73,21 +73,28 @@
          color:orange;
         }     
       }
+    
     &.usergroup{
 
       &:before{
-         @extend .icon-members;
+         // @extend .icon-members;
+         // extend breaks icon in firefox
+         content: "\e60d";
          color:green;
         }     
-      }
+    }
+      
     &.workspace{
 
       &:before{
-         @extend .icon-books;
+         // @extend .icon-books;
+         // extend breaks icon in firefox
+         content: "\e61b";
          color:blue;
         }     
       }      
    }  
+   
   .cm-message-recipient-remove{
     float:right;    
     background-color:$bgr2;
