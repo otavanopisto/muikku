@@ -219,23 +219,39 @@ $(document).ready(function(){
 
       var _this = this;
       var messages = ids.length;
-      var lastMessage = messages - 1;
+      
       $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
       
-      for (i = 0; i < ids.length; i++){ 
-        mApi().communicator.messages.del(ids[i]).callback(function (err, result){
-         if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
-          } else {
-            if( i == lastMessage){
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
-             _this._refreshView();
-            }
-          }         
-
-        });
-      } 
+      var batch = $.map(ids, function(id){
+        mApi().communicator.messages.del(id);
+      });
+      
+      mApi().batch(batch).callback(function(err){
+        if (err) {
+         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
+        } else {
+         $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
+         _this._refreshView();
+        }
+      });
+      
     },
+      
+      
+//      for (i = 0; i < ids.length; i++){ 
+//        mApi().communicator.messages.del(ids[i]).callback(function (err, result){
+//         if (err) {
+//            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
+//          } else {
+//            if( i == lastMessage){
+//            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
+//             _this._refreshView();
+//            }
+//          }         
+//
+//        });
+//      } 
+
     
     _onRecipientFocus:function(event){
       $(event.target).autocomplete({
