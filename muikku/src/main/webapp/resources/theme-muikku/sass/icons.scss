@@ -1,13 +1,10 @@
-@import "_jsf.scss";
-
 @font-face {
   font-family: 'muikku';
-  @include font-src('fonts/muikku.eot');
-  @include font-srcs(
-  'fonts/muikku.eot#iefix','embedded-opentype',
-  'fonts/muikku.ttf','truetype',
-  'fonts/muikku.woff','woff',
-  'fonts/muikku.svg#muikku','svg');
+  src:url('/fonts/muikku.eot?d835dl');
+  src:url('/fonts/muikku.eot?#iefixd835dl') format('embedded-opentype'),
+    url('/fonts/muikku.ttf?d835dl') format('truetype'),
+    url('/fonts/muikku.woff?d835dl') format('woff'),
+    url('/fonts/muikku.svg?d835dl#muikku') format('svg');
   font-weight: normal;
   font-style: normal;
 }
