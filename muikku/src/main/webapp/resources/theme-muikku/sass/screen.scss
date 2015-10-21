@@ -51,6 +51,16 @@ body {
   }
 }
 
+[class^="icon-"] span, [class*=" icon-"] span {
+  display: inline-block;
+  font-family: "Open Sans";
+  padding-left: 4px;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  text-decoration:none;  
+}
+
 main {
   display:block;
 }

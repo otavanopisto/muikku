@@ -6,6 +6,8 @@ import org.ocpsoft.rewrite.annotation.RewriteConfiguration;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+import org.ocpsoft.rewrite.servlet.config.Path;
+import org.ocpsoft.rewrite.servlet.config.Substitute;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 
 @RewriteConfiguration
@@ -19,7 +21,11 @@ public class JsfResourceRewriteRules extends HttpConfigurationProvider {
     configuration.addRule(Join.path("/scripts/{file}").to("/faces/javax.faces.resource/scripts/{file}"))
                     .where("file").matches("[a-zA-Z0-9/_.\\-]*");
     configuration.addRule(Join.path("/css/{file}").to("/javax.faces.resource/css/{file}.jsf?ln=theme-muikku"));
-    configuration.addRule(Join.path("/fonts/{file}").to("/javax.faces.resource/fonts/{file}.jsf?ln=theme-muikku"));
+    
+    configuration.addRule()
+      .when(Path.matches("/icons/{file}"))
+      .perform(Substitute.with("/javax.faces.resource/icons/{file}.jsf?ln=theme-muikku"))
+      .where("file").matches("[a-zA-Z0-9/_.\\-]*");
     
     return configuration;
   }
