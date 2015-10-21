@@ -138,8 +138,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     capabilities.setCapability("video-upload-on-pass", false);
     capabilities.setCapability("capture-html", true);
     capabilities.setCapability("timeZone", "Universal");
-    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-    capabilities.setCapability("chrome.switches", Arrays.asList("--ignore-certificate-errors"));
     capabilities.setCapability("seleniumVersion", seleniumVersion);
     
     if (resolution != null) {
