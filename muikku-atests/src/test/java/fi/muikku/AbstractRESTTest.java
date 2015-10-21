@@ -23,7 +23,7 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
 
   @Before
   public void setupMocks() throws JsonProcessingException {
-    PyramusMocks.personsPyramusMocks();
+//    PyramusMocks.personsPyramusMocks();
     PyramusMocks.student1LoginMock();
   }
   

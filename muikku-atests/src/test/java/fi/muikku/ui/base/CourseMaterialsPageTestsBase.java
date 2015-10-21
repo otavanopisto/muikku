@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -16,6 +14,7 @@ import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
+import fi.muikku.TestUtilities;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
@@ -170,10 +169,10 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
@@ -196,10 +195,10 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
     asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
