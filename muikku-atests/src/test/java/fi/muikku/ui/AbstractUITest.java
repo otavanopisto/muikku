@@ -1,4 +1,4 @@
-package fi.muikkku.ui;
+package fi.muikku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
 import static org.junit.Assert.assertEquals;

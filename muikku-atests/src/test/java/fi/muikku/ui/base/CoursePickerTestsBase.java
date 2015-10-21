@@ -10,10 +10,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
-import fi.muikkku.ui.AbstractUITest;
-import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
+import fi.muikku.ui.AbstractUITest;
+import fi.muikku.ui.PyramusMocks;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
 public class CoursePickerTestsBase extends AbstractUITest {
