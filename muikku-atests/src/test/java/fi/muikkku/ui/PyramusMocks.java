@@ -26,10 +26,12 @@ import fi.pyramus.rest.model.EducationType;
 import fi.pyramus.rest.model.EducationalTimeUnit;
 import fi.pyramus.rest.model.Email;
 import fi.pyramus.rest.model.Person;
+import fi.pyramus.rest.model.Sex;
 import fi.pyramus.rest.model.StaffMember;
 import fi.pyramus.rest.model.Student;
 import fi.pyramus.rest.model.StudentGroup;
 import fi.pyramus.rest.model.Subject;
+import fi.pyramus.rest.model.UserRole;
 import fi.pyramus.rest.model.WhoAmI;
 
 public class PyramusMocks{
@@ -123,9 +125,60 @@ public class PyramusMocks{
         .withBody(whoAmIJson)
         .withStatus(200)));
   }    
+
+  private static Person mockPerson(Long personId, DateTime birthday, String socialSecurityNumber, Sex sex, Long defaultUserId) throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    Person person = new Person(personId, birthday, socialSecurityNumber, sex, false, "empty", defaultUserId);
+    String personJson = objectMapper.writeValueAsString(person);
+    
+    stubFor(get(urlEqualTo("/1/persons/persons/" + personId))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(personJson)
+        .withStatus(200)));
+    
+    return person;
+  }
+  
+  private static StaffMember mockStaffMember(Long personId, Long staffMemberId, String firstName, String lastName, String email, UserRole role, List<String> tags, Map<String, String> variables) throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    StaffMember staffMember = new StaffMember(staffMemberId, personId, null, firstName, lastName, null, 
+        role, tags, variables);
+      
+    String staffMemberJson = objectMapper.writeValueAsString(staffMember);
+    
+    stubFor(get(urlEqualTo("/1/staff/members/" + staffMemberId))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staffMemberJson)
+        .withStatus(200)));
+    
+    StaffMember[] staffMemberArray = { staffMember };
+    String staffMemberArrayJson = objectMapper.writeValueAsString(staffMemberArray);
+    
+    stubFor(get(urlEqualTo("/1/staff/members?email=" + email))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staffMemberArrayJson)
+        .withStatus(200)));
+    
+    Email staffEmail = new Email(staffMemberId, (long) 1, true, email);
+    Email[] staffEmails = { staffEmail };
+    String staffEmailJson = objectMapper.writeValueAsString(staffEmails);
+    
+    stubFor(get(urlEqualTo("/1/staff/members/" + staffMemberId + "/emails"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staffEmailJson)
+        .withStatus(200)));   
+    
+    return staffMember;
+  }
   
   public static void personsPyramusMocks() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Map<String, String> variables = null;
     List<String> tags = null;
@@ -163,43 +216,13 @@ public class PyramusMocks{
 
     DateTime birthday = new DateTime(1990, 2, 2, 0, 0, 0, 0);
 
-    Person person = new Person((long) 1, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 1);
-    String personJson = objectMapper.writeValueAsString(person);
+    Person person = mockPerson(1l, birthday, "345345-3453", Sex.MALE, 1l);
+    Person staff1 = mockPerson(2l, birthday, "345345-3453", Sex.MALE, 2l);
+    Person staff2 = mockPerson(3l, birthday, "345345-3453", Sex.MALE, 3l);
+    Person staff3 = mockPerson(4l, birthday, "345345-3453", Sex.MALE, 4l);
+    Person staff4 = mockPerson(5l, birthday, "345345-3453", Sex.MALE, 5l);
     
-    stubFor(get(urlEqualTo("/1/persons/persons/1"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(personJson)
-        .withStatus(200)));
-
-    Person staff1 = new Person((long) 2, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 2);
-    String staff1Json = objectMapper.writeValueAsString(staff1);
-    
-    stubFor(get(urlEqualTo("/1/persons/persons/2"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staff1Json)
-        .withStatus(200)));
-
-    Person staff2 = new Person((long) 3, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 3);
-    String staff2Json = objectMapper.writeValueAsString(staff2);
-    
-    stubFor(get(urlEqualTo("/1/persons/persons/3"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staff2Json)
-        .withStatus(200)));
-    
-    Person staff3 = new Person((long) 4, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 4);
-    String staff3Json = objectMapper.writeValueAsString(staff3);
-    
-    stubFor(get(urlEqualTo("/1/persons/persons/4"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staff3Json)
-        .withStatus(200)));
-    
-    Person[] personArray = {person, staff1, staff2, staff3};
+    Person[] personArray = { person, staff1, staff2, staff3, staff4 };
     String personArrayJson = objectMapper.writeValueAsString(personArray);
     
     stubFor(get(urlMatching("/1/persons/persons?filterArchived=.*"))
@@ -220,66 +243,12 @@ public class PyramusMocks{
         .withBody(studentArrayJson)
         .withStatus(200)));
 
-    StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, null, "Test", "Staff1member", null, 
-      fi.pyramus.rest.model.UserRole.MANAGER, tags, variables);
-    
-    String staffMemberJson = objectMapper.writeValueAsString(staffMember1);
-    
-    stubFor(get(urlEqualTo("/1/staff/members/2"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staffMemberJson)
-        .withStatus(200)));
-    
-    StaffMember[] staffMemberArray = { staffMember1 };
-    String staffMemberArrayJson = objectMapper.writeValueAsString(staffMemberArray);
-    
-    stubFor(get(urlEqualTo("/1/staff/members?email=teacher@made.up"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staffMemberArrayJson)
-        .withStatus(200)));
-    
-    StaffMember staffMember2 = new StaffMember((long) 3, (long) 3, null, "Test", "Staff2member", null, 
-      fi.pyramus.rest.model.UserRole.MANAGER, tags, variables);
-    
-    staffMemberJson = objectMapper.writeValueAsString(staffMember2);
-    stubFor(get(urlEqualTo("/1/staff/members/3"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staffMemberJson)
-        .withStatus(200)));
-    
-    StaffMember[] staffMember2Array = {staffMember2};
-    staffMemberArrayJson = objectMapper.writeValueAsString(staffMember2Array);
-    
-    stubFor(get(urlEqualTo("/1/staff/members?email=mana@made.up"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staffMemberArrayJson)
-        .withStatus(200)));
-    
-    StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, null, "Test", "Administrator", null, 
-      fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
-    
-    staffMemberJson = objectMapper.writeValueAsString(staffMember3);
-    
-    stubFor(get(urlEqualTo("/1/staff/members/4"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staffMemberJson)
-        .withStatus(200)));
+    StaffMember staffMember1 = mockStaffMember(2l, 2l, "Test", "Staff1member", "teacher@made.up", UserRole.MANAGER, tags, variables);
+    StaffMember staffMember2 = mockStaffMember(3l, 3l, "Test", "Staff2member", "mana@made.up", UserRole.MANAGER, tags, variables);
+    StaffMember staffMember3 = mockStaffMember(4l, 4l, "Test", "Administrator", "admin@made.up", UserRole.ADMINISTRATOR, tags, variables);
+    StaffMember staffMember4 = mockStaffMember(5l, 5l, "Trusted", "System", "trusted@made.up", UserRole.TRUSTED_SYSTEM, tags, variables);
 
-    StaffMember[] staffMember3Array = {staffMember3};
-    staffMemberArrayJson = objectMapper.writeValueAsString(staffMember3Array);
-    
-    stubFor(get(urlEqualTo("/1/staff/members?email=admin@made.up"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staffMemberArrayJson)
-        .withStatus(200)));
-    
-    StaffMember[] staffArray = { staffMember1, staffMember2, staffMember3 };
+    StaffMember[] staffArray = { staffMember1, staffMember2, staffMember3, staffMember4 };
     String staffArrayJson = objectMapper.writeValueAsString(staffArray);
 
     stubFor(get(urlEqualTo("/1/staff/members"))
@@ -294,7 +263,7 @@ public class PyramusMocks{
         .withBody(staffArrayJson)
         .withStatus(200)));
 
-    staffMemberJson = objectMapper.writeValueAsString(staffMember1);
+    String staffMemberJson = objectMapper.writeValueAsString(staffMember1);
     stubFor(get(urlEqualTo("1/courses/courses/1/staffMembers/2"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
@@ -313,33 +282,6 @@ public class PyramusMocks{
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staffMemberJson)
-        .withStatus(200)));
-    
-    Email staff1Email = new Email((long) 2, (long) 1, true, "teacher@made.up");
-    Email[] staff1Emails = {staff1Email};
-    String staff1EmailJson = objectMapper.writeValueAsString(staff1Emails);
-    stubFor(get(urlEqualTo("/1/staff/members/2/emails"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staff1EmailJson)
-        .withStatus(200)));   
-    
-    Email staff2Email = new Email((long) 3, (long) 1, true, "mana@made.up");
-    Email[] staff2Emails = {staff2Email};
-    String staff2EmailJson = objectMapper.writeValueAsString(staff2Emails);
-    stubFor(get(urlEqualTo("/1/staff/members/3/emails"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staff2EmailJson)
-        .withStatus(200)));
-
-    Email staff3Email = new Email((long) 4, (long) 1, true, "admin@made.up");
-    Email[] staff3Emails = {staff3Email};
-    String staff3EmailJson = objectMapper.writeValueAsString(staff3Emails);
-    stubFor(get(urlEqualTo("/1/staff/members/4/emails"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staff3EmailJson)
         .withStatus(200)));
     
     CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 1, "Opettaja");

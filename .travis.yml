@@ -1,26 +1,27 @@
 sudo: false
 language: java
 before_script:
-- curl -sS https://saucelabs.com/downloads/sc-4.3.11-linux.tar.gz|tar -xzC /tmp/
-- /tmp/sc-4.3.11-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid
+- if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then 
+    curl -sS https://saucelabs.com/downloads/sc-4.3.11-linux.tar.gz|tar -xzC /tmp/;
+    /tmp/sc-4.3.11-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid;
+  fi
 after_script:
-- kill `cat /tmp/sc.pid`
+- if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then
+    kill `cat /tmp/sc.pid`;
+  fi;
 script:
-- pushd .
-- cd muikku-atests
-- mvn clean verify -Prest-it
-- mvn clean verify -Ptravis
-- popd
+- set -e;
+  if [ $TRAVIS_BRANCH != 'master' ]; then
+    pushd .;
+    cd muikku-atests;
+    mvn clean verify -P$it_profile;
+    popd;
+  fi;
 jdk:
 - openjdk7
 cache:
   directories:
   - $HOME/.m2
-branches:
-  only:
-  - devel
-  - master
-  - FTR-490_course_discussion_tests
 env:
   global:
   - secure: CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A=
@@ -31,6 +32,9 @@ env:
   - secure: M42u24iv0SCErRMdx8m59k3dp2bC1jRWtaeXXBWd+iK/SZWO3TrA0efUpGm3rP4/1vqTmulQ8WL0G1VkSX2dMXL7iD8SpN/4gORqkC/B7y4zG0/7cjVxsHLCG1ndcuvCIIiCupO9S8f+qWZVv4Kqcf+l2PvXR06mcxNrRB2O8GM=
   - secure: LZViiGyq2B/NfKRByoaA5AumTd0tpS0AaH03sRebV6MF9kcyeWJC+Idv8EyYttyed9GLQM0Qk6aVvvop3dguJNNOMnrKAFoxN4u09QDG+o8IuQiCzFQmEtXBipP+08lqsgn7wfVBD4MyhWHrmJeatq1C/So4IkaMwaYvq6eo7A4=
   - secure: QmDnYj3Lb3nMzyKDkGShAU2N3TOt1Bn0ku2KokVD+y3Q7lTdcfdvMCeBiFI7qPDrWU9bPaiTRh0+/sMWLM7J0aFg8e7OljqJrArKSB+i3leTl+/L/x9cplESMjV5u5cjtsUCmGX3ywSfhpwlGzkILVFl3ZE2eI2e2+OoOfZrezY=
+  matrix:
+  - it_profile: rest-it use_sc=false
+  - it_profile: travis use_sc=true
 addons:
   hosts:
   - dev.muikku.fi
@@ -38,13 +42,7 @@ before_install:
 - unset GEM_PATH
 - mvn install -Pmongo-log-plugin,jndi-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin -Dfindbugs.skip=false
 after_success:
-- python travis-upload-reports.py
-- python travis-prepare-maven.py
-- pushd .
-- cd muikku
-- mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,pyramus-plugins -Dclassifier=otavanopisto
-- mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,pyramus-plugins -Dclassifier=janakkala
-- popd
+- bash travis-after-success.sh
 after_failure:
 - cat muikku-atests/target/cargo/configurations/wildfly8x/log/server.log
 notifications:
@@ -56,9 +54,9 @@ notifications:
     template:
     - '%{repository} (%{commit}) : %{message} %{foo} '
     - 'Build details: %{build_url}'
-webhooks:
-  urls:
-  - http://build.staging.fi/travis.php
-  on_success: always
-  on_failure: never
-  on_start: false
+  webhooks:
+    urls:
+    - http://build.staging.fi/travis.php
+    on_success: always
+    on_failure: never
+    on_start: false

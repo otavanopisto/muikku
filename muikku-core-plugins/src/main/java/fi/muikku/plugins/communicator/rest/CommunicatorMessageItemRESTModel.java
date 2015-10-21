@@ -7,9 +7,9 @@ import java.util.Set;
 public class CommunicatorMessageItemRESTModel extends CommunicatorMessageRESTModel {
 
   public CommunicatorMessageItemRESTModel(Long id, Long communicatorMessageId, Long senderId, String categoryName, String caption, 
-      String content, Date created, Set<String> tags, List<Long> recipientIds, List<Long> recipientGroupIds, boolean unreadMessagesInThread,
+      String content, Date created, Set<String> tags, List<Long> recipientIds, boolean unreadMessagesInThread,
       Date threadLatestMessageDate) {
-    super(id, communicatorMessageId, senderId, categoryName, caption, content, created, tags, recipientIds, recipientGroupIds);
+    super(id, communicatorMessageId, senderId, categoryName, caption, content, created, tags, recipientIds);
     this.unreadMessagesInThread = unreadMessagesInThread;
     this.threadLatestMessageDate = threadLatestMessageDate;
   }

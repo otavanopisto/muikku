@@ -14,6 +14,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
+import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -45,6 +48,9 @@ public class SchoolDataSearchReindexListener {
   private UserGroupEntityController userGroupEntityController;
   
   @Inject
+  private PluginSettingsController pluginSettingsController;
+  
+  @Inject
   private SearchIndexer indexer;
   
   @Inject
@@ -56,30 +62,27 @@ public class SchoolDataSearchReindexListener {
   @Resource
   private TimerService timerService;
 
-  private int userIndex = 0;
-  private int groupIndex = 0;
-  private int workspaceIndex = 0;
-  private static int BATCH = 100;
+  private static final int DEFAULT_TIMEOUT_SECONDS = 5;
+  private static final int DEFAULT_BATCH_SIZE = 50;
   
   public void onReindexEvent(@Observes SearchReindexEvent event) {
-    userIndex = 0;
-    workspaceIndex = 0;
+    setOffset("userIndex", 0);
+    setOffset("workspaceIndex", 0);
+    setOffset("groupIndex", 0);
     
     logger.log(Level.INFO, "Reindex initiated.");
-    
-    timerService.createSingleActionTimer(5000, new TimerConfig());
+
+    startTimer(getTimeout());
   }
 
   @Timeout
   private void onTimeOut(Timer timer) {
-    timer.cancel();
-
     logger.log(Level.INFO, "Commencing Reindex task.");
     try {
-      boolean alldone = reindexWorkspaceEntities() || reindexUsers() || reindexUserGroups();
+      boolean alldone = reindexUserGroups() && reindexUsers() && reindexWorkspaceEntities();
   
       if (!alldone)
-        timerService.createSingleActionTimer(5000, new TimerConfig());
+        startTimer(getTimeout());
     } catch (Exception ex) {
       logger.log(Level.SEVERE, "Reindexing of entities failed.", ex);
     }
@@ -88,9 +91,10 @@ public class SchoolDataSearchReindexListener {
   private boolean reindexWorkspaceEntities() {
     try {
       List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntities();
+      int workspaceIndex = getOffset("workspaceIndex");
       
       if (workspaceIndex < workspaceEntities.size()) {
-        int last = Math.min(workspaceEntities.size(), workspaceIndex + BATCH);
+        int last = Math.min(workspaceEntities.size(), workspaceIndex + getBatchSize());
         
         for (int i = workspaceIndex; i < last; i++) {
           WorkspaceEntity workspaceEntity = workspaceEntities.get(i);
@@ -99,7 +103,7 @@ public class SchoolDataSearchReindexListener {
     
         logger.log(Level.INFO, "Reindexed batch of workspaces (" + workspaceIndex + "-" + last + ")");
         
-        workspaceIndex += BATCH;
+        setOffset("workspaceIndex", workspaceIndex + getBatchSize());
         return false;
       } else
         return true;
@@ -112,19 +116,24 @@ public class SchoolDataSearchReindexListener {
   private boolean reindexUsers() {
     try {
       List<UserEntity> users = userEntityController.listUserEntities();
+      int userIndex = getOffset("userIndex");
       
       if (userIndex < users.size()) {
-        int last = Math.min(users.size(), userIndex + BATCH);
+        int last = Math.min(users.size(), userIndex + getBatchSize());
         
         for (int i = userIndex; i < last; i++) {
-          UserEntity userEntity = users.get(i);
-  
-          userIndexer.indexUser(userEntity);
+          try {
+            UserEntity userEntity = users.get(i);
+    
+            userIndexer.indexUser(userEntity);
+          } catch (Exception uex) {
+            logger.log(Level.SEVERE, "Failed indexing userentity", uex);
+          }
         }
         
         logger.log(Level.INFO, "Reindexed batch of users (" + userIndex + "-" + last + ")");
   
-        userIndex += BATCH;
+        setOffset("userIndex", userIndex + getBatchSize());
         return false;
       } else
         return true;
@@ -137,9 +146,10 @@ public class SchoolDataSearchReindexListener {
   private boolean reindexUserGroups() {
     try {
       List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupEntities();
+      int groupIndex = getOffset("groupIndex");
       
       if (groupIndex < userGroups.size()) {
-        int last = Math.min(userGroups.size(), groupIndex + BATCH);
+        int last = Math.min(userGroups.size(), groupIndex + getBatchSize());
         
         for (int i = groupIndex; i < last; i++) {
           UserGroupEntity groupEntity = userGroups.get(i);
@@ -155,7 +165,7 @@ public class SchoolDataSearchReindexListener {
         
         logger.log(Level.INFO, "Reindexed batch of usergroups (" + groupIndex + "-" + last + ")");
   
-        groupIndex += BATCH;
+        setOffset("groupIndex", groupIndex + getBatchSize());
         return false;
       } else
         return true;
@@ -165,4 +175,33 @@ public class SchoolDataSearchReindexListener {
     }
   }
   
+  private int getBatchSize() {
+    return NumberUtils.toInt(pluginSettingsController.getPluginSetting("school-data", "school-data.reindexer.batch"), DEFAULT_BATCH_SIZE);
+  }
+  
+  private int getTimeout() {
+    return NumberUtils.toInt(pluginSettingsController.getPluginSetting("school-data", "school-data.reindexer.timeout"), DEFAULT_TIMEOUT_SECONDS) * 1000;
+  }
+  
+  private int getOffset(String var) {
+    return NumberUtils.toInt(pluginSettingsController.getPluginSetting("school-data", "school-data.reindexer." + var + ".offset"));
+  }
+  
+  private void setOffset(String var, int offset) {
+    pluginSettingsController.setPluginSetting("school-data", "school-data.reindexer." + var + ".offset", String.valueOf(offset));
+  }
+  
+  private void startTimer(int duration) {
+    if (this.timer != null) {
+      this.timer.cancel();
+      this.timer = null;
+    }
+    
+    TimerConfig timerConfig = new TimerConfig();
+    timerConfig.setPersistent(false);
+    
+    this.timer = timerService.createSingleActionTimer(duration, timerConfig);
+  }
+  
+  private Timer timer;
 }
