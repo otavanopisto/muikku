@@ -1,4 +1,4 @@
-package fi.muikku.ui.sauce;
+package fi.muikku.ui.sauce.indexpage;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -12,10 +12,10 @@ import org.junit.runners.Parameterized;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.junit.SauceOnDemandTestWatcher;
 
-import fi.muikku.ui.base.CourseDiscussionTestsBase;
+import fi.muikku.ui.base.indexpage.IndexPageTestsBase;
 
 @RunWith (Parameterized.class)
-public class CourseDiscussionTestsIT extends CourseDiscussionTestsBase {
+public class IndexPageTestsIT extends IndexPageTestsBase {
   
   public SauceOnDemandAuthentication authentication = new SauceOnDemandAuthentication(getSauceUsername(), getSauceAccessKey());
 
@@ -27,7 +27,7 @@ public class CourseDiscussionTestsIT extends CourseDiscussionTestsBase {
     return getDefaultSauceBrowsers();
   }
 
-  public CourseDiscussionTestsIT(String browser, String version, String platform, String resolution) {
+  public IndexPageTestsIT(String browser, String version, String platform, String resolution) {
     this.browser = browser;
     this.version = version;
     this.platform = platform;

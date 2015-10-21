@@ -1,4 +1,4 @@
-package fi.muikku.ui.base;
+package fi.muikku.ui.base.course.discussions;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package fi.muikku.ui.base;
+package fi.muikku.ui.base.indexpage;
 
 import static org.junit.Assert.assertTrue;
 
