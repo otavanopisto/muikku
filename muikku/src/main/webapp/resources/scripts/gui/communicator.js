@@ -472,6 +472,47 @@ $(document).ready(function(){
     
     
   },
+  
+  _onMoreClick : function(event){
+    var element = $(event.target);
+    element = element.parents(".cm-messages-paging");
+    var pageElement = $(".cm-messages-pages");
+    var _this = this;  
+
+    $(element).remove(); 
+    _this._addLoading(pageElement);
+    
+
+    var msgsCount = 0;
+    var msgs = $(CommunicatorImpl.msgContainer).find('.cm-message');
+    
+    for(var m = 0; m < usrs.length; m++){
+      msgsCount ++;
+     }
+          
+    var fRes = msgsCount;
+    
+
+      mApi().user.users.read({ archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, users) {
+        
+        // TODO : what if 25 users and no more? 
+        if(users != undefined){
+         users.userCount = users.length;
+        }
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
+        } else {
+          _this._clearLoading();
+          renderDustTemplate('/guider/guider_page.dust', users, function(text) {
+
+           pageElement.append($.parseHTML(text));
+
+          });
+        }
+      });     
+    
+
+  },       
     _onHashChange: function (event) {
       var hash = window.location.hash.substring(1);
       var _this = this;

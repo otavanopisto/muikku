@@ -1,0 +1,16 @@
+
+{?.}
+  <div class="cm-messages-toolbar"> 
+     <div class="cm-messages-tool mf-item-tool icon-delete"></div>
+     <div class="clear"></div>
+  </div>
+{/.}
+
+<div class="cm-messages-pages">
+  {?.}
+    {>"communicator/communicator_page.dust"/}  
+  {:else}
+    {>"commmunicator/communicator_empty.dust"/}    
+  {/.}  
+  <div class="clear"></div>
+ </div>

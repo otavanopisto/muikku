@@ -1,0 +1,27 @@
+
+  <div class="cm-messages-page">
+    {#.}
+        {>"communicator/communicator_item.dust"/}
+    {/.} 
+    {@lt key=msgCount value=25}
+      <div class="mf-items-paging cm-messages-paging">
+        <div class="mf-paging-toolbar cm-paging-toolbar">
+          <div class="mf-paging-tool mf-page-link-load-more cm-paging-tool cm-page-link-load-more disabled">{#localize key="plugin.communicator.links.nomore"/}</div>
+        </div>
+      </div>    
+     {:else}   
+      {?.}  
+        <div class="mf-items-paging cm-messages-paging">
+          <div class="mf-paging-toolbar gt-paging-toolbar">
+            <div class="mf-paging-tool mf-page-link-load-more gt-paging-tool gt-page-link-load-more">{#localize key="plugin.communicator.links.more"/}</div>
+          </div>
+        </div>
+      {:else}
+        <div class="mf-items-paging cm-messages-paging">
+          <div class="mf-paging-toolbar cm-paging-toolbar">
+            <div class="mf-paging-tool mf-page-link-load-more cm-paging-tool cm-page-link-load-more disabled">{#localize key="plugin.communicator.links.nomore"/}</div>
+          </div>
+        </div>    
+      {/.}
+    {/lt}    
+  </div>
