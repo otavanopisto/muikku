@@ -71,7 +71,6 @@
     &.usergroup{
 
       &:before{
-         content: "\e60d";
          color:green;
         }     
     }
@@ -79,7 +78,6 @@
     &.workspace{
 
       &:before{
-         content: "\e61b";
          color:blue;
         }     
       }     
