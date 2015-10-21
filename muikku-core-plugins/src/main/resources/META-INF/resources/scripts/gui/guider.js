@@ -4,6 +4,7 @@ $(document).ready(function(){
 
     	init : function(){
           this._refreshUsers();
+          this._loadFilters();
     	    $(GuideImpl.guideContainer).on("click", '.gt-user:not(.open)', $.proxy(this._showUser,this));  
           $(GuideImpl.guideContainer).on("click", '.gt-user.open .gt-user-name', $.proxy(this._hideUser,this));  
     	    $(GuideImpl.guideContainer).on("click", '.gt-tool-view-profile', $.proxy(this._onShowProfileClick,this));
@@ -22,10 +23,22 @@ $(document).ready(function(){
     	
       _refreshList: function () {
         var _this = this;
+        var hash = window.location.hash.substring(1);
         var term = this._searchInput.val();
-        
-        this._loadUsers(term);
-
+        if (hash.indexOf("filter/") === 0){
+          var first = hash.indexOf("/");
+          var second = hash.indexOf("/", first + 1); 
+          first = first + 1;
+          var filter = hash.substring(first, second);
+          var filterId = hash.substring(second + 1);          
+          switch (filter){
+            case "workspace":
+              _this._loadWorkSpaceUsers(filterId, term);
+              break;
+          }          
+        }else{
+          this._loadUsers(term);
+        }
       },
           	
       _refreshListTimer: function () {
@@ -40,6 +53,31 @@ $(document).ready(function(){
       _onSearchUsersChange : function (event) {
         this._refreshListTimer();
       },
+      
+      _loadFilters : function(){
+        var filterContainer = $('.gu-filters');
+        var _this = this;
+        
+          mApi().workspace.workspaces
+          .read({ userId: MUIKKU_LOGGED_USER_ID })
+          .callback( function (err, workspaces) {
+            if(workspaces){
+              workspaces.filtersTitle = getLocaleText('plugin.guider.filters.workspaces');
+              workspaces.filterType = "workspace";
+            }
+            if( err ){
+               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
+            }else{
+              renderDustTemplate('guider/guider_user_filters.dust', workspaces, function (text) {
+                filterContainer.append($.parseHTML(text));
+                });
+              
+              
+            }
+          });        
+        
+        
+      },      
       _loadUsers : function(params){
         var _this = this;
         _this._clearUsers();
@@ -50,10 +88,12 @@ $(document).ready(function(){
         if(searchVisible == false ){
           search.show("slide");
         }
-        
         mApi().user.users.read({searchString : params, archetype : 'STUDENT', maxResults: 25 })
         .callback(function (err, users) {
           
+          if(users != undefined){
+           users.userCount = users.length;
+          }
           if( err ){
                 $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
           }else{        
@@ -66,34 +106,62 @@ $(document).ready(function(){
           }
         });   
     
-  },      
-    	_refreshUsers : function(){
-            var _this = this;
-            _this._clearUsers();
-            _this._addLoading($(GuideImpl.guideContainer));
-            var search = $(".gt-search");
-            var searchVisible = search.is(":visible");
-            
-            if(searchVisible == false ){
-            	search.show("slide");
-            }
-            
-    	    mApi().user.users.read({ archetype : 'STUDENT', maxResults: 25 })
-    	    .callback(function (err, users) {
-    	  	  
-    		    if( err ){
-    		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
-    		  	}else{    	  
+  },
+    _loadWorkSpaceUsers : function(workspaceId, params){
+      var _this = this;
+      var workspaceArray = [workspaceId];
+      _this._clearUsers();
+      _this._addLoading($(GuideImpl.guideContainer));
 
-    		  	 renderDustTemplate('guider/guider_items.dust', users, function(text) {
-    		  	   _this._clearLoading();
-      		 		$(GuideImpl.guideContainer).append($.parseHTML(text));
-      		 		 
-      		  	});
-    		  	}
-    	    });		
+      mApi().user.users.read({workspaceIds : workspaceId, archetype : 'STUDENT', maxResults: 25, searchString : params })
+      .callback(function (err, users) {
+        if(users != undefined){
+          users.userCount = users.length;
+        }
+        if( err ){
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
+        }else{        
+
+         renderDustTemplate('guider/guider_items.dust', users, function(text) {
+           _this._clearLoading();
+          $(GuideImpl.guideContainer).append($.parseHTML(text));
+           
+          });
+        }
+      });       
+    }, 
+    _refreshUsers : function(){
+      var _this = this;
+      _this._clearUsers();
+      _this._addLoading($(GuideImpl.guideContainer));
+      var container = $(".mf-list");
+      var categories = container.find("li");        
+      categories.removeClass("selected");      
+      var search = $(".gt-search");
+      var searchVisible = search.is(":visible");
+      
+      if(searchVisible == false ){
+      	search.show("slide");
+      }
+      
+	    mApi().user.users.read({archetype : 'STUDENT', maxResults: 25 })
+	    .callback(function (err, users) {
+        if(users != undefined){
+          users.userCount = users.length;
+        }
+		    if( err ){
+		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
+		  	}else{    	  
+
+		  	 renderDustTemplate('guider/guider_items.dust', users, function(text) {
+		  	   _this._clearLoading();
+  		 		$(GuideImpl.guideContainer).append($.parseHTML(text));
+  		 		 
+  		  	});
+		  	}
+	    });		
     		
-    	},
+      },
 
       _onMoreClick : function(event){
         var element = $(event.target);
@@ -115,13 +183,17 @@ $(document).ready(function(){
         var fRes = usrsCount;
         
 
-          mApi().user.users.read({archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, threads) {
-    
+          mApi().user.users.read({ archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, users) {
+            
+            // TODO : what if 25 users and no more? 
+            if(users != undefined){
+             users.userCount = users.length;
+            }
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
             } else {
               _this._clearLoading();
-              renderDustTemplate('/guider/guider_page.dust', threads, function(text) {
+              renderDustTemplate('/guider/guider_page.dust', users, function(text) {
     
                pageElement.append($.parseHTML(text));
     
@@ -141,6 +213,9 @@ $(document).ready(function(){
     	
 	    _viewUserProfile : function(uId){
 	      this._clearUsers();
+        var container = $(".mf-list");
+        var categories = container.find("li");        
+        categories.removeClass("selected");	      
 		    mApi().user.users.read(uId).callback(function(err, user){
 				    if( err ){
 				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
@@ -166,8 +241,7 @@ $(document).ready(function(){
 		    });  		
 				
 	    },    	
-	    _showUser : function(event){
-	      
+	    _showUser : function(event){	      
         var _this = this;
 	    	var element = $(event.target); 
 	      element = element.parents(".gt-user");
@@ -191,13 +265,10 @@ $(document).ready(function(){
 
 	    },
       _hideUser : function(event){
-
         var element = $(event.target); 
         element = element.parents(".gt-user");
         var det = element.find(".gt-user-details"); 
         var detcont = element.find(".gt-user-details-content"); 
-
-
         $(element).removeClass("open");
         $(detcont).empty();             
         $(det).hide();     
@@ -243,7 +314,13 @@ $(document).ready(function(){
 //		    	}
 //		      });		   
 //	   }, 
-
+      _setSelected : function(sel){
+        var container = $(".mf-list");
+        var categories = container.find("li");        
+        categories.removeClass("selected");
+        var test = $('li'+ sel);
+        $(test).addClass("selected"); 
+      },
 	   _addLoading : function(parentEl){
 	     $(parentEl).append('<div class="mf-loading"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div></div>');  
 	     
@@ -266,6 +343,21 @@ $(document).ready(function(){
 	          var hI = hash.indexOf('/');
 	          var cHash = hash.substring(0, hI);
 	          _this._viewUserProfile(studentId);
+	        }else if (hash.indexOf("filter/") === 0){
+	          var first = hash.indexOf("/");
+	          var second = hash.indexOf("/", first + 1); 
+	          first = first + 1;
+	          var filter = hash.substring(first, second);
+	          var filterId = hash.substring(second + 1);
+	          
+            switch (filter){
+              case "workspace":
+                var clickedId = "#" + filter + "-" + filterId;
+                _this._setSelected(clickedId);
+                _this._loadWorkSpaceUsers(filterId);
+                
+                break;
+            }
 	        }else
 	          _this._refreshUsers;
 

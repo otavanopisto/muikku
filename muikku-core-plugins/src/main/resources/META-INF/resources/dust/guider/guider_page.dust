@@ -3,17 +3,25 @@
     {#.}
         {>"guider/guider_item.dust"/}
     {/.} 
-    {?.}  
-      <div class="mf-items-paging gt-users-paging">
-        <div class="mf-paging-toolbar gt-paging-toolbar">
-          <div class="mf-paging-tool mf-page-link-load-more gt-paging-tool gt-page-link-load-more">{#localize key="plugin.guider.links.more"/}</div>
-        </div>
-      </div>
-    {:else}
+    {@lt key=userCount value=25}
       <div class="mf-items-paging gt-users-paging">
         <div class="mf-paging-toolbar gt-paging-toolbar">
           <div class="mf-paging-tool mf-page-link-load-more gt-paging-tool gt-page-link-load-more disabled">{#localize key="plugin.guider.links.nomore"/}</div>
         </div>
       </div>    
-    {/.}    
+     {:else}   
+      {?.}  
+        <div class="mf-items-paging gt-users-paging">
+          <div class="mf-paging-toolbar gt-paging-toolbar">
+            <div class="mf-paging-tool mf-page-link-load-more gt-paging-tool gt-page-link-load-more">{#localize key="plugin.guider.links.more"/}</div>
+          </div>
+        </div>
+      {:else}
+        <div class="mf-items-paging gt-users-paging">
+          <div class="mf-paging-toolbar gt-paging-toolbar">
+            <div class="mf-paging-tool mf-page-link-load-more gt-paging-tool gt-page-link-load-more disabled">{#localize key="plugin.guider.links.nomore"/}</div>
+          </div>
+        </div>    
+      {/.}
+    {/lt}    
   </div>
