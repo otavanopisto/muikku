@@ -36,6 +36,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -456,17 +457,30 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return result;
   }
   
+  protected String getAttributeValue(String selector, String attribute){
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    return element.getAttribute(attribute);
+
+  }
+  
+  protected void dragAndDrop(String source, String target){
+    WebElement sourceElement = getWebDriver().findElement(By.cssSelector(source)); 
+    WebElement targetElement = getWebDriver().findElement(By.cssSelector(target));
+    (new Actions(getWebDriver())).dragAndDrop(sourceElement, targetElement).perform();
+  }
+  
   protected WorkspaceHtmlMaterial createWorkspaceHtmlMaterial(Long workspaceEntityId, Long parentId, String title, String contentType, String html, Long revisionNumber, String assignmentType) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     WorkspaceHtmlMaterial payload = new WorkspaceHtmlMaterial(null, parentId, title, contentType, html, revisionNumber, assignmentType);
     Response response = asAdmin()
-      .contentType("application/json")
+      .contentType("application/json;charset=UTF-8")
       .body(payload)
       .post("/test/workspaces/{WORKSPACEENTITYIID}/htmlmaterials", workspaceEntityId);
     
-    response.then()
-      .statusCode(200);
+    int status = response.statusCode();
+    
+    assertEquals(String.format("Status code: %d does not match expected 200 Responded with message %s",status, response.asString()), 200, status);
       
     WorkspaceHtmlMaterial result = objectMapper.readValue(response.asString(), WorkspaceHtmlMaterial.class);
     assertNotNull(result);

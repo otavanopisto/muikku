@@ -2,8 +2,11 @@ package fi.muikku.ui.base;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -269,6 +272,88 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
         assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
+  }
+  
+  @Test
+  public void answerConnectFieldByClickingTestAdmin() throws Exception {
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;},{&quot;name&quot;:&quot;4&quot;,&quot;text&quot;:&quot;Kinkku&quot;},{&quot;name&quot;:&quot;5&quot;,&quot;text&quot;:&quot;Leipä&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;},{&quot;name&quot;:&quot;D&quot;,&quot;text&quot;:&quot;Kebab&quot;},{&quot;name&quot;:&quot;E&quot;,&quot;text&quot;:&quot;Halko&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;},{&quot;field&quot;:&quot;4&quot;,&quot;counterpart&quot;:&quot;D&quot;},{&quot;field&quot;:&quot;5&quot;,&quot;counterpart&quot;:&quot;E&quot;}]}\"/></object><br/></p>", 1l, 
+          "EXERCISE");
+      
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        
+        assertVisible(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
+        assertClassNotPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()), "muikku-field-saved");
+        String firstTermValue = getAttributeValue(".muikku-connect-field-term:first-child", "data-field-name");
+        click(".muikku-connect-field-term:first-child");
+        waitClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-term-selected");
+        String lastCounterpartValue = getAttributeValue(".muikku-connect-field-counterpart:last-child", "data-field-value"); 
+        click(".muikku-connect-field-counterpart:last-child");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
+        List<WebElement> terms = getWebDriver().findElements(By.cssSelector(".muikku-connect-field-term"));
+        List<WebElement> counterparts = getWebDriver().findElements(By.cssSelector(".muikku-connect-field-counterpart"));
+        for(int i = 0; i < terms.size();i++){
+          if(terms.get(i).getAttribute("data-field-name") == firstTermValue){
+            assertEquals(lastCounterpartValue, counterparts.get(i).getAttribute("data-field-value"));
+          }
+        }
+        
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
+  }
+  
+  @Test
+  public void answerConnectFieldByDraggingTestAdmin() throws Exception {
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;},{&quot;name&quot;:&quot;4&quot;,&quot;text&quot;:&quot;Kinkku&quot;},{&quot;name&quot;:&quot;5&quot;,&quot;text&quot;:&quot;Leipä&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;},{&quot;name&quot;:&quot;D&quot;,&quot;text&quot;:&quot;Kebab&quot;},{&quot;name&quot;:&quot;E&quot;,&quot;text&quot;:&quot;Halko&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;},{&quot;field&quot;:&quot;4&quot;,&quot;counterpart&quot;:&quot;D&quot;},{&quot;field&quot;:&quot;5&quot;,&quot;counterpart&quot;:&quot;E&quot;}]}\"/></object><br/></p>", 1l, 
+          "EXERCISE");
+      
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        
+        assertVisible(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
+        assertClassNotPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()), "muikku-field-saved");
+        String firstTermValue = getAttributeValue(".muikku-connect-field-term:first-child", "data-field-name");
+        String lastCounterpartValue = getAttributeValue(".muikku-connect-field-counterpart:last-child", "data-field-value"); 
+        dragAndDrop(".muikku-connect-field-counterpart:last-child", ".muikku-connect-field-counterpart:first-child");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
+        List<WebElement> terms = getWebDriver().findElements(By.cssSelector(".muikku-connect-field-term"));
+        List<WebElement> counterparts = getWebDriver().findElements(By.cssSelector(".muikku-connect-field-counterpart"));
+        for(int i = 0; i < terms.size();i++){
+          if(terms.get(i).getAttribute("data-field-name") == firstTermValue){
+            assertEquals(lastCounterpartValue, counterparts.get(i).getAttribute("data-field-value"));
+          }
+        }
+        
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
