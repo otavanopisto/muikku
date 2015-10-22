@@ -232,7 +232,7 @@ $(document).ready(function(){
     _onRecipientFocus:function(event){
       $(event.target).autocomplete({
        create: function(event, ui){
-        $('.ui-autocomplete').perfectScrollbar();
+        $('.ui-autocomplete').perfectScrollbar(); 
        },  
       source: function (request, response) {
         response(mCommunicator._doSearch(request.term));
@@ -264,6 +264,10 @@ $(document).ready(function(){
         });
       } else if (item.type == "GROUP") {
         renderDustTemplate('communicator/communicator_messagerecipientgroup.dust', prms, function (text) {
+          recipientListElement.prepend($.parseHTML(text));
+        });
+      } else if (item.type == "WORKSPACE") {
+        renderDustTemplate('communicator/communicator_messagerecipientworkspace.dust', prms, function (text) {
           recipientListElement.prepend($.parseHTML(text));
         });
       }
@@ -315,11 +319,17 @@ $(document).ready(function(){
   },    
       
   _doSearch: function (searchTerm) {
+
+    var workspaces = this._searchWorkspaces(searchTerm);
     var groups = this._searchGroups(searchTerm);
     var users = this._searchUsers(searchTerm);
+    var recipients = users.concat(workspaces, groups);
     
-    return $.merge(groups, users);
-//      return this._searchUsers(searchTerm);
+    
+ 
+    
+    
+    return recipients;
   },      
 
   
@@ -341,7 +351,7 @@ $(document).ready(function(){
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage.success'));
          }
         });
-    }   
+     }   
      mApi().communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback) {
        mApi().communicator.communicatormessages.sender.read(eId).callback(function(err, user) {
          reply.senderFullName = user.firstName + ' ' + user.lastName;
@@ -354,9 +364,38 @@ $(document).ready(function(){
     });
     
   },
+
+  _searchWorkspaces: function (searchTerm) {
+    var _this = this;
+    var workspaces = new Array();
+
+    mApi().coursepicker.workspaces.read({
+      search: searchTerm,
+      myWorkspaces: true,
+    })
+    .callback($.proxy(function (err, result) {
+      if (result != undefined) {
+        for (var i = 0, l = result.length; i < l; i++) {
+          var img = undefined;
+          if (result[i].hasImage)
+            img = CONTEXTPATH + "/picture?userId=" + result[i].id;
+    
+          workspaces.push({
+            category : getLocaleText("plugin.communicator.workspaces"),
+            label : result[i].name,
+            id : result[i].id,
+            type : "WORKSPACE"
+          });
+        }
+      }      
+
+    }, this));        
+    
+    return workspaces;
+  },  
   _searchGroups: function (searchTerm) {
     var _this = this;
-    var users = new Array();
+    var groups = new Array();
   
     if (MUIKKU_LOGGEDINROLES.admin || MUIKKU_LOGGEDINROLES.manager || MUIKKU_LOGGEDINROLES.teacher) {
       mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
@@ -366,7 +405,7 @@ $(document).ready(function(){
             if (result[i].hasImage)
               img = CONTEXTPATH + "/picture?userId=" + result[i].id;
   
-            users.push({
+            groups.push({
               category : getLocaleText("plugin.communicator.usergroups"),
               label : result[i].name + " (" + result[i].userCount + ")",
               id : result[i].id,
@@ -378,7 +417,7 @@ $(document).ready(function(){
       });
     }
     
-    return users;
+    return groups;
   },
 
   _searchUsers: function (searchTerm) {

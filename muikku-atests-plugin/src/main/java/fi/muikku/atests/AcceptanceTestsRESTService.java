@@ -19,33 +19,36 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.plugins.forum.ForumController;
+import fi.muikku.plugins.forum.model.ForumArea;
+import fi.muikku.plugins.forum.model.ForumAreaGroup;
+import fi.muikku.plugins.forum.model.ForumThread;
+import fi.muikku.plugins.forum.model.ForumThreadReply;
+import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
+import fi.muikku.plugins.search.UserIndexer;
+import fi.muikku.plugins.search.WorkspaceIndexer;
 import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
-import fi.muikku.schooldata.entity.User;
-import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
-import fi.muikku.search.SearchIndexer;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
-import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
-import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -67,26 +70,14 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   private Logger logger;
   
   @Inject
-  private WorkspaceController workspaceController;
-  
-  @Inject
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
-  private UserController userController;
-
-  @Inject
   private UserEntityController userEntityController;
   
-  @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController; 
-  
-  @Inject
-  private SearchIndexer indexer;
-   
   @Inject
   private PyramusUpdater pyramusUpdater;
   
@@ -98,10 +89,19 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
-  
+
+  @Inject
+  private ForumController forumController;
+
   @Inject
   private Event<SchoolDataWorkspaceDiscoveredEvent> schoolDataWorkspaceDiscoveredEvent;
 
+  @Inject
+  private UserIndexer userIndexer;
+  
+  @Inject
+  private WorkspaceIndexer workspaceIndexer;
+  
   @GET
   @Path("/login")
   @Produces("text/plain")
@@ -138,35 +138,29 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntities();
     for (int i = 0; i < workspaceEntities.size(); i++) {
       WorkspaceEntity workspaceEntity = workspaceEntities.get(i);
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      if (workspace != null) {
-        try {
-          indexer.index(Workspace.class.getSimpleName(), workspace);
-        } catch (Exception e) {
-          logger.log(Level.WARNING, "could not index WorkspaceEntity #" + workspaceEntity.getId(), e);
-        }
-      }
+      
+      workspaceIndexer.indexWorkspace(workspaceEntity);
     }
 
-    logger.log(Level.INFO, "Reindexed workspaces )");
+    logger.log(Level.INFO, "Reindexed " + workspaceEntities.size() + " workspaces");
    
     List<UserEntity> users = userEntityController.listUserEntities();
     for (int i = 0; i < users.size(); i++) {
       UserEntity userEntity = users.get(i);
-      List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
-
-      for (UserSchoolDataIdentifier identifier : identifiers) {
-        User user = userController.findUserByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
-        try {
-          indexer.index(User.class.getSimpleName(), user);
-        } catch (Exception e) {
-          logger.log(Level.WARNING, "could not index User #" + user.getSchoolDataSource() + '/' + user.getIdentifier(), e);
-        }
-      }
+      
+      userIndexer.indexUser(userEntity);
     }
-    logger.log(Level.INFO, "Reindexed users");
     
-   return Response.ok().build();
+    logger.log(Level.INFO, "Reindexed " + users.size() + " users");
+    
+    try {
+      Thread.sleep(10000);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    return Response.ok().build();
   }
 
   @GET
@@ -302,6 +296,147 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
   
+  @POST
+  @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createWorkspaceDiscussionGroup(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, fi.muikku.atests.WorkspaceDiscussionGroup payload) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
+    }
+    
+    if (StringUtils.isBlank(payload.getName())) {
+      return Response.status(Status.BAD_REQUEST).entity("Mandatory name is missing").build(); 
+    }
+    
+    return Response.ok(createRestEntity(forumController.createForumAreaGroup(payload.getName()))).build();
+  }  
+  
+  @DELETE
+  @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteWorkspaceDiscussionGroup(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("GROUPID") Long groupId) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
+    }
+    
+    ForumAreaGroup group = forumController.findForumAreaGroup(groupId);
+    if (group == null) {
+      return Response.status(Status.NOT_FOUND).entity("Group not found").build();
+    }
+    
+    forumController.deleteAreaGroup(group);;
+    
+    return Response.noContent().build();
+  }  
+
+  @POST
+  @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createWorkspaceDiscussion(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("GROUPID") Long groupId, fi.muikku.atests.WorkspaceDiscussion payload) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
+    }
+    
+    ForumAreaGroup group = forumController.findForumAreaGroup(groupId);
+    if (group == null) {
+      return Response.status(Status.NOT_FOUND).entity("Group not found").build();
+    }
+    
+    if (StringUtils.isBlank(payload.getName())) {
+      return Response.status(Status.BAD_REQUEST).entity("Mandatory name is missing").build(); 
+    }
+    
+    return Response.ok(createRestEntity(forumController.createWorkspaceForumArea(workspaceEntity, payload.getName(), group.getId()))).build();
+  }
+
+  @DELETE
+  @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteWorkspaceDiscussion(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("GROUPID") Long groupId, @PathParam ("DISCUSSIONID") Long discussionId) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
+    }
+    
+    ForumAreaGroup group = forumController.findForumAreaGroup(groupId);
+    if (group == null) {
+      return Response.status(Status.NOT_FOUND).entity("Group not found").build();
+    }
+    
+    ForumArea forumArea = forumController.getForumArea(discussionId);
+    if (forumArea == null) {
+      return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
+    }
+    
+    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE);
+    for (ForumThread thread : threads) {
+      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE);
+      for (ForumThreadReply reply : replies) {
+        forumController.deleteReply(reply); 
+      }
+      
+      forumController.deleteThread(thread);
+    }
+    
+    forumController.deleteArea(forumArea);
+    
+    return Response.noContent().build();
+  }
+
+  @POST
+  @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createWorkspaceDiscussionThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("GROUPID") Long groupId, @PathParam ("DISCUSSIONID") Long discussionId, fi.muikku.atests.WorkspaceDiscussionThread payload) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
+    }
+    
+    ForumAreaGroup group = forumController.findForumAreaGroup(groupId);
+    if (group == null) {
+      return Response.status(Status.NOT_FOUND).entity("Group not found").build();
+    }
+    
+    ForumArea discussion = forumController.getForumArea(discussionId);
+    if (discussion == null) {
+      return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
+    }
+    
+    return Response.ok(createRestEntity(forumController.createForumThread(discussion, payload.getTitle(), payload.getMessage(), payload.getSticky(), payload.getLocked()))).build();
+  }
+
+  @DELETE
+  @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteWorkspaceDiscussionThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("GROUPID") Long groupId, @PathParam ("DISCUSSIONID") Long discussionId, @PathParam ("ID") Long id) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
+    }
+    
+    ForumAreaGroup group = forumController.findForumAreaGroup(groupId);
+    if (group == null) {
+      return Response.status(Status.NOT_FOUND).entity("Group not found").build();
+    }
+    
+    ForumArea forumArea = forumController.getForumArea(discussionId);
+    if (forumArea == null) {
+      return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
+    }
+    
+    ForumThread thread = forumController.getForumThread(id);
+    if (thread == null) {
+      return Response.status(Status.NOT_FOUND).entity("Thread not found").build();
+    }
+
+    forumController.deleteThread(thread);
+    
+    return Response.noContent().build();
+  }
+
   private fi.muikku.atests.Workspace createRestEntity(WorkspaceEntity workspaceEntity, String name) {
     return new fi.muikku.atests.Workspace(workspaceEntity.getId(), 
         name, 
@@ -309,6 +444,14 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         workspaceEntity.getDataSource().getIdentifier(), 
         workspaceEntity.getIdentifier(), 
         workspaceEntity.getPublished());
+  }
+
+  private WorkspaceDiscussionGroup createRestEntity(ForumAreaGroup entity) {
+    return new WorkspaceDiscussionGroup(entity.getId(), entity.getName());
+  }
+
+  private fi.muikku.atests.WorkspaceDiscussion createRestEntity(WorkspaceForumArea entity) {
+    return new fi.muikku.atests.WorkspaceDiscussion(entity.getId(), entity.getName(), entity.getGroup().getId());
   }
 
   private fi.muikku.atests.WorkspaceHtmlMaterial createRestEntity(WorkspaceMaterial workspaceMaterial, HtmlMaterial htmlMaterial) {
@@ -329,5 +472,12 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         workspaceFolder.getTitle(),
         workspaceFolder.getParent() != null ? workspaceFolder.getParent().getId() : null);
   }
-  
+
+  private fi.muikku.atests.WorkspaceDiscussionThread createRestEntity(ForumThread entity) {
+    return new fi.muikku.atests.WorkspaceDiscussionThread(entity.getId(), 
+        entity.getTitle(), 
+        entity.getMessage(), 
+        entity.getSticky(), 
+        entity.getLocked());
+  }
 }

@@ -1,0 +1,11 @@
+
+{?.}
+  <div class="mf-list-title"><span>{filtersTitle}</span></div>
+  <ul class="mf-list gu-filters">
+    {#.}
+      {>"guider/guider_user_filter.dust"/}  
+    {/.}
+  </ul>
+{:else}
+  <div class="mf-list-title no-items"><span>{#localize key="plugin.guider.empty.filters"/}</span></div>
+{/.}

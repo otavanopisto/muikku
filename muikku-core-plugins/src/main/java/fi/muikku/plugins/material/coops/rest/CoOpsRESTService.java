@@ -2,9 +2,9 @@ package fi.muikku.plugins.material.coops.rest;
 
 import java.util.List;
 
+import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -33,7 +33,7 @@ import fi.muikku.users.EnvironmentUserController;
 @Path ("/coops/{FILEID}")
 @RequestScoped
 @Produces (MediaType.APPLICATION_JSON)
-@Transactional
+@Stateful
 public class CoOpsRESTService {
 
   @Inject

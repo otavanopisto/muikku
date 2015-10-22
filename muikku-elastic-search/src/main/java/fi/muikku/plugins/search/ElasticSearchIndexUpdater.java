@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -21,7 +20,6 @@ import org.elasticsearch.node.Node;
 import fi.muikku.search.SearchIndexUpdater;
 
 @ApplicationScoped
-@Stateful
 public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   
   @Inject

@@ -42,6 +42,10 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.findByWorkspaceAndIdentifier(workspaceEntity, identifier);
   }
   
+  public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierIncludeArchived(workspaceEntity, userSchoolDataIdentifier);
+  }
+  
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifier(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
     return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifier(workspaceEntity, userSchoolDataIdentifier);
   }
@@ -109,6 +113,10 @@ public class WorkspaceUserEntityController {
   
   public void archiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
     workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.TRUE);
+  }
+
+  public void unArchiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
+    workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.FALSE);
   }
 
   public void deleteWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {

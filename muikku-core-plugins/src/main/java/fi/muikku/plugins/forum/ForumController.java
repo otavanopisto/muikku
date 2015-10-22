@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -47,8 +45,6 @@ import fi.muikku.users.UserEntityController;
 import fi.otavanopisto.security.Permit;
 import fi.otavanopisto.security.PermitContext;
 
-@Dependent
-@Stateful
 public class ForumController {
   
   @Inject
@@ -249,7 +245,7 @@ public class ForumController {
   
   public List<ForumThread> listLatestForumThreads(int firstResult, int maxResults) {
     List<EnvironmentForumArea> environmentForums = listEnvironmentForums();
-    List<WorkspaceForumArea> workspaceForums = listCourseForums();
+//    List<WorkspaceForumArea> workspaceForums = listCourseForums();
     List<ForumArea> forumAreas = new ArrayList<ForumArea>();
 
     // TODO: This could use some optimization
@@ -258,9 +254,9 @@ public class ForumController {
       forumAreas.add(ef);
     }
     
-    for (WorkspaceForumArea wf : workspaceForums) {
-      forumAreas.add(wf);
-    }
+//    for (WorkspaceForumArea wf : workspaceForums) {
+//      forumAreas.add(wf);
+//    }
     
     List<ForumThread> threads;
     
