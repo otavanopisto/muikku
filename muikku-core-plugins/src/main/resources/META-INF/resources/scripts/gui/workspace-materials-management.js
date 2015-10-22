@@ -985,9 +985,8 @@
     });
 
     $('.correct-answers-settings').each(function(index, node) {
-      if ($(node).closest('.workspace-materials-view-page').attr('data-assignment-type') != 'EXERCISE') {
-        $(node).hide();
-      } else {
+      if ($(node).closest('.workspace-materials-view-page').attr('data-assignment-type') == 'EXERCISE') {
+        $(node).removeClass('hidden');
         var correctAnswersElem = $(node).find('.correct-answers');
         if ($(node).closest('.workspace-materials-view-page').attr('data-correct-answers') == 'ALWAYS') {
           $(correctAnswersElem)
@@ -1319,7 +1318,7 @@
                 }
               }, this));
             }
-            $(page).find('.correct-answers-settings').hide();
+            $(page).find('.correct-answers-settings').addClass('hidden');
           }
         }, this));
       break;
@@ -1329,7 +1328,7 @@
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
             $(page).removeAttr('data-assignment-type');
-            $(page).find('.correct-answers-settings').hide();
+            $(page).find('.correct-answers-settings').addClass('hidden');
           }
         }, this));
       break;
@@ -1349,7 +1348,7 @@
                 }
               }, this));
             }
-            $(page).find('.correct-answers-settings').show();
+            $(page).find('.correct-answers-settings').removeClass('hidden');
           }
         }, this));
       break;
@@ -1464,7 +1463,6 @@
                 }
                 newPage.empty();
                 $(document).muikkuMaterialLoader('loadMaterial', newPage);
-                $(newPage).find('.correct-answers-settings').hide();
                 // TODO Concurrency? Has the material been loaded before edit?
                 editPage(newPage);
               } 
