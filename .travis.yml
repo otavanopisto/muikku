@@ -44,6 +44,7 @@ env:
 addons:
   hosts:
   - dev.muikku.fi
+install: true
 before_install:
 - unset GEM_PATH
 - mvn install -Pmongo-log-plugin,jndi-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin -Dfindbugs.skip=false
