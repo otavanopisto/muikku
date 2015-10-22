@@ -413,11 +413,11 @@ public class PyramusMocks{
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
     TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
-    CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 1, "Opettaja");
-    CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
-    CourseStaffMemberRole vRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
-    CourseStaffMemberRole studentRole = new CourseStaffMemberRole(10l, "Opiskelija");
-    CourseStaffMemberRole[] cRoleArray = { teacherRole, tutorRole, vRole, studentRole };
+    CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 8, "Opettaja");
+//    CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
+//    CourseStaffMemberRole vRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
+//    CourseStaffMemberRole studentRole = new CourseStaffMemberRole((long) 9, "Opiskelija");
+    CourseStaffMemberRole[] cRoleArray = { teacherRole };
 
     String cRoleJson = objectMapper.writeValueAsString(cRoleArray);
     
@@ -620,7 +620,8 @@ public class PyramusMocks{
   
   public static void guiderTestMock() throws Exception{
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    CourseStaffMember staffMember = new CourseStaffMember(1l, 1l, 4l, 1l);
+    CourseStaffMember staffMember = new CourseStaffMember(1l, 1l, 4l, 8l);
+
     CourseStaffMember[] staffMembers = { staffMember };
 
     stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/staffMembers", 1l)))
@@ -633,6 +634,7 @@ public class PyramusMocks{
         .withHeader("Content-Type", "application/json")
         .withBody(objectMapper.writeValueAsString(staffMember))
         .withStatus(200)));
+    
     String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
     TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
@@ -643,6 +645,18 @@ public class PyramusMocks{
     TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookCourseStaffMemberCreatePayload(1l, 1l, 4l));
     TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+
+    Map<String, String> variables = null;
+    List<String> tags = null;
+    
+    Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null,
+      null, null, null, (long) 1, null, null,
+      false, null, null, null, null, variables, tags, false);
+    stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students", 1l)))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(student))
+        .withStatus(200)));
 //    payload = objectMapper.writeValueAsString(new WebhookCourseStaffMemberCreatePayload(2l, 2l, 4l));
 //    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
 //    payload = objectMapper.writeValueAsString(new WebhookCourseStudentCreatePayload(3l, 1l, 1l));
