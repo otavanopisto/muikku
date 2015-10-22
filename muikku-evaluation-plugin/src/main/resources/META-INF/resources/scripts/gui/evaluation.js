@@ -652,9 +652,8 @@
     
     _create : function() {
       this.element.addClass('evaluation-assignment-wrapper evaluation-assignment-pending');
-      this.element.append($('<div>').addClass('evaluation-assignment-picture'));
-      this.element.append($('<div>').addClass('evaluation-assignment-title').text(this.options.title));
       this.element.append($('<div>').addClass('evaluation-assignment-date'));
+      this.element.append($('<div>').addClass('evaluation-assignment-title').text(this.options.title));
 
       $('#evaluation').on("viewInitialized", $.proxy(this._onEvaluationViewInitialized, this));
       $('#evaluation').on("viewScroll", $.proxy(this._onEvaluationViewScroll, this));
