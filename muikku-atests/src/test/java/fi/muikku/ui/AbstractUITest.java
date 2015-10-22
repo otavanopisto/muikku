@@ -602,6 +602,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
+  protected void switchToFrame(String selector) {
+    getWebDriver().switchTo().frame(
+        getWebDriver().findElementByCssSelector(selector)
+    );
+  }
+  
+  protected void switchToDefaultFrame() {
+    getWebDriver().switchTo().defaultContent();
+  }
+  
   enum RoleType {
     PSEUDO, ENVIRONMENT, WORKSPACE
   }
