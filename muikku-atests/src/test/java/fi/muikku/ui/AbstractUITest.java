@@ -138,7 +138,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected String getSaucePlatform() {
-    return System.getProperty("it.sauce.browser.platform");
+    return System.getProperty("it.sauce.platform");
   }
   
   protected RemoteWebDriver createSauceWebDriver() throws MalformedURLException {
