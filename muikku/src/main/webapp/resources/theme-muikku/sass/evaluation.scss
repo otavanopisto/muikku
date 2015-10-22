@@ -44,9 +44,13 @@ body.evaluation {
     font-size:26px;
     color:#aaaaaa;
     cursor:pointer;
+    background:transparent;
+    outline:none;
+    transition:background 0.3s ease-in-out;
   
     &:hover {
       color:#57abec;
+      background:#fff;
     }
   
   }
@@ -259,6 +263,10 @@ body.evaluation {
       border-radius:3px;
       border-top:3px solid #fff;
       box-shadow:0 0 10px 0px rgba(169, 169, 169, 0.2);
+      
+      &.loading {
+        animation: load-cards 1s infinite ease-in-out;
+      }
       
       &:hover {
         box-shadow:0 0 0 5px #c1e8ff;
