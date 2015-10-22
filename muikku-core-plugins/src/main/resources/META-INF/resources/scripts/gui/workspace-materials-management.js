@@ -984,34 +984,6 @@
       enableFileUploader(element);
     });
 
-    $('.correct-answers-settings').each(function(index, node) {
-      if ($(node).closest('.workspace-materials-view-page').attr('data-assignment-type') == 'EXERCISE') {
-        $(node).removeClass('hidden');
-        var correctAnswersElem = $(node).find('.correct-answers');
-        if ($(node).closest('.workspace-materials-view-page').attr('data-correct-answers') == 'ALWAYS') {
-          $(correctAnswersElem)
-          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"))
-          .find("span")
-          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
-        } else if ($(node).closest('.workspace-materials-view-page').attr('data-correct-answers') == 'ON_REQUEST') {
-          $(correctAnswersElem)
-          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"))
-          .find("span")
-          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"));
-        } else if ($(node).closest('.workspace-materials-view-page').attr('data-correct-answers') == 'NEVER') {
-          $(correctAnswersElem)
-          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"))
-          .find("span")
-          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"));
-        } else {
-          $(correctAnswersElem)
-          .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"))
-          .find("span")
-          .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
-        }
-      }
-    });
-
     $('.muikku-connect-field').muikkuConnectField('refresh');
     
     $(window).data('initializing', false);
@@ -1745,6 +1717,35 @@
   $(document).on('click', '.close-page-editor', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     closeEditor($('#page-' + workspaceMaterialId), true);
+  });
+
+  $(document).on('afterHtmlMaterialRender', function (event, data) {
+    var node = $(data.pageElement);
+    if ($(node).attr('data-assignment-type') == 'EXERCISE') {
+      $(node).find('.correct-answers-settings').removeClass('hidden');
+      var correctAnswersElem = $(node).find('.correct-answers');
+      if ($(node).attr('data-correct-answers') == 'ALWAYS') {
+        $(correctAnswersElem)
+        .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"))
+        .find("span")
+        .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
+      } else if ($(node).attr('data-correct-answers') == 'ON_REQUEST') {
+        $(correctAnswersElem)
+        .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"))
+        .find("span")
+        .text(getLocaleText("plugin.workspace.materialsManagement.materialShowOnRequestCorrectAnswersTooltip"));
+      } else if ($(node).attr('data-correct-answers') == 'NEVER') {
+        $(correctAnswersElem)
+        .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"))
+        .find("span")
+        .text(getLocaleText("plugin.workspace.materialsManagement.materialShowNeverCorrectAnswersTooltip"));
+      } else {
+        $(correctAnswersElem)
+        .attr('title', getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"))
+        .find("span")
+        .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
+      }
+    }
   });
   
 }).call(this);
