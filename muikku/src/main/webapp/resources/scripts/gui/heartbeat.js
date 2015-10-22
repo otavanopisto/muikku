@@ -6,18 +6,15 @@ $(function() {
     return obj === Object(obj);
   }
 
-  if (mApi) {
-    setInterval(function() {
+  setInterval(function() {
 
-      try {
-        mApi().system.ping.read().callback(function() {
-        });
-      } catch (ex) {
-        if (isObject(console) && console.log) {
-          console.log("Ping failed");
-        }
+    try {
+      $.ajax({url: '/heartbeat'});
+    } catch (ex) {
+      if (isObject(console) && console.log) {
+        console.log("Heartbeat failed");
       }
+    }
 
-    }, 15 * 60 * 1000);
-  }
+  }, 30 * 1000);
 });
