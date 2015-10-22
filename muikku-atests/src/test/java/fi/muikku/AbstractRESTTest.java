@@ -14,7 +14,7 @@ import com.jayway.restassured.config.ObjectMapperConfig;
 import com.jayway.restassured.config.RestAssuredConfig;
 import com.jayway.restassured.mapper.factory.Jackson2ObjectMapperFactory;
 
-import fi.muikkku.ui.PyramusMocks;
+import fi.muikku.ui.PyramusMocks;
 
 public abstract class AbstractRESTTest extends AbstractIntegrationTest {
   
