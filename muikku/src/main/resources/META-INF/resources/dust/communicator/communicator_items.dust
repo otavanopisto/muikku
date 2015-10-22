@@ -10,7 +10,7 @@
   {?.}
     {>"communicator/communicator_page.dust"/}  
   {:else}
-    {>"commmunicator/communicator_empty.dust"/}    
+    {>"communicator/communicator_empty.dust"/}    
   {/.}  
   <div class="clear"></div>
  </div>

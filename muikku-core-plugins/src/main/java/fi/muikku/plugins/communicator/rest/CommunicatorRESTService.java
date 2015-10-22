@@ -155,7 +155,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/sentitems")
   @RESTPermitUnimplemented
-  public Response listUserSentCommunicatorItems() {
+  public Response listUserSentCommunicatorItems(
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     List<InboxCommunicatorMessage> sentItems = communicatorController.listSentItems(user);
 
@@ -175,6 +177,10 @@ public class CommunicatorRESTService extends PluginRESTService {
           msg.getId(), msg.getCommunicatorMessageId().getId(), msg.getSender(), categoryName, 
           msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), getMessageRecipientIdList(msg)));
     }
+    
+    
+    result = result.subList(firstResult, Math.min(firstResult + maxResults, result.size()));
+    
     
     return Response.ok(
       result

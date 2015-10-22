@@ -1,8 +1,9 @@
 
   <div class="cm-messages-page">
     {#.}
-        {>"communicator/communicator_item.dust"/}
+        {>"communicator/communicator_sent_item.dust"/}
     {/.} 
+    
     {@lt key=msgLoadCount value=10}
       <div class="mf-items-paging cm-messages-paging">
         <div class="mf-paging-toolbar cm-paging-toolbar">

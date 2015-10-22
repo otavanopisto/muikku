@@ -23,6 +23,8 @@ $(document).ready(function(){
 
   CommunicatorImpl = $.klass({
     init: function () {
+      var hash = window.location.hash.substring(1);      
+      
       $(CommunicatorImpl.msgContainer).on('click','.cm-message:not(.open) .cm-message-details-container', $.proxy(this._onMessageClick, this));
       $(CommunicatorImpl.msgContainer).on('click','.icon-goback', $.proxy(this._onMessageBackClick, this));
       $(CommunicatorImpl.msgContainer).on('click','.icon-delete', $.proxy(this._onMessageDeleteClick, this));
@@ -30,6 +32,7 @@ $(document).ready(function(){
       $('#socialNavigation').on('focus', '#recipientContent', $.proxy(this._onRecipientFocus, this));
       $("#socialNavigation").on("click", ".cm-message-recipient-name", $.proxy(this._onRemoveRecipientClick, this));
       $("#socialNavigation").on("click", ".cm-message-recipient-name", $.proxy(this._onRemoveRecipientClick, this));
+      $(CommunicatorImpl.msgContainer).on("click", '.cm-page-link-load-more:not(.disabled)', { box : hash }, $.proxy(this._onMoreClick, this));                
       $('*[data-message-type="inbox"]').addClass('selected');      
 
       dust.preload("communicator/communicator_item.dust");
@@ -39,8 +42,9 @@ $(document).ready(function(){
       $(window).trigger("hashchange");
       
       var _this = this;
+      
       $(document).on("Communicator:newmessagereceived", function (event, data) {
-        var hash = window.location.hash.substring(1);
+//        var hash = window.location.hash.substring(1);
 
         if ((hash == "") || (hash == "inbox")) {
           _this._showInbox();
@@ -71,6 +75,7 @@ $(document).ready(function(){
         itemCallback();
       })
       .callback(function (err, result) {
+        result.msgLoadCount = result.length;
         renderDustTemplate('communicator/communicator_items.dust', result, function (text) {
           $(CommunicatorImpl.msgContainer).empty();
           _this._clearLoading();
@@ -78,6 +83,7 @@ $(document).ready(function(){
         });
       });
     },
+    
     _showMessage : function (communicatorMessageId) {
       var mCont = $(CommunicatorImpl.msgContainer);
       var _this = this; 
@@ -151,6 +157,7 @@ $(document).ready(function(){
         itemCallback();
       })
       .callback(function (err, result) {
+        result.msgLoadCount = result.length;
         renderDustTemplate('communicator/communicator_sent_items.dust', result, function (text) {
           
           _this._clearLoading();
@@ -475,6 +482,7 @@ $(document).ready(function(){
   
   _onMoreClick : function(event){
     var element = $(event.target);
+    var box = event.data.box;
     element = element.parents(".cm-messages-paging");
     var pageElement = $(".cm-messages-pages");
     var _this = this;  
@@ -486,30 +494,71 @@ $(document).ready(function(){
     var msgsCount = 0;
     var msgs = $(CommunicatorImpl.msgContainer).find('.cm-message');
     
-    for(var m = 0; m < usrs.length; m++){
+    for(var m = 0; m < msgs.length; m++){
       msgsCount ++;
      }
           
     var fRes = msgsCount;
+
+
+    switch(box) {
+      case "sent":
+        mApi().communicator.sentitems.read({'firstResult' : fRes})
+        .on('$', function (item, itemCallback) {
+          item.caption = $('<div>').html(item.caption).text();
+          item.content = $('<div>').html(item.content).text();
+          
+          // Lets fetch message recipients by their ids
+          var recipients = item.recipientIds;
+          var recipientNames = [];
+          for (var i = 0; i < recipients.length; i++) {
+           
+            mApi().communicator.communicatormessages.recipients.info.read(item.id, recipients[i])
+              .callback(function (err, user) {  
+                recipientNames.push(user.firstName + ' ' + user.lastName);
+                
+                item.recipientHasPicture = user.hasImage;
+              });
+          
+            item.recipientFullName = recipientNames;
+          }
+
+          mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
+            .callback(function (err, count) {
+              item.messageCount = count;
+            });
+
+          itemCallback();
+        })
+        .callback(function (err, result) {
+          result.msgLoadCount = result.length;
+          renderDustTemplate('communicator/communicator_sent_page.dust', result, function (text) {
+            
+            _this._clearLoading();
+            pageElement.append($.parseHTML(text));
+          });
+        });      
+        break;
+      default:
+        mApi().communicator.items.read({'firstResult' : fRes}).callback(function(err, msgs) {
+          // TODO : what if 25 users and no more? 
+          if(msgs != undefined){
+           msgs.msgLoadCount = msgs.length;
+          }
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
+          } else {
+            _this._clearLoading();
+            renderDustTemplate('/communicator/communicator_page.dust', msgs, function(text) {
+
+             pageElement.append($.parseHTML(text));
+
+            });
+          }
+        });     
+    }    
     
 
-      mApi().user.users.read({ archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, users) {
-        
-        // TODO : what if 25 users and no more? 
-        if(users != undefined){
-         users.userCount = users.length;
-        }
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
-        } else {
-          _this._clearLoading();
-          renderDustTemplate('/guider/guider_page.dust', users, function(text) {
-
-           pageElement.append($.parseHTML(text));
-
-          });
-        }
-      });     
     
 
   },       
