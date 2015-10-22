@@ -710,7 +710,7 @@ $(document).ready(function() {
     var deleteArea = function(values) {
       var areaId = values.forumAreaId;
       
-      mApi().forum.areas.del(areaId).callback(function(err, result) 
+      mApi().forum.areas.del(areaId).callback(function(err, result) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.areadelete', err));
         } else {                  
