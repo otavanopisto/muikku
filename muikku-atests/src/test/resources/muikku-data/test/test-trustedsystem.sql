@@ -32,6 +32,7 @@ INSERT INTO ROLESCHOOLDATAIDENTIFIER (id, identifier, datasource_id, roleentity_
   (9, 'WS-9', 2, 9),
   (10,'WS-STUDENT', 2, 10);
   
+insert into SystemRoleEntity (id, roleType) values (11, 'EVERYONE');
 insert into WorkspaceRoleEntity (id, archetype) values (7, 'TEACHER'), (8, 'CUSTOM'), (9, 'CUSTOM'), (10, 'STUDENT');
 
 insert into UserGroupEntity (id, schoolDataSource_id, identifier, archived) values

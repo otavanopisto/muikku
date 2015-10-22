@@ -43,7 +43,6 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.session.local.LocalSession;
@@ -159,13 +158,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     
     logger.log(Level.INFO, "Reindexed " + users.size() + " users");
-    
-    try {
-      Thread.sleep(10000);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     
     return Response.ok().build();
   }

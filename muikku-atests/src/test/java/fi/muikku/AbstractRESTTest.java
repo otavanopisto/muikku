@@ -25,7 +25,7 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
 
   @Before
-  public static void setupMocks() throws JsonProcessingException {
+  public void setupMocks() throws JsonProcessingException {
     List<String> payloads = new ArrayList<String>();
 
     PyramusMocksRest.mockDefaults(payloads);
