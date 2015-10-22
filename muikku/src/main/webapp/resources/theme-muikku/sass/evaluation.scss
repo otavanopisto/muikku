@@ -4,13 +4,16 @@
 @import "_connect-field.scss";
 
 body.evaluation {
-  background:#4f6677;
+  background:none;
+  background-color:#f0f3f5;
+  @include background-image('/gfx/light-diagonal-strips.png');
   padding:0.01em; /* Prevent margin collapsing  */
   min-height:100%;
   line-height:1.7em;
   font-size:18px;
   
   .evaluation-navigation-wrapper {
+    background:#7ed9ff;
     position:absolute;
     top:0;
     left:0;
@@ -18,7 +21,8 @@ body.evaluation {
     height:50px;
     box-sizing:border-box;
     padding:5px;
-    background:#5991a8;
+    box-shadow:0 4px 5px rgba(169,169,169,0.3);
+    z-index: 9999;
   }
   
   .evaluation-content-wrapper {
@@ -28,35 +32,31 @@ body.evaluation {
     right:0;
     bottom:0;
   }
-
-  .prevPage {
-    position:absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    z-index: 9999;
-    border:0;
-    width:40px;
-    
-    &:hover {
-      opacity:0.9;
-      background:#576e7f;
-    }
-  }
   
+  .prevPage,
   .nextPage {
     position:absolute;
     top:0;
     bottom:0;
-    right:0;
-    z-index: 9999;
+    z-index: 9998;
     border:0;
     width:40px;
-    
+    font-size:26px;
+    color:#aaaaaa;
+    cursor:pointer;
+  
     &:hover {
-      opacity:0.9;
-      background:#576e7f;
+      color:#57abec;
     }
+  
+  }
+
+  .prevPage {
+    left:0;
+  }
+  
+  .nextPage {
+    right:0;
   }
   
   .evaluation-students {
@@ -77,6 +77,7 @@ body.evaluation {
       display:inline-block;
       text-align:center;
       transition:opacity 1s ease-in-out, transform 1s ease-in-out;
+      position:relative;
       
       &.evaluation-student-pending {
         opacity: 0.5;
@@ -227,6 +228,10 @@ body.evaluation {
         border-radius:3px;
         font-size:16px;
         white-space:normal;
+        position:absolute;
+        left:0;
+        right:0;
+        bottom:0;
       }
     
     }
@@ -248,12 +253,15 @@ body.evaluation {
       margin:10px;
       display:inline-block;
       text-align:center;
-      background:#617e94;
-      opacity:0.15;
+      background:#fff;
+      opacity:0.35;
       position:relative;
+      border-radius:3px;
+      border-top:3px solid #fff;
+      box-shadow:0 0 10px 0px rgba(169, 169, 169, 0.2);
       
       &:hover {
-        box-shadow:0 0 0 5px #8cd1fa;
+        box-shadow:0 0 0 5px #c1e8ff;
       }
       
       &.assignment-unaswered {
@@ -268,32 +276,31 @@ body.evaluation {
       &.assignment-submitted {
         opacity:1;
         cursor:pointer;
+        
+        .evaluation-assignment-date {
+          background:#daf1ff;
+          color:#066c85;
+        }
+        
       }
       
       &.assignment-evaluated {
         opacity:1;
-        box-shadow:0 0 0 5px #3cdd2a;
+        border-top:3px solid #3cdd2a;
         cursor:pointer;
         
         &:hover {
-          box-shadow:0 0 0 5px #8cd1fa;
+          box-shadow:0 0 0 5px #b7fbc1;
         }
-      }
-      
-      .evaluation-assignment-picture {
-        height:100px;  
-        width:100%;
-        box-sizing:border-box;
       }
       
       .evaluation-assignment-date {
         width:100%;
         box-sizing:border-box;
         padding:2px 4px;
-        color:#fff;
+        color:#4c4c4c;
         text-align:right;
-        position:absolute;
-        top:0;
+        min-height:1.7em;
         font-size:14px;
         line-height:1.3em;
         white-space:normal;
@@ -303,8 +310,6 @@ body.evaluation {
         width:100%;
         box-sizing:border-box;
         padding:3px 4px;
-        background:#fff;
-        margin:-25px 0 0 0;
         font-size:14px;
         line-height:1.3em;
         white-space:normal;
