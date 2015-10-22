@@ -8,13 +8,15 @@ insert into RoleEntity (id, name) values
   (6, 'ADMINISTRATOR'),
   (7, 'STUDENT'),
   (8, 'Course Teacher'),
-  (9, 'Course Student');
+  (9, 'Course Student'),
+  (10, 'TRUSTED_SYSTEM');
 
 insert into EnvironmentRoleEntity (id, archetype) values 
   (4, 'TEACHER'),
   (5, 'MANAGER'),
   (6, 'ADMINISTRATOR'),
-  (7, 'STUDENT');
+  (7, 'STUDENT'),
+  (10, 'CUSTOM');
 
 --insert into SchoolDataSource (id, identifier) values (1, 'LOCAL'), (2, 'PYRAMUS');
 insert into WorkspaceRoleEntity (id, archetype) values (8, 'TEACHER'), (9, 'STUDENT'); 
@@ -55,5 +57,13 @@ insert into UserEmailEntity (id,user_id,address) values (4, 4, 'admin@made.up');
 insert into UserIdentification (id, externalId, authSource_id, user_id) values (4, 4, 1, 4);
 
 --insert into superuser (id) values (4);
+
+-- User 5 - TRUSTED_SYSTEM
+
+insert into UserEntity (id, archived, defaultIdentifier, defaultSchoolDataSource_id) values (5, false, 'STAFF-5', (select id from SchoolDataSource where identifier = 'PYRAMUS'));
+insert into EnvironmentUser (id, archived, role_id, user_id) values (5, 0, 10, 5);
+insert into UserSchoolDataIdentifier (id, identifier, dataSource_id, userEntity_id) values (5, 'STAFF-5', (select id from SchoolDataSource where identifier = 'PYRAMUS'), 5);
+insert into UserEmailEntity (id,user_id,address) values (5, 5, 'trusted@made.up');
+insert into UserIdentification (id, externalId, authSource_id, user_id) values (5, 5, 1, 5);
 
 SET REFERENTIAL_INTEGRITY TRUE;

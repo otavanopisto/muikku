@@ -1,4 +1,4 @@
-package fi.muikkku.ui;
+package fi.muikku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
 import static org.junit.Assert.assertEquals;
@@ -124,12 +124,34 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected RemoteWebDriver getWebDriver() {
     return webDriver;
   }
+
+  protected String getSauceBrowser() {
+    return System.getProperty("it.sauce.browser");
+  }
   
-  protected RemoteWebDriver createSauceWebDriver(String browser, String version, String platform, String resolution) throws MalformedURLException {
-    DesiredCapabilities capabilities = new DesiredCapabilities();
+  protected String getSauceBrowserVersion() {
+    return System.getProperty("it.sauce.browser.version");
+  }
+  
+  protected String getSauceBrowserResolution() {
+    return System.getProperty("it.sauce.browser.resolution");
+  }
+  
+  protected String getSaucePlatform() {
+    return System.getProperty("it.sauce.platform");
+  }
+  
+  protected RemoteWebDriver createSauceWebDriver() throws MalformedURLException {
+    final DesiredCapabilities capabilities = new DesiredCapabilities();
+    final String seleniumVersion = System.getProperty("it.selenium.version");
+    
+    final String browser = getSauceBrowser();
+    final String browserVersion = getSauceBrowserVersion();
+    final String browserResolution = getSauceBrowserResolution();
+    final String platform = getSaucePlatform();
     
     capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
-    capabilities.setCapability(CapabilityType.VERSION, version);
+    capabilities.setCapability(CapabilityType.VERSION, browserVersion);
     capabilities.setCapability(CapabilityType.PLATFORM, platform);
     capabilities.setCapability("name", getClass().getSimpleName() + ':' + testName.getMethodName());
     capabilities.setCapability("tags", Arrays.asList( String.valueOf( getTestStartTime() ) ) );
@@ -137,11 +159,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     capabilities.setCapability("video-upload-on-pass", false);
     capabilities.setCapability("capture-html", true);
     capabilities.setCapability("timeZone", "Universal");
-    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-    capabilities.setCapability("chrome.switches", Arrays.asList("--ignore-certificate-errors"));
+    capabilities.setCapability("seleniumVersion", seleniumVersion);
     
-    if (resolution != null) {
-      capabilities.setCapability("screenResolution", resolution);
+    if (!StringUtils.isBlank(browserResolution)) {
+      capabilities.setCapability("screenResolution", browserResolution);
     }
     
     if (getSauceTunnelId() != null) {
@@ -154,7 +175,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected RemoteWebDriver createChromeDriver() {
     ChromeOptions options = new ChromeOptions();
     options.addArguments("--lang=en_US");
-    options.addArguments("start-maximized"); // Too narrow window causes test to fail
     ChromeDriver chromeDriver = new ChromeDriver(options);
     return chromeDriver;
   }
@@ -402,9 +422,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String optionText = option.getText();
     assertEquals(expected, optionText);
   }
-  protected void assertChecked(String selector, String expected) {
+  protected void assertChecked(String selector, Boolean expected) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
-    assertEquals(expected, element.getAttribute("checked"));
+    assertEquals(expected, element.isSelected());
   }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {

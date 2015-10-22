@@ -108,6 +108,10 @@ public class UserGroupEntityController {
     return userGroupEntityDAO.findById(groupId);
   }
 
+  public UserGroupUserEntity findUserGroupUserEntityById(Long userGroupUserId) {
+    return userGroupUserEntityDAO.findById(userGroupUserId);
+  }
+
   public List<UserGroupUserEntity> listUserGroupUsersByUser(UserEntity userEntity) {
     return userGroupUserEntityDAO.listByUserEntity(userEntity);
   }
