@@ -1,11 +1,11 @@
-package fi.muikku.ui.chrome;
+package fi.muikku.ui.chrome.course;
 
 import org.junit.After;
 import org.junit.Before;
 
-import fi.muikku.ui.base.CourseMaterialsPageTestsBase;
+import fi.muikku.ui.base.course.CourseTestsBase;
 
-public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
+public class CourseTestsIT extends CourseTestsBase {
   
   @Before
   public void setUp() {

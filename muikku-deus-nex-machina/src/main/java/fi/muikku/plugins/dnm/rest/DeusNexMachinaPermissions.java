@@ -16,6 +16,10 @@ public class DeusNexMachinaPermissions extends AbstractMuikkuPermissionCollectio
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
   public static final String UNEMBED_WORKSPACE_MATERIALS = "UNEMBED_WORKSPACE_MATERIALS";
 
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
+  public static final String CLEAN_WORKSPACE_MATERIALS = "CLEAN_WORKSPACE_MATERIALS";
+
   @Override
   public List<String> listPermissions() {
     return listPermissions(DeusNexMachinaPermissions.class);
