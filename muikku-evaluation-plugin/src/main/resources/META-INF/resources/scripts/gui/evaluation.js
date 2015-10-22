@@ -193,7 +193,8 @@
         assessors: this.options.assessors,
         workspaceName: this.options.workspaceName,
         studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-        assignments: this.options.workspaceEvaluableAssignments
+        evaluableAssignments: this.options.workspaceEvaluableAssignments,
+        exercises: []
       }, callback);
     }
   });
@@ -348,21 +349,15 @@
     },
     
     _load: function (callback) {
-      mApi().materials.html
-        .read(this.options.materialId)
-        .callback($.proxy(function (err, htmlMaterial) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            this._loadTemplate(this.options.workspaceMaterialId, 
-              htmlMaterial.id, 
-              'html', 
-              htmlMaterial.title, 
-              htmlMaterial.html, 
-              callback
-            );
-          }
-        }, this));
+      $('#evaluation').evaluationLoader("loadHtml", this.options.materialId, $.proxy(function (htmlMaterial) {
+        this._loadTemplate(this.options.workspaceMaterialId, 
+          htmlMaterial.id, 
+          'html', 
+          htmlMaterial.title, 
+          htmlMaterial.html, 
+          callback
+        );
+      }, this));
     },
     
     _loadTemplate: function (workspaceMaterialId, materialId, materialType, materialTitle, materialHtml, callback) {
@@ -391,6 +386,41 @@
 
       this._pendingWorkspaceMaterialReplyLoads = [];
       this._loadingWorkspaceMaterialReplies = false;
+      this._materialHtml = {};
+    },
+    
+    loadHtml: function (materialId, callback) {
+      if (this._materialHtml[materialId]) {
+        if (this._materialHtml[materialId].loading === true) {
+          this._materialHtml[materialId].pending.push(callback);
+        } else {
+          callback(this._materialHtml[materialId].htmlMaterial);
+        }
+      } else { 
+        this._materialHtml[materialId] = {
+          loading: true,
+          pending: []
+        };
+        
+        mApi().materials.html
+          .read(materialId)
+          .callback($.proxy(function (err, htmlMaterial) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              this._materialHtml[materialId].htmlMaterial = htmlMaterial;
+              this._materialHtml[materialId].loading = false;
+              
+              callback(htmlMaterial);
+              
+              $.each(this._materialHtml[materialId].pending, function (pendingCallback) {
+                pendingCallback(htmlMaterial);
+              });
+              
+              delete this._materialHtml[materialId].pending;
+          }
+        }, this));
+      }
     },
     
     loadStudent: function (id, callback) {
