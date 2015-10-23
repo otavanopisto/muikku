@@ -357,8 +357,9 @@ public class CoursePickerRESTService extends PluginRESTService {
   private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String description, boolean canSignup, boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     return new CoursePickerWorkspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
-        workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, description, numVisits, lastVisit, canSignup, isCourseMember);
+        workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, workspace.getNameExtension(), description, numVisits, lastVisit, canSignup, isCourseMember);
   }
 
   
