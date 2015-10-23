@@ -60,8 +60,8 @@ public class CommunicatorController {
     return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
   }
   
-  public List<InboxCommunicatorMessage> listSentItems(UserEntity userEntity) {
-    return communicatorMessageDAO.listFirstMessagesBySender(userEntity);
+  public List<InboxCommunicatorMessage> listSentItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
+    return communicatorMessageDAO.listFirstMessagesBySender(userEntity, firstResult, maxResults);
   }
 
   public List<CommunicatorMessageRecipient> listReceivedItemsByUserAndRead(UserEntity userEntity, boolean read) {

@@ -159,14 +159,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
-    List<InboxCommunicatorMessage> sentItems = communicatorController.listSentItems(user);
-
-    Collections.sort(sentItems, new Comparator<CommunicatorMessage>() {
-      @Override
-      public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
-        return o2.getCreated().compareTo(o1.getCreated());
-      }
-    });
+    List<InboxCommunicatorMessage> sentItems = communicatorController.listSentItems(user, firstResult, maxResults);
 
     List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
     
@@ -177,10 +170,6 @@ public class CommunicatorRESTService extends PluginRESTService {
           msg.getId(), msg.getCommunicatorMessageId().getId(), msg.getSender(), categoryName, 
           msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), getMessageRecipientIdList(msg)));
     }
-    
-    
-    result = result.subList(firstResult, Math.min(firstResult + maxResults, result.size()));
-    
     
     return Response.ok(
       result
