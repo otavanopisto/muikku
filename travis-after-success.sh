@@ -9,7 +9,9 @@ then
   popd
 elif [[ $TRAVIS_BRANCH == 'devel' ]]
 then
-  python travis-upload-reports.py
+  if [[ $findbugs_skip == 'false' ]]; then
+      python travis-upload-reports.py
+  fi
   python travis-prepare-maven.py
   pushd .
   cd muikku

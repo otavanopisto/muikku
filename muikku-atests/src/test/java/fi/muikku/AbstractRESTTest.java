@@ -2,6 +2,9 @@ package fi.muikku;
 
 import static com.jayway.restassured.RestAssured.certificate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Rule;
 
@@ -14,7 +17,7 @@ import com.jayway.restassured.config.ObjectMapperConfig;
 import com.jayway.restassured.config.RestAssuredConfig;
 import com.jayway.restassured.mapper.factory.Jackson2ObjectMapperFactory;
 
-import fi.muikkku.ui.PyramusMocks;
+import fi.muikku.rest.test.PyramusMocksRest;
 
 public abstract class AbstractRESTTest extends AbstractIntegrationTest {
   
@@ -22,9 +25,14 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
 
   @Before
-  public void setupMocks() throws JsonProcessingException {
-    PyramusMocks.personsPyramusMocks();
-    PyramusMocks.student1LoginMock();
+  public void setupMocks() throws Exception {
+    List<String> payloads = new ArrayList<String>();
+
+    PyramusMocksRest.mockDefaults(payloads);
+    
+    for (String s : payloads) {
+      webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", s);
+    }
   }
   
   @Before

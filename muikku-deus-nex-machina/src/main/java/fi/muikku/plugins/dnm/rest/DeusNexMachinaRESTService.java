@@ -1,5 +1,6 @@
 package fi.muikku.plugins.dnm.rest;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,8 +19,13 @@ import javax.ws.rs.core.Response.Status;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.dnm.unembed.MaterialUnEmbedder;
+import fi.muikku.plugins.dnm.util.HtmlMaterialCleaner;
+import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.security.rest.RESTPermit;
 
@@ -33,6 +39,9 @@ public class DeusNexMachinaRESTService extends PluginRESTService {
   
   @Inject
   private MaterialUnEmbedder materialUnembedder;
+
+  @Inject
+  private HtmlMaterialCleaner htmlMaterialCleaner;
   
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -50,7 +59,6 @@ public class DeusNexMachinaRESTService extends PluginRESTService {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity != null) {
       WorkspaceNode rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
-  
       try {
         materialUnembedder.unembedWorkspaceMaterials(rootFolder);
       }
@@ -63,6 +71,44 @@ public class DeusNexMachinaRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Unknown workspace " + workspaceEntityId).build();
     }
     return Response.status(Status.OK).entity("Workspace " + workspaceEntityId + " materials successfully unembedded").build();
+  }
+  
+  @GET
+  @Path("/cleanworkspacematerials/{ID}")
+  @RESTPermit (DeusNexMachinaPermissions.CLEAN_WORKSPACE_MATERIALS)
+  public Response cleanWorkspaceMaterials(@PathParam("ID") Long workspaceEntityId, @Context Request request) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity != null) {
+      WorkspaceNode rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+      try {
+        List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(rootFolder);
+        cleanMaterials(nodes);
+      }
+      catch (Exception e) {
+        logger.log(Level.SEVERE, "Cleaning materials of workspace " + workspaceEntityId + " failed", e);
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+      }
+    }
+    else {
+      return Response.status(Status.NOT_FOUND).entity("Unknown workspace " + workspaceEntityId).build();
+    }
+    return Response.status(Status.OK).entity("Workspace " + workspaceEntityId + " materials successfully cleaned").build();
+  }
+  
+  private void cleanMaterials(List<WorkspaceNode> nodes) {
+    for (WorkspaceNode node : nodes) {
+      if (node.getType() != WorkspaceNodeType.MATERIAL) {
+        cleanMaterials(workspaceMaterialController.listWorkspaceNodesByParent(node));
+      }
+      else {
+        WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) node;
+        Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
+        if ("html".equals(material.getType())) {
+          logger.info("Cleaning html material " + material.getId());
+          htmlMaterialCleaner.cleanMaterial((HtmlMaterial) material,  workspaceMaterial);
+        }
+      }
+    }
   }
 
 }
