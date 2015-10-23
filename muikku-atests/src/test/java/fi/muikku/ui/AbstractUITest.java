@@ -1,4 +1,4 @@
-package fi.muikkku.ui;
+package fi.muikku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
 import static org.junit.Assert.assertEquals;
@@ -18,11 +18,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -43,6 +38,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import wiremock.org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,7 +64,6 @@ import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
-import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -124,12 +120,34 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected RemoteWebDriver getWebDriver() {
     return webDriver;
   }
+
+  protected String getSauceBrowser() {
+    return System.getProperty("it.sauce.browser");
+  }
   
-  protected RemoteWebDriver createSauceWebDriver(String browser, String version, String platform, String resolution) throws MalformedURLException {
-    DesiredCapabilities capabilities = new DesiredCapabilities();
+  protected String getSauceBrowserVersion() {
+    return System.getProperty("it.sauce.browser.version");
+  }
+  
+  protected String getSauceBrowserResolution() {
+    return System.getProperty("it.sauce.browser.resolution");
+  }
+  
+  protected String getSaucePlatform() {
+    return System.getProperty("it.sauce.platform");
+  }
+  
+  protected RemoteWebDriver createSauceWebDriver() throws MalformedURLException {
+    final DesiredCapabilities capabilities = new DesiredCapabilities();
+    final String seleniumVersion = System.getProperty("it.selenium.version");
+    
+    final String browser = getSauceBrowser();
+    final String browserVersion = getSauceBrowserVersion();
+    final String browserResolution = getSauceBrowserResolution();
+    final String platform = getSaucePlatform();
     
     capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
-    capabilities.setCapability(CapabilityType.VERSION, version);
+    capabilities.setCapability(CapabilityType.VERSION, browserVersion);
     capabilities.setCapability(CapabilityType.PLATFORM, platform);
     capabilities.setCapability("name", getClass().getSimpleName() + ':' + testName.getMethodName());
     capabilities.setCapability("tags", Arrays.asList( String.valueOf( getTestStartTime() ) ) );
@@ -137,11 +155,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     capabilities.setCapability("video-upload-on-pass", false);
     capabilities.setCapability("capture-html", true);
     capabilities.setCapability("timeZone", "Universal");
-    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-    capabilities.setCapability("chrome.switches", Arrays.asList("--ignore-certificate-errors"));
+    capabilities.setCapability("seleniumVersion", seleniumVersion);
     
-    if (resolution != null) {
-      capabilities.setCapability("screenResolution", resolution);
+    if (!StringUtils.isBlank(browserResolution)) {
+      capabilities.setCapability("screenResolution", browserResolution);
     }
     
     if (getSauceTunnelId() != null) {
@@ -274,29 +291,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return false;
   }
 
-  protected Boolean webhookCall(String url, String payload) throws Exception {
-    String signature = "38c6cbd28bf165070d070980dd1fb595";
-    CloseableHttpClient client = HttpClients.createDefault();
-    try {
-      HttpPost httpPost = new HttpPost(url);
-      try {
-        StringEntity dataEntity = new StringEntity(payload);
-        try {
-          httpPost.addHeader("X-Pyramus-Signature", signature);
-          httpPost.setEntity(dataEntity);
-          client.execute(httpPost);
-          return true;
-        } finally {
-          EntityUtils.consume(dataEntity);
-        }
-      } finally {
-        httpPost.releaseConnection();
-      }
-    } finally {
-      client.close();
-    }
-  }
-  
   protected void assertPresent(String selector) {
     assertTrue(String.format("Could not find element %s", selector), getWebDriver().findElements(By.cssSelector(selector)).size() > 0);
   }

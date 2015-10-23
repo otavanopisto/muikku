@@ -2,14 +2,14 @@
   <article class="evaluation-modal-student-wrapper">
     <div class="evaluation-modal-workspace-assignment-info">
       <div class="evaluation-modal-workspace-assignment-wrapper">
-        {#assignments}
+        {#evaluableAssignments}
           {>"evaluation/evaluation_evaluate_workspace_single_assigment.dust"/}
-        {/assignments}
+        {/evaluableAssignments}
       </div>
       <div class="evaluation-modal-workspace-exercise-wrapper">
-        {#assignments}
+        {#exercises}
           {>"evaluation/evaluation_evaluate_workspace_single_exercise.dust"/}
-        {/assignments}
+        {/exercises}
       </div>
     </div>
   </article>

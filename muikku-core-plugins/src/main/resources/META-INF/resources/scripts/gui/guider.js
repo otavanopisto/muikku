@@ -90,7 +90,10 @@ $(document).ready(function(){
         }
         mApi().user.users.read({searchString : params, archetype : 'STUDENT', maxResults: 25 })
         .callback(function (err, users) {
-          users.userCount = users.length;         
+          
+          if(users != undefined){
+           users.userCount = users.length;
+          }
           if( err ){
                 $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
           }else{        
@@ -112,7 +115,9 @@ $(document).ready(function(){
 
       mApi().user.users.read({workspaceIds : workspaceId, archetype : 'STUDENT', maxResults: 25, searchString : params })
       .callback(function (err, users) {
-        users.userCount = users.length;
+        if(users != undefined){
+          users.userCount = users.length;
+        }
         if( err ){
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
         }else{        
@@ -141,7 +146,9 @@ $(document).ready(function(){
       
 	    mApi().user.users.read({archetype : 'STUDENT', maxResults: 25 })
 	    .callback(function (err, users) {
-        users.userCount = users.length;   	  	  
+        if(users != undefined){
+          users.userCount = users.length;
+        }
 		    if( err ){
 		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
 		  	}else{    	  
@@ -179,9 +186,9 @@ $(document).ready(function(){
           mApi().user.users.read({ archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, users) {
             
             // TODO : what if 25 users and no more? 
-            
+            if(users != undefined){
              users.userCount = users.length;
-            
+            }
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
             } else {

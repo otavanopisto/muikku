@@ -183,6 +183,33 @@
     },
     
     _load: function (callback) {
+      var materialIds = $.map(this.options.workspaceEvaluableAssignments, function (workspaceEvaluableAssignment) {
+        return workspaceEvaluableAssignment.materialId;
+      });
+      
+      $('#evaluation').evaluationLoader("loadHtmls", materialIds, $.proxy(function (err, htmlMaterials) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var htmlMaterialMap = {};
+          $.each(htmlMaterials, function (index, htmlMaterial) {
+            htmlMaterialMap[htmlMaterial.id] = htmlMaterial;
+          });
+          
+          var assignments = $.map(this.options.workspaceEvaluableAssignments, function (workspaceEvaluableAssignment) {
+            return {
+              workspaceMaterialId: workspaceEvaluableAssignment.id,
+              materialId: workspaceEvaluableAssignment.materialId,
+              type: 'html',
+              title: htmlMaterialMap[workspaceEvaluableAssignment.materialId].title,
+              html: htmlMaterialMap[workspaceEvaluableAssignment.materialId].html
+            };
+          });
+
+          this._loadTemplate(assignments, callback);
+        }
+      }, this));
+
       this._loadTemplate([], callback);
     },
     
@@ -193,7 +220,8 @@
         assessors: this.options.assessors,
         workspaceName: this.options.workspaceName,
         studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-        assignments: this.options.workspaceEvaluableAssignments
+        evaluableAssignments: assignments,
+        exercises: []
       }, callback);
     }
   });
@@ -348,21 +376,19 @@
     },
     
     _load: function (callback) {
-      mApi().materials.html
-        .read(this.options.materialId)
-        .callback($.proxy(function (err, htmlMaterial) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            this._loadTemplate(this.options.workspaceMaterialId, 
-              htmlMaterial.id, 
-              'html', 
-              htmlMaterial.title, 
-              htmlMaterial.html, 
-              callback
-            );
-          }
-        }, this));
+      $('#evaluation').evaluationLoader("loadHtml", this.options.materialId, $.proxy(function (err, htmlMaterial) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._loadTemplate(this.options.workspaceMaterialId, 
+            htmlMaterial.id, 
+            'html', 
+            htmlMaterial.title, 
+            htmlMaterial.html, 
+            callback
+          );
+        }
+      }, this));
     },
     
     _loadTemplate: function (workspaceMaterialId, materialId, materialType, materialTitle, materialHtml, callback) {
@@ -391,6 +417,56 @@
 
       this._pendingWorkspaceMaterialReplyLoads = [];
       this._loadingWorkspaceMaterialReplies = false;
+      this._materialHtml = {};
+    },
+
+    loadHtmls: function (materialIds, callback) {
+      var loads = $.map(materialIds, $.proxy(function (materialId) {
+        return $.proxy(function (callbackMethod) {
+          this.loadHtml(materialId, function (err, response) {
+            callbackMethod(err, response);
+          });
+        }, this);
+      }, this));
+      
+  
+      async.series(loads, function (err, results) {
+        callback(err, results);
+      });
+    },
+    
+    loadHtml: function (materialId, callback) {
+      if (this._materialHtml[materialId]) {
+        if (this._materialHtml[materialId].loading === true) {
+          this._materialHtml[materialId].pending.push(callback);
+        } else {
+          callback(null, this._materialHtml[materialId].htmlMaterial);
+        }
+      } else { 
+        this._materialHtml[materialId] = {
+          loading: true,
+          pending: []
+        };
+        
+        mApi().materials.html
+          .read(materialId)
+          .callback($.proxy(function (err, htmlMaterial) {
+            if (err) {
+              callback(err, null);
+            } else {
+              this._materialHtml[materialId].htmlMaterial = htmlMaterial;
+              this._materialHtml[materialId].loading = false;
+              
+              callback(null, htmlMaterial);
+              
+              $.each(this._materialHtml[materialId].pending, function (pendingCallback) {
+                pendingCallback(null, htmlMaterial);
+              });
+              
+              delete this._materialHtml[materialId].pending;
+          }
+        }, this));
+      }
     },
     
     loadStudent: function (id, callback) {
@@ -621,7 +697,7 @@
     },
     
     _create : function() {
-      this.element.addClass('evaluation-assignment-wrapper evaluation-assignment-pending');
+      this.element.addClass('evaluation-assignment-wrapper assignment-pending');
       this.element.append($('<div>').addClass('evaluation-assignment-date'));
       this.element.append($('<div>').addClass('evaluation-assignment-title').text(this.options.title));
 
@@ -655,19 +731,19 @@
     
     _load: function () {
       this.element
-        .removeClass('evaluation-assignment-pending')
-        .addClass('evaluation-assignment-loading');
+        .removeClass('assignment-pending')
+        .addClass('assignment-loading');
             
       $('#evaluation').evaluationLoader('loadWorkspaceMaterialReplies', this.options.workspaceEntityId, this.options.workspaceMaterialId, this.options.studentEntityId, $.proxy(function (reply) {
         this.element
-          .removeClass('evaluation-assignment-loading')
-          .addClass('evaluation-assignment-loaded');
+          .removeClass('assignment-loading')
+          .addClass('assignment-loaded');
         this._onWorkspaceMaterialReplyLoaded(reply);
       }, this));
     },
     
     _onEvaluationViewInitialized: function (event, data) {
-      if (this.element.hasClass('evaluation-assignment-pending')) {
+      if (this.element.hasClass('assignment-pending')) {
         var viewWidth = $(event.target).width();
         
         var offset = this.element.offset();
@@ -678,7 +754,7 @@
     },
     
     _onEvaluationViewScroll: function (event, data) {
-      if (this.element.hasClass('evaluation-assignment-pending')) {
+      if (this.element.hasClass('assignment-pending')) {
         var viewWidth = $(event.target).width();
         
         var offset = this.element.offset();
