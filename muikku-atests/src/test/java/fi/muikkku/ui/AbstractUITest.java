@@ -387,12 +387,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    PyramusMocks.adminMock();
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
   }
