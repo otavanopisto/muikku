@@ -20,6 +20,7 @@ public class ForumAreaGroupDAO extends CorePluginsDAO<ForumAreaGroup> {
 		return forumAreaGroup;
 	}
   
+  @Override
   public void delete(ForumAreaGroup forumAreaGroup) {
     super.delete(forumAreaGroup);
   }

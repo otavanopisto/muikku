@@ -13,7 +13,7 @@
 	    <span class="assignment-type">
 	      <a href="javascript:void(null)" class="change-assignment icon-assignment"><span>{#localize key="plugin.workspace.materialsManagement.materialChangeAssesmentTypeTooltip"/}</span></a>
 	    </span>
-      <span class="correct-answers-settings">
+      <span class="correct-answers-settings hidden">
         <a href="javascript:void(null)" class="correct-answers icon-correct-answers" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"/}</span></a>
       </span>
       <a href="javascript:void(null)" class="page-attachments icon-attachment" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialAttachmentsTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialAttachmentsTooltip"/}</span></a>

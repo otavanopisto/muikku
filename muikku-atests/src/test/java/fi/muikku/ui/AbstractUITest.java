@@ -18,11 +18,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -43,6 +38,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import wiremock.org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,7 +64,6 @@ import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
-import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -295,29 +291,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return false;
   }
 
-  protected Boolean webhookCall(String url, String payload) throws Exception {
-    String signature = "38c6cbd28bf165070d070980dd1fb595";
-    CloseableHttpClient client = HttpClients.createDefault();
-    try {
-      HttpPost httpPost = new HttpPost(url);
-      try {
-        StringEntity dataEntity = new StringEntity(payload);
-        try {
-          httpPost.addHeader("X-Pyramus-Signature", signature);
-          httpPost.setEntity(dataEntity);
-          client.execute(httpPost);
-          return true;
-        } finally {
-          EntityUtils.consume(dataEntity);
-        }
-      } finally {
-        httpPost.releaseConnection();
-      }
-    } finally {
-      client.close();
-    }
-  }
-  
   protected void assertPresent(String selector) {
     assertTrue(String.format("Could not find element %s", selector), getWebDriver().findElements(By.cssSelector(selector)).size() > 0);
   }
