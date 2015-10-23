@@ -183,6 +183,33 @@
     },
     
     _load: function (callback) {
+      var materialIds = $.map(this.options.workspaceEvaluableAssignments, function (workspaceEvaluableAssignment) {
+        return workspaceEvaluableAssignment.materialId;
+      });
+      
+      $('#evaluation').evaluationLoader("loadHtmls", materialIds, $.proxy(function (err, htmlMaterials) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var htmlMaterialMap = {};
+          $.each(htmlMaterials, function (index, htmlMaterial) {
+            htmlMaterialMap[htmlMaterial.id] = htmlMaterial;
+          });
+          
+          var assignments = $.map(this.options.workspaceEvaluableAssignments, function (workspaceEvaluableAssignment) {
+            return {
+              workspaceMaterialId: workspaceEvaluableAssignment.id,
+              materialId: workspaceEvaluableAssignment.materialId,
+              type: 'html',
+              title: htmlMaterialMap[workspaceEvaluableAssignment.materialId].title,
+              html: htmlMaterialMap[workspaceEvaluableAssignment.materialId].html
+            };
+          });
+
+          this._loadTemplate(assignments, callback);
+        }
+      }, this));
+
       this._loadTemplate([], callback);
     },
     
@@ -193,7 +220,7 @@
         assessors: this.options.assessors,
         workspaceName: this.options.workspaceName,
         studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-        evaluableAssignments: this.options.workspaceEvaluableAssignments,
+        evaluableAssignments: assignments,
         exercises: []
       }, callback);
     }
@@ -349,14 +376,18 @@
     },
     
     _load: function (callback) {
-      $('#evaluation').evaluationLoader("loadHtml", this.options.materialId, $.proxy(function (htmlMaterial) {
-        this._loadTemplate(this.options.workspaceMaterialId, 
-          htmlMaterial.id, 
-          'html', 
-          htmlMaterial.title, 
-          htmlMaterial.html, 
-          callback
-        );
+      $('#evaluation').evaluationLoader("loadHtml", this.options.materialId, $.proxy(function (err, htmlMaterial) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._loadTemplate(this.options.workspaceMaterialId, 
+            htmlMaterial.id, 
+            'html', 
+            htmlMaterial.title, 
+            htmlMaterial.html, 
+            callback
+          );
+        }
       }, this));
     },
     
@@ -388,13 +419,28 @@
       this._loadingWorkspaceMaterialReplies = false;
       this._materialHtml = {};
     },
+
+    loadHtmls: function (materialIds, callback) {
+      var loads = $.map(materialIds, $.proxy(function (materialId) {
+        return $.proxy(function (callbackMethod) {
+          this.loadHtml(materialId, function (err, response) {
+            callbackMethod(err, response);
+          });
+        }, this);
+      }, this));
+      
+  
+      async.series(loads, function (err, results) {
+        callback(err, results);
+      });
+    },
     
     loadHtml: function (materialId, callback) {
       if (this._materialHtml[materialId]) {
         if (this._materialHtml[materialId].loading === true) {
           this._materialHtml[materialId].pending.push(callback);
         } else {
-          callback(this._materialHtml[materialId].htmlMaterial);
+          callback(null, this._materialHtml[materialId].htmlMaterial);
         }
       } else { 
         this._materialHtml[materialId] = {
@@ -406,15 +452,15 @@
           .read(materialId)
           .callback($.proxy(function (err, htmlMaterial) {
             if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
+              callback(err, null);
             } else {
               this._materialHtml[materialId].htmlMaterial = htmlMaterial;
               this._materialHtml[materialId].loading = false;
               
-              callback(htmlMaterial);
+              callback(null, htmlMaterial);
               
               $.each(this._materialHtml[materialId].pending, function (pendingCallback) {
-                pendingCallback(htmlMaterial);
+                pendingCallback(null, htmlMaterial);
               });
               
               delete this._materialHtml[materialId].pending;
