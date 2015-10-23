@@ -1045,9 +1045,16 @@ body.workspace-materials-management {
           font-size:17px;
         }
       }
+    
+      &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
+        background: $evaluatedAssignment;
+      }
+      
+      &[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
+        background: $exerciseAssignment;
+      }
       
       .workspace-materials-management-view-page-controls span.correct-answers-settings { /* Special case for assignment type link and correct answers */
-        display:none;
         height:25px;
         width:25px;
         padding:2px;
@@ -1056,81 +1063,36 @@ body.workspace-materials-management {
         border:1px solid #fff;
         position:relative;
         left:0;
-        top:-1px;
+        top:-4px;
         color:#fff;
         text-align:center;
         background:#bdc7cf;
-
-      }
     
-      &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
-        background: $evaluatedAssignment;
+        a.correct-answers {
+          margin:0;
+          position:relative;
+          left:0px;
+          font-size:16px;
+        }
 
-        a.change-assignment {
-          margin:0;
-          position:relative;
-          top:-3px;
-          left:-1px;
-          font-size:17px;
+        &.hidden {
+          display:none;
         }
-        
-      }
-      
-      &[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
-        background: $exerciseAssignment;
-        
-        a.change-assignment {
-          margin:0;
-          position:relative;
-          top:-3px;
-          left:-1px;
-          font-size:17px;
-        }
-      
+
       }
 
       &[data-correct-answers="ALWAYS"] .workspace-materials-management-view-page-controls span.correct-answers-settings { /* Special case for assignment type link */
         background: $exerciseCorrectAnswersAlways;
-        display:inline-block;
-        
-        a.correct-answers {
-          margin:0;
-          position:relative;
-          top:-2px;
-          left:0px;
-          font-size:16px;
-        }
-      
       }
       
       &[data-correct-answers="NEVER"] .workspace-materials-management-view-page-controls span.correct-answers-settings { /* Special case for assignment type link */
         background: $exerciseCorrectAnswersNever;
-        display:inline-block;
-        
-        a.correct-answers {
-          margin:0;
-          position:relative;
-          top:-2px;
-          left:0px;
-          font-size:16px;
-        }
-        
       }
       
       &[data-correct-answers="ON_REQUEST"] .workspace-materials-management-view-page-controls span.correct-answers-settings { /* Special case for assignment type link */
         background: $exerciseCorrectAnswersOnRequest;
-        display:inline-block;
-        
-        a.correct-answers {
-          margin:0;
-          position:relative;
-          top:-2px;
-          left:0px;
-          font-size:16px;
-        }
-      
       }
-      
+
       .workspace-materials-management-view-page-controls {
         position:absolute;
         top:0;
