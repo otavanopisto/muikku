@@ -263,8 +263,12 @@ body.evaluation {
       border-radius:3px;
       border-top:3px solid #fff;
       box-shadow:0 0 10px 0px rgba(169, 169, 169, 0.2);
+
+      &.assignment-pending {
+        opacity:0.1;
+      }
       
-      &.loading {
+      &.assignment-loading {
         animation: load-cards 1s infinite ease-in-out;
       }
       

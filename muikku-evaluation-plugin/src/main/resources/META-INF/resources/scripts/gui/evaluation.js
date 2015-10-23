@@ -697,7 +697,7 @@
     },
     
     _create : function() {
-      this.element.addClass('evaluation-assignment-wrapper evaluation-assignment-pending');
+      this.element.addClass('evaluation-assignment-wrapper assignment-pending');
       this.element.append($('<div>').addClass('evaluation-assignment-date'));
       this.element.append($('<div>').addClass('evaluation-assignment-title').text(this.options.title));
 
@@ -731,19 +731,19 @@
     
     _load: function () {
       this.element
-        .removeClass('evaluation-assignment-pending')
-        .addClass('evaluation-assignment-loading');
+        .removeClass('assignment-pending')
+        .addClass('assignment-loading');
             
       $('#evaluation').evaluationLoader('loadWorkspaceMaterialReplies', this.options.workspaceEntityId, this.options.workspaceMaterialId, this.options.studentEntityId, $.proxy(function (reply) {
         this.element
-          .removeClass('evaluation-assignment-loading')
-          .addClass('evaluation-assignment-loaded');
+          .removeClass('assignment-loading')
+          .addClass('assignment-loaded');
         this._onWorkspaceMaterialReplyLoaded(reply);
       }, this));
     },
     
     _onEvaluationViewInitialized: function (event, data) {
-      if (this.element.hasClass('evaluation-assignment-pending')) {
+      if (this.element.hasClass('assignment-pending')) {
         var viewWidth = $(event.target).width();
         
         var offset = this.element.offset();
@@ -754,7 +754,7 @@
     },
     
     _onEvaluationViewScroll: function (event, data) {
-      if (this.element.hasClass('evaluation-assignment-pending')) {
+      if (this.element.hasClass('assignment-pending')) {
         var viewWidth = $(event.target).width();
         
         var offset = this.element.offset();
