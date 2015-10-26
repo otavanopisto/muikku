@@ -44,7 +44,7 @@ body.evaluation {
     font-size:26px;
     color:#aaaaaa;
     cursor:pointer;
-    background:transparent;
+    background:#eee;
     outline:none;
     transition:background 0.3s ease-in-out;
   
@@ -330,7 +330,7 @@ body.evaluation {
     }
   }
 
-.evaluation-evaluate-modal-wrapper {
+  .evaluation-evaluate-modal-wrapper {
     position:absolute;
     left:0;
     top:69px;
@@ -339,6 +339,7 @@ body.evaluation {
     padding:0;
     margin:0;
     border:0px;
+    overflow:hidden;
 
     #evaluationStudentAssignmentWrapper {
       padding:0 20px 0 10px;
@@ -414,7 +415,7 @@ body.evaluation {
                   border-radius:3px;
                   color:#000;
                   
-                  h2 {
+                  > h2 {
                     border-left:5px solid $exerciseAssignment;
                     font-size:20px;
                     margin:0 100px 0 -5px; 
@@ -425,7 +426,7 @@ body.evaluation {
                     cursor:pointer;
                   }
                   
-                  .evaluation-exercise-assesmentvalue {
+                  .evaluation-exercise-assessmentvalue {
                     position:absolute;
                     max-width:80px;
                     right:0;
@@ -443,7 +444,7 @@ body.evaluation {
                   border-radius:3px;
                   color:#000;
                 
-                  h2 {
+                  > h2 {
                     border-left:5px solid $evaluatedAssignment;
                     font-size:20px;
                     margin:0 100px 0 -5px; 
@@ -454,7 +455,7 @@ body.evaluation {
                     cursor:pointer;
                   }
                   
-                  .evaluation-assignment-assesmentvalue {
+                  .evaluation-assignment-assessmentvalue {
                     position:absolute;
                     max-width:80px;
                     right:0;
@@ -467,13 +468,98 @@ body.evaluation {
                 
                 .evaluation-assignment-content,
                 .evaluation-exercise-content {
+
+                  article {
+                    clear:both;
+                  
+                    h2,h3,h4,h5,h6 {
+                      color:#000;
+                      font-weight:300;
+                      padding:0 0 0 5px;
+                      
+                    }
+                    
+                    h2 {
+                      border-left:5px solid $evaluatedAssignment;
+                      font-size:20px;
+                      margin:0 100px 0 -5px; 
+                      padding:5px 5px 5px 10px;
+                      font-weight:300;
+                      margin:0;
+                      color:#000;
+                    }
+                    
+                    h3 {
+                      font-size:22px;
+                    }
+                    
+                    h4 {
+                      font-size:20px;
+                    }
+                    
+                    h5 {
+                      font-size:18px;
+                    }
+                    
+                    h6 {
+                      font-size:16px;
+                    }
+                    
+                    p {
+                      line-height:22px;
+                      margin:10px 0;
+                    }
+                    
+                    textarea,
+                    input[type="text"] {
+                      font-family:'Open Sans',Verdana, sans-serif;
+                      border-radius:3px;
+                      background:#ebf7ff;
+                      padding:5px 10px;
+                      margin:0;
+                      font-weight:300;
+                      font-style:italic;
+                      border:0px;
+                      color:#000;
+                      resize:none;
+                      box-sizing:border-box;
+                      
+                      &:focus {
+                        box-shadow:none;
+                        outline:none;
+                      }
+                      
+                    }
+                    
+                    input[type="text"] {
+                      width:auto;
+                      margin:2px 0;
+                    }
+                    
+                    input[type="checkbox"],
+                    input[type="radio"] {
+                      background:#fff;
+                      border:3px solid #c9e0fb;
+                      border-radius:3px;
+                      box-shadow:0 0 0 3px rgba(215, 215, 215, 0.15);
+                      display:inline-block;
+                      margin:0 10px;
+                      outline:none; 
+                    }
+                    
+                    label {
+                      display:inline;
+                      font-weight:400;
+                    }
+                    
+                  }
                 
                   &[data-open-state="closed"] {
-                    display: none;
+                    display:none;
                   }
                 
                   &[data-open-state="open"] {
-                    display: block;
+                    display:block;
                   }
                 }
               
@@ -579,80 +665,7 @@ body.evaluation {
             }
           
           }
-          
-          /* EXERCISE EVALUATION */
-          .evaluation-modal-workspace-exercise-wrapper {
-            margin:20px 0 0 0;
-            
-            .evaluation-modal-workspace-single-exercise {
-              margin:10px 0;
-              
-              article {
-                border-bottom:5px solid #eee;
-                padding:0 0 30px 0;
-                margin:0 0 30px 0;
-                clear:both;
 
-                h2,h3,h4,h5,h6 {
-                  color:#000;
-                  font-weight:300;
-                  padding:0 0 0 5px;
-                  
-                }
-                
-                h2 {
-                  font-size:24px;
-                  margin-left:-20px;
-                  border-left:20px solid #ff9900;
-                }
-                
-                h3 {
-                  font-size:22px;
-                }
-                
-                h4 {
-                  font-size:20px;
-                }
-                
-                h5 {
-                  font-size:18px;
-                }
-                
-                h6 {
-                  font-size:16px;
-                }
-                
-                p {
-                  line-height:22px;
-                  margin:10px 0;
-                }
-                
-                textarea {
-                  font-family:'Open Sans',Verdana, sans-serif;
-                  border-radius:3px;
-                  background:#ebf7ff;
-                  padding:5px 10px;
-                  margin:0;
-                  font-weight:300;
-                  font-style:italic;
-                  border:0px; 
-                  color:#000;
-                  resize:none;
-                  box-sizing:border-box;
-                  
-                  &:focus {
-                    box-shadow:none;
-                    outline:none;
-                  }
-                  
-                }
-                
-              }
-            
-            }
-          
-          }
-  
         }
         
       }

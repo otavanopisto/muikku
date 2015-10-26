@@ -8,6 +8,7 @@
       loadAnswers: false,
       readOnlyFields: false,
       dustTemplate: 'workspace/materials-page.dust',
+      prependTitle : true,
       renderMode: {
         "html": "raw"
       },
@@ -38,7 +39,7 @@
         $(pageElement).removeAttr('data-material-content');
 
         var parsed = $('<div>');
-        if (material.title) {
+        if (material.title && this.options.prependTitle) {
           parsed.append('<h2>' + material.title + '</h2>');
         }
         if (material.html) {

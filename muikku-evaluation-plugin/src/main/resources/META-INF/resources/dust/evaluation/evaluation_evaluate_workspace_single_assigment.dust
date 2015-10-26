@@ -3,7 +3,7 @@
   <div class="evaluation-assignmentlist-wrapper">
     <div class="evaluation-assignment-title-container">
       <h2>{title}</h2>
-      <div class="evaluation-assignment-assesmentvalue">Hyväksytty</div>  
+      <div class="evaluation-assignment-assessmentvalue">Hyväksytty</div>  
     </div>
     <div class="evaluation-assignment-content" data-open-state="closed">
       <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" class="evaluation-assignment"></article>

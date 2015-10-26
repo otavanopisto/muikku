@@ -3,7 +3,7 @@
   <div class="evaluation-exerciselist-wrapper">
     <div class="evaluation-exercise-title-container">
       <h2>H01 Esimerkki harjoitustehtävä</h2>
-      <div class="evaluation-exercise-assesmentvalue">Tehty</div>  
+      <div class="evaluation-exercise-assessmentvalue">Tehty</div>  
     </div>
     <div class="evaluation-exercise-content" data-open-state="closed">
       

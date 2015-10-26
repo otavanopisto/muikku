@@ -50,6 +50,16 @@
               .attr('type', 'text')
               .datepicker();
             
+            $("#evaluationStudentAssignmentWrapper").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
+            $(".evaluation-modal-evaluateForm-content").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
             $(this).find('input[name="evaluationDate"]')
               .datepicker('setDate', this.options.evaluationDate||new Date());
             
@@ -94,7 +104,7 @@
               }
             }, this));
             
-            this._dialog.on(".evaluation-assignment-title-container").click($.proxy(this._onAssignmentTitleClick, this));
+            this._dialog.find(".evaluation-assignment-title-container").click($.proxy(this._onAssignmentTitleClick, this));
             
           }, this),
           buttons: [{
@@ -279,6 +289,16 @@
               .css({'z-index': 9999, 'position': 'relative'})
               .attr('type', 'text')
               .datepicker();
+            
+            $("#evaluationStudentAssignmentWrapper").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
+            $(".evaluation-modal-evaluateForm-content").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
             
             $(this).find('input[name="evaluationDate"]')
               .datepicker('setDate', this.options.evaluationDate||new Date());
@@ -896,8 +916,10 @@
 
   $(document).ready(function () {
     var workspaceEntityId = $('#evaluation').attr('data-workspace-entity-id');
-    
-    $(document).muikkuMaterialLoader({});
+
+    $(document).muikkuMaterialLoader({
+      prependTitle : false
+    });
     
     $('#evaluation').evaluationLoader();
     $('#evaluation').evaluation({
