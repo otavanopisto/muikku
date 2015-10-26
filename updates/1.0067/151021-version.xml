@@ -21,4 +21,8 @@
     </table>
   </alterTables>
   
+  <sql>update ForumArea set version = 1;</sql>
+  <sql>update ForumMessage set version = 1;</sql>
+  <sql>update UserEntity set version = 1;</sql>
+  
 </update>
