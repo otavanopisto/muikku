@@ -152,6 +152,21 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
 
+  @DELETE
+  @Path ("/items/{COMMUNICATORMESSAGEID}")
+  @RESTPermitUnimplemented
+  public Response deleteReceivedMessages(
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
+   ) throws AuthorizationException {
+    UserEntity user = sessionController.getLoggedUserEntity();
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    communicatorController.archiveReceivedMessages(user, messageId);
+    
+    return Response.noContent().build();
+  }
+
   @GET
   @Path ("/sentitems")
   @RESTPermitUnimplemented
@@ -179,6 +194,21 @@ public class CommunicatorRESTService extends PluginRESTService {
     return Response.ok(
       result
     ).build();
+  }
+  
+  @DELETE
+  @Path ("/sentitems/{COMMUNICATORMESSAGEID}")
+  @RESTPermitUnimplemented
+  public Response deleteSentMessages(
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
+   ) throws AuthorizationException {
+    UserEntity user = sessionController.getLoggedUserEntity();
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    communicatorController.archiveSentMessages(user, messageId);
+    
+    return Response.noContent().build();
   }
   
   @GET
@@ -247,21 +277,6 @@ public class CommunicatorRESTService extends PluginRESTService {
     return Response.ok(
       result
     ).build();
-  }
-
-  @DELETE
-  @Path ("/messages/{COMMUNICATORMESSAGEID}")
-  @RESTPermitUnimplemented
-  public Response deleteMessage(
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
-   ) throws AuthorizationException {
-    UserEntity user = sessionController.getLoggedUserEntity();
-    
-    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
-
-    communicatorController.archiveMessage(user, messageId);
-    
-    return Response.noContent().build();
   }
 
   @POST
