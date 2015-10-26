@@ -49,15 +49,10 @@
   
   .cm-message-recipient-name{
     float:left;
-    padding:6px 0;
     margin-top:0 !important;
-    &:hover{   
-    color:red;
-      &:before{
-       color:red;
-  /*            @extend .icon-delete; */
-      }
-    }   
+    font-family:inherit;
+    margin-left: 10px;
+    padding: 9px 0;
 
     &:before{
       margin-right:5px;
@@ -69,7 +64,6 @@
     &.user{
 
       &:before{
-         @extend .icon-user;
          color:orange;
         }     
       }
@@ -77,9 +71,6 @@
     &.usergroup{
 
       &:before{
-         // @extend .icon-members;
-         // extend breaks icon in firefox
-         content: "\e60d";
          color:green;
         }     
     }
@@ -87,12 +78,15 @@
     &.workspace{
 
       &:before{
-         // @extend .icon-books;
-         // extend breaks icon in firefox
-         content: "\e61b";
          color:blue;
         }     
-      }      
+      }     
+     &:hover{   
+      color:red;
+      &:before{
+       color:red;
+      }
+    }         
    }  
    
   .cm-message-recipient-remove{
