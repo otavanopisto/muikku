@@ -3,7 +3,6 @@
 @import "_fonts.scss";
 @import "_textcontent.scss";
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
-@import "_icons.scss"; /* Has to be loaded here, so it can be used with @extend in others */
 @import "_animations.scss";
 @import "_commons.scss";
 @import "_forms.scss";
@@ -50,6 +49,16 @@ body {
    background-color:#fff;
    background-image:none;
   }
+}
+
+[class^="icon-"] span, [class*=" icon-"] span {
+  display: inline-block;
+  font-family: "Open Sans";
+  padding-left: 4px;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  text-decoration:none;  
 }
 
 main {
