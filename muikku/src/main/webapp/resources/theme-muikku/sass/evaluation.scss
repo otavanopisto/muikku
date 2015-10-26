@@ -835,12 +835,13 @@ body.evaluation {
     border:none;
     z-index:9999;
     position:fixed;
-    top:5px;
-    right:5px;
-    bottom:5px;
-    left:5px;
+    top:0px;
+    right:0px;
+    bottom:0px;
+    left:0px;
     background:#fff;
-    border-radius:10px;
+    border-radius:0px;
+    border:5px solid #3d4f5c;
     overflow:hidden;
     min-width:990px;
     text-transform:none;
