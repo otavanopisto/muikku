@@ -424,6 +424,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForPresent(".index");
   }
   
+  protected void loginStudent2() throws JsonProcessingException, Exception {
+    PyramusMocks.student2LoginMock();
+    PyramusMocks.personsPyramusMocks();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    navigate("/login?authSourceId=1", true);
+    waitForPresent(".index");
+  }
+  
   protected Workspace createWorkspace(String name, String identifier, Boolean published) throws IOException {
     PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier));
 
