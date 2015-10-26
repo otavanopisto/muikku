@@ -269,15 +269,3 @@
 .icon-new-section:before {
   content: "\e92f";
 }
-.icon-forgotpassword:before {
-  content: "\e63f";
-}
-.icon-correct-answers:before {
-  content: "\e642";
-}
-.icon-edit-index:before {
-  content: "\e640";
-}
-.icon-edit-help:before {
-  content: "\e641";
-}
