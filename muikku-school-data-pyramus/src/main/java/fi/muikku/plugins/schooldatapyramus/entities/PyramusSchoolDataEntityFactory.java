@@ -260,9 +260,12 @@ public class PyramusSchoolDataEntityFactory {
     if (modified == null) {
       modified = course.getCreated();
     }
-
-    return new PyramusWorkspace(identifierMapper.getWorkspaceIdentifier(course.getId()), course.getName(),
-        course.getDescription(), identifierMapper.getWorkspaceTypeIdentifier(course.getTypeId()),
+    return new PyramusWorkspace(
+        identifierMapper.getWorkspaceIdentifier(course.getId()),
+        course.getName(),
+        course.getNameExtension(),
+        course.getDescription(),
+        identifierMapper.getWorkspaceTypeIdentifier(course.getTypeId()),
         identifierMapper.getWorkspaceCourseIdentifier(course.getSubjectId(), course.getCourseNumber()),
         modified.toDate(), identifierMapper.getSubjectIdentifier(course.getSubjectId()), educationTypeIdentifier,
         course.getLength(), identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),

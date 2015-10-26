@@ -68,9 +68,23 @@ public class WorkspaceRolePermissionDAO extends CoreDAO<WorkspaceRolePermission>
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  public List<WorkspaceRolePermission> listByPermission(Permission permission) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceRolePermission> criteria = criteriaBuilder.createQuery(WorkspaceRolePermission.class);
+    Root<WorkspaceRolePermission> root = criteria.from(WorkspaceRolePermission.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceRolePermission_.permission), permission)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   @Override
   public void delete(WorkspaceRolePermission workspaceRolePermission) {
     super.delete(workspaceRolePermission);
   }
-  
+
 }
