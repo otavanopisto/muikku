@@ -94,6 +94,8 @@
               }
             }, this));
             
+            this._dialog.on(".evaluation-assignment-title-container").click($.proxy(this._onAssignmentTitleClick, this));
+            
           }, this),
           buttons: [{
             'text': this._dialog.attr('data-button-save-text'),
@@ -209,8 +211,6 @@
           this._loadTemplate(assignments, callback);
         }
       }, this));
-
-      this._loadTemplate([], callback);
     },
     
     _loadTemplate: function (assignments, callback) {
@@ -223,6 +223,13 @@
         evaluableAssignments: assignments,
         exercises: []
       }, callback);
+    },
+    
+    _onAssignmentTitleClick: function (event) {
+      var assignment = $(event.target).closest('.evaluation-assignmentlist-wrapper');
+      var content = $(assignment).find('.evaluation-assignment-content');
+      var state = content.attr('data-open-state');
+      content.attr('data-open-state', state == 'closed' ? 'open' : 'closed');
     }
   });
   

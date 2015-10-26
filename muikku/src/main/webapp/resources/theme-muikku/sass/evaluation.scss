@@ -467,7 +467,14 @@ body.evaluation {
                 
                 .evaluation-assignment-content,
                 .evaluation-exercise-content {
-                  height:0px;
+                
+                  &[data-open-state="closed"] {
+                    display: none;
+                  }
+                
+                  &[data-open-state="open"] {
+                    display: block;
+                  }
                 }
               
               }
