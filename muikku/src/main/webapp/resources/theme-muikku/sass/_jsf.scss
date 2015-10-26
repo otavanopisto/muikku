@@ -3,26 +3,7 @@
 /* Theme name, not the folder name. theme- preface will be included automatically! */
 $theme:muikku;
 
-
 /* CSS Background-image loader, has to be use in every background-image rule */
-
-@mixin font-src($fontSrc){
-	src:(url('#' + '{resource["theme-' + $theme + ':' + $fontSrc + '"]}'));
-}
-
-@mixin font-srcs($fontSrc1,$fontSrc1Fmt,$fontSrc2,$fontSrc2Fmt,$fontSrc3,$fontSrc3Fmt,$fontSrc4,$fontSrc4Fmt){
-  src:(url('#' + '{resource["theme-' + $theme + ':' + $fontSrc1 + '"]}') format($fontSrc1Fmt), 
-  url('#' + '{resource["theme-' + $theme + ':' + $fontSrc2 + '"]}') format($fontSrc2Fmt), 
-  url('#' + '{resource["theme-' + $theme + ':' + $fontSrc3 + '"]}') format($fontSrc3Fmt), 
-  url('#' + '{resource["theme-' + $theme + ':' + $fontSrc4 + '"]}') format($fontSrc4Fmt));
-}
-
-@mixin font-srcs2($fontSrc1,$fontSrc1Fmt,$fontSrc2,$fontSrc2Fmt,$fontSrc3,$fontSrc3Fmt,$fontSrc4,$fontSrc4Fmt){
-  src:(url('#' + '{resource["theme-' + $theme + ':' + $fontSrc1 + '"]}') format($fontSrc1Fmt), 
-  url('#' + '{resource["theme-' + $theme + ':' + $fontSrc2 + '"]}') format($fontSrc2Fmt),
-  url('#' + '{resource["theme-' + $theme + ':' + $fontSrc3 + '"]}') format($fontSrc3Fmt), 
-  url('#' + '{resource["theme-' + $theme + ':' + $fontSrc4 + '"]}') format($fontSrc4Fmt));
-}
 
 @mixin background-image($imgSrc) {
   background-image:(url('#' + '{resource["theme-' + $theme + ':' + $imgSrc + '"]}'));
