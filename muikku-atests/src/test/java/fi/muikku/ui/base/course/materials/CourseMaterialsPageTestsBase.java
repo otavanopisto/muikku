@@ -1,4 +1,4 @@
-package fi.muikku.ui.base;
+package fi.muikku.ui.base.course.materials;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,13 +12,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
-import fi.muikkku.ui.AbstractUITest;
-import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
+import fi.muikku.ui.AbstractUITest;
+import fi.muikku.ui.PyramusMocks;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
@@ -187,31 +187,29 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1ExerciseMaterialSetup.sql"})
+  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1ExerciseMaterialDelete.sql"})
   public void courseMaterialExerciseClassTest() throws Exception {
-    loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
-    try {
-      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-          "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.multiselect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;param1&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Vaihtoehto 1&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;kakkonen&quot;,&quot;text&quot;:&quot;Vaihtoehto 2&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;???&quot;,&quot;text&quot;:&quot;Vaihtoehto 3&quot;,&quot;correct&quot;:false}],&quot;listType&quot;:&quot;checkbox-vertical&quot;}\"/><input name=\"param1\" type=\"checkbox\" value=\"1\"/><label>Vaihtoehto 1</label><input name=\"param1\" type=\"checkbox\" value=\"kakkonen\"/><label>Vaihtoehto 2</label><input name=\"param1\" type=\"checkbox\" value=\"???\"/><label>Vaihtoehto 3</label></object></p>", 1l, 
-          "EXERCISE");
-      
-      try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d>div", htmlMaterial.getId()));
-        String actual = getWebDriver().findElementByCssSelector(String.format("#page-%d>div", htmlMaterial.getId())).getAttribute("class");
-        String expected = new String("muikku-page-assignment-type exercise");
-        assertEquals(expected, actual);
-        
-      } finally {
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-      }
-      
-    } finally {
-      deleteWorkspace(workspace.getId());
-    }
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    PyramusMocks.workspace1PyramusMock();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
+    asAdmin().get("/test/reindex");
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
+    waitForElementToBePresent(By.id("contentWorkspaceMaterials"));
+    String actual = getWebDriver().findElementByCssSelector("#page-46>div").getAttribute("class");
+    String expected = new String("muikku-page-assignment-type exercise");
+    assertEquals(expected, actual);
+    WireMock.reset();
   }
   
   @Test
@@ -476,76 +474,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
         assertChecked(String.format("#page-%d .muikku-checkbox-field input[value=\"1\"]", htmlMaterial.getId()), true);
-        
-      } finally {
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-      }
-      
-    } finally {
-      deleteWorkspace(workspace.getId());
-    }
-  }
-  
-  @Test
-  public void answerMemoTestAdmin() throws Exception {
-    loginAdmin();
-
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
-    try {
-      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-          "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.memo\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-ETPwEBpxxJr5edocOZXSFQJt&quot;,&quot;columns&quot;:&quot;4&quot;,&quot;rows&quot;:&quot;4&quot;,&quot;example&quot;:&quot;&quot;}\" /></object></p>", 1l, 
-          "EXERCISE");
-      
-      try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-        
-        assertVisible(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()), "");
-        assertClassNotPresent(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()), "muikku-field-saved");
-        sendKeys(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()), "field value");
-        waitClassPresent(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()), "field value");
-        
-      } finally {
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-      }
-      
-    } finally {
-      deleteWorkspace(workspace.getId());
-    }
-  }
-  
-  @Test
-  public void answerMemoTestStudent() throws Exception {
-    loginStudent1();
-
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
-    try {
-      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-        "Test", "text/html;editor=CKEditor", 
-        "<p><object type=\"application/vnd.muikku.field.memo\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-ETPwEBpxxJr5edocOZXSFQJt&quot;,&quot;columns&quot;:&quot;4&quot;,&quot;rows&quot;:&quot;4&quot;,&quot;example&quot;:&quot;&quot;}\" /></object></p>", 1l, 
-        "EXERCISE");
-      
-      try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-        
-        assertVisible(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()), "");
-        assertClassNotPresent(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()), "muikku-field-saved");
-        sendKeys(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()), "field value");
-        waitClassPresent(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-memo-field", htmlMaterial.getId()), "field value");
         
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());

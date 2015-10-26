@@ -295,6 +295,7 @@ public class PyramusSchoolDataEntityFactory {
     return new PyramusWorkspace(
         identifierMapper.getWorkspaceIdentifier(course.getId()),
         course.getName(),
+        course.getNameExtension(),
         course.getDescription(),
         identifierMapper.getWorkspaceTypeIdentifier(course.getTypeId()),
         identifierMapper.getWorkspaceCourseIdentifier(course.getSubjectId(), course.getCourseNumber()),
