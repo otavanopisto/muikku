@@ -1,5 +1,9 @@
 sudo: false
 language: java
+branches:
+  only:
+    - master
+    - devel
 before_script:
 - if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then 
     curl -sS https://saucelabs.com/downloads/sc-4.3.11-linux.tar.gz|tar -xzC /tmp/;
