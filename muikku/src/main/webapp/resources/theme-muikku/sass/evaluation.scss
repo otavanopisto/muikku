@@ -521,7 +521,7 @@ body.evaluation {
                       font-style:italic;
                       border:0px;
                       color:#000;
-                      resize:none;
+                      resize:vertical;
                       box-sizing:border-box;
                       
                       &:focus {
@@ -629,7 +629,7 @@ body.evaluation {
                   font-style:italic;
                   border:0px;
                   color:#000;
-                  resize:none;
+                  resize:vertical;
                   box-sizing:border-box;
                   
                   &:focus {
