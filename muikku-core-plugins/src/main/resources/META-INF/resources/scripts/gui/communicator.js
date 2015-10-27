@@ -190,9 +190,6 @@ $(document).ready(function(){
       
       openElement = parent.find(".open");
      
-
-
-      
       if(openElement.length > 0){
         var id = [openElement.attr("data-thread-id")];
         
@@ -207,18 +204,21 @@ $(document).ready(function(){
         }         
         this._deleteMessages(deleteQ)
       }
-      
-      
-      
-
     },    
     
-    _deleteMessages : function(ids){
+    _deleteMessages : function(ids) {
       var _this = this;
-      for (i = 0; i < ids.length; i++){ 
-        mApi().communicator.messages.del(ids[i]).callback(function (err, result){
+      for (i = 0; i < ids.length; i++) {
+        var endpoint = mApi().communicator.items;
+        var hash = window.location.hash.substring(1);
+        
+        if (hash == "sent") {
+          endpoint = mApi().communicator.sentitems;
+        }
+
+        endpoint.del(ids[i]).callback(function (err, result){
          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
           } else {
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
           }         
@@ -229,21 +229,18 @@ $(document).ready(function(){
     
     _onRecipientFocus:function(event){
       $(event.target).autocomplete({
-       create: function(event, ui){
-        $('.ui-autocomplete').perfectScrollbar(); 
-       },  
-      source: function (request, response) {
-        response(mCommunicator._doSearch(request.term));
-      },
-      select: function (event, ui) {
-      mCommunicator._selectRecipient(event, ui.item);
-        $(this).val("");
-        return false;
-      }
-    });     
-
-
-      
+        create: function(event, ui){
+          $('.ui-autocomplete').perfectScrollbar(); 
+        },  
+        source: function (request, response) {
+          response(mCommunicator._doSearch(request.term));
+        },
+        select: function (event, ui) {
+          mCommunicator._selectRecipient(event, ui.item);
+          $(this).val("");
+          return false;
+        }
+      });     
     }, 
  
     _selectRecipient: function (event, item) {
