@@ -300,13 +300,12 @@
           }
         });  
       
-      $(object).replaceWith(taskfieldWrapper.append(input));
+      taskfieldWrapper.append(input);
       
-      // If hint is set
       if (data.meta.hint != '') {
         taskfieldWrapper.append($('<span class="muikku-text-field-hint">' + data.meta.hint + '</span>'));  
         
-        $(input).on( "focus", function() {
+        $(input).on("focus", function() {
           $(taskfieldWrapper).children('.muikku-text-field-hint')
             .css({
               visibility:"visible",
@@ -318,9 +317,9 @@
             }, 300, function() {
             
             })
-        } );
+        });
         
-        $(input).on( "blur", function() {
+        $(input).on("blur", function() {
           $(taskfieldWrapper).children('.muikku-text-field-hint')
             .css({
               visibility:"hidden"  
@@ -331,18 +330,16 @@
             }, 150, function() {
             
             })
-        } );
+        });
       }
-      
-      
-      
+      $(object).replaceWith(taskfieldWrapper);      
     }
   });
   
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.memo') {
-      var field = $(object).replaceWith($('<textarea>')
+      var field = $('<textarea>')
         .addClass('muikku-memo-field')
         .attr({
           'cols':data.meta.columns,
@@ -380,8 +377,8 @@
               return [];
             }
           }
-        })
-      );
+        });
+      $(object).replaceWith(field);
     }
   });
   
