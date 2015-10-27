@@ -429,9 +429,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.student2LoginMock();
     PyramusMocks.personsPyramusMocks();
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
+    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 2));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 2));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
