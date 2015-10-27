@@ -199,7 +199,7 @@ public class InboxCommunicatorMessageDAO extends CorePluginsDAO<InboxCommunicato
     return entityManager.createQuery(criteria).getSingleResult();
   }
 
-  public List<InboxCommunicatorMessage> listBySenderAndMessageId(UserEntity sender, CommunicatorMessageId messageId) {
+  public List<InboxCommunicatorMessage> listBySenderAndMessageId(UserEntity sender, CommunicatorMessageId communicatorMessageId) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -209,6 +209,7 @@ public class InboxCommunicatorMessageDAO extends CorePluginsDAO<InboxCommunicato
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId),
             criteriaBuilder.equal(root.get(CommunicatorMessage_.sender), sender.getId()),
             criteriaBuilder.equal(root.get(CommunicatorMessage_.archivedBySender), Boolean.FALSE)
         )

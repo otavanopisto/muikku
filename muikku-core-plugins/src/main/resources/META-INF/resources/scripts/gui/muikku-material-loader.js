@@ -15,7 +15,6 @@
     },
     
     _create : function() {
-      dust.preload(this.options.dustTemplate);
     },    
     
     _getRenderMode: function(type) {

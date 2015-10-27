@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -63,6 +64,14 @@ public class ForumArea implements ResourceEntity, OwnedEntity {
     this.group = group;
   }
 
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -82,4 +91,8 @@ public class ForumArea implements ResourceEntity, OwnedEntity {
   
   @Column (name = "owner_id")
   private Long owner;
+  
+  @Version
+  @Column(nullable = false)
+  private Long version;
 }

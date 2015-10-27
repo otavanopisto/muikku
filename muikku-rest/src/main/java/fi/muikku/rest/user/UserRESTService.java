@@ -21,9 +21,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
@@ -198,7 +204,7 @@ public class UserRESTService extends AbstractRESTService {
   @GET
 	@Path("/users/{ID}")
   @RESTPermitUnimplemented
-	public Response findUser(@PathParam("ID") Long id) {
+	public Response findUser(@Context Request request, @PathParam("ID") Long id) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -208,6 +214,16 @@ public class UserRESTService extends AbstractRESTService {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 
+    EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(userEntity.getVersion())));
+
+    ResponseBuilder builder = request.evaluatePreconditions(tag);
+    if (builder != null) {
+      return builder.build();
+    }
+
+    CacheControl cacheControl = new CacheControl();
+    cacheControl.setMustRevalidate(true);
+
 		User user = userController.findUserByDataSourceAndIdentifier(
 				userEntity.getDefaultSchoolDataSource(),
 				userEntity.getDefaultIdentifier());
@@ -215,13 +231,17 @@ public class UserRESTService extends AbstractRESTService {
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 
-		return Response.ok(createRestModel(userEntity, user)).build();
+		return Response
+		    .ok(createRestModel(userEntity, user))
+        .cacheControl(cacheControl)
+        .tag(tag)
+		    .build();
 	}
 
   @GET
   @Path("/users/{ID}/basicinfo")
   @RESTPermitUnimplemented
-  public Response findUserBasicInfo(@PathParam("ID") Long id) {
+  public Response findUserBasicInfo(@Context Request request, @PathParam("ID") Long id) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -230,6 +250,16 @@ public class UserRESTService extends AbstractRESTService {
     if (userEntity == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
+
+    EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(userEntity.getVersion())));
+
+    ResponseBuilder builder = request.evaluatePreconditions(tag);
+    if (builder != null) {
+      return builder.build();
+    }
+
+    CacheControl cacheControl = new CacheControl();
+    cacheControl.setMustRevalidate(true);
 
     schoolDataBridgeSessionController.startSystemSession();
     try {
@@ -242,7 +272,12 @@ public class UserRESTService extends AbstractRESTService {
 
       // TODO: User image
       boolean hasImage = false;
-      return Response.ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), hasImage )).build();
+      
+      return Response
+          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), hasImage))
+          .cacheControl(cacheControl)
+          .tag(tag)
+          .build();
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }

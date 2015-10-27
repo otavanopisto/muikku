@@ -1,12 +1,16 @@
 sudo: false
 language: java
+branches:
+  only:
+    - master
+    - devel
 before_script:
 - if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then 
     curl -sS https://saucelabs.com/downloads/sc-4.3.11-linux.tar.gz|tar -xzC /tmp/;
     /tmp/sc-4.3.11-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid;
   fi
 after_script:
-- if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then
+- if [ -e /tmp/sc.pid ] && [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then
     kill `cat /tmp/sc.pid`;
   fi;
 script:
