@@ -270,6 +270,7 @@
         <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
+        <it.package>**</it.package>
       </properties>
 
       <dependencies>
@@ -301,7 +302,7 @@
               </dependenciesToScan>
 
               <includes>
-                <include>fi/muikku/ui/chrome/*IT.java</include>
+                <include>fi/muikku/ui/chrome/${it.package}/*IT.java</include>
               </includes>
               <systemPropertyVariables>
                 <it.project.version>${project.version}</it.project.version>
