@@ -31,8 +31,6 @@ $(document).ready(function(){
 //            messages[i].content = generatePreview(messages[i].content);
           }
 
-          dust.preload("frontpage/widget_message.dust");
-
           renderDustTemplate('frontpage/widget_messages.dust', 
           {
              messages : messages

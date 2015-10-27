@@ -12,6 +12,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import fi.muikku.model.base.SchoolDataSource;
@@ -59,6 +60,14 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
     this.defaultSchoolDataSource = defaultSchoolDataSource;
   }
 
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -74,4 +83,8 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
   
   @ManyToOne
   private SchoolDataSource defaultSchoolDataSource;
+
+  @Version
+  @Column(nullable = false)
+  private Long version;
 }

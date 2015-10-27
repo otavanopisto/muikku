@@ -12,6 +12,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import fi.muikku.model.util.ArchivableEntity;
@@ -81,6 +82,14 @@ public abstract class ForumMessage implements ArchivableEntity {
     this.lastModified = lastModified;
   }
   
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -110,4 +119,8 @@ public abstract class ForumMessage implements ArchivableEntity {
   @Column (nullable=false)
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date lastModified;
+
+  @Version
+  @Column(nullable = false)
+  private Long version;
 }

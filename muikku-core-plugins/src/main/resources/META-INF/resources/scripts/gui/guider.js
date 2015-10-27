@@ -10,8 +10,6 @@ $(document).ready(function(){
     	    $(GuideImpl.guideContainer).on("click", '.gt-tool-view-profile', $.proxy(this._onShowProfileClick,this));
 //    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-send-mail', $.proxy(this.messageToUser,this));
           $(GuideImpl.guideContainer).on("click", '.gt-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));    	    
-    	    
-          dust.preload("guider/guider_item.dust");
           
           $(window).on("hashchange", $.proxy(this._onHashChange, this));
 
