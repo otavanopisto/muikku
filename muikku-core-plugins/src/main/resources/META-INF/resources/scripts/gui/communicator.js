@@ -30,7 +30,7 @@ $(document).ready(function(){
       $(CommunicatorImpl.msgContainer).on("click", '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));                
       $('*[data-message-type="inbox"]').addClass('selected');      
 
-      dust.preload("communicator/communicator_item.dust");
+//      dust.preload("communicator/communicator_item.dust");
 
       $(window).on("hashchange", $.proxy(this._onHashChange, this));
       
