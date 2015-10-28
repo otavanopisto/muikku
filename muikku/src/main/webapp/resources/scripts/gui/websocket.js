@@ -126,14 +126,15 @@
     },
     
     _startPinging: function () {
-      this._pingHandle = setInterval(function() {
+      this._pingHandle = setInterval($.proxy(function() {
         if (!this._pinging) {
-          this.sendMessage("ping", {});
+          this.sendMessage("ping:ping", {});
           this._pinging = true;
         } else {
           this._pingTime += this.options.pingTimeStep;
           
           if (this._pingTime > this.options.pingTimeout) {
+            if (console) console.log("ping failed, reconnecting...");
             this._pinging = false;
             this._pingTime = 0;
             
@@ -141,7 +142,7 @@
           }
         }
         
-      }, this.options.pingTimeStep);
+      }, this), this.options.pingTimeStep);
     },
     
     _reconnect: function () {
@@ -199,7 +200,7 @@
       var message = JSON.parse(event.data);
       var eventType = message.eventType;
       
-      if (eventType == "pong") {
+      if (eventType == "ping:pong") {
         this._pinging = false;
         this._pingTime = 0;
       }
