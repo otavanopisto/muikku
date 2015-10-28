@@ -35,13 +35,15 @@ import fi.otavanopisto.security.LoggedIn;
 @LoggedIn
 public class WorkspaceJournalBackingBean {
   
-  public static final class UserWithUserEntity {
+  public static final class UserView {
     private final User user;
     private final UserEntity userEntity;
+    private final boolean selected;
     
-    public UserWithUserEntity(User user, UserEntity entity) {
+    public UserView(User user, UserEntity entity, boolean selected) {
       this.user = user;
       this.userEntity = entity;
+      this.selected = selected;
     }
     
     public User getUser() {
@@ -50,6 +52,10 @@ public class WorkspaceJournalBackingBean {
     
     public UserEntity getUserEntity() {
       return userEntity;
+    }
+    
+    public boolean isSelected() {
+      return selected;
     }
     
   }
@@ -182,8 +188,8 @@ public class WorkspaceJournalBackingBean {
         MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
   }
   
-  public List<UserWithUserEntity> getWorkspaceStudents() {
-    ArrayList<UserWithUserEntity> result = new ArrayList<>();
+  public List<UserView> getWorkspaceStudents() {
+    ArrayList<UserView> result = new ArrayList<>();
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     List<User> userList = workspaceController.listUsersByWorkspaceEntityAndRoleArchetype(
         workspaceEntity,
@@ -195,7 +201,7 @@ public class WorkspaceJournalBackingBean {
               user.getSchoolDataSource(),
               user.getIdentifier());
       result.add(
-          new UserWithUserEntity(user, userEntity)
+          new UserView(user, userEntity, userEntity.getId().equals(studentId))
       );
     }
     

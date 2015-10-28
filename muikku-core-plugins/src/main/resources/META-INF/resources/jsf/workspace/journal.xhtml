@@ -22,9 +22,14 @@
 					<div class="workspace-journal-select-student-container">
 						<span class="journal-select-student-label">#{i18n.text['plugin.workspace.journal.studentFilter.label']}</span>
             <select id="studentSelectField" class="journal-select-student-selection" name="studentId">
-							<option>#{i18n.text['plugin.workspace.journal.studentFilter.showAll']}</option>
+							<option value="">#{i18n.text['plugin.workspace.journal.studentFilter.showAll']}</option>
 							<ui:repeat value="#{workspaceJournalBackingBean.workspaceStudents}" var="student">
-								<option value="${student.userEntity.id}">#{student.user.firstName} #{student.user.lastName}</option>
+							  <ui:fragment rendered="#{student.selected}">
+								  <option selected value="#{student.userEntity.id}">#{student.user.firstName} #{student.user.lastName}</option>
+								</ui:fragment>
+								<ui:fragment rendered="#{not student.selected}">
+								  <option value="#{student.userEntity.id}">#{student.user.firstName} #{student.user.lastName}</option>
+								</ui:fragment>
 							</ui:repeat>
 						</select>
 					</div>
