@@ -169,13 +169,15 @@ public class CommunicatorController {
     return communicatorMessageTemplateDAO.create(name, content, user);
   }
 
-  public void archiveMessage(UserEntity user, CommunicatorMessageId messageId) {
+  public void archiveReceivedMessages(UserEntity user, CommunicatorMessageId messageId) {
     List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId);
     
     for (CommunicatorMessageRecipient recipient : received) {
       communicatorMessageRecipientDAO.archiveRecipient(recipient);
     }
-    
+  }
+
+  public void archiveSentMessages(UserEntity user, CommunicatorMessageId messageId) {
     List<InboxCommunicatorMessage> sent = communicatorMessageDAO.listBySenderAndMessageId(user, messageId);
 
     for (CommunicatorMessage msg : sent) {

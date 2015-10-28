@@ -17,9 +17,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
@@ -167,19 +173,31 @@ public class ForumRESTService extends PluginRESTService {
   @GET
   @Path ("/areas/{AREAID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response findArea(@PathParam ("AREAID") Long areaId) throws AuthorizationException {
+  public Response findArea(@Context Request request, @PathParam ("AREAID") Long areaId) throws AuthorizationException {
     ForumArea forumArea = forumController.getForumArea(areaId);
     
     if (forumArea != null) {
       if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_LISTFORUM, forumArea)) {
         Long numThreads = forumController.getThreadCount(forumArea);
         
+        EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(forumArea.getVersion()) + String.valueOf(numThreads)));
+
+        ResponseBuilder builder = request.evaluatePreconditions(tag);
+        if (builder != null) {
+          return builder.build();
+        }
+
+        CacheControl cacheControl = new CacheControl();
+        cacheControl.setMustRevalidate(true);
+        
         ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), 
             forumArea.getGroup() != null ? forumArea.getGroup().getId() : null, numThreads); 
         
-        return Response.ok(
-          result
-        ).build();
+        return Response
+            .ok(result)
+            .cacheControl(cacheControl)
+            .tag(tag)
+            .build();
       } else {
         return Response.status(Status.FORBIDDEN).build();
       }

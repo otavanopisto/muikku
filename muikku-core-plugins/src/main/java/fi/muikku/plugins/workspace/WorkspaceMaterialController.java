@@ -886,10 +886,6 @@ public class WorkspaceMaterialController {
   }
 
   public synchronized String generateUniqueUrlName(WorkspaceNode parent, WorkspaceNode targetNode, String title) {
-    if (StringUtils.isBlank(title)) {
-      // no title to work with, so settle for a random UUID
-      title = UUID.randomUUID().toString();
-    }
     String urlName = generateUrlName(title);
     // use urlName as base and uniqueName as final result
     String uniqueName = urlName;
@@ -917,14 +913,14 @@ public class WorkspaceMaterialController {
 
   public static String generateUrlName(String title) {
     // convert to lower-case and replace spaces and slashes with a minus sign
-    String urlName = StringUtils.lowerCase(title.replaceAll(" ", "-").replaceAll("/", "-"));
+    String urlName = title == null ? "" : StringUtils.lowerCase(title.replaceAll(" ", "-").replaceAll("/", "-"));
     // truncate consecutive minus signs into just one
     while (urlName.indexOf("--") >= 0) {
       urlName = urlName.replace("--", "-");
     }
     // get rid of accented characters and all special characters other than minus, period, and underscore
     urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
-    return urlName;
+    return StringUtils.isBlank(urlName) ? StringUtils.substringBefore(UUID.randomUUID().toString(), "-") : urlName;
   }
 
   /* Front page */
