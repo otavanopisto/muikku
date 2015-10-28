@@ -6,7 +6,7 @@
     options: {
       reconnectInterval: 200,
       pingTimeStep: 1000,
-      pingTimeout: 3000
+      pingTimeout: 10000
     },
     
     _create : function() {
