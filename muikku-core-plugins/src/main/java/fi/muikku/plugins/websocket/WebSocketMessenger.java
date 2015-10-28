@@ -118,6 +118,7 @@ public class WebSocketMessenger {
       WebSocketTicket ticket = webSocketTicketController.findTicket(ticketId);
       if (ticket != null) {
         WebSocketMessage messageData = mapper.readValue(message, WebSocketMessage.class);
+        
         WebSocketMessageEvent event = new WebSocketMessageEvent(ticket.getTicket(), ticket.getUser(), messageData);
         webSocketMessageEvent.select(new MuikkuWebSocketEventLiteral(messageData.getEventType())).fire(event);
       } else {
