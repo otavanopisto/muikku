@@ -905,7 +905,7 @@ public class WorkspaceMaterialController {
             break;
           }
           // uniqueName in use, try again with the next candidate (name, name-2, name-3, etc.)
-          uniqueName = isFileName ? fileName + "-" + ++i + "." + extension : urlName + "-" + ++i; 
+          uniqueName = isFileName ? String.format("%s-%d.%s", fileName, ++i, extension) : String.format("%s-%d", urlName, ++i); 
         } else {
           // Current uniqueName is available
           break;
