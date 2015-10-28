@@ -2,6 +2,7 @@ package fi.muikku.schooldata.events;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -149,14 +150,14 @@ public class DefaultSchoolDataWorkspaceListener {
    */
   private String generateWorkspaceUrlName(String name) {
     // convert to lower-case and replace spaces and slashes with a minus sign
-    String urlName = StringUtils.lowerCase(name.replaceAll(" ", "-").replaceAll("/", "-"));
+    String urlName = name == null ? "" : StringUtils.lowerCase(name.replaceAll(" ", "-").replaceAll("/", "-"));
     // truncate consecutive minus signs into just one
     while (urlName.indexOf("--") >= 0) {
       urlName = urlName.replace("--", "-");
     }
     // get rid of accented characters and all special characters other than minus, period, and underscore
     urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
-    return urlName;
+    return StringUtils.isBlank(urlName) ? StringUtils.substringBefore(UUID.randomUUID().toString(), "-") : urlName;
   }
   
   private Map<String, Long> discoveredWorkspaceUsers;
