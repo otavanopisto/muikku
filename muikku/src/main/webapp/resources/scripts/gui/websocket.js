@@ -127,6 +127,9 @@
     
     _startPinging: function () {
       this._pingHandle = setInterval($.proxy(function() {
+        if (this._socketOpen === false) {
+          return;
+        }
         if (!this._pinging) {
           this.sendMessage("ping:ping", {});
           this._pinging = true;
@@ -141,7 +144,6 @@
             this._reconnect();
           }
         }
-        
       }, this), this.options.pingTimeStep);
     },
     
