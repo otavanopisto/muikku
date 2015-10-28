@@ -32,8 +32,6 @@ $(document).ready(function(){
       $("#socialNavigation").on("click", ".cm-message-recipient-name", $.proxy(this._onRemoveRecipientClick, this));
       $('*[data-message-type="inbox"]').addClass('selected');      
 
-      dust.preload("communicator/communicator_item.dust");
-
       $(window).on("hashchange", $.proxy(this._onHashChange, this));
       
       $(window).trigger("hashchange");
@@ -189,9 +187,6 @@ $(document).ready(function(){
       
       openElement = parent.find(".open");
      
-
-
-      
       if(openElement.length > 0){
         var id = [openElement.attr("data-thread-id")];
         
@@ -206,32 +201,37 @@ $(document).ready(function(){
         }         
         this._deleteMessages(deleteQ)
       }
-      
-      
-      
-
     },    
     
     _deleteMessages : function(ids){
-
+      
+      
       var _this = this;
       var messages = ids.length;
+      var endpoint = mApi().communicator.items;
+      var hash = window.location.hash.substring(1);
+
+      var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
+
+        if (hash == "sent") {
+          endpoint = mApi().communicator.sentitems;
+        }
       
-      $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
       
       var batch = $.map(ids, function(id){
-        mApi().communicator.messages.del(id);
+        endpoint.del(id);
       });
       
       mApi().batch(batch).callback(function(err){
+        $('.notification-queue').notificationQueue('remove', loadNotification);
+        
         if (err) {
          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
         } else {
-         $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
-         _this._refreshView();
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
+           _this._refreshView();
         }
       });
-      
     },
 
     _onRecipientFocus:function(event){

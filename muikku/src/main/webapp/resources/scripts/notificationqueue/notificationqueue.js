@@ -52,6 +52,10 @@
       }
     },
     
+    remove: function (item) {
+      $(item).hide(this.options.hide.effect, this.options.hide.options);
+    },
+    
     _setupItem: function (item) {
       var severityOption = this.options['severity-' + $(item).data('severity')];
       if (severityOption && severityOption.timeout) {
