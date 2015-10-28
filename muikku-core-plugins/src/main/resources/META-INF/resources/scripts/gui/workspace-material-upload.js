@@ -45,7 +45,7 @@
     _uploadFile: function (file) {
       mApi().materials.binary.create({
         title: file.name,
-        contentType: file.contentType,
+        contentType: !file.contentType || file.contentType == '' ? 'application/octet-stream' : file.contentType,
         fileId: file.id
       })
       .callback($.proxy(function (materialErr, materialResult) {

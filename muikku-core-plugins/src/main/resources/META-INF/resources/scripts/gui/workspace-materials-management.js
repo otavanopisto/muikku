@@ -562,6 +562,9 @@
       var fileId = data._response.result.fileId;
       var fileName = data.files[0].name;
       var contentType = data.files[0].type;
+      if (!contentType || contentType == '') {
+        contentType = 'application/octet-stream';
+      }
       
       mApi().materials.binary.create({
         title: fileName,
