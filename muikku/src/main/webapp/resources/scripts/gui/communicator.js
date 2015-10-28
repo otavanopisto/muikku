@@ -335,11 +335,6 @@ $(document).ready(function(){
     var groups = this._searchGroups(searchTerm);
     var users = this._searchUsers(searchTerm);
     var recipients = users.concat(workspaces, groups);
-    
-    
- 
-    
-    
     return recipients;
   },      
 
