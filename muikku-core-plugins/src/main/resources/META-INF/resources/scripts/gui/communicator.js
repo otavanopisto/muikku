@@ -549,9 +549,6 @@ $(document).ready(function(){
         });      
         break;
       default:
-
-        
-        
         mApi().communicator.items.read({'firstResult' : msgsCount}).on('$', function (item, itemCallback) {
           item.caption = $('<div>').html(item.caption).text();
           item.content = $('<div>').html(item.content).text();
