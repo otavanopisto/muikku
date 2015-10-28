@@ -335,6 +335,11 @@ $(document).ready(function(){
     var groups = this._searchGroups(searchTerm);
     var users = this._searchUsers(searchTerm);
     var recipients = users.concat(workspaces, groups);
+    
+    
+ 
+    
+    
     return recipients;
   },      
 
@@ -544,9 +549,6 @@ $(document).ready(function(){
         });      
         break;
       default:
-
-        
-        
         mApi().communicator.items.read({'firstResult' : msgsCount}).on('$', function (item, itemCallback) {
           item.caption = $('<div>').html(item.caption).text();
           item.content = $('<div>').html(item.content).text();
