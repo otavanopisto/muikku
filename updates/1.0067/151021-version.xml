@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <alterTables>
+    <table name="ForumArea">
+      <addFields>
+        <field name="version" type="java.lang.Long" nullable="false"/>
+      </addFields>
+    </table>
+
+    <table name="ForumMessage">
+      <addFields>
+        <field name="version" type="java.lang.Long" nullable="false"/>
+      </addFields>
+    </table>
+
+    <table name="UserEntity">
+      <addFields>
+        <field name="version" type="java.lang.Long" nullable="false"/>
+      </addFields>
+    </table>
+  </alterTables>
+  
+  <sql>update ForumArea set version = 1;</sql>
+  <sql>update ForumMessage set version = 1;</sql>
+  <sql>update UserEntity set version = 1;</sql>
+  
+</update>
