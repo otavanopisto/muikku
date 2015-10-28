@@ -203,9 +203,9 @@
       if (eventType == "ping:pong") {
         this._pinging = false;
         this._pingTime = 0;
+      } else {
+        this.element.trigger(eventType, message.data);
       }
-      
-      this.element.trigger(eventType, message.data);
     },
     
     _onBeforeWindowUnload: function () {
