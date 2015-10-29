@@ -123,7 +123,7 @@
         dialogClass: "workspace-evaluation-confirm-dialog",
         buttons: [{
           'text': dialog.data('button-request-text'),
-          'class': 'request-button',
+          'class': 'save-evaluation-button',
           'click': function(event) {
             
             var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
@@ -176,7 +176,7 @@
         dialogClass: "workspace-evaluation-confirm-dialog",
         buttons: [{
           'text': dialog.data('button-cancellation-text'),
-          'class': 'cancellation-button',
+          'class': 'cancel-evaluation-button',
           'click': function(event) {
             
             var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
