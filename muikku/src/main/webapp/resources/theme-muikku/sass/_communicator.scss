@@ -147,11 +147,10 @@
    }
    .cm-message-header-content-primary{
     float: left;
-
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 210px;
+    max-width: 210px;
       span.cm-message-sender-name{
        color:#000;
       }
