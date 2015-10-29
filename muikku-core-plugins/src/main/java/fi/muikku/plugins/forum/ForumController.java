@@ -8,6 +8,12 @@ import java.util.logging.Logger;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
+
 import fi.muikku.controller.PermissionController;
 import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
@@ -98,6 +104,12 @@ public class ForumController {
   @Inject
   private RoleEntityDAO roleEntityDAO; 
   
+  private String clean(String html) {
+    Document doc = Jsoup.parse(html);
+    doc = new Cleaner(Whitelist.relaxed()).clean(doc);
+    doc.outputSettings().escapeMode(EscapeMode.xhtml);
+    return doc.body().html();
+  }
 
   public ForumArea getForumArea(Long forumAreaId) {
     return forumAreaDAO.findById(forumAreaId);
@@ -187,7 +199,7 @@ public class ForumController {
 
 //  @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
   public ForumThread createForumThread(/** @PermitContext **/ ForumArea forumArea, String title, String message, Boolean sticky, Boolean locked) {
-    return forumThreadDAO.create(forumArea, title, message, sessionController.getLoggedUserEntity(), sticky, locked);
+    return forumThreadDAO.create(forumArea, title, clean(message), sessionController.getLoggedUserEntity(), sticky, locked);
   }
 
   @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
@@ -206,7 +218,7 @@ public class ForumController {
       logger.severe("Tried to create a forum thread reply for locked thread");
       return null;
     } else {
-      ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, message, sessionController.getLoggedUserEntity());
+      ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity());
       forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
       return reply;
     }
@@ -337,12 +349,12 @@ public class ForumController {
   
   public void updateForumThread(ForumThread thread, String title, String message, Boolean sticky, Boolean locked) {
     UserEntity user = sessionController.getLoggedUserEntity();
-    forumThreadDAO.update(thread, title, message, sticky, locked, new Date(), user);
+    forumThreadDAO.update(thread, title, clean(message), sticky, locked, new Date(), user);
   }
 
   public void updateForumThreadReply(ForumThreadReply reply, String message) {
     UserEntity user = sessionController.getLoggedUserEntity();
-    forumThreadReplyDAO.update(reply, message, new Date(), user);
+    forumThreadReplyDAO.update(reply, clean(message), new Date(), user);
   }
 
   public List<ForumAreaGroup> listForumAreaGroups() {
