@@ -502,7 +502,10 @@ $(document).ready(function(){
     switch(box) {
       case "sent":
         mApi().communicator.sentitems.read({'firstResult' : msgsCount})
-        .on('$', function (item, itemCallback) {
+        .on('$', $.proxy(function (item, itemCallback) {
+          
+          
+          var t = this;
           item.caption = $('<div>').html(item.caption).text();
           item.content = $('<div>').html(item.content).text();
           
@@ -513,8 +516,9 @@ $(document).ready(function(){
             return   mApi().communicator.communicatormessages.recipients.info.read(item.id, recipient);
           });
             
-          mApi().batch(calls).callback(function(err, results){
+          mApi().batch(calls).callback($.proxy(function(err, results){
 
+            var y = this;
             var rec = [];
 
             $.each(results, function(result){
@@ -529,25 +533,31 @@ $(document).ready(function(){
             item.recipients = rec;
             
             mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
-            .callback(function (err, count) {
+            .callback($.proxy(function (err, count) {
+              var u = this;
               item.messageCount = count;
               
               itemCallback();
 
-            });            
+            }, this));            
             
       
-          });
-        })
-        .callback(function (err, result) {
-          result.msgLoadCount = result.length;
-          renderDustTemplate('communicator/communicator_sent_page.dust', result, function (text) {
-            
-            _this._clearLoading();
-            pageElement.append($.parseHTML(text));
-          });
-        });      
+          }, this));
+        }, this))
+        .callback($.proxy(function (err, result) {
+          var o = this;
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
+          } else {          
+            result.msgLoadCount = result.length;
+            renderDustTemplate('communicator/communicator_sent_page.dust', result, $.proxy(function (text) {
+              this._clearLoading();
+              pageElement.append($.parseHTML(text));
+            }, this));
+          }
+        }, this));      
         break;
+        
       default:
         mApi().communicator.items.read({'firstResult' : msgsCount}).on('$', function (item, itemCallback) {
           item.caption = $('<div>').html(item.caption).text();
@@ -565,7 +575,7 @@ $(document).ready(function(){
               });
           });
         })
-        .callback(function (err, msgs) {
+        .callback($.proxy(function (err, msgs) {
           
           // TODO : what if 25 users and no more? 
           
@@ -575,14 +585,14 @@ $(document).ready(function(){
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
           } else {
-            _this._clearLoading();
+            this._clearLoading();
             renderDustTemplate('/communicator/communicator_page.dust', msgs, function(text) {
 
               pageElement.append($.parseHTML(text));
 
             });
           }
-        });
+        }, this));
       }    
     },       
     _onHashChange: function (event) {
