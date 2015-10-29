@@ -198,8 +198,18 @@
       
       var showAnswersButton = stateOptions['show-answers-button-visible'] && this.correctAnswers() == 'ON_REQUEST' && this._hasDisplayableAnswers();
       if (showAnswersButton) {
+        
+        var correctAnswersButton = this.element.find('.muikku-hide-correct-answers-button');  
+        if (correctAnswersButton) {
+          $(correctAnswersButton)
+          .removeClass("muikku-hide-correct-answers-button")
+          .addClass("muikku-show-correct-answers-button")
+          .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'));
+        }
+          
         this.element.find('.muikku-show-correct-answers-button').show();
       } else {
+        
         this.element.find('.muikku-show-correct-answers-button').hide();
       }
       
@@ -379,7 +389,21 @@
     },
     
     _onShowAnswersButtonClick: function (event) {
-      this._checkExercises(true);
+      var target = (event.target) ? event.target : event.srcElement;  
+      if ($(target).hasClass("muikku-show-correct-answers-button")) {
+        this._checkExercises(true);  
+        $(target)
+          .removeClass("muikku-show-correct-answers-button")
+          .addClass("muikku-hide-correct-answers-button")
+          .text(getLocaleText('plugin.workspace.materialsLoader.hideAnswers'));
+      } else {
+        $(target)
+          .addClass("muikku-show-correct-answers-button")
+          .removeClass("muikku-hide-correct-answers-button")
+          .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'));
+        this._checkExercises(false); 
+      }
+      
     },
     
     _onFieldAnswerSaved: function (event, data) {
