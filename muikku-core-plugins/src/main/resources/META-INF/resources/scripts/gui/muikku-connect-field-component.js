@@ -194,11 +194,18 @@
       _swapElements: function(term, counterpart){
         var elementIndex = $(term).parent().find('.muikku-connect-field-term').index(term);
         var counterPartIndex = $(counterpart).parent().find('.muikku-connect-field-counterpart').index(counterpart);
+        var occupyingElement = this._element.find( '.muikku-connect-field-counterpart:eq( '+elementIndex+' )' );
+        if(counterpart.hasClass('muikku-connect-field-edited')){
+          this._element.find( '.muikku-connect-field-term:eq( '+counterPartIndex+' )' ).removeClass('muikku-connect-field-edited');
+          occupyingElement.removeClass('muikku-connect-field-edited');
+        }
         if(elementIndex > counterPartIndex){
+          counterpart.after(occupyingElement);
           this._element.find( '.muikku-connect-field-counterpart:eq( '+elementIndex+' )' ).after(counterpart);
           term.addClass('muikku-connect-field-edited');
           counterpart.addClass('muikku-connect-field-edited');
         }else if(elementIndex < counterPartIndex){
+          counterpart.before(occupyingElement);
           this._element.find( '.muikku-connect-field-counterpart:eq( '+elementIndex+' )' ).before(counterpart);
           term.addClass('muikku-connect-field-edited');
           counterpart.addClass('muikku-connect-field-edited');
