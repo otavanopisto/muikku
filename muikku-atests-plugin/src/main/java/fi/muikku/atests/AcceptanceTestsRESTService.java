@@ -42,8 +42,8 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.session.local.LocalSession;
@@ -107,6 +107,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Produces("text/plain")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response test_login(@QueryParam ("role") String role) {
+    logger.log(Level.INFO, "Acceptance tests plugin logging in with role " + role);
+    
     switch (role) {
       case "ENVIRONMENT-STUDENT":
         localSessionController.login("PYRAMUS", "STUDENT-1");
@@ -119,6 +121,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       break;
       case "ENVIRONMENT-ADMINISTRATOR":
         localSessionController.login("PYRAMUS", "STAFF-4");
+      break;
+      case "ENVIRONMENT-TRUSTED_SYSTEM":
+        localSessionController.login("PYRAMUS", "STAFF-5");
       break;
       
       case "PSEUDO-EVERYONE":
@@ -135,6 +140,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Produces("text/plain")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response test_reindex() {
+    logger.log(Level.INFO, "Acceptance tests plugin reindex task started.");
+
     List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntities();
     for (int i = 0; i < workspaceEntities.size(); i++) {
       WorkspaceEntity workspaceEntity = workspaceEntities.get(i);
@@ -152,13 +159,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     
     logger.log(Level.INFO, "Reindexed " + users.size() + " users");
-    
-    try {
-      Thread.sleep(10000);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     
     return Response.ok().build();
   }
@@ -267,7 +267,16 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, htmlMaterial);
-
+    String assignmentType = payload.getAssignmentType();
+    if (StringUtils.isNotBlank(assignmentType)) {
+      WorkspaceMaterialAssignmentType workspaceMaterialAssignmentType = WorkspaceMaterialAssignmentType.valueOf(assignmentType);
+      if (workspaceMaterialAssignmentType == null) {
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid assignmentType '%s'", assignmentType)).build();
+      }
+      
+      workspaceMaterialController.updateWorkspaceMaterialAssignmentType(workspaceMaterial, workspaceMaterialAssignmentType);
+    }
+    
     return Response.ok(createRestEntity(workspaceMaterial, htmlMaterial)).build();
   }
 

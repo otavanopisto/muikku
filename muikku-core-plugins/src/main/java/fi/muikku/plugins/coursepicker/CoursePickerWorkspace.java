@@ -7,13 +7,14 @@ public class CoursePickerWorkspace {
   public CoursePickerWorkspace() {
   }
 
-  public CoursePickerWorkspace(Long id, String urlName, Boolean archived, Boolean published, String name, String description, Long numVisits, Date lastVisit, boolean canSignup, boolean isCourseMember) {
+  public CoursePickerWorkspace(Long id, String urlName, Boolean archived, Boolean published, String name, String nameExtension, String description, Long numVisits, Date lastVisit, boolean canSignup, boolean isCourseMember) {
     super();
     this.id = id;
     this.urlName = urlName;
     this.archived = archived;
     this.published = published;
     this.name = name;
+    this.nameExtension = nameExtension;
     this.description = description;
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
@@ -51,6 +52,14 @@ public class CoursePickerWorkspace {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getNameExtension() {
+    return nameExtension;
+  }
+
+  public void setNameExtension(String nameExtension) {
+    this.nameExtension = nameExtension;
   }
 
   public String getDescription() {
@@ -105,6 +114,7 @@ public class CoursePickerWorkspace {
   private String urlName;
   private Boolean archived;
   private String name;
+  private String nameExtension;
   private String description;
   private Long numVisits;
   private Date lastVisit;

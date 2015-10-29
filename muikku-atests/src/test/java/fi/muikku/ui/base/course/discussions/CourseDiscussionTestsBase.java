@@ -1,12 +1,12 @@
-package fi.muikku.ui.base;
+package fi.muikku.ui.base.course.discussions;
 
 import org.junit.Test;
 
-import fi.muikkku.ui.AbstractUITest;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceDiscussion;
 import fi.muikku.atests.WorkspaceDiscussionGroup;
 import fi.muikku.atests.WorkspaceDiscussionThread;
+import fi.muikku.ui.AbstractUITest;
 
 public class CourseDiscussionTestsBase extends AbstractUITest {
   

@@ -1,4 +1,4 @@
-package fi.muikku.ui.base;
+package fi.muikku.ui.base.course;
 
 import static org.junit.Assert.*;
 
@@ -10,12 +10,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
-import fi.muikkku.ui.AbstractUITest;
-import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
 import fi.muikku.TestUtilities;
 import fi.muikku.atests.Workspace;
+import fi.muikku.ui.AbstractUITest;
+import fi.muikku.ui.PyramusMocks;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
 public class CourseTestsBase extends AbstractUITest {

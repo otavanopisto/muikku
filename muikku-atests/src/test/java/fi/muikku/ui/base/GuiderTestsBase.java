@@ -2,8 +2,8 @@ package fi.muikku.ui.base;
 
 import org.junit.Test;
 
-import fi.muikkku.ui.AbstractUITest;
-import fi.muikkku.ui.PyramusMocks;
+import fi.muikku.ui.AbstractUITest;
+import fi.muikku.ui.PyramusMocks;
 import fi.muikku.atests.Workspace;
 
 public class GuiderTestsBase extends AbstractUITest {

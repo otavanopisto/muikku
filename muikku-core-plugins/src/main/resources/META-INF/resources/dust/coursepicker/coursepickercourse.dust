@@ -42,8 +42,11 @@
         </div>
         <div class="cp-course-description">
           <div class="cp-course-header-name">
-           <span class="cp-course-short"></span>
+<!--            <span class="cp-course-short"></span> -->
            <span class="cp-course-long">{name}</span>
+             {?nameExtension}
+               <span class="cp-course-extension">( {nameExtension} )</span>
+             {/nameExtension}
           </div>
           
           <div class="cp-course-header-details">
