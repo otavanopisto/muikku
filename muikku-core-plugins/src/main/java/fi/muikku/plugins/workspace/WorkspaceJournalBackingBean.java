@@ -2,7 +2,9 @@ package fi.muikku.plugins.workspace;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -107,6 +109,7 @@ public class WorkspaceJournalBackingBean {
       return NavigationRules.ACCESS_DENIED;
     }
 
+    posterCache = new HashMap<Long, String>();
     canListAllEntries = sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
     workspaceStudents = prepareWorkspaceStudents();
     journalEntries = prepareJournalEntries();
@@ -115,9 +118,15 @@ public class WorkspaceJournalBackingBean {
   }
 
   public String posterOf(WorkspaceJournalEntry entry) {
-    UserEntity userEntity = userEntityController.findUserEntityById(entry.getUserEntityId());
-    User user = userController.findUserByUserEntityDefaults(userEntity);
-    return user.getFirstName() + " " + user.getLastName();
+    if (posterCache.containsKey(entry.getUserEntityId())) {
+      return posterCache.get(entry.getUserEntityId());
+    } else {
+      UserEntity userEntity = userEntityController.findUserEntityById(entry.getUserEntityId());
+      User user = userController.findUserByUserEntityDefaults(userEntity);
+      String fullName = user.getFirstName() + " " + user.getLastName();
+      posterCache.put(entry.getUserEntityId(), fullName);
+      return fullName;
+    }
   }
 
   public void addWorkspaceJournalEntry() {
@@ -245,4 +254,5 @@ public class WorkspaceJournalBackingBean {
   private boolean canListAllEntries;
   private List<UserView> workspaceStudents;
   private List<WorkspaceJournalEntry> journalEntries;
+  private Map<Long, String> posterCache;
 }
