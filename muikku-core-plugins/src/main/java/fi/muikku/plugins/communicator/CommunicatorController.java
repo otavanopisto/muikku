@@ -57,7 +57,7 @@ public class CommunicatorController {
   private CommunicatorMessageSignatureDAO communicatorMessageSignatureDAO;
   
   private String clean(String html) {
-    Document doc = Jsoup.parse(html);
+    Document doc = Jsoup.parseBodyFragment(html);
     doc = new Cleaner(Whitelist.relaxed()).clean(doc);
     doc.outputSettings().escapeMode(EscapeMode.xhtml);
     return doc.body().html();
