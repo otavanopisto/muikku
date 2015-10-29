@@ -107,6 +107,10 @@ public class WorkspaceJournalBackingBean {
       return NavigationRules.ACCESS_DENIED;
     }
 
+    canListAllEntries = sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
+    workspaceStudents = prepareWorkspaceStudents();
+    journalEntries = prepareJournalEntries();
+
     return null;
   }
 
@@ -183,12 +187,18 @@ public class WorkspaceJournalBackingBean {
   }
   
   public boolean isCanListAllEntries() {
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    return sessionController.hasCoursePermission(
-        MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
+    return canListAllEntries;
   }
   
   public List<UserView> getWorkspaceStudents() {
+    return workspaceStudents;
+  }
+  
+  public List<WorkspaceJournalEntry> getJournalEntries() {
+    return journalEntries;
+  }
+    
+  private List<UserView> prepareWorkspaceStudents() {
     ArrayList<UserView> result = new ArrayList<>();
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     List<User> userList = workspaceController.listUsersByWorkspaceEntityAndRoleArchetype(
@@ -208,7 +218,7 @@ public class WorkspaceJournalBackingBean {
     return result;
   }
 
-  public List<WorkspaceJournalEntry> getJournalEntries() {
+  private List<WorkspaceJournalEntry> prepareJournalEntries() {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     if (studentId == null) {
@@ -232,4 +242,7 @@ public class WorkspaceJournalBackingBean {
   private String workspaceJournalEntryTitle;
   private String workspaceJournalEntryHtml;
   private Long workspaceJournalEntryId;
+  private boolean canListAllEntries;
+  private List<UserView> workspaceStudents;
+  private List<WorkspaceJournalEntry> journalEntries;
 }
