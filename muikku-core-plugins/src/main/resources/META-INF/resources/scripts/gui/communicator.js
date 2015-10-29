@@ -219,7 +219,7 @@ $(document).ready(function(){
       
       
       var batch = $.map(ids, function(id){
-        endpoint.del(id);
+        return endpoint.del(id);
       });
       
       mApi().batch(batch).callback($.proxy(function(err){
