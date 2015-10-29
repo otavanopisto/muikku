@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.74-SNAPSHOT</version>
+    <version>1.0.75-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -945,10 +945,10 @@
         <it.sauce.username>${env.SAUCE_USERNAME}</it.sauce.username>
         <it.sauce.accessKey>${env.SAUCE_ACCESS_KEY}</it.sauce.accessKey>
         <it.sauce.tunnelId>${env.TRAVIS_JOB_NUMBER}</it.sauce.tunnelId>
-        <it.sauce.browser></it.sauce.browser>
-        <it.sauce.browser.version></it.sauce.browser.version>
-        <it.sauce.browser.resolution></it.sauce.browser.resolution>
-        <it.sauce.platform></it.sauce.platform>
+        <it.sauce.browser />
+        <it.sauce.browser.version />
+        <it.sauce.browser.resolution />
+        <it.sauce.platform />
         <it.package>**</it.package>
       </properties>
 

@@ -887,6 +887,10 @@ public class WorkspaceMaterialController {
 
   public synchronized String generateUniqueUrlName(WorkspaceNode parent, WorkspaceNode targetNode, String title) {
     String urlName = generateUrlName(title);
+    String fileName = StringUtils.substringBeforeLast(urlName, ".");
+    String extension = StringUtils.substringAfterLast(urlName, ".");
+    int extensionLength = StringUtils.length(extension); 
+    boolean isFileName = StringUtils.isAlphanumeric(extension) && extensionLength < StringUtils.length(urlName) - 1;
     // use urlName as base and uniqueName as final result
     String uniqueName = urlName;
     if (parent != null) {
@@ -901,7 +905,7 @@ public class WorkspaceMaterialController {
             break;
           }
           // uniqueName in use, try again with the next candidate (name, name-2, name-3, etc.)
-          uniqueName = urlName + "-" + ++i;
+          uniqueName = isFileName ? String.format("%s-%d.%s", fileName, ++i, extension) : String.format("%s-%d", urlName, ++i); 
         } else {
           // Current uniqueName is available
           break;
