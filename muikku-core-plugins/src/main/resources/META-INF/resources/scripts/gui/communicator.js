@@ -206,7 +206,7 @@ $(document).ready(function(){
     _deleteMessages : function(ids){
       
       
-      var _this = this;
+//      var _this = this;
       var messages = ids.length;
       var endpoint = mApi().communicator.items;
       var hash = window.location.hash.substring(1);
@@ -222,16 +222,16 @@ $(document).ready(function(){
         endpoint.del(id);
       });
       
-      mApi().batch(batch).callback(function(err){
+      mApi().batch(batch).callback($.proxy(function(err){
         $('.notification-queue').notificationQueue('remove', loadNotification);
         
         if (err) {
          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
         } else {
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
-           _this._refreshView();
+           this._refreshView();
         }
-      });
+      }, this));
     },
 
     _onRecipientFocus:function(event){
