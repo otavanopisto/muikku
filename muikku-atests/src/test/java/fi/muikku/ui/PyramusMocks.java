@@ -48,6 +48,11 @@ public class PyramusMocks{
   public static void student1LoginMock() throws JsonProcessingException {
     loginMock(1l, "testuser@made.up", "Test", "User");   
   }
+  
+  public static void student2LoginMock() throws JsonProcessingException {
+    loginMock(5l, "seconduser@made.up", "Second", "User");  
+  }
+
 
   public static void teacherLoginMock() throws JsonProcessingException {
     loginMock(2l, "teacher@made.up", "Teacher", "User");

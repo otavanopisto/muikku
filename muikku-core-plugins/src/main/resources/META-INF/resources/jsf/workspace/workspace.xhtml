@@ -52,14 +52,9 @@
         </ui:fragment>
   		</div>
       
-      <div class="workspace-publication-container" jsf:rendered="#{workspaceIndexBackingBean.canPublish}">
-        <ui:fragment rendered="#{!workspaceIndexBackingBean.published}">
-          <a class="workspace-publish-button" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.publish']}</a>
-        </ui:fragment>
-        
-        <ui:fragment rendered="#{workspaceIndexBackingBean.published}">
-          <a class="workspace-unpublish-button" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.unpublish']}</a>
-        </ui:fragment>
+      <div class="workspace-publication-container" jsf:rendered="#{workspaceIndexBackingBean.canPublish}" data-published="#{workspaceIndexBackingBean.published}">
+        <a class="workspace-publish-button" style="display:none;" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.publish']}</a>
+        <a class="workspace-unpublish-button" style="display:none;" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.unpublish']}</a>
       </div>
       
     </header>
