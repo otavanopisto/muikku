@@ -159,57 +159,62 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   }
 
-  @Test
-  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1EvaluatedMaterialSetup.sql"})
-  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1EvaluatedMaterialDelete.sql"})
+//  @Test
+//  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1EvaluatedMaterialSetup.sql"})
+//  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1EvaluatedMaterialDelete.sql"})
   public void courseMaterialEvaluatedClassTest() throws Exception {
-    PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    PyramusMocks.workspace1PyramusMock();
-    
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    
-    asAdmin().get("/test/reindex");
-    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-    waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
-    waitForElementToBePresent(By.id("contentWorkspaceMaterials"));
-    String actual = getWebDriver().findElementByCssSelector("#page-45>div").getAttribute("class");
-    String expected = new String("muikku-page-assignment-type evaluated");
-    assertEquals(expected, actual);
-    WireMock.reset();
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+          "1.0 Testimateriaali", "text/html;editor=CKEditor", 
+          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+          "EVALUATED");
+      try {
+        getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
+        waitForElementToBePresent(By.cssSelector(".muikku-page-assignment-type"));
+        String actual = getWebDriver().findElementByCssSelector("#page-45>div").getAttribute("class");
+        String expected = new String("muikku-page-assignment-type evaluated");
+        assertEquals(expected, actual);
+        WireMock.reset();
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
   }
   
-  @Test
-  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1ExerciseMaterialSetup.sql"})
-  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1ExerciseMaterialDelete.sql"})
+//  @Test
+//  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1ExerciseMaterialSetup.sql"})
+//  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1ExerciseMaterialDelete.sql"})
   public void courseMaterialExerciseClassTest() throws Exception {
-    PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    PyramusMocks.workspace1PyramusMock();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    
-    asAdmin().get("/test/reindex");
-    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-    waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
-    waitForElementToBePresent(By.id("contentWorkspaceMaterials"));
-    String actual = getWebDriver().findElementByCssSelector("#page-46>div").getAttribute("class");
-    String expected = new String("muikku-page-assignment-type exercise");
-    assertEquals(expected, actual);
-    WireMock.reset();
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+          "1.0 Testimateriaali", "text/html;editor=CKEditor", 
+          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+          "EXERCISE");
+      try {
+        getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
+        waitForElementToBePresent(By.cssSelector(".muikku-page-assignment-type"));
+        String actual = getWebDriver().findElementByCssSelector(String.format("#page-%d>div", htmlMaterial1.getId())).getAttribute("class");
+        String expected = new String("muikku-page-assignment-type exercise");
+        assertEquals(expected, actual);
+        WireMock.reset();
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
   }
   
   @Test
