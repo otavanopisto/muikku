@@ -199,18 +199,17 @@ $(document).ready(function(){
           var msgId = $(inputs[i]).attr("value");
           deleteQ.push(msgId);
         }         
-        this._deleteMessages(deleteQ)
+        if(deleteQ.length != 0){
+          this._deleteMessages(deleteQ)
+        }
       }
     },    
     
     _deleteMessages : function(ids){
-      
-      
-//      var _this = this;
       var messages = ids.length;
       var endpoint = mApi().communicator.items;
-      var hash = window.location.hash.substring(1);
-
+      
+      var hash = window.location.hash != '' ? window.location.hash.substring(1) : "none";
       var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
 
         if (hash == "sent") {
