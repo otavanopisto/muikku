@@ -322,8 +322,8 @@ public class ForumRESTService extends PluginRESTService {
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) ||
         sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_EDITMESSAGES, forumThread)) {
       forumController.updateForumThread(forumThread, 
-          Jsoup.clean(updThread.getTitle(), Whitelist.basic()), 
-          Jsoup.clean(updThread.getMessage(), Whitelist.relaxed()), 
+          updThread.getTitle(),
+          updThread.getMessage(),
           updThread.getSticky(), 
           updThread.getLocked());
       
@@ -505,7 +505,7 @@ public class ForumRESTService extends PluginRESTService {
       
       if (sessionController.hasPermission(MuikkuPermissions.OWNER, threadReply) ||
           sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_EDITMESSAGES, threadReply.getForumArea())) {
-        forumController.updateForumThreadReply(threadReply, Jsoup.clean(reply.getMessage(), Whitelist.relaxed()));
+        forumController.updateForumThreadReply(threadReply, reply.getMessage());
       
         return Response.ok(createRestModel(threadReply)).build();
       } else {
@@ -555,7 +555,7 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
       }
       if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES, forumThread)) {      
-        return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, Jsoup.clean(newReply.getMessage(), Whitelist.relaxed())))).build();
+        return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage()))).build();
       } else {
         return Response.status(Status.FORBIDDEN).build();
       }
