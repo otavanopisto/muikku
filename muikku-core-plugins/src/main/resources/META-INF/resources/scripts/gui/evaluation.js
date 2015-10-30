@@ -221,6 +221,9 @@
         
           CKEDITOR.replace($("#evaluateFormLiteralEvaluation")[0], {
             height : '200px',
+            entities: false,
+            entities_latin: false,
+            entities_greek: false,
             toolbar: [
                       { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
                       { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
@@ -399,6 +402,9 @@
         
           CKEDITOR.replace($("#evaluateFormLiteralEvaluation")[0], {
             height : '200px',
+            entities: false,
+            entities_latin: false,
+            entities_greek: false,
             toolbar: [
                       { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
                       { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
