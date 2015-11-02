@@ -725,7 +725,8 @@
     
     _create : function() {
       this.element.addClass('evaluation-assignment-wrapper assignment-pending');
-      this.element.append($('<div>').addClass('evaluation-assignment-date'));
+      this.element.append($('<div>').addClass('evaluation-assignment-evaluated-date'));
+      this.element.append($('<div>').addClass('evaluation-assignment-submitted-date'));
       this.element.append($('<div>').addClass('evaluation-assignment-title').text(this.options.title));
 
       $('#evaluation').on("viewInitialized", $.proxy(this._onEvaluationViewInitialized, this));
@@ -802,8 +803,8 @@
         case 'SUBMITTED':
           this.element.addClass('assignment-submitted');
           if (reply.submitted) {
-            this.element.find('.evaluation-assignment-date')
-              .text(formatDate(new Date(reply.submitted)));   
+            this.element.find('.evaluation-assignment-submitted-date')
+              .text(getLocaleText("plugin.evaluation.evaluationGridSubmitted.label") + " " + formatDate(new Date(reply.submitted)));   
           }
         break;
         case 'WITHDRAWN':
@@ -811,6 +812,10 @@
         break;
         case 'EVALUATED':
           this.element.addClass('assignment-evaluated');
+          if (reply.evaluated) {
+            this.element.find('.evaluation-assignment-evaluated-date')
+              .text(getLocaleText("plugin.evaluation.evaluationGridSEvaluated.label") + " " + formatDate(new Date(reply.evaluated)));   
+          }
         break;
       }
       
