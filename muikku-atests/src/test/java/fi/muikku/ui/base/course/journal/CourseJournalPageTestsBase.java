@@ -1,6 +1,7 @@
 package fi.muikku.ui.base.course.journal;
 
 import org.junit.Test;
+
 import fi.muikku.ui.AbstractUITest;
 import fi.muikku.atests.Workspace;
 
@@ -9,7 +10,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
   @Test
   public void courseJournalToolsForTeacher() throws Exception {
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), true);
       waitForPresent(".workspace-journal-content-wrapper");
@@ -23,7 +24,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
   @Test
   public void courseJournalNewEntryForStudent() throws Exception {
     loginStudent1();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), true);
       waitForPresent(".workspace-journal-content-wrapper");
@@ -36,7 +37,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
   @Test
   public void courseJournalEntryAdded() throws Exception {
     loginStudent1();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), true);
       click(".workspace-journal-new-entry-button");

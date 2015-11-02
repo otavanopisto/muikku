@@ -14,6 +14,8 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.muikku.ui.AbstractUITest;
 import fi.muikku.ui.PyramusMocks;
+import fi.muikku.TestUtilities;
+
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
 
@@ -32,7 +34,7 @@ public class IndexPageTestsBase extends AbstractUITest {
     PyramusMocks.personsPyramusMocks();
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
     boolean elementExists = getWebDriver().findElements(By.className("index")).size() > 0;
     WireMock.reset();
@@ -45,7 +47,7 @@ public class IndexPageTestsBase extends AbstractUITest {
     PyramusMocks.personsPyramusMocks();
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
     getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
     boolean elementExists = getWebDriver().findElements(By.className("index")).size() > 0;

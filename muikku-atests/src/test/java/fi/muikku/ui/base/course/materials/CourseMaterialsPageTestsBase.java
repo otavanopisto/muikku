@@ -27,7 +27,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @Test
   public void courseMaterialExistsTest() throws Exception {
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -52,7 +52,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @Test
   public void courseFullscreenReadingButtonExistsTest() throws Exception {
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -76,7 +76,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @Test
   public void courseMaterialManagementButtonExistsTest() throws Exception {
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
       waitForPresent("#contentWorkspaceMaterials");
@@ -91,7 +91,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     maximizeWindow();
     
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -127,7 +127,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     maximizeWindow();
     
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -159,12 +159,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   }
 
-//  @Test
-//  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1EvaluatedMaterialSetup.sql"})
-//  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1EvaluatedMaterialDelete.sql"})
   public void courseMaterialEvaluatedClassTest() throws Exception {
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -188,12 +185,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   }
   
-//  @Test
-//  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1ExerciseMaterialSetup.sql"})
-//  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1ExerciseMaterialDelete.sql"})
   public void courseMaterialExerciseClassTest() throws Exception {
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -220,7 +214,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @Test
   public void answerTextFieldTestAdmin() throws Exception {
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -255,7 +249,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   public void answerTextFieldTestStudent() throws Exception {
     loginStudent1();
     
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -289,7 +283,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   public void answerDropdownTestAdmin() throws Exception {
     loginAdmin();
     maximizeWindow();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -323,7 +317,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   public void answerDropdownTestStudent() throws Exception {
     loginStudent1();
     maximizeWindow();    
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -357,7 +351,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   public void answerRadioButtonsTestAdmin() throws Exception {
     loginAdmin();
     maximizeWindow();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -391,7 +385,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   public void answerRadioButtonsTestStudent() throws Exception {
     loginStudent1();
     maximizeWindow();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -425,7 +419,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   public void answerCheckboxTestAdmin() throws Exception {
     loginAdmin();
     maximizeWindow();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -459,7 +453,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   public void answerCheckboxTestStudent() throws Exception {
     loginStudent1();
     maximizeWindow();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       

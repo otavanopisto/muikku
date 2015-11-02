@@ -12,6 +12,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
+import fi.muikku.TestUtilities;
 import fi.muikku.atests.Workspace;
 import fi.muikku.ui.AbstractUITest;
 import fi.muikku.ui.PyramusMocks;
@@ -29,7 +30,7 @@ public class CourseTestsBase extends AbstractUITest {
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
     asAdmin().get("/test/reindex");
     
@@ -52,7 +53,7 @@ public class CourseTestsBase extends AbstractUITest {
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
 
     asAdmin().get("/test/reindex");
     
@@ -75,7 +76,7 @@ public class CourseTestsBase extends AbstractUITest {
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
 
     asAdmin().get("/test/reindex");
     
@@ -98,10 +99,10 @@ public class CourseTestsBase extends AbstractUITest {
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
 
     asAdmin().get("/test/reindex");
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
@@ -121,7 +122,7 @@ public class CourseTestsBase extends AbstractUITest {
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
     asAdmin().get("/test/reindex");
     
@@ -137,7 +138,7 @@ public class CourseTestsBase extends AbstractUITest {
   @Test
   public void courseUnpublishTest() throws Exception {
     loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
     waitForPresent(".workspace-title");
     assertVisible(".workspace-unpublish-button");
