@@ -725,8 +725,8 @@
     
     _create : function() {
       this.element.addClass('evaluation-assignment-wrapper assignment-pending');
-      this.element.append($('<div>').addClass('evaluation-assignment-evaluated-date'));
       this.element.append($('<div>').addClass('evaluation-assignment-submitted-date'));
+      this.element.append($('<div>').addClass('evaluation-assignment-evaluated-date'));
       this.element.append($('<div>').addClass('evaluation-assignment-title').text(this.options.title));
 
       $('#evaluation').on("viewInitialized", $.proxy(this._onEvaluationViewInitialized, this));

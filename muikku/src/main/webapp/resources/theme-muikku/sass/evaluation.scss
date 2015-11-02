@@ -290,8 +290,7 @@ body.evaluation {
         cursor:pointer;
         
         .evaluation-assignment-submitted-date {
-          background:#daf1ff;
-          color:#066c85;
+
         }
         
       }
@@ -302,8 +301,7 @@ body.evaluation {
         cursor:pointer;
         
         .evaluation-assignment-evaluated-date {
-          background:#b3f4ab;
-          color:#12590a;
+          color:#1aa00b;
         }
         
         &:hover {
@@ -321,15 +319,18 @@ body.evaluation {
         font-size:14px;
         line-height:1.3em;
         white-space:normal;
+        font-size:12px;
+        margin:1px 0;
       }
       
       .evaluation-assignment-title {
         width:100%;
         box-sizing:border-box;
-        padding:3px 4px;
+        padding:6px 4px;
         font-size:14px;
         line-height:1.3em;
         white-space:normal;
+        border-top:1px solid #f2f2f2;
       }
     
     }
