@@ -707,6 +707,7 @@ $(document).ready(function() {
   });
   
   $(".di-delete-area-button").click(function() {
+    
 
     var deleteArea = function(values) {
       var areaId = values.forumAreaId;
@@ -721,10 +722,10 @@ $(document).ready(function() {
         } 
       });
 
-
     }
 
-    mApi().forum.areas.read().callback(function(err, areas) {
+    var workspaceId = $("input[name='workspaceEntityId']").val();
+    mApi().forum.workspace.areas.read(workspaceId).callback(function(err, areas) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
       } else {
