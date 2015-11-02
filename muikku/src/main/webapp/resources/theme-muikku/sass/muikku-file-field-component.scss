@@ -88,6 +88,15 @@
   right: 0px;
   bottom: 0px;
   cursor: pointer;
+  
+  /* Fix for Chrome upload file field display issue */
+  &::-webkit-file-upload-button {
+    width: 0;
+    padding: 0;
+    margin: 0;
+    -webkit-appearance: none;
+    border: none;
+  }
 }
 
 .muikku-file-input-field-file-uploader-container input[type="file"][disabled="disabled"] {
