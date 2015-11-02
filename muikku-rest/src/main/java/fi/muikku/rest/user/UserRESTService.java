@@ -40,6 +40,7 @@ import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.rest.model.UserBasicInfo;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
@@ -78,6 +79,9 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController; 
   
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+  
 	@Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
@@ -111,8 +115,8 @@ public class UserRESTService extends AbstractRESTService {
 	  EnvironmentRoleArchetype roleArchetype = archetype != null ? EnvironmentRoleArchetype.valueOf(archetype) : null;
 
     Set<Long> userGroupFilters = null;
-    Set<Long> workspaceFilters = null;
-	  
+    Set<Long> workspaceFilters = new HashSet<Long>(workspaceEntityController.listPublishedWorkspaceEntityIds());
+
 	  if ((myUserGroups != null) && myUserGroups) {
 	    userGroupFilters = new HashSet<Long>();
 
@@ -130,19 +134,16 @@ public class UserRESTService extends AbstractRESTService {
 	  }
 
     if ((myWorkspaces != null) && myWorkspaces) {
-      workspaceFilters = new HashSet<Long>();
-      
       // Workspaces where user is a member
-      
       List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(loggedUser);
-      for (WorkspaceEntity workspace : workspaces) {
-        workspaceFilters.add(workspace.getId());
-      }
+      Set<Long> myWorkspaceIds = new HashSet<Long>();
+      for (WorkspaceEntity ws : workspaces)
+        myWorkspaceIds.add(ws.getId());
+
+      workspaceFilters.retainAll(myWorkspaceIds);
     } else if (!CollectionUtils.isEmpty(workspaceIds)) {
-      workspaceFilters = new HashSet<Long>();
-      
       // Defined workspaces
-      workspaceFilters.addAll(workspaceIds);
+      workspaceFilters.retainAll(workspaceIds);
     }
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
