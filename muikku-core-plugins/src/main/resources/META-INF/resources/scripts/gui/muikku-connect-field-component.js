@@ -11,15 +11,23 @@
           .addClass("muikku-connect-field")
           .append($('<div>').addClass('muikku-connect-field-terms'))
           .append($('<div>').addClass('muikku-connect-field-gap'))
-          .append($('<div>').addClass('muikku-connect-field-counterparts').sortable({
-            placeholder: "ui-sortable-placeholder",
+          .append($('<div>').addClass('muikku-connect-field-counterparts').swappable({
+            items: '.muikku-connect-field-counterpart',
+            cursorAt: {top:-1},
+            distance: 10,
+            placeholder: 'ui-sortable-placeholder',
             update: function(event, ui){
               var counterPartElement = ui.item;
               var elementIndex = counterPartElement.parent().find('.muikku-connect-field-counterpart').index(counterPartElement);
               var termElement = _this._element.find( '.muikku-connect-field-term:eq( '+elementIndex+' )' );
+              var position = ui.originalPosition;
+              _this._element.find( '.muikku-connect-field-counterpart:eq( '+_this.draggedIndex+' )' ).removeClass('muikku-connect-field-edited');
+              _this._element.find( '.muikku-connect-field-term:eq( '+_this.draggedIndex+' )' ).removeClass('muikku-connect-field-edited');
               counterPartElement.addClass('muikku-connect-field-edited');
               termElement.addClass('muikku-connect-field-edited');
               _this._updateValues();
+            },start: function(event, ui){
+              _this.draggedIndex = ui.item.parent().find('.muikku-connect-field-counterpart').index(ui.item);
             }
           }).disableSelection())
           .muikkuField({
@@ -195,10 +203,8 @@
         var elementIndex = $(term).parent().find('.muikku-connect-field-term').index(term);
         var counterPartIndex = $(counterpart).parent().find('.muikku-connect-field-counterpart').index(counterpart);
         var occupyingElement = this._element.find( '.muikku-connect-field-counterpart:eq( '+elementIndex+' )' );
-        if(counterpart.hasClass('muikku-connect-field-edited')){
-          this._element.find( '.muikku-connect-field-term:eq( '+counterPartIndex+' )' ).removeClass('muikku-connect-field-edited');
-          occupyingElement.removeClass('muikku-connect-field-edited');
-        }
+        occupyingElement.removeClass('muikku-connect-field-edited');
+        this._element.find( '.muikku-connect-field-term:eq( '+counterPartIndex+' )' ).removeClass('muikku-connect-field-edited');
         if(elementIndex > counterPartIndex){
           counterpart.after(occupyingElement);
           this._element.find( '.muikku-connect-field-counterpart:eq( '+elementIndex+' )' ).after(counterpart);
@@ -210,8 +216,8 @@
           term.addClass('muikku-connect-field-edited');
           counterpart.addClass('muikku-connect-field-edited');
         }else{
-            term.addClass('muikku-connect-field-edited');
-            counterpart.addClass('muikku-connect-field-edited');	
+          term.addClass('muikku-connect-field-edited');
+          counterpart.addClass('muikku-connect-field-edited');	
         }
         this._updateValues();
         this._element.find('.muikku-connect-field-term').removeClass('muikku-connect-field-term-selected');
