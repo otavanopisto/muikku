@@ -2,6 +2,7 @@ package fi.muikku.plugins.workspace;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,6 +209,10 @@ public class WorkspaceJournalBackingBean {
   }
     
   private List<UserView> prepareWorkspaceStudents() {
+    if (!canListAllEntries) {
+      return Collections.emptyList();
+    }
+    
     ArrayList<UserView> result = new ArrayList<>();
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     List<User> userList = workspaceController.listUsersByWorkspaceEntityAndRoleArchetype(
