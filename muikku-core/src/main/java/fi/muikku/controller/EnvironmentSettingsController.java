@@ -45,6 +45,9 @@ public class EnvironmentSettingsController {
   @Inject
   private WorkspaceRolePermissionDAO courseUserRolePermissionDAO;
   
+  @Inject
+  private SystemSettingsController systemSettingsController;
+  
   public String getBaseUrl() {
     HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 
@@ -55,8 +58,7 @@ public class EnvironmentSettingsController {
   }
   
   public String getSystemEmailSenderAddress() {
-    // TODO Put tis in da base.
-    return "muikku@muikku.fi";
+    return systemSettingsController.getSystemEmailSenderAddress();
   }
   
   public List<RoleEntity> listEnvironmentUserRoles() {

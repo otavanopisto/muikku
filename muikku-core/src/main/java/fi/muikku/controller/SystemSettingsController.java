@@ -55,5 +55,14 @@ public class SystemSettingsController {
       return DEFAULT_UPLOAD_FILE_SIZE_LIMIT;
     }
   }
+  
+  public String getSystemEmailSenderAddress() {
+    String systemEmailAddress = getSetting("systemEmailSenderAddress");
+    if (systemEmailAddress == null) {
+      return ""; // TODO fallback sender address 
+    } else {
+      return systemEmailAddress;
+    }
+  }
 
 }
