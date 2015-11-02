@@ -13,7 +13,9 @@
           if (updErr) {
             $('.notification-queue').notificationQueue('notification', 'error', updErr);
           } else {
-            window.location.reload(true); 
+            $('.workspace-publish-button').hide();
+            $('.workspace-unpublish-button').show();
+            $('.workspace-publication-container').data('published', true);
           }
         });
       }
@@ -32,7 +34,9 @@
           if (updErr) {
             $('.notification-queue').notificationQueue('notification', 'error', updErr);
           } else {
-            window.location.reload(true); 
+            $('.workspace-publish-button').show();
+            $('.workspace-unpublish-button').hide();
+            $('.workspace-publication-container').data('published', false);
           }
         });
       }
@@ -47,8 +51,21 @@
     });
   }
 
+  window.onload = function(e) {
+    if ($('.workspace-publication-container')) {
+      var published = $('.workspace-publication-container').data('published');
+      if (published) {
+        $('.workspace-publish-button').hide();
+        $('.workspace-unpublish-button').show();
+      }
+      else {
+        $('.workspace-publish-button').show();
+        $('.workspace-unpublish-button').hide();
+      }
+    }
+  };
+
   $(document).ready(function() {
-    
     $('#staticNavigationWrapperWorkspace').waypoint('sticky', {
       stuckClass : 'stuckStNav'
     });
@@ -106,7 +123,7 @@
         dialogClass: "workspace-evaluation-confirm-dialog",
         buttons: [{
           'text': dialog.data('button-request-text'),
-          'class': 'request-button',
+          'class': 'save-evaluation-button',
           'click': function(event) {
             
             var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
@@ -159,7 +176,7 @@
         dialogClass: "workspace-evaluation-confirm-dialog",
         buttons: [{
           'text': dialog.data('button-cancellation-text'),
-          'class': 'cancellation-button',
+          'class': 'cancel-evaluation-button',
           'click': function(event) {
             
             var evalButton = $('.wi-workspace-dock-navi-button-evaluation');

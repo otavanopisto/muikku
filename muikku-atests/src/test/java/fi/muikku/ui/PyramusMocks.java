@@ -66,6 +66,36 @@ public class PyramusMocks{
         .withStatus(200)));
   }
 
+  public static void student2LoginMock() throws JsonProcessingException {
+    stubFor(get(urlEqualTo("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
+
+    stubFor(get(urlMatching("/users/authorize.*"))
+      .willReturn(aResponse()
+        .withStatus(302)
+        .withHeader("Location",
+          "http://dev.muikku.fi:8080/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+    
+    stubFor(post(urlEqualTo("/1/oauth/token"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody("{\"expires_in\":3600,\"refresh_token\":\"12312ewsdf34fsd234r43rfsw32rf33e\",\"access_token\":\"ur84ur839843ruwf39843ru39ru37y2e\"}")
+        .withStatus(200)));
+
+    List<String> emails = new ArrayList<String>();
+    emails.add("testuser2@made.up");
+    WhoAmI whoAmI = new WhoAmI(2l, "Test", "User2", emails);
+
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
+
+    stubFor(get(urlEqualTo("/1/system/whoami"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(whoAmIJson)
+        .withStatus(200)));
+  }
+
   public static void teacherLoginMock() throws JsonProcessingException {
     stubFor(get(urlEqualTo("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
 
@@ -183,20 +213,32 @@ public class PyramusMocks{
     Map<String, String> variables = null;
     List<String> tags = null;
     
-    Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null,
-      null, null, null, (long) 1, null, null,
+    Student student1 = new Student(1l, 1l, "Test", "User", null, null, null, null, null, null, null, null,
+      null, null, null, 1l, null, null,
       false, null, null, null, null, variables, tags, false);
     
-    String studentJson = objectMapper.writeValueAsString(student);
+    Student student2 = new Student(2l, 6l, "Test", "User2", null, null, null, null, null, null, null, null,
+      null, null, null, 2l, null, null,
+      false, null, null, null, null, variables, tags, false);
+    
+    String student1Json = objectMapper.writeValueAsString(student1);
+    String student2Json = objectMapper.writeValueAsString(student2);
     
     stubFor(get(urlEqualTo("/1/students/students/1"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
-        .withBody(studentJson)
+        .withBody(student1Json)
         .withStatus(200)));
 
-    Email email = new Email((long) 1, (long) 2, true, "testuser@made.up");
-    Email[] emails = {email};
+    stubFor(get(urlEqualTo("/1/students/students/2"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(student2Json)
+        .withStatus(200)));
+
+    Email email = new Email(1l, 2l, true, "testuser@made.up");
+    Email email2 = new Email(2l, 2l, true, "testuser2@made.up");
+    Email[] emails = {email, email2};
     String emailJson = objectMapper.writeValueAsString(emails);
     
     stubFor(get(urlEqualTo("/1/students/students/1/emails"))
@@ -204,7 +246,7 @@ public class PyramusMocks{
         .withHeader("Content-Type", "application/json")
         .withBody(emailJson).withStatus(200)));
 
-    Student[] studentArray = { student };
+    Student[] studentArray = { student1, student2 };
     String studentArrayJson = objectMapper.writeValueAsString(studentArray);
     
     stubFor(get(urlEqualTo("/1/students/students?email=testuser@made.up"))
@@ -221,8 +263,9 @@ public class PyramusMocks{
     Person staff2 = mockPerson(3l, birthday, "345345-3453", Sex.MALE, 3l);
     Person staff3 = mockPerson(4l, birthday, "345345-3453", Sex.MALE, 4l);
     Person staff4 = mockPerson(5l, birthday, "345345-3453", Sex.MALE, 5l);
+    Person studentPerson2 = mockPerson(6l, birthday, "345345-3453", Sex.MALE, 6l);
     
-    Person[] personArray = { person, staff1, staff2, staff3, staff4 };
+    Person[] personArray = { person, staff1, staff2, staff3, staff4, studentPerson2 };
     String personArrayJson = objectMapper.writeValueAsString(personArray);
     
     stubFor(get(urlMatching("/1/persons/persons?filterArchived=.*"))

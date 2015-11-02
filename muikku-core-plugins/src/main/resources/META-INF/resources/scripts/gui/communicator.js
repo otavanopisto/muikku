@@ -109,9 +109,6 @@ $(document).ready(function(){
           mCont.empty();
           _this._clearLoading();
           mCont.append($.parseHTML(text));
-          
-
-     
         });
 
         mApi().communicator.messages.markasread.create(communicatorMessageId).callback(function (err, result) {
@@ -218,45 +215,54 @@ $(document).ready(function(){
           var msgId = $(inputs[i]).attr("value");
           deleteQ.push(msgId);
         }         
-        this._deleteMessages(deleteQ)
+        if(deleteQ.length != 0){
+          this._deleteMessages(deleteQ)
+        }
       }
     },    
     
-    _deleteMessages : function(ids) {
-      var _this = this;
-      for (i = 0; i < ids.length; i++) {
-        var endpoint = mApi().communicator.items;
-        var hash = window.location.hash.substring(1);
-        
+    _deleteMessages : function(ids){
+      var messages = ids.length;
+      var endpoint = mApi().communicator.items;
+      
+      var hash = window.location.hash != '' ? window.location.hash.substring(1) : "none";
+      var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
+
         if (hash == "sent") {
           endpoint = mApi().communicator.sentitems;
         }
-
-        endpoint.del(ids[i]).callback(function (err, result){
-         if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
-          } else {
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
-          }         
-          _this._refreshView();
-        });
-      } 
+      
+      
+      var batch = $.map(ids, function(id){
+        return endpoint.del(id);
+      });
+      
+      mApi().batch(batch).callback($.proxy(function(err){
+        $('.notification-queue').notificationQueue('remove', loadNotification);
+        
+        if (err) {
+         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
+        } else {
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
+           this._refreshView();
+        }
+      }, this));
     },
-    
+
     _onRecipientFocus:function(event){
       $(event.target).autocomplete({
-       create: function(event, ui){
-        $('.ui-autocomplete').perfectScrollbar(); 
-       },  
-      source: function (request, response) {
-        response(mCommunicator._doSearch(request.term));
-      },
-      select: function (event, ui) {
-      mCommunicator._selectRecipient(event, ui.item);
-        $(this).val("");
-        return false;
-      }
-    });           
+        create: function(event, ui){
+          $('.ui-autocomplete').perfectScrollbar(); 
+        },  
+        source: function (request, response) {
+          response(mCommunicator._doSearch(request.term));
+        },
+        select: function (event, ui) {
+          mCommunicator._selectRecipient(event, ui.item);
+          $(this).val("");
+          return false;
+        }
+      });
     }, 
  
     _selectRecipient: function (event, item) {
