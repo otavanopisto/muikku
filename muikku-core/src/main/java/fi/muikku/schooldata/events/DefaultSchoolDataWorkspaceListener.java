@@ -2,6 +2,7 @@ package fi.muikku.schooldata.events;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -22,8 +23,6 @@ import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
 
 public class DefaultSchoolDataWorkspaceListener {
-  
-  private static final int MAX_URL_NAME_LENGTH = 30;
   
   @Inject
   private Logger logger;
@@ -58,19 +57,16 @@ public class DefaultSchoolDataWorkspaceListener {
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (workspaceEntity == null) {
+      // workspace url name
       String urlNameBase = generateWorkspaceUrlName(event.getName());
       String urlName = urlNameBase;
       int urlNameIterator = 1;
-      while (true) {
-        if (workspaceEntityController.findWorkspaceByUrlName(urlName) == null) {
-          break;
-        }
-        
-        urlName = urlNameBase + "_" + (urlNameIterator++); 
+      while (workspaceEntityController.findWorkspaceByUrlName(urlName) != null) {
+        urlName = urlNameBase + "-" + ++urlNameIterator; 
       }
-
+      // workspace
       workspaceEntity = workspaceEntityController.createWorkspaceEntity(event.getDataSource(), event.getIdentifier(), urlName);
-
+      // workspace bookkeeping
       discoveredWorkspaces.put(discoverId, workspaceEntity.getId());
       event.setDiscoveredWorkspaceEntityId(workspaceEntity.getId());
     } else {
@@ -153,7 +149,15 @@ public class DefaultSchoolDataWorkspaceListener {
    * @return URL name
    */
   private String generateWorkspaceUrlName(String name) {
-    return StringUtils.substring(StringUtils.replace(StringUtils.stripAccents(StringUtils.lowerCase(StringUtils.trim(StringUtils.normalizeSpace(name)))), " ", "-").replaceAll("-{2,}", "-"), 0, MAX_URL_NAME_LENGTH);
+    // convert to lower-case and replace spaces and slashes with a minus sign
+    String urlName = name == null ? "" : StringUtils.lowerCase(name.replaceAll(" ", "-").replaceAll("/", "-"));
+    // truncate consecutive minus signs into just one
+    while (urlName.indexOf("--") >= 0) {
+      urlName = urlName.replace("--", "-");
+    }
+    // get rid of accented characters and all special characters other than minus, period, and underscore
+    urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
+    return StringUtils.isBlank(urlName) ? StringUtils.substringBefore(UUID.randomUUID().toString(), "-") : urlName;
   }
   
   private Map<String, Long> discoveredWorkspaceUsers;

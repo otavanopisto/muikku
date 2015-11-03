@@ -7,9 +7,11 @@ then
   mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,pyramus-plugins -Dclassifier=otavanopisto
   mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,pyramus-plugins -Dclassifier=janakkala
   popd
-elif [[ $TRAVIS_BRANCH == 'devel' ]]
+elif [[ $TRAVIS_BRANCH == 'devel' ]] && [[ $TRAVIS_PULL_REQUEST == 'false' ]]
 then
-  python travis-upload-reports.py
+  if [[ $findbugs_skip == 'false' ]]; then
+      python travis-upload-reports.py
+  fi
   python travis-prepare-maven.py
   pushd .
   cd muikku
@@ -17,3 +19,5 @@ then
   mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,pyramus-plugins -Dclassifier=janakkala
   popd
 fi
+
+

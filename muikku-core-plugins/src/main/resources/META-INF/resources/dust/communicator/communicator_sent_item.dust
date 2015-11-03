@@ -14,15 +14,14 @@
              </span>
           </div>
           <div class="mf-item-description">
-
             <div class="mf-item-header-name cm-message-header-name">
-              {?recipientHasPicture} 
-                <img class="cm-user-picture custom" src="{@contextPath/}/picture?userId={sender}" title="{recipientFullName}" width="50" height="50" />
-              {:else}
-                <div class="cm-user-picture default" title="{recipientFullName}"></div>
-              {/recipientHasPicture}    
               <input type="hidden" name="mf-person-id" value="{sender}"/>
-
+              <div class="mf-item-header-content-primary cm-message-header-content-primary">
+                 <span>({recipients.length})</span>
+                 {#recipients}
+                   <span class="cm-message-recipient-name" title="{fullName}">{firstName}</span>
+                 {/recipients}
+              </div> 
               <div class="mf-item-header-content-secondary cm-message-header-content-secondary{?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</div>    
             </div>
             <div class="mf-item-header-details cm-message-header-count">

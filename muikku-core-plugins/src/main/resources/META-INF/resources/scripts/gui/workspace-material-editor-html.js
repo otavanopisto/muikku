@@ -124,6 +124,9 @@
         editorOptions: {
           autoGrowOnStartup : true,
           allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
+          entities: false,
+          entities_latin: false,
+          entities_greek: false,
           skin : 'moono',
           height : 500,
           language: getLocale(),

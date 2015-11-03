@@ -48,6 +48,9 @@
           
           CKEDITOR.replace(textarea, {
             height : '100px',
+            entities: false,
+            entities_latin: false,
+            entities_greek: false,
             toolbar: [
                       { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
                       { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },

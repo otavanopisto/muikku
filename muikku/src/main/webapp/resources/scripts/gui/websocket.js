@@ -4,7 +4,9 @@
   $.widget("custom.muikkuWebSocket", {
     
     options: {
-      reconnectInterval: 200
+      reconnectInterval: 200,
+      pingTimeStep: 1000,
+      pingTimeout: 10000
     },
     
     _create : function() {
@@ -12,10 +14,14 @@
       this._webSocket = null;
       this._socketOpen = false;
       this._messagesPending = [];
+      this._pingHandle = null;
+      this._pinging = false;
+      this._pingTime = 0;
       
       this._getTicket($.proxy(function (ticket) {
         if (this._ticket) {
           this._openWebSocket();
+          this._startPinging();
         } else {
           $('.notification-queue').notificationQueue('notification', 'error', "Could not open WebSocket because ticket was missing");
         }
@@ -119,6 +125,28 @@
       return null;
     },
     
+    _startPinging: function () {
+      this._pingHandle = setInterval($.proxy(function() {
+        if (this._socketOpen === false) {
+          return;
+        }
+        if (!this._pinging) {
+          this.sendMessage("ping:ping", {});
+          this._pinging = true;
+        } else {
+          this._pingTime += this.options.pingTimeStep;
+          
+          if (this._pingTime > this.options.pingTimeout) {
+            if (console) console.log("ping failed, reconnecting...");
+            this._pinging = false;
+            this._pingTime = 0;
+            
+            this._reconnect();
+          }
+        }
+      }, this), this.options.pingTimeStep);
+    },
+    
     _reconnect: function () {
       this._socketOpen = false;
       clearTimeout(this._reconnectTimeout);
@@ -174,7 +202,12 @@
       var message = JSON.parse(event.data);
       var eventType = message.eventType;
       
-      this.element.trigger(eventType, message.data);
+      if (eventType == "ping:pong") {
+        this._pinging = false;
+        this._pingTime = 0;
+      } else {
+        this.element.trigger(eventType, message.data);
+      }
     },
     
     _onBeforeWindowUnload: function () {

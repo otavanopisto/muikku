@@ -2,7 +2,7 @@
 
 /* COLORS */
 $contextualLink:#0099ff;
-$contextualLinkHover:#006ab1;
+$contextualLinkHover:#006ab1; 
 
 $exerciseAssignment:#ff9900;
 $evaluatedAssignment:#ce01bd;
@@ -483,4 +483,20 @@ background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1)
  
 @mixin transitionDirection($val1:0,$val2:0,$val3:0,$val4:0) {
   margin:$val1 $val2 $val3 $val4;
+}
+
+@mixin flexbox() {
+  display:-webkit-box; 
+  display:-moz-box;
+  display:-ms-flexbox;
+  display:-webkit-flex;
+  display:flex;
+}
+
+@mixin flex($values) {
+  -webkit-box-flex:$values;
+  -moz-box-flex:$values;
+  -webkit-flex:$values;
+  -ms-flex:$values;
+  flex:$values;
 }

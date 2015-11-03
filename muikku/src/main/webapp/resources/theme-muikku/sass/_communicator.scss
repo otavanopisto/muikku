@@ -49,15 +49,10 @@
   
   .cm-message-recipient-name{
     float:left;
-    padding:6px 0;
     margin-top:0 !important;
-    &:hover{   
-    color:red;
-      &:before{
-       color:red;
-  /*            @extend .icon-delete; */
-      }
-    }   
+    font-family:inherit;
+    margin-left: 10px;
+    padding: 9px 0;
 
     &:before{
       margin-right:5px;
@@ -69,25 +64,31 @@
     &.user{
 
       &:before{
-         @extend .icon-user;
          color:orange;
         }     
       }
+    
     &.usergroup{
 
       &:before{
-         @extend .icon-members;
          color:green;
         }     
-      }
+    }
+      
     &.workspace{
 
       &:before{
-         @extend .icon-books;
          color:blue;
         }     
-      }      
+      }     
+     &:hover{   
+      color:red;
+      &:before{
+       color:red;
+      }
+    }         
    }  
+   
   .cm-message-recipient-remove{
     float:right;    
     background-color:$bgr2;
@@ -145,8 +146,24 @@
     }
    }
    .cm-message-header-content-primary{
-      font-weight:700;  
-     }
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 210px;
+      span.cm-message-sender-name{
+       color:#000;
+      }
+      span.cm-message-recipient-name{
+       margin-left:5px;
+        &:after{
+          content: ",";
+        }       
+        &:last-child:after{
+          content: none;
+        }
+      }
+    }
   
   
    .cm-message-header-content-secondary{
@@ -319,6 +336,8 @@
     .cm-message-header-content-primary{
       font-weight:700;
       margin-left:10px;
+      
+      
     }   
 
    

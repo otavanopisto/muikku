@@ -22,6 +22,10 @@
                 <div class="cm-user-picture default"></div>
               {/senderHasPicture}            
               <input type="hidden" name="mf-person-id" value="{sender}"/>
+              
+              <div class="mf-item-header-content-primary cm-message-header-content-primary">
+                 <span class="cm-message-sender-name">{senderFullName}</span>
+              </div>               
               <div class="mf-item-header-content-secondary cm-message-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</div>    
             </div>
             <div class="mf-item-header-details cm-message-header-count">

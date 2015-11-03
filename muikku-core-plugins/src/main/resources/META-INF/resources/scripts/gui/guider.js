@@ -3,18 +3,15 @@ $(document).ready(function(){
     GuideImpl = $.klass({
 
     	init : function(){
-          this._refreshUsers();
+
           this._loadFilters();
     	    $(GuideImpl.guideContainer).on("click", '.gt-user:not(.open)', $.proxy(this._showUser,this));  
           $(GuideImpl.guideContainer).on("click", '.gt-user.open .gt-user-name', $.proxy(this._hideUser,this));  
     	    $(GuideImpl.guideContainer).on("click", '.gt-tool-view-profile', $.proxy(this._onShowProfileClick,this));
 //    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-send-mail', $.proxy(this.messageToUser,this));
           $(GuideImpl.guideContainer).on("click", '.gt-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));    	    
-    	    
-          dust.preload("guider/guider_item.dust");
           
           $(window).on("hashchange", $.proxy(this._onHashChange, this));
-          $(window).trigger("hashchange");          
 
           var guiderSearchUsersInput = $("#content").find("input[name='guiderSearch']")
           this._searchInput = guiderSearchUsersInput;
@@ -57,25 +54,34 @@ $(document).ready(function(){
       _loadFilters : function(){
         var filterContainer = $('.gu-filters');
         var _this = this;
-        
           mApi().workspace.workspaces
           .read({ userId: MUIKKU_LOGGED_USER_ID })
           .callback( function (err, workspaces) {
             if(workspaces){
               workspaces.filtersTitle = getLocaleText('plugin.guider.filters.workspaces');
               workspaces.filterType = "workspace";
+            }else{
+              // I have no testcase scenario of a someone who has no workspaces, but this is for now if such a person exists
+              $(window).trigger("hashchange");   
             }
+            
             if( err ){
                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
             }else{
               renderDustTemplate('guider/guider_user_filters.dust', workspaces, function (text) {
                 filterContainer.append($.parseHTML(text));
-                });
+                
+                // Hashchange is triggered here so that the filters are loaded when it begins. Otherwise it will fail. This can't be the best way, can it?  //  
+                $(window).trigger("hashchange");   
+
+
+              });
               
+       
               
             }
           });        
-        
+
         
       },      
       _loadUsers : function(params){
@@ -90,7 +96,10 @@ $(document).ready(function(){
         }
         mApi().user.users.read({searchString : params, archetype : 'STUDENT', maxResults: 25 })
         .callback(function (err, users) {
-          users.userCount = users.length;         
+          
+          if(users != undefined){
+           users.userCount = users.length;
+          }
           if( err ){
                 $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
           }else{        
@@ -112,7 +121,9 @@ $(document).ready(function(){
 
       mApi().user.users.read({workspaceIds : workspaceId, archetype : 'STUDENT', maxResults: 25, searchString : params })
       .callback(function (err, users) {
-        users.userCount = users.length;
+        if(users != undefined){
+          users.userCount = users.length;
+        }
         if( err ){
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
         }else{        
@@ -141,7 +152,9 @@ $(document).ready(function(){
       
 	    mApi().user.users.read({archetype : 'STUDENT', maxResults: 25 })
 	    .callback(function (err, users) {
-        users.userCount = users.length;   	  	  
+        if(users != undefined){
+          users.userCount = users.length;
+        }
 		    if( err ){
 		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
 		  	}else{    	  
@@ -179,9 +192,9 @@ $(document).ready(function(){
           mApi().user.users.read({ archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, users) {
             
             // TODO : what if 25 users and no more? 
-            
+            if(users != undefined){
              users.userCount = users.length;
-            
+            }
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
             } else {
@@ -352,7 +365,7 @@ $(document).ready(function(){
                 break;
             }
 	        }else
-	          _this._refreshUsers;
+	          _this._refreshUsers();
 
 	    },
 	    _klass : {
