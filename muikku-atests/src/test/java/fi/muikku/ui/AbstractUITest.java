@@ -564,7 +564,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
     WorkspaceHtmlMaterial payload = new WorkspaceHtmlMaterial(null, parentId, title, contentType, html, revisionNumber, assignmentType);
     Response response = asAdmin()
-      .contentType("application/json")
+      .contentType("application/json;charset=UTF-8")
       .body(payload)
       .post("/test/workspaces/{WORKSPACEENTITYIID}/htmlmaterials", workspaceEntityId);
     
