@@ -1,6 +1,7 @@
 package fi.muikku.ui.base.course.materials;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -508,10 +509,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-term-selected");
         String lastCounterpartValue = getAttributeValue(".muikku-connect-field-counterpart:last-child", "data-field-value"); 
         click(".muikku-connect-field-counterpart:last-child");
+        waitClassPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()), "muikku-field-saved");
+        assertClassPresent(".muikku-connect-field-counterpart:first-child", "muikku-connect-field-edited");
+        assertClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-edited");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
-        List<WebElement> terms = getWebDriver().findElements(By.cssSelector(".muikku-connect-field-term"));
-        List<WebElement> counterparts = getWebDriver().findElements(By.cssSelector(".muikku-connect-field-counterpart"));
+        List<WebElement> terms = findElements(".muikku-connect-field-term");
+        List<WebElement> counterparts = findElements(".muikku-connect-field-counterpart");
+        assertTrue("No terms found", terms.size() > 0);
         for(int i = 0; i < terms.size();i++){
           if(terms.get(i).getAttribute("data-field-name") == firstTermValue){
             assertEquals(lastCounterpartValue, counterparts.get(i).getAttribute("data-field-value"));
@@ -548,10 +553,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         String firstTermValue = getAttributeValue(".muikku-connect-field-term:first-child", "data-field-name");
         String lastCounterpartValue = getAttributeValue(".muikku-connect-field-counterpart:last-child", "data-field-value"); 
         dragAndDrop(".muikku-connect-field-counterpart:last-child", ".muikku-connect-field-counterpart:first-child");
+        waitClassPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()), "muikku-field-saved");
+        assertClassPresent(".muikku-connect-field-counterpart:first-child", "muikku-connect-field-edited");
+        assertClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-edited");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
-        List<WebElement> terms = getWebDriver().findElements(By.cssSelector(".muikku-connect-field-term"));
-        List<WebElement> counterparts = getWebDriver().findElements(By.cssSelector(".muikku-connect-field-counterpart"));
+        List<WebElement> terms = findElements(".muikku-connect-field-term");
+        List<WebElement> counterparts = findElements(".muikku-connect-field-counterpart");
+        assertTrue("No terms found", terms.size() > 0);
         for(int i = 0; i < terms.size();i++){
           if(terms.get(i).getAttribute("data-field-name") == firstTermValue){
             assertEquals(lastCounterpartValue, counterparts.get(i).getAttribute("data-field-value"));

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -595,6 +596,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     WebElement sourceElement = getWebDriver().findElement(By.cssSelector(source)); 
     WebElement targetElement = getWebDriver().findElement(By.cssSelector(target));
     (new Actions(getWebDriver())).dragAndDrop(sourceElement, targetElement).perform();
+  }
+  
+  protected List<WebElement> findElements(String selector){
+    try {
+      return getWebDriver().findElements(By.cssSelector(selector));
+    } catch (Exception e) {
+      return new ArrayList<WebElement>();
+    }
   }
   
   protected void switchToFrame(String selector) {
