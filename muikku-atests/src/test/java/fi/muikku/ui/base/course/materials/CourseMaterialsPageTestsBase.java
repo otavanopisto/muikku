@@ -509,9 +509,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-term-selected");
         String lastCounterpartValue = getAttributeValue(".muikku-connect-field-counterpart:last-child", "data-field-value"); 
         click(".muikku-connect-field-counterpart:last-child");
-        waitClassPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()), "muikku-field-saved");
-        assertClassPresent(".muikku-connect-field-counterpart:first-child", "muikku-connect-field-edited");
-        assertClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-edited");
+        waitClassPresent(".muikku-connect-field-counterpart:first-child", "muikku-connect-field-edited");
+        waitClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-edited");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
         List<WebElement> terms = findElements(".muikku-connect-field-term");
@@ -553,9 +552,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         String firstTermValue = getAttributeValue(".muikku-connect-field-term:first-child", "data-field-name");
         String lastCounterpartValue = getAttributeValue(".muikku-connect-field-counterpart:last-child", "data-field-value"); 
         dragAndDrop(".muikku-connect-field-counterpart:last-child", ".muikku-connect-field-counterpart:first-child");
-        waitClassPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()), "muikku-field-saved");
-        assertClassPresent(".muikku-connect-field-counterpart:first-child", "muikku-connect-field-edited");
-        assertClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-edited");
+        waitClassPresent(".muikku-connect-field-counterpart:first-child", "muikku-connect-field-edited");
+        waitClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-edited");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
         List<WebElement> terms = findElements(".muikku-connect-field-term");
