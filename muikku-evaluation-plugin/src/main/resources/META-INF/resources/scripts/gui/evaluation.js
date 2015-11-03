@@ -818,6 +818,10 @@
         case 'EVALUATED':
           this.element.on("click", $.proxy(this._onClick, this));
           this.element.addClass('assignment-evaluated');
+          if (reply.submitted) {
+            this.element.find('.evaluation-assignment-submitted-date')
+              .text(getLocaleText("plugin.evaluation.evaluationGridSubmitted.label") + " " + formatDate(new Date(reply.submitted)));   
+          }
           if (reply.evaluated) {
             this.element.find('.evaluation-assignment-evaluated-date')
               .text(getLocaleText("plugin.evaluation.evaluationGridSEvaluated.label") + " " + formatDate(new Date(reply.evaluated)));   
