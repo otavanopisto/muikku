@@ -59,7 +59,7 @@ public class SystemSettingsController {
   public String getSystemEmailSenderAddress() {
     String systemEmailAddress = getSetting("systemEmailSenderAddress");
     if (systemEmailAddress == null) {
-      return ""; // TODO fallback sender address 
+      return "no-reply@muikkuverkko.fi";
     } else {
       return systemEmailAddress;
     }
