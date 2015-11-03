@@ -15,9 +15,7 @@
   <ui:define name="workspace.content.top.center"> 
     <m:widget name="workspace-discussion-browse-areas" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
     <m:widget name="workspace-discussion-new-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/>
-    <!-- TODO: Add this when scripts are unified between environment and workspace  
     <m:widget name="workspace-discussion-delete-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/> 
-    -->
   </ui:define>
   
   <ui:define name="workspace.content.center.widget">
