@@ -737,8 +737,6 @@
 
       $('#evaluation').on("viewInitialized", $.proxy(this._onEvaluationViewInitialized, this));
       $('#evaluation').on("viewScroll", $.proxy(this._onEvaluationViewScroll, this));
-
-      this.element.on("click", $.proxy(this._onClick, this));
     },
     
     _onClick: function (event) {
@@ -807,6 +805,7 @@
           this.element.addClass('assignment-aswered');
         break;
         case 'SUBMITTED':
+          this.element.on("click", $.proxy(this._onClick, this));
           this.element.addClass('assignment-submitted');
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
@@ -817,6 +816,7 @@
           this.element.addClass('assignment-withdrawn');
         break;
         case 'EVALUATED':
+          this.element.on("click", $.proxy(this._onClick, this));
           this.element.addClass('assignment-evaluated');
           if (reply.evaluated) {
             this.element.find('.evaluation-assignment-evaluated-date')
