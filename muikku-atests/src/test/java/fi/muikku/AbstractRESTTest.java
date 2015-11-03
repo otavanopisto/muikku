@@ -2,6 +2,7 @@ package fi.muikku;
 
 import static com.jayway.restassured.RestAssured.certificate;
 
+
 import java.util.ArrayList;
 import java.util.List;
 

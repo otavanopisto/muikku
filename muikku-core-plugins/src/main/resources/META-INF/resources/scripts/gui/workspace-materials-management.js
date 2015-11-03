@@ -561,7 +561,7 @@
       
       var fileId = data._response.result.fileId;
       var fileName = data.files[0].name;
-      var contentType = data.files[0].type;
+      var contentType = data.files[0].type||'application/octet-stream';
       
       mApi().materials.binary.create({
         title: fileName,
@@ -955,10 +955,6 @@
     $('.workspace-materials-toc-section').each(function(index, node) {
       setupSortableSection(node);
     });
-
-    dust.preload('workspace/materials-management-page-html.dust');
-    dust.preload('workspace/materials-management-page-binary.dust');
-    dust.preload('workspace/materials-management-page-folder.dust');
 
     $(document).muikkuMaterialLoader({
       workspaceEntityId: $('.workspaceEntityId').val(),

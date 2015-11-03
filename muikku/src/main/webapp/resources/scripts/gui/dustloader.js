@@ -1,30 +1,37 @@
-dust.onLoad = function(name, callback) {
-  $.ajax(CONTEXTPATH + '/resources/dust/' + name, {
-    success : function(data, textStatus, jqXHR) {
-      callback(false, data);
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-      var message = 'Could not find Dust template: ' + name;
-      $('.notification-queue').notificationQueue('notification', 'error', message);  
-    }
-  });
-};
+var mdust = {};
 
-dust.preload = function(name) {
-  var tmpl = dust.cache[name];
-  if (!tmpl) {
+mdust.loading = {};
+mdust.queued = {};
+
+dust.onLoad = function(name, callback) {
+  if (mdust.loading[name]) {
+    if (!mdust.queued[name]) {
+      mdust.queued[name] = [];
+    }
+    
+    mdust.queued[name].push(callback);
+  } else {
+    mdust.loading[name] = true;
+    
     $.ajax(CONTEXTPATH + '/resources/dust/' + name, {
-      async: false,
       success : function(data, textStatus, jqXHR) {
-        if (!dust.cache[name]) 
-          dust.loadSource(dust.compile(data, name));
+        delete mdust.loading[name];
+        callback(false, data);
+        
+        if (mdust.queued[name]) {
+          $.each(mdust.queued[name], function (ind, queuedCallback) {
+            queuedCallback(false, data);
+          });
+          
+          delete mdust.queued[name];
+        }
       },
       error: function (jqXHR, textStatus, errorThrown) {
         var message = 'Could not find Dust template: ' + name;
         $('.notification-queue').notificationQueue('notification', 'error', message);  
       }
-    });
-  }
+    })
+  };
 };
 
 dust.filters.formatDate = function(value) {

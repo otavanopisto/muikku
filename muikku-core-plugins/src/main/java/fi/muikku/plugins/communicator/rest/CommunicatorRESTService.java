@@ -152,19 +152,29 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
 
+  @DELETE
+  @Path ("/items/{COMMUNICATORMESSAGEID}")
+  @RESTPermitUnimplemented
+  public Response deleteReceivedMessages(
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
+   ) throws AuthorizationException {
+    UserEntity user = sessionController.getLoggedUserEntity();
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    communicatorController.archiveReceivedMessages(user, messageId);
+    
+    return Response.noContent().build();
+  }
+
   @GET
   @Path ("/sentitems")
   @RESTPermitUnimplemented
-  public Response listUserSentCommunicatorItems() {
+  public Response listUserSentCommunicatorItems(
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
-    List<InboxCommunicatorMessage> sentItems = communicatorController.listSentItems(user);
-
-    Collections.sort(sentItems, new Comparator<CommunicatorMessage>() {
-      @Override
-      public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
-        return o2.getCreated().compareTo(o1.getCreated());
-      }
-    });
+    List<InboxCommunicatorMessage> sentItems = communicatorController.listSentItems(user, firstResult, maxResults);
 
     List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
     
@@ -179,6 +189,21 @@ public class CommunicatorRESTService extends PluginRESTService {
     return Response.ok(
       result
     ).build();
+  }
+  
+  @DELETE
+  @Path ("/sentitems/{COMMUNICATORMESSAGEID}")
+  @RESTPermitUnimplemented
+  public Response deleteSentMessages(
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
+   ) throws AuthorizationException {
+    UserEntity user = sessionController.getLoggedUserEntity();
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    communicatorController.archiveSentMessages(user, messageId);
+    
+    return Response.noContent().build();
   }
   
   @GET
@@ -247,21 +272,6 @@ public class CommunicatorRESTService extends PluginRESTService {
     return Response.ok(
       result
     ).build();
-  }
-
-  @DELETE
-  @Path ("/messages/{COMMUNICATORMESSAGEID}")
-  @RESTPermitUnimplemented
-  public Response deleteMessage(
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
-   ) throws AuthorizationException {
-    UserEntity user = sessionController.getLoggedUserEntity();
-    
-    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
-
-    communicatorController.archiveMessage(user, messageId);
-    
-    return Response.noContent().build();
   }
 
   @POST
@@ -337,11 +347,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
-    String content = Jsoup.clean(newMessage.getContent(), Whitelist.relaxed());
-    String caption = Jsoup.clean(newMessage.getCaption(), Whitelist.relaxed());
-
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
-        caption, content, tagList);
+        newMessage.getCaption(), newMessage.getContent(), tagList);
       
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
     webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);

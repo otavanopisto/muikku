@@ -10,7 +10,7 @@ before_script:
     /tmp/sc-4.3.11-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid;
   fi
 after_script:
-- if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then
+- if [ -e /tmp/sc.pid ] && [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then
     kill `cat /tmp/sc.pid`;
   fi;
 script:
@@ -88,6 +88,7 @@ env:
   - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=course/discussions
   - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=course/materials
   - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=course/picker
+  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=course/journal
   - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=indexpage
 addons:
   hosts:

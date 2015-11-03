@@ -482,7 +482,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       }
       
       /* Show Correct Answers */
-      &.muikku-show-correct-answers-button {
+      &.muikku-show-correct-answers-button,
+      &.muikku-hide-correct-answers-button {
         background: $exerciseCorrectAnswersOnRequest;
       }
       
@@ -612,7 +613,8 @@ body.workspace-materials #contentWorkspaceMaterials {
       font-size:14px;
     }
     
-    button.muikku-show-correct-answers-button {
+    button.muikku-show-correct-answers-button,
+    button.muikku-hide-correct-answers-button {
       font-size:14px;
     }
   
@@ -639,7 +641,8 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
       font-size:16px;
     }
     
-    button.muikku-show-correct-answers-button {
+    button.muikku-show-correct-answers-button,
+    button.muikku-hide-correct-answers-button {
       font-size:16px;
     }
   

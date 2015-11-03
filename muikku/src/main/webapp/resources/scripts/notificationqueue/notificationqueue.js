@@ -52,6 +52,14 @@
       }
     },
     
+    remove: function (item) {
+      this._hide($(item));
+    },
+    
+    _hide : function(element){
+      element.hide(this.options.hide.effect, this.options.hide.options);
+    },
+    
     _setupItem: function (item) {
       var severityOption = this.options['severity-' + $(item).data('severity')];
       if (severityOption && severityOption.timeout) {
@@ -66,7 +74,7 @@
     },
     
     _onRemoveClick: function (event, data) {
-      $(event.target).closest('.notification-queue-item').hide(this.options.hide.effect, this.options.hide.options);
+      this._hide($(event.target).closest('.notification-queue-item'));
     },
     
     _destroy : function() {

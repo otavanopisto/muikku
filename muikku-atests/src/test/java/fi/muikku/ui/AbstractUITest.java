@@ -55,6 +55,7 @@ import com.jayway.restassured.response.Response;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
+import fi.muikku.TestUtilities;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceDiscussion;
 import fi.muikku.atests.WorkspaceDiscussionGroup;
@@ -171,6 +172,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected RemoteWebDriver createChromeDriver() {
     ChromeOptions options = new ChromeOptions();
     options.addArguments("--lang=en_US");
+    options.addArguments("start-maximized");
     ChromeDriver chromeDriver = new ChromeDriver(options);
     return chromeDriver;
   }
@@ -402,12 +404,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    PyramusMocks.adminMock();
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
   }
@@ -417,15 +414,27 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.personsPyramusMocks();
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    navigate("/login?authSourceId=1", true);
+    waitForPresent(".index");
+  }
+  
+  protected void loginStudent2() throws JsonProcessingException, Exception {
+    PyramusMocks.student2LoginMock();
+    PyramusMocks.personsPyramusMocks();
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 2));
+    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 2));
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
   }
   
-  protected Workspace createWorkspace(String name, String identifier, Boolean published) throws IOException {
-    PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier));
+  protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws IOException {
+    PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier), name, description);
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
@@ -573,6 +582,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .delete("/test/workspaces/{WORKSPACEID}/htmlmaterials/{WORKSPACEMATERIALID}", workspaceEntityId, id)
       .then()
       .statusCode(204);
+  }
+  
+  protected void switchToFrame(String selector) {
+    getWebDriver().switchTo().frame(
+        getWebDriver().findElementByCssSelector(selector)
+    );
+  }
+  
+  protected void switchToDefaultFrame() {
+    getWebDriver().switchTo().defaultContent();
   }
   
   enum RoleType {
