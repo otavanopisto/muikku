@@ -392,20 +392,6 @@
       return array;
     }
     
-    function getExcelStyleLetterIndex(numericIndex) {   
-      var ALPHABET_SIZE = 26;
-      
-      var result = "";
-      do {
-        var charIndex = Math.floor(numericIndex % ALPHABET_SIZE);
-        numericIndex = Math.floor(numericIndex / ALPHABET_SIZE);
-        numericIndex -= 1;
-        result = String.fromCharCode(charIndex + 65) + result;
-      } while (numericIndex > -1);
-        
-      return result;
-    };
-    
     function organizeFieldsByAnswers(terms, counterparts, answers){
       var organizedTerms = [];
       var organizedCounterparts = [];
