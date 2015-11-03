@@ -132,7 +132,7 @@ $(document).ready(function(){
           mApi().batch(calls).callback(function(err, results){
             item.recipients = $.map(results, function (result) {
               return {
-                fullName: result.firstName + ' ' + resultlastName,
+                fullName: result.firstName + ' ' + result.lastName,
                 firstName: result.firstName,
                 hasPicture: result.hasImage
               };
