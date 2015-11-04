@@ -80,6 +80,8 @@ public class ElasticSearchProvider implements SearchProvider {
 
       List<FilterBuilder> filters = new ArrayList<FilterBuilder>();
       
+      filters.add(FilterBuilders.notFilter(FilterBuilders.termFilter("hidden", true)));
+      
       if (StringUtils.isNotBlank(text)) {
         StringTokenizer tokenizer = new StringTokenizer(text, " ");
 
