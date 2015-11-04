@@ -52,6 +52,8 @@
   ServiceImpl = $.klass({
     init: function (service) {
       this._client = new $.RestClient(CONTEXTPATH + '/rest/' + service + '/', {
+        cache: 30,
+        cachableMethods: ["GET"],
         ajax: {
           async: false
         }
