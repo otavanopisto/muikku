@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.Description;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -338,6 +339,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void waitAndClick(String selector) {
     waitForPresent(selector);
     click(selector);
+  }
+  
+  protected void waitScrollAndClick(String selector) {
+    scrollIntoView(selector);
+    waitAndClick(selector);
+  }
+  
+  protected void scrollIntoView(String selector) {
+    ((JavascriptExecutor) getWebDriver()).executeScript(String.format("document.querySelectorAll('%s').item(0).scrollIntoView(true);", selector));
   }
 
   protected void selectOption(String selector, String value){

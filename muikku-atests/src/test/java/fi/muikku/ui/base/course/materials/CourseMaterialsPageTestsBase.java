@@ -8,22 +8,13 @@ import java.util.List;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
-import fi.muikku.SqlAfter;
-import fi.muikku.SqlBefore;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.muikku.ui.AbstractUITest;
-import fi.muikku.ui.PyramusMocks;
-import fi.pyramus.webhooks.WebhookPersonCreatePayload;
-import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
 public class CourseMaterialsPageTestsBase extends AbstractUITest {
 
@@ -505,10 +496,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertVisible(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
         assertClassNotPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()), "muikku-field-saved");
         String firstTermValue = getAttributeValue(".muikku-connect-field-term:first-child", "data-field-name");
-        click(".muikku-connect-field-term:first-child");
+        
+        waitScrollAndClick(".muikku-connect-field-term:first-child");
+        
         waitClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-term-selected");
-        String lastCounterpartValue = getAttributeValue(".muikku-connect-field-counterpart:last-child", "data-field-value"); 
-        click(".muikku-connect-field-counterpart:last-child");
+        String lastCounterpartValue = getAttributeValue(".muikku-connect-field-counterpart:nth-child(3)", "data-field-value"); 
+
+        waitScrollAndClick(".muikku-connect-field-counterpart:nth-child(3)");
+        
         waitClassPresent(".muikku-connect-field-counterpart:first-child", "muikku-connect-field-edited");
         waitClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-edited");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
@@ -530,7 +525,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       deleteWorkspace(workspace.getId());
     }
   }
-  
+
   @Test
   public void answerConnectFieldByDraggingTestAdmin() throws Exception {
     loginAdmin();
@@ -550,8 +545,10 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertVisible(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
         assertClassNotPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()), "muikku-field-saved");
         String firstTermValue = getAttributeValue(".muikku-connect-field-term:first-child", "data-field-name");
-        String lastCounterpartValue = getAttributeValue(".muikku-connect-field-counterpart:last-child", "data-field-value"); 
-        dragAndDrop(".muikku-connect-field-counterpart:last-child", ".muikku-connect-field-counterpart:first-child");
+        String lastCounterpartValue = getAttributeValue(".muikku-connect-field-counterpart:nth-child(3)", "data-field-value"); 
+        scrollIntoView(".muikku-connect-field-counterpart:nth-child(3)");
+        
+        dragAndDrop(".muikku-connect-field-counterpart:nth-child(3)", ".muikku-connect-field-counterpart:first-child");
         waitClassPresent(".muikku-connect-field-counterpart:first-child", "muikku-connect-field-edited");
         waitClassPresent(".muikku-connect-field-term:first-child", "muikku-connect-field-edited");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
