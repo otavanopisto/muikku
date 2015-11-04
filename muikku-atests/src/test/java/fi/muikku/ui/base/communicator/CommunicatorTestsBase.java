@@ -14,26 +14,40 @@ public class CommunicatorTestsBase extends AbstractUITest {
     navigate("/communicator", true);
     waitAndClick(".bt-mainFunction-content span");
     waitForPresent("#recipientContent");
-    sendKeys("#recipientContent", "Test");
+    sendKeys("#recipientContent", "Test User");
     waitAndClick(".ui-autocomplete li.ui-menu-item");
-    waitAndClick(".mf-textfield-subject");
-    
+    waitForPresent(".mf-textfield-subject");
+    sendKeys(".mf-textfield-subject", "Test");    
     waitAndClick("#cke_1_contents");
     getWebDriver().switchTo().activeElement().sendKeys("Communicator test");
     click("*[name='send']");
-    waitAndClick("#j_idt64");
-    waitForPresent(".index");
+    logout();
     loginStudent1();
-//    mockaa
-//    http://dev.muikku.fi:8089/users/logout.page?redirectUrl=https://dev.muikku.fi:8443
     navigate("/communicator", true);
+    waitForPresent("div.cm-message-header-content-secondary");
     assertText("div.cm-message-header-content-secondary", "Test");
+//    viestien poisto
   }
   
   @Test
   public void communicatorSentMessagesTest() throws Exception {
     loginAdmin();
-    PyramusMocks.personsPyramusMocks(); 
+    PyramusMocks.personsPyramusMocks();
+    navigate("/communicator", true);
+    waitAndClick(".bt-mainFunction-content span");
+    waitForPresent("#recipientContent");
+    sendKeys("#recipientContent", "Test User");
+    waitAndClick(".ui-autocomplete li.ui-menu-item");
+    waitForPresent(".mf-textfield-subject");
+    sendKeys(".mf-textfield-subject", "Test");    
+    waitAndClick("#cke_1_contents");
+    getWebDriver().switchTo().activeElement().sendKeys("Communicator test");
+    click("*[name='send']");
+    waitForPresentVisible(".notification-queue-item-success span");
+    navigate("/communicator#sent", true);
+    waitForPresent("div.cm-message-header-content-secondary");
+    assertText("div.cm-message-header-content-secondary", "Test");
+//    test cleanup
   }
 
 

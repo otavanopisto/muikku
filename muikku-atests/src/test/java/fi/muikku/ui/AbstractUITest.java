@@ -260,6 +260,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
 
+  protected void waitForPresentVisible(String selector) {
+    waitForElementToBePresent(By.cssSelector(selector));
+    assertVisible(selector);
+  }
+  
   protected void takeScreenshot() throws IOException {
     if (getWebDriver() instanceof TakesScreenshot) {
       Date dNow = new Date();
@@ -431,6 +436,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
+  }
+  
+  protected void logout() {
+    waitAndClick("#j_idt64");
+    waitForPresent(".index");    
   }
   
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws IOException {
