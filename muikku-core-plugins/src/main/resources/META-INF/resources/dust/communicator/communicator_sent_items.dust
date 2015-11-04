@@ -4,8 +4,13 @@
      <div class="clear"></div>
   </div>
 {/.}
-{#.}
-  {>"communicator/communicator_sent_item.dust"/}
-{:else}    
-  {>"communicator/communicator_empty.dust"/}
-{/.}
+
+<div class="cm-messages-pages">
+  {?.}
+    {>"communicator/communicator_sent_page.dust"/}
+  {:else}    
+    {>"communicator/communicator_empty.dust"/}
+  {/.}
+  <div class="clear"></div>
+</div>
+

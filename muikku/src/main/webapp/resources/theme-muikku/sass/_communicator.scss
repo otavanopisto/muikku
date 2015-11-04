@@ -146,8 +146,24 @@
     }
    }
    .cm-message-header-content-primary{
-      font-weight:700;  
-     }
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 210px;
+      span.cm-message-sender-name{
+       color:#000;
+      }
+      span.cm-message-recipient-name{
+       margin-left:5px;
+        &:after{
+          content: ",";
+        }       
+        &:last-child:after{
+          content: none;
+        }
+      }
+    }
   
   
    .cm-message-header-content-secondary{
@@ -320,6 +336,8 @@
     .cm-message-header-content-primary{
       font-weight:700;
       margin-left:10px;
+      
+      
     }   
 
    

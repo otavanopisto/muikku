@@ -12,6 +12,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
+import fi.muikku.TestUtilities;
 import fi.muikku.ui.AbstractUITest;
 import fi.muikku.ui.PyramusMocks;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
@@ -28,7 +29,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
     
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     
     asAdmin().get("/test/reindex");
     
