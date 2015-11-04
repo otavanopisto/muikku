@@ -82,7 +82,7 @@ $(document).ready(function(){
       var mCont = $(CommunicatorImpl.msgContainer);
       this._addLoading(CommunicatorImpl.msgContainer);
       
-      mApi().communicator.messages.read(communicatorMessageId).callback(function (err, result) {
+      mApi().communicator.messages.read(communicatorMessageId).callback($.proxy(function (err, result) {
         for (var i = 0; i < result.length; i++) {
           result[i].caption = $('<div>').html(result[i].caption).text();
           result[i].content = $('<div>').html(result[i].content).text();
@@ -108,10 +108,10 @@ $(document).ready(function(){
           mCont.append($.parseHTML(text));
         }, this));
 
-        mApi().communicator.messages.markasread.create(communicatorMessageId).callback(function (err, result) {
+        mApi().communicator.messages.markasread.create(communicatorMessageId).callback($.proxy(function (err, result) {
           $(document).trigger("Communicator:messageread");
-        });
-      });
+        }, this));
+      }, this));
     },
     _showSentItems : function () {
       $(CommunicatorImpl.msgContainer).empty();
@@ -132,7 +132,7 @@ $(document).ready(function(){
           mApi().batch(calls).callback(function(err, results){
             item.recipients = $.map(results, function (result) {
               return {
-                fullName: result.firstName + ' ' + resultlastName,
+                fullName: result.firstName + ' ' + result.lastName,
                 firstName: result.firstName,
                 hasPicture: result.hasImage
               };
