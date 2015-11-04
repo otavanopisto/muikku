@@ -9,10 +9,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Stateful;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.mongodb.BasicDBObject;
@@ -26,43 +28,55 @@ import com.mongodb.MongoTimeoutException;
 import com.mongodb.ServerAddress;
 import com.mongodb.util.JSON;
 
+import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.commonlog.LogProvider;
 
 @ApplicationScoped
-@Stateful
 public class MongoLogProvider implements LogProvider {
-
-  private static final String DB_NAME = "muikku"; // TODO: Make configurable
-  private static final String DB_HOST = "kahana.mongohq.com";
-  private static final String DB_USER = "muikku";
-  private static final String DB_PASSWORD = "muikku";
-  private static final int DB_PORT = 10066;
-  private boolean enabled = true;
   
+  private boolean enabled = true;
+
   @Inject
   private Logger logger;
 
+  @Inject
+  private PluginSettingsController pluginSettingsController;
+
   @PostConstruct
   public void init() {
+    String user = pluginSettingsController.getPluginSetting("mongo-log", "database.user");
+    String password = pluginSettingsController.getPluginSetting("mongo-log", "database.password");
+    String host = pluginSettingsController.getPluginSetting("mongo-log", "database.host");
+    String port = pluginSettingsController.getPluginSetting("mongo-log", "database.port");
+    String database = pluginSettingsController.getPluginSetting("mongo-log", "database.name");
+
     try {
-      if (DB_USER != "" && DB_PASSWORD != "") {
-          MongoCredential credential = MongoCredential.createMongoCRCredential(DB_USER, DB_NAME, DB_PASSWORD.toCharArray());
-          ServerAddress addr;
-          addr = new ServerAddress(DB_HOST, DB_PORT);
-          mongo = new MongoClient(addr, Arrays.asList(credential));
-          db = mongo.getDB(DB_NAME);
+      if (StringUtils.isNotBlank(user) && StringUtils.isNotBlank(password) && StringUtils.isNumeric(port) && 
+          StringUtils.isNotBlank(host) && StringUtils.isNotBlank(database)) {
+        MongoCredential credential = MongoCredential.createMongoCRCredential(user, database, password.toCharArray());
+        ServerAddress addr = new ServerAddress(host, NumberUtils.createInteger(port));
+        mongo = new MongoClient(addr, Arrays.asList(credential));
+        db = mongo.getDB(database);
+      } else {
+        logger.warning("Could not initialize mongo log because some of the settings were missing");
       }
-     } catch (Exception e) {
-       logger.warning("Cannot initialize connection to mongoDB");
-       enabled = false;
-     }
+    } catch (Exception e) {
+      logger.warning("Cannot initialize connection to mongoDB");
+      enabled = false;
+    }
+  }
+
+  @PreDestroy
+  public void deinit() {
+    mongo.close();
   }
 
   @Override
   public void log(String collection, Object data) {
-    if(!enabled){
+    if (!enabled) {
       return;
     }
+
     DBCollection c = db.getCollection(collection);
     try {
       String json = new ObjectMapper().writeValueAsString(data);
@@ -74,15 +88,15 @@ public class MongoLogProvider implements LogProvider {
       logger.warning("Connection to mongoDB timed out!, disabling logging to mongoDB");
       enabled = false;
     }
-
   }
 
   @SuppressWarnings("unchecked")
   @Override
   public ArrayList<HashMap<String, Object>> getLogEntries(String collection, Map<String, Object> query, int count) {
-    if(!enabled){
+    if (!enabled) {
       return null;
     }
+
     try {
       DBCollection c = db.getCollection(collection);
       BasicDBObject queryObject = new BasicDBObject();
@@ -107,5 +121,4 @@ public class MongoLogProvider implements LogProvider {
 
   private MongoClient mongo;
   private DB db;
-
 }
