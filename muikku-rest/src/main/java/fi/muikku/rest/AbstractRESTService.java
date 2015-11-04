@@ -11,7 +11,7 @@ import javax.validation.ConstraintViolationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-public class AbstractRESTService {
+public class AbstractRESTService extends AbstractCoreRESTService {
 
   protected Response getConstraintViolations(ConstraintViolationException violationException) {
     List<Map<String, Object>> violationMessages = new ArrayList<Map<String,Object>>();
