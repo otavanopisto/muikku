@@ -68,13 +68,26 @@ public class ElasticSearchProvider implements SearchProvider {
     return c.isEmpty();
   }
   
+  private String sanitizeSearchString(String query) {
+    if (query == null)
+      return null;
+    
+    // TODO: query_string search for case insensitive searches??
+    // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
+    String ret = query.toLowerCase();
+
+    // Replace characters we don't support at the moment
+    ret = ret.replace('-', ' ');
+    
+    ret = ret.trim();
+    return ret;
+  }
+  
   @Override
   public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, 
       Collection<Long> groups, Collection<Long> workspaces, int start, int maxResults) {
     try {
-      // TODO: query_string search for case insensitive searches??
-      // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
-      text = text != null ? text.toLowerCase() : null;
+      text = sanitizeSearchString(text);
 
       QueryBuilder query = QueryBuilders.matchAllQuery();
 
@@ -163,6 +176,8 @@ public class ElasticSearchProvider implements SearchProvider {
     
     QueryBuilder query = QueryBuilders.matchAllQuery();
     
+    freeText = sanitizeSearchString(freeText);
+    
     try {
       List<FilterBuilder> filters = new ArrayList<FilterBuilder>();
       
@@ -231,9 +246,7 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult search(String query, String[] fields, int start, int maxResults, Class<?>... types) {
     try {
-      // TODO: query_string search for case insensitive searches??
-      // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
-      query = query != null ? query.toLowerCase() : null;
+      query = sanitizeSearchString(query);
       
       String[] typenames = new String[types.length];
       for (int i = 0; i < types.length; i++) {
@@ -276,6 +289,8 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult freeTextSearch(String text, int start, int maxResults) {
     try {
+      text = sanitizeSearchString(text);
+      
       SearchResponse response = elasticClient.prepareSearch().setQuery(QueryBuilders.matchQuery("_all", text)).setFrom(start).setSize(maxResults).execute()
           .actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();

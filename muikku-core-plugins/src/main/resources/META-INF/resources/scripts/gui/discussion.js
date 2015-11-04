@@ -233,10 +233,7 @@ $(document).ready(function() {
         mApi().forum.latest.read({'firstResult' : fRes}).on('$', function(msgs, msgsCallback) {
           mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
             msgs.areaName = area.name;
-  
           });
-  
-  
           
           var d = new Date(msgs.created);
           msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
@@ -250,7 +247,6 @@ $(document).ready(function() {
             renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
               _this._clearLoading(); 
              pageElement.append($.parseHTML(text));
-  
             });
           }
         });     
@@ -260,12 +256,10 @@ $(document).ready(function() {
 
           mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
             thread.areaName = area.name;
-
           });
 
           mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
-
           });
 
           var d = new Date(thread.created);
@@ -281,13 +275,11 @@ $(document).ready(function() {
             renderDustTemplate('/discussion/discussion_page.dust', threads, function(text) {
               _this._clearLoading();
               $(".di-messages-pages").append($.parseHTML(text));
-
             });
           }
+        });
 
-        });        
-        
-      }
+			}
     },   
     _onMoreRepliesClick : function(event){
       var element = $(event.target);
@@ -445,7 +437,7 @@ $(document).ready(function() {
           }
           renderDustTemplate('/discussion/discussion_replies.dust', replies, function(text) {
             $(DiscImpl.msgContainer).append($.parseHTML(text));
-          });         
+          });
         }
       });
     },
@@ -689,9 +681,8 @@ $(document).ready(function() {
           window.discussion._refreshLatest();
           window.discussion._refreshAreas();
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newarea'));
-        }  
+        }
       });
-
 
     }
 
