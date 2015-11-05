@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.Description;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -31,6 +33,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -38,8 +41,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import wiremock.org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,8 +64,8 @@ import fi.muikku.atests.WorkspaceDiscussionThread;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
-import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
+import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -337,6 +338,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForPresent(selector);
     click(selector);
   }
+  
+  protected void waitScrollAndClick(String selector) {
+    scrollIntoView(selector);
+    waitAndClick(selector);
+  }
+  
+  protected void scrollIntoView(String selector) {
+    ((JavascriptExecutor) getWebDriver()).executeScript(String.format("document.querySelectorAll('%s').item(0).scrollIntoView(true);", selector));
+  }
 
   protected void selectOption(String selector, String value){
     Select selectField = new Select(getWebDriver().findElementByCssSelector(selector));
@@ -563,7 +573,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
     WorkspaceHtmlMaterial payload = new WorkspaceHtmlMaterial(null, parentId, title, contentType, html, revisionNumber, assignmentType);
     Response response = asAdmin()
-      .contentType("application/json")
+      .contentType("application/json;charset=UTF-8")
       .body(payload)
       .post("/test/workspaces/{WORKSPACEENTITYIID}/htmlmaterials", workspaceEntityId);
     
@@ -582,6 +592,38 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .delete("/test/workspaces/{WORKSPACEID}/htmlmaterials/{WORKSPACEMATERIALID}", workspaceEntityId, id)
       .then()
       .statusCode(204);
+  }
+  
+  protected String getAttributeValue(String selector, String attribute){
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    return element.getAttribute(attribute);
+
+  }
+  
+  protected void dragAndDrop(String source, String target){
+    if (StringUtils.equals(getSauceBrowser(), "microsoftedge") || StringUtils.equals(getSauceBrowser(), "internet explorer") || StringUtils.equals(getSauceBrowser(), "safari")) {
+      ((JavascriptExecutor) getWebDriver())
+        .executeScript(String.format("try { $('%s').simulate('drag-n-drop', { dragTarget: $('%s') }); } catch (e) { console.log(e); } ", source, target ));
+    } else {     
+      WebElement sourceElement = findElement(source); 
+      WebElement targetElement = findElement(target);
+      
+      (new Actions(getWebDriver()))
+        .dragAndDrop(sourceElement, targetElement)
+        .perform();
+    }
+  }
+  
+  protected WebElement findElement(String selection) {
+    return getWebDriver().findElement(By.cssSelector(selection));
+  }
+  
+  protected List<WebElement> findElements(String selector){
+    try {
+      return getWebDriver().findElements(By.cssSelector(selector));
+    } catch (Exception e) {
+      return new ArrayList<WebElement>();
+    }
   }
   
   protected void switchToFrame(String selector) {
