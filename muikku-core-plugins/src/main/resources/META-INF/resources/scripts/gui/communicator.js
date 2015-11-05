@@ -82,29 +82,33 @@ $(document).ready(function(){
       var mCont = $(CommunicatorImpl.msgContainer);
       this._addLoading(CommunicatorImpl.msgContainer);
       
-      mApi().communicator.messages.read(communicatorMessageId).callback($.proxy(function (err, result) {
-        for (var i = 0; i < result.length; i++) {
-          result[i].caption = $('<div>').html(result[i].caption).text();
-          result[i].content = $('<div>').html(result[i].content).text();
-          
-          var sId = result[i].id;
-          mApi().communicator.communicatormessages.sender.read(sId)
-            .callback(function (err, user) {  
+      mApi().communicator.messages.read(communicatorMessageId).callback($.proxy(function (err, messages) {
+        
+        // TODO: Recipients issue no: #875 
+        
+        $.each(messages, function (index, message){
+           messages[index].caption = $('<div>').html(message.caption).text();
+           messages[index].content = $('<div>').html(message.content).text();
+           
+           mApi().communicator.communicatormessages.sender.read(message.id)
+           .callback(function (err, user) {  
 
-            if (MUIKKU_LOGGED_USER_ID == user.id){
-              result[i].isOwner = true;         
-            } else {
-              result[i].isOwner = false;    
-            }               
+           if (MUIKKU_LOGGED_USER_ID == user.id){
+             messages[index].isOwner = true;         
+           } else {
+             messages[index].isOwner = false;    
+           }               
 
-            result[i].senderFullName = user.firstName + ' ' + user.lastName;
-            result[i].senderHasPicture = user.hasImage;
-          });
-        } 
-            
-        renderDustTemplate('communicator/communicator_items_open.dust', result, $.proxy(function(text) {
-          mCont.empty();
+           messages[index].senderFullName = user.firstName + ' ' + user.lastName;
+           messages[index].senderHasPicture = user.hasImage;
+
+          });        
+        });        
+ 
+ 
+        renderDustTemplate('communicator/communicator_items_open.dust', messages, $.proxy(function(text) {
           this._clearLoading();
+          mCont.empty();
           mCont.append($.parseHTML(text));
         }, this));
 
@@ -113,6 +117,7 @@ $(document).ready(function(){
         }, this));
       }, this));
     },
+    
     _showSentItems : function () {
       $(CommunicatorImpl.msgContainer).empty();
       this._addLoading(CommunicatorImpl.msgContainer);
