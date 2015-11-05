@@ -49,34 +49,34 @@
             this.element.remove();
           }, this),
           open: $.proxy(function() {
-            $(this).find('input[name="evaluationDate"]')
+            $(this._dialog).find('input[name="evaluationDate"]')
               .css({'z-index': 9999, 'position': 'relative'})
               .attr('type', 'text')
               .datepicker();
             
-            $("#evaluationStudentAssignmentWrapper").perfectScrollbar({
+            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
               wheelSpeed:3,
               swipePropagation:false
             });
             
-            $(".evaluation-modal-evaluateForm-content").perfectScrollbar({
+            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
               wheelSpeed:3,
               swipePropagation:false
             });
             
-            $(this).find('input[name="evaluationDate"]')
+            $(this._dialog).find('input[name="evaluationDate"]')
               .datepicker('setDate', this.options.evaluationDate||new Date());
             
             if (this.options.evaluationGradeId) {
-              $(this).find('select[name="grade"]').val(this.options.evaluationGradeId);
+              $(this._dialog).find('select[name="grade"]').val(this.options.evaluationGradeId);
             }
             
             if (this.options.assessorEntityId) {
-              $(this).find('select[name="assessor"]').val(this.options.assessorEntityId);
+              $(this._dialog).find('select[name="assessor"]').val(this.options.assessorEntityId);
             }
             
             if (this.options.verbalAssessment) {
-              $(this).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
+              $(this._dialog).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
             }
 
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
@@ -293,34 +293,34 @@
             this.element.remove();
           }, this),
           open: $.proxy(function() {
-            $(this).find('input[name="evaluationDate"]')
+            $(this._dialog).find('input[name="evaluationDate"]')
               .css({'z-index': 9999, 'position': 'relative'})
               .attr('type', 'text')
               .datepicker();
             
-            $("#evaluationStudentAssignmentWrapper").perfectScrollbar({
+            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
               wheelSpeed:3,
               swipePropagation:false
             });
             
-            $(".evaluation-modal-evaluateForm-content").perfectScrollbar({
+            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
               wheelSpeed:3,
               swipePropagation:false
             });
             
-            $(this).find('input[name="evaluationDate"]')
+            $(this._dialog).find('input[name="evaluationDate"]')
               .datepicker('setDate', this.options.evaluationDate||new Date());
             
             if (this.options.evaluationGradeId) {
-              $(this).find('select[name="grade"]').val(this.options.evaluationGradeId);
+              $(this._dialog).find('select[name="grade"]').val(this.options.evaluationGradeId);
             }
             
             if (this.options.assessorEntityId) {
-              $(this).find('select[name="assessor"]').val(this.options.assessorEntityId);
+              $(this._dialog).find('select[name="assessor"]').val(this.options.assessorEntityId);
             }
             
             if (this.options.verbalAssessment) {
-              $(this).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
+              $(this._dialog).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
             }
 
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
