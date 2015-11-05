@@ -13,7 +13,7 @@
               <div class="mf-textfield">
                 <div class="mf-textfield-subcontainer">
                   <span class="mf-textfield-title">{#localize key="plugin.discussion.createmessage.title"/}</span>
-                  <input type="text" value="" name="title"></input>
+                  <input type="text" value="" name="title" maxlength="255"></input>
                 </div>
               </div>    
               <div id="areaSelect" class="mf-select">
