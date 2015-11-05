@@ -603,7 +603,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void dragAndDrop(String source, String target){
     if (StringUtils.equals(getSauceBrowser(), "microsoftedge") || StringUtils.equals(getSauceBrowser(), "internet explorer") || StringUtils.equals(getSauceBrowser(), "safari")) {
       ((JavascriptExecutor) getWebDriver())
-        .executeScript(String.format("$('%s').simulate('drag-n-drop', { dragTarget: $('%s') });", source, target ));
+        .executeScript(String.format("try { $('%s').simulate('drag-n-drop', { dragTarget: $('%s') }); } catch (e) { console.log(e); } ", source, target ));
     } else {     
       WebElement sourceElement = findElement(source); 
       WebElement targetElement = findElement(target);
