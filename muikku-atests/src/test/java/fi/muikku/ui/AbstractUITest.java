@@ -42,8 +42,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import wiremock.org.apache.commons.lang.StringUtils;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -66,8 +64,8 @@ import fi.muikku.atests.WorkspaceDiscussionThread;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
-import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
+import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -603,9 +601,41 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void dragAndDrop(String source, String target){
-    WebElement sourceElement = getWebDriver().findElement(By.cssSelector(source)); 
-    WebElement targetElement = getWebDriver().findElement(By.cssSelector(target));
-    (new Actions(getWebDriver())).dragAndDrop(sourceElement, targetElement).perform();
+    if (StringUtils.equals(getSauceBrowser(), "microsoftedge") || StringUtils.equals(getSauceBrowser(), "internet explorer") || StringUtils.equals(getSauceBrowser(), "safari")) {
+      StringBuilder jsBuilder = new StringBuilder();
+      
+      if (!simulateScriptsLoaded) {
+        simulateScriptsLoaded = true;
+        
+        String[] files = new String[] {
+          "//cdn.muikkuverkko.fi/libs/jquery-simulate/1.0.1/jquery.simulate.js",
+          "//cdn.muikkuverkko.fi/libs/jquery-simulate-ext/1.3.0/jquery.simulate.ext.js",
+          "//cdn.muikkuverkko.fi/libs/jquery-simulate-ext/1.3.0/jquery.simulate.drag-n-drop.js"
+        };
+        
+        for (String file : files) {
+          jsBuilder.append(String.format("$('<script>').attr({ 'src': '%s', 'type': 'text/javascript' }).appendTo(document.head);", file));
+        }
+        
+        simulateScriptsLoaded = true;
+      }
+      
+      jsBuilder.append(String.format("$('%s').simulate('drag-n-drop', { dragTarget: $('%s') });", source, target ));
+      
+      ((JavascriptExecutor) getWebDriver()).executeScript(jsBuilder.toString());
+      
+    } else {     
+      WebElement sourceElement = findElement(source); 
+      WebElement targetElement = findElement(target);
+      
+      (new Actions(getWebDriver()))
+        .dragAndDrop(sourceElement, targetElement)
+        .perform();
+    }
+  }
+  
+  protected WebElement findElement(String selection) {
+    return getWebDriver().findElement(By.cssSelector(selection));
   }
   
   protected List<WebElement> findElements(String selector){
@@ -632,5 +662,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   private RemoteWebDriver webDriver;
   private String sessionId;
+  private boolean simulateScriptsLoaded = false;
 
 }
