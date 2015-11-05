@@ -808,29 +808,37 @@
       maxFileSize = Number($("input[name='max-file-size']").val());
     }
     
-    // File field support
-    $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
-      $(field)
-        .muikkuFileField({
-          maxFileSize: maxFileSize
-        })
-        .muikkuField({
-          fieldName: $(field).data('field-name'),
-          embedId: $(field).data('embed-id'),
-          materialId: $(field).data('material-id'),
-          readonly: data.readOnlyFields||false,
-          answer: function (val) {
-            // TODO: Support setter for files
-            return JSON.stringify($(this.element).muikkuFileField('files'));
-          },
-          isReadonly: function () {
-            return $(this.element).muikkuFileField("isReadonly");
-          },
-          setReadonly: function (readonly) {
-            $(this.element).muikkuFileField("setReadonly", readonly);
-          }
-        });
-    });
+    renderDustTemplate('workspace/materials-assignment-attachement-delete-confirm.dust', { }, $.proxy(function (text) {
+      // File field support
+      $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
+        $(field)
+          .muikkuFileField({
+            maxFileSize: maxFileSize,
+            confirmRemove: true,
+            confirmRemoveHtml: text,
+            supportRestore: false,
+            confirmRemoveDialogClass: "workspace-materials-assigment-attachment-dialog",
+          })
+          .muikkuField({
+            fieldName: $(field).data('field-name'),
+            embedId: $(field).data('embed-id'),
+            materialId: $(field).data('material-id'),
+            readonly: data.readOnlyFields||false,
+            answer: function (val) {
+              // TODO: Support setter for files
+              return JSON.stringify($(this.element).muikkuFileField('files'));
+            },
+            isReadonly: function () {
+              return $(this.element).muikkuFileField("isReadonly");
+            },
+            setReadonly: function (readonly) {
+              $(this.element).muikkuFileField("setReadonly", readonly);
+            }
+          });
+      });
+      
+    }, this));
+    
   });
 
 }).call(this);

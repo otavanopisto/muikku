@@ -3,13 +3,15 @@
 
   $.widget("custom.muikkuFileField", {
     options : {
-        maxFileSize: undefined
+        maxFileSize: undefined,
+        supportRestore: true,
+        confirmRemove: false,
+        confirmRemoveHtml: null
       },
     _create : function() {
       this._readonly = false;
       this._fieldName = this.element.attr("name");
       this._multiple = this.element.attr("multiple") == 'multiple';
-      this._fileIndex = 0;
       
       this._uploaderContainer = $('<div>')
         .addClass('muikku-file-input-field-file-uploader-container')
@@ -56,6 +58,8 @@
         }).appendTo(fileElement);
       }
       
+      this._fileIndex = fileCount;
+      
       this.element.closest('form').submit($.proxy(this._onFormSubmit, this));
 
       this.element
@@ -67,12 +71,15 @@
       return $.map(this._uploaderContainer.find('.muikku-file-input-field-file'), $.proxy(function (fileElement) {
         var fileIndex = $(fileElement).data('file-index');
         var fieldPrefix = this._fieldName + '.' + fileIndex;
+        var fileId = $(fileElement).find('input[name="' + fieldPrefix + '-file-id"]').val();
+        var originalId = $(fileElement).find('input[name="' + fieldPrefix + '-original-file-id"]').val();
+        var removed = $(fileElement).hasClass('muikku-file-input-field-file-removed');
         
         return {
           contentType: $(fileElement).find('input[name="' + fieldPrefix + '-content-type"]').val(),
           name: $(fileElement).find('input[name="' + fieldPrefix + '-filename"]').val(),
-          id: $(fileElement).hasClass('muikku-file-input-field-file-removed') ? null : $(fileElement).find('input[name="' + fieldPrefix + '-file-id"]').val(),
-          originalId: $(fileElement).find('input[name="' + fieldPrefix + '-original-file-id"]').val()
+          id: removed ? null : fileId,
+          originalId: removed ? originalId || fileId : originalId
         };
       }, this));
     },
@@ -153,6 +160,7 @@
 
         this._fileCount.val(parseInt(this._fileCount.val()) + 1);
       } else {
+        var originalFileId = fileElement.find('input[name="' + fieldPrefix + '-file-id"]').val();
         fileElement.find('input[name="' + fieldPrefix + '-content-type"]').val(contentType);
         fileElement.find('input[name="' + fieldPrefix + '-filename"]').val(fileName);
         fileElement.find('input[name="' + fieldPrefix + '-file-id"]').val(fileId);
@@ -172,11 +180,25 @@
         }).text(text)
       );
     },
+    
+    _removeFiles: function (files) {
+      if (this.options.supportRestore) {
+        files.addClass('muikku-file-input-field-file-removed');
+        files.find('.muikku-file-input-field-file-remove').hide();
+        files.find('.muikku-file-input-field-file-restore').show();
+      } else {
+        files.addClass('muikku-file-input-field-file-removed muikku-file-input-field-file-removed-permanently');
+      }
+      
+      this.element.trigger("change");
+    },
 
     _onFileUploadAdd : function(e, data) {
       this.element.closest('form').find('input[type="submit"]').attr('disabled', 'disabled');
 
-      data.context = this._findFileElementByIndex(this._fileIndex);
+      if (!this._multiple) {
+        this._removeFiles(this._uploaderContainer.find('.muikku-file-input-field-file'));
+      }
       
       var i, l;
       for (i=0, l=data.originalFiles.length; i<l; i++) {
@@ -185,10 +207,8 @@
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsManagement.fileFieldUpload.fileSizeTooLarge', maxFileSizeConvertToKB));
           return;
         } else {
-          if (data.context.length == 0) {
-            data.context = this._createFileElement(this._fileIndex);
-          }
-          
+          data.context = this._createFileElement(this._fileIndex);
+          this._fileIndex++;
           $(this.element).trigger('uploadStart');
         }
       }
@@ -198,10 +218,31 @@
     
     _onFileRemoveClick: function (event) {
       var file = $(event.target).closest('.muikku-file-input-field-file');
-      file.addClass('muikku-file-input-field-file-removed');
-      file.find('.muikku-file-input-field-file-remove').hide();
-      file.find('.muikku-file-input-field-file-restore').show();
-      this.element.trigger("change");
+      
+      if (this.options.confirmRemove === true) {
+        var dialog = $(this.options.confirmRemoveHtml);
+        
+        dialog.dialog({
+          modal: true, 
+          dialogClass: this.options.confirmRemoveDialogClass,
+          buttons: [{
+            'text': dialog.attr('data-button-delete-text'),
+            'class': 'delete-button',
+            'click': $.proxy(function(event) {
+              this._removeFiles(file);
+              $(dialog).remove();
+            }, this)
+          }, {
+            'text': dialog.attr('data-button-cancel-text'),
+            'class': 'cancel-button',
+            'click': $.proxy(function(event) {
+              $(dialog).remove();
+            }, this)
+          }]
+        });
+      } else {
+        this._removeFiles(file);
+      }
     },
     
     _onFileRestoreClick: function (event) {
@@ -223,26 +264,17 @@
         }
       }
       
-      this._updateFileMeta(this._fileIndex, fileId, fileName, contentType);
-      this._updateFileLabel(this._fileIndex, fileName, fileId);
-      
-      // Fix for uploading a file over a removed one
-      var fileElement = this._findFileElementByIndex(this._fileIndex);
-      if (fileElement.hasClass('muikku-file-input-field-file-removed')) {
-        fileElement.removeClass('muikku-file-input-field-file-removed');
-        fileElement.find('.muikku-file-input-field-file-restore').hide();
-        fileElement.find('.muikku-file-input-field-file-remove').show();
-      }
-      
-      if (this._multiple) {
-        this._fileIndex++;
-      }
+      var index = parseInt(data.context.attr('data-file-index'));
+
+      this._updateFileMeta(index, fileId, fileName, contentType);
+      this._updateFileLabel(index, fileName, fileId);
       
       $(this.element).trigger('uploadDone', {
         id: fileId,
         name: fileName,
         contentType: contentType
       });
+      
       this.element.trigger("change");
     },
     
