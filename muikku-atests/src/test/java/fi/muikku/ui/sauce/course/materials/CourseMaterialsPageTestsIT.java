@@ -91,4 +91,5 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
       super.answerRadioButtonsTestStudent();
     }
   }
+  
 }
