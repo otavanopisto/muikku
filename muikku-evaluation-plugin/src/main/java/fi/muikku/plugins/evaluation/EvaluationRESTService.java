@@ -19,11 +19,11 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.evaluation.rest.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
-import fi.muikku.plugins.workspace.rest.WorkspaceRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.WorkspaceEntityController;
@@ -36,7 +36,8 @@ import fi.muikku.users.UserEntityController;
 @RequestScoped
 @Stateful
 @Produces("application/json")
-public class EvaluationRESTService extends WorkspaceRESTService {
+@Path("/workspace")
+public class EvaluationRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -2380108419567067263L;
 

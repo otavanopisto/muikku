@@ -6,6 +6,7 @@
       studentStudyProgrammeName: null,
       studentDisplayName: null,
       workspaceName: null,
+      workspaceEvaluableAssignments: null,
       gradingScales: [],
       assessors: [],
       evaluationDate: null,
@@ -81,7 +82,7 @@
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
             
             var batchCalls = $.map(this.options.workspaceEvaluableAssignments, $.proxy(function (workspaceEvaluableAssignment) {
-              return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceEvaluableAssignment.id, {
+              return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {
                 userEntityId: this.options.studentEntityId
               });
             }, this));
@@ -199,7 +200,7 @@
     
     _load: function (callback) {
       var materialIds = $.map(this.options.workspaceEvaluableAssignments, function (workspaceEvaluableAssignment) {
-        return workspaceEvaluableAssignment.materialId;
+        return workspaceEvaluableAssignment.workspaceMaterial.materialId;
       });
       
       $('#evaluation').evaluationLoader("loadHtmls", materialIds, $.proxy(function (err, htmlMaterials) {
@@ -213,11 +214,12 @@
           
           var assignments = $.map(this.options.workspaceEvaluableAssignments, function (workspaceEvaluableAssignment) {
             return {
-              workspaceMaterialId: workspaceEvaluableAssignment.id,
-              materialId: workspaceEvaluableAssignment.materialId,
+              workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
+              materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
               type: 'html',
-              title: htmlMaterialMap[workspaceEvaluableAssignment.materialId].title,
-              html: htmlMaterialMap[workspaceEvaluableAssignment.materialId].html
+              title: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].title,
+              html: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].html,
+              evaluation: workspaceEvaluableAssignment.evaluation
             };
           });
 
@@ -653,10 +655,18 @@
     _loadMaterials: function () {
       mApi().workspace.workspaces.materials
         .read(this.options.workspaceEntityId, { assignmentType : 'EVALUATED'})
-        .callback($.proxy(function (err, workspaceEvaluableAssignments) {
+        .callback($.proxy(function (err, workspaceEvaluableAssignmentMaterials) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
+            var workspaceEvaluableAssignments = [];
+            
+            for (var i=0; i<workspaceEvaluableAssignmentMaterials.length; i++) {
+              workspaceEvaluableAssignments.push(
+                  {workspaceMaterial: workspaceEvaluableAssignmentMaterials[i]}
+              );
+            }
+          
             this.element.trigger("materialsLoaded", {
               workspaceEvaluableAssignments: workspaceEvaluableAssignments
             });
@@ -700,17 +710,32 @@
           .addClass('evaluation-student-assignment-listing-row')
           .appendTo($('.evaluation-assignments'));
         
+        
         $.each(this._workspaceUsers, $.proxy(function (studentIndex, workspaceUser) {
-          $('<div>')
-            .evaluationAssignment({
-              workspaceEntityId: this.options.workspaceEntityId,
-              workspaceMaterialId: workspaceEvaluableAssignment.id,
-              materialId: workspaceEvaluableAssignment.materialId,
-              title: workspaceEvaluableAssignment.title,
-              workspaceUserEntityId: workspaceUser.id,
-              studentEntityId: workspaceUser.userId
-            })
-            .appendTo(materialRow);
+          
+          mApi().workspace.workspaces.materials.evaluations.read(
+              this.options.workspaceEntityId,
+              workspaceEvaluableAssignment.workspaceMaterial.id,
+              {userEntityId: workspaceUser.userId})
+          .callback($.proxy(function(err, workspaceMaterialEvaluations) {
+            var workspaceMaterialEvaluation = null;
+            if (workspaceMaterialEvaluations != null && workspaceMaterialEvaluations.length > 0) {
+              workspaceMaterialEvaluation = workspaceMaterialEvaluations[0];
+            }
+            workspaceEvaluableAssignment.evaluation = workspaceMaterialEvaluation;
+              
+            $('<div>')
+              .evaluationAssignment({
+                workspaceEntityId: this.options.workspaceEntityId,
+                workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
+                materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
+                title: workspaceEvaluableAssignment.workspaceMaterial.title,
+                workspaceUserEntityId: workspaceUser.id,
+                studentEntityId: workspaceUser.userId,
+                evaluation: workspaceMaterialEvaluation
+              })
+              .appendTo(materialRow);
+            }, this));
           }, this));
       }, this));
       
@@ -726,7 +751,8 @@
       workspaceMaterialId: null,
       title: null,
       workspaceUserEntityId: null,
-      studentEntityId: null
+      studentEntityId: null,
+      evaluation: null
     },
     
     _create : function() {
@@ -755,9 +781,9 @@
         studentStudyProgrammeName: studyProgrammeName,
         workspaceMaterialId: this.options.workspaceMaterialId,
         materialId: this.options.materialId,
-        evaluationDate: null,
-        evaluationGradeId: null,
-        verbalAssessment: null
+        evaluationDate: evaluation.evaluated,
+        evaluationGradeId: evaluation.gradeIdentifier,
+        verbalAssessment: evaluation.verbalAssessment
       });
     },
     
