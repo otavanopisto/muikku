@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.regex.Pattern;
@@ -111,6 +112,22 @@ public abstract class AbstractIntegrationTest extends TestWatcher {
     }
   }
 
+  public long getUserIdByEmail(String email) throws SQLException, ClassNotFoundException{
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute(String.format("SELECT user_id FROM useremailentity WHERE address = '%s'", email));
+      ResultSet results = statement.getResultSet();
+      long user_id = 0;
+      while (results.next()) {              
+        user_id = results.getLong("user_id");
+      }
+      return user_id;
+    } finally {
+      connection.close();
+    }
+  }
+  
   protected Boolean webhookCall(String url, String payload) throws Exception {
     String signature = "38c6cbd28bf165070d070980dd1fb595";
     CloseableHttpClient client = HttpClients.createDefault();
