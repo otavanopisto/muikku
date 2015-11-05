@@ -602,28 +602,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void dragAndDrop(String source, String target){
     if (StringUtils.equals(getSauceBrowser(), "microsoftedge") || StringUtils.equals(getSauceBrowser(), "internet explorer") || StringUtils.equals(getSauceBrowser(), "safari")) {
-      StringBuilder jsBuilder = new StringBuilder();
-      
-      if (!simulateScriptsLoaded) {
-        simulateScriptsLoaded = true;
-        
-        String[] files = new String[] {
-          "//cdn.muikkuverkko.fi/libs/jquery-simulate/1.0.1/jquery.simulate.js",
-          "//cdn.muikkuverkko.fi/libs/jquery-simulate-ext/1.3.0/jquery.simulate.ext.js",
-          "//cdn.muikkuverkko.fi/libs/jquery-simulate-ext/1.3.0/jquery.simulate.drag-n-drop.js"
-        };
-        
-        for (String file : files) {
-          jsBuilder.append(String.format("$('<script>').attr({ 'src': '%s', 'type': 'text/javascript' }).appendTo(document.head);", file));
-        }
-        
-        simulateScriptsLoaded = true;
-      }
-      
-      jsBuilder.append(String.format("$('%s').simulate('drag-n-drop', { dragTarget: $('%s') });", source, target ));
-      
-      ((JavascriptExecutor) getWebDriver()).executeScript(jsBuilder.toString());
-      
+      ((JavascriptExecutor) getWebDriver())
+        .executeScript(String.format("$('%s').simulate('drag-n-drop', { dragTarget: $('%s') });", source, target ));
     } else {     
       WebElement sourceElement = findElement(source); 
       WebElement targetElement = findElement(target);
@@ -662,6 +642,5 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   private RemoteWebDriver webDriver;
   private String sessionId;
-  private boolean simulateScriptsLoaded = false;
 
 }

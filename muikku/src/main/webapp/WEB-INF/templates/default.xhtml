@@ -3,6 +3,7 @@
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:h="http://java.sun.com/jsf/html" 
   xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
   xmlns:ui="http://java.sun.com/jsf/facelets">
 
   <f:view locale="#{muikkuSession.locale}">
@@ -47,6 +48,10 @@
       <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
       <h:outputScript name="scripts/jquery.klass/jquery.klass-0.1a.js" />
       
+      <script jsf:rendered="#{sessionBackingBean.testsRunning}" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery-simulate/1.0.1/jquery.simulate.js"></script>
+      <script jsf:rendered="#{sessionBackingBean.testsRunning}" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery-simulate-ext/1.3.0/jquery.simulate.ext.js"></script>
+      <script jsf:rendered="#{sessionBackingBean.testsRunning}" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery-simulate-ext/1.3.0/jquery.simulate.drag-n-drop.js"></script>
+      
       <!-- Perfect Scrollbar -->
       <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.5/js/min/perfect-scrollbar.jquery.min.js"/>
       <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.5/css/perfect-scrollbar.min.css"/>
@@ -89,6 +94,8 @@
       
       <!-- Api -->
       <h:outputScript name="scripts/api/api.js"/>
+
+      <h:outputScript name="scripts/debug.js"/>
   
       <!-- Widget Controller -->
       <h:outputScript name="scripts/gui/widgetcontroller.js" />
