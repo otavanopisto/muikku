@@ -67,10 +67,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
       loginStudent1();
       navigate("/communicator", true);
       waitAndClick(".cm-page-link-load-more");
-//      TODO: Find a way to wait by condition rather than sleep.
-      sleep(5000);
-      int elementCount = countElements("div.cm-message-header-content-secondary");
-      assertTrue(String.format("Elements list is not greater than %d in size", 10), elementCount > 10); 
+      assertTrue(String.format("Elements list is not greater than %d in size", 10), waitForMoreThanSize("div.cm-message-header-content-secondary", 10)); 
     }finally{
       deleteCommunicatorMessages(); 
     }

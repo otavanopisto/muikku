@@ -391,7 +391,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
           String[] classes = StringUtils.split(element.getAttribute("class"), " ");
           return ArrayUtils.contains(classes, className);
         }
-        
+        return false;
+      }
+    });
+  }
+
+  protected boolean waitForMoreThanSize(final String selector, final int size) {
+    WebDriver driver = getWebDriver();
+    return new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        int elementCount = countElements(selector);
+        if (elementCount > size) {
+          return true;
+        }
         return false;
       }
     });
