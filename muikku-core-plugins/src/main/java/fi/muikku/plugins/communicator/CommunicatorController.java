@@ -9,6 +9,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
+
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageCategoryDAO;
@@ -50,18 +56,19 @@ public class CommunicatorController {
   @Inject
   private CommunicatorMessageSignatureDAO communicatorMessageSignatureDAO;
   
-  /**
-   * 
-   * @param user
-   * @return
-   */
+  private String clean(String html) {
+    Document doc = Jsoup.parseBodyFragment(html);
+    doc = new Cleaner(Whitelist.relaxed()).clean(doc);
+    doc.outputSettings().escapeMode(EscapeMode.xhtml);
+    return doc.body().html();
+  }
 
   public List<InboxCommunicatorMessage> listReceivedItems(UserEntity userEntity) {
     return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
   }
   
-  public List<InboxCommunicatorMessage> listSentItems(UserEntity userEntity) {
-    return communicatorMessageDAO.listFirstMessagesBySender(userEntity);
+  public List<InboxCommunicatorMessage> listSentItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
+    return communicatorMessageDAO.listFirstMessagesBySender(userEntity, firstResult, maxResults);
   }
 
   public List<CommunicatorMessageRecipient> listReceivedItemsByUserAndRead(UserEntity userEntity, boolean read) {
@@ -82,7 +89,7 @@ public class CommunicatorController {
   
   public CommunicatorMessage createMessage(CommunicatorMessageId communicatorMessageId, UserEntity sender, List<UserEntity> recipients, 
       CommunicatorMessageCategory category, String caption, String content, Set<Tag> tags) {
-    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), category, caption, content, new Date(), tags);
+    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), category, caption, clean(content), new Date(), tags);
 
     for (UserEntity recipient : recipients) {
       communicatorMessageRecipientDAO.create(message, recipient.getId());

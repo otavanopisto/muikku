@@ -120,6 +120,11 @@ public class LocalUserImpl implements User {
     this.studyTimeEnd = studyTimeEnd;
   }
 
+  @Override
+  public boolean getHidden() {
+    return false;
+  }
+
   private String identifier;
   private String firstName;
   private String lastName;

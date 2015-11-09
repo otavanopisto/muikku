@@ -32,6 +32,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 
@@ -42,6 +43,9 @@ public class ElasticSearchProvider implements SearchProvider {
   @Inject
   private Logger logger;
 
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+  
   @Override
   public void init() {
     Builder settings = nodeBuilder().settings();
@@ -68,17 +72,32 @@ public class ElasticSearchProvider implements SearchProvider {
     return c.isEmpty();
   }
   
+  private String sanitizeSearchString(String query) {
+    if (query == null)
+      return null;
+    
+    // TODO: query_string search for case insensitive searches??
+    // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
+    String ret = query.toLowerCase();
+
+    // Replace characters we don't support at the moment
+    ret = ret.replace('-', ' ');
+    
+    ret = ret.trim();
+    return ret;
+  }
+  
   @Override
   public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, 
       Collection<Long> groups, Collection<Long> workspaces, int start, int maxResults) {
     try {
-      // TODO: query_string search for case insensitive searches??
-      // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
-      text = text != null ? text.toLowerCase() : null;
+      text = sanitizeSearchString(text);
 
       QueryBuilder query = QueryBuilders.matchAllQuery();
 
       List<FilterBuilder> filters = new ArrayList<FilterBuilder>();
+      
+      filters.add(FilterBuilders.notFilter(FilterBuilders.termFilter("hidden", true)));
       
       if (StringUtils.isNotBlank(text)) {
         StringTokenizer tokenizer = new StringTokenizer(text, " ");
@@ -107,10 +126,22 @@ public class ElasticSearchProvider implements SearchProvider {
       if (!isEmptyCollection(groups)) {
         filters.add(FilterBuilders.inFilter("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
       }
-      
+
       if (!isEmptyCollection(workspaces)) {
         filters.add(FilterBuilders.inFilter("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
       }
+
+      // Mandatory filter, you can always see either non students or students that are in the same workspace as you are
+      List<Long> publishedWorkspaceEntityIds = workspaceEntityController.listPublishedWorkspaceEntityIds();
+      
+      filters.add(
+          FilterBuilders.orFilter(
+              FilterBuilders.inFilter("archetype", EnvironmentRoleArchetype.TEACHER.name().toLowerCase(), EnvironmentRoleArchetype.MANAGER.name().toLowerCase(), EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()),
+              FilterBuilders.andFilter(
+                  FilterBuilders.termsFilter("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()),
+                  FilterBuilders.inFilter("workspaces", ArrayUtils.toPrimitive(publishedWorkspaceEntityIds.toArray(new Long[0]))))
+              )
+          );
       
       FilterBuilder filter;
       
@@ -162,6 +193,8 @@ public class ElasticSearchProvider implements SearchProvider {
     }
     
     QueryBuilder query = QueryBuilders.matchAllQuery();
+    
+    freeText = sanitizeSearchString(freeText);
     
     try {
       List<FilterBuilder> filters = new ArrayList<FilterBuilder>();
@@ -231,9 +264,7 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult search(String query, String[] fields, int start, int maxResults, Class<?>... types) {
     try {
-      // TODO: query_string search for case insensitive searches??
-      // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
-      query = query != null ? query.toLowerCase() : null;
+      query = sanitizeSearchString(query);
       
       String[] typenames = new String[types.length];
       for (int i = 0; i < types.length; i++) {
@@ -276,6 +307,8 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult freeTextSearch(String text, int start, int maxResults) {
     try {
+      text = sanitizeSearchString(text);
+      
       SearchResponse response = elasticClient.prepareSearch().setQuery(QueryBuilders.matchQuery("_all", text)).setFrom(start).setSize(maxResults).execute()
           .actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();

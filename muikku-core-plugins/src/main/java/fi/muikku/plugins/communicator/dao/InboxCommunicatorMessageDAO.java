@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.criterion.Order;
 
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
@@ -77,7 +79,7 @@ public class InboxCommunicatorMessageDAO extends CorePluginsDAO<InboxCommunicato
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<InboxCommunicatorMessage> listFirstMessagesBySender(UserEntity sender) {
+  public List<InboxCommunicatorMessage> listFirstMessagesBySender(UserEntity sender, Integer firstResult, Integer maxResults) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -93,7 +95,13 @@ public class InboxCommunicatorMessageDAO extends CorePluginsDAO<InboxCommunicato
     );
     criteria.groupBy(root.get(CommunicatorMessage_.communicatorMessageId));
     
-    return entityManager.createQuery(criteria).getResultList();
+    criteria.orderBy(criteriaBuilder.desc(root.get(CommunicatorMessage_.created)));
+    
+    TypedQuery<InboxCommunicatorMessage> query = entityManager.createQuery(criteria);
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
+    
+    return query.getResultList();
   }
 
   public List<InboxCommunicatorMessage> listMessagesByRecipientAndMessageId(UserEntity recipient, CommunicatorMessageId communicatorMessageId) {

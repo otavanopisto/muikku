@@ -14,7 +14,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   public void courseDiscussionSendMessageTest() throws Exception {
     loginAdmin();
     
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceDiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
       try {
@@ -45,7 +45,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   public void courseDiscussionAdminCreateAreaTest() throws Exception {
     loginAdmin();
     
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceDiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
       try {
@@ -73,7 +73,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   public void courseDiscussionReplyTest() throws Exception {
     loginAdmin();
     
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceDiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
       try {
@@ -107,7 +107,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   public void courseDiscussionDeleteThreadTest() throws Exception {
     loginAdmin();
     
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceDiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
       try {

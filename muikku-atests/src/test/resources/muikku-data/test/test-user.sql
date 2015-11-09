@@ -6,16 +6,20 @@ insert into RoleEntity (id, name) values
   (4, 'TEACHER'),
   (5, 'MANAGER'),
   (6, 'ADMINISTRATOR'),
-  (7, 'STUDENT');
+  (7, 'STUDENT'),
+  (8, 'Course Teacher'),
+  (9, 'Course Student'),
+  (10, 'TRUSTED_SYSTEM');
 
 insert into EnvironmentRoleEntity (id, archetype) values 
   (4, 'TEACHER'),
   (5, 'MANAGER'),
   (6, 'ADMINISTRATOR'),
-  (7, 'STUDENT');
+  (7, 'STUDENT'),
+  (10, 'CUSTOM');
 
 --insert into SchoolDataSource (id, identifier) values (1, 'LOCAL'), (2, 'PYRAMUS');
-insert into WorkspaceRoleEntity (id, archetype) values (4, 'TEACHER'), (7, 'STUDENT');
+insert into WorkspaceRoleEntity (id, archetype) values (8, 'TEACHER'), (9, 'STUDENT'); 
 
 -- User 4 - ADMINISTRATOR
 

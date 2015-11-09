@@ -39,13 +39,12 @@
             if (!err) {
               window.location.reload();
             } else {
-              alert("Error occurred: " + err);
+              $('.notification-queue').notificationQueue('notification', 'error', err);
             }
           });
     }
 
-    openInSN('/workspace/workspace-journal-new-entry.dust', +workspaceId,
-        sendJournalEntry);
+    openInSN('/workspace/workspace-journal-new-entry.dust', +workspaceId,sendJournalEntry);
   };
 
  function editJournalEntry(element) {
@@ -56,13 +55,12 @@
         ,message: element.find('.workspace-journal-content').html()
         ,title: element.find('.workspace-journal-title').html()}
       , function(values){
-      console.log(values);
       mApi().workspace.journal.update(id, values).callback(
           function(err, result) {
             if (!err) {
               window.location.reload();
             } else {
-              alert("Error occurred: " + err);
+              $('.notification-queue').notificationQueue('notification', 'error', err);
             }
           });
     });
@@ -93,5 +91,9 @@
   $(document).on('click', '.journal-edit-button', function(event) {
     editJournalEntry($(this).parent().parent());
   });
+
+  $(document).on('change', '#studentSelectField', function() {
+    $("#studentSelectForm")[0].submit();
+  })
 
 }).call(this);

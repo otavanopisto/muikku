@@ -116,13 +116,13 @@ body {
           background:#27b91c; /* GREEN */
         }
         
-        button.revert-button {
+        button.revert-button,
+        button.cancel-evaluation-button {
           float:right;
           background:#f6a930; /* ORANGE */
         }
         
-        button.cancel-button,
-        button.cancel-evaluation-button {
+        button.cancel-button {
           float:right;
           background:#7391a7; /* GRAYISH BLUE */
         }

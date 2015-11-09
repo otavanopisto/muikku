@@ -170,16 +170,11 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/sentitems")
   @RESTPermitUnimplemented
-  public Response listUserSentCommunicatorItems() {
+  public Response listUserSentCommunicatorItems(
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
-    List<InboxCommunicatorMessage> sentItems = communicatorController.listSentItems(user);
-
-    Collections.sort(sentItems, new Comparator<CommunicatorMessage>() {
-      @Override
-      public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
-        return o2.getCreated().compareTo(o1.getCreated());
-      }
-    });
+    List<InboxCommunicatorMessage> sentItems = communicatorController.listSentItems(user, firstResult, maxResults);
 
     List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
     
@@ -352,11 +347,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
-    String content = Jsoup.clean(newMessage.getContent(), Whitelist.relaxed());
-    String caption = Jsoup.clean(newMessage.getCaption(), Whitelist.relaxed());
-
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
-        caption, content, tagList);
+        newMessage.getCaption(), newMessage.getContent(), tagList);
       
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
     webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);

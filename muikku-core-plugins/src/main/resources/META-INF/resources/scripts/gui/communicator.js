@@ -3,24 +3,22 @@ $(document).ready(function(){
   
   $(".bt-mainFunction").click(function(){
     var sendMessage = function(values){
-      var _this = this;
       delete values.recipient;
       
       mApi().communicator.messages.create(values)
-      .callback(function (err, result) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.newMessage.error'));
-        } else {
-        $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage.success'));
-        }
-      });
+        .callback(function (err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.newMessage.error'));
+          } else {
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage.success'));
+          }
+        });
+      
       window.mCommunicator._refreshView();
     }   
 
     openInSN('/communicator/communicator_create_message.dust', null, sendMessage);    
   });
-  
-
   CommunicatorImpl = $.klass({
     init: function () {
       $(CommunicatorImpl.msgContainer).on('click','.cm-message:not(.open) .cm-message-details-container', $.proxy(this._onMessageClick, this));
@@ -29,14 +27,17 @@ $(document).ready(function(){
       $(CommunicatorImpl.msgContainer).on('click','.cm-message-reply-link', $.proxy(this._replyMessage, this));
       $('#socialNavigation').on('focus', '#recipientContent', $.proxy(this._onRecipientFocus, this));
       $("#socialNavigation").on("click", ".cm-message-recipient-name", $.proxy(this._onRemoveRecipientClick, this));
-      $("#socialNavigation").on("click", ".cm-message-recipient-name", $.proxy(this._onRemoveRecipientClick, this));
+      $(CommunicatorImpl.msgContainer).on("click", '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));                
       $('*[data-message-type="inbox"]').addClass('selected');      
+
+//      dust.preload("communicator/communicator_item.dust");
 
       $(window).on("hashchange", $.proxy(this._onHashChange, this));
       
       $(window).trigger("hashchange");
       
       var _this = this;
+      
       $(document).on("Communicator:newmessagereceived", function (event, data) {
         var hash = window.location.hash.substring(1);
 
@@ -47,11 +48,10 @@ $(document).ready(function(){
     },
 
     _showInbox : function () {
-      var _this = this;
+      $(CommunicatorImpl.msgContainer).empty();      
+      this._addLoading(CommunicatorImpl.msgContainer);
       
-      _this._addLoading(CommunicatorImpl.msgContainer);
-      
-      _this._setSelected("inbox");
+      this._setSelected("inbox");
       mApi().communicator.items.read().on('$', function (item, itemCallback) {
         item.caption = $('<div>').html(item.caption).text();
         item.content = $('<div>').html(item.content).text();
@@ -60,29 +60,29 @@ $(document).ready(function(){
           .callback(function (err, user) {  
             item.senderFullName = user.firstName + ' ' + user.lastName;
             item.senderHasPicture = user.hasImage;
-          });
-        mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
-          .callback(function (err, count) {
-            item.messageCount = count;
-          });
-
-        itemCallback();
-      })
-      .callback(function (err, result) {
-        renderDustTemplate('communicator/communicator_items.dust', result, function (text) {
-          $(CommunicatorImpl.msgContainer).empty();
-          _this._clearLoading();
-          $(CommunicatorImpl.msgContainer).append($.parseHTML(text));
+            
+            mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
+            .callback(function (err, count) {
+              item.messageCount = count;
+              itemCallback();
+            });
         });
-      });
+      })
+      .callback($.proxy(function (err, result) {
+        result.msgLoadCount = result.length;
+        renderDustTemplate('communicator/communicator_items.dust', result, $.proxy(function (text) {
+          this._clearLoading();
+          $(CommunicatorImpl.msgContainer).append($.parseHTML(text));
+        }, this));
+      }, this));
+      
     },
+    
     _showMessage : function (communicatorMessageId) {
       var mCont = $(CommunicatorImpl.msgContainer);
-      var _this = this; 
+      this._addLoading(CommunicatorImpl.msgContainer);
       
-      _this._addLoading(CommunicatorImpl.msgContainer);
-      
-      mApi().communicator.messages.read(communicatorMessageId).callback(function (err, result) {
+      mApi().communicator.messages.read(communicatorMessageId).callback($.proxy(function (err, result) {
         for (var i = 0; i < result.length; i++) {
           result[i].caption = $('<div>').html(result[i].caption).text();
           result[i].content = $('<div>').html(result[i].content).text();
@@ -102,61 +102,63 @@ $(document).ready(function(){
           });
         } 
             
-        renderDustTemplate('communicator/communicator_items_open.dust', result, function(text) {
+        renderDustTemplate('communicator/communicator_items_open.dust', result, $.proxy(function(text) {
           mCont.empty();
-          _this._clearLoading();
+          this._clearLoading();
           mCont.append($.parseHTML(text));
-          
+        }, this));
 
-     
-        });
-
-        mApi().communicator.messages.markasread.create(communicatorMessageId).callback(function (err, result) {
+        mApi().communicator.messages.markasread.create(communicatorMessageId).callback($.proxy(function (err, result) {
           $(document).trigger("Communicator:messageread");
-        });
-      });
+        }, this));
+      }, this));
     },
     _showSentItems : function () {
-      var _this = this;
+      $(CommunicatorImpl.msgContainer).empty();
+      this._addLoading(CommunicatorImpl.msgContainer);
       
-      _this._addLoading(CommunicatorImpl.msgContainer);
-      
-      mApi().communicator.sentitems.read()
-      .on('$', function (item, itemCallback) {
-        item.caption = $('<div>').html(item.caption).text();
-        item.content = $('<div>').html(item.content).text();
+      mApi().communicator.sentitems
+        .read()
+        .on('$', function (item, itemCallback) {
+          item.caption = $('<div>').html(item.caption).text();
+          item.content = $('<div>').html(item.content).text();
         
-        // Lets fetch message recipients by their ids
-        var recipients = item.recipientIds;
-        var recipientNames = [];
-        for (var i = 0; i < recipients.length; i++) {
-         
-          mApi().communicator.communicatormessages.recipients.info.read(item.id, recipients[i])
-            .callback(function (err, user) {  
-              recipientNames.push(user.firstName + ' ' + user.lastName);
-              
-              item.recipientHasPicture = user.hasImage;
-            });
+          // Lets fetch message recipients by their ids
         
-          item.recipientFullName = recipientNames;
-        }
-
-        mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
-          .callback(function (err, count) {
-            item.messageCount = count;
+          var calls = $.map(item.recipientIds||[], function(recipient){
+            return mApi().communicator.communicatormessages.recipients.info.read(item.id, recipient);
           });
-
-        itemCallback();
-      })
-      .callback(function (err, result) {
-        renderDustTemplate('communicator/communicator_sent_items.dust', result, function (text) {
           
-          _this._clearLoading();
-          $(CommunicatorImpl.msgContainer).empty();
-          $(CommunicatorImpl.msgContainer).append($.parseHTML(text));
-        });
-      });      
-      
+          mApi().batch(calls).callback(function(err, results){
+            item.recipients = $.map(results, function (result) {
+              return {
+                fullName: result.firstName + ' ' + result.lastName,
+                firstName: result.firstName,
+                hasPicture: result.hasImage
+              };
+            });
+          
+            mApi().communicator.messages.messagecount
+              .read(item.communicatorMessageId)
+              .callback(function (err, count) {
+                item.messageCount = count;
+                itemCallback();
+              });            
+          });
+        })
+        .callback($.proxy(function (err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.sent.loaderror'));
+          } else {
+            result.msgLoadCount = result.length;
+            
+            renderDustTemplate('communicator/communicator_sent_items.dust', result, $.proxy(function (text) {
+              this._clearLoading();
+              $(CommunicatorImpl.msgContainer).empty();
+              $(CommunicatorImpl.msgContainer).append($.parseHTML(text));
+            }, this));
+          }
+        }, this));      
     },
     _onMessageClick: function (event) {
       var element = $(event.target);
@@ -202,31 +204,39 @@ $(document).ready(function(){
           var msgId = $(inputs[i]).attr("value");
           deleteQ.push(msgId);
         }         
-        this._deleteMessages(deleteQ)
+        if(deleteQ.length != 0){
+          this._deleteMessages(deleteQ)
+        }
       }
     },    
     
-    _deleteMessages : function(ids) {
-      var _this = this;
-      for (i = 0; i < ids.length; i++) {
-        var endpoint = mApi().communicator.items;
-        var hash = window.location.hash.substring(1);
-        
-        if (hash == "sent") {
-          endpoint = mApi().communicator.sentitems;
-        }
+    _deleteMessages : function(ids){
+      var messages = ids.length;
+      var endpoint = mApi().communicator.items;
+      
+      var hash = window.location.hash != '' ? window.location.hash.substring(1) : "none";
+      var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
 
-        endpoint.del(ids[i]).callback(function (err, result){
-         if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
-          } else {
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
-          }         
-          _this._refreshView();
-        });
-      } 
+      if (hash == "sent") {
+        endpoint = mApi().communicator.sentitems;
+      }
+
+      var batch = $.map(ids, function(id){
+        return endpoint.del(id);
+      });
+      
+      mApi().batch(batch).callback($.proxy(function(err){
+        $('.notification-queue').notificationQueue('remove', loadNotification);
+        
+        if (err) {
+         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
+        } else {
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
+           this._refreshView();
+        }
+      }, this));
     },
-    
+
     _onRecipientFocus:function(event){
       $(event.target).autocomplete({
         create: function(event, ui){
@@ -240,11 +250,10 @@ $(document).ready(function(){
           $(this).val("");
           return false;
         }
-      });     
+      });
     }, 
  
     _selectRecipient: function (event, item) {
-      var _this = this;
       var element = $(event.target);
       var recipientListElement = $("#msgRecipientsContainer");      
       var prms = {
@@ -467,28 +476,118 @@ $(document).ready(function(){
     
     
   },
-    _onHashChange: function (event) {
-      var hash = window.location.hash.substring(1);
-      var _this = this;
-       
-        if (hash.indexOf("inbox/") === 0) {
-          var messageId = hash.substring(6);
-          var hI = hash.indexOf('/');
-          var cHash = hash.substring(0, hI);
-          _this._showMessage(messageId);
-          _this._setSelected(cHash);
-        } else if (hash == "sent") {
-          _this._showSentItems();
-          _this._setSelected(hash);
-        } else if (hash.indexOf("sent/") === 0) {
-          var hI = hash.indexOf('/');          
-          var cHash = hash.substring(0, hI );
-          var messageId = hash.substring(5);
-          _this._showMessage(messageId);
-          _this._setSelected(cHash);
-        } else
-          _this._showInbox();
+  
+  _onMoreClick : function(event){
+    var element = $(event.target);
+    var box = window.location.hash ? window.location.hash.substring(1) : "none";
+    element = element.parents(".cm-messages-paging");
+    var pageElement = $(".cm-messages-pages");
+    var _this = this;  
 
+    $(element).remove(); 
+    this._addLoading(pageElement);
+    
+
+
+    var msgs = $(CommunicatorImpl.msgContainer).find('.cm-message');
+    var msgsCount = msgs.length;
+
+    switch(box) {
+      case "sent":
+        mApi().communicator.sentitems.read({'firstResult' : msgsCount})
+        .on('$', $.proxy(function (item, itemCallback) {
+          item.caption = $('<div>').html(item.caption).text();
+          item.content = $('<div>').html(item.content).text();
+          
+          // Lets fetch message recipients by their ids
+          var recipients = item.recipientIds;
+          
+          var calls = $.map(recipients, function(recipient){
+            return mApi().communicator.communicatormessages.recipients.info.read(item.id, recipient);
+          });
+            
+          mApi().batch(calls).callback($.proxy(function(err, results){
+            item.recipients = $.map(results, function (result) {
+              return {
+                fullName: result.firstName + ' ' + result.lastName,
+                hasPicture: result.hasImage,
+                firstName: result.firstName
+              };
+            });
+            
+            mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
+              .callback($.proxy(function (err, count) {
+                item.messageCount = count;
+                itemCallback();
+              }, this));            
+            
+          }, this));
+        }, this))
+        .callback($.proxy(function (err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
+          } else {
+            result.msgLoadCount = result.length;
+            renderDustTemplate('communicator/communicator_sent_page.dust', result, $.proxy(function (text) {
+              this._clearLoading();
+              pageElement.append($.parseHTML(text));
+            }, this));
+          }
+        }, this));      
+      break;
+      default:
+        mApi().communicator.items.read({'firstResult' : msgsCount}).on('$', function (item, itemCallback) {
+          item.caption = $('<div>').html(item.caption).text();
+          item.content = $('<div>').html(item.content).text();
+          
+          mApi().communicator.communicatormessages.sender.read(item.id)
+            .callback(function (err, user) {  
+              item.senderFullName = user.firstName + ' ' + user.lastName;
+              item.senderHasPicture = user.hasImage;
+              
+              mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
+              .callback(function (err, count) {
+                item.messageCount = count;
+                itemCallback();
+              });
+          });
+        })
+        .callback($.proxy(function (err, msgs) {
+          // TODO : what if 25 users and no more? 
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
+          } else {
+            msgs.msgLoadCount = msgs.length;
+            
+            this._clearLoading();
+            renderDustTemplate('/communicator/communicator_page.dust', msgs, function(text) {
+              pageElement.append($.parseHTML(text));
+            });
+          }
+        }, this));
+      }    
+    },
+    
+    _onHashChange: function (event) {
+      var hash = window.location.hash ? window.location.hash.substring(1) : "none";
+      if (hash.indexOf("inbox/") === 0) {
+        var messageId = hash.substring(6);
+        var hI = hash.indexOf('/');
+        var cHash = hash.substring(0, hI);
+        this._showMessage(messageId);
+        this._setSelected(cHash);
+      } else if (hash == "sent") {
+        this._showSentItems();
+        this._setSelected(hash);
+      } else if (hash.indexOf("sent/") === 0) {
+        var hI = hash.indexOf('/');          
+        var cHash = hash.substring(0, hI );
+        var messageId = hash.substring(5);
+        this._showMessage(messageId);
+        this._setSelected(cHash);
+      } else {
+        this._showInbox();
+      }
     },
     
     _klass : {

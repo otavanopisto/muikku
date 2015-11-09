@@ -122,4 +122,8 @@ public class WorkspaceEntityController {
     
     return result;
   }
+
+  public List<Long> listPublishedWorkspaceEntityIds() {
+    return workspaceEntityDAO.listPublishedWorkspaceEntityIds();
+  }
 }
