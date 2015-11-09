@@ -69,9 +69,9 @@
             getCorrectAnswers: $.proxy(function() {
               var result = [];
               var meta = this.options.meta;
-              //var counterParts = this._element.find('');
               for (var i = 0, l = meta.connections.length; i < l; i++) {
-                result.push(meta.connections[i].field + ' = ' + meta.connections[i].counterpart);
+                this._element.find('.muikku-connect-field-terms').append(this._element.find('.muikku-connect-field-term[data-field-name="' + meta.connections[i].field + '"]'));
+                this._element.find('.muikku-connect-field-counterparts').append(this._element.find('.muikku-connect-field-counterpart[data-field-value="' + meta.connections[i].counterpart + '"]'));
               }
               return result;
             }, this)
