@@ -58,13 +58,23 @@
                 corrects[meta.connections[i].field] = meta.connections[i].counterpart;
               }
               
+              var isCorrect = true;
               for (var term in pairs) {
+                var termElement = this._element.find('.muikku-connect-field-term[data-field-name="' + term + '"]');
+                var counterPartElement = this._element.find('.muikku-connect-field-counterpart[data-field-value="' + pairs[term] + '"]');
+                termElement.removeClass('muikku-connect-field-wrong-answer muikku-connect-field-correct-answer');
+                counterPartElement.removeClass('muikku-connect-field-wrong-answer muikku-connect-field-correct-answer');
                 if (corrects[term] != pairs[term]) {
-                  return false;
+                  termElement.addClass('muikku-connect-field-wrong-answer');
+                  counterPartElement.addClass('muikku-connect-field-wrong-answer');
+                  isCorrect = false;
+                }else{
+                  termElement.addClass('muikku-connect-field-correct-answer');
+                  counterPartElement.addClass('muikku-connect-field-correct-answer');
                 }
               }
+              return isCorrect;
 
-              return true; 
             }, this),
             getCorrectAnswers: $.proxy(function() {
               var result = [];
