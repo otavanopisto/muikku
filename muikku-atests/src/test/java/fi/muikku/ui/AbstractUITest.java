@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.Description;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -40,8 +41,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import wiremock.org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,8 +64,8 @@ import fi.muikku.atests.WorkspaceDiscussionThread;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
-import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
+import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -339,6 +338,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForPresent(selector);
     click(selector);
   }
+  
+  protected void waitScrollAndClick(String selector) {
+    scrollIntoView(selector);
+    waitAndClick(selector);
+  }
+  
+  protected void scrollIntoView(String selector) {
+    ((JavascriptExecutor) getWebDriver()).executeScript(String.format("document.querySelectorAll('%s').item(0).scrollIntoView(true);", selector));
+  }
 
   protected void selectOption(String selector, String value){
     Select selectField = new Select(getWebDriver().findElementByCssSelector(selector));
@@ -593,9 +601,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void dragAndDrop(String source, String target){
-    WebElement sourceElement = getWebDriver().findElement(By.cssSelector(source)); 
-    WebElement targetElement = getWebDriver().findElement(By.cssSelector(target));
-    (new Actions(getWebDriver())).dragAndDrop(sourceElement, targetElement).perform();
+    if (StringUtils.equals(getSauceBrowser(), "microsoftedge") || StringUtils.equals(getSauceBrowser(), "internet explorer") || StringUtils.equals(getSauceBrowser(), "safari")) {
+      ((JavascriptExecutor) getWebDriver())
+        .executeScript(String.format("try { $('%s').simulate('drag-n-drop', { dragTarget: $('%s') }); } catch (e) { console.log(e); } ", source, target ));
+    } else {     
+      WebElement sourceElement = findElement(source); 
+      WebElement targetElement = findElement(target);
+      
+      (new Actions(getWebDriver()))
+        .dragAndDrop(sourceElement, targetElement)
+        .perform();
+    }
+  }
+  
+  protected WebElement findElement(String selection) {
+    return getWebDriver().findElement(By.cssSelector(selection));
   }
   
   protected List<WebElement> findElements(String selector){

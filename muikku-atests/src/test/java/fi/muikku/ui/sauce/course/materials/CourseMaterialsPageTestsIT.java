@@ -92,11 +92,4 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
     }
   }
   
-  @Override
-  public void answerConnectFieldByDraggingTestAdmin() throws Exception {
-    if(!"microsoftedge".equals(getSauceBrowser()) && !"safari".equals(getSauceBrowser())) {
-      super.answerConnectFieldByDraggingTestAdmin();
-    }
-  }
-  
 }
