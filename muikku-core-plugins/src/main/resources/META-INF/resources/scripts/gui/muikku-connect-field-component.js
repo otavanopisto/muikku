@@ -82,7 +82,7 @@
               for (var i = 0, l = meta.connections.length; i < l; i++) {
                 var counterpart = this._element.find('.muikku-connect-field-counterpart[data-field-value="' + meta.connections[i].counterpart + '"]');
                 var termNumber = this._element.find('.muikku-connect-field-term[data-field-name="' + meta.connections[i].field + '"]').attr('data-field-number');
-                counterpart.after($('<span>')
+                counterpart.before($('<span>')
                     .text(termNumber)
                     .addClass('muikku-connect-field-correct-number'));
               }
