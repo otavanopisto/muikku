@@ -382,6 +382,14 @@
   
   $(document).on('taskFieldDiscovered', function (event, data) {
     
+    function concatText(text, length){
+      if(text.length > length){
+        return text.substring(0, length)+'...';
+      }else{
+        return text;
+      }
+    }
+    
     function shuffleArray(array) {
       for (var i = array.length - 1; i > 0; i--) {
           var j = Math.floor(Math.random() * (i + 1));
@@ -473,13 +481,15 @@
             })
             .val(values[connectFieldTermMeta.name]);
           
-          tdTermElement.text(connectFieldTermMeta.text);
+          tdTermElement.text(concatText(connectFieldTermMeta.text, 60));
+          tdTermElement.attr('title', connectFieldTermMeta.text);
           tdTermElement.data('muikku-connect-field-option-name', connectFieldTermMeta.name);
           tdValueElement.append(inputElement);
         }
         
         if (connectFieldCounterpartMeta != null) {
-          tdCounterpartElement.text(connectFieldCounterpartMeta.text);
+          tdCounterpartElement.text(concatText(connectFieldCounterpartMeta.text, 60));
+          tdCounterpartElement.attr('title', connectFieldCounterpartMeta.text);
           tdCounterpartElement.attr('data-muikku-connect-field-option-name', connectFieldCounterpartMeta.name);
         }
       
