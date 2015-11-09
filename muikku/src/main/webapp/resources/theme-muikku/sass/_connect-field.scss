@@ -1,26 +1,39 @@
 .muikku-connect-field {
   position:relative;
+  @include flexbox;
+  flex-flow:row nowrap;
+  justify-content:space-between;
+  align-items:flex-start;
+  align-content:space-between;
 }
 
 .muikku-connect-field-counterparts,
-.muikku-connect-field-gap,
 .muikku-connect-field-terms {
-	display: inline-block;
-	  vertical-align:top;
+	display:block;
+	@include flex(1 0 48%);
 }
 
 .muikku-connect-field-gap {
-	width: 40px;
+	@include flex(0 1 4%);
 }
 
 .muikku-connect-field-counterpart,
 .muikku-connect-field-term {
+  @include flexbox;
+  align-items:center;
   padding:8px 21px;
 	background:#e1f7fc;
 	margin: 4px;
 	@include rounded(3px);
 	transition:background 0.3s ease-in-out;
-/* 	white-space:nowrap; */ /* By removing this connect field looks like a potato */
+}
+
+.muikku-connect-field-term {
+  justify-content:flex-end;  
+}
+
+.muikku-connect-field-counterpart {
+  justify-content: flex-start
 }
 
 .ui-sortable-placeholder {
@@ -37,7 +50,10 @@
   
   .muikku-connect-field-counterpart,
   .muikku-connect-field-term {
-    width:250px;
+    height:2.5em;
+    line-height:1.2em;
+    overflow:hidden;
+/*     width:250px; */
   }
 
 }
@@ -46,13 +62,15 @@
   
   .muikku-connect-field-counterpart,
   .muikku-connect-field-term {
-    width:230px;
+    height:2.5em;
+    line-height:1.2em;
+    overflow:hidden;
+/*     width:230px; */
   }
 
 }
 
 .muikku-connect-field-term {
-	text-align: right;
 	cursor:pointer;
 	
 	&.muikku-connect-field-edited {
