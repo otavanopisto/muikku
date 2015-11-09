@@ -38,6 +38,7 @@ import fi.pyramus.rest.model.StudyProgrammeCategory;
 import fi.pyramus.rest.model.Subject;
 import fi.pyramus.rest.model.UserRole;
 import fi.pyramus.rest.model.WhoAmI;
+import fi.pyramus.webhooks.WebhookCourseCreatePayload;
 import fi.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookCourseStudentCreatePayload;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
@@ -47,6 +48,43 @@ import fi.pyramus.webhooks.WebhookStudentGroupCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentGroupStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentGroupStudentCreatePayload;
 
+/**
+ * Pyramus data bridge mocks for rest tests.
+ * 
+ * Mocks default of
+ * 
+ * Common properties
+ *  * EducationType (id = 1)
+ *  * EducationalTimeUnit (id = 1)
+ *  * CourseType (id = 1)
+ * 
+ * Roles
+ *  * CourseStaffMember (id = 7, "Opettaja")
+ *  * CourseStaffMember (id = 8, "Tutor")
+ *  * CourseStaffMember (id = 9, "Vastuuhenkilö")
+ *  * CourseStaffMember (id = 10, "Opiskelija")
+ *  
+ * StudyProgramme (id = 1)
+ * StudyProgrammeCategory (id = 1)
+ * 
+ * Users
+ *  * Person - Student (ids = 1)
+ *  * Person - StaffMember (ids = 2, Role = USER)
+ *  * Person - StaffMember (ids = 3, Role = MANAGER)
+ *  * Person - StaffMember (ids = 4, Role = ADMINISTRATOR)
+ *  * Person - StaffMember (ids = 5, Role = TRUSTED_SYSTEM)
+ *  * Person - Student (ids = 6)
+ *  
+ * UserGroups (id = 1)
+ *  * Members (id = 1, userId = 4 [Admin])
+ *  * Members (id = 2, userId = 1 [Student])
+ *  
+ * Courses (id = 1)
+ * CourseStaffMember (id = 1, userId = 4 [Admin], courseRole = 7)
+ * CourseStudent (id = 2, userId = 1)
+ * 
+ * Login info for student1
+ */
 public class PyramusMocksRest {
   
   public static void mockDefaults(List<String> payloads) throws JsonProcessingException {
@@ -262,43 +300,47 @@ public class PyramusMocksRest {
     return staffMember;
   }
   
-  public static void mockUsers(List<String> payloads) throws JsonProcessingException {
+  public static Student mockStudent(Long personId, Long studentId, String firstName, String lastName, String email, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    
-    Map<String, String> variables = null;
-    List<String> tags = null;
-    
-    Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null,
+
+    Student student = new Student(studentId, personId, firstName, lastName, null, null, null, null, null, null, null, null,
       null, null, null, (long) 1, null, null,
       false, null, null, null, null, variables, tags, false);
     
     String studentJson = objectMapper.writeValueAsString(student);
     
-    stubFor(get(urlEqualTo("/1/students/students/1"))
+    stubFor(get(urlEqualTo(String.format("/1/students/students/%d", studentId)))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(studentJson)
         .withStatus(200)));
 
-    Email email = new Email((long) 1, (long) 2, true, "testuser@made.up");
-    Email[] emails = {email};
+    Email emailObj = new Email(studentId, (long) 2, true, email);
+    Email[] emails = { emailObj };
     String emailJson = objectMapper.writeValueAsString(emails);
+
+    Student[] studentArray = { student };
+    String studentArrayJson = objectMapper.writeValueAsString(studentArray);
     
-    stubFor(get(urlEqualTo("/1/students/students/1/emails"))
+    stubFor(get(urlEqualTo(String.format("/1/students/students/%d/emails", studentId)))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(emailJson).withStatus(200)));
 
-    Student[] studentArray = { student };
-    String studentArrayJson = objectMapper.writeValueAsString(studentArray);
-
-    stubFor(get(urlEqualTo("/1/students/students?email=testuser@made.up"))
-    // .withQueryParam("email", matching(".*"))
+    stubFor(get(urlEqualTo(String.format("/1/students/students?email=%s", email)))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(studentArrayJson)
         .withStatus(200)));
+    
+    addPayload(payloads, objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
 
+    return student;
+  }
+  
+  public static void mockUsers(List<String> payloads) throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
     DateTime birthday = new DateTime(1990, 2, 2, 0, 0, 0, 0);
 
     Person person = mockPerson(1l, birthday, "345345-3453", Sex.MALE, 1l);
@@ -306,14 +348,13 @@ public class PyramusMocksRest {
     Person staff2 = mockPerson(3l, birthday, "345345-3453", Sex.MALE, 3l);
     Person staff3 = mockPerson(4l, birthday, "345345-3453", Sex.MALE, 4l);
     Person staff4 = mockPerson(5l, birthday, "345345-3453", Sex.MALE, 5l);
+    Person studentPerson2 = mockPerson(6l, birthday, "345345-3453", Sex.MALE, 6l);
     
-    Person[] personArray = { person, staff1, staff2, staff3, staff4 };
+    Person[] personArray = { person, staff1, staff2, staff3, staff4, studentPerson2 };
     String personArrayJson = objectMapper.writeValueAsString(personArray);
 
     for (Person p : personArray)
       addPayload(payloads, objectMapper.writeValueAsString(new WebhookPersonCreatePayload(p.getId())));
-
-    addPayload(payloads, objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
     
     stubFor(get(urlMatching("/1/persons/persons?filterArchived=.*"))
       .willReturn(aResponse()
@@ -326,20 +367,29 @@ public class PyramusMocksRest {
         .withHeader("Content-Type", "application/json")
         .withBody(personArrayJson)
         .withStatus(200)));
-    
-    stubFor(get(urlMatching("/1/students/students?filterArchived=false&firstResult=.*&maxResults=.*"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(studentArrayJson)
-        .withStatus(200)));
+
+    Map<String, String> variables = null;
+    List<String> tags = null;
+
+    Student student1 = mockStudent(1l, 1l, "Test", "User", "testuser@made.up", tags, variables, payloads);
+    Student student2 = mockStudent(6l, 6l, "Hidden", "Dragon", "crouchingtiger@made.up", tags, variables, payloads);
 
     StaffMember staffMember1 = mockStaffMember(2l, 2l, "Test", "Staff1member", "teacher@made.up", UserRole.USER, tags, variables, payloads);
     StaffMember staffMember2 = mockStaffMember(3l, 3l, "Test", "Staff2member", "mana@made.up", UserRole.MANAGER, tags, variables, payloads);
     StaffMember staffMember3 = mockStaffMember(4l, 4l, "Test", "Administrator", "admin@made.up", UserRole.ADMINISTRATOR, tags, variables, payloads);
     StaffMember staffMember4 = mockStaffMember(5l, 5l, "Trusted", "System", "trusted@made.up", UserRole.TRUSTED_SYSTEM, tags, variables, payloads);
 
+    Student[] studentArray = { student1, student2 };
     StaffMember[] staffArray = { staffMember1, staffMember2, staffMember3, staffMember4 };
+
+    String studentArrayJson = objectMapper.writeValueAsString(studentArray);
     String staffArrayJson = objectMapper.writeValueAsString(staffArray);
+
+    stubFor(get(urlMatching("/1/students/students?filterArchived=false&firstResult=.*&maxResults=.*"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(studentArrayJson)
+        .withStatus(200)));
 
     stubFor(get(urlEqualTo("/1/staff/members"))
       .willReturn(aResponse()
@@ -390,6 +440,8 @@ public class PyramusMocksRest {
     
     Course[] courseArray = { course };
     String courseArrayJson = objectMapper.writeValueAsString(courseArray);
+    
+    addPayload(payloads, new WebhookCourseCreatePayload(id));
     
     stubFor(get(urlEqualTo("/1/courses/courses"))
       .willReturn(aResponse()
@@ -500,7 +552,7 @@ public class PyramusMocksRest {
           .withHeader("Content-Type", "application/json")
           .withBody(objectMapper.writeValueAsString(studentGroup))
           .withStatus(200)));
-    
+
     addPayload(payloads, objectMapper.writeValueAsString(new WebhookStudentGroupCreatePayload(groupId)));
 
     StudentGroupUser studentGroupStaffMember = new StudentGroupUser(1l, 4l);
@@ -580,6 +632,12 @@ public class PyramusMocksRest {
           .withStatus(200)));
     
     addPayload(payloads, objectMapper.writeValueAsString(new WebhookCourseStudentCreatePayload(2l, courseId, student.getId())));
+  }
+  
+  private static void addPayload(List<String> payloads, Object obj) throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    addPayload(payloads, objectMapper.writeValueAsString(obj));
   }
   
   private static void addPayload(List<String> payloads, String payload) {

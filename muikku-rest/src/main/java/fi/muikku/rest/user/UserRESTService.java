@@ -40,7 +40,6 @@ import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.rest.model.UserBasicInfo;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
-import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
@@ -80,9 +79,6 @@ public class UserRESTService extends AbstractRESTService {
   private WorkspaceUserEntityController workspaceUserEntityController; 
   
   @Inject
-  private WorkspaceEntityController workspaceEntityController;
-  
-	@Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
 
@@ -115,7 +111,7 @@ public class UserRESTService extends AbstractRESTService {
 	  EnvironmentRoleArchetype roleArchetype = archetype != null ? EnvironmentRoleArchetype.valueOf(archetype) : null;
 
     Set<Long> userGroupFilters = null;
-    Set<Long> workspaceFilters = new HashSet<Long>(workspaceEntityController.listPublishedWorkspaceEntityIds());
+    Set<Long> workspaceFilters = new HashSet<Long>();
 
 	  if ((myUserGroups != null) && myUserGroups) {
 	    userGroupFilters = new HashSet<Long>();
@@ -140,10 +136,10 @@ public class UserRESTService extends AbstractRESTService {
       for (WorkspaceEntity ws : workspaces)
         myWorkspaceIds.add(ws.getId());
 
-      workspaceFilters.retainAll(myWorkspaceIds);
+      workspaceFilters.addAll(myWorkspaceIds);
     } else if (!CollectionUtils.isEmpty(workspaceIds)) {
       // Defined workspaces
-      workspaceFilters.retainAll(workspaceIds);
+      workspaceFilters.addAll(workspaceIds);
     }
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
