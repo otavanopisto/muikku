@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.75</version>
+    <version>1.0.76-SNAPSHOT</version>
   </parent>
 
   <artifactId>dummy-mail-bridge-plugin</artifactId>
