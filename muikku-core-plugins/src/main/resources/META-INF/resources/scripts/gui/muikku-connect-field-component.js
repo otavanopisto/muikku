@@ -70,8 +70,11 @@
               var result = [];
               var meta = this.options.meta;
               for (var i = 0, l = meta.connections.length; i < l; i++) {
-                this._element.find('.muikku-connect-field-terms').append(this._element.find('.muikku-connect-field-term[data-field-name="' + meta.connections[i].field + '"]'));
-                this._element.find('.muikku-connect-field-counterparts').append(this._element.find('.muikku-connect-field-counterpart[data-field-value="' + meta.connections[i].counterpart + '"]'));
+                var counterpart = this._element.find('.muikku-connect-field-counterpart[data-field-value="' + meta.connections[i].counterpart + '"]');
+                var termNumber = this._element.find('.muikku-connect-field-term[data-field-name="' + meta.connections[i].field + '"]').attr('data-field-number');
+                counterpart.after($('<span>')
+                    .text(termNumber)
+                    .addClass('muikku-connect-field-correct-number'));
               }
               return result;
             }, this)
@@ -109,6 +112,7 @@
           var termElement = $('<div>')
             .addClass('muikku-connect-field-term')
             .attr('data-field-name', fieldName)
+            .attr('data-field-number', index + 1)
             .html($(term).html());
           
           termElement.click($.proxy(function(e){
@@ -117,7 +121,10 @@
             $(termElement).addClass('muikku-connect-field-term-selected');
           }, this));
           
-          this._element.find('.muikku-connect-field-terms').append(termElement);
+          this._element.find('.muikku-connect-field-terms')
+            .append($('<span>').text(index + 1).addClass('muikku-connect-field-number'))
+            .append(termElement);
+          
         }, this));
         
         this.element.find('.muikku-connect-field-counterpart-cell').each($.proxy(function (index, counterpart) {
