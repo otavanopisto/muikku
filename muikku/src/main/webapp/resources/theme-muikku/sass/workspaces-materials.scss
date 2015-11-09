@@ -113,6 +113,7 @@ body[class^='workspace'] {
           .workspace-materials-toc-item {
             font-weight:300;
             list-style:none;
+            word-wrap:break-word;
             
             &:first-child {
               margin-top:5px;
@@ -164,12 +165,12 @@ body[class^='workspace'] {
             
             .workspace-materials-toc-item {
               font-weight:300;
+              word-wrap:break-word;
               
               a {
                 text-decoration:none;
                 color:#41505b;
                 display:block;
-/*                     @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out); */
                 @include rounded(2px);
                 padding:2px 8px;
                 
