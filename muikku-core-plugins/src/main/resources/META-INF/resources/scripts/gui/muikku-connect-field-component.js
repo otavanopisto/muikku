@@ -186,14 +186,15 @@
       
       pairs: function(val) {
         if (val !== undefined) {
-          
-          $(this._element).find('.muikku-connect-field-input').val('');
-          
+          var currentPairs = this.pairs();
           $.each(val || {}, $.proxy(function (name, value) {
-            $(this._element).find('.muikku-connect-field-input[name="' + name + '"]').val(value);
+            if(currentPairs[name] != value){
+              var term = this._element.find('.muikku-connect-field-term[data-field-name="' + name + '"]');
+              var counterpart = this._element.find('.muikku-connect-field-counterpart[data-field-value="' + value + '"]');
+              $(this._element).find('.muikku-connect-field-input[name="' + name + '"]').val(value);
+              this._swapElements(term, counterpart);
+            }
           }, this));
-          
-          this._updateValues();
         } else {
           var pairs = {};
           
