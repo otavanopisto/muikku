@@ -25,7 +25,7 @@
             <div class="mf-fieldRow">
               <div class="mf-textfield">
                <div class="mf-textfield-subcontainer">
-                 <span class="mf-textfield-title">{#localize key="plugin.communicator.createmessage.title.subject"/}</span><input class="mf-textfield-subject" type="text" name="caption"></input>
+                 <span class="mf-textfield-title">{#localize key="plugin.communicator.createmessage.title.subject"/}</span><input class="mf-textfield-subject" type="text" name="caption" maxlength="255"></input>
                </div>  
               </div>      
             </div>
