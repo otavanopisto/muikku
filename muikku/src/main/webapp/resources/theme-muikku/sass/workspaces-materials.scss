@@ -113,6 +113,7 @@ body[class^='workspace'] {
           .workspace-materials-toc-item {
             font-weight:300;
             list-style:none;
+            word-wrap:break-word;
             
             &:first-child {
               margin-top:5px;

@@ -39,9 +39,9 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
     if (files.length > 0) {
       
       // TODO: support for multiple files
-      if (files.length != 1) {
-        throw new WorkspaceFieldIOException("File field does not support multiple files");
-      } 
+//      if (files.length != 1) {
+//        throw new WorkspaceFieldIOException("File field does not support multiple files");
+//      } 
         
       for (File file : files) {
         try {
@@ -70,7 +70,9 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
             // original id exists but id does not, file has been removed
             if (StringUtils.isNotBlank(file.getOriginalId())) {
               WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(file.getOriginalId());
-              workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
+              if (fieldAnswerFile != null) {
+                workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
+              }
             }
           }
         } catch (IOException e) {
