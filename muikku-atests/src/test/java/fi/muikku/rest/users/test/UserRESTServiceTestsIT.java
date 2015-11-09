@@ -69,7 +69,6 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
         + "{'id':4,'firstName':'Test','lastName':'Administrator','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ad...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':2,'firstName':'Test','lastName':'Staff1member','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':3,'firstName':'Test','lastName':'Staff2member','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ma...@made.up','studyStartDate':null,'studyTimeEnd':null},"
-        + "{'id':5,'firstName':'Trusted','lastName':'System','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'tr...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null}]";
     JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
@@ -85,7 +84,6 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
         + "{'id':4,'firstName':'Test','lastName':'Administrator','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ad...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':2,'firstName':'Test','lastName':'Staff1member','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':3,'firstName':'Test','lastName':'Staff2member','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ma...@made.up','studyStartDate':null,'studyTimeEnd':null},"
-        + "{'id':5,'firstName':'Trusted','lastName':'System','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'tr...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null}]";
     JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
