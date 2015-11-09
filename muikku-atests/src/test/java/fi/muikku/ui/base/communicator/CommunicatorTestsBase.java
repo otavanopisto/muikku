@@ -109,4 +109,21 @@ public class CommunicatorTestsBase extends AbstractUITest {
     }
   }
 
+  @Test
+  public void communicatorDeleteSentMessageTest() throws Exception {
+    try{
+      loginAdmin();
+      long sender = getUserIdByEmail("admin@made.up");
+      long recipient = getUserIdByEmail("testuser@made.up");
+      createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
+      navigate("/communicator#sent", true);
+      waitAndClick("div.mf-item-select input[type=\"checkbox\"]");
+      waitAndClick("div.icon-delete");
+      assertTrue("Communicator does not stay in sent messages box.", getWebDriver().getCurrentUrl() == "https://dev.muikku.fi:8443/communicator#sent");
+      assertTrue("Element found even though it shouldn't be there", isElementPresent("div.mf-item-select input[type=\"checkbox\"]") == false);
+    }finally{
+      deleteCommunicatorMessages(); 
+    }
+  }
+  
 }
