@@ -529,8 +529,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
         border:none !important;  
       }
       
-      .muikku-connect-field-counterpart, 
-      .muikku-connect-field-term {
+      .muikku-connect-field-counterpart.muikku-connect-field-correct-answer, 
+      .muikku-connect-field-term.muikku-connect-field-correct-answer {
         background:#55fc70;
       }
       
@@ -550,9 +550,16 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
         border:none !important;  
       }
       
-      .muikku-connect-field-counterpart, 
-      .muikku-connect-field-term {
+      .muikku-connect-field-counterpart.muikku-connect-field-wrong-answer, 
+      .muikku-connect-field-term.muikku-connect-field-wrong-answer {
         background:#f64e4e;
+      }
+      
+      /* Connect field's correct answer's styling is required here as we mark 
+      wraping element to be incorrect when checking exercise */
+      .muikku-connect-field-counterpart.muikku-connect-field-correct-answer, 
+      .muikku-connect-field-term.muikku-connect-field-correct-answer {
+        background:#55fc70;
       }
       
     }
