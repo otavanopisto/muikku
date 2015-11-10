@@ -103,6 +103,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
       navigate("/communicator", true);
       waitAndClick("div.mf-item-select input[type=\"checkbox\"]");
       waitAndClick("div.icon-delete");
+      waitForPresentVisible(".notification-queue-item-success");
       assertTrue("Element found even though it shouldn't be there", isElementPresent("div.mf-item-select input[type=\"checkbox\"]") == false);
     }finally{
       deleteCommunicatorMessages(); 
@@ -119,6 +120,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
       navigate("/communicator#sent", true);
       waitAndClick("div.mf-item-select input[type=\"checkbox\"]");
       waitAndClick("div.icon-delete");
+      waitForPresentVisible(".notification-queue-item-success");
       assertTrue("Communicator does not stay in sent messages box.", getWebDriver().getCurrentUrl() == "https://dev.muikku.fi:8443/communicator#sent");
       assertTrue("Element found even though it shouldn't be there", isElementPresent("div.mf-item-select input[type=\"checkbox\"]") == false);
     }finally{
