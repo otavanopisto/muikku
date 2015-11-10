@@ -36,15 +36,13 @@ $(document).ready(function(){
       
       $(window).trigger("hashchange");
       
-      var _this = this;
-      
-      $(document).on("Communicator:newmessagereceived", function (event, data) {
+      $(document).on("Communicator:newmessagereceived", $.proxy(function (event, data) {
         var hash = window.location.hash.substring(1);
 
         if ((hash == "") || (hash == "inbox")) {
-          _this._showInbox();
+          this._showInbox();
         }
-      });
+      }, this));
     },
 
     _showInbox : function () {
@@ -82,42 +80,43 @@ $(document).ready(function(){
       var mCont = $(CommunicatorImpl.msgContainer);
       this._addLoading(CommunicatorImpl.msgContainer);
       
-      mApi().communicator.messages.read(communicatorMessageId).callback($.proxy(function (err, messages) {
-        
-        // TODO: Recipients issue no: #875 
-        
-        $.each(messages, function (index, message){
-           messages[index].caption = $('<div>').html(message.caption).text();
-           messages[index].content = $('<div>').html(message.content).text();
-           
-           mApi().communicator.communicatormessages.sender.read(message.id)
-           .callback(function (err, user) {  
+      mApi().communicator.messages
+        .read(communicatorMessageId)
+        .on("$", function (message, messageCallback) {
+          
+          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+            if(err){
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+            }else{            
+              message.isOwner = MUIKKU_LOGGED_USER_ID == user.id;
+              message.senderFullName = user.firstName + ' ' + user.lastName;
+              message.senderHasPicture = user.hasImage;
+              message.caption = $('<div>').html(message.caption).text();
+              message.content = $('<div>').html(message.content).text();
+              messageCallback();
+            }
+          });
+        })
+        .callback($.proxy(function (err, messages) {
+          
+          // TODO: Recipients issue no: #875 
+          
+          if(err){
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+          }else{
+            renderDustTemplate('communicator/communicator_items_open.dust', messages, $.proxy(function(text) {
+              this._clearLoading();
+              mCont.empty();
+              mCont.append($.parseHTML(text));
 
-           if (MUIKKU_LOGGED_USER_ID == user.id){
-             messages[index].isOwner = true;         
-           } else {
-             messages[index].isOwner = false;    
-           }               
-
-           messages[index].senderFullName = user.firstName + ' ' + user.lastName;
-           messages[index].senderHasPicture = user.hasImage;
-
-          });        
-        });        
- 
- 
-        renderDustTemplate('communicator/communicator_items_open.dust', messages, $.proxy(function(text) {
-          this._clearLoading();
-          mCont.empty();
-          mCont.append($.parseHTML(text));
-        }, this));
-
-        mApi().communicator.messages.markasread.create(communicatorMessageId).callback($.proxy(function (err, result) {
-          $(document).trigger("Communicator:messageread");
-        }, this));
+              mApi().communicator.messages.markasread.create(communicatorMessageId).callback($.proxy(function (err, result) {
+                $(document).trigger("Communicator:messageread");
+              }, this));               
+           }, this));
+         }         
       }, this));
     },
-    
+ 
     _showSentItems : function () {
       $(CommunicatorImpl.msgContainer).empty();
       this._addLoading(CommunicatorImpl.msgContainer);
