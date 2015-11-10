@@ -110,6 +110,10 @@
   display: block;
 }
 
+.muikku-file-input-field-file-removed-permanently {
+  display: none;
+}
+
 .muikku-file-input-field-file-removed .muikku-file-input-field-file-label {
   text-decoration:line-through;
 }
