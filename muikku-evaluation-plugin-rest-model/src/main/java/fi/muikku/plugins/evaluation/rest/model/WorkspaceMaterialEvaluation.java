@@ -7,8 +7,18 @@ public class WorkspaceMaterialEvaluation {
   public WorkspaceMaterialEvaluation() {
   }
   
-  public WorkspaceMaterialEvaluation(Long id, Date evaluated, Long assessorEntityId, Long studentEntityId, Long workspaceMaterialId,
-      String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment) {
+  public WorkspaceMaterialEvaluation(
+      Long id,
+      Date evaluated, 
+      Long assessorEntityId, 
+      Long studentEntityId, 
+      Long workspaceMaterialId,
+      String gradingScaleIdentifier, 
+      String gradingScaleSchoolDataSource, 
+      String grade, 
+      String gradeIdentifier, 
+      String gradeSchoolDataSource, 
+      String verbalAssessment) {
     super();
     this.id = id;
     this.evaluated = evaluated;
@@ -17,6 +27,7 @@ public class WorkspaceMaterialEvaluation {
     this.workspaceMaterialId = workspaceMaterialId;
     this.gradingScaleIdentifier = gradingScaleIdentifier;
     this.gradingScaleSchoolDataSource = gradingScaleSchoolDataSource;
+    this.setGrade(grade);
     this.gradeIdentifier = gradeIdentifier;
     this.gradeSchoolDataSource = gradeSchoolDataSource;
     this.verbalAssessment = verbalAssessment;
@@ -102,6 +113,14 @@ public class WorkspaceMaterialEvaluation {
     this.verbalAssessment = verbalAssessment;
   }
 
+  public String getGrade() {
+    return grade;
+  }
+
+  public void setGrade(String grade) {
+    this.grade = grade;
+  }
+
   private Long id;
   private Date evaluated;
   private Long assessorEntityId;
@@ -109,6 +128,7 @@ public class WorkspaceMaterialEvaluation {
   private Long workspaceMaterialId;
   private String gradingScaleIdentifier;
   private String gradingScaleSchoolDataSource;
+  private String grade;
   private String gradeIdentifier;
   private String gradeSchoolDataSource;
   private String verbalAssessment;

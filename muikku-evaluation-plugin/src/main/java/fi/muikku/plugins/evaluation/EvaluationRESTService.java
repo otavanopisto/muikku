@@ -360,13 +360,30 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   private WorkspaceMaterialEvaluation createRestModel(fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation evaluation) {
-    return new WorkspaceMaterialEvaluation(evaluation.getId(), 
+    String grade = null;
+    if (evaluation.getGradingScaleSchoolDataSource() != null &&
+        evaluation.getGradingScaleIdentifier() != null &&
+        evaluation.getGradeSchoolDataSource() != null &&
+        evaluation.getGradeIdentifier() != null) {
+      GradingScale gradingScale = gradingController.findGradingScale(
+          evaluation.getGradingScaleSchoolDataSource(),
+          evaluation.getGradingScaleIdentifier());
+      GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(
+          gradingScale,
+          evaluation.getGradeSchoolDataSource(),
+          evaluation.getGradeIdentifier());
+      grade = gradingScaleItem.getName();
+    }
+
+    return new WorkspaceMaterialEvaluation(
+        evaluation.getId(), 
         evaluation.getEvaluated(), 
         evaluation.getAssessorEntityId(), 
         evaluation.getStudentEntityId(), 
         evaluation.getWorkspaceMaterialId(), 
         evaluation.getGradingScaleIdentifier(), 
         evaluation.getGradingScaleSchoolDataSource(), 
+        grade,
         evaluation.getGradeIdentifier(), 
         evaluation.getGradeSchoolDataSource(),
         evaluation.getVerbalAssessment());
