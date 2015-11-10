@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
+  template="/jsf/workspace/templates/workspace-base-template.xhtml">
+
+  <!-- Lets set the base body class per view -->
+  <ui:param name="bodyClass" value="workspace-journal" />
+  
+  <ui:define name="viewScripts">
+    <h:outputScript name="scripts/gui/workspace.js"  />
+  </ui:define>
+  
+  <ui:define name="viewCss">
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-users.css" />  
+  </ui:define>
+
+</ui:composition>
