@@ -14,7 +14,8 @@ $(document).ready(function(){
           }
         });
       
-      window.mCommunicator._refreshView();
+      window.location.reload(true);
+
     }   
 
     openInSN('/communicator/communicator_create_message.dust', null, sendMessage);    
@@ -206,7 +207,6 @@ $(document).ready(function(){
         var deleteQ = [];
         for (i = 0; i < inputs.length; i++){
           var msgId = $(inputs[i]).attr("value");
-          deleteQ.push(msgId);
         }         
         if(deleteQ.length != 0){
           this._deleteMessages(deleteQ)
@@ -236,7 +236,7 @@ $(document).ready(function(){
          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
         } else {
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
-           this._refreshView();
+           window.location.reload(true);
         }
       }, this));
     },
@@ -279,35 +279,6 @@ $(document).ready(function(){
           recipientListElement.prepend($.parseHTML(text));
         });
       }
-  },
-  _refreshView: function(){
-    if (window.location.hash) {
-      var hash = window.location.hash.substring(1);
-      if (window.location.hash.indexOf("#sent") === 0){
-        
-        var messageId = hash.substring(5);
-        if(messageId == ""){
-          this._showSentItems();
-        }else{
-          this._showMessage(messageId);
-          
-        }
-      }else{
-        var messageId = hash.substring(6);
-        if(messageId == ""){
-          this._showInbox();
-        }else{
-          this._showMessage(messageId);
-          
-        }
-
-        
-      }
-
-    } else{
-      this._showInbox();
-      
-    }
   },
   _addLoading : function(parentEl){
     $(parentEl).append('<div class="mf-loading"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div></div>');  
