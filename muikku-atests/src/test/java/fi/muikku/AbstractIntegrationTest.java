@@ -2,6 +2,7 @@ package fi.muikku;
 
 import static com.jayway.restassured.RestAssured.given;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -207,6 +208,10 @@ public abstract class AbstractIntegrationTest extends TestWatcher {
     return System.getProperty("it.project.version");
   }
 
+  public File getTestFile() {
+    return new File(System.getProperty("it.test.file"));
+  }
+  
   protected DateTime getDate(int year, int monthOfYear, int dayOfMonth) {
     return new DateTime(year, monthOfYear, dayOfMonth, 0, 0, 0, 0);
   }
