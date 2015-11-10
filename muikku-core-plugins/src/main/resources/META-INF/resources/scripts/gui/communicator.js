@@ -207,6 +207,7 @@ $(document).ready(function(){
         var deleteQ = [];
         for (i = 0; i < inputs.length; i++){
           var msgId = $(inputs[i]).attr("value");
+          deleteQ.push(msgId);
         }         
         if(deleteQ.length != 0){
           this._deleteMessages(deleteQ)
