@@ -1,0 +1,9 @@
+@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "_custom-ckeditor-styles.scss";
+@import "_workspaces.scss"; /* Generic workspace styles */
+
+body[class^='workspace'] { 
+  
+  
+}
+  
