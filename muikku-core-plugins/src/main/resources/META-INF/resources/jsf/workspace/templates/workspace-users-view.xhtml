@@ -9,10 +9,11 @@
   template="/jsf/workspace/templates/workspace-base-template.xhtml">
 
   <!-- Lets set the base body class per view -->
-  <ui:param name="bodyClass" value="workspace-journal" />
+  <ui:param name="bodyClass" value="workspace-users"/>
   
   <ui:define name="viewScripts">
-    <h:outputScript name="scripts/gui/workspace.js"  />
+    <h:outputScript name="scripts/gui/workspace.js"/>
+    <h:outputScript name="scripts/gui/workspace-users.js"/>
   </ui:define>
   
   <ui:define name="viewCss">

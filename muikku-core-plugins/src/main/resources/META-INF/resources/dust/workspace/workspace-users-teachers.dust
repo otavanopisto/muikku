@@ -1,0 +1,5 @@
+<div class="teachers-list-container">
+  {#teachers}
+    <div class="workspace-users-teacher" data-teacher-id="{id}">{lastName}, {firstName}</div>
+  {/teachers} 
+</div>

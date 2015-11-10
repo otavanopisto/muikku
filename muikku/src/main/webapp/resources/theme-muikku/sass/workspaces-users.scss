@@ -4,6 +4,23 @@
 
 body[class^='workspace'] { 
   
+  .workspace-teachers-listing-wrapper {
+    padding:0 20px 20px 20px;
+  
+    .workspace-users-teacher {
+      padding:2px 5px;
+    }
+  
+  }
+  
+  .workspace-students-listing-wrapper {
+    padding:0 20px 20px 20px;
+  
+    .workspace-users-student {
+      padding:2px 5px;
+    }
+  
+  }
   
 }
   
