@@ -59,7 +59,7 @@
   $(document).ready(function() {
     
     /* Get Workspace Teachers */
-    mApi().user.users.read()
+    mApi().user.users.read({archetype : 'TEACHER'})
     .callback(function (err, teachers) {
 
       if (err) {
@@ -73,7 +73,7 @@
     });  
     
     /* Get Workspace Students */
-    mApi().user.users.read()
+    mApi().user.users.read({archetype : 'STUDENT'})
     .callback(function (err, students) {
 
       if (err) {
