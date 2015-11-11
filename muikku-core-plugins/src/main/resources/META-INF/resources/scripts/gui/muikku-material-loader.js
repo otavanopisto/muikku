@@ -382,6 +382,14 @@
   
   $(document).on('taskFieldDiscovered', function (event, data) {
     
+    function concatText(text, length){
+      if(text.length > length){
+        return text.substring(0, length)+'...';
+      }else{
+        return text;
+      }
+    }
+    
     function shuffleArray(array) {
       for (var i = array.length - 1; i > 0; i--) {
           var j = Math.floor(Math.random() * (i + 1));
@@ -473,13 +481,15 @@
             })
             .val(values[connectFieldTermMeta.name]);
           
-          tdTermElement.text(connectFieldTermMeta.text);
+          tdTermElement.text(concatText(connectFieldTermMeta.text, 60));
+          tdTermElement.attr('title', connectFieldTermMeta.text);
           tdTermElement.data('muikku-connect-field-option-name', connectFieldTermMeta.name);
           tdValueElement.append(inputElement);
         }
         
         if (connectFieldCounterpartMeta != null) {
-          tdCounterpartElement.text(connectFieldCounterpartMeta.text);
+          tdCounterpartElement.text(concatText(connectFieldCounterpartMeta.text, 60));
+          tdCounterpartElement.attr('title', connectFieldCounterpartMeta.text);
           tdCounterpartElement.attr('data-muikku-connect-field-option-name', connectFieldCounterpartMeta.name);
         }
       
@@ -842,29 +852,37 @@
       maxFileSize = Number($("input[name='max-file-size']").val());
     }
     
-    // File field support
-    $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
-      $(field)
-        .muikkuFileField({
-          maxFileSize: maxFileSize
-        })
-        .muikkuField({
-          fieldName: $(field).data('field-name'),
-          embedId: $(field).data('embed-id'),
-          materialId: $(field).data('material-id'),
-          readonly: data.readOnlyFields||false,
-          answer: function (val) {
-            // TODO: Support setter for files
-            return JSON.stringify($(this.element).muikkuFileField('files'));
-          },
-          isReadonly: function () {
-            return $(this.element).muikkuFileField("isReadonly");
-          },
-          setReadonly: function (readonly) {
-            $(this.element).muikkuFileField("setReadonly", readonly);
-          }
-        });
-    });
+    renderDustTemplate('workspace/materials-assignment-attachement-delete-confirm.dust', { }, $.proxy(function (text) {
+      // File field support
+      $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
+        $(field)
+          .muikkuFileField({
+            maxFileSize: maxFileSize,
+            confirmRemove: true,
+            confirmRemoveHtml: text,
+            supportRestore: false,
+            confirmRemoveDialogClass: "workspace-materials-assigment-attachment-dialog",
+          })
+          .muikkuField({
+            fieldName: $(field).data('field-name'),
+            embedId: $(field).data('embed-id'),
+            materialId: $(field).data('material-id'),
+            readonly: data.readOnlyFields||false,
+            answer: function (val) {
+              // TODO: Support setter for files
+              return JSON.stringify($(this.element).muikkuFileField('files'));
+            },
+            isReadonly: function () {
+              return $(this.element).muikkuFileField("isReadonly");
+            },
+            setReadonly: function (readonly) {
+              $(this.element).muikkuFileField("setReadonly", readonly);
+            }
+          });
+      });
+      
+    }, this));
+    
   });
 
 }).call(this);
