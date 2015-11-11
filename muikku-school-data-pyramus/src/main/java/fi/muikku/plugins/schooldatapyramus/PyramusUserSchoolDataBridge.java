@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.joda.time.DateTime;
 
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
@@ -74,91 +73,85 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   private List<User> createStudentEntities(Student... students) {
-    List<StudyProgramme> studyProgrammes = new ArrayList<>(students.length);
     Map<Long, StudyProgramme> studyProgrammeMap = new HashMap<Long, StudyProgramme>();
-    List<String> nationalities = new ArrayList<>();
-    List<String> languages = new ArrayList<>();
-    List<String> municipalities = new ArrayList<>();
-    List<String> schools = new ArrayList<>();
-    List<DateTime> studyStartDates = new ArrayList<>();
-    List<DateTime> studyTimeEnds = new ArrayList<>();
+    List<User> users = new ArrayList<User>();
 
     for (Student student : students) {
+      StudyProgramme studyProgramme;
+      String nationality = null;
+      String language = null;
+      String municipality = null;
+      String school = null;
+      boolean hidden = false;
+      
       if (student.getStudyProgrammeId() != null) {
         if (!studyProgrammeMap.containsKey(student.getStudyProgrammeId())) {
-          StudyProgramme studyProgramme = pyramusClient.get(
+          StudyProgramme studyProgrammeO = pyramusClient.get(
               "/students/studyProgrammes/" + student.getStudyProgrammeId(),
               StudyProgramme.class);
-          studyProgrammeMap.put(student.getStudyProgrammeId(), studyProgramme);
+          
+          if (studyProgrammeO != null)
+            studyProgrammeMap.put(student.getStudyProgrammeId(), studyProgrammeO);
         }
 
-        studyProgrammes
-            .add(studyProgrammeMap.get(student.getStudyProgrammeId()));
+        studyProgramme = studyProgrammeMap.get(student.getStudyProgrammeId());
       } else {
-        studyProgrammes.add(null);
+        studyProgramme = null;
       }
       
       if (student.getNationalityId() != null) {
-        Nationality nationality = pyramusClient.get(
+        Nationality nationalityO = pyramusClient.get(
             "/students/nationalities/" + student.getNationalityId(),
             Nationality.class);
-        if (nationality != null)
-          nationalities.add(nationality.getName());
-        else
-          nationalities.add(null);
-      } else {
-        nationalities.add(null);
+        if (nationalityO != null)
+          nationality = nationalityO.getName();
       }
       
       if (student.getLanguageId() != null) {
-        Language language = pyramusClient.get(
+        Language languageO = pyramusClient.get(
             "/students/languages/" + student.getLanguageId(),
             Language.class);
-        if (language != null)
-          languages.add(language.getName());
-        else
-          languages.add(null);
-      } else {
-        languages.add(null);
+        if (languageO != null)
+          language = languageO.getName();
       }
       
       if (student.getMunicipalityId() != null) {
-          Municipality municipality = pyramusClient.get(
-              "/students/municipalities/" + student.getMunicipalityId(),
-              Municipality.class);
-          if (municipality != null)
-            municipalities.add(municipality.getName());
-          else
-            municipalities.add(null);
-      } else {
-        municipalities.add(null);
+        Municipality municipalityO = pyramusClient.get(
+            "/students/municipalities/" + student.getMunicipalityId(),
+            Municipality.class);
+        if (municipalityO != null)
+          municipality = municipalityO.getName();
       }
       
       if (student.getSchoolId() != null) {
-        School school = pyramusClient.get(
+        School schoolO = pyramusClient.get(
             "/schools/schools/" + student.getSchoolId(),
             School.class);
-        if (school != null)
-          schools.add(school.getName());
-        else
-          schools.add(null);
-      } else {
-        schools.add(null);
+        if (schoolO != null)
+          school = schoolO.getName();
       }
 
-      studyStartDates.add(student.getStudyStartDate());
-      studyTimeEnds.add(student.getStudyTimeEnd());
-     
+      if (student.getPersonId() != null) {
+        Person person = pyramusClient.get(
+            "/persons/persons/" + student.getPersonId(),
+            Person.class);
+        if (person != null)
+          hidden = person.getSecureInfo() != null ? person.getSecureInfo() : false;
+      }
+      
+      users.add(entityFactory.createEntity(
+          student,
+          studyProgramme,
+          nationality,
+          language,
+          municipality,
+          school,
+          student.getStudyStartDate(),
+          student.getStudyTimeEnd(),
+          hidden));
     }
-
-    return entityFactory.createEntity(students,
-        studyProgrammes.toArray(new StudyProgramme[0]),
-        nationalities.toArray(new String[0]),
-        languages.toArray(new String[0]),
-        municipalities.toArray(new String[0]),
-        schools.toArray(new String[0]),
-        studyStartDates.toArray(new DateTime[0]),
-        studyTimeEnds.toArray(new DateTime[0]));
+    
+    return users;
   }
 
   private User createStudentEntity(Student student) {

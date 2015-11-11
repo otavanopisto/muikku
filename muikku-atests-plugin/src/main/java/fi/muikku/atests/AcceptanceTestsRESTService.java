@@ -228,6 +228,20 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.ok(createRestEntity(workspaceEntity, payload.getName())).build();
   }
   
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/publish")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response publishWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(404).entity("Not found").build();
+    }
+
+    workspaceEntityController.updatePublished(workspaceEntity, true);
+    
+    return Response.noContent().build();
+  }
+
   @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}")
   @RESTPermit (handling = Handling.UNSECURED)
