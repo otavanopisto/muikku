@@ -13,12 +13,17 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.security.MuikkuPermissions;
+import fi.muikku.session.SessionController;
 
 @Named
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/users", to = "/jsf/workspace/users.jsf")
 public class WorkspaceUsersBackingBean {
+
+  @Inject
+  private SessionController sessionController;
 
   @Parameter
   private String workspaceUrlName;
@@ -39,6 +44,10 @@ public class WorkspaceUsersBackingBean {
       return NavigationRules.NOT_FOUND;
     }
     workspaceEntityId = workspaceEntity.getId();
+    
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+      return NavigationRules.NOT_FOUND;
+    }
 
     return null;
   }
