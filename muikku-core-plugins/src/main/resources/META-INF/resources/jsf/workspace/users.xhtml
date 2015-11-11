@@ -11,6 +11,8 @@
   </ui:define>
 
   <ui:define name="workspace.content">
+    <input name="workspaceEntityId" type="hidden" value="#{workspaceUsersBackingBean.workspaceEntityId}" />
+
     <h2 class="workspace-generic-title">#{i18n.text['plugin.workspace.users.teachers.title']}</h2>
     <div class="workspace-teachers-listing-wrapper">
     

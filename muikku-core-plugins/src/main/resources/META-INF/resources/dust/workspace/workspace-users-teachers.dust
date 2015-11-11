@@ -4,5 +4,5 @@
       <div class="workspace-users-name">{lastName}, {firstName}</div>
       <div class="workspace-users-delete">{#localize key="plugin.workspace.users.student.deleteLink.label"/}</div>
     </div>
-  {/teachers} 
+  {/teachers}
 </div>

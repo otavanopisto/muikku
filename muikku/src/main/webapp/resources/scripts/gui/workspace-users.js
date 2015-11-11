@@ -57,35 +57,31 @@
   }
 
   $(document).ready(function() {
+    var workspaceEntityId = $("input[name='workspaceEntityId']").val(); 
     
-    /* Get Workspace Teachers */
-    mApi().user.users.read({archetype : 'TEACHER'})
-    .callback(function (err, teachers) {
-
+    // Workspace teachers
+    mApi().workspace.workspaces.users.read(workspaceEntityId, {roleArchetype: 'TEACHER', orderBy: 'name'}).callback(function (err, teachers) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', err);
-      } else {
-        renderDustTemplate('workspace/workspace-users-teachers.dust', {teachers:teachers}, function (text) {
+      }
+      else {
+        renderDustTemplate('workspace/workspace-users-teachers.dust', {teachers: teachers}, function (text) {
           $(".workspace-teachers-listing-wrapper").append($.parseHTML(text));  
         });
       }
-      
     });  
     
-    /* Get Workspace Students */
-    mApi().user.users.read({archetype : 'STUDENT'})
-    .callback(function (err, students) {
-
+    // Workspace students
+    mApi().workspace.workspaces.users.read(workspaceEntityId, {roleArchetype: 'STUDENT', orderBy: 'name'}).callback(function (err, students) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', err);
-      } else {
-        renderDustTemplate('workspace/workspace-users-students.dust', {students:students}, function (text) {
+      }
+      else {
+        renderDustTemplate('workspace/workspace-users-students.dust', {students: students}, function (text) {
           $(".workspace-students-listing-wrapper").append($.parseHTML(text));
         });
       }
-      
     }); 
-
   });
   
   $(document).on('click', '.workspace-users-archive', function(event) {
