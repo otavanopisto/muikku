@@ -358,11 +358,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForClickable(String selector){
-    getWebDriver().findElement(By.cssSelector(selector));
+    waitForPresent(selector);
   }
   
   protected void waitAndClick(String selector) {
-    waitForClickable(selector);
+    waitForPresent(selector);
     click(selector);
   }
   

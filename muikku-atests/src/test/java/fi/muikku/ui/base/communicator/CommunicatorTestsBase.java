@@ -15,15 +15,13 @@ public class CommunicatorTestsBase extends AbstractUITest {
       navigate("/communicator", true);
       waitAndClick(".bt-mainFunction-content span");
       waitForPresent("#recipientContent");
-      sendKeys("#recipientContent", "Test User");
+      sendKeys("#recipientContent", "Test");
       waitAndClick(".ui-autocomplete li.ui-menu-item");
       waitForPresent(".mf-textfield-subject");
       sendKeys(".mf-textfield-subject", "Test");    
       waitAndClick("#cke_1_contents");
       getWebDriver().switchTo().activeElement().sendKeys("Communicator test");
       click("*[name='send']");
-      logout();
-      loginStudent1();
       navigate("/communicator", true);
       waitForPresent("div.cm-message-header-content-secondary");
       assertText("div.cm-message-header-content-secondary", "Test");  
@@ -39,7 +37,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
       navigate("/communicator", true);
       waitAndClick(".bt-mainFunction-content span");
       waitForPresent("#recipientContent");
-      sendKeys("#recipientContent", "Test User");
+      sendKeys("#recipientContent", "Test");
       waitAndClick(".ui-autocomplete li.ui-menu-item");
       waitForPresent(".mf-textfield-subject");
       sendKeys(".mf-textfield-subject", "Test");    
@@ -48,7 +46,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
       click("*[name='send']");
       // Window.reload screws this up.
       // waitForPresentVisible(".notification-queue-item-success span");
-      waitForPresent(".cm-messages-container");
+//      waitForPresent(".cm-messages-container");
       navigate("/communicator#sent", true);
       waitForPresent("div.cm-message-header-content-secondary");
       assertText("div.cm-message-header-content-secondary", "Test");
@@ -68,7 +66,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
       logout();
       loginStudent1();
       navigate("/communicator", true);
-      waitAndClick(".cm-page-link-load-more");
+      waitScrollAndClick(".cm-page-link-load-more");
       assertTrue(String.format("Elements list is not greater than %d in size", 10), waitForMoreThanSize("div.cm-message-header-content-secondary", 10)); 
     }finally{
       deleteCommunicatorMessages(); 
