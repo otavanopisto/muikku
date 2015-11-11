@@ -14,9 +14,12 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
 
   public UserRESTServiceTestsIT() {
   }
+
+  private static final boolean STRICT_JSON = false; 
   
   @Before
   public void before() throws Exception {
+    asAdmin().get("/test/workspaces/1/publish");
     asAdmin().get("/test/reindex");
   }
   
@@ -39,7 +42,7 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
     response.then().statusCode(200);
     
     String expected = "{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null}";
-    JSONAssert.assertEquals(expected, response.body().asString(), true);
+    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
 
   @Test
@@ -52,7 +55,7 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
     response.then().statusCode(200);
 
     String expected = "{'id':1,'firstName':'Test','lastName':'User','hasImage':false}";
-    JSONAssert.assertEquals(expected, response.body().asString(), true);
+    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
 
   @Test
@@ -66,9 +69,23 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
         + "{'id':4,'firstName':'Test','lastName':'Administrator','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ad...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':2,'firstName':'Test','lastName':'Staff1member','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':3,'firstName':'Test','lastName':'Staff2member','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ma...@made.up','studyStartDate':null,'studyTimeEnd':null},"
-        + "{'id':5,'firstName':'Trusted','lastName':'System','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'tr...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null}]";
-    JSONAssert.assertEquals(expected, response.body().asString(), true);
+    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
+  }
+
+  @Test
+  public void testSearchUsersAsStudent() throws NoSuchFieldException {
+    Response response = asStudent()
+        .get("/user/users");
+
+    response.then().statusCode(200);
+
+    String expected = "["
+        + "{'id':4,'firstName':'Test','lastName':'Administrator','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ad...@made.up','studyStartDate':null,'studyTimeEnd':null},"
+        + "{'id':2,'firstName':'Test','lastName':'Staff1member','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null},"
+        + "{'id':3,'firstName':'Test','lastName':'Staff2member','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ma...@made.up','studyStartDate':null,'studyTimeEnd':null},"
+        + "{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null}]";
+    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
 
   @Test
@@ -84,7 +101,7 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
     String expected = "["
         + "{'id':4,'firstName':'Test','lastName':'Administrator','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ad...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null}]";
-    JSONAssert.assertEquals(expected, response.body().asString(), true);
+    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
 
   @Test
@@ -98,7 +115,7 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
     String expected = "["
         + "{'id':4,'firstName':'Test','lastName':'Administrator','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ad...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null}]";
-    JSONAssert.assertEquals(expected, response.body().asString(), true);
+    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
   
   @Test
@@ -114,7 +131,8 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
     String expected = "["
         + "{'id':4,'firstName':'Test','lastName':'Administrator','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ad...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null}]";
-    JSONAssert.assertEquals(expected, response.body().asString(), true);
+    
+    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
 
   @Test
@@ -128,7 +146,8 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
     String expected = "["
         + "{'id':4,'firstName':'Test','lastName':'Administrator','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ad...@made.up','studyStartDate':null,'studyTimeEnd':null},"
         + "{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null}]";
-    JSONAssert.assertEquals(expected, response.body().asString(), true);
+    
+    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
 
   @Test
@@ -142,7 +161,7 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
     response.then().statusCode(200);
     
     String expected = "[{'id':4,'firstName':'Test','lastName':'Administrator','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'ad...@made.up','studyStartDate':null,'studyTimeEnd':null}]";
-    JSONAssert.assertEquals(expected, response.body().asString(), true);
+    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
 
   @Test
@@ -153,10 +172,10 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
         .param("archetype", archetype)
         .get("/user/users");
 
-   response.then().statusCode(200);
+    response.then().statusCode(200);
 
     String expected = "[{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@made.up','studyStartDate':null,'studyTimeEnd':null}]";
-    JSONAssert.assertEquals(expected, response.body().asString(), true);
+    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
 
 }

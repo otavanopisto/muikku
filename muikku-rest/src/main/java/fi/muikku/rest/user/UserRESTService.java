@@ -78,7 +78,7 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController; 
   
-	@Inject
+  @Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
 
@@ -111,8 +111,8 @@ public class UserRESTService extends AbstractRESTService {
 	  EnvironmentRoleArchetype roleArchetype = archetype != null ? EnvironmentRoleArchetype.valueOf(archetype) : null;
 
     Set<Long> userGroupFilters = null;
-    Set<Long> workspaceFilters = null;
-	  
+    Set<Long> workspaceFilters = new HashSet<Long>();
+
 	  if ((myUserGroups != null) && myUserGroups) {
 	    userGroupFilters = new HashSet<Long>();
 
@@ -130,17 +130,14 @@ public class UserRESTService extends AbstractRESTService {
 	  }
 
     if ((myWorkspaces != null) && myWorkspaces) {
-      workspaceFilters = new HashSet<Long>();
-      
       // Workspaces where user is a member
-      
       List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(loggedUser);
-      for (WorkspaceEntity workspace : workspaces) {
-        workspaceFilters.add(workspace.getId());
-      }
+      Set<Long> myWorkspaceIds = new HashSet<Long>();
+      for (WorkspaceEntity ws : workspaces)
+        myWorkspaceIds.add(ws.getId());
+
+      workspaceFilters.addAll(myWorkspaceIds);
     } else if (!CollectionUtils.isEmpty(workspaceIds)) {
-      workspaceFilters = new HashSet<Long>();
-      
       // Defined workspaces
       workspaceFilters.addAll(workspaceIds);
     }
