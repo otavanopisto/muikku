@@ -4,23 +4,49 @@
 
 body[class^='workspace'] { 
   
-  .workspace-teachers-listing-wrapper {
-    padding:0 20px 20px 20px;
-  
-    .workspace-users-teacher {
-      padding:2px 5px;
-    }
-  
-  }
-  
+  .workspace-teachers-listing-wrapper,
   .workspace-students-listing-wrapper {
     padding:0 20px 20px 20px;
   
-    .workspace-users-student {
-      padding:2px 5px;
+    .workspace-users {
+      padding:4px 5px;
+      @include flexbox();
+      transition:background 0.3s ease-in-out;
+      background:#fff;
+      border-radius:2px;
+      
+      &:hover {
+        background:#f8f8f8;
+      }
+      
+      .workspace-users-name {
+        @include flex(1 0);
+      }
+      
+      .workspace-users-archive,
+      .workspace-users-delete {
+        @include flex(0 0);
+        padding:0 5px;
+        margin:0 5px;
+        border-radius:2px;
+        color:#fff;
+        font-size:14px;
+        font-weight:400;
+        cursor:pointer;
+      }
+      
+      .workspace-users-archive {
+        background:#f6a930;
+      }
+      
+      .workspace-users-delete {
+        background:#de3211;
+      }
+      
     }
   
   }
+ 
   
 }
   
