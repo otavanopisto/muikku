@@ -334,12 +334,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.cssSelector(selector)).click();
   }
   
+  protected void waitForClickable(String selector){
+    getWebDriver().findElement(By.cssSelector(selector));
+  }
+  
   protected void waitAndClick(String selector) {
-    waitForPresent(selector);
+    waitForClickable(selector);
     click(selector);
   }
   
   protected void waitScrollAndClick(String selector) {
+    waitForPresent(selector);
     scrollIntoView(selector);
     waitAndClick(selector);
   }
@@ -414,7 +419,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
-    PyramusMocks.adminMock();
+    PyramusMocks.personsPyramusMocks();
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
   }

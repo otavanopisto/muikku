@@ -54,6 +54,7 @@ import fi.muikku.search.SearchResult;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
+import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -78,6 +79,9 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @Inject
   private UserController userController;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
 
   @Inject
   private RoleController roleController;
@@ -293,13 +297,19 @@ public class CoursePickerRESTService extends PluginRESTService {
     String workspaceName = workspace.getName();
 
     String userName = user.getFirstName() + " " + user.getLastName();
+    String userEmail = userEmailEntityController.getUserEmailAddress(userIdentifier.getUserEntity(), true);
 
     for (WorkspaceUserEntity cu : workspaceTeachers) {
       teachers.add(cu.getUserSchoolDataIdentifier().getUserEntity());
     }
     
     WorkspaceUser result = new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(discoverEvent.getDiscoveredWorkspaceUserEntityId(),
-        workspaceEntityId, userIdentifier.getUserEntity().getId(), workspaceStudentRoleId, Boolean.FALSE);
+        workspaceEntityId,
+        userIdentifier.getUserEntity().getId(),
+        workspaceStudentRoleId,
+        user.getFirstName(),
+        user.getLastName(),
+        userEmail);
 
     workspaceController.createWorkspaceUserSignup(
         workspaceEntity, userIdentifier.getUserEntity(), new Date(), entity.getMessage());
@@ -361,6 +371,5 @@ public class CoursePickerRESTService extends PluginRESTService {
     return new CoursePickerWorkspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
         workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, workspace.getNameExtension(), description, numVisits, lastVisit, canSignup, isCourseMember);
   }
-
   
 }
