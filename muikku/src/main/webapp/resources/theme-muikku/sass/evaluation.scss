@@ -251,6 +251,11 @@ body.evaluation {
     white-space: nowrap;
     transition:margin 0.2s ease-in-out;
     
+    .ps-scrollbar-y-rail,
+    .ps-scrollbar-x-rail {
+      z-index:9;
+    }
+    
     .evaluation-assignment-wrapper {
       width:160px;
       box-sizing:border-box;
