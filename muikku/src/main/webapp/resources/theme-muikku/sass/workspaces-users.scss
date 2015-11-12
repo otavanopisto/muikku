@@ -25,7 +25,7 @@ body[class^='workspace'] {
       
       .workspace-users-archive,
       .workspace-users-delete {
-        @include flex(0 0);
+        @include flex(0 0 auto);
         padding:0 5px;
         margin:0 5px;
         border-radius:2px;
