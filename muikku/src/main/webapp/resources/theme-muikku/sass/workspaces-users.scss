@@ -20,7 +20,7 @@ body[class^='workspace'] {
       }
       
       .workspace-users-name {
-        @include flex(1 0);
+        @include flex(1 0 auto);
       }
       
       .workspace-users-archive,
