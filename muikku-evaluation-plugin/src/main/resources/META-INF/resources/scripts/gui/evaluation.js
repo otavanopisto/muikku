@@ -710,6 +710,11 @@
           .addClass('evaluation-student-assignment-listing-row')
           .appendTo($('.evaluation-assignments'));
         
+        $(".evaluation-assignments").perfectScrollbar({
+          wheelSpeed:3,
+          swipePropagation:false,
+          suppressScrollX:true
+        });
         
         $.each(this._workspaceUsers, $.proxy(function (studentIndex, workspaceUser) {
           
@@ -957,7 +962,7 @@
 
   $(document).ready(function () {
     var workspaceEntityId = $('#evaluation').attr('data-workspace-entity-id');
-
+    
     $(document).muikkuMaterialLoader({
       prependTitle : false
     });
