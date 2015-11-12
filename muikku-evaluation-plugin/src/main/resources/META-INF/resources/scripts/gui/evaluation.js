@@ -855,7 +855,7 @@
           }
           if (reply.evaluated) {
             this.element.find('.evaluation-assignment-evaluated-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGridSEvaluated.label") + " " + formatDate(new Date(reply.evaluated)));   
+              .text(getLocaleText("plugin.evaluation.evaluationGridSEvaluated.label") + " " + formatDate(new Date(this.options.evaluation.evaluated)));   
           }
         break;
       }
