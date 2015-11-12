@@ -33,6 +33,10 @@ public class WorkspaceUsersBackingBean {
   @Inject
   private WorkspaceController workspaceController;
 
+  @Inject
+  @Named
+  private WorkspaceBackingBean workspaceBackingBean;
+
   @RequestAction
   public String init() {
     String urlName = getWorkspaceUrlName();
@@ -46,7 +50,8 @@ public class WorkspaceUsersBackingBean {
       return NavigationRules.NOT_FOUND;
     }
     workspaceEntityId = workspaceEntity.getId();
-    
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
+  
     if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
       return NavigationRules.NOT_FOUND;
     }
