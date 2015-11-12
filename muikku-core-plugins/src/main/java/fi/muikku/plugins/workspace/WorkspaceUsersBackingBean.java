@@ -15,11 +15,13 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
+import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/users", to = "/jsf/workspace/users.jsf")
+@LoggedIn
 public class WorkspaceUsersBackingBean {
 
   @Inject
