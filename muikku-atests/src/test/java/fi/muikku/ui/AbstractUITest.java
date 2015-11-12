@@ -419,7 +419,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
-    PyramusMocks.adminMock();
+    PyramusMocks.personsPyramusMocks();
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
   }
