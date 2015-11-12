@@ -8,6 +8,9 @@
 	template="./templates/workspace-journal-view.xhtml">
 
 	<ui:define name="workspace.content.top.static">
+    <!-- Workspace view title -->
+    <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.journal.pageTitle']}</h1>
+  
 		<form style="display: none;">
 			<input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
 		</form>
