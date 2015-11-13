@@ -89,7 +89,7 @@ $(document).ready(function(){
             if(err){
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
             }else{            
-              message.isOwner = MUIKKU_LOGGED_USER_ID == user.id;
+              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
               message.senderFullName = user.firstName + ' ' + user.lastName;
               message.senderHasPicture = user.hasImage;
               message.caption = $('<div>').html(message.caption).text();
