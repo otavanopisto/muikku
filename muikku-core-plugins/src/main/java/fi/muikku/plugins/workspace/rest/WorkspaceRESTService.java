@@ -991,8 +991,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = entity.getUserSchoolDataIdentifier().getUserEntity();
     Long userId = userEntity != null ? userEntity.getId() : null;
     
-    // TODO Correct user from correct source?
-    User user = userController.findUserByDataSourceAndIdentifier(entity.getWorkspaceEntity().getDataSource(), entity.getUserSchoolDataIdentifier().getIdentifier());
+    User user = userController.findUserByDataSourceAndIdentifier(
+        entity.getUserSchoolDataIdentifier().getDataSource(),
+        entity.getUserSchoolDataIdentifier().getIdentifier());
     String userEmail = userEmailEntityController.getUserEmailAddress(userEntity, true);
     
     Long roleId = entity.getWorkspaceUserRole() != null ? entity.getWorkspaceUserRole().getId() : null;
