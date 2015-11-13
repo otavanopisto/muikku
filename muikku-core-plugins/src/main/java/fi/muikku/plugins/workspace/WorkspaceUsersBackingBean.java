@@ -15,11 +15,13 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
+import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/users", to = "/jsf/workspace/users.jsf")
+@LoggedIn
 public class WorkspaceUsersBackingBean {
 
   @Inject
@@ -30,6 +32,10 @@ public class WorkspaceUsersBackingBean {
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  @Named
+  private WorkspaceBackingBean workspaceBackingBean;
 
   @RequestAction
   public String init() {
@@ -44,7 +50,8 @@ public class WorkspaceUsersBackingBean {
       return NavigationRules.NOT_FOUND;
     }
     workspaceEntityId = workspaceEntity.getId();
-    
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
+  
     if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
       return NavigationRules.NOT_FOUND;
     }

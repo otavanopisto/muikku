@@ -6,7 +6,7 @@ body[class^='workspace'] {
   
   .workspace-teachers-listing-wrapper,
   .workspace-students-listing-wrapper {
-    padding:0 20px 20px 20px;
+    padding:0 30px 30px 30px;
   
     .workspace-users {
       padding:4px 5px;
@@ -20,7 +20,7 @@ body[class^='workspace'] {
       }
       
       .workspace-users-name {
-        @include flex(1 0);
+        @include flex(1 0 auto);
       }
       
       .workspace-users-archive,
