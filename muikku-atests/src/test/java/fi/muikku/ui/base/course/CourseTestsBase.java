@@ -139,15 +139,18 @@ public class CourseTestsBase extends AbstractUITest {
   public void courseUnpublishTest() throws Exception {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
-    waitForPresent(".workspace-title");
-    assertVisible(".workspace-unpublish-button");
-    assertNotVisible(".workspace-publish-button");
-    click(".workspace-unpublish-button");
-    waitForPresent(".workspace-title");
-    assertNotVisible(".workspace-unpublish-button");
-    assertVisible(".workspace-publish-button");
-    deleteWorkspace(workspace.getId());
+    try{
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      waitForPresent(".workspace-title");
+      assertVisible(".workspace-unpublish-button");
+      assertNotVisible(".workspace-publish-button");
+      click(".workspace-unpublish-button");
+      waitForPresent(".workspace-title");
+      assertNotVisible(".workspace-unpublish-button");
+      assertVisible(".workspace-publish-button");      
+    }finally{
+      deleteWorkspace(workspace.getId());  
+    }
   }
   
 }
