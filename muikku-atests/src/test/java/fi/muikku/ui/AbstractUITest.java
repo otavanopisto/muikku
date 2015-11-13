@@ -269,7 +269,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
 
-  protected void waitForPresentVisible(String selector) {
+  protected void waitForPresentAndVisible(String selector) {
     waitForElementToBePresent(By.cssSelector(selector));
     assertVisible(selector);
   }
