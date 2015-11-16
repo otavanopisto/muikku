@@ -522,11 +522,26 @@
         this.options.setReadonly.call(this, readonly);
       }
     },
+    _checkStatusMessage: function () {
+      var saveStateLabel = this.element.prev('.muikku-field-save-state-label');
+      if (saveStateLabel.length <= 0) {
+        $(this.element)
+        .before($('<span>')
+          .addClass('muikku-field-save-state-label')
+        );
+      }
+    },
     _saveField: function () {
       if (!this.readonly()) {
+        this._checkStatusMessage();
+        
         $(this.element)
           .removeClass('muikku-field-unsaved')
           .addClass('muikku-field-saving');
+        
+        $(this.element)
+          .prev('.muikku-field-save-state-label')
+          .text(getLocaleText('plugin.workspace.materials.answerSavingLabel'));
         
         var page = $(this.element).closest('.workspace-materials-view-page');
         var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
@@ -555,6 +570,10 @@
       $(this.element)
         .removeClass('muikku-field-saved muikku-field-saving')
         .addClass('muikku-field-unsaved');
+      
+      $(this.element)
+        .prev('.muikku-field-save-state-label')
+        .text(getLocaleText('plugin.workspace.materials.answerSavingLabel'));
   
       if (this._saveTimeoutId) {
         clearTimeout(this._saveTimeoutId);
@@ -592,10 +611,20 @@
           $(this.element)
             .removeClass('muikku-field-unsaved muikku-field-saving')
             .addClass('muikku-field-saved');
+          
+          $(this.element)
+            .prev('.muikku-field-save-state-label')
+            .text(getLocaleText('plugin.workspace.materials.answerSavedLabel'));
+          
         } else {
           $(this.element)
             .removeClass('muikku-field-unsaved muikku-field-saving')
             .addClass('muikku-field-saved');
+          
+          $(this.element)
+            .find('.muikku-field-saving-label')
+            .text(getLocaleText('plugin.workspace.materials.answerSavedLabel'));
+          
           this.answer(message.answer);
         }
         $(this.element).trigger('fieldAnswerSaved');
