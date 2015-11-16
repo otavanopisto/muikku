@@ -221,5 +221,29 @@ public class CommunicatorController {
     
     return createMessage(communicatorMessageId, sender, recipients, categoryEntity, subject, content, null);
   }
+
+  public List<InboxCommunicatorMessage> listAllInboxMessages() {
+    return communicatorMessageDAO.listAll();
+  }
+
+  public List<CommunicatorMessageRecipient> listAllRecipients() {
+    return communicatorMessageRecipientDAO.listAll();
+  }
+
+  public List<CommunicatorMessageId> listAllMessageIds() {
+    return communicatorMessageIdDAO.listAll();
+  }
+
+  public void delete(InboxCommunicatorMessage icm) {
+    communicatorMessageDAO.delete(icm);
+  }
+
+  public void delete(CommunicatorMessageRecipient cmr) {
+    communicatorMessageRecipientDAO.delete(cmr);
+  }
+
+  public void delete(CommunicatorMessageId id) {
+    communicatorMessageIdDAO.delete(id);
+  }
   
 }

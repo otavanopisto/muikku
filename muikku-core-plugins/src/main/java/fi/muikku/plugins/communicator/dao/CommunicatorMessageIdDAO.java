@@ -17,4 +17,8 @@ public class CommunicatorMessageIdDAO extends CorePluginsDAO<CommunicatorMessage
     return communicatorMessageId;
   }
   
+  @Override
+  public void delete(CommunicatorMessageId e) {
+    super.delete(e);
+  }
 }
