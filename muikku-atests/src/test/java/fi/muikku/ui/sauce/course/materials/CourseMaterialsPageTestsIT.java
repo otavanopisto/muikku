@@ -94,34 +94,46 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
 
   @Override
   public void answerFileFieldTestStudent() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser()) || !"safari".equals(getSauceBrowser())) {
-
-      super.answerFileFieldTestStudent();
+    if ("microsoftedge".equals(getSauceBrowser())) {
+      return;
     }
+    if ("safari".equals(getSauceBrowser())) {
+      return;
+    }
+    super.answerFileFieldTestStudent();
   }
   
   @Override
   public void answerFileFieldTestAdmin() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser()) || !"safari".equals(getSauceBrowser())) {
-
-      super.answerFileFieldTestAdmin();
+    if ("microsoftedge".equals(getSauceBrowser())) {
+      return;
     }
+    if ("safari".equals(getSauceBrowser())) {
+      return;
+    }
+    super.answerFileFieldTestAdmin();
   }
 
   @Override
   public void removeFileFieldTestAdmin() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser()) || !"safari".equals(getSauceBrowser())) {
-
-      super.removeFileFieldTestAdmin();
+    if ("microsoftedge".equals(getSauceBrowser())) {
+      return;
     }
+    if ("safari".equals(getSauceBrowser())) {
+      return;
+    }
+    super.removeFileFieldTestAdmin();
   }
   
   @Override
   public void removeFileFieldTestStudent() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser()) || !"safari".equals(getSauceBrowser())) {
-
-      super.removeFileFieldTestStudent();
+    if ("microsoftedge".equals(getSauceBrowser())) {
+      return;
     }
+    if ("safari".equals(getSauceBrowser())) {
+      return;
+    }
+    super.removeFileFieldTestStudent();
   }
   
 }
