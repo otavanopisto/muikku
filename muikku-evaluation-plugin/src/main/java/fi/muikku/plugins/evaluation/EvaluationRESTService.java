@@ -22,11 +22,12 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.evaluation.rest.model.WorkspaceAssessor;
+import fi.muikku.plugins.evaluation.rest.model.WorkspaceGrade;
+import fi.muikku.plugins.evaluation.rest.model.WorkspaceGradingScale;
 import fi.muikku.plugins.evaluation.rest.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
-import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.WorkspaceController;
@@ -181,6 +182,38 @@ public class EvaluationRESTService extends PluginRESTService {
               user.getDisplayName(),
               userEntity.getId(),
               userEntity.getId().equals(loggedUserEntity.getId())));
+    }
+    
+    return Response.ok(result).build();
+  }
+
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/gradingScales")
+  @RESTPermitUnimplemented
+  public Response listWorkspaceGrades(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
+    List<WorkspaceGradingScale> result = new ArrayList<>();
+    
+    List<GradingScale> gradingScales = gradingController.listGradingScales();
+    for (GradingScale gradingScale : gradingScales) {
+      List<GradingScaleItem> gradingScaleItems = gradingController.listGradingScaleItems(gradingScale);
+      List<WorkspaceGrade> workspaceGrades = new ArrayList<>();
+      for (GradingScaleItem gradingScaleItem : gradingScaleItems) {
+        workspaceGrades.add(
+            new WorkspaceGrade(
+                gradingScaleItem.getName(),
+                gradingScaleItem.getIdentifier(),
+                gradingScaleItem.getSchoolDataSource()));
+      }
+      result.add(
+          new WorkspaceGradingScale(
+              gradingScale.getName(),
+              gradingScale.getIdentifier(),
+              gradingScale.getSchoolDataSource(),
+              workspaceGrades));
     }
     
     return Response.ok(result).build();

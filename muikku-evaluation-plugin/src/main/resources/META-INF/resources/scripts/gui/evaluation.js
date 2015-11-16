@@ -914,7 +914,7 @@
       var workspaceName = $('#evaluation').evaluation("workspaceName");
       var workspaceEvaluableAssignments = $('#evaluation').evaluation("workspaceEvaluableAssignments");
       var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
-      var assessors = mApi()
+      mApi()
         .workspace
         .workspaces
         .assessors
@@ -923,21 +923,31 @@
           if (err) {
             
           } else {
-            $('<div>').evaluateWorkspaceDialog({
-              studentStudyProgrammeName: this.studyProgrammeName(),
-              studentDisplayName: this.displayName(),
-              workspaceName: workspaceName,
-              gradingScales: [],
-              assessors: workspaceUsers,
-              studentAnswers: [],
-              evaluationDate: null,
-              evaluationGradeId: null,
-              assessorEntityId: null,
-              verbalAssessment: null,
-              studentEntityId: this.studentEntityId(), 
-              workspaceEvaluableAssignments: workspaceEvaluableAssignments,
-              workspaceEntityId: workspaceEntityId
-            });
+            mApi()
+              .workspace
+              .workspaces
+              .gradingScales
+              .read(workspaceEntityId)
+              .callback($.proxy(function(err, gradingScales) {
+              if (err) {
+              } else {
+                $('<div>').evaluateWorkspaceDialog({
+                  studentStudyProgrammeName: this.studyProgrammeName(),
+                  studentDisplayName: this.displayName(),
+                  workspaceName: workspaceName,
+                  gradingScales: gradingScales,
+                  assessors: workspaceUsers,
+                  studentAnswers: [],
+                  evaluationDate: null,
+                  evaluationGradeId: null,
+                  assessorEntityId: null,
+                  verbalAssessment: null,
+                  studentEntityId: this.studentEntityId(), 
+                  workspaceEvaluableAssignments: workspaceEvaluableAssignments,
+                  workspaceEntityId: workspaceEntityId
+                });
+              }
+            }, this));
           }
         }, this));
     },
