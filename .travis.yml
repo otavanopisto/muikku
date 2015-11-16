@@ -7,7 +7,7 @@ branches:
 before_script:
 - if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then 
     curl -sS https://saucelabs.com/downloads/sc-4.3-linux.tar.gz|tar -xzC /tmp/;
-    /tmp/sc-4.3-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER -D cdn.muikkuverkko.fi --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid;
+    /tmp/sc-4.3-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid;
   fi
 after_script:
 - if [ -e /tmp/sc.pid ] && [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then
