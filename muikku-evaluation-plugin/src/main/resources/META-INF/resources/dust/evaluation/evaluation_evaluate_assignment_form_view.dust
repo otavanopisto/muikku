@@ -46,9 +46,9 @@
       <select name="assessor">
       {#assessors}
         {@eq key=selected value="true" type="boolean"}
-          <option value="{userId}" selected="selected">{displayName}</option>
+          <option value="{userEntityId}" selected="selected">{displayName}</option>
         {:else}
-          <option value="{userId}">{displayName}</option>
+          <option value="{userEntityId}">{displayName}</option>
         {/eq}
       {/assessors}
       </select>
