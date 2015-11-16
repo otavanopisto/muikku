@@ -43,7 +43,11 @@
           resizable: false,
           width: 'auto',
           height: 'auto',
-          // title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
+          title: '<span class="modal-title-student-name">'
+                    +this.options.studentDisplayName
+                    +'</span><span class="modal-title-workspace-name">'
+                    +this.options.workspaceName
+                    +'</span>',
           dialogClass: "evaluation-evaluate-modal",
           close: $.proxy(function () {
             this.element.remove();
@@ -287,7 +291,11 @@
           resizable: false,
           width: 'auto',
           height: 'auto',
-          // title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
+          title: '<span class="modal-title-student-name">'
+                    +this.options.studentDisplayName
+                    +'</span><span class="modal-title-workspace-name">'
+                    +this.options.workspaceName
+                    +'</span>',
           dialogClass: "evaluation-evaluate-modal",
           close: $.proxy(function () {
             this.element.remove();
@@ -341,59 +349,63 @@
             'text': this._dialog.attr('data-button-save-text'),
             'class': 'save-evaluation-button',
             'click': $.proxy(function(event) {
-//              var gradeValue = $(this).find('select[name="grade"]')
-//                .val()
-//                .split('@', 2);
-//              var grade = gradeValue[0].split('/', 2);
-//              var gradingScale = gradeValue[1].split('/', 2);
-//              // TODO: Switch to ISO 8601
-//              var evaluationDate = $(this).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
-//              var assessorEntityId = $(this).find('select[name="assessor"]').val();
-//              var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
-//              
-//              if (workspaceMaterialEvaluation && workspaceMaterialEvaluation.id) {
-//                mApi().workspace.workspaces.materials.evaluations.update(workspaceEntityId, workspaceMaterialId, workspaceMaterialEvaluation.id, {
-//                  evaluated: evaluationDate,
-//                  gradeIdentifier: grade[0],
-//                  gradeSchoolDataSource: grade[1],
-//                  gradingScaleIdentifier: gradingScale[0],
-//                  gradingScaleSchoolDataSource: gradingScale[1],
-//                  assessorEntityId: assessorEntityId,
-//                  studentEntityId: studentEntityId,
-//                  workspaceMaterialId: workspaceMaterialId,
-//                  verbalAssessment: verbalAssessment
-//                }).callback($.proxy(function (err, result) {
-//                  if (err) {
-//                    $('.notification-queue').notificationQueue('notification', 'error', err);
-//                  } else {
-//                    assigmentElement.removeClass('assignment-unaswered assignment-aswered assignment-submitted assignment-withdrawn assignment-evaluated');
-//                    assigmentElement.addClass('assignment-evaluated');
-//                    assigmentElement.attr('data-workspace-material-evaluation-id', result.id);
-//                    $(this).dialog("destroy").remove();
-//                  }
-//                }, this));
-//              } else {
-//                mApi().workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
-//                  evaluated: evaluationDate,
-//                  gradeIdentifier: grade[0],
-//                  gradeSchoolDataSource: grade[1],
-//                  gradingScaleIdentifier: gradingScale[0],
-//                  gradingScaleSchoolDataSource: gradingScale[1],
-//                  assessorEntityId: assessorEntityId,
-//                  studentEntityId: studentEntityId,
-//                  workspaceMaterialId: workspaceMaterialId,
-//                  verbalAssessment: verbalAssessment
-//                }).callback($.proxy(function (err, result) {
-//                  if (err) {
-//                    $('.notification-queue').notificationQueue('notification', 'error', err);
-//                  } else {
-//                    assigmentElement.removeClass('assignment-unaswered assignment-aswered assignment-submitted assignment-withdrawn assignment-evaluated');
-//                    assigmentElement.addClass('assignment-evaluated');
-//                    assigmentElement.attr('data-workspace-material-evaluation-id', result.id);
-//                    $(this).dialog("destroy").remove();
-//                  }
-//                }, this));
-//              }
+              var gradeValue = $(this._dialog).find('select[name="grade"]')
+                .val()
+                .split('@', 2);
+              var grade = gradeValue[0].split('/', 2);
+              var gradingScale = gradeValue[1].split('/', 2);
+              // TODO: Switch to ISO 8601
+              var evaluationDate = $(this._dialog).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
+              var assessorEntityId = $(this._dialog).find('select[name="assessor"]').val();
+              var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
+              var workspaceMaterialId = this.options.workspaceMaterialId;
+              var workspaceEntityId = this.options.workspaceEntityId;
+              
+              if (this.options.evaluationId) {
+                mApi().workspace.workspaces.materials.evaluations.update(workspaceEntityId, workspaceMaterialId, this.options.evaluationId, {
+                  evaluated: evaluationDate,
+                  gradeIdentifier: grade[0],
+                  gradeSchoolDataSource: grade[1],
+                  gradingScaleIdentifier: gradingScale[0],
+                  gradingScaleSchoolDataSource: gradingScale[1],
+                  assessorEntityId: assessorEntityId,
+                  studentEntityId: this.options.studentEntityId,
+                  workspaceMaterialId: workspaceMaterialId,
+                  verbalAssessment: verbalAssessment
+                }).callback($.proxy(function (err, result) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  } else {
+                    //TODO: update element
+                    //assigmentElement.removeClass('assignment-unaswered assignment-aswered assignment-submitted assignment-withdrawn assignment-evaluated');
+                    //assigmentElement.addClass('assignment-evaluated');
+                    //assigmentElement.attr('data-workspace-material-evaluation-id', result.id);
+                    this.element.remove();
+                  }
+                }, this));
+              } else {
+                mApi().workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
+                  evaluated: evaluationDate,
+                  gradeIdentifier: grade[0],
+                  gradeSchoolDataSource: grade[1],
+                  gradingScaleIdentifier: gradingScale[0],
+                  gradingScaleSchoolDataSource: gradingScale[1],
+                  assessorEntityId: assessorEntityId,
+                  studentEntityId: this.options.studentEntityId,
+                  workspaceMaterialId: workspaceMaterialId,
+                  verbalAssessment: verbalAssessment
+                }).callback($.proxy(function (err, result) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  } else {
+                    //TODO: update element
+                    //assigmentElement.removeClass('assignment-unaswered assignment-aswered assignment-submitted assignment-withdrawn assignment-evaluated');
+                    //assigmentElement.addClass('assignment-evaluated');
+                    //assigmentElement.attr('data-workspace-material-evaluation-id', result.id);
+                    this.element.remove();
+                  }
+                }, this));
+              }
             }, this)
           }, {
             'text': this._dialog.attr('data-button-cancel-text'),
@@ -772,24 +784,47 @@
     
     _onClick: function (event) {
       var workspaceStudent = $('*[data-workspace-student="' +  this.options.workspaceUserEntityId + '"]');
-      
       var studentDisplayName = workspaceStudent.evaluationStudent('displayName');
       var studyProgrammeName = workspaceStudent.evaluationStudent('studyProgrammeName');
       var workspaceName = $('#evaluation').evaluation("workspaceName");
-      
-      $('<div>').evaluateAssignmentDialog({
-        studentDisplayName: studentDisplayName,
-        studentAnswers: this._studentAnswers,
-        gradingScales: [],
-        assessors: [],
-        workspaceName: workspaceName,
-        studentStudyProgrammeName: studyProgrammeName,
-        workspaceMaterialId: this.options.workspaceMaterialId,
-        materialId: this.options.materialId,
-        evaluationDate: evaluation.evaluated,
-        evaluationGradeId: evaluation.gradeIdentifier,
-        verbalAssessment: evaluation.verbalAssessment
-      });
+      var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
+      mApi()
+      .workspace
+      .workspaces
+      .assessors
+      .read(workspaceEntityId)
+      .callback($.proxy(function(err, workspaceUsers) {
+        if (err) {
+          
+        } else {
+          mApi()
+            .workspace
+            .workspaces
+            .gradingScales
+            .read(workspaceEntityId)
+            .callback($.proxy(function(err, gradingScales) {
+              if (err) {
+              } else {
+                $('<div>').evaluateAssignmentDialog({
+                  studentDisplayName: studentDisplayName,
+                  studentAnswers: this._studentAnswers,
+                  gradingScales: gradingScales,
+                  assessors: workspaceUsers,
+                  workspaceName: workspaceName,
+                  studentStudyProgrammeName: studyProgrammeName,
+                  workspaceMaterialId: this.options.workspaceMaterialId,
+                  materialId: this.options.materialId,
+                  studentEntityId: workspaceStudent.evaluationStudent('studentEntityId'),
+                  evaluationId: this.options.evaluation == null ? null : this.options.evaluation.id,
+                  evaluationDate: evaluation.evaluated,
+                  evaluationGradeId: evaluation.gradeIdentifier,
+                  verbalAssessment: evaluation.verbalAssessment,
+                  workspaceEntityId: workspaceEntityId
+                });
+              }
+            }, this));
+        }
+      }, this));
     },
     
     _load: function () {

@@ -1,5 +1,6 @@
 package fi.muikku.plugins.evaluation;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -13,10 +14,14 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.rest.SessionContext;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.WorkspaceSchoolDataBridge;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -32,6 +37,9 @@ public class EvaluationIndexBackingBean {
   @Parameter ("workspaceEntityId")
   @Matches ("[0-9]{1,}")
   private Long workspaceEntityId;
+  
+  @Inject
+  private SessionController sessionController;
 
   @Inject
   private WorkspaceController workspaceController;
@@ -41,8 +49,20 @@ public class EvaluationIndexBackingBean {
   
   @RequestAction
   public String init() {
+    
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    
+    if (userEntity == null) {
+      return NavigationRules.ACCESS_DENIED;
+    }
+    
     if (getWorkspaceEntityId() == null) {
-      return NavigationRules.NOT_FOUND;
+      List<WorkspaceEntity> myWorkspaces = workspaceController.listWorkspaceEntitiesByUser(userEntity);
+      if (!myWorkspaces.isEmpty()) {
+        setWorkspaceEntityId(myWorkspaces.get(0).getId());
+      } else {
+        return NavigationRules.NOT_FOUND;
+      }
     }
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(getWorkspaceEntityId());
