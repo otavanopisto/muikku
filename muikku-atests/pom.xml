@@ -16,7 +16,7 @@
 
   <properties>
     <!-- Selenium -->
-    <selenium-java.version>2.48.2</selenium-java.version>
+    <selenium-java.version>2.47.1</selenium-java.version>
     <wiremock.version>1.53</wiremock.version>
   </properties>
 
