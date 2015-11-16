@@ -43,7 +43,11 @@
           resizable: false,
           width: 'auto',
           height: 'auto',
-          // title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
+          title: '<span class="modal-title-student-name">'
+                    +this.options.studentDisplayName
+                    +'</span><span class="modal-title-workspace-name">'
+                    +this.options.workspaceName
+                    +'</span>',
           dialogClass: "evaluation-evaluate-modal",
           close: $.proxy(function () {
             this.element.remove();
@@ -287,7 +291,11 @@
           resizable: false,
           width: 'auto',
           height: 'auto',
-          // title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
+          title: '<span class="modal-title-student-name">'
+                    +this.options.studentDisplayName
+                    +'</span><span class="modal-title-workspace-name">'
+                    +this.options.workspaceName
+                    +'</span>',
           dialogClass: "evaluation-evaluate-modal",
           close: $.proxy(function () {
             this.element.remove();
