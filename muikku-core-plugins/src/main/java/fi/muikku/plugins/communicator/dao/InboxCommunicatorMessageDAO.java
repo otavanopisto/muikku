@@ -12,8 +12,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.criterion.Order;
-
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.CorePluginsDAO;
@@ -233,5 +231,9 @@ public class InboxCommunicatorMessageDAO extends CorePluginsDAO<InboxCommunicato
     
     return msg;
   }
-  
+
+  @Override
+  public void delete(InboxCommunicatorMessage e) {
+    super.delete(e);
+  }
 }

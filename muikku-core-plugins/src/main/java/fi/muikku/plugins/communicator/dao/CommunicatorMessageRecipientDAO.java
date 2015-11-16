@@ -102,4 +102,8 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
     return recipient;
   }
 
+  @Override
+  public void delete(CommunicatorMessageRecipient e) {
+    super.delete(e);
+  }
 }

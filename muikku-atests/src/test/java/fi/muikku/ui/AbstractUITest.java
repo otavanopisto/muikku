@@ -14,11 +14,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,7 +45,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
@@ -57,12 +62,15 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
 import fi.muikku.TestUtilities;
+import fi.muikku.atests.CommunicatorMessageRESTModel;
+import fi.muikku.atests.CommunicatorNewMessageRESTModel;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceDiscussion;
 import fi.muikku.atests.WorkspaceDiscussionGroup;
 import fi.muikku.atests.WorkspaceDiscussionThread;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
+import fi.muikku.model.base.Tag;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
 import wiremock.org.apache.commons.lang.StringUtils;
@@ -261,6 +269,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
 
+  protected void waitForPresentAndVisible(String selector) {
+    waitForElementToBePresent(By.cssSelector(selector));
+    assertVisible(selector);
+  }
+  
   protected void takeScreenshot() throws IOException {
     if (getWebDriver() instanceof TakesScreenshot) {
       Date dNow = new Date();
@@ -330,16 +343,26 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForElementToBePresent(By.cssSelector(selector));
   }
   
+  protected boolean isElementPresent(String selector) {
+    try {
+      getWebDriver().findElement(By.cssSelector(selector));
+      return true;
+    } catch (org.openqa.selenium.NoSuchElementException e) {
+      return false;
+    }
+  }
+
+  
   protected void click(String selector) {
     getWebDriver().findElement(By.cssSelector(selector)).click();
   }
   
   protected void waitForClickable(String selector){
-    getWebDriver().findElement(By.cssSelector(selector));
+    waitForPresent(selector);
   }
   
   protected void waitAndClick(String selector) {
-    waitForClickable(selector);
+    waitForPresent(selector);
     click(selector);
   }
   
@@ -356,7 +379,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void selectOption(String selector, String value){
     Select selectField = new Select(getWebDriver().findElementByCssSelector(selector));
     selectField.selectByValue(value);
-    
   }
   
   protected void assertText(String selector, String text) {
@@ -383,12 +405,29 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
           String[] classes = StringUtils.split(element.getAttribute("class"), " ");
           return ArrayUtils.contains(classes, className);
         }
-        
         return false;
       }
     });
   }
 
+  protected boolean waitForMoreThanSize(final String selector, final int size) {
+    WebDriver driver = getWebDriver();
+    return new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        int elementCount = countElements(selector);
+        if (elementCount > size) {
+          return true;
+        }
+        return false;
+      }
+    });
+  }
+  
+  protected int countElements(String selector) {
+    List<WebElement> elements = getWebDriver().findElements(By.cssSelector(selector));
+    return elements.size();
+  }
+  
   protected void assertClassNotPresent(String selector, String className) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     String[] classes = StringUtils.split(element.getAttribute("class"), " ");
@@ -446,6 +485,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
+  }
+  
+  protected void logout() {
+    waitAndClick("a.lu-action-signout");
+    waitForPresent(".index");    
   }
   
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws IOException {
@@ -597,6 +641,34 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .delete("/test/workspaces/{WORKSPACEID}/htmlmaterials/{WORKSPACEMATERIALID}", workspaceEntityId, id)
       .then()
       .statusCode(204);
+  }
+
+  protected void deleteCommunicatorMessages() {
+    asAdmin()
+      .delete("/test/communicator/messages")
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void createCommunicatorMesssage(String caption, String content, Long sender, Long recipient) throws JsonParseException, JsonMappingException, IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    Date created = new Date();
+    Set<String> tags = new HashSet<>();
+    List<Long> recipientIds = new ArrayList<>();
+    recipientIds.add(recipient);
+    CommunicatorNewMessageRESTModel payload = new CommunicatorNewMessageRESTModel(null, null, sender, "test", caption, content, created, tags, recipientIds, new ArrayList<Long>(), new ArrayList<Long>(), new ArrayList<Long>());
+
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/communicator/messages");
+    
+    response.then()
+      .statusCode(200);
+      
+    CommunicatorMessageRESTModel result = objectMapper.readValue(response.asString(), CommunicatorMessageRESTModel.class);
+    assertNotNull(result);
+    assertNotNull(result.getId());
   }
   
   protected String getAttributeValue(String selector, String attribute){
