@@ -776,20 +776,41 @@
       var studentDisplayName = workspaceStudent.evaluationStudent('displayName');
       var studyProgrammeName = workspaceStudent.evaluationStudent('studyProgrammeName');
       var workspaceName = $('#evaluation').evaluation("workspaceName");
-      
-      $('<div>').evaluateAssignmentDialog({
-        studentDisplayName: studentDisplayName,
-        studentAnswers: this._studentAnswers,
-        gradingScales: [],
-        assessors: [],
-        workspaceName: workspaceName,
-        studentStudyProgrammeName: studyProgrammeName,
-        workspaceMaterialId: this.options.workspaceMaterialId,
-        materialId: this.options.materialId,
-        evaluationDate: evaluation.evaluated,
-        evaluationGradeId: evaluation.gradeIdentifier,
-        verbalAssessment: evaluation.verbalAssessment
-      });
+      var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
+      mApi()
+      .workspace
+      .workspaces
+      .assessors
+      .read(workspaceEntityId)
+      .callback($.proxy(function(err, workspaceUsers) {
+        if (err) {
+          
+        } else {
+          mApi()
+            .workspace
+            .workspaces
+            .gradingScales
+            .read(workspaceEntityId)
+            .callback($.proxy(function(err, gradingScales) {
+              if (err) {
+              } else {
+                $('<div>').evaluateAssignmentDialog({
+                  studentDisplayName: studentDisplayName,
+                  studentAnswers: this._studentAnswers,
+                  gradingScales: gradingScales,
+                  assessors: workspaceUsers,
+                  workspaceName: workspaceName,
+                  studentStudyProgrammeName: studyProgrammeName,
+                  workspaceMaterialId: this.options.workspaceMaterialId,
+                  materialId: this.options.materialId,
+                  evaluationDate: evaluation.evaluated,
+                  evaluationGradeId: evaluation.gradeIdentifier,
+                  verbalAssessment: evaluation.verbalAssessment
+                });
+              }
+            }, this));
+        }
+      }, this));
     },
     
     _load: function () {
