@@ -917,8 +917,8 @@
       var assessors = mApi()
         .workspace
         .workspaces
-        .users
-        .read(workspaceEntityId, {roleArchtype: "TEACHER"}) // sic
+        .assessors
+        .read(workspaceEntityId)
         .callback($.proxy(function(err, workspaceUsers) {
           if (err) {
             
