@@ -27,7 +27,7 @@ public class WorkspaceMaterialEvaluation {
     this.workspaceMaterialId = workspaceMaterialId;
     this.gradingScaleIdentifier = gradingScaleIdentifier;
     this.gradingScaleSchoolDataSource = gradingScaleSchoolDataSource;
-    this.setGrade(grade);
+    this.grade = grade;
     this.gradeIdentifier = gradeIdentifier;
     this.gradeSchoolDataSource = gradeSchoolDataSource;
     this.verbalAssessment = verbalAssessment;
