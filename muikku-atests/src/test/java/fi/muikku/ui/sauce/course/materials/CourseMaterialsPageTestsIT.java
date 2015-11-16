@@ -94,7 +94,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
 
   @Override
   public void answerFileFieldTestStudent() throws Exception {
-    if ((!"microsoftedge".equals(getSauceBrowser())) || (!"safari".equals(getSauceBrowser()))) {
+    if (!"microsoftedge".equals(getSauceBrowser()) || !"safari".equals(getSauceBrowser())) {
 
       super.answerFileFieldTestStudent();
     }
@@ -102,7 +102,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Override
   public void answerFileFieldTestAdmin() throws Exception {
-    if ((!"microsoftedge".equals(getSauceBrowser())) || (!"safari".equals(getSauceBrowser()))) {
+    if (!"microsoftedge".equals(getSauceBrowser()) || !"safari".equals(getSauceBrowser())) {
 
       super.answerFileFieldTestAdmin();
     }
@@ -110,7 +110,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
 
   @Override
   public void removeFileFieldTestAdmin() throws Exception {
-    if ((!"microsoftedge".equals(getSauceBrowser())) || (!"safari".equals(getSauceBrowser()))) {
+    if (!"microsoftedge".equals(getSauceBrowser()) || !"safari".equals(getSauceBrowser())) {
 
       super.removeFileFieldTestAdmin();
     }
@@ -118,7 +118,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Override
   public void removeFileFieldTestStudent() throws Exception {
-    if ((!"microsoftedge".equals(getSauceBrowser())) || (!"safari".equals(getSauceBrowser()))) {
+    if (!"microsoftedge".equals(getSauceBrowser()) || !"safari".equals(getSauceBrowser())) {
 
       super.removeFileFieldTestStudent();
     }
