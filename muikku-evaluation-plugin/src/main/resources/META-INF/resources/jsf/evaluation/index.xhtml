@@ -7,8 +7,32 @@
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/jsf/evaluation/templates/evaluation-view.xhtml">
   
+  <ui:define name="evaluation.toolbar">
+    <div class="evaluation-navigation-wrapper">
+      <span class="icon-navicon w-tooltip" title="#{i18n.text['plugin.evaluation.navigation.tooltip']}">
+        <span class="evaluation-workspacelist-tt-container">#{i18n.text['plugin.evaluation.navigation.tooltip']}</span>
+      </span>
+      
+      <div class="evaluation-workspacelisting-wrapper">
+        <div class="evaluation-current-workspace">
+          <span>Nykyisen työtilan nimi</span>
+        </div>
+        <div class="evaluation-select-workspace">
+          <span class="icon-arrow-down w-tooltip" title="#{i18n.text['plugin.evaluation.workspacelist.selectWorkspace.tooltip']}"></span>
+        </div>
+        <div class="evaluation-available-workspaces" data-hidden="1">
+          <div class="evaluation-workspace-item">Joku muu työtila 1</div>
+          <div class="evaluation-workspace-item">Joku muu työtila A</div>
+          <div class="evaluation-workspace-item">Joku muu työtila 5</div>
+          <div class="evaluation-workspace-item">Joku muu työtila D</div>
+          <div class="evaluation-workspace-item">Joku muu työtila 2</div>
+          <div class="evaluation-workspace-item">Joku muu työtila T</div>
+        </div>        
+      </div>
+    </div>
+  </ui:define>
+  
   <ui:define name="evaluation.content.studentAssignmentListing">
-    <div class="evaluation-navigation-wrapper"></div>
     <div class="evaluation-content-wrapper" id="evaluation" data-workspace-entity-id="#{evaluationIndexBackingBean.workspaceEntityId}" data-workspace-name="#{evaluationIndexBackingBean.workspaceName}"></div>
   </ui:define>
   

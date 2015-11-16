@@ -991,6 +991,48 @@
     $('#evaluation').evaluation({
       workspaceEntityId: workspaceEntityId
     }); 
+    
+    $('.evaluation-available-workspaces').perfectScrollbar({
+      wheelSpeed:3,
+      swipePropagation:false
+    });
+    
+  });
+  
+  $(document).on('click', '.evaluation-select-workspace', function (event, data) {
+    
+    var elementHidden = $('.evaluation-available-workspaces').attr('data-hidden');
+    
+    if (elementHidden > 0) {
+      $('.evaluation-available-workspaces')
+      .animate({
+        opacity:1,
+        visibility: 'visible',
+        height:'150px'
+      }, {
+        duration : 300,
+        easing : "easeInOutQuint",
+        complete: function() {
+          $('.evaluation-available-workspaces').attr('data-hidden', '0');
+        }
+      });  
+    } else {
+      $('.evaluation-available-workspaces')
+      .animate({
+        opacity:0,
+        visibility: 'hidden',
+        height:'0px'
+      }, {
+        duration : 200,
+        easing : "easeInOutQuint",
+        complete: function() {
+          $('.evaluation-available-workspaces').attr('data-hidden', '1');
+        }
+      });
+    }
+    
+    
+
   });
 
 }).call(this);

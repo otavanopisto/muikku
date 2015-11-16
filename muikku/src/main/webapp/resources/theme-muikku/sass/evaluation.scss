@@ -23,6 +23,71 @@ body.evaluation {
     padding:5px;
     box-shadow:0 4px 5px rgba(169,169,169,0.3);
     z-index: 9999;
+    
+    .icon-navicon {
+      color:#fff;
+      font-size:30px;
+      display:inline-block;
+      padding:4px;
+      cursor:not-allowed;
+      
+      span[class*="tt"] {
+         display:none;
+      }
+      
+    }
+    
+    .evaluation-workspacelisting-wrapper {
+      position:absolute;
+      left:60px;
+      top:0;
+      @include flexbox();
+      flex-flow:row nowrap;
+      align-items:center;
+      height:45px;
+      padding:0 0 5px 0;
+      
+      .evaluation-current-workspace {
+        color:#fff;
+        text-transform:uppercase;
+        font-size:30px;
+        font-weight:300;
+        @include flex(1 1 auto);
+      }
+      
+      .evaluation-select-workspace {
+        @include flex(1 1 auto);
+        cursor:pointer;
+        padding:10px;
+        
+        span.icon-arrow-down {
+          color:#fff;
+          font-size:22px;
+          display:block;
+        }
+        
+      }
+      
+      .evaluation-available-workspaces {
+        color:#fff;
+        padding:10px 20px;
+        background:#28b8f4;
+        position:absolute;
+        clear:both;
+        display:block;
+        right:0;
+        left:0;
+        top:50px;
+        visible:hidden;
+        overflow:hidden;
+        opacity:0;
+        height:0px;
+      }
+
+    }
+    
+
+    
   }
   
   .evaluation-content-wrapper {
