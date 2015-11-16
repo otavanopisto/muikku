@@ -913,23 +913,33 @@
     _onClick: function (event) {
       var workspaceName = $('#evaluation').evaluation("workspaceName");
       var workspaceEvaluableAssignments = $('#evaluation').evaluation("workspaceEvaluableAssignments");
-      
-      $('<div>').evaluateWorkspaceDialog({
-        studentStudyProgrammeName: this.studyProgrammeName(),
-        studentDisplayName: this.displayName(),
-        workspaceName: workspaceName,
-        gradingScales: [],
-        assessors: [],
-        studentAnswers: [],
-        evaluationDate: null,
-        evaluationGradeId: null,
-        assessorEntityId: null,
-        verbalAssessment: null,
-        studentEntityId: this.studentEntityId(), 
-        workspaceEvaluableAssignments: workspaceEvaluableAssignments,
-        workspaceEntityId: $('#evaluation').evaluation("workspaceEntityId")
-      });
-      
+      var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
+      var assessors = mApi()
+        .workspace
+        .workspaces
+        .users
+        .read(workspaceEntityId, {roleArchtype: "TEACHER"}) // sic
+        .callback($.proxy(function(err, workspaceUsers) {
+          if (err) {
+            
+          } else {
+            $('<div>').evaluateWorkspaceDialog({
+              studentStudyProgrammeName: this.studyProgrammeName(),
+              studentDisplayName: this.displayName(),
+              workspaceName: workspaceName,
+              gradingScales: [],
+              assessors: workspaceUsers,
+              studentAnswers: [],
+              evaluationDate: null,
+              evaluationGradeId: null,
+              assessorEntityId: null,
+              verbalAssessment: null,
+              studentEntityId: this.studentEntityId(), 
+              workspaceEvaluableAssignments: workspaceEvaluableAssignments,
+              workspaceEntityId: workspaceEntityId
+            });
+          }
+        }, this));
     },
     
     _onEvaluationViewInitialized: function (event, data) {
