@@ -12,6 +12,7 @@ public class GuiderTestsBase extends AbstractUITest {
   public void filterByNameTest() throws Exception {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace2 = createWorkspace("diffentcourse", "Second test course", "2", Boolean.TRUE);
     PyramusMocks.personsPyramusMocks();
     try {
       navigate("/guider", true);
@@ -19,6 +20,7 @@ public class GuiderTestsBase extends AbstractUITest {
       assertText(".gt-user .gt-user-meta-topic>span", "Second User");
     } finally {
       deleteWorkspace(workspace.getId());
+      deleteWorkspace(workspace2.getId());
     }
   }
   

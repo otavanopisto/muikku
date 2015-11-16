@@ -136,4 +136,30 @@ public class UserEmailEntityController {
     return userEmailEntityDAO.create(user, address);
   }
 
+  public String getUserEmailAddress(UserEntity userEntity, boolean obfuscate) {
+    String emailAddress = null;
+    List<String> addressesByUserEntity = listAddressesByUserEntity(userEntity);
+    if (addressesByUserEntity != null && addressesByUserEntity.size() > 0) {
+      emailAddress = addressesByUserEntity.get(0);
+    }
+    if (obfuscate && emailAddress != null) {
+      emailAddress = emailAddress.toLowerCase();
+      int atIndex = emailAddress.indexOf('@');
+      if (atIndex != -1) {
+        String user = emailAddress.substring(0, atIndex);
+        if (user.length() > 3) {
+          String domain = emailAddress.substring(atIndex);
+          emailAddress = user.substring(0, 2) + "..." + domain;
+        }
+        else {
+          emailAddress = null;
+        }
+      }
+      else {
+        emailAddress = null;
+      }
+    }
+    return emailAddress;
+  }
+
 }

@@ -58,19 +58,33 @@
                 corrects[meta.connections[i].field] = meta.connections[i].counterpart;
               }
               
+              var isCorrect = true;
               for (var term in pairs) {
+                var termElement = this._element.find('.muikku-connect-field-term[data-field-name="' + term + '"]');
+                var counterPartElement = this._element.find('.muikku-connect-field-counterpart[data-field-value="' + pairs[term] + '"]');
+                termElement.removeClass('muikku-connect-field-wrong-answer muikku-connect-field-correct-answer');
+                counterPartElement.removeClass('muikku-connect-field-wrong-answer muikku-connect-field-correct-answer');
                 if (corrects[term] != pairs[term]) {
-                  return false;
+                  termElement.addClass('muikku-connect-field-wrong-answer');
+                  counterPartElement.addClass('muikku-connect-field-wrong-answer');
+                  isCorrect = false;
+                }else{
+                  termElement.addClass('muikku-connect-field-correct-answer');
+                  counterPartElement.addClass('muikku-connect-field-correct-answer');
                 }
               }
+              return isCorrect;
 
-              return true; 
             }, this),
             getCorrectAnswers: $.proxy(function() {
               var result = [];
               var meta = this.options.meta;
               for (var i = 0, l = meta.connections.length; i < l; i++) {
-                result.push(meta.connections[i].field + ' = ' + meta.connections[i].counterpart);
+                var counterpart = this._element.find('.muikku-connect-field-counterpart[data-field-value="' + meta.connections[i].counterpart + '"]');
+                var termNumber = this._element.find('.muikku-connect-field-term[data-field-name="' + meta.connections[i].field + '"]').attr('data-field-number');
+                counterpart.before($('<span>')
+                    .text(termNumber)
+                    .addClass('muikku-connect-field-correct-number'));
               }
               return result;
             }, this)
@@ -107,7 +121,9 @@
            
           var termElement = $('<div>')
             .addClass('muikku-connect-field-term')
+            .attr('title', $(term).attr('title'))
             .attr('data-field-name', fieldName)
+            .attr('data-field-number', index + 1)
             .html($(term).html());
           
           termElement.click($.proxy(function(e){
@@ -116,12 +132,16 @@
             $(termElement).addClass('muikku-connect-field-term-selected');
           }, this));
           
-          this._element.find('.muikku-connect-field-terms').append(termElement);
+          this._element.find('.muikku-connect-field-terms')
+            .append($('<span>').text(index + 1).addClass('muikku-connect-field-number'))
+            .append(termElement);
+          
         }, this));
         
         this.element.find('.muikku-connect-field-counterpart-cell').each($.proxy(function (index, counterpart) {
           var counterpartElement = $('<div>')
             .addClass('muikku-connect-field-counterpart')
+            .attr('title', $(counterpart).attr('title'))
             .attr('data-field-value', $(counterpart).data('muikku-connect-field-option-name'))
             .html($(counterpart).html());
           
@@ -166,14 +186,15 @@
       
       pairs: function(val) {
         if (val !== undefined) {
-          
-          $(this._element).find('.muikku-connect-field-input').val('');
-          
+          var currentPairs = this.pairs();
           $.each(val || {}, $.proxy(function (name, value) {
-            $(this._element).find('.muikku-connect-field-input[name="' + name + '"]').val(value);
+            if(currentPairs[name] != value){
+              var term = this._element.find('.muikku-connect-field-term[data-field-name="' + name + '"]');
+              var counterpart = this._element.find('.muikku-connect-field-counterpart[data-field-value="' + value + '"]');
+              $(this._element).find('.muikku-connect-field-input[name="' + name + '"]').val(value);
+              this._swapElements(term, counterpart);
+            }
           }, this));
-          
-          this._updateValues();
         } else {
           var pairs = {};
           
