@@ -54,15 +54,6 @@
       this._client = new $.RestClient(CONTEXTPATH + '/rest/' + service + '/', {});
       // "temporary workaround": $.RestClient has a shared `async' object in options
       this._client.opts.ajax = {dataType: 'json', async: async};
-      if (async) {
-        this._client.opts.ajax.isAsync = "isAsync";
-        this._client.opts.isAsync = "isAsync";
-        this._client.isAsync = "isAsync";
-      } else {
-        this._client.opts.ajax.isSync = "isSync";
-        this._client.opts.isSync = "isSync";
-        this._client.isSync = "isSync";
-      }
     },
     add: function (resources) {
       var current = this;
