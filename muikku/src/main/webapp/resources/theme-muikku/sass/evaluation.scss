@@ -59,7 +59,7 @@ body.evaluation {
       .evaluation-select-workspace {
         @include flex(1 1 auto);
         cursor:pointer;
-        padding:10px;
+        padding:15px 10px 10px 10px;
         
         span.icon-arrow-down {
           color:#fff;
@@ -73,8 +73,11 @@ body.evaluation {
         color:#fff;
         padding:0 10px;
         box-sizing:border-box;
-        border:10px solid #7ed9ff; 
-        background:#7ed9ff;
+        border-top:10px solid #8edeff;
+        border-bottom:10px solid #8edeff; 
+        border-bottom-left-radius:10px;
+        border-bottom-right-radius:10px;
+        background:#8edeff;
         position:absolute;
         clear:both;
         display:block;
@@ -85,9 +88,27 @@ body.evaluation {
         overflow:hidden;
         opacity:0;
         height:0px;
+        box-shadow:0 10px 10px rgba(0, 0, 0, 0.1);
         
         &.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
           background-color:#fff;
+        }
+        
+        .evaluation-workspace-item {
+          padding:2px 5px;
+          border-radius:3px;
+          
+          &:hover {
+            background:#7ad8ff;
+          }
+        
+          a {
+            color:#fff;
+            text-decoration:none;
+            text-transform:uppercase;
+            display:block;
+          }
+        
         }
         
       }
