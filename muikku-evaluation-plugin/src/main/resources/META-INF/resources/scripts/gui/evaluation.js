@@ -576,7 +576,7 @@
         this._loadingWorkspaceMaterialReplies = true;
         var pendingLoad = this._pendingWorkspaceMaterialReplyLoads.shift();
         
-        mApi({async: true}).workspace.workspaces.materials.compositeMaterialReplies
+        mApi({async: false}).workspace.workspaces.materials.compositeMaterialReplies
           .read(pendingLoad.workspaceEntityId, pendingLoad.workspaceMaterialId, {
             userEntityId: pendingLoad.userEntityId
           })
