@@ -575,6 +575,13 @@ body.evaluation {
                 
                 .evaluation-assignment-content,
                 .evaluation-exercise-content {
+                  
+                  .evaluation-assignment-literal-assessment {
+                    background:#d5ffd2;
+                    padding:8px 16px;
+                    border-radius:3px;
+                    margin:10px 0;
+                  }
 
                   article {
                     clear:both;
