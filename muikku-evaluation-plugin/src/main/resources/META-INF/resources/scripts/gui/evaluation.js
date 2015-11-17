@@ -96,12 +96,12 @@
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
             
             var batchCalls = $.map(this.options.workspaceEvaluableAssignments, $.proxy(function (workspaceEvaluableAssignment) {
-              return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {
+              return mApi({async: false}).workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {
                 userEntityId: this.options.studentEntityId
               });
             }, this));
             
-            mApi().batch(batchCalls).callback($.proxy(function (err, results) {
+            mApi({async: false}).batch(batchCalls).callback($.proxy(function (err, results) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
@@ -139,7 +139,7 @@
 //              var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
 //              
 //              if(alreadyEvaluated){
-//                mApi().workspace.workspaces.assessments.update(workspaceEntityId, evaluationData.assessmentIdentifier, {
+//                mApi({async: false}).workspace.workspaces.assessments.update(workspaceEntityId, evaluationData.assessmentIdentifier, {
 //                  evaluated: evaluationDate,
 //                  gradeIdentifier: grade[0],
 //                  gradeSchoolDataSource: grade[1],
@@ -167,7 +167,7 @@
 //                  }
 //                }, this));
 //              } else {
-//                mApi().workspace.workspaces.assessments.create(workspaceEntityId, {
+//                mApi({async: false}).workspace.workspaces.assessments.create(workspaceEntityId, {
 //                  evaluated: evaluationDate,
 //                  gradeIdentifier: grade[0],
 //                  gradeSchoolDataSource: grade[1],
@@ -372,7 +372,7 @@
               var workspaceEntityId = this.options.workspaceEntityId;
               
               if (this.options.evaluationId) {
-                mApi().workspace.workspaces.materials.evaluations.update(workspaceEntityId, workspaceMaterialId, this.options.evaluationId, {
+                mApi({async: false}).workspace.workspaces.materials.evaluations.update(workspaceEntityId, workspaceMaterialId, this.options.evaluationId, {
                   evaluated: evaluationDate,
                   gradeIdentifier: grade[0],
                   gradeSchoolDataSource: grade[1],
@@ -394,7 +394,7 @@
                   }
                 }, this));
               } else {
-                mApi().workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
+                mApi({async: false}).workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
                   evaluated: evaluationDate,
                   gradeIdentifier: grade[0],
                   gradeSchoolDataSource: grade[1],
@@ -505,7 +505,7 @@
           pending: []
         };
         
-        mApi().materials.html
+        mApi({async: false}).materials.html
           .read(materialId)
           .callback($.proxy(function (err, htmlMaterial) {
             if (err) {
@@ -556,7 +556,7 @@
         this._loadingStudent = true;
         var pendingLoad = this._pendingStudentLoads.shift();
         
-        mApi().user.users.basicinfo
+        mApi({async: false}).user.users.basicinfo
           .read(pendingLoad.id)
           .callback($.proxy(function (err, user) {
             if (err) {
@@ -576,7 +576,7 @@
         this._loadingWorkspaceMaterialReplies = true;
         var pendingLoad = this._pendingWorkspaceMaterialReplyLoads.shift();
         
-        mApi().workspace.workspaces.materials.compositeMaterialReplies
+        mApi({async: false}).workspace.workspaces.materials.compositeMaterialReplies
           .read(pendingLoad.workspaceEntityId, pendingLoad.workspaceMaterialId, {
             userEntityId: pendingLoad.userEntityId
           })
@@ -661,7 +661,7 @@
     },
 
     _loadStudents: function () {
-      mApi().workspace.workspaces.users
+      mApi({async: false}).workspace.workspaces.users
         .read(this.options.workspaceEntityId)
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
@@ -675,7 +675,7 @@
     },
     
     _loadMaterials: function () {
-      mApi().workspace.workspaces.materials
+      mApi({async: false}).workspace.workspaces.materials
         .read(this.options.workspaceEntityId, { assignmentType : 'EVALUATED'})
         .callback($.proxy(function (err, workspaceEvaluableAssignmentMaterials) {
           if (err) {
@@ -740,7 +740,7 @@
         
         $.each(this._workspaceUsers, $.proxy(function (studentIndex, workspaceUser) {
           
-          mApi().workspace.workspaces.materials.evaluations.read(
+          mApi({async: false}).workspace.workspaces.materials.evaluations.read(
               this.options.workspaceEntityId,
               workspaceEvaluableAssignment.workspaceMaterial.id,
               {userEntityId: workspaceUser.userId})
@@ -798,7 +798,7 @@
       var studyProgrammeName = workspaceStudent.evaluationStudent('studyProgrammeName');
       var workspaceName = $('#evaluation').evaluation("workspaceName");
       var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
-      mApi()
+      mApi({async: false})
       .workspace
       .workspaces
       .assessors
@@ -807,7 +807,7 @@
         if (err) {
           
         } else {
-          mApi()
+          mApi({async: false})
             .workspace
             .workspaces
             .gradingScales
@@ -959,7 +959,7 @@
       var workspaceName = $('#evaluation').evaluation("workspaceName");
       var workspaceEvaluableAssignments = $('#evaluation').evaluation("workspaceEvaluableAssignments");
       var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
-      mApi()
+      mApi({async: false})
         .workspace
         .workspaces
         .assessors
@@ -968,7 +968,7 @@
           if (err) {
             
           } else {
-            mApi()
+            mApi({async: false})
               .workspace
               .workspaces
               .gradingScales

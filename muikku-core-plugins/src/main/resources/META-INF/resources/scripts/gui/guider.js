@@ -54,7 +54,7 @@ $(document).ready(function(){
       _loadFilters : function(){
         var filterContainer = $('.gu-filters');
         var _this = this;
-          mApi().workspace.workspaces
+          mApi({async: false}).workspace.workspaces
           .read({ userId: MUIKKU_LOGGED_USER_ID })
           .callback( function (err, workspaces) {
             if(workspaces){
@@ -94,7 +94,7 @@ $(document).ready(function(){
         if(searchVisible == false ){
           search.show("slide");
         }
-        mApi().user.users.read({searchString : params, archetype : 'STUDENT', maxResults: 25 })
+        mApi({async: false}).user.users.read({searchString : params, archetype : 'STUDENT', maxResults: 25 })
         .callback(function (err, users) {
           
           if(users != undefined){
@@ -119,7 +119,7 @@ $(document).ready(function(){
       _this._clearUsers();
       _this._addLoading($(GuideImpl.guideContainer));
 
-      mApi().user.users.read({workspaceIds : workspaceId, archetype : 'STUDENT', maxResults: 25, searchString : params })
+      mApi({async: false}).user.users.read({workspaceIds : workspaceId, archetype : 'STUDENT', maxResults: 25, searchString : params })
       .callback(function (err, users) {
         if(users != undefined){
           users.userCount = users.length;
@@ -150,7 +150,7 @@ $(document).ready(function(){
       	search.show("slide");
       }
       
-	    mApi().user.users.read({archetype : 'STUDENT', maxResults: 25 })
+	    mApi({async: false}).user.users.read({archetype : 'STUDENT', maxResults: 25 })
 	    .callback(function (err, users) {
         if(users != undefined){
           users.userCount = users.length;
@@ -189,7 +189,7 @@ $(document).ready(function(){
         var fRes = usrsCount;
         
 
-          mApi().user.users.read({ archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, users) {
+          mApi({async: false}).user.users.read({ archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, users) {
             
             // TODO : what if 25 users and no more? 
             if(users != undefined){
@@ -222,7 +222,7 @@ $(document).ready(function(){
         var container = $(".mf-list");
         var categories = container.find("li");        
         categories.removeClass("selected");	      
-		    mApi().user.users.read(uId).callback(function(err, user){
+		    mApi({async: false}).user.users.read(uId).callback(function(err, user){
 				    if( err ){
 				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
 				  	}else{    	  
@@ -233,7 +233,7 @@ $(document).ready(function(){
 					        
 						  	var cont1 = $(".gt-data-container-1 div.gt-data");
 
-			          mApi().workspace.workspaces.read({ userId: uId}).callback(function(err, wps){						  	
+			          mApi({async: false}).workspace.workspaces.read({ userId: uId}).callback(function(err, wps){						  	
 							  	renderDustTemplate('coursepicker/coursepickercourse.dust',wps,function(text){
 							  		$(cont1).append($.parseHTML(text));
 							  		
@@ -258,7 +258,7 @@ $(document).ready(function(){
 	    	$(element).addClass("open");
 	    	_this._addLoading(detCont);
 	    	$(det).show();	   
-        mApi().user.users.read(uId).callback(function(err, user){
+        mApi({async: false}).user.users.read(uId).callback(function(err, user){
 				    if( err ){
 				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
 				  	}else{    	  
@@ -304,13 +304,13 @@ $(document).ready(function(){
 ////	                recipientId : recipientId,
 ////	                recipientGroupIds : groupIds				
 //				
-//	            mApi().communicator.messages.create(recipientIds,values)
+//	            mApi({async: false}).communicator.messages.create(recipientIds,values)
 //	              .callback(function (err, result) {
 //	              });
 //
 //			}	
 //				
-//		    mApi().user.users.read(uId)
+//		    mApi({async: false}).user.users.read(uId)
 //		      .callback(function (err, user) {
 //		      	if( err ){
 //		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));

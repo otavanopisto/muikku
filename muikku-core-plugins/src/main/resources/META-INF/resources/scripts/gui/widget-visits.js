@@ -4,7 +4,7 @@ $(document).ready(function(){
 
 	
 	
-    mApi().workspace.workspaces
+    mApi({async: false}).workspace.workspaces
     .read({ minVisits: 1, orderBy: "lastVisit" }).on('$', function(workspace, workspaceCallback){
 
     	 var td = new Date();

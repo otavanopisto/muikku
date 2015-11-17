@@ -3,7 +3,7 @@
   function changePassword() {
     var username = "";
     
-    mApi().userplugin.credentials.read().callback(function(err, result) {
+    mApi({async: false}).userplugin.credentials.read().callback(function(err, result) {
       username = result.username || "";
     });
     
@@ -43,7 +43,7 @@
             
             var erronous = false;
             
-            mApi().userplugin.credentials.update(values).callback(function(err, result) {
+            mApi({async: false}).userplugin.credentials.update(values).callback(function(err, result) {
               if (erronous = err) {
                 if (result.status == 403)
                   $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.profile.changePassword.dialog.notif.unauthorized"));

@@ -37,7 +37,7 @@ $(document).ready(function(){
             var recipientIds = [10];
             var groupIds = [];
             
-            mApi().communicator.messages.create({
+            mApi({async: false}).communicator.messages.create({
               categoryName: "message",
               caption : subject,
               content : content,
@@ -58,14 +58,14 @@ $(document).ready(function(){
     });
 
     
-    mApi().communicator.items.read()
+    mApi({async: false}).communicator.items.read()
       .on('$', function (item, itemCallback) {
-        mApi().communicator.communicatormessages.sender.read(item.id)
+        mApi({async: false}).communicator.communicatormessages.sender.read(item.id)
           .callback(function (err, user) {  
             item.senderFullName = user.firstName + ' ' + user.lastName;
             item.senderHasPicture = user.hasImage;
           });
-        mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
+        mApi({async: false}).communicator.messages.messagecount.read(item.communicatorMessageId)
           .callback(function (err, count) {
             item.messageCount = count;
           });
@@ -84,9 +84,9 @@ $(document).ready(function(){
     	var mId = $(this).attr('id');
     	var mCont = $('.cm-messages-container');
     	
-        mApi().communicator.messages.read(mId).on('$', function(item, msgCallback){
+        mApi({async: false}).communicator.messages.read(mId).on('$', function(item, msgCallback){
         	
-	        mApi().communicator.communicatormessages.sender.read(mId)
+	        mApi({async: false}).communicator.communicatormessages.sender.read(mId)
 	        .callback(function (err, user) {  
 	          item.senderFullName = user.firstName + ' ' + user.lastName;
 	          item.senderHasPicture = user.hasImage;
@@ -103,7 +103,7 @@ $(document).ready(function(){
 	               
 	        	   
 	               var fCont = $('.mf-item-content-tools');
-	               mApi().communicator.messages.read(mId).callback(function (err, pMsg){
+	               mApi({async: false}).communicator.messages.read(mId).callback(function (err, pMsg){
 	               	renderDustTemplate('communicator/communicator_replymessage.dust', pMsg, function (text) {
 	                   fCont.empty();
 	       	           fCont.append($.parseHTML(text));
