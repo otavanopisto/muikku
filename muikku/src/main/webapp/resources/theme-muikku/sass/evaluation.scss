@@ -46,6 +46,7 @@ body.evaluation {
       align-items:center;
       height:45px;
       padding:0 0 5px 10px;
+      cursor:pointer;
       
       .evaluation-current-workspace {
         color:#fff;
@@ -61,7 +62,8 @@ body.evaluation {
         cursor:pointer;
         padding:15px 10px 10px 10px;
         
-        span.icon-arrow-down {
+        span.icon-arrow-down,
+        span.icon-arrow-up {
           color:#fff;
           font-size:22px;
           display:block;

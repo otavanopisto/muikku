@@ -1044,11 +1044,16 @@
     
   });
   
-  $(document).on('click', '.evaluation-select-workspace', function (event, data) {
+  $(document).on('click', '.evaluation-workspacelisting-wrapper', function (event, data) {
     
     var elementHidden = $('.evaluation-available-workspaces').attr('data-hidden');
     
     if (elementHidden > 0) {
+      $('.evaluation-select-workspace')
+      .find('.w-tooltip')
+      .removeClass('icon-arrow-down')
+      .addClass('icon-arrow-up');
+      
       $('.evaluation-available-workspaces')
       .animate({
         opacity:1,
@@ -1062,6 +1067,11 @@
         }
       });  
     } else {
+      $('.evaluation-select-workspace')
+      .find('.w-tooltip')
+      .removeClass('icon-arrow-up')
+      .addClass('icon-arrow-down');
+      
       $('.evaluation-available-workspaces')
       .animate({
         opacity:0,
