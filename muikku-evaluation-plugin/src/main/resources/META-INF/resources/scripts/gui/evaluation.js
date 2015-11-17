@@ -576,7 +576,7 @@
         this._loadingWorkspaceMaterialReplies = true;
         var pendingLoad = this._pendingWorkspaceMaterialReplyLoads.shift();
         
-        mApi({async: false}).workspace.workspaces.materials.compositeMaterialReplies
+        mApi({async: true}).workspace.workspaces.materials.compositeMaterialReplies
           .read(pendingLoad.workspaceEntityId, pendingLoad.workspaceMaterialId, {
             userEntityId: pendingLoad.userEntityId
           })
@@ -740,7 +740,7 @@
         
         $.each(this._workspaceUsers, $.proxy(function (studentIndex, workspaceUser) {
           
-          mApi({async: true}).workspace.workspaces.materials.evaluations.read(
+          mApi().workspace.workspaces.materials.evaluations.read(
               this.options.workspaceEntityId,
               workspaceEvaluableAssignment.workspaceMaterial.id,
               {userEntityId: workspaceUser.userId})
