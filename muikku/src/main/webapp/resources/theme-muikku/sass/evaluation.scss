@@ -39,13 +39,14 @@ body.evaluation {
     
     .evaluation-workspacelisting-wrapper {
       position:absolute;
-      left:60px;
+      left:50px;
       top:0;
       @include flexbox();
       flex-flow:row nowrap;
       align-items:center;
       height:45px;
-      padding:0 0 5px 0;
+      padding:0 0 5px 10px;
+      cursor:pointer;
       
       .evaluation-current-workspace {
         color:#fff;
@@ -53,14 +54,16 @@ body.evaluation {
         font-size:30px;
         font-weight:300;
         @include flex(1 1 auto);
+        padding:1px 0 0 0;
       }
       
       .evaluation-select-workspace {
         @include flex(1 1 auto);
         cursor:pointer;
-        padding:10px;
+        padding:15px 10px 10px 10px;
         
-        span.icon-arrow-down {
+        span.icon-arrow-down,
+        span.icon-arrow-up {
           color:#fff;
           font-size:22px;
           display:block;
@@ -70,18 +73,46 @@ body.evaluation {
       
       .evaluation-available-workspaces {
         color:#fff;
-        padding:10px 20px;
-        background:#28b8f4;
+        padding:0 10px;
+        box-sizing:border-box;
+        border-top:10px solid #8edeff;
+        border-bottom:10px solid #8edeff; 
+        border-bottom-left-radius:10px;
+        border-bottom-right-radius:10px;
+        background:#8edeff;
         position:absolute;
         clear:both;
         display:block;
         right:0;
         left:0;
         top:50px;
-        visible:hidden;
+        visible:hidden; 
         overflow:hidden;
         opacity:0;
         height:0px;
+        box-shadow:0 10px 10px rgba(0, 0, 0, 0.1);
+        
+        &.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
+          background-color:#fff;
+        }
+        
+        .evaluation-workspace-item {
+          padding:2px 5px;
+          border-radius:3px;
+          
+          &:hover {
+            background:#7ad8ff;
+          }
+        
+          a {
+            color:#fff;
+            text-decoration:none;
+            text-transform:uppercase;
+            display:block;
+          }
+        
+        }
+        
       }
 
     }
@@ -544,6 +575,13 @@ body.evaluation {
                 
                 .evaluation-assignment-content,
                 .evaluation-exercise-content {
+                  
+                  .evaluation-assignment-literal-assessment {
+                    background:#d5ffd2;
+                    padding:8px 16px;
+                    border-radius:3px;
+                    margin:10px 0;
+                  }
 
                   article {
                     clear:both;
