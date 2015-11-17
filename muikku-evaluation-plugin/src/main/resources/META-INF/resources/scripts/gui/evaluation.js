@@ -740,7 +740,7 @@
         
         $.each(this._workspaceUsers, $.proxy(function (studentIndex, workspaceUser) {
           
-          mApi({async: false}).workspace.workspaces.materials.evaluations.read(
+          mApi({async: true}).workspace.workspaces.materials.evaluations.read(
               this.options.workspaceEntityId,
               workspaceEvaluableAssignment.workspaceMaterial.id,
               {userEntityId: workspaceUser.userId})
@@ -762,11 +762,12 @@
                 evaluation: workspaceMaterialEvaluation
               })
               .appendTo(materialRow);
+
+              this.element.trigger("viewInitialized");
             }, this));
           }, this));
       }, this));
       
-      this.element.trigger("viewInitialized");
     }
     
   });
