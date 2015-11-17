@@ -1,6 +1,16 @@
 (function() {
   'use strict';
   
+  $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+    _title: function(title) {
+      if (this.options.htmlTitle) {
+        title.html(this.options.htmlTitle);
+      } else {
+        title.text(this.options.title);
+      }
+    }
+  }));
+  
   $.widget( "custom.evaluateWorkspaceDialog", {
     options: {
       studentStudyProgrammeName: null,
@@ -43,7 +53,7 @@
           resizable: false,
           width: 'auto',
           height: 'auto',
-          title: '<span class="modal-title-student-name">'
+          htmlTitle: '<span class="modal-title-student-name">'
                     +this.options.studentDisplayName
                     +'</span><span class="modal-title-workspace-name">'
                     +this.options.workspaceName
@@ -291,7 +301,7 @@
           resizable: false,
           width: 'auto',
           height: 'auto',
-          title: '<span class="modal-title-student-name">'
+          htmlTitle: '<span class="modal-title-student-name">'
                     +this.options.studentDisplayName
                     +'</span><span class="modal-title-workspace-name">'
                     +this.options.workspaceName

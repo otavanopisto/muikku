@@ -15,18 +15,19 @@
       
       <div class="evaluation-workspacelisting-wrapper">
         <div class="evaluation-current-workspace">
-          <span>Nykyisen työtilan nimi</span>
+          <span>#{evaluationIndexBackingBean.workspaceName}</span>
         </div>
         <div class="evaluation-select-workspace">
           <span class="icon-arrow-down w-tooltip" title="#{i18n.text['plugin.evaluation.workspacelist.selectWorkspace.tooltip']}"></span>
         </div>
         <div class="evaluation-available-workspaces" data-hidden="1">
-          <div class="evaluation-workspace-item">Joku muu työtila 1</div>
-          <div class="evaluation-workspace-item">Joku muu työtila A</div>
-          <div class="evaluation-workspace-item">Joku muu työtila 5</div>
-          <div class="evaluation-workspace-item">Joku muu työtila D</div>
-          <div class="evaluation-workspace-item">Joku muu työtila 2</div>
-          <div class="evaluation-workspace-item">Joku muu työtila T</div>
+        <ui:repeat var="myWorkspace" value="#{evaluationIndexBackingBean.myWorkspaces}">
+          <div class="evaluation-workspace-item">
+          <h:link value="#{myWorkspace.workspace.name} (#{myWorkspace.workspace.nameExtension})">
+            <f:param name="workspaceEntityId" value="#{myWorkspace.workspaceEntity.id}" />
+          </h:link>
+          </div>
+        </ui:repeat>
         </div>        
       </div>
     </div>

@@ -1,5 +1,6 @@
 package fi.muikku.plugins.evaluation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -16,10 +17,8 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.rest.SessionContext;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.schooldata.WorkspaceSchoolDataBridge;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
@@ -47,6 +46,22 @@ public class EvaluationIndexBackingBean {
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
+  public static class WorkspaceWithEntity {
+    public WorkspaceWithEntity(Workspace workspace, WorkspaceEntity workspaceEntity) {
+      super();
+      this.workspace = workspace;
+      this.workspaceEntity = workspaceEntity;
+    }
+    public Workspace getWorkspace() {
+      return workspace;
+    }
+    public WorkspaceEntity getWorkspaceEntity() {
+      return workspaceEntity;
+    }
+    private final Workspace workspace;
+    private final WorkspaceEntity workspaceEntity;
+  }
+  
   @RequestAction
   public String init() {
     
@@ -55,14 +70,20 @@ public class EvaluationIndexBackingBean {
     if (userEntity == null) {
       return NavigationRules.ACCESS_DENIED;
     }
+
+    List<WorkspaceEntity> myWorkspaceEntities = workspaceController.listWorkspaceEntitiesByUser(userEntity);
     
     if (getWorkspaceEntityId() == null) {
-      List<WorkspaceEntity> myWorkspaces = workspaceController.listWorkspaceEntitiesByUser(userEntity);
-      if (!myWorkspaces.isEmpty()) {
-        setWorkspaceEntityId(myWorkspaces.get(0).getId());
+      if (!myWorkspaceEntities.isEmpty()) {
+        setWorkspaceEntityId(myWorkspaceEntities.get(0).getId());
       } else {
         return NavigationRules.NOT_FOUND;
       }
+    }
+    
+    myWorkspaces = new ArrayList<>();
+    for (WorkspaceEntity myWorkspaceEntity : myWorkspaceEntities) {
+      myWorkspaces.add(new WorkspaceWithEntity(workspaceController.findWorkspace(myWorkspaceEntity), myWorkspaceEntity));
     }
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(getWorkspaceEntityId());
@@ -94,9 +115,16 @@ public class EvaluationIndexBackingBean {
     this.workspaceEntityId = workspaceEntityId;
   }
   
+  public List<WorkspaceWithEntity> getMyWorkspaces() {
+    return myWorkspaces;
+  }
+  
   public String getWorkspaceName() {
     return workspaceName;
   }
  
   private String workspaceName;
+  
+  private List<WorkspaceWithEntity> myWorkspaces;
+
 }
