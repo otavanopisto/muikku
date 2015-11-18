@@ -6,13 +6,18 @@ branches:
     - devel
 before_script:
 - if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then 
-    curl -sS https://saucelabs.com/downloads/sc-4.3.11-linux.tar.gz|tar -xzC /tmp/;
-    /tmp/sc-4.3.11-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid;
+    SC_READYFILE=sauce-connect-ready-$RANDOM;
+    curl -sS https://saucelabs.com/downloads/sc-4.3.12-linux.tar.gz|tar -xzC /tmp/;
+    /tmp/sc-4.3.12-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER -f ${SC_READYFILE} --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid;
+    while [ ! -f ${SC_READYFILE} ]; do
+      sleep .5;
+    done
   fi
 after_script:
 - if [ -e /tmp/sc.pid ] && [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then
     kill `cat /tmp/sc.pid`;
   fi;
+- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
 script:
 - set -e;
   if [ $TRAVIS_BRANCH != 'master' ]; then
