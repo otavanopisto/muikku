@@ -16,7 +16,7 @@
 
   <properties>
     <!-- Selenium -->
-    <selenium-java.version>2.48.2</selenium-java.version>
+    <selenium-java.version>2.47.1</selenium-java.version>
     <wiremock.version>1.53</wiremock.version>
   </properties>
 
@@ -271,6 +271,7 @@
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
         <it.package>**</it.package>
+        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
       </properties>
 
       <dependencies>
@@ -321,6 +322,7 @@
                 <it.report.directory>${it.report.directory}</it.report.directory>
                 <it.build.directory>${it.build.directory}</it.build.directory>
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
+                <it.test.file>${it.test.file}</it.test.file>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -598,6 +600,7 @@
         <it.sauce.browser.resolution />
         <it.sauce.platform />
         <it.package>**</it.package>
+        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
       </properties>
 
       <dependencies>
@@ -656,6 +659,7 @@
                 <it.sauce.browser.resolution>${it.sauce.browser.resolution}</it.sauce.browser.resolution>
                 <it.sauce.platform>${it.sauce.platform}</it.sauce.platform>
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
+                <it.test.file>${it.test.file}</it.test.file>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -961,6 +965,7 @@
         <it.sauce.browser.resolution />
         <it.sauce.platform />
         <it.package>**</it.package>
+        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
       </properties>
 
       <dependencies>
@@ -1018,6 +1023,7 @@
                 <it.sauce.browser.resolution>${it.sauce.browser.resolution}</it.sauce.browser.resolution>
                 <it.sauce.platform>${it.sauce.platform}</it.sauce.platform>
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
+                <it.test.file>${it.test.file}</it.test.file>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -1287,6 +1293,7 @@
         <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
+        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
       </properties>
 
       <dependencies>
@@ -1336,6 +1343,7 @@
                 <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
                 <it.report.directory>${it.report.directory}</it.report.directory>
                 <it.build.directory>${it.build.directory}</it.build.directory>
+                <it.test.file>${it.test.file}</it.test.file>
               </systemPropertyVariables>
             </configuration>
             <executions>
