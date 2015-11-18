@@ -129,73 +129,52 @@
             'text': this._dialog.attr('data-button-save-text'),
             'class': 'save-evaluation-button',
             'click': $.proxy(function(event) {
-//              var gradeString = $(this).find('select[name="grade"]').val();
-//              var gradeValue = gradeString.split('@', 2);
-//              var grade = gradeValue[0].split('/', 2);
-//              var gradingScale = gradeValue[1].split('/', 2);
-//              var evaluationDate = $(this).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
-//              var assessorEntityId = $(this).find('select[name="assessor"]').val();
-//
-//              var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
-//              
-//              if(alreadyEvaluated){
-//                mApi({async: false}).workspace.workspaces.assessments.update(workspaceEntityId, evaluationData.assessmentIdentifier, {
-//                  evaluated: evaluationDate,
-//                  gradeIdentifier: grade[0],
-//                  gradeSchoolDataSource: grade[1],
-//                  gradingScaleIdentifier: gradingScale[0],
-//                  gradingScaleSchoolDataSource: gradingScale[1],
-//                  workspaceUserEntityId: workspaceStudentEntityId,
-//                  assessorEntityId: assessorEntityId,
-//                  verbalAssessment: verbalAssessment
-//                }).callback($.proxy(function (err, result) {
-//                  if (err) {
-//                    $('.notification-queue').notificationQueue('notification', 'error', err);
-//                  } else {
-//                    var newEvaluationData = {
-//                        'assessmentIdentifier': evaluationData.assessmentIdentifier,
-//                        'gradeString': gradeString,
-//                        'verbalAssessment':verbalAssessment,
-//                        'assessingUserEntityId':assessorEntityId,
-//                        'date':evaluationDate
-//                    };
-//                    studentElement.removeClass('workspace-assessment-requested workspace-assessment-critical');
-//                    studentElement.addClass('workspace-evaluated');
-//                    studentElement.attr('data-workspace-evaluated', 'true');
-//                    studentElement.attr('data-workspace-evaluation-data', JSON.stringify(newEvaluationData));
-//                    $(this).dialog("destroy").remove();
-//                  }
-//                }, this));
-//              } else {
-//                mApi({async: false}).workspace.workspaces.assessments.create(workspaceEntityId, {
-//                  evaluated: evaluationDate,
-//                  gradeIdentifier: grade[0],
-//                  gradeSchoolDataSource: grade[1],
-//                  gradingScaleIdentifier: gradingScale[0],
-//                  gradingScaleSchoolDataSource: gradingScale[1],
-//                  workspaceUserEntityId: workspaceStudentEntityId,
-//                  assessorEntityId: assessorEntityId,
-//                  verbalAssessment: verbalAssessment
-//                }).callback($.proxy(function (err, result) {
-//                  if (err) {
-//                    $('.notification-queue').notificationQueue('notification', 'error', err);
-//                  } else { 
-//                    var evaluationData = {
-//                        'assessmentIdentifier': result.identifier,
-//                        'gradeString': gradeString,
-//                        'verbalAssessment':verbalAssessment,
-//                        'assessingUserEntityId':assessorEntityId,
-//                        'date':evaluationDate
-//                    };
-//                    studentElement.removeClass('workspace-assessment-requested workspace-assessment-critical');
-//                    studentElement.addClass('workspace-evaluated');
-//                    studentElement.attr('data-workspace-evaluated', 'true');
-//                    studentElement.attr('data-workspace-evaluation-data', JSON.stringify(evaluationData));
-//                    $(this).dialog("destroy").remove();
-//                  }
-//                }, this));
-//              }
-//            }
+              var gradeString = $(this._dialog).find('select[name="grade"]').val();
+              var gradeValue = gradeString.split('@', 2);
+              var grade = gradeValue[0].split('/', 2);
+              var gradingScale = gradeValue[1].split('/', 2);
+              var assessedDate = $(this._dialog).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
+              var assessorEntityId = $(this._dialog).find('select[name="assessor"]').val();
+              var workspaceEntityId = this.options.workspaceEntityId;
+              var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
+              
+              if(this.options.assessmentId){
+                mApi({async: false}).workspace.workspaces.assessments.update(workspaceEntityId, this.options.assessmentId, {
+                  evaluated: assessedDate,
+                  gradeIdentifier: grade[0],
+                  gradeSchoolDataSource: grade[1],
+                  gradingScaleIdentifier: gradingScale[0],
+                  gradingScaleSchoolDataSource: gradingScale[1],
+                  workspaceUserEntityId: this.options.workspaceStudentEntityId,
+                  assessorEntityId: assessorEntityId,
+                  verbalAssessment: verbalAssessment
+                }).callback($.proxy(function (err, result) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  } else {
+                    //TODO: update view
+                    this.element.remove();
+                  }
+                }, this));
+              } else {
+                mApi({async: false}).workspace.workspaces.assessments.create(workspaceEntityId, {
+                  evaluated: assessedDate,
+                  gradeIdentifier: grade[0],
+                  gradeSchoolDataSource: grade[1],
+                  gradingScaleIdentifier: gradingScale[0],
+                  gradingScaleSchoolDataSource: gradingScale[1],
+                  workspaceUserEntityId: this.options.workspaceStudentEntityId,
+                  assessorEntityId: assessorEntityId,
+                  verbalAssessment: verbalAssessment
+                }).callback($.proxy(function (err, result) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  } else {
+                    //TODO: update view
+                    this.element.remove();
+                  }
+                }, this));
+              }
             }, this)
           }, {
             'text': this._dialog.attr('data-button-cancel-text'),
@@ -711,14 +690,26 @@
     _onStudentsLoaded: function (event, data) {
       this._workspaceUsers = data.workspaceUsers;
       
-      $.each(this._workspaceUsers, $.proxy(function (index, workspaceUser) {
-        $('<div>')
-          .attr('data-workspace-student', workspaceUser.id)
-          .evaluationStudent({
-            workspaceStudentEntityId: workspaceUser.id,
-            studentEntityId: workspaceUser.userId
-          })
-          .appendTo(this.element.find('.evaluation-students'));
+      $.each(this._workspaceUsers, $.proxy(function (index, workspaceUser) { 
+        mApi({async: false}).workspace.workspaces.assessments.read(
+              this.options.workspaceEntityId,
+              {userEntityId: workspaceUser.userId})
+          .callback($.proxy(function(err, workspaceAssessments) {
+            var workspaceAssessment = null;
+            if (workspaceAssessments != null && workspaceAssessments.length > 0) {
+              workspaceAssessment = workspaceAssessments[0];
+            }
+            workspaceUser.assessment = workspaceAssessment;
+  
+          $('<div>')
+            .attr('data-workspace-student', workspaceUser.id)
+            .evaluationStudent({
+              workspaceStudentEntityId: workspaceUser.id,
+              studentEntityId: workspaceUser.userId,
+              assessment: workspaceAssessment
+            })
+            .appendTo(this.element.find('.evaluation-students'));
+        }, this));    
       }, this));
       
       this._loadMaterials();
@@ -914,7 +905,8 @@
     
     options: {
       workspaceStudentEntityId: null,
-      studentEntityId: null
+      studentEntityId: null,
+      assessment: null
     },
     
     _create : function() {
@@ -940,6 +932,10 @@
     
     studentEntityId: function () {
       return this.options.studentEntityId;
+    },
+    
+    workspaceStudentEntityId: function () {
+      return this.options.workspaceStudentEntityId;
     },
     
     _loadBasicInfo: function () {
@@ -983,11 +979,13 @@
                   gradingScales: gradingScales,
                   assessors: workspaceUsers,
                   studentAnswers: [],
-                  evaluationDate: null,
-                  evaluationGradeId: null,
-                  assessorEntityId: null,
-                  verbalAssessment: null,
-                  studentEntityId: this.studentEntityId(), 
+                  evaluationDate: this.options.assessment ? this.options.assessment.evaluated : null,
+                  evaluationGradeId: this.options.assessment ? this.options.assessment.gradeIdentifier : null,
+                  assessorEntityId: this.options.assessment ? this.options.assessment.assessorEntityId : null,
+                  verbalAssessment: this.options.assessment ? this.options.assessment.verbalAssessment : null,
+                  assessmentId: this.options.assessment ? this.options.assessment.identifier : null,
+                  studentEntityId: this.studentEntityId(),
+                  workspaceStudentEntityId: this.workspaceStudentEntityId(),
                   workspaceEvaluableAssignments: workspaceEvaluableAssignments,
                   workspaceEntityId: workspaceEntityId
                 });
@@ -996,7 +994,7 @@
           }
         }, this));
     },
-    
+
     _onEvaluationViewInitialized: function (event, data) {
       if (this.element.hasClass('evaluation-student-pending')) {
         var viewWidth = $(event.target).width();
