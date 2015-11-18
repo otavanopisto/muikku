@@ -537,11 +537,11 @@
         $(this.element)
           .removeClass('muikku-field-unsaved')
           .addClass('muikku-field-saving');
-        
+
         var page = $(this.element).closest('.workspace-materials-view-page');
         var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
         var workspaceMaterialId =  page.muikkuMaterialPage('workspaceMaterialId'); 
-        
+
         $(document).muikkuWebSocket("sendMessage", 'workspace:field-answer-save', JSON.stringify({
           'answer': this.answer(),
           'embedId': this.embedId(),
