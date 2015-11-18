@@ -534,14 +534,9 @@
     _saveField: function () {
       if (!this.readonly()) {
         this._checkStatusMessage();
-        
         $(this.element)
           .removeClass('muikku-field-unsaved')
           .addClass('muikku-field-saving');
-        
-        $(this.element)
-          .prev('.muikku-field-save-state-label')
-          .text(getLocaleText('plugin.workspace.materials.answerSavingLabel'));
         
         var page = $(this.element).closest('.workspace-materials-view-page');
         var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
@@ -571,10 +566,6 @@
         .removeClass('muikku-field-saved muikku-field-saving')
         .addClass('muikku-field-unsaved');
       
-      $(this.element)
-        .prev('.muikku-field-save-state-label')
-        .text(getLocaleText('plugin.workspace.materials.answerSavingLabel'));
-  
       if (this._saveTimeoutId) {
         clearTimeout(this._saveTimeoutId);
         this._saveTimeoutId = null;
@@ -614,12 +605,24 @@
           
           $(this.element)
             .prev('.muikku-field-save-state-label')
-            .text(getLocaleText('plugin.workspace.materials.answerSavedLabel'));
+            .text(getLocaleText('plugin.workspace.materials.answerSavedLabel'))
+            .finish()
+            .fadeIn(10)
+            .delay(1000)
+            .fadeOut(300);
           
         } else {
           $(this.element)
             .removeClass('muikku-field-unsaved muikku-field-saving')
             .addClass('muikku-field-saved');
+          
+          $(this.element)
+          .prev('.muikku-field-save-state-label')
+          .text(getLocaleText('plugin.workspace.materials.answerSavedLabel'))
+          .finish()
+          .fadeIn(10)
+          .delay(1000)
+          .fadeOut(300);
           
           $(this.element)
             .find('.muikku-field-saving-label')
