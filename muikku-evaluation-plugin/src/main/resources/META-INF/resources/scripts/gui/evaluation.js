@@ -208,17 +208,26 @@
             htmlMaterialMap[htmlMaterial.id] = htmlMaterial;
           });
           
-          var assignments = $.map(this.options.workspaceEvaluableAssignments, function (workspaceEvaluableAssignment) {
-            return {
-              workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
-              materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
-              type: 'html',
-              title: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].title,
-              html: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].html,
-              evaluation: workspaceEvaluableAssignment.evaluation
-            };
-          });
-
+          var assignments = [];
+          for (var i = 0; i<this.options.workspaceEvaluableAssignments.length; i++) {
+            var workspaceEvaluableAssignment = this.options.workspaceEvaluableAssignments[i];
+            mApi({async: false}).workspace.workspaces.materials.evaluations
+            .read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {userEntityId: this.options.studentEntityId})
+            .callback($.proxy(function(err, evaluations) {
+              var evaluation = null;
+              if (evaluations != null && evaluations.length > 0) {
+                evaluation = evaluations[0];
+              }
+              assignments.push({
+                workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
+                materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
+                type: 'html',
+                title: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].title,
+                html: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].html,
+                evaluation: evaluation
+              });
+            }, this));
+          }
           this._loadTemplate(assignments, callback);
         }
       }, this));
@@ -734,6 +743,7 @@
                 title: workspaceEvaluableAssignment.workspaceMaterial.title,
                 workspaceUserEntityId: workspaceUser.id,
                 studentEntityId: workspaceUser.userId,
+                workspaceEvaluableAssignment: workspaceEvaluableAssignment
               })
               .appendTo(materialRow);
           }, this));
@@ -751,7 +761,8 @@
       workspaceMaterialId: null,
       title: null,
       workspaceUserEntityId: null,
-      studentEntityId: null
+      studentEntityId: null,
+      workspaceEvaluableAssignment: null
     },
     
     _create : function() {
@@ -822,6 +833,7 @@
           this.options.studentEntityId,
           $.proxy(function (reply, evaluation) {
         
+        this.options.workspaceEvaluableAssignment.evaluation = evaluation;
         this.element
           .removeClass('assignment-loading')
           .addClass('assignment-loaded');

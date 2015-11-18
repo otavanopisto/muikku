@@ -25,9 +25,16 @@
         <div class="evaluation-available-workspaces" data-hidden="1">
         <ui:repeat var="myWorkspace" value="#{evaluationIndexBackingBean.myWorkspaces}">
           <div class="evaluation-workspace-item">
-          <h:link value="#{myWorkspace.workspace.name} (#{myWorkspace.workspace.nameExtension})">
-            <f:param name="workspaceEntityId" value="#{myWorkspace.workspaceEntity.id}" />
-          </h:link>
+          <ui:fragment rendered="#{empty myWorkspace.workspace.nameExtension}">
+	          <h:link value="#{myWorkspace.workspace.name}">
+	            <f:param name="workspaceEntityId" value="#{myWorkspace.workspaceEntity.id}" />
+	          </h:link>
+          </ui:fragment>
+          <ui:fragment rendered="#{not empty myWorkspace.workspace.nameExtension}">
+            <h:link value="#{myWorkspace.workspace.name} (#{myWorkspace.workspace.nameExtension})">
+              <f:param name="workspaceEntityId" value="#{myWorkspace.workspaceEntity.id}" />
+            </h:link>
+          </ui:fragment>
           </div>
         </ui:repeat>
         </div>        
