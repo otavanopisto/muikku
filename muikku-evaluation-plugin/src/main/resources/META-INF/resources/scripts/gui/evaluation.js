@@ -537,18 +537,28 @@
       }
     },
     
-    loadWorkspaceMaterialReplies: function (workspaceEntityId, workspaceMaterialId, studentEntityId, callback) {
-      this._pendingWorkspaceMaterialReplyLoads.push({
-        workspaceEntityId: workspaceEntityId,
-        workspaceMaterialId: workspaceMaterialId,
-        userEntityId: studentEntityId,
-        callback: callback
-      });
-      
-      if (!this._loadingWorkspaceMaterialReplies) {
-        this._loadNextWorkspaceMaterialReply();
-      }
-      
+    loadWorkspaceMaterialRepliesAndEvaluations: function (workspaceEntityId, workspaceMaterialId, studentEntityId, callback) {
+      mApi().workspace.workspaces.materials.compositeMaterialReplies
+        .read(workspaceEntityId, workspaceMaterialId, {
+          userEntityId: studentEntityId
+        })
+        .callback($.proxy(function (err, reply) {
+          mApi().workspace.workspaces.materials.evaluations
+          .read(workspaceEntityId, workspaceMaterialId, {userEntityId: studentEntityId})
+          .callback($.proxy(function (err, evaluations) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              var evaluation = null;
+              if (evaluations != null) {
+                if (evaluations.length > 0) {
+                  evaluation = evaluations[0];
+                }
+              }
+              callback(reply, evaluation);
+            }
+          }, this));
+        }, this)); 
     },
     
     _loadNextStudent: function () {
@@ -570,29 +580,6 @@
           }, this)); 
       }
     },
-    
-    _loadNextWorkspaceMaterialReply: function () {
-      if (this._pendingWorkspaceMaterialReplyLoads.length) { 
-        this._loadingWorkspaceMaterialReplies = true;
-        var pendingLoad = this._pendingWorkspaceMaterialReplyLoads.shift();
-        
-        mApi({async: false}).workspace.workspaces.materials.compositeMaterialReplies
-          .read(pendingLoad.workspaceEntityId, pendingLoad.workspaceMaterialId, {
-            userEntityId: pendingLoad.userEntityId
-          })
-          .callback($.proxy(function (err, reply) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              pendingLoad.callback(reply);
-            }
-            
-            this._loadingWorkspaceMaterialReplies = false;
-            this._loadNextWorkspaceMaterialReply();
-          }, this)); 
-      }
-    }
-    
   });
   
   $.widget("custom.evaluation", {
@@ -743,20 +730,7 @@
           var divId = "wm" + (currentId + 0x10000).toString(16).substring(1);
           currentId++;
           
-          $('<div>').attr('id', divId).appendTo(materialRow);
-          
-          mApi().workspace.workspaces.materials.evaluations.read(
-              this.options.workspaceEntityId,
-              workspaceEvaluableAssignment.workspaceMaterial.id,
-              {userEntityId: workspaceUser.userId})
-          .callback($.proxy(function(err, workspaceMaterialEvaluations) {
-            var workspaceMaterialEvaluation = null;
-            if (workspaceMaterialEvaluations != null && workspaceMaterialEvaluations.length > 0) {
-              workspaceMaterialEvaluation = workspaceMaterialEvaluations[0];
-            }
-            workspaceEvaluableAssignment.evaluation = workspaceMaterialEvaluation;
-              
-            $("#" + divId)
+          $('<div>')
               .evaluationAssignment({
                 workspaceEntityId: this.options.workspaceEntityId,
                 workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
@@ -764,14 +738,12 @@
                 title: workspaceEvaluableAssignment.workspaceMaterial.title,
                 workspaceUserEntityId: workspaceUser.id,
                 studentEntityId: workspaceUser.userId,
-                evaluation: workspaceMaterialEvaluation
               })
-
-              this.element.trigger("viewInitialized");
-            }, this));
+              .appendTo(materialRow);
           }, this));
       }, this));
       
+      this.element.trigger("viewInitialized");
     }
     
   });
@@ -783,8 +755,7 @@
       workspaceMaterialId: null,
       title: null,
       workspaceUserEntityId: null,
-      studentEntityId: null,
-      evaluation: null
+      studentEntityId: null
     },
     
     _create : function() {
@@ -847,11 +818,17 @@
         .removeClass('assignment-pending')
         .addClass('assignment-loading');
             
-      $('#evaluation').evaluationLoader('loadWorkspaceMaterialReplies', this.options.workspaceEntityId, this.options.workspaceMaterialId, this.options.studentEntityId, $.proxy(function (reply) {
+      $('#evaluation').evaluationLoader(
+          'loadWorkspaceMaterialRepliesAndEvaluations',
+          this.options.workspaceEntityId,
+          this.options.workspaceMaterialId,
+          this.options.studentEntityId,
+          $.proxy(function (reply, evaluation) {
+        
         this.element
           .removeClass('assignment-loading')
           .addClass('assignment-loaded');
-        this._onWorkspaceMaterialReplyLoaded(reply);
+        this._onWorkspaceMaterialReplyAndEvaluationLoaded(reply, evaluation);
       }, this));
     },
     
@@ -877,7 +854,7 @@
       }
     },
     
-    _onWorkspaceMaterialReplyLoaded: function (reply) {
+    _onWorkspaceMaterialReplyAndEvaluationLoaded: function (reply, evaluation) {
       switch (reply.state) {
         case 'UNANSWERED':
           this.element.addClass('assignment-unaswered');
@@ -903,9 +880,9 @@
             this.element.find('.evaluation-assignment-submitted-date')
               .text(getLocaleText("plugin.evaluation.evaluationGridSubmitted.label") + " " + formatDate(new Date(reply.submitted)));   
           }
-          if (this.options.evaluation.evaluated) {
+          if (evaluation && evaluation.evaluated) {
             this.element.find('.evaluation-assignment-evaluated-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGridEvaluated.label") + " " + formatDate(new Date(this.options.evaluation.evaluated)));   
+              .text(getLocaleText("plugin.evaluation.evaluationGridEvaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
           }
         break;
       }
