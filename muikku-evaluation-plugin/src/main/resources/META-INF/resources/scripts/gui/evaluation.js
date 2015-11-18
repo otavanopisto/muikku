@@ -25,6 +25,7 @@
       verbalAssessment: null,
       studentEntityId: null,
       workspaceEntityId: null,
+      triggeringElement: null,
       studentAnswers: [],
       ckeditor: {
         height : '200px',
@@ -152,7 +153,8 @@
                   if (err) {
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
-                    //TODO: update view
+                    this.options.triggeringElement.options.assessment = result;
+                    this.options.triggeringElement.element.addClass('workspace-evaluated');
                     this.element.remove();
                   }
                 }, this));
@@ -170,7 +172,8 @@
                   if (err) {
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
-                    //TODO: update view
+                    this.options.triggeringElement.options.assessment = result;
+                    this.options.triggeringElement.element.addClass('workspace-evaluated');
                     this.element.remove();
                   }
                 }, this));
@@ -253,6 +256,7 @@
       studentStudyProgrammeName: null,
       workspaceMaterialId: null,
       materialId: null,
+      triggeringElement: null,
       ckeditor: {
         height : '200px',
         entities: false,
@@ -365,10 +369,10 @@
                   if (err) {
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
-                    //TODO: update element
-                    //assigmentElement.removeClass('assignment-unaswered assignment-aswered assignment-submitted assignment-withdrawn assignment-evaluated');
-                    //assigmentElement.addClass('assignment-evaluated');
-                    //assigmentElement.attr('data-workspace-material-evaluation-id', result.id);
+                    this.options.triggeringElement.options.evaluation = result;
+                    this.options.triggeringElement.element.addClass('assignment-evaluated');
+                    this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
+                      .text(getLocaleText("plugin.evaluation.evaluationGridEvaluated.label") + " " + formatDate(new Date(result.evaluated)));
                     this.element.remove();
                   }
                 }, this));
@@ -387,11 +391,12 @@
                   if (err) {
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
-                    //TODO: update element
-                    //assigmentElement.removeClass('assignment-unaswered assignment-aswered assignment-submitted assignment-withdrawn assignment-evaluated');
-                    //assigmentElement.addClass('assignment-evaluated');
-                    //assigmentElement.attr('data-workspace-material-evaluation-id', result.id);
+                    this.options.triggeringElement.options.evaluation = result;
+                    this.options.triggeringElement.element.addClass('assignment-evaluated');
+                    this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
+                      .text(getLocaleText("plugin.evaluation.evaluationGridEvaluated.label") + " " + formatDate(new Date(result.evaluated)));
                     this.element.remove();
+                    
                   }
                 }, this));
               }
@@ -792,11 +797,12 @@
                   workspaceMaterialId: this.options.workspaceMaterialId,
                   materialId: this.options.materialId,
                   studentEntityId: workspaceStudent.evaluationStudent('studentEntityId'),
-                  evaluationId: this.options.evaluation == null ? null : this.options.evaluation.id,
-                  evaluationDate: evaluation.evaluated,
-                  evaluationGradeId: evaluation.gradeIdentifier,
-                  verbalAssessment: evaluation.verbalAssessment,
-                  workspaceEntityId: workspaceEntityId
+                  evaluationId: this.options.evaluation ? this.options.evaluation.id : null,
+                  evaluationDate: this.options.evaluation ? new Date(this.options.evaluation.evaluated)  : null,
+                  evaluationGradeId: this.options.evaluation ? this.options.evaluation.gradeIdentifier+'/'+this.options.evaluation.gradeSchoolDataSource+'@'+this.options.evaluation.gradingScaleIdentifier+'/'+this.options.evaluation.gradingScaleSchoolDataSource : null,
+                  verbalAssessment: this.options.evaluation ? this.options.evaluation.verbalAssessment : null,
+                  workspaceEntityId: workspaceEntityId,
+                  triggeringElement: this
                 });
               }
             }, this));
@@ -872,6 +878,7 @@
               .text(getLocaleText("plugin.evaluation.evaluationGridSubmitted.label") + " " + formatDate(new Date(reply.submitted)));   
           }
           if (evaluation && evaluation.evaluated) {
+            this.options.evaluation = evaluation;
             this.element.find('.evaluation-assignment-evaluated-date')
               .text(getLocaleText("plugin.evaluation.evaluationGridEvaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
           }
@@ -961,15 +968,16 @@
                   gradingScales: gradingScales,
                   assessors: workspaceUsers,
                   studentAnswers: [],
-                  evaluationDate: this.options.assessment ? this.options.assessment.evaluated : null,
-                  evaluationGradeId: this.options.assessment ? this.options.assessment.gradeIdentifier : null,
+                  evaluationDate: this.options.assessment ? new Date(this.options.assessment.evaluated) : null,
+                  evaluationGradeId: this.options.assessment ? this.options.assessment.gradeIdentifier+'/'+this.options.assessment.gradeSchoolDataSource+'@'+this.options.assessment.gradingScaleIdentifier+'/'+this.options.assessment.gradingScaleSchoolDataSource : null,
                   assessorEntityId: this.options.assessment ? this.options.assessment.assessorEntityId : null,
                   verbalAssessment: this.options.assessment ? this.options.assessment.verbalAssessment : null,
                   assessmentId: this.options.assessment ? this.options.assessment.identifier : null,
                   studentEntityId: this.studentEntityId(),
                   workspaceStudentEntityId: this.workspaceStudentEntityId(),
                   workspaceEvaluableAssignments: workspaceEvaluableAssignments,
-                  workspaceEntityId: workspaceEntityId
+                  workspaceEntityId: workspaceEntityId,
+                  triggeringElement: this
                 });
               }
             }, this));
@@ -1001,6 +1009,9 @@
       this._displayName = user.firstName + ' ' + user.lastName;
       this._studyProgrammeName = user.studyProgrammeName;
       this.element.find('.evaluation-student-name').text(this._displayName);
+      if(this.options.assessment){
+        this.element.addClass('workspace-evaluated');
+      }
     }
   
   });
