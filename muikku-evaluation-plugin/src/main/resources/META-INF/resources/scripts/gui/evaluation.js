@@ -675,7 +675,7 @@
     },
     
     _loadMaterials: function () {
-      mApi({async: false}).workspace.workspaces.materials
+      mApi({async: true}).workspace.workspaces.materials
         .read(this.options.workspaceEntityId, { assignmentType : 'EVALUATED'})
         .callback($.proxy(function (err, workspaceEvaluableAssignmentMaterials) {
           if (err) {
@@ -726,6 +726,7 @@
     
     _onMaterialsLoaded: function (event, data) {
       this._workspaceEvaluableAssignments = data.workspaceEvaluableAssignments;
+      var currentId = 0;
       
       $.each(this._workspaceEvaluableAssignments, $.proxy(function (materialIndex, workspaceEvaluableAssignment) {
         var materialRow = $('<div>')
@@ -739,6 +740,10 @@
         });
         
         $.each(this._workspaceUsers, $.proxy(function (studentIndex, workspaceUser) {
+          var divId = "wm" + (currentId + 0x10000).toString(16).substring(1);
+          currentId++;
+          
+          $('<div>').attr('id', divId).appendTo(materialRow);
           
           mApi().workspace.workspaces.materials.evaluations.read(
               this.options.workspaceEntityId,
@@ -751,7 +756,7 @@
             }
             workspaceEvaluableAssignment.evaluation = workspaceMaterialEvaluation;
               
-            $('<div>')
+            $("#" + divId)
               .evaluationAssignment({
                 workspaceEntityId: this.options.workspaceEntityId,
                 workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
@@ -761,7 +766,6 @@
                 studentEntityId: workspaceUser.userId,
                 evaluation: workspaceMaterialEvaluation
               })
-              .appendTo(materialRow);
 
               this.element.trigger("viewInitialized");
             }, this));
