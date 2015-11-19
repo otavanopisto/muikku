@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -39,6 +40,7 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -175,7 +177,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
     }
     
-    return new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
+    RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
+    
+    remoteWebDriver.setFileDetector(new LocalFileDetector());
+
+    return remoteWebDriver; 
+
   }
   
   protected RemoteWebDriver createChromeDriver() {
@@ -331,6 +338,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
   }
   
+  protected void assertCount(String selector, int expectedCount) {
+    int count = 0;
+    
+    try {
+      count = getWebDriver().findElements(By.cssSelector(selector)).size();
+    } catch (NoSuchElementException e) {
+      // Could not find element, so the element count is zero.
+    }
+    
+    assertEquals(expectedCount, count);
+  }
+  
   protected void navigate(String path, boolean secure) {
     getWebDriver().get(String.format("%s%s", getAppUrl(secure), path));
   }
@@ -386,6 +405,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertEquals(text, element.getText());
   }
 
+
+  protected void assertTextIgnoreCase(String selector, String text) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    assertEquals(StringUtils.lowerCase(text), StringUtils.lowerCase(element.getText()));
+  }
+  
+  
   protected void sendKeys(String selector, String keysToSend) {
     getWebDriver().findElement(By.cssSelector(selector)).sendKeys(keysToSend);
   }
