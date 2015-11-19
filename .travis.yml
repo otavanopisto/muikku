@@ -4,20 +4,29 @@ branches:
   only:
     - master
     - devel
+jdk:
+- openjdk7
+cache:
+  directories:
+  - $HOME/.m2
+  - muikku-atests/.cargo
+addons:
+  hosts:
+  - dev.muikku.fi
+before_install:
+- unset GEM_PATH
+- if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then 
+    curl -sS https://saucelabs.com/downloads/sc-4.3.12-linux.tar.gz|tar -xzC /tmp/;
+    /tmp/sc-4.3.12-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER -f /tmp/sc-ready --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid;
+  fi
+install:
+- mvn install -Pmongo-log-plugin,jndi-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin -Dfindbugs.skip=$findbugs_skip -Dmaven.javadoc.skip=true -Dsource.skip=true
 before_script:
 - if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then 
-    SC_READYFILE=sauce-connect-ready-$RANDOM;
-    curl -sS https://saucelabs.com/downloads/sc-4.3.12-linux.tar.gz|tar -xzC /tmp/;
-    /tmp/sc-4.3.12-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER -f ${SC_READYFILE} --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid;
-    while [ ! -f ${SC_READYFILE} ]; do
+    while [ ! -f /tmp/sc-ready ]; do
       sleep .5;
     done
   fi
-after_script:
-- if [ -e /tmp/sc.pid ] && [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then
-    kill `cat /tmp/sc.pid`;
-  fi;
-- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
 script:
 - set -e;
   if [ $TRAVIS_BRANCH != 'master' ]; then
@@ -34,12 +43,11 @@ script:
       -P$it_profile;
     popd;
   fi;
-jdk:
-- openjdk7
-cache:
-  directories:
-  - $HOME/.m2
-  - muikku-atests/.cargo
+after_script:
+- if [ -e /tmp/sc.pid ] && [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then
+    kill `cat /tmp/sc.pid`;
+  fi;
+- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
 env:
   global:
   - secure: CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A=
@@ -97,13 +105,6 @@ env:
   - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=course/journal
   - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=course/users
   - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=indexpage
-addons:
-  hosts:
-  - dev.muikku.fi
-install: true
-before_install:
-- unset GEM_PATH
-- mvn install -Pmongo-log-plugin,jndi-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin -Dfindbugs.skip=$findbugs_skip -Dmaven.javadoc.skip=true -Dsource.skip=true
 after_success:
 - bash travis-after-success.sh
 after_failure:
