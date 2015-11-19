@@ -178,14 +178,14 @@
     _loadCourses: function (params) {
       this._coursesContainer.children().remove();
       
-      mApi({async: false}).coursepicker.workspaces.read(params||{})
+      mApi().coursepicker.workspaces.read(params||{})
         .on('$', function (workspace, workspaceCallback) {
 
-//        mApi({async: false}).coursepicker.workspaces.users.read(workspace.id, {
-//          roleArchtype: 'TEACHER'
+//        mApi().coursepicker.workspaces.users.read(workspace.id, {
+//          roleArchetype: 'TEACHER'
 //        })  
 //        .on('$', function (workspaceUser, workspaceUserCallback) {
-//          mApi({async: false}).user.users.read(workspaceUser.userId).callback(function (userErr, user) {
+//          mApi().user.users.read(workspaceUser.userId).callback(function (userErr, user) {
 //            workspaceUser.hasPicture = user.hasImage;
 //            workspaceUser.fullName = (user.firstName ? user.firstName + ' ' : '') + user.lastName;
 //            workspaceUserCallback();
@@ -212,7 +212,7 @@
     
     _loadUserCourses: function (callback) {
       if (MUIKKU_LOGGED_USER_ID) {
-        mApi({async: false}).coursepicker.workspaces
+        mApi().coursepicker.workspaces
           .read({ userId: MUIKKU_LOGGED_USER_ID })
           .callback($.proxy(function (err, workspaces) {
             var ids = $.map(workspaces||[], function (workspace) {
@@ -258,7 +258,7 @@
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
     },
     _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
-      mApi({async: false}).coursepicker.workspaces.signup.create(workspaceId, {
+      mApi().coursepicker.workspaces.signup.create(workspaceId, {
         message: joinMessage
       })
       .callback(function (workspaceUsersErr, workspaceUsers) {

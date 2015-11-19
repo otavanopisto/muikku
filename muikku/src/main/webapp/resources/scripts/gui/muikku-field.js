@@ -302,6 +302,7 @@
       var wrongAnswerCount = 0;
 
       this.element.find('.muikku-field-examples').remove();
+      this.element.find('.muikku-connect-field-correct-number').remove();
 
       $(fields).each(function (index, field) {
         $(field).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');

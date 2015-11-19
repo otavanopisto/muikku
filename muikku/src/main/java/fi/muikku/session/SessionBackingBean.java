@@ -6,6 +6,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
@@ -31,6 +33,7 @@ public class SessionBackingBean {
   public void init() {
     loggedUserRoleArchetype = null;
     loggedUserName = null;
+    testsRunning = StringUtils.equals("true", System.getProperty("tests.running"));
 
     if (sessionController.isLoggedIn()) {
       UserEntity loggedUser = sessionController.getLoggedUserEntity();
@@ -87,6 +90,11 @@ public class SessionBackingBean {
     return sessionController.getLocale().getCountry();
   }
   
+  public boolean getTestsRunning() {
+    return testsRunning;
+  }
+  
   private EnvironmentRoleArchetype loggedUserRoleArchetype;
   private String loggedUserName;
+  private boolean testsRunning;
 }

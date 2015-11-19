@@ -78,7 +78,7 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController; 
   
-	@Inject
+  @Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
 
@@ -111,8 +111,8 @@ public class UserRESTService extends AbstractRESTService {
 	  EnvironmentRoleArchetype roleArchetype = archetype != null ? EnvironmentRoleArchetype.valueOf(archetype) : null;
 
     Set<Long> userGroupFilters = null;
-    Set<Long> workspaceFilters = null;
-	  
+    Set<Long> workspaceFilters = new HashSet<Long>();
+
 	  if ((myUserGroups != null) && myUserGroups) {
 	    userGroupFilters = new HashSet<Long>();
 
@@ -130,17 +130,14 @@ public class UserRESTService extends AbstractRESTService {
 	  }
 
     if ((myWorkspaces != null) && myWorkspaces) {
-      workspaceFilters = new HashSet<Long>();
-      
       // Workspaces where user is a member
-      
       List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(loggedUser);
-      for (WorkspaceEntity workspace : workspaces) {
-        workspaceFilters.add(workspace.getId());
-      }
+      Set<Long> myWorkspaceIds = new HashSet<Long>();
+      for (WorkspaceEntity ws : workspaces)
+        myWorkspaceIds.add(ws.getId());
+
+      workspaceFilters.addAll(myWorkspaceIds);
     } else if (!CollectionUtils.isEmpty(workspaceIds)) {
-      workspaceFilters = new HashSet<Long>();
-      
       // Defined workspaces
       workspaceFilters.addAll(workspaceIds);
     }
@@ -164,9 +161,7 @@ public class UserRESTService extends AbstractRESTService {
 									id[0]);
 					
 					if (userEntity != null) {
-					  String emailAddress = getUserEmailAddress(userEntity);
-
-					  emailAddress = secret(emailAddress);
+					  String emailAddress = userEmailEntityController.getUserEmailAddress(userEntity, true);
 					  
 					  HashMap<String, Object> studyStartDate = (HashMap<String, Object>)o.get("studyStartDate");
 					  HashMap<String, Object> studyTimeEnd = (HashMap<String, Object>)o.get("studyTimeEnd");
@@ -282,45 +277,12 @@ public class UserRESTService extends AbstractRESTService {
     }
   }
 
-  private String secret(String emailAddress) {
-    if (emailAddress == null)
-      return null;
-
-    emailAddress = emailAddress.toLowerCase();
-    
-    int atIndex = emailAddress.indexOf('@');
-    
-    if (atIndex != -1) {
-      String user = emailAddress.substring(0, atIndex);
-      
-      if (user.length() > 3) {
-        String domain = emailAddress.substring(atIndex);
-    
-        return user.substring(0, 2) + "..." + domain;
-      } else
-        return null;
-    } else
-      return null;
-  }
-
-  private String getUserEmailAddress(UserEntity userEntity) {
-    String emailAddress = null;
-    List<String> addressesByUserEntity = userEmailEntityController.listAddressesByUserEntity(userEntity);
-    
-    if ((addressesByUserEntity != null) && (addressesByUserEntity.size() > 0))
-      emailAddress = addressesByUserEntity.get(0);
-    
-    return emailAddress;
-  }
-  
-	private fi.muikku.rest.model.User createRestModel(UserEntity userEntity,
+  private fi.muikku.rest.model.User createRestModel(UserEntity userEntity,
 			User user) {
 		// TODO: User Image
 		boolean hasImage = false;
 		
-		String emailAddress = getUserEmailAddress(userEntity);
-		
-		emailAddress = secret(emailAddress);
+		String emailAddress = userEmailEntityController.getUserEmailAddress(userEntity, true); 
 		
 		Date startDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
 		Date endDate = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;

@@ -51,7 +51,13 @@
   
   ServiceImpl = $.klass({
     init: function (async, service) {
-      this._client = new $.RestClient(CONTEXTPATH + '/rest/' + service + '/', {});
+      this._client = new $.RestClient(CONTEXTPATH + '/rest/' + service + '/', {
+        cache: 30,
+        cachableMethods: ["GET"],
+        ajax: {
+          async: false
+        }
+      });
       // "temporary workaround": $.RestClient has a shared `async' object in options
       this._client.opts.ajax = {dataType: 'json', async: async};
     },

@@ -88,6 +88,7 @@ import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
+import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
@@ -120,6 +121,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
 
   @Inject
   private RoleController roleController;
@@ -367,14 +371,19 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{ID}/users")
   @RESTPermitUnimplemented
-  public Response getWorkspaceUsers(@PathParam("ID") Long workspaceEntityId, @QueryParam("roleArchtype") String roleArchetype,
-      @QueryParam("userId") Long userId) {
+  public Response listWorkspaceUsers(@PathParam("ID") Long workspaceEntityId,
+      @QueryParam("roleArchetype") String roleArchetype,
+      @QueryParam("orderBy") String orderBy) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    List<WorkspaceUserEntity> workspaceUsers = null;
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    List<WorkspaceUserEntity> workspaceUserEntities = null;
     List<WorkspaceRoleEntity> workspaceRoles = null;
 
     if (StringUtils.isNotBlank(roleArchetype)) {
@@ -386,46 +395,33 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
 
-    if (userId != null) {
-      workspaceUsers = new ArrayList<>();
-
-      UserEntity userEntity = userEntityController.findUserEntityById(userId);
-      if (userEntity == null) {
-        return Response.status(Status.BAD_REQUEST).build();
-      }
-
-      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByWorkspaceAndUser(
-          workspaceEntity, userEntity);
-      for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-        List<Long> workspaceRoleIds = null;
-
-        if (workspaceRoles != null) {
-          workspaceRoleIds = new ArrayList<>();
-          for (WorkspaceRoleEntity workspaceRole : workspaceRoles) {
-            workspaceRoleIds.add(workspaceRole.getId());
-          }
-        }
-
-        if ((workspaceRoleIds == null) || (workspaceRoleIds.contains(workspaceUserEntity.getWorkspaceUserRole().getId()))) {
-          workspaceUsers.add(workspaceUserEntity);
-        }
-      }
+    if (!workspaceRoles.isEmpty()) {
+      workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByRoles(workspaceEntity, workspaceRoles);
     } else {
-      if (workspaceRoles != null) {
-        workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoles(workspaceEntity, workspaceRoles);
-      } else {
-        workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
-      }
+      workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
     }
 
-    if (workspaceUsers.isEmpty()) {
+    if (workspaceUserEntities.isEmpty()) {
       return Response.noContent().build();
+    }
+    
+    List<WorkspaceUser> workspaceUsers = createRestModel(workspaceUserEntities.toArray(new WorkspaceUserEntity[0])); 
+
+    if (StringUtils.equals(orderBy, "name")) {
+      Collections.sort(workspaceUsers, new Comparator<WorkspaceUser>() {
+        @Override
+        public int compare(WorkspaceUser o1, WorkspaceUser o2) {
+          String s1 = String.format("%s, %s", StringUtils.defaultString(o1.getLastName(), ""), StringUtils.defaultString(o1.getFirstName(), ""));
+          String s2 = String.format("%s, %s", StringUtils.defaultString(o2.getLastName(), ""), StringUtils.defaultString(o2.getFirstName(), ""));
+          return s1.compareTo(s2);
+        }
+      });
     }
     
     boolean canList = false;
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     Long loggedUserId = userEntity == null ? null : userEntity.getId();
-    for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
       if (workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId().equals(loggedUserId)) {
         canList = true;
         break;
@@ -442,7 +438,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     if (canList) {
-      return Response.ok(createRestModel(workspaceUsers.toArray(new WorkspaceUserEntity[0]))).build();
+      return Response.ok(workspaceUsers).build();
     } else {
       return Response.status(Status.FORBIDDEN).entity("You must be enrolled").build();
     }
@@ -519,6 +515,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     String workspaceName = workspace.getName();
 
     String userName = user.getFirstName() + " " + user.getLastName();
+    String userEmail = userEmailEntityController.getUserEmailAddress(userIdentifier.getUserEntity(), true);
 
     for (WorkspaceUserEntity cu : workspaceTeachers) {
       teachers.add(cu.getUserSchoolDataIdentifier().getUserEntity());
@@ -534,7 +531,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     WorkspaceUser result = new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(discoverEvent.getDiscoveredWorkspaceUserEntityId(),
-        workspaceEntityId, userIdentifier.getUserEntity().getId(), entity.getRoleId(), Boolean.FALSE);
+        workspaceEntityId,
+        userIdentifier.getUserEntity().getId(),
+        entity.getRoleId(),
+        user.getFirstName(),
+        user.getLastName(),
+        userEmail);
 
     return Response.ok(result).build();
   }
@@ -1042,8 +1044,21 @@ public class WorkspaceRESTService extends PluginRESTService {
     Long workspaceEntityId = entity.getWorkspaceEntity() != null ? entity.getWorkspaceEntity().getId() : null;
     UserEntity userEntity = entity.getUserSchoolDataIdentifier().getUserEntity();
     Long userId = userEntity != null ? userEntity.getId() : null;
+    
+    User user = userController.findUserByDataSourceAndIdentifier(
+        entity.getUserSchoolDataIdentifier().getDataSource(),
+        entity.getUserSchoolDataIdentifier().getIdentifier());
+    String userEmail = userEmailEntityController.getUserEmailAddress(userEntity, true);
+    
     Long roleId = entity.getWorkspaceUserRole() != null ? entity.getWorkspaceUserRole().getId() : null;
-    return new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(entity.getId(), workspaceEntityId, userId, roleId, entity.getArchived());
+    return new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(
+        entity.getId(),
+        workspaceEntityId,
+        userId,
+        roleId,
+        user.getFirstName(),
+        user.getLastName(),
+        userEmail);
   }
 
   private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String description) {
@@ -1530,7 +1545,4 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     return Response.noContent().build();
   }
-  
-  
-
 }

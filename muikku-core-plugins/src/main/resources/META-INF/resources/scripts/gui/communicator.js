@@ -5,7 +5,7 @@ $(document).ready(function(){
     var sendMessage = function(values){
       delete values.recipient;
       
-      mApi({async: false}).communicator.messages.create(values)
+      mApi().communicator.messages.create(values)
         .callback(function (err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.newMessage.error'));
@@ -14,7 +14,8 @@ $(document).ready(function(){
           }
         });
       
-      window.mCommunicator._refreshView();
+      window.location.reload(true);
+
     }   
 
     openInSN('/communicator/communicator_create_message.dust', null, sendMessage);    
@@ -36,15 +37,13 @@ $(document).ready(function(){
       
       $(window).trigger("hashchange");
       
-      var _this = this;
-      
-      $(document).on("Communicator:newmessagereceived", function (event, data) {
+      $(document).on("Communicator:newmessagereceived", $.proxy(function (event, data) {
         var hash = window.location.hash.substring(1);
 
         if ((hash == "") || (hash == "inbox")) {
-          _this._showInbox();
+          this._showInbox();
         }
-      });
+      }, this));
     },
 
     _showInbox : function () {
@@ -52,16 +51,16 @@ $(document).ready(function(){
       this._addLoading(CommunicatorImpl.msgContainer);
       
       this._setSelected("inbox");
-      mApi({async: false}).communicator.items.read().on('$', function (item, itemCallback) {
+      mApi().communicator.items.read().on('$', function (item, itemCallback) {
         item.caption = $('<div>').html(item.caption).text();
         item.content = $('<div>').html(item.content).text();
         
-        mApi({async: false}).communicator.communicatormessages.sender.read(item.id)
+        mApi().communicator.communicatormessages.sender.read(item.id)
           .callback(function (err, user) {  
             item.senderFullName = user.firstName + ' ' + user.lastName;
             item.senderHasPicture = user.hasImage;
             
-            mApi({async: false}).communicator.messages.messagecount.read(item.communicatorMessageId)
+            mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
             .callback(function (err, count) {
               item.messageCount = count;
               itemCallback();
@@ -82,42 +81,48 @@ $(document).ready(function(){
       var mCont = $(CommunicatorImpl.msgContainer);
       this._addLoading(CommunicatorImpl.msgContainer);
       
-      mApi({async: false}).communicator.messages.read(communicatorMessageId).callback(function (err, result) {
-        for (var i = 0; i < result.length; i++) {
-          result[i].caption = $('<div>').html(result[i].caption).text();
-          result[i].content = $('<div>').html(result[i].content).text();
+      mApi().communicator.messages
+        .read(communicatorMessageId)
+        .on("$", function (message, messageCallback) {
           
-          var sId = result[i].id;
-          mApi({async: false}).communicator.communicatormessages.sender.read(sId)
-            .callback(function (err, user) {  
-
-            if (MUIKKU_LOGGED_USER_ID == user.id){
-              result[i].isOwner = true;         
-            } else {
-              result[i].isOwner = false;    
-            }               
-
-            result[i].senderFullName = user.firstName + ' ' + user.lastName;
-            result[i].senderHasPicture = user.hasImage;
+          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+            if(err){
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+            }else{            
+              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+              message.senderFullName = user.firstName + ' ' + user.lastName;
+              message.senderHasPicture = user.hasImage;
+              message.caption = $('<div>').html(message.caption).text();
+              message.content = $('<div>').html(message.content).text();
+              messageCallback();
+            }
           });
-        } 
-            
-        renderDustTemplate('communicator/communicator_items_open.dust', result, $.proxy(function(text) {
-          mCont.empty();
-          this._clearLoading();
-          mCont.append($.parseHTML(text));
-        }, this));
+        })
+        .callback($.proxy(function (err, messages) {
+          
+          // TODO: Recipients issue no: #875 
+          
+          if(err){
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+          }else{
+            renderDustTemplate('communicator/communicator_items_open.dust', messages, $.proxy(function(text) {
+              this._clearLoading();
+              mCont.empty();
+              mCont.append($.parseHTML(text));
 
-        mApi({async: false}).communicator.messages.markasread.create(communicatorMessageId).callback(function (err, result) {
-          $(document).trigger("Communicator:messageread");
-        });
-      });
+              mApi().communicator.messages.markasread.create(communicatorMessageId).callback($.proxy(function (err, result) {
+                $(document).trigger("Communicator:messageread");
+              }, this));               
+           }, this));
+         }         
+      }, this));
     },
+ 
     _showSentItems : function () {
       $(CommunicatorImpl.msgContainer).empty();
       this._addLoading(CommunicatorImpl.msgContainer);
       
-      mApi({async: false}).communicator.sentitems
+      mApi().communicator.sentitems
         .read()
         .on('$', function (item, itemCallback) {
           item.caption = $('<div>').html(item.caption).text();
@@ -126,19 +131,19 @@ $(document).ready(function(){
           // Lets fetch message recipients by their ids
         
           var calls = $.map(item.recipientIds||[], function(recipient){
-            return mApi({async: false}).communicator.communicatormessages.recipients.info.read(item.id, recipient);
+            return mApi().communicator.communicatormessages.recipients.info.read(item.id, recipient);
           });
           
-          mApi({async: false}).batch(calls).callback(function(err, results){
+          mApi().batch(calls).callback(function(err, results){
             item.recipients = $.map(results, function (result) {
               return {
-                fullName: result.firstName + ' ' + resultlastName,
+                fullName: result.firstName + ' ' + result.lastName,
                 firstName: result.firstName,
                 hasPicture: result.hasImage
               };
             });
           
-            mApi({async: false}).communicator.messages.messagecount
+            mApi().communicator.messages.messagecount
               .read(item.communicatorMessageId)
               .callback(function (err, count) {
                 item.messageCount = count;
@@ -212,27 +217,27 @@ $(document).ready(function(){
     
     _deleteMessages : function(ids){
       var messages = ids.length;
-      var endpoint = mApi({async: false}).communicator.items;
+      var endpoint = mApi().communicator.items;
       
       var hash = window.location.hash != '' ? window.location.hash.substring(1) : "none";
       var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
 
       if (hash == "sent") {
-        endpoint = mApi({async: false}).communicator.sentitems;
+        endpoint = mApi().communicator.sentitems;
       }
 
       var batch = $.map(ids, function(id){
         return endpoint.del(id);
       });
       
-      mApi({async: false}).batch(batch).callback($.proxy(function(err){
+      mApi().batch(batch).callback($.proxy(function(err){
         $('.notification-queue').notificationQueue('remove', loadNotification);
         
         if (err) {
          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
         } else {
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
-           this._refreshView();
+           window.location.reload(true);
         }
       }, this));
     },
@@ -276,35 +281,6 @@ $(document).ready(function(){
         });
       }
   },
-  _refreshView: function(){
-    if (window.location.hash) {
-      var hash = window.location.hash.substring(1);
-      if (window.location.hash.indexOf("#sent") === 0){
-        
-        var messageId = hash.substring(5);
-        if(messageId == ""){
-          this._showSentItems();
-        }else{
-          this._showMessage(messageId);
-          
-        }
-      }else{
-        var messageId = hash.substring(6);
-        if(messageId == ""){
-          this._showInbox();
-        }else{
-          this._showMessage(messageId);
-          
-        }
-
-        
-      }
-
-    } else{
-      this._showInbox();
-      
-    }
-  },
   _addLoading : function(parentEl){
     $(parentEl).append('<div class="mf-loading"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div></div>');  
     
@@ -347,7 +323,7 @@ $(document).ready(function(){
      var sendReply = function(values){
        var tId = threadId; 
 
-       mApi({async: false}).communicator.messages.create(tId, values).callback(function (err, result) {
+       mApi().communicator.messages.create(tId, values).callback(function (err, result) {
          if (err) {
            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.newMessage.error'));
          } else {
@@ -356,8 +332,8 @@ $(document).ready(function(){
          }
         });
      }   
-     mApi({async: false}).communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback) {
-       mApi({async: false}).communicator.communicatormessages.sender.read(eId).callback(function(err, user) {
+     mApi().communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback) {
+       mApi().communicator.communicatormessages.sender.read(eId).callback(function(err, user) {
          reply.senderFullName = user.firstName + ' ' + user.lastName;
          reply.senderHasPicture = user.hasImage;
        });
@@ -373,7 +349,7 @@ $(document).ready(function(){
     var _this = this;
     var workspaces = new Array();
 
-    mApi({async: false}).coursepicker.workspaces.read({
+    mApi().coursepicker.workspaces.read({
       search: searchTerm,
       myWorkspaces: true,
     })
@@ -402,7 +378,7 @@ $(document).ready(function(){
     var groups = new Array();
   
     if (MUIKKU_LOGGEDINROLES.admin || MUIKKU_LOGGEDINROLES.manager || MUIKKU_LOGGEDINROLES.teacher) {
-      mApi({async: false}).usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
+      mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
         if (result != undefined) {
           for (var i = 0, l = result.length; i < l; i++) {
             var img = undefined;
@@ -436,7 +412,7 @@ $(document).ready(function(){
       recipients.push(rId);
     }   
     
-    mApi({async: false}).user.users.read({ 'searchString' : searchTerm }).callback(function(err, result) {
+    mApi().user.users.read({ 'searchString' : searchTerm }).callback(function(err, result) {
       if (result != undefined) {
         for (var i = 0, l = result.length; i < l; i++) {
           var uId = result[i].id.toString();
@@ -494,7 +470,7 @@ $(document).ready(function(){
 
     switch(box) {
       case "sent":
-        mApi({async: false}).communicator.sentitems.read({'firstResult' : msgsCount})
+        mApi().communicator.sentitems.read({'firstResult' : msgsCount})
         .on('$', $.proxy(function (item, itemCallback) {
           item.caption = $('<div>').html(item.caption).text();
           item.content = $('<div>').html(item.content).text();
@@ -503,10 +479,10 @@ $(document).ready(function(){
           var recipients = item.recipientIds;
           
           var calls = $.map(recipients, function(recipient){
-            return mApi({async: false}).communicator.communicatormessages.recipients.info.read(item.id, recipient);
+            return mApi().communicator.communicatormessages.recipients.info.read(item.id, recipient);
           });
             
-          mApi({async: false}).batch(calls).callback($.proxy(function(err, results){
+          mApi().batch(calls).callback($.proxy(function(err, results){
             item.recipients = $.map(results, function (result) {
               return {
                 fullName: result.firstName + ' ' + result.lastName,
@@ -515,7 +491,7 @@ $(document).ready(function(){
               };
             });
             
-            mApi({async: false}).communicator.messages.messagecount.read(item.communicatorMessageId)
+            mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
               .callback($.proxy(function (err, count) {
                 item.messageCount = count;
                 itemCallback();
@@ -536,16 +512,16 @@ $(document).ready(function(){
         }, this));      
       break;
       default:
-        mApi({async: false}).communicator.items.read({'firstResult' : msgsCount}).on('$', function (item, itemCallback) {
+        mApi().communicator.items.read({'firstResult' : msgsCount}).on('$', function (item, itemCallback) {
           item.caption = $('<div>').html(item.caption).text();
           item.content = $('<div>').html(item.content).text();
           
-          mApi({async: false}).communicator.communicatormessages.sender.read(item.id)
+          mApi().communicator.communicatormessages.sender.read(item.id)
             .callback(function (err, user) {  
               item.senderFullName = user.firstName + ' ' + user.lastName;
               item.senderHasPicture = user.hasImage;
               
-              mApi({async: false}).communicator.messages.messagecount.read(item.communicatorMessageId)
+              mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
               .callback(function (err, count) {
                 item.messageCount = count;
                 itemCallback();

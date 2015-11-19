@@ -32,6 +32,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 
@@ -42,6 +43,9 @@ public class ElasticSearchProvider implements SearchProvider {
   @Inject
   private Logger logger;
 
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+  
   @Override
   public void init() {
     Builder settings = nodeBuilder().settings();
@@ -93,6 +97,8 @@ public class ElasticSearchProvider implements SearchProvider {
 
       List<FilterBuilder> filters = new ArrayList<FilterBuilder>();
       
+      filters.add(FilterBuilders.notFilter(FilterBuilders.termFilter("hidden", true)));
+      
       if (StringUtils.isNotBlank(text)) {
         StringTokenizer tokenizer = new StringTokenizer(text, " ");
 
@@ -120,10 +126,22 @@ public class ElasticSearchProvider implements SearchProvider {
       if (!isEmptyCollection(groups)) {
         filters.add(FilterBuilders.inFilter("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
       }
-      
+
       if (!isEmptyCollection(workspaces)) {
         filters.add(FilterBuilders.inFilter("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
       }
+
+      // Mandatory filter, you can always see either non students or students that are in the same workspace as you are
+      List<Long> publishedWorkspaceEntityIds = workspaceEntityController.listPublishedWorkspaceEntityIds();
+      
+      filters.add(
+          FilterBuilders.orFilter(
+              FilterBuilders.inFilter("archetype", EnvironmentRoleArchetype.TEACHER.name().toLowerCase(), EnvironmentRoleArchetype.MANAGER.name().toLowerCase(), EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()),
+              FilterBuilders.andFilter(
+                  FilterBuilders.termsFilter("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()),
+                  FilterBuilders.inFilter("workspaces", ArrayUtils.toPrimitive(publishedWorkspaceEntityIds.toArray(new Long[0]))))
+              )
+          );
       
       FilterBuilder filter;
       

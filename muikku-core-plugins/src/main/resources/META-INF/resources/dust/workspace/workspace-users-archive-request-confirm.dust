@@ -1,0 +1,3 @@
+<div class="workspace-users-archive-confirm-dialog" title="{#localize key="plugin.workspace.users.student.archiveDialog.title"/}" data-button-archive-text="{#localize key="plugin.workspace.users.student.archiveDialog.archiveButton"/}" data-button-cancel-text="{#localize key="plugin.workspace.users.student.archiveDialog.cancelButton"/}">
+  {#localize key="plugin.workspace.users.student.archiveDialog.description"/}
+</div>

@@ -1,6 +1,8 @@
 package fi.muikku.atests;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,11 +24,25 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
+import fi.muikku.model.base.Tag;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserGroupEntity;
+import fi.muikku.model.users.UserGroupUserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.plugins.communicator.CommunicatorController;
+import fi.muikku.plugins.communicator.CommunicatorPermissionCollection;
+import fi.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
+import fi.muikku.plugins.communicator.rest.CommunicatorMessageRESTModel;
+import fi.muikku.plugins.communicator.rest.CommunicatorNewMessageRESTModel;
 import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumAreaGroup;
@@ -44,12 +60,14 @@ import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -68,6 +86,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private CommunicatorController communicatorController;
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -175,7 +196,23 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     
     return Response.ok().build();
   }
-  
+
+  @DELETE
+  @Path("/communicator/messages")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteCommunicatorMessages() {
+    for (CommunicatorMessageRecipient x : communicatorController.listAllRecipients())
+      communicatorController.delete(x);
+
+    for (InboxCommunicatorMessage message : communicatorController.listAllInboxMessages())
+      communicatorController.delete(message);
+    
+    for (CommunicatorMessageId x : communicatorController.listAllMessageIds())
+      communicatorController.delete(x);
+    
+    return Response.noContent().build();
+  }
+
   @POST
   @Path("/workspaces")
   @RESTPermit (handling = Handling.UNSECURED)
@@ -191,6 +228,20 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.ok(createRestEntity(workspaceEntity, payload.getName())).build();
   }
   
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/publish")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response publishWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(404).entity("Not found").build();
+    }
+
+    workspaceEntityController.updatePublished(workspaceEntity, true);
+    
+    return Response.noContent().build();
+  }
+
   @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}")
   @RESTPermit (handling = Handling.UNSECURED)

@@ -89,6 +89,13 @@ public class PyramusMocks{
         .withHeader("Content-Type", "application/json")
         .withBody(whoAmIJson)
         .withStatus(200)));
+    
+    stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:8443"))
+      .willReturn(aResponse()
+        .withStatus(302)
+        .withHeader("Location",
+          "http://dev.muikku.fi:8080/")));
+
   }
   
   public static void personsPyramusMocks() throws Exception {

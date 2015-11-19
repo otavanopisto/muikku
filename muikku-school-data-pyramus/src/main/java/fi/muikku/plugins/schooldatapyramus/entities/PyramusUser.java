@@ -1,6 +1,7 @@
 package fi.muikku.plugins.schooldatapyramus.entities;
 
 import org.joda.time.DateTime;
+
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.entity.User;
 
@@ -16,7 +17,8 @@ public class PyramusUser implements User {
                      String municipality,
                      String school,
                      DateTime studyStartDate,
-                     DateTime studyTimeEnd) {
+                     DateTime studyTimeEnd,
+                     boolean hidden) {
     this.identifier = identifier;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -28,6 +30,7 @@ public class PyramusUser implements User {
     this.school = school;
     this.studyStartDate = studyStartDate;
     this.studyTimeEnd = studyTimeEnd;
+    this.hidden = hidden;
   }
 
   @Override
@@ -129,6 +132,15 @@ public class PyramusUser implements User {
     this.studyTimeEnd = studyTimeEnd;
   }
 
+  @Override
+  public boolean getHidden() {
+    return hidden;
+  }
+
+  public void setHidden(boolean hidden) {
+    this.hidden = hidden;
+  }
+
   private String identifier;
   private String firstName;
   private String lastName;
@@ -140,4 +152,5 @@ public class PyramusUser implements User {
   private String school;
   private DateTime studyStartDate;
   private DateTime studyTimeEnd;
+  private boolean hidden;
 }
