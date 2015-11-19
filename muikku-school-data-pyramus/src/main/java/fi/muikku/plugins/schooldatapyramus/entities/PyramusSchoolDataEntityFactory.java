@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
+
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
@@ -88,8 +89,7 @@ public class PyramusSchoolDataEntityFactory {
     }
 
     return new PyramusUser(identifierMapper.getStaffIdentifier(staffMember.getId()), staffMember.getFirstName(),
-        staffMember.getLastName(), displayName, null, null, null, null, null, null, null);
-
+        staffMember.getLastName(), displayName, null, null, null, null, null, null, null, false);
   }
 
   public List<User> createEntity(fi.pyramus.rest.model.StaffMember... staffMembers) {
@@ -102,13 +102,9 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public User createEntity(fi.pyramus.rest.model.Student student, fi.pyramus.rest.model.StudyProgramme studyProgramme) {
-    return createEntity(student, studyProgramme, null, null, null, null, null, null);
-  }
-
   public User createEntity(fi.pyramus.rest.model.Student student, fi.pyramus.rest.model.StudyProgramme studyProgramme,
       String nationality, String language, String municipality, String school, DateTime studyStartDate,
-      DateTime studyTimeEnd) {
+      DateTime studyTimeEnd, boolean hidden) {
     StringBuilder displayName = new StringBuilder();
 
     displayName.append(student.getFirstName()).append(' ').append(student.getLastName());
@@ -121,43 +117,7 @@ public class PyramusSchoolDataEntityFactory {
 
     return new PyramusUser(identifierMapper.getStudentIdentifier(student.getId()), student.getFirstName(),
         student.getLastName(), displayName.toString(), studyProgrammeName, nationality, language, municipality, school,
-        studyStartDate, studyTimeEnd);
-  }
-
-  public List<User> createEntity(fi.pyramus.rest.model.Student[] students,
-      fi.pyramus.rest.model.StudyProgramme[] studyProgrammes) {
-    return createEntity(students, studyProgrammes, new String[students.length], new String[students.length],
-        new String[students.length], new String[students.length], new DateTime[students.length],
-        new DateTime[students.length]);
-  }
-
-  private boolean allEqual(int... values) {
-    int reference = values[0];
-    for (int value : values) {
-      if (value != reference) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  public List<User> createEntity(fi.pyramus.rest.model.Student[] students,
-      fi.pyramus.rest.model.StudyProgramme[] studyProgrammes, String[] nationalities, String[] languages,
-      String[] municipalities, String[] schools, DateTime[] studyStartDates, DateTime[] studyTimeEnds) {
-    if (!allEqual(students.length, studyProgrammes.length, nationalities.length, languages.length,
-        municipalities.length, schools.length, studyStartDates.length, studyTimeEnds.length)) {
-      throw new RuntimeException("createEntity parameters not all equal length");
-    }
-
-    List<User> result = new ArrayList<>();
-
-    for (int i = 0, l = students.length; i < l; i++) {
-      result.add(createEntity(students[i], studyProgrammes[i], nationalities[i], languages[i], municipalities[i],
-          schools[i], studyStartDates[i], studyTimeEnds[i]));
-    }
-
-    return result;
+        studyStartDate, studyTimeEnd, hidden);
   }
 
   public EnvironmentRole createEntity(fi.pyramus.rest.model.UserRole role) {

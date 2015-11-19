@@ -14,7 +14,8 @@ $(document).ready(function(){
           }
         });
       
-      window.mCommunicator._refreshView();
+      window.location.reload(true);
+
     }   
 
     openInSN('/communicator/communicator_create_message.dust', null, sendMessage);    
@@ -36,15 +37,13 @@ $(document).ready(function(){
       
       $(window).trigger("hashchange");
       
-      var _this = this;
-      
-      $(document).on("Communicator:newmessagereceived", function (event, data) {
+      $(document).on("Communicator:newmessagereceived", $.proxy(function (event, data) {
         var hash = window.location.hash.substring(1);
 
         if ((hash == "") || (hash == "inbox")) {
-          _this._showInbox();
+          this._showInbox();
         }
-      });
+      }, this));
     },
 
     _showInbox : function () {
@@ -82,37 +81,43 @@ $(document).ready(function(){
       var mCont = $(CommunicatorImpl.msgContainer);
       this._addLoading(CommunicatorImpl.msgContainer);
       
-      mApi({async: false}).communicator.messages.read(communicatorMessageId).callback(function (err, result) {
-        for (var i = 0; i < result.length; i++) {
-          result[i].caption = $('<div>').html(result[i].caption).text();
-          result[i].content = $('<div>').html(result[i].content).text();
+      mApi({async: false}).communicator.messages
+        .read(communicatorMessageId)
+        .on("$", function (message, messageCallback) {
           
-          var sId = result[i].id;
-          mApi({async: false}).communicator.communicatormessages.sender.read(sId)
-            .callback(function (err, user) {  
-
-            if (MUIKKU_LOGGED_USER_ID == user.id){
-              result[i].isOwner = true;         
-            } else {
-              result[i].isOwner = false;    
-            }               
-
-            result[i].senderFullName = user.firstName + ' ' + user.lastName;
-            result[i].senderHasPicture = user.hasImage;
+          mApi({async: false}).communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+            if(err){
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+            }else{            
+              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+              message.senderFullName = user.firstName + ' ' + user.lastName;
+              message.senderHasPicture = user.hasImage;
+              message.caption = $('<div>').html(message.caption).text();
+              message.content = $('<div>').html(message.content).text();
+              messageCallback();
+            }
           });
-        } 
-            
-        renderDustTemplate('communicator/communicator_items_open.dust', result, $.proxy(function(text) {
-          mCont.empty();
-          this._clearLoading();
-          mCont.append($.parseHTML(text));
-        }, this));
+        })
+        .callback($.proxy(function (err, messages) {
+          
+          // TODO: Recipients issue no: #875 
+          
+          if(err){
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+          }else{
+            renderDustTemplate('communicator/communicator_items_open.dust', messages, $.proxy(function(text) {
+              this._clearLoading();
+              mCont.empty();
+              mCont.append($.parseHTML(text));
 
-        mApi({async: false}).communicator.messages.markasread.create(communicatorMessageId).callback(function (err, result) {
-          $(document).trigger("Communicator:messageread");
-        });
-      });
+              mApi({async: false}).communicator.messages.markasread.create(communicatorMessageId).callback($.proxy(function (err, result) {
+                $(document).trigger("Communicator:messageread");
+              }, this));               
+           }, this));
+         }         
+      }, this));
     },
+ 
     _showSentItems : function () {
       $(CommunicatorImpl.msgContainer).empty();
       this._addLoading(CommunicatorImpl.msgContainer);
@@ -132,7 +137,7 @@ $(document).ready(function(){
           mApi({async: false}).batch(calls).callback(function(err, results){
             item.recipients = $.map(results, function (result) {
               return {
-                fullName: result.firstName + ' ' + resultlastName,
+                fullName: result.firstName + ' ' + result.lastName,
                 firstName: result.firstName,
                 hasPicture: result.hasImage
               };
@@ -232,7 +237,7 @@ $(document).ready(function(){
          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
         } else {
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
-           this._refreshView();
+           window.location.reload(true);
         }
       }, this));
     },
@@ -275,35 +280,6 @@ $(document).ready(function(){
           recipientListElement.prepend($.parseHTML(text));
         });
       }
-  },
-  _refreshView: function(){
-    if (window.location.hash) {
-      var hash = window.location.hash.substring(1);
-      if (window.location.hash.indexOf("#sent") === 0){
-        
-        var messageId = hash.substring(5);
-        if(messageId == ""){
-          this._showSentItems();
-        }else{
-          this._showMessage(messageId);
-          
-        }
-      }else{
-        var messageId = hash.substring(6);
-        if(messageId == ""){
-          this._showInbox();
-        }else{
-          this._showMessage(messageId);
-          
-        }
-
-        
-      }
-
-    } else{
-      this._showInbox();
-      
-    }
   },
   _addLoading : function(parentEl){
     $(parentEl).append('<div class="mf-loading"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div></div>');  

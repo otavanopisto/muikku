@@ -20,4 +20,13 @@ public class SystemRESTService extends AbstractRESTService {
   public Response ping() {
     return Response.ok("pong").build();
   }
+  
+  @GET
+  @Path("/status")
+  @Produces("text/plain")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response status() {
+    // TODO: Add support for more sophisticated health checks
+    return Response.ok("ok").build();
+  }
 }

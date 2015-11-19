@@ -324,9 +324,20 @@ $(document).ready(function(){
         var container = $(".mf-list");
         var categories = container.find("li");        
         categories.removeClass("selected");
-        var test = $('li'+ sel);
-        $(test).addClass("selected"); 
+        categories.off("click");
+        var selFilter = $('li'+ sel);
+        $(selFilter).addClass("selected"); 
+        $(selFilter).on("click", $.proxy(this._clearSelected, this));
       },
+      _clearSelected : function(event){
+        event.preventDefault();  
+        var filterLink = $(event.target);
+        var filter = filterLink.parent("li")
+        filter.off("click");
+        $(filter).removeClass("selected");
+        window.location.hash = "";  
+
+      },      
 	   _addLoading : function(parentEl){
 	     $(parentEl).append('<div class="mf-loading"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div></div>');  
 	     
@@ -348,7 +359,7 @@ $(document).ready(function(){
 	          var studentId = hash.substring(12);
 	          var hI = hash.indexOf('/');
 	          var cHash = hash.substring(0, hI);
-	          _this._viewUserProfile(studentId);
+	          this._viewUserProfile(studentId);
 	        }else if (hash.indexOf("filter/") === 0){
 	          var first = hash.indexOf("/");
 	          var second = hash.indexOf("/", first + 1); 
@@ -358,14 +369,13 @@ $(document).ready(function(){
 	          
             switch (filter){
               case "workspace":
-                var clickedId = "#" + filter + "-" + filterId;
-                _this._setSelected(clickedId);
-                _this._loadWorkSpaceUsers(filterId);
-                
+                var clickedId = "#" + filter + "-" + filterId;                
+                  this._setSelected(clickedId);
+                  this._loadWorkSpaceUsers(filterId);
                 break;
             }
 	        }else
-	          _this._refreshUsers();
+	          this._refreshUsers();
 
 	    },
 	    _klass : {

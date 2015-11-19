@@ -65,10 +65,7 @@ public class WebSocketRESTService extends PluginRESTService {
       UserEntity user = sessionController.getLoggedUserEntity(); 
   
       Long userId = user != null ? user.getId() : null;
-      String ip = request.getRemoteAddr();
-      
-      boolean valid = ip != null ? ip.equals(ticket.getIp()) : false;
-      valid = valid && (userId != null ? userId.equals(ticket.getUser()) : ticket.getUser() == null);
+      boolean valid = userId != null ? userId.equals(ticket.getUser()) : ticket.getUser() == null;
 
       if (valid)
         return Response.noContent().build();

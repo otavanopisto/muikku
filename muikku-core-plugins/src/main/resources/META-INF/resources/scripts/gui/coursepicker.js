@@ -182,7 +182,7 @@
         .on('$', function (workspace, workspaceCallback) {
 
 //        mApi({async: false}).coursepicker.workspaces.users.read(workspace.id, {
-//          roleArchtype: 'TEACHER'
+//          roleArchetype: 'TEACHER'
 //        })  
 //        .on('$', function (workspaceUser, workspaceUserCallback) {
 //          mApi({async: false}).user.users.read(workspaceUser.userId).callback(function (userErr, user) {

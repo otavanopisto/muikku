@@ -1,47 +1,137 @@
-.muikku-connect-field-counterparts,.muikku-connect-field-gap,.muikku-connect-field-terms
-	{
-	display: table-cell
+.muikku-connect-field {
+  position:relative;
+  @include flexbox;
+  flex-flow:row nowrap;
+  justify-content:space-between;
+  align-items:flex-start;
+  align-content:space-between;
+}
+
+.muikku-connect-field-counterparts,
+.muikku-connect-field-terms {
+	display:block;
+	@include flex(1 0 48%);
+	position:relative;
 }
 
 .muikku-connect-field-gap {
-	width: 40px;
+	@include flex(0 1 4%);
 }
 
-.muikku-connect-field-counterpart,.muikku-connect-field-term {
+.muikku-connect-field-number {
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:20px;
+  color:#4c4c4c;
+  font-size:12px;
+  left:-10px;
+  line-height:12px;
+  margin:15px 0 0;
+  min-width:12px;
+  padding:5px;
+  position:absolute;
+  text-align:center;
+  z-index:9;
+  font-weight:400;
+}
+
+.muikku-connect-field-correct-number {
+  background:#62c3eb;
+  border:1px solid #fff;
+  border-radius:20px;
+  color:#fff;
+  font-size:12px;
+  right:-10px;
+  line-height:12px;
+  margin:15px 0 0;
+  min-width:12px;
+  padding:5px;
+  position:absolute;
+  text-align:center;
+  z-index:9;
+  font-weight:400;
+}
+
+.muikku-connect-field-counterpart,
+.muikku-connect-field-term {
+  @include flexbox;
+  align-items:center;
   padding:8px 21px;
-	background:#e1f3ff;
-	margin: 4px;
+	background:#e1f7fc;
+	margin:0px 4px 8px 4px;
 	@include rounded(3px);
-/* 	white-space:nowrap; */ /* By removing this connect field looks like a potato */
 	transition:background 0.3s ease-in-out;
-	text-shadow: 0 0 1px #ffffff;
-	
-	&:hover {
-	  background: #ceebff;
-	}
+}
+
+.muikku-connect-field-term {
+  justify-content:flex-end;  
+}
+
+.muikku-connect-field-counterpart {
+  justify-content: flex-start
+}
+
+.ui-sortable-placeholder {
+  padding:8px 21px;
+  background:#e1f7fc;
+  margin: 4px;
+  @include rounded(3px);
+  background:#f8f8f8;
+  height:1.7em;
 }
 
 .workspace-materials-reading,
 .workspace-materials-management {
   
-  .muikku-connect-field-counterpart,.muikku-connect-field-term {
-    width:250px;
+  .muikku-connect-field-counterpart,
+  .muikku-connect-field-term {
+    height:2.5em;
+    line-height:1.2em;
+    overflow:hidden;
+    font-size:16px;
+/*     width:250px; */
   }
 
 }
 
 .workspace-materials {
   
-  .muikku-connect-field-counterpart,.muikku-connect-field-term {
-    width:230px;
+  .muikku-connect-field-counterpart,
+  .muikku-connect-field-term {
+    height:2.5em;
+    line-height:1.2em;
+    overflow:hidden;
+    font-size:16px;
+/*     width:230px; */
   }
 
 }
 
 .muikku-connect-field-term {
-	text-align: right
+	cursor:pointer;
+	
+	&.muikku-connect-field-edited {
+	  background:#b1e8fe;
+	}
+	
+	&.muikku-connect-field-term-selected {
+	  background:#3dc7ff;
+	  color:#fff;
+	  font-weight:400;
+	}
+	
 }
 
 .muikku-connect-field-counterpart {
-	text-align: left
+	text-align: left;
+  cursor:pointer;
+	
+	 &.muikku-connect-field-edited {
+     background:#b1e8fe;
+  }
+  
+  &.ui-sortable-helper {
+    cursor:grab;
+  }
+  
 }

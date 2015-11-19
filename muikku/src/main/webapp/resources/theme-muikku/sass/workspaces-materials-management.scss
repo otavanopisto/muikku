@@ -208,7 +208,7 @@ body.workspace-materials-management {
             .workspace-materials-toc-itemDragHandle {
               opacity:0;
               color:#ffffff;
-              cursor:move;
+              cursor:grab;
               font-size:14px;
               padding:6px 8px 6px 8px;
               position:absolute;
@@ -243,7 +243,7 @@ body.workspace-materials-management {
               .workspace-materials-toc-sectionDragHandle {
                 opacity:0;
                 color:#2c2c2c;
-                cursor:move;
+                cursor:grab;
                 font-size:14px;
                 padding:6px 8px 6px 8px;
                 position:absolute;

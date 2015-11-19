@@ -75,8 +75,6 @@
       );
     });
     
-    $('.muikku-connect-field').muikkuConnectField('refresh');
-    
     $(window).data('initializing', false);
   });
   

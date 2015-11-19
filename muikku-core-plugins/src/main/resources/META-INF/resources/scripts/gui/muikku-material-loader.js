@@ -23,7 +23,6 @@
     },
 
     _loadHtmlMaterial: function(pageElement, fieldAnswers) {
-      
       var workspaceMaterialId = $(pageElement).data('workspace-material-id');
       var materialId = $(pageElement).data('material-id');
       var parentIds = []; // TODO needed anymore?
@@ -384,24 +383,70 @@
   
   $(document).on('taskFieldDiscovered', function (event, data) {
     
-    function getExcelStyleLetterIndex(numericIndex) {   
-      var ALPHABET_SIZE = 26;
+    function concatText(text, length){
+      if(text.length > length){
+        return text.substring(0, length)+'...';
+      }else{
+        return text;
+      }
+    }
+    
+    function shuffleArray(array) {
+      for (var i = array.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var temp = array[i];
+          array[i] = array[j];
+          array[j] = temp;
+      }
+      return array;
+    }
+    
+    function organizeFieldsByAnswers(terms, counterparts, answers){
+      var organizedTerms = [];
+      var organizedCounterparts = [];
+      for (var answer in answers) {
+        if (answers.hasOwnProperty(answer)) {
+          for(var i = 0, j = terms.length; i < j;i++){
+            if(terms[i].name == answer){
+              organizedTerms.push(terms[i]);
+              terms.splice(i, 1);
+              break;
+            }
+          }
+          
+          for(var n = 0, l = counterparts.length; n < l;n++){
+            if(counterparts[n].name == answers[answer]){
+              organizedCounterparts.push(counterparts[n]);
+              counterparts.splice(n, 1);
+              break;
+            }
+          }
+        }
+      }
       
-      var result = "";
-      do {
-        var charIndex = Math.floor(numericIndex % ALPHABET_SIZE);
-        numericIndex = Math.floor(numericIndex / ALPHABET_SIZE);
-        numericIndex -= 1;
-        result = String.fromCharCode(charIndex + 65) + result;
-      } while (numericIndex > -1);
-        
-      return result;
+      terms = shuffleArray(terms);
+      counterparts = shuffleArray(counterparts);
+      
+      return {
+        terms: organizedTerms.concat(terms),
+        counterparts: organizedCounterparts.concat(counterparts)
+      };
+      
     };
 
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.connect') {
       var meta = data.meta;
       var values = data.value ? $.parseJSON(data.value) : {};
+      if(!$.isEmptyObject(values)){
+        var organizedFields = organizeFieldsByAnswers(meta.fields, meta.counterparts, values);
+        meta.fields = organizedFields.terms;
+        meta.counterparts = organizedFields.counterparts
+      }else{
+        meta.fields = shuffleArray(meta.fields);
+        meta.counterparts = shuffleArray(meta.counterparts);
+      }   
+      
       var tBody = $('<tbody>');
       
       var field = $('<table>')
@@ -437,13 +482,15 @@
             })
             .val(values[connectFieldTermMeta.name]);
           
-          tdTermElement.text((rowIndex + 1) + " - " + connectFieldTermMeta.text);
+          tdTermElement.text(concatText(connectFieldTermMeta.text, 60));
+          tdTermElement.attr('title', connectFieldTermMeta.text);
           tdTermElement.data('muikku-connect-field-option-name', connectFieldTermMeta.name);
           tdValueElement.append(inputElement);
         }
         
         if (connectFieldCounterpartMeta != null) {
-          tdCounterpartElement.text(getExcelStyleLetterIndex(rowIndex) + " - " + connectFieldCounterpartMeta.text);
+          tdCounterpartElement.text(concatText(connectFieldCounterpartMeta.text, 60));
+          tdCounterpartElement.attr('title', connectFieldCounterpartMeta.text);
           tdCounterpartElement.attr('data-muikku-connect-field-option-name', connectFieldCounterpartMeta.name);
         }
       
@@ -786,8 +833,6 @@
     $(data.pageElement)
       .append($('<div>').addClass('clear'));
     
-    // Connect field support
-    jsPlumb.ready(function() {
       $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
         var meta = $.parseJSON($(field).attr('data-meta'));
         $(field).muikkuConnectField({
@@ -798,7 +843,6 @@
           readonly: data.readOnlyFields||false
         });
       });
-    });
     
     // Lazy loading
     $(data.pageElement).find('img.lazy').lazyload();
@@ -809,29 +853,37 @@
       maxFileSize = Number($("input[name='max-file-size']").val());
     }
     
-    // File field support
-    $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
-      $(field)
-        .muikkuFileField({
-          maxFileSize: maxFileSize
-        })
-        .muikkuField({
-          fieldName: $(field).data('field-name'),
-          embedId: $(field).data('embed-id'),
-          materialId: $(field).data('material-id'),
-          readonly: data.readOnlyFields||false,
-          answer: function (val) {
-            // TODO: Support setter for files
-            return JSON.stringify($(this.element).muikkuFileField('files'));
-          },
-          isReadonly: function () {
-            return $(this.element).muikkuFileField("isReadonly");
-          },
-          setReadonly: function (readonly) {
-            $(this.element).muikkuFileField("setReadonly", readonly);
-          }
-        });
-    });
+    renderDustTemplate('workspace/materials-assignment-attachement-delete-confirm.dust', { }, $.proxy(function (text) {
+      // File field support
+      $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
+        $(field)
+          .muikkuFileField({
+            maxFileSize: maxFileSize,
+            confirmRemove: true,
+            confirmRemoveHtml: text,
+            supportRestore: false,
+            confirmRemoveDialogClass: "workspace-materials-assigment-attachment-dialog",
+          })
+          .muikkuField({
+            fieldName: $(field).data('field-name'),
+            embedId: $(field).data('embed-id'),
+            materialId: $(field).data('material-id'),
+            readonly: data.readOnlyFields||false,
+            answer: function (val) {
+              // TODO: Support setter for files
+              return JSON.stringify($(this.element).muikkuFileField('files'));
+            },
+            isReadonly: function () {
+              return $(this.element).muikkuFileField("isReadonly");
+            },
+            setReadonly: function (readonly) {
+              $(this.element).muikkuFileField("setReadonly", readonly);
+            }
+          });
+      });
+      
+    }, this));
+    
   });
 
 }).call(this);
