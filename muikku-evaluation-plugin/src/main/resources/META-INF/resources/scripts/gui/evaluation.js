@@ -788,6 +788,7 @@
       .read(workspaceEntityId)
       .callback($.proxy(function(err, workspaceUsers) {
         if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
           
         } else {
           mApi({async: false})
@@ -797,6 +798,7 @@
             .read(workspaceEntityId)
             .callback($.proxy(function(err, gradingScales) {
               if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
                 $('<div>').evaluateAssignmentDialog({
                   studentDisplayName: studentDisplayName,
@@ -963,7 +965,7 @@
         .read(workspaceEntityId)
         .callback($.proxy(function(err, workspaceUsers) {
           if (err) {
-            
+            $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
             mApi({async: false})
               .workspace
@@ -972,6 +974,7 @@
               .read(workspaceEntityId)
               .callback($.proxy(function(err, gradingScales) {
               if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
                 $('<div>').evaluateWorkspaceDialog({
                   studentStudyProgrammeName: this.studyProgrammeName(),
