@@ -191,7 +191,7 @@ body.evaluation {
       /* Workspace has been evaluated by teacher */
       &.workspace-evaluated {
       
-        .workspace-evaluation-request-date {
+        .workspace-evaluation-requested-date {
           position:absolute;
           width:100%;
           box-sizing:border-box;
@@ -206,6 +206,7 @@ body.evaluation {
           top:5px;
           background:#00ccff;
           color:#fff;
+          font-size:14px;
         }
         
         .workspace-evaluated-date {
@@ -220,9 +221,10 @@ body.evaluation {
           white-space:normal;
           position:absolute;
           font-size:0.9em;
-          top:5px;
+          top:35px;
           background:#3cdd2a;
           color:#fff;
+          font-size:14px;
         }
       
         .evaluation-student-picture {
@@ -234,7 +236,7 @@ body.evaluation {
       /* Student has sent workspace evaluation request */
       &.workspace-evaluation-requested {
       
-        .workspace-evaluation-request-date {
+        .workspace-evaluation-requested-date {
           position:absolute;
           width:100%;
           box-sizing:border-box;
@@ -249,6 +251,7 @@ body.evaluation {
           top:5px;
           background:#00ccff;
           color:#fff;
+          font-size:14px;
         }
       
         .evaluation-student-picture {
@@ -260,7 +263,7 @@ body.evaluation {
       /* Workspace hasn't been evaluated in acceptable time frame and TIME IS RUNNING OUT */
       &.workspace-assessment-critical {
       
-        .workspace-evaluation-request-date {
+        .workspace-evaluation-requested-date {
           position:absolute;
           width:100%;
           box-sizing:border-box;
@@ -275,6 +278,7 @@ body.evaluation {
           top:5px;
           background:#de5500;
           color:#fff;
+          font-size:14px;
         }
       
         .evaluation-student-picture {
