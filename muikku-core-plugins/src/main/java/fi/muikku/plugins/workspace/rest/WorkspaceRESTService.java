@@ -395,7 +395,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
 
-    if (!workspaceRoles.isEmpty()) {
+    if (workspaceRoles != null && !workspaceRoles.isEmpty()) {
       workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByRoles(workspaceEntity, workspaceRoles);
     } else {
       workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
