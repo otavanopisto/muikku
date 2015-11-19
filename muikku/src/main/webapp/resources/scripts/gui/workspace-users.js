@@ -10,8 +10,7 @@
     },
     
     _loadTeacherList: function () {
-       // Workspace teachers
-      mApi().workspace.workspaces.users.read(this.options.workspaceEntityId, {roleArchetype: 'TEACHER', orderBy: 'name'}).callback($.proxy(function (err, teachers) {
+      mApi().workspace.workspaces.staffmembers.read(this.options.workspaceEntityId, {orderBy: 'name'}).callback($.proxy(function (err, teachers) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
@@ -36,8 +35,7 @@
     },
     
     _loadStudentList: function () {
-      // Workspace students
-      mApi().workspace.workspaces.users.read(this.options.workspaceEntityId, {roleArchetype: 'STUDENT', orderBy: 'name'}).callback($.proxy(function (err, students) {
+      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {status: 'active', orderBy: 'name'}).callback($.proxy(function (err, students) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }

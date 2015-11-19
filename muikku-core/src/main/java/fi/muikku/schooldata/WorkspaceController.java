@@ -274,8 +274,14 @@ public class WorkspaceController {
 
   public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
-        workspaceUser.getWorkspaceSchoolDataSource(), workspaceUser.getWorkspaceIdentifier());
-    return workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity,
+        workspaceUser.getWorkspaceSchoolDataSource(),
+        workspaceUser.getWorkspaceIdentifier());
+    return findWorkspaceUserEntity(workspaceUser, workspaceEntity); 
+  }
+
+  public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser, WorkspaceEntity workspaceEntity) {
+    return workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(
+        workspaceEntity,
         workspaceUser.getIdentifier());
   }
 
@@ -289,6 +295,22 @@ public class WorkspaceController {
       return workspaceSchoolDataController.listWorkspaceUsers(workspace);
     }
 
+    return null;
+  }
+  
+  public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity, String status) {
+    Workspace workspace = findWorkspace(workspaceEntity);
+    if (workspace != null) {
+      return workspaceSchoolDataController.listWorkspaceStudents(workspace, status);      
+    }
+    return null;
+  }
+
+  public List<WorkspaceUser> listWorkspaceStaffMembers(WorkspaceEntity workspaceEntity) {
+    Workspace workspace = findWorkspace(workspaceEntity);
+    if (workspace != null) {
+      return workspaceSchoolDataController.listWorkspaceStaffMembers(workspace);      
+    }
     return null;
   }
   

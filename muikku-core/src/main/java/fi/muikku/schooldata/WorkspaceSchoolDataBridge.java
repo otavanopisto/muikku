@@ -44,5 +44,11 @@ public interface WorkspaceSchoolDataBridge {
 	
 	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
+	public List<WorkspaceUser> listWorkspaceStaffMembers(String workspaceIdentifier);
+	public List<WorkspaceUser> listActiveWorkspaceStudents(String workspaceIdentifier);
+	public List<WorkspaceUser> listEvaluatedWorkspaceStudents(String workspaceIdentifier);
+	public List<WorkspaceUser> listInactiveWorkspaceStudents(String workspaceIdentifier);
+	public void archiveWorkspaceUser(WorkspaceUser workspaceUser);
+	public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser);
 
 }

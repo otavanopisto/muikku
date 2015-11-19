@@ -2,7 +2,9 @@ package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
@@ -11,6 +13,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
+import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
@@ -31,6 +34,9 @@ import fi.pyramus.rest.model.Subject;
 public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
   
   @Inject
+  private Logger logger;
+
+  @Inject
   private PyramusClient pyramusClient;
 
   @Inject
@@ -38,6 +44,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
+
+  @Inject
+  private PluginSettingsController pluginSettingsController;
 
   @Override
   public String getSchoolDataSource() {
@@ -192,5 +201,80 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     }
     
     return entityFactory.createEntity(course, educationTypeIdentifier);
+  }
+
+  @Override
+  public List<WorkspaceUser> listWorkspaceStaffMembers(String workspaceIdentifier) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    if (courseId != null) {
+      CourseStaffMember[] staffMembers = pyramusClient.get(String.format("/courses/courses/%d/staffMembers", courseId), CourseStaffMember[].class);
+      if (staffMembers != null) {
+        return entityFactory.createEntity(staffMembers);
+      }
+    }
+    return Collections.<WorkspaceUser>emptyList();
+  }
+
+  @Override
+  public List<WorkspaceUser> listActiveWorkspaceStudents(String workspaceIdentifier) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    String participationTypes = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.active");
+    if (StringUtils.isEmpty(participationTypes)) {
+      logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.active", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
+    }
+    else {
+      CourseStudent[] students = pyramusClient.get(String.format("/courses/courses/%d/students?participationTypes=%s", courseId, participationTypes), CourseStudent[].class);
+      if (students != null) {
+        return entityFactory.createEntity(students);
+      }
+    }
+    return Collections.<WorkspaceUser>emptyList();
+  }
+
+  @Override
+  public List<WorkspaceUser> listEvaluatedWorkspaceStudents(String workspaceIdentifier) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    String participationTypes = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.evaluated");
+    if (StringUtils.isEmpty(participationTypes)) {
+      logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.evaluated", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
+      return Collections.<WorkspaceUser>emptyList();
+    }
+    else {
+      CourseStudent[] students = pyramusClient.get(String.format("/courses/courses/%d/students?participationTypes=%s", courseId, participationTypes), CourseStudent[].class);
+      if (students != null) {
+        return entityFactory.createEntity(students);
+      }
+    }
+    return Collections.<WorkspaceUser>emptyList();
+  }
+
+  @Override
+  public List<WorkspaceUser> listInactiveWorkspaceStudents(String workspaceIdentifier) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    String participationTypes = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.inactive");
+    if (StringUtils.isEmpty(participationTypes)) {
+      logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.inactive", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
+    }
+    else {
+      CourseStudent[] students = pyramusClient.get(String.format("/courses/courses/%d/students?participationTypes=%s", courseId, participationTypes), CourseStudent[].class);
+      if (students != null) {
+        return entityFactory.createEntity(students);
+      }
+    }
+    return Collections.<WorkspaceUser>emptyList();
+  }
+
+  @Override
+  public void archiveWorkspaceUser(WorkspaceUser workspaceUser) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier());
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier());
+    // TODO Auto-generated method stub
+    
   }
 }

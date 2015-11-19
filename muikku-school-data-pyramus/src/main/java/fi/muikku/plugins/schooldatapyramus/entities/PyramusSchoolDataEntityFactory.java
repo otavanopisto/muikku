@@ -88,8 +88,19 @@ public class PyramusSchoolDataEntityFactory {
       break;
     }
 
-    return new PyramusUser(identifierMapper.getStaffIdentifier(staffMember.getId()), staffMember.getFirstName(),
-        staffMember.getLastName(), displayName, null, null, null, null, null, null, null, false);
+    return new PyramusUser(
+        identifierMapper.getStaffIdentifier(staffMember.getId()),
+        staffMember.getFirstName(),
+        staffMember.getLastName(),
+        displayName,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        false);
   }
 
   public List<User> createEntity(fi.pyramus.rest.model.StaffMember... staffMembers) {
@@ -115,9 +126,19 @@ public class PyramusSchoolDataEntityFactory {
       displayName.append(String.format(" (%s)", studyProgrammeName));
     }
 
-    return new PyramusUser(identifierMapper.getStudentIdentifier(student.getId()), student.getFirstName(),
-        student.getLastName(), displayName.toString(), studyProgrammeName, nationality, language, municipality, school,
-        studyStartDate, studyTimeEnd, hidden);
+    return new PyramusUser(
+        identifierMapper.getStudentIdentifier(student.getId()),
+        student.getFirstName(),
+        student.getLastName(),
+        displayName.toString(),
+        studyProgrammeName,
+        nationality,
+        language,
+        municipality,
+        school,
+        studyStartDate,
+        studyTimeEnd,
+        hidden);
   }
 
   public EnvironmentRole createEntity(fi.pyramus.rest.model.UserRole role) {
@@ -171,9 +192,11 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
 
-    return new PyramusWorkspaceUser(identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId()),
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifierMapper.getWorkspaceIdentifier(staffMember
-            .getCourseId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+    return new PyramusWorkspaceUser(
+        identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId()),
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        identifierMapper.getWorkspaceIdentifier(staffMember.getCourseId()),
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId()),
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifierMapper.getWorkspaceStaffRoleIdentifier(staffMember.getRoleId()));

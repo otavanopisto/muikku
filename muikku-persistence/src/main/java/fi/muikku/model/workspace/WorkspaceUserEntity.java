@@ -1,5 +1,6 @@
 package fi.muikku.model.workspace;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,8 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.muikku.model.users.UserSchoolDataIdentifier;
@@ -21,6 +24,8 @@ import fi.muikku.model.util.ArchivableEntity;
     @UniqueConstraint (columnNames = {"userSchoolDataIdentifier_id", "workspaceEntity_id"})
   }    
 )
+@Cacheable
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class WorkspaceUserEntity implements ArchivableEntity {
 
   public Long getId() {
