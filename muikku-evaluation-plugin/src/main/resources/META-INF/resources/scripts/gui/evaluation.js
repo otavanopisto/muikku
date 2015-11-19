@@ -642,7 +642,7 @@
 
     _loadStudents: function () {
       mApi({async: false}).workspace.workspaces.users
-        .read(this.options.workspaceEntityId)
+        .read(this.options.workspaceEntityId, {roleArchtype: "STUDENT"})
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);

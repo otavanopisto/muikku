@@ -422,17 +422,26 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.noContent().build();
     }
     
-    boolean hasCurrentUser = false;
+    boolean canList = false;
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     Long loggedUserId = userEntity == null ? null : userEntity.getId();
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
       if (workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId().equals(loggedUserId)) {
-        hasCurrentUser = true;
+        canList = true;
         break;
       }
     }
     
-    if ("TEACHER".equals(roleArchetype) || hasCurrentUser) {
+    if ("TEACHER".equals(roleArchetype)) {
+      canList = true;
+    }
+    
+    if (sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_STUDENTS,
+                                              workspaceEntity)) {
+      canList = true;
+    }
+    
+    if (canList) {
       return Response.ok(createRestModel(workspaceUsers.toArray(new WorkspaceUserEntity[0]))).build();
     } else {
       return Response.status(Status.FORBIDDEN).entity("You must be enrolled").build();
