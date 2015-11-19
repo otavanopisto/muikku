@@ -525,7 +525,7 @@ body.evaluation {
                   > h2 {
                     border-left:5px solid $exerciseAssignment;
                     font-size:20px;
-                    margin:0 100px 0 -5px; 
+                    margin:0 120px 0 -5px; 
                     padding:5px 5px 5px 10px;
                     font-weight:300;
                     margin:0;
@@ -535,7 +535,7 @@ body.evaluation {
                   
                   .evaluation-exercise-assessmentvalue {
                     position:absolute;
-                    max-width:80px;
+                    max-width:100px;
                     right:0;
                     top:0;
                     text-align:right;
@@ -554,7 +554,7 @@ body.evaluation {
                   > h2 {
                     border-left:5px solid $evaluatedAssignment;
                     font-size:20px;
-                    margin:0 100px 0 -5px; 
+                    margin:0 120px 0 -5px; 
                     padding:5px 5px 5px 10px;
                     font-weight:300;
                     margin:0;
@@ -564,7 +564,7 @@ body.evaluation {
                   
                   .evaluation-assignment-assessmentvalue {
                     position:absolute;
-                    max-width:80px;
+                    max-width:100px;
                     right:0;
                     top:0;
                     text-align:right;
@@ -581,6 +581,11 @@ body.evaluation {
                     padding:8px 16px;
                     border-radius:3px;
                     margin:10px 0;
+                    
+                    &.no-literal-assessment {
+                      text-align:center;
+                      font-style:italic;
+                    }
                   }
 
                   article {

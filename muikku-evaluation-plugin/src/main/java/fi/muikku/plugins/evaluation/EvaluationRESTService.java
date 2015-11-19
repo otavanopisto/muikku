@@ -28,17 +28,17 @@ import fi.muikku.plugins.evaluation.rest.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
-import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
 import fi.muikku.schooldata.entity.User;
-import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @RequestScoped
 @Stateful
@@ -74,7 +74,7 @@ public class EvaluationRESTService extends PluginRESTService {
   
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling=Handling.INLINE)
   public Response createWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialEvaluation payload) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
@@ -85,7 +85,7 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.EVALUATE_MATERIAL, workspaceEntity)) {
+    if (!sessionController.hasCoursePermission(EvaluationResourcePermissionCollection.EVALUATION_CREATEWORKSPACEMATERIALEVALUATION, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -161,13 +161,17 @@ public class EvaluationRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/assessors")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE)
   public Response listWorkspaceAssessors(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+
+    if (!sessionController.hasCoursePermission(EvaluationResourcePermissionCollection.EVALUATION_LISTASSESSORS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     
     List<UserEntity> workspaceUsers = workspaceController.listUserEntitiesByWorkspaceEntityAndRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.TEACHER);
     
@@ -189,10 +193,18 @@ public class EvaluationRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/gradingScales")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE)
   public Response listWorkspaceGrades(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!sessionController.hasCoursePermission(EvaluationResourcePermissionCollection.EVALUATION_LISTGRADINGSCALES, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     List<WorkspaceGradingScale> result = new ArrayList<>();
@@ -221,7 +233,7 @@ public class EvaluationRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE)
   public Response listWorkspaceMaterialEvaluations(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam("userEntityId") Long userEntityId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
@@ -242,7 +254,7 @@ public class EvaluationRESTService extends PluginRESTService {
     }
 
     if (!sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
-      if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_MATERIAL_EVALUATION, workspaceEntity)) {
+      if (!sessionController.hasCoursePermission(EvaluationResourcePermissionCollection.EVALUATION_LISTWORKSPACEMATERIALEVALUATIONS, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -281,7 +293,7 @@ public class EvaluationRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE)
   public Response findWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("ID") Long workspaceMaterialEvaluationId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
@@ -316,7 +328,7 @@ public class EvaluationRESTService extends PluginRESTService {
     }
 
     if (!sessionController.getLoggedUserEntity().getId().equals(workspaceMaterialEvaluation.getStudentEntityId())) {
-      if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_MATERIAL_EVALUATION, workspaceEntity)) {
+      if (!sessionController.hasCoursePermission(EvaluationResourcePermissionCollection.EVALUATION_FINDWORKSPACEMATERIALEVALUATION, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -326,7 +338,7 @@ public class EvaluationRESTService extends PluginRESTService {
   
   @PUT
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE)
   public Response updateWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("ID") Long workspaceMaterialEvaluationId, WorkspaceMaterialEvaluation payload) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
@@ -337,7 +349,7 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.EVALUATE_MATERIAL, workspaceEntity)) {
+    if (!sessionController.hasCoursePermission(EvaluationResourcePermissionCollection.EVALUATION_UPDATEWORKSPACEMATERIALEVALUATION, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     

@@ -642,7 +642,7 @@
 
     _loadStudents: function () {
       mApi({async: false}).workspace.workspaces.users
-        .read(this.options.workspaceEntityId)
+        .read(this.options.workspaceEntityId, {roleArchtype: "STUDENT"})
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -986,7 +986,7 @@
         .read(workspaceEntityId)
         .callback($.proxy(function(err, workspaceUsers) {
           if (err) {
-            
+            $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
             mApi({async: false})
               .workspace
@@ -995,6 +995,7 @@
               .read(workspaceEntityId)
               .callback($.proxy(function(err, gradingScales) {
               if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
                 $('<div>').evaluateWorkspaceDialog({
                   studentStudyProgrammeName: this.studyProgrammeName(),
