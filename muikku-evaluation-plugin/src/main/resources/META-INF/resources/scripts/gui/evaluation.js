@@ -654,6 +654,26 @@
         }, this)); 
     },
     
+    _loadAssessmentRequests: function() {
+      mApi().assessmentrequest.workspace.assessmentRequests
+        .read(this.options.workspaceEntityId)
+        .callback($.proxy(function(err, workspaceAssessmentRequests){
+          if(err){
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            for(var i = 0; i < workspaceAssessmentRequests.length;i++){
+              var workspaceAssessmentRequest = workspaceAssessmentRequests[i];
+              var studentElement = $('.evaluation-students').find('div[data-workspace-user="'+workspaceAssessmentRequest.userEntityId+'"]');
+              studentElement.addClass('workspace-assessment-requested');
+              $('<div>')
+                .addClass('workspace-assessment-requested-date')
+                .text(formatDate(new Date(workspaceAssessmentRequest.date)))
+                .prependTo(studentElement);
+            }
+          }
+        }, this));
+    },
+    
     _loadMaterials: function () {
       mApi({async: true}).workspace.workspaces.materials
         .read(this.options.workspaceEntityId, { assignmentType : 'EVALUATED'})
@@ -704,6 +724,7 @@
   
           $('<div>')
             .attr('data-workspace-student', workspaceUser.id)
+            .attr('data-workspace-user', workspaceUser.userId)
             .evaluationStudent({
               workspaceStudentEntityId: workspaceUser.id,
               studentEntityId: workspaceUser.userId,
@@ -713,6 +734,7 @@
         }, this));    
       }, this));
       
+      this._loadAssessmentRequests();
       this._loadMaterials();
     },
     
@@ -788,7 +810,7 @@
       .read(workspaceEntityId)
       .callback($.proxy(function(err, workspaceUsers) {
         if (err) {
-          
+          $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           mApi({async: false})
             .workspace
@@ -797,6 +819,7 @@
             .read(workspaceEntityId)
             .callback($.proxy(function(err, gradingScales) {
               if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
                 $('<div>').evaluateAssignmentDialog({
                   studentDisplayName: studentDisplayName,
