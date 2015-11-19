@@ -71,7 +71,7 @@
 		<module>muikku-jndi-mail-bridge-plugin</module>
 		<module>muikku-deus-nex-machina</module>
 		<module>muikku</module>
-    <module>developer-tools</module>
+    <module>muikku-developer-tools</module>
 		<module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
     <module>muikku-atests-plugin-rest-model</module>
