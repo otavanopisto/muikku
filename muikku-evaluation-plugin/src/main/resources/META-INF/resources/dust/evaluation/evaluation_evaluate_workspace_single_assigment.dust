@@ -7,16 +7,20 @@
         {#evaluation}
           {grade}
         {:else}
-          Ei arvioitu
+          {#localize key="plugin.evaluation.workspaceEvaluationDialog.assignmentNotEvaluated"/}
         {/evaluation}
       </div>  
     </div>
     <div class="evaluation-assignment-content" data-open-state="closed">
-      <div class="evaluation-assignment-literal-assessment">
-        {#evaluation}
+      {#evaluation}
+        <div class="evaluation-assignment-literal-assessment">
           {verbalAssessment|s}
-        {/evaluation}
-      </div>
+        </div>
+      {:else}
+        <div class="evaluation-assignment-literal-assessment no-literal-assessment">
+          {#localize key="plugin.evaluation.workspaceEvaluationDialog.assignmentNoLiteralAssessment"/}
+        </div>
+      {/evaluation}
       <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" class="evaluation-assignment"></article>
     </div>
   </div>
