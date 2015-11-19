@@ -664,11 +664,23 @@
             for(var i = 0; i < workspaceAssessmentRequests.length;i++){
               var workspaceAssessmentRequest = workspaceAssessmentRequests[i];
               var studentElement = $('.evaluation-students').find('div[data-workspace-user="'+workspaceAssessmentRequest.userEntityId+'"]');
-              studentElement.addClass('workspace-assessment-requested');
-              $('<div>')
-                .addClass('workspace-assessment-requested-date')
+              if(!studentElement.hasClass('workspace-evaluated')){
+                studentElement.addClass('workspace-evaluation-requested');
+              }
+              if(studentElement.find('.workspace-evaluation-requested-date').length == 0){
+                $('<div>')
+                .attr('data-evaluation-date', workspaceAssessmentRequest.date)
+                .addClass('workspace-evaluation-requested-date')
                 .text(formatDate(new Date(workspaceAssessmentRequest.date)))
                 .prependTo(studentElement);
+              }else{
+                var evaluationDateElement = studentElement.find('.workspace-evaluation-requested-date');
+                var oldDate = evaluationDateElement.attr('data-evaluation-date');
+                if(workspaceAssessmentRequest.date > oldDate){
+                  evaluationDateElement.attr('data-evaluation-date', workspaceAssessmentRequest.date);
+                  evaluationDateElement.text(formatDate(new Date(workspaceAssessmentRequest.date)));
+                }
+              }
             }
           }
         }, this));
@@ -1046,6 +1058,15 @@
       this._studyProgrammeName = user.studyProgrammeName;
       this.element.find('.evaluation-student-name').text(this._displayName);
       if(this.options.assessment){
+        this.element.removeClass('workspace-evaluation-requested');
+        var evaluatedDate = $('<div>')
+          .addClass('workspace-evaluated-date')
+          .text(formatDate(new Date(this.options.assessment.evaluated)));
+        if(this.element.hasClass('workspace-evaluation-requested')){
+          this.element.find('workspace-evaluation-requested-date').after(evaluatedDate);
+        }else{
+          evaluatedDate.prependTo(this.element);
+        }
         this.element.addClass('workspace-evaluated');
       }
     }
