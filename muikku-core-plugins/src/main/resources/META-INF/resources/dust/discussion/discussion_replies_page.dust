@@ -3,7 +3,7 @@
     {#.}
         {>"discussion/discussion_reply.dust"/}
     {/.} 
-    {@lt key=msgLoadCount value=10}
+    {@lt key=length value=10}
       <div class="mf-items-paging di-replies-paging">
         <div class="mf-paging-toolbar di-paging-toolbar">
           <div class="mf-paging-tool mf-page-link-load-more di-paging-tool di-page-link-load-more disabled">{#localize key="plugin.discussion.links.nomore"/}</div>
