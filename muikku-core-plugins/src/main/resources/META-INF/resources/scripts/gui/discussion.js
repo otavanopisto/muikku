@@ -170,7 +170,7 @@ $(document).ready(function() {
 
           var d = new Date(thread.created);
 
-          thread.prettyDate = d.toLocaleString();
+          thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
 
           threadCallback();
         }, this)).callback($.proxy(function(err, threads) {
