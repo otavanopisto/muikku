@@ -94,6 +94,8 @@ import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @RequestScoped
 @Stateful
@@ -375,7 +377,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{ID}/users")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling=Handling.INLINE)
   public Response listWorkspaceUsers(@PathParam("ID") Long workspaceEntityId,
       @QueryParam("roleArchetype") String roleArchetype,
       @QueryParam("orderBy") String orderBy) {

@@ -1,5 +1,6 @@
 package fi.muikku.plugins.evaluation.dao;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -54,6 +55,10 @@ public class WorkspaceMaterialEvaluationDAO extends PluginDAO<WorkspaceMaterialE
 
   public List<WorkspaceMaterialEvaluation> findByWorkspaceMaterialIdsAndStudentEntityId(List<Long> workspaceMaterialIds, Long studentEntityId) {
     EntityManager entityManager = getEntityManager(); 
+    
+    if (workspaceMaterialIds.isEmpty()) {
+      return Collections.emptyList();
+    }
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<WorkspaceMaterialEvaluation> criteria = criteriaBuilder.createQuery(WorkspaceMaterialEvaluation.class);

@@ -1,6 +1,7 @@
 package fi.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -185,6 +186,7 @@ public class EvaluationRESTService extends PluginRESTService {
           new WorkspaceAssessor(
               user.getDisplayName(),
               userEntity.getId(),
+              // TODO: better to set `selected' in client side
               userEntity.getId().equals(loggedUserEntity.getId())));
     }
     
@@ -281,7 +283,7 @@ public class EvaluationRESTService extends PluginRESTService {
     }
     
     if (result.isEmpty()) {
-      return Response.noContent().build();
+      return Response.ok(Collections.emptyList()).build();
     }
     
     if (!workspaceMaterialEvaluation.getWorkspaceMaterialId().equals(workspaceMaterial.getId())) {

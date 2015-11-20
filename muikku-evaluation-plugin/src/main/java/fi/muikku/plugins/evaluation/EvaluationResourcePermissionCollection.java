@@ -18,6 +18,14 @@ public class EvaluationResourcePermissionCollection extends AbstractMuikkuPermis
   public static final String PERMISSIONSCOPE_WORKSPACE = "WORKSPACE";
   
   /**
+   * Evaluation view
+   */
+
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultWorkspacePermissionRoles({WorkspaceRoleArchetype.TEACHER})
+  public static final String EVALUATION_VIEW_INDEX = "EVALUATION_VIEW_INDEX";
+  
+  /**
    * Evaluations
    */
   

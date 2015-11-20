@@ -71,6 +71,17 @@ public class EvaluationIndexBackingBean {
       return NavigationRules.ACCESS_DENIED;
     }
 
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(getWorkspaceEntityId());
+    if (workspaceEntity == null) {
+      return NavigationRules.NOT_FOUND;
+    }
+
+    if (sessionController.hasCoursePermission(
+          EvaluationResourcePermissionCollection.EVALUATION_VIEW_INDEX,
+          workspaceEntity)) {
+      return NavigationRules.NOT_FOUND;
+    }
+
     List<WorkspaceEntity> myWorkspaceEntities = workspaceController.listWorkspaceEntitiesByUser(userEntity);
     
     if (getWorkspaceEntityId() == null) {
@@ -86,10 +97,6 @@ public class EvaluationIndexBackingBean {
       myWorkspaces.add(new WorkspaceWithEntity(workspaceController.findWorkspace(myWorkspaceEntity), myWorkspaceEntity));
     }
     
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(getWorkspaceEntityId());
-    if (workspaceEntity == null) {
-      return NavigationRules.NOT_FOUND;
-    }
     
     schoolDataBridgeSessionController.startSystemSession();
     try {

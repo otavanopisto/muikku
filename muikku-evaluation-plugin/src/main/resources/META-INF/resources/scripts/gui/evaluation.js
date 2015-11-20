@@ -481,7 +481,11 @@
       
   
       async.series(loads, function (err, results) {
-        callback(err, results);
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          callback(err, results);
+        }
       });
     },
     
@@ -559,6 +563,7 @@
         this._loadingStudent = true;
         var pendingLoad = this._pendingStudentLoads.shift();
         
+        // TODO: remove async false
         mApi({async: false}).user.users.basicinfo
           .read(pendingLoad.id)
           .callback($.proxy(function (err, user) {
@@ -752,7 +757,6 @@
     
     _onMaterialsLoaded: function (event, data) {
       this._workspaceEvaluableAssignments = data.workspaceEvaluableAssignments;
-      var currentId = 0;
       
       $.each(this._workspaceEvaluableAssignments, $.proxy(function (materialIndex, workspaceEvaluableAssignment) {
         var materialRow = $('<div>')
@@ -766,9 +770,6 @@
         });
         
         $.each(this._workspaceUsers, $.proxy(function (studentIndex, workspaceUser) {
-          var divId = "wm" + (currentId + 0x10000).toString(16).substring(1);
-          currentId++;
-          
           $('<div>')
               .evaluationAssignment({
                 workspaceEntityId: this.options.workspaceEntityId,
@@ -1015,7 +1016,6 @@
                   workspaceName: workspaceName,
                   gradingScales: gradingScales,
                   assessors: workspaceUsers,
-                  studentAnswers: [],
                   evaluationDate: this.options.assessment ? new Date(this.options.assessment.evaluated) : null,
                   evaluationGradeId: this.options.assessment ? this.options.assessment.gradeIdentifier+'/'+this.options.assessment.gradeSchoolDataSource+'@'+this.options.assessment.gradingScaleIdentifier+'/'+this.options.assessment.gradingScaleSchoolDataSource : null,
                   assessorEntityId: this.options.assessment ? this.options.assessment.assessorEntityId : null,
