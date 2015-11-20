@@ -121,12 +121,8 @@ $(document).ready(function() {
 
         mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
-          if(thread.creator == MUIKKU_LOGGED_USER_ID){
-            thread.canEdit = true;
-          }else{
-            thread.canEdit = false;
-            
-          }
+          thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
+          
         });
 
         var d = new Date(thread.created);
@@ -320,12 +316,16 @@ $(document).ready(function() {
 
         mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
           replies.creatorFullName = user.firstName + ' ' + user.lastName;
+          replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
 
+          var d = new Date(replies.created);
+          
+          replies.prettyDate = d.toLocaleString();
+          repliesCallback();
+          
+          
         });
-        var d = new Date(replies.created);
-       
-        replies.prettyDate = d.toLocaleString();
-        repliesCallback();
+
       }).callback(function(err, replies) {
         
         if (err) {
@@ -363,11 +363,7 @@ $(document).ready(function() {
 
         mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
-          if(thread.creator == MUIKKU_LOGGED_USER_ID){
-            thread.canEdit = true;
-          }else{
-            thread.canEdit = false;
-          }
+          thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
         });
 
         var d = new Date(thread.created);
@@ -413,12 +409,9 @@ $(document).ready(function() {
 
         mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
           replies.creatorFullName = user.firstName + ' ' + user.lastName;
-          if(replies.creator == MUIKKU_LOGGED_USER_ID){
-            replies.canEdit = true;
-          }else{
-            replies.canEdit = false;
-          }
+          replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
         });
+
         var d = new Date(replies.created);
 
         replies.prettyDate = d.toLocaleString();
