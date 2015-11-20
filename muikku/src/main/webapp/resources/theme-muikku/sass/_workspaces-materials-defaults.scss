@@ -16,6 +16,19 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     margin:10px 0;
   }
   
+  .muikku-field-save-state-label {
+    position:absolute;
+    margin-top:-16px;
+    border-top:1px solid #fff;
+    border-radius:3px;
+    margin-left:4px;
+    padding:4px;
+    background:#9cf3c7;
+    font-size:12px;
+    line-height:12px;
+    display:inline-block;
+  }
+  
   .textfield-wrapper {
     display:inline-block;
     position:relative;

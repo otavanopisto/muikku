@@ -522,16 +522,26 @@
         this.options.setReadonly.call(this, readonly);
       }
     },
+    _checkStatusMessage: function () {
+      var saveStateLabel = this.element.prev('.muikku-field-save-state-label');
+      if (saveStateLabel.length <= 0) {
+        $(this.element)
+        .before($('<span>')
+          .addClass('muikku-field-save-state-label')
+        );
+      }
+    },
     _saveField: function () {
       if (!this.readonly()) {
+        this._checkStatusMessage();
         $(this.element)
           .removeClass('muikku-field-unsaved')
           .addClass('muikku-field-saving');
-        
+
         var page = $(this.element).closest('.workspace-materials-view-page');
         var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
         var workspaceMaterialId =  page.muikkuMaterialPage('workspaceMaterialId'); 
-        
+
         $(document).muikkuWebSocket("sendMessage", 'workspace:field-answer-save', JSON.stringify({
           'answer': this.answer(),
           'embedId': this.embedId(),
@@ -555,7 +565,7 @@
       $(this.element)
         .removeClass('muikku-field-saved muikku-field-saving')
         .addClass('muikku-field-unsaved');
-  
+      
       if (this._saveTimeoutId) {
         clearTimeout(this._saveTimeoutId);
         this._saveTimeoutId = null;
@@ -592,10 +602,32 @@
           $(this.element)
             .removeClass('muikku-field-unsaved muikku-field-saving')
             .addClass('muikku-field-saved');
+          
+          $(this.element)
+            .prev('.muikku-field-save-state-label')
+            .text(getLocaleText('plugin.workspace.materials.answerSavedLabel'))
+            .finish()
+            .fadeIn(10)
+            .delay(1000)
+            .fadeOut(300);
+          
         } else {
           $(this.element)
             .removeClass('muikku-field-unsaved muikku-field-saving')
             .addClass('muikku-field-saved');
+          
+          $(this.element)
+          .prev('.muikku-field-save-state-label')
+          .text(getLocaleText('plugin.workspace.materials.answerSavedLabel'))
+          .finish()
+          .fadeIn(10)
+          .delay(1000)
+          .fadeOut(300);
+          
+          $(this.element)
+            .find('.muikku-field-saving-label')
+            .text(getLocaleText('plugin.workspace.materials.answerSavedLabel'));
+          
           this.answer(message.answer);
         }
         $(this.element).trigger('fieldAnswerSaved');

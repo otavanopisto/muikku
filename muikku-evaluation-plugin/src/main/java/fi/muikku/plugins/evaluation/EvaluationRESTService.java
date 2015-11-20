@@ -169,7 +169,11 @@ public class EvaluationRESTService extends PluginRESTService {
     }
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-
+    
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
     if (!sessionController.hasCoursePermission(EvaluationResourcePermissionCollection.EVALUATION_LISTASSESSORS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
