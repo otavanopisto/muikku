@@ -121,7 +121,7 @@ $(document).ready(function() {
 
         mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
-          thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? thread.canEdit = true : thread.canEdit = false;
+          thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
           
         });
 
@@ -316,7 +316,7 @@ $(document).ready(function() {
 
         mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
           replies.creatorFullName = user.firstName + ' ' + user.lastName;
-          replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? replies.canEdit = true : replies.canEdit = false;
+          replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
 
           var d = new Date(replies.created);
           
@@ -363,7 +363,7 @@ $(document).ready(function() {
 
         mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
-          thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? thread.canEdit = true : thread.canEdit = false;
+          thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
         });
 
         var d = new Date(thread.created);
@@ -409,7 +409,7 @@ $(document).ready(function() {
 
         mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
           replies.creatorFullName = user.firstName + ' ' + user.lastName;
-          replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? replies.canEdit = true : replies.canEdit = false;
+          replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
         });
 
         var d = new Date(replies.created);
