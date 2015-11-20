@@ -3,9 +3,6 @@
     <div class="workspace-users" data-user-id="{id}">
       <div class="workspace-users-name">{lastName}, {firstName}</div>
       <div class="workspace-users-archive">{#localize key="plugin.workspace.users.student.archiveLink.label"/}</div>
-      <!--
-      <div class="workspace-users-delete">{#localize key="plugin.workspace.users.student.deleteLink.label"/}</div>
-      -->
     </div>
   {/students}
 </div>

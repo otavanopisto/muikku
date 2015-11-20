@@ -29,29 +29,65 @@
     },
     
     _create: function () {
-      this._loadStudentList();
-      
+      this._loadStudentList('active');
+      this.element.on("click", ".workspace-students-active", $.proxy(this._onWorkspaceStudentsActiveClick, this));
+      this.element.on("click", ".workspace-students-evaluated", $.proxy(this._onWorkspaceStudentsEvaluatedClick, this));
+      this.element.on("click", ".workspace-students-inactive", $.proxy(this._onWorkspaceStudentsInactiveClick, this));
       this.element.on("click", ".workspace-users-archive", $.proxy(this._onWorkspaceStudentArchiveClick, this));
+      this.element.on("click", ".workspace-users-unarchive", $.proxy(this._onWorkspaceStudentUnarchiveClick, this));
     },
     
-    _loadStudentList: function () {
-      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {status: 'active', orderBy: 'name'}).callback($.proxy(function (err, students) {
+    _loadStudentList: function(status) {
+      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {status: status, orderBy: 'name'}).callback($.proxy(function (err, students) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          renderDustTemplate('workspace/workspace-users-students.dust', {students: students}, $.proxy(function (text) {
-            this.element.append($.parseHTML(text));
-          }, this));
+          this.element.find('.workspace-students-list').empty();
+          if (status == 'active') {
+            renderDustTemplate('workspace/workspace-users-students-active.dust', {students: students}, $.proxy(function (text) {
+              this.element.find('.workspace-students-list').append($.parseHTML(text));
+            }, this));
+          }
+          else if (status =='evaluated') {
+            renderDustTemplate('workspace/workspace-users-students-evaluated.dust', {students: students}, $.proxy(function (text) {
+              this.element.find('.workspace-students-list').append($.parseHTML(text));
+            }, this));
+          }
+          else if (status == 'inactive') {
+            renderDustTemplate('workspace/workspace-users-students-inactive.dust', {students: students}, $.proxy(function (text) {
+              this.element.find('.workspace-students-list').append($.parseHTML(text));
+            }, this));
+          }
         }
       }, this)); 
     },
     
+    _onWorkspaceStudentsActiveClick: function (event) {
+      this._loadStudentList('active');
+    },
+
+    _onWorkspaceStudentsEvaluatedClick: function (event) {
+      this._loadStudentList('evaluated');
+    },
+
+    _onWorkspaceStudentsInactiveClick: function (event) {
+      this._loadStudentList('inactive');
+    },
+
     _onWorkspaceStudentArchiveClick: function (event) {
       var studentElement = $(event.target).closest('.workspace-users');
       var studentId = studentElement.data('user-id');
       this._confirmArchiveStudent($.proxy(function() {
         this._archiveStudent(studentId);
+      }, this));
+    },
+
+    _onWorkspaceStudentUnarchiveClick: function (event) {
+      var studentElement = $(event.target).closest('.workspace-users');
+      var studentId = studentElement.data('user-id');
+      this._confirmUnarchiveStudent($.proxy(function() {
+        this._unarchiveStudent(studentId);
       }, this));
     },
     
@@ -84,6 +120,35 @@
       }, this));
     },
     
+    _confirmArchiveStudent: function(confirmCallback) {
+      renderDustTemplate('workspace/workspace-users-unarchive-request-confirm.dust', {}, $.proxy(function(text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal : true,
+          minHeight : 200,
+          maxHeight : $(window).height() - 50,
+          resizable : false,
+          width : 560,
+          dialogClass : "workspace-user-confirm-dialog",
+          buttons : [ {
+            'text' : dialog.data('button-unarchive-text'),
+            'class' : 'unarchive-button',
+            'click' : function(event) {
+              event.stopPropagation();
+              confirmCallback();
+              $(this).dialog("destroy").remove();
+            }
+          }, {
+            'text' : dialog.data('button-cancel-text'),
+            'class' : 'cancel-button',
+            'click' : function(event) {
+              $(this).dialog("destroy").remove();
+            }
+          } ]
+        });
+      }, this));
+    },
+
     /* TODO implement
     _confirmDeleteStudent: function(confirmCallback) {
       renderDustTemplate('workspace/workspace-users-delete-request-confirm.dust', {}, $.proxy(function(text) {
