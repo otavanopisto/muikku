@@ -36,17 +36,33 @@ public class EvaluationController {
   @Inject
   private UserEntityController userEntityController;
 
-  public WorkspaceMaterialEvaluation createWorkspaceMaterialEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
-    WorkspaceMaterialEvaluation evaluation = workspaceMaterialEvaluationDAO.create(student.getId(), 
-        workspaceMaterial.getId(),  
-        gradingScale.getIdentifier(), 
-        gradingScale.getSchoolDataSource(), 
-        grade.getIdentifier(), 
-        grade.getSchoolDataSource(), 
-        assessor.getId(), 
-        evaluated, 
-        verbalAssessment);
+  public WorkspaceMaterialEvaluation createOrUpdateWorkspaceMaterialEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
+    WorkspaceMaterialEvaluation evaluation = workspaceMaterialEvaluationDAO.findByWorkspaceMaterialIdAndStudentEntityId(
+        workspaceMaterial.getId(),
+        student.getId());
     
+    if (evaluation == null) {
+      evaluation = workspaceMaterialEvaluationDAO.create(student.getId(), 
+          workspaceMaterial.getId(),  
+          gradingScale.getIdentifier(), 
+          gradingScale.getSchoolDataSource(), 
+          grade.getIdentifier(), 
+          grade.getSchoolDataSource(), 
+          assessor.getId(), 
+          evaluated, 
+          verbalAssessment);
+    } else {
+      evaluation = workspaceMaterialEvaluationDAO.update(
+          evaluation,
+          gradingScale.getIdentifier(), 
+          gradingScale.getSchoolDataSource(), 
+          grade.getIdentifier(), 
+          grade.getSchoolDataSource(), 
+          assessor.getId(), 
+          evaluated, 
+          verbalAssessment);
+    }
+
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
     if (reply == null) {
       workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.EVALUATED, student);

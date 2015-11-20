@@ -36,6 +36,26 @@ public class WorkspaceMaterialEvaluationDAO extends PluginDAO<WorkspaceMaterialE
     return persist(workspaceMaterialEvaluation);
   }
 
+  public WorkspaceMaterialEvaluation update(
+      WorkspaceMaterialEvaluation workspaceMaterialEvaluation, 
+      String gradingScaleIdentifier, 
+      String gradingScaleSchoolDataSource, 
+      String gradeIdentifier, 
+      String gradeSchoolDataSource,
+      Long assessorEntityId, 
+      Date evaluated, 
+      String verbalAssessment) {
+
+    workspaceMaterialEvaluation.setGradingScaleIdentifier(gradingScaleIdentifier);
+    workspaceMaterialEvaluation.setGradingScaleSchoolDataSource(gradingScaleSchoolDataSource);
+    workspaceMaterialEvaluation.setGradeIdentifier(gradeIdentifier);
+    workspaceMaterialEvaluation.setGradeSchoolDataSource(gradeSchoolDataSource);
+    workspaceMaterialEvaluation.setAssessorEntityId(assessorEntityId);
+    workspaceMaterialEvaluation.setEvaluated(evaluated);
+    workspaceMaterialEvaluation.setVerbalAssessment(verbalAssessment);
+    return persist(workspaceMaterialEvaluation);
+  }
+
   public WorkspaceMaterialEvaluation findByWorkspaceMaterialIdAndStudentEntityId(Long workspaceMaterialId, Long studentEntityId) {
     EntityManager entityManager = getEntityManager(); 
     
