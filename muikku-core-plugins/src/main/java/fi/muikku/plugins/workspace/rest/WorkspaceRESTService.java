@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -101,6 +103,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -5286350366083446537L;
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private WorkspaceController workspaceController;
 
@@ -1034,7 +1039,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<fi.muikku.plugins.workspace.rest.model.WorkspaceUser> result = new ArrayList<>();
 
     for (WorkspaceUserEntity entry : entries) {
-      result.add(createRestModel(entry));
+      WorkspaceUser model = createRestModel(entry);
+      if (model != null) {
+        result.add(model);
+      } 
     }
 
     return result;
@@ -1048,17 +1056,24 @@ public class WorkspaceRESTService extends PluginRESTService {
     User user = userController.findUserByDataSourceAndIdentifier(
         entity.getUserSchoolDataIdentifier().getDataSource(),
         entity.getUserSchoolDataIdentifier().getIdentifier());
-    String userEmail = userEmailEntityController.getUserEmailAddress(userEntity, true);
     
-    Long roleId = entity.getWorkspaceUserRole() != null ? entity.getWorkspaceUserRole().getId() : null;
-    return new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(
-        entity.getId(),
-        workspaceEntityId,
-        userId,
-        roleId,
-        user.getFirstName(),
-        user.getLastName(),
-        userEmail);
+    if (user != null) {
+      String userEmail = userEmailEntityController.getUserEmailAddress(userEntity, true);
+      
+      Long roleId = entity.getWorkspaceUserRole() != null ? entity.getWorkspaceUserRole().getId() : null;
+      return new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(
+          entity.getId(),
+          workspaceEntityId,
+          userId,
+          roleId,
+          user.getFirstName(),
+          user.getLastName(),
+          userEmail);
+    } else {
+      logger.log(Level.SEVERE, String.format("Could not find corresponding school data user for user entity %d", userId));
+      return null;
+    }
+    
   }
 
   private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String description) {

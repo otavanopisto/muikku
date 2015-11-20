@@ -1095,7 +1095,7 @@
           .addClass('workspace-evaluated-date')
           .text(formatDate(new Date(this.options.assessment.evaluated)));
         if(this.element.hasClass('workspace-evaluation-requested')){
-          this.element.find('workspace-evaluation-requested-date').after(evaluatedDate);
+          this.element.find('workspace-evaluation-requested-date').before(evaluatedDate);
         }else{
           evaluatedDate.prependTo(this.element);
         }
