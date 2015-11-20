@@ -154,7 +154,22 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.assessment = result;
-                    this.options.triggeringElement.element.addClass('workspace-evaluated');
+                    if(this.options.triggeringElement.hasClass('workspace-evaluated')){
+                      this.options.triggeringElement.find('.workspace-evaluated-date')
+                        .text(formatDate(new Date(result.evaluated)));
+                    }else{
+                      var evaluatedDate = $('<div>')
+                        .addClass('workspace-evaluated-date')
+                        .text(formatDate(new Date(result.evaluated)));
+                    
+                      if(this.options.triggeringElement.hasClass('workspace-evaluation-requested')){
+                        this.options.triggeringElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
+                      }else{
+                        evaluatedDate.prependTo(this.options.triggeringElement);
+                      }
+                      this.options.triggeringElement.removeClass('workspace-evaluation-requested');
+                      this.options.triggeringElement.element.addClass('workspace-evaluated');
+                    }
                     this.element.remove();
                   }
                 }, this));
@@ -173,7 +188,24 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.assessment = result;
-                    this.options.triggeringElement.element.addClass('workspace-evaluated');
+                    
+                    if(this.options.triggeringElement.hasClass('workspace-evaluated')){
+                      this.options.triggeringElement.find('.workspace-evaluated-date')
+                        .text(formatDate(new Date(result.evaluated)));
+                    }else{
+                      var evaluatedDate = $('<div>')
+                        .addClass('workspace-evaluated-date')
+                        .text(formatDate(new Date(result.evaluated)));
+                    
+                      if(this.options.triggeringElement.hasClass('workspace-evaluation-requested')){
+                        this.options.triggeringElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
+                      }else{
+                        evaluatedDate.prependTo(this.options.triggeringElement);
+                      }
+                      this.options.triggeringElement.removeClass('workspace-evaluation-requested');
+                      this.options.triggeringElement.element.addClass('workspace-evaluated');
+                    }
+
                     this.element.remove();
                   }
                 }, this));
