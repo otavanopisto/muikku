@@ -58,11 +58,10 @@ $(document).ready(function() {
         
         mApi().user.users.basicinfo.read(msgs.creator).callback(function(err, user) {
           msgs.creatorFullName = user.firstName + ' ' + user.lastName;
+          var d = new Date(msgs.created);
+          msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
+          msgsCallback();
         });
-        
-        var d = new Date(msgs.created);
-        msgs.prettyDate = d.toLocaleString();
-        msgsCallback();
       }, this)).callback($.proxy(function(err, threads) {
 
         if (err) {
@@ -120,19 +119,17 @@ $(document).ready(function() {
 
         mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
+          var d = new Date(thread.created);
+          thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+          threadCallback();          
           if(thread.creator == MUIKKU_LOGGED_USER_ID){
             thread.canEdit = true;
           }else{
             thread.canEdit = false;
-            
           }
         });
 
-        var d = new Date(thread.created);
 
-        thread.prettyDate = d.toLocaleString();
-
-        threadCallback();
       }, this)).callback($.proxy(function(err, threads) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
@@ -251,7 +248,7 @@ $(document).ready(function() {
             mApi().user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
               thread.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(thread.created);
-              thread.prettyDate = d.toLocaleString();
+              thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
               threadCallback();
             }, this));
           }, this));
@@ -302,7 +299,7 @@ $(document).ready(function() {
           mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
               replies.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(replies.created);
-              replies.prettyDate = d.toLocaleString();
+              replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
               repliesCallback();
             });          
         });
@@ -338,7 +335,7 @@ $(document).ready(function() {
               thread.canEdit = false;
             }
             var d = new Date(thread.created);
-            thread.prettyDate = d.toLocaleString();
+            thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
             threadCallback();
           });          
         }, this));
@@ -376,7 +373,7 @@ $(document).ready(function() {
               replies.canEdit = false;
             }
             var d = new Date(replies.created);
-            replies.prettyDate = d.toLocaleString();
+            replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
             replies.threadId = threadId;
             repliesCallback();
           });          
