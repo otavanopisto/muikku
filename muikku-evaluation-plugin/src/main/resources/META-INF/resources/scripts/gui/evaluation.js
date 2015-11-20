@@ -154,21 +154,22 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.assessment = result;
-                    if(this.options.triggeringElement.hasClass('workspace-evaluated')){
-                      this.options.triggeringElement.find('.workspace-evaluated-date')
+                    var studentElement = $(this.options.triggeringElement.element);
+                    if(studentElement.hasClass('workspace-evaluated')){
+                      studentElement.find('.workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
                     }else{
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
                     
-                      if(this.options.triggeringElement.hasClass('workspace-evaluation-requested')){
-                        this.options.triggeringElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
+                      if(studentElement.hasClass('workspace-evaluation-requested')){
+                        studentElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
                       }else{
-                        evaluatedDate.prependTo(this.options.triggeringElement);
+                        evaluatedDate.prependTo(studentElement);
                       }
-                      this.options.triggeringElement.removeClass('workspace-evaluation-requested');
-                      this.options.triggeringElement.element.addClass('workspace-evaluated');
+                      studentElement.removeClass('workspace-evaluation-requested');
+                      studentElement.addClass('workspace-evaluated');
                     }
                     this.element.remove();
                   }
@@ -188,22 +189,22 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.assessment = result;
-                    
-                    if(this.options.triggeringElement.hasClass('workspace-evaluated')){
-                      this.options.triggeringElement.find('.workspace-evaluated-date')
+                    var studentElement = $(this.options.triggeringElement.element);
+                    if(studentElement.hasClass('workspace-evaluated')){
+                      studentElement.find('.workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
                     }else{
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
                     
-                      if(this.options.triggeringElement.hasClass('workspace-evaluation-requested')){
-                        this.options.triggeringElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
+                      if(studentElement.hasClass('workspace-evaluation-requested')){
+                        studentElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
                       }else{
-                        evaluatedDate.prependTo(this.options.triggeringElement);
+                        evaluatedDate.prependTo(studentElement);
                       }
-                      this.options.triggeringElement.removeClass('workspace-evaluation-requested');
-                      this.options.triggeringElement.element.addClass('workspace-evaluated');
+                      studentElement.removeClass('workspace-evaluation-requested');
+                      studentElement.addClass('workspace-evaluated');
                     }
 
                     this.element.remove();
