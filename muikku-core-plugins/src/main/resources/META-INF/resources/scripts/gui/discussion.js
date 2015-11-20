@@ -122,11 +122,7 @@ $(document).ready(function() {
           var d = new Date(thread.created);
           thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
           threadCallback();          
-          if(thread.creator == MUIKKU_LOGGED_USER_ID){
-            thread.canEdit = true;
-          }else{
-            thread.canEdit = false;
-          }
+          thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
         });
 
 
@@ -300,6 +296,7 @@ $(document).ready(function() {
               replies.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(replies.created);
               replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
               repliesCallback();
             });          
         });
@@ -329,11 +326,7 @@ $(document).ready(function() {
           thread.areaName = area.name;
           mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
-            if(thread.creator == MUIKKU_LOGGED_USER_ID){
-              thread.canEdit = true;
-            }else{
-              thread.canEdit = false;
-            }
+            thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             var d = new Date(thread.created);
             thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
             threadCallback();
@@ -367,11 +360,7 @@ $(document).ready(function() {
           replies.areaName = area.name;
           mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
             replies.creatorFullName = user.firstName + ' ' + user.lastName;
-            if(replies.creator == MUIKKU_LOGGED_USER_ID){
-              replies.canEdit = true;
-            }else{
-              replies.canEdit = false;
-            }
+            replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             var d = new Date(replies.created);
             replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
             replies.threadId = threadId;
