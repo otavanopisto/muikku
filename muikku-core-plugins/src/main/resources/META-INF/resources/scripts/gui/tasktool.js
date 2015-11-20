@@ -125,8 +125,8 @@ $(document).ready(function(){
     }
     
     
-      mApi().assessmentrequest.assessmentrequestsforme.read(asreqFilter).on('$', function(asreq, asreqcallback){
-        mApi().user.users.read(asreq.id).callback(function (err, user){
+      mApi({async: false}).assessmentrequest.assessmentrequestsforme.read(asreqFilter).on('$', function(asreq, asreqcallback){
+        mApi({async: false}).user.users.read(asreq.id).callback(function (err, user){
           if( err ){
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.tasktool.errormessage.users', err));
           }else{        
@@ -137,7 +137,7 @@ $(document).ready(function(){
           
         });  
   
-        mApi().workspace.workspaces.read(asreq.workspaceId).callback(function (err, workspace){
+        mApi({async: false}).workspace.workspaces.read(asreq.workspaceId).callback(function (err, workspace){
           if( err ){
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.tasktool.errormessage.noworkspaces', err));
           }else{        
@@ -177,8 +177,8 @@ $(document).ready(function(){
             	search.show("slide");
             	
             }
-            mApi().assessmentrequest.assessmentrequestsforme.read().on('$', function(asreq, asreqcallback){
-              mApi().user.users.read(asreq.id).callback(function (err, user){
+            mApi({async: false}).assessmentrequest.assessmentrequestsforme.read().on('$', function(asreq, asreqcallback){
+              mApi({async: false}).user.users.read(asreq.id).callback(function (err, user){
                 if( err ){
                   $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.tasktool.errormessage.users', err));
                 }else{        
@@ -189,7 +189,7 @@ $(document).ready(function(){
                 
               });  
 
-              mApi().workspace.workspaces.read(asreq.workspaceId).callback(function (err, workspace){
+              mApi({async: false}).workspace.workspaces.read(asreq.workspaceId).callback(function (err, workspace){
                 if( err ){
                   $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.tasktool.errormessage.noworkspaces', err));
                 }else{        
@@ -232,7 +232,7 @@ $(document).ready(function(){
          }
          
          
-         mApi().user.users.read({ 'searchString' : filterTerm }).callback(
+         mApi({async: false}).user.users.read({ 'searchString' : filterTerm }).callback(
           function (err, usr) {
             if(typeof usr !== "undefined"){
               for (var i = 0, l = usr.length; i < l; i++) {
@@ -254,7 +254,7 @@ $(document).ready(function(){
             } 
        });       
        
-//       mApi().workspace.workspaces.read({ 'searchString' : searchTerm }).callback(
+//       mApi({async: false}).workspace.workspaces.read({ 'searchString' : searchTerm }).callback(
 //           function (err, workspaces) {
 //              for (var i = 0, l = workspaces.length; i < l; i++) {
 //
@@ -280,7 +280,7 @@ $(document).ready(function(){
        
     
      
-     mApi().workspace.workspaces.read({ 'search' : filterTerm }).callback(
+     mApi({async: false}).workspace.workspaces.read({ 'search' : filterTerm }).callback(
          function (err, workspace) {
            if(typeof workspace !== "undefined"){           
              for (var i = 0, l = workspace.length; i < l; i++) {

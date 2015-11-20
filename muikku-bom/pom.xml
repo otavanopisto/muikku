@@ -195,6 +195,24 @@
         <artifactId>muikku-school-data-pyramus-persistence</artifactId>
         <version>${muikku.version}</version>
       </dependency>
+    
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>evaluation-plugin</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>evaluation-plugin-persistence</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>evaluation-plugin-rest-model</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
 
 			<!-- Coops -->
 			<dependency>

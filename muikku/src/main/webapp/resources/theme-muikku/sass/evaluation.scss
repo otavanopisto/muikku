@@ -4,626 +4,472 @@
 @import "_connect-field.scss";
 
 body.evaluation {
-  background:#4f6677;
+  background:none;
+  background-color:#f0f3f5;
+  @include background-image('/gfx/light-diagonal-strips.png');
   padding:0.01em; /* Prevent margin collapsing  */
   min-height:100%;
   line-height:1.7em;
   font-size:18px;
-  overflow-x:hidden;
-  overflow-y:scroll;
   
-  /* WORKSPACE NAVIGATION - FULLSCREEN */
-  div[class*='wi-evaluation-workspacelist-navi-button'] > a,
-  div[class*='wi-evaluation-workspacelist-navi-button'] > span {
-    cursor:pointer;
-    font-size:30px;
-    color:#fff;
-    text-decoration:none;
-    @include iconShadow;
-    background:transparent;
-    padding:6px;
-    margin:0px;
-    display:inline-block;
-    position:relative;
-    width:34px;
-    text-align:center;
-  
-    span[class*='evaluation-workspacelist-tt-container-'] {
-      opacity:0;
-      font-family:'Open Sans',Verdana, sans-serif;
-      font-size:16px;
-      height:16px;
-      font-weight:300;
-      position:absolute;
-      top:0px;
-      left:-4500px;
-      width:0px;
-      color:#fff;
-      text-transform:uppercase;
-      padding:13px 15px 15px 14px;
-      @include rounded-top-left(3px);
-      @include rounded-bottom-left(3px);
-      @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
-    }
-      
-    &:hover {
-      @include iconShadow(rgba(255,255,190,0.5));
-      background:transparent;
-    }
-  }
-  
-  #evaluationToolbar { /* Top toolbar for view change actions */
-    height:45px;
-    width:100%;
-    position:fixed;
-    z-index:997;
+  .evaluation-navigation-wrapper {
+    background:#7ed9ff;
+    position:absolute;
     top:0;
     left:0;
     right:0;
-    background:#5c7486;
-  }
-  
-  main#contentEvaluation {
-    margin:65px 0 0 45px;
-    position:relative;
+    height:50px;
+    box-sizing:border-box;
+    padding:5px;
+    box-shadow:0 4px 5px rgba(169,169,169,0.3);
+    z-index: 9999;
     
-    .evaluation-view-placeholder {
+    .icon-navicon {
+      color:#fff;
+      font-size:30px;
+      display:inline-block;
+      padding:4px;
+      cursor:not-allowed;
+      
+      span[class*="tt"] {
+         display:none;
+      }
       
     }
     
-    .content-loading {
+    .evaluation-workspacelisting-wrapper {
       position:absolute;
+      left:50px;
       top:0;
-      left:0;
-      bottom:0;
-      right:0;
-      z-index:9999;
-      opacity:0.98;
-      background:#4f6677;
-      font-size:80px;
-      color:#c8e8ff;
+      @include flexbox();
+      flex-flow:row nowrap;
+      align-items:center;
+      height:45px;
+      padding:0 0 5px 10px;
+      cursor:pointer;
       
-      .icon-spinner {
-        position:absolute;
-        left:50%;
-        top:50%;
-        margin:-50px 0 0 -50px;
-        -webkit-animation: spinner 0.5s linear infinite;
-        -moz-animation: spinner 0.5s linear infinite;
-        -ms-animation: spinner 0.5s linear infinite;
-        -o-animation: spinner 0.5s linear infinite;
-        animation: spinner 0.5s linear infinite;
+      .evaluation-current-workspace {
+        color:#fff;
+        text-transform:uppercase;
+        font-size:30px;
+        font-weight:300;
+        @include flex(1 1 auto);
+        padding:1px 0 0 0;
       }
+      
+      .evaluation-select-workspace {
+        @include flex(1 1 auto);
+        cursor:pointer;
+        padding:15px 10px 10px 10px;
+        
+        span.icon-arrow-down,
+        span.icon-arrow-up {
+          color:#fff;
+          font-size:22px;
+          display:block;
+        }
+        
+      }
+      
+      .evaluation-available-workspaces {
+        color:#fff;
+        padding:0 10px;
+        box-sizing:border-box;
+        border-top:10px solid #8edeff;
+        border-bottom:10px solid #8edeff; 
+        border-bottom-left-radius:10px;
+        border-bottom-right-radius:10px;
+        background:#8edeff;
+        position:absolute;
+        clear:both;
+        display:block;
+        right:0;
+        left:0;
+        top:50px;
+        visible:hidden; 
+        overflow:hidden;
+        opacity:0;
+        height:0px;
+        box-shadow:0 10px 10px rgba(0, 0, 0, 0.1);
+        
+        &.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
+          background-color:#fff;
+        }
+        
+        .evaluation-workspace-item {
+          padding:2px 5px;
+          border-radius:3px;
+          
+          &:hover {
+            background:#7ad8ff;
+          }
+        
+          a {
+            color:#fff;
+            text-decoration:none;
+            text-transform:uppercase;
+            display:block;
+          }
+        
+        }
+        
+      }
+
     }
     
-    .evaluation-slyder-wrapper {
-      width:1220px;
-      margin:20px auto 0 auto;
 
-      #evaluationSlyScrollbar {
-        background:#5a82a0;
-        position:fixed;
-        top:45px;
-        left:45px;
-        right:0;
-        z-index:998;
-        
-        &.scrollbar { 
-          height:4px; 
-          
-          .handle {
-            width:100px;
-            height:100%;
-            background:#79bff2;
-            position:relative;
-            cursor:pointer;
-            border-radius:4px;
-            
-            .mousearea {
-              position:absolute;
-              top:-8px;
-              left:0;
-              width:100%;
-              height:20px;
-            }
-          }
-          
-        }
-      }
-      
-      .evaluation-slyder-controls {
-        position:fixed;
-        z-index:995;
-        top:55px;
-        bottom:5px;
-        width:1220px;
-      
-        button[class*='icon-arrow-']{
-          color:#fff;
-          font-size:40px;
-          background:transparent;
-          border:0;
-          width:70px;
-          height:100%;
-          opacity:0.5;
-          cursor:pointer;
-          border-radius:3px;
-          outline:none;
-          
-          &.disabled {
-            opacity:0;
-            cursor:default;
-          }
-          
-          &:before {
-  
-          }
-          
-        }
-        
-        .prevPage {
-          position:absolute;
-          top:0;
-          bottom:0;
-          left:0;
-          
-          
-          &:hover {
-            opacity:0.9;
-            background:#576e7f;
-          }
-        }
-        
-        .nextPage {
-          position:absolute;
-          top:0;
-          bottom:0;
-          right:0;
-          
-          &:hover {
-            opacity:0.9;
-            background:#576e7f;
-          }
-        }
-      
-      }
-
-    }
-
-    #evaluation-views-wrapper { 
-      height:100%;
-      position:relative;
-      z-index:996;
-      width:1080px;
-      margin:0 auto;
-      
-      .evaluation-views-slyder { 
-        margin:0; 
-        padding:0; 
-        height:100%; 
-        
-        .evaluation-view-wrapper {
-          float:left; 
-          padding:0; 
-          width:100%;
-          height:100%;
-          position:relative;
-      
-          .evaluation-student-listing-wrapper {
-            margin:20px auto 10px auto;
-            white-space:nowrap;
-            height:150px;
-          
-            .evaluation-student-wrapper {
-              width:160px;
-              height:130px;
-              box-sizing:border-box;
-              margin:10px;
-              display:block;
-              text-align:center;
-              float:left;
-              position:relative;
-              
-              /* Workspace has been evaluated by teacher */
-              &.workspace-evaluated {
-              
-                .evaluation-assessment-request-date {
-                  width:100%;
-                  box-sizing:border-box;
-                  padding:3px 4px;
-                  background:#fff;
-                  border-radius:3px;
-                  font-size:16px;
-                  line-height:1.3em;
-                  white-space:normal;
-                  position:absolute;
-                  font-size:0.9em;
-                  top:5px;
-                  background:#3cdd2a;
-                  color:#fff;
-                }
-              
-                .evaluation-student-picture {
-                  box-shadow:0 0 0 5px #3cdd2a;
-                }
-
-              }
-              
-              /* Student has sent workspace assessment request */
-              &.workspace-assessment-requested {
-              
-               .evaluation-assessment-request-date {
-                  width:100%;
-                  box-sizing:border-box;
-                  padding:3px 4px;
-                  background:#fff;
-                  border-radius:3px;
-                  font-size:16px;
-                  line-height:1.3em;
-                  white-space:normal;
-                  position:absolute;
-                  font-size:0.9em;
-                  top:5px;
-                  background:#00ccff;
-                  color:#fff;
-                }
-              
-                .evaluation-student-picture {
-                  box-shadow:0 0 0 5px #0099ff;
-                }
-              
-              }
-              
-              /* Workspace hasn't been evaluated in time and TIME IS RUNNING OUT */
-              &.workspace-assessment-critical {
-              
-               .evaluation-assessment-request-date {
-                  width:100%;
-                  box-sizing:border-box;
-                  padding:3px 4px;
-                  background:#fff;
-                  border-radius:3px;
-                  font-size:16px;
-                  line-height:1.3em;
-                  white-space:normal;
-                  position:absolute;
-                  font-size:0.9em;
-                  top:5px;
-                  background:#de5500;
-                  color:#fff;
-                }
-              
-                .evaluation-student-picture {
-                  box-shadow:0 0 0 5px #de0000;
-                }
-              
-              }
-              
-              /* Workspace has been reviewed and needs more input from student */
-              &.workspace-reviewed-but-not-evaluated {
-              
-                .evaluation-assessment-request-date {
-                  width:100%;
-                  box-sizing:border-box;
-                  padding:3px 4px;
-                  background:#fff;
-                  border-radius:3px;
-                  font-size:16px;
-                  line-height:1.3em;
-                  white-space:normal;
-                  position:absolute;
-                  font-size:0.9em;
-                  top:5px;
-                  background:#ea7401;
-                  color:#fff;
-                }
-              
-                .evaluation-student-picture {
-                  box-shadow:0 0 0 5px #ea7401;
-                }
-
-              }
-              
-              .evaluation-assessment-request-date {
-                width:100%;
-                box-sizing:border-box;
-                padding:3px 4px;
-                background:#fff;
-                border-radius:3px;
-                font-size:16px;
-                line-height:1.3em;
-                white-space:normal;
-                position:absolute;
-                font-size:0.9em;
-                top:5px;
-                background:#fff;
-                color:#000;
-              }
-            
-              .evaluation-student-picture {
-                width:120px;
-                height:120px;
-                margin:0 auto;  
-                box-sizing:border-box;
-                @include background-image('gfx/default-user-picture.jpg');
-                background-size:cover;
-                border-radius:75px;
-                background-position:center center;
-                cursor:pointer;
-                
-                &:hover {
-                  box-shadow:0 0 0 5px #8cd1fa;
-                }
-              }
-              
-              .evaluation-student-name {
-                width:100%;
-                box-sizing:border-box;
-                padding:3px 4px;
-                background:#fff;
-                border-radius:3px;
-                font-size:16px;
-                line-height:1.3em;
-                white-space:normal;
-                position:absolute;
-                bottom:0;
-              }
-            
-            }
-          
-          }
-          
-          .evaluation-student-assignment-listing-wrapper {
-            margin:10px auto 10px auto;
-            
-            .evaluation-student-assignment-listing-row {
-              margin:0;
-              white-space:nowrap;
-              clear:both;
-            
-              .evaluation-assignment-wrapper {
-                width:160px;
-                box-sizing:border-box;
-                margin:10px;
-                display:inline-block;
-                text-align:center;
-                background:#617e94;
-                opacity:0.15;
-                position:relative;
-                
-                &:hover {
-                  box-shadow:0 0 0 5px #8cd1fa;
-                }
-                
-                &.assignment-unaswered {
-                }
-                
-                &.assignment-aswered {
-                }
-                
-                &.assignment-withdrawn {
-                }
-                
-                &.assignment-submitted {
-                  opacity:1;
-                  cursor:pointer;
-                }
-                
-                &.assignment-evaluated {
-                  opacity:1;
-                  box-shadow:0 0 0 5px #3cdd2a;
-                  cursor:pointer;
-                  
-                  &:hover {
-                    box-shadow:0 0 0 5px #8cd1fa;
-                  }
-                }
-                
-                .evaluation-assignment-picture {
-                  height:100px;  
-                  width:100%;
-                  box-sizing:border-box;
-                }
-                
-                .evaluation-assignment-date {
-                  width:100%;
-                  box-sizing:border-box;
-                  padding:2px 4px;
-                  color:#fff;
-                  text-align:right;
-                  position:absolute;
-                  top:0;
-                  font-size:14px;
-                  line-height:1.3em;
-                  white-space:normal;
-                }
-                
-                .evaluation-assignment-title {
-                  width:100%;
-                  box-sizing:border-box;
-                  padding:3px 4px;
-                  background:#fff;
-                  margin:-25px 0 0 0;
-                  font-size:14px;
-                  line-height:1.3em;
-                  white-space:normal;
-                }
-              
-              }
-            
-            }
-          
-          }
-        
-        }
-        
-  
-      }
-      
-    }
-  
+    
   }
   
-
-  #evaluationWorkspacelistWrapper {
-    position:fixed;
+  .evaluation-content-wrapper {
+    position:absolute;
+    top:50px;
     left:0;
+    right:0;
+    bottom:0;
+  }
+  
+  .prevPage,
+  .nextPage {
+    position:absolute;
     top:0;
     bottom:0;
-    z-index:999;
+    z-index: 9998;
+    border:0;
+    width:40px;
+    font-size:26px;
+    color:#aaaaaa;
+    cursor:pointer;
+    background:#eee;
+    outline:none;
+    transition:background 0.3s ease-in-out;
+  
+    &:hover {
+      color:#57abec;
+      background:#fff;
+    }
+  
+  }
 
-    #evaluationWorkspacelistContainer {
-      height:100%;
-      background:#7794a8;
-      position:absolute;
-      top:0;
-      z-index:36;
-      
-      &.evaluation-workspacelist-shrinked {
-        width:45px;
-        
-        .evaluation-workspacelist-wrapper {
-          width:100%;
-        
-          .evaluation-workspacelist-content-outer {
-            width:100%;
-            
-            .evaluation-workspacelist-content-inner {
-              width:75px;
-              
-              .evaluation-workspacelist-content-scrolling {
-                width:100%;
-              }
-              
-            }
-          }
-        }
-      }
-      
-      &.evaluation-workspacelist-expanded {
-        width:350px;
-      }
-      
-      .grid_1 {
-        float:none;
-        width:auto;
-        margin:0;
-      }
-      
-      ul,
-      li {
-        list-style:none;
-      }
-      
-      .evaluation-workspacelist-title {
-        padding:12px;
-        position:relative;
-        
-        h1 {
-          color:#2c2c2c;
-          font-size:20px;
-          margin:0;
-          padding:0;
-        }
-
-      }
-      
-      .evaluation-workspacelist-wrapper {
-        position:absolute;
-        top:45px;
-        bottom:0;
-        left:0;
-        width:45px;
-        
-        .evaluation-workspacelist-workspace-name {
-          height:30px;
-          font-size:14px;
-          font-weight:400;
-          white-space:nowrap;
-          padding:4px 12px 4px 24px;
-          background:#72c4f6;
-          color:#fff;
-          z-index:31;
-          display:none;
-          opacity:0;
-          border-top-right-radius:4px;
-          border-bottom-right-radius:4px;
-        }
-
-        .evaluation-workspacelist-content-outer {
-          overflow:hidden;
-          width:350px;
-          height:100%;
-        
-          .evaluation-workspacelist-content-inner {  
-            overflow-x:hidden;
-            overflow-y:scroll;
-            width:370px;
-            height:100%;
-          
-            .evaluation-workspacelist-content-scrolling {
-              width:338px;
-              padding:0;
-              height:100%;
-              
-              .evaluation-workspacelist-root {
-                height:100%;
-                margin:0;
-                padding:0;
+  .prevPage {
+    left:0;
+  }
+  
+  .nextPage {
+    right:0;
+  }
+  
+  .evaluation-students {
+    overflow: hidden;
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 0px;
+    height: 150px;
+    white-space: nowrap;
+    transition:margin 0.2s ease-in-out;
     
-                .evaluation-workspacelist-item {
-                  margin:0 0 1px 0;
-                  position:static;
-                  cursor:pointer;
-                  width:45px;
-  
-                  .evaluation-workspacelist-workspace-abbreviation {
-                    width:45px;
-                    height:30px;
-                    background:#89b3d0;
-                    z-index:32;
-                    position:relative;
-                    color:#fff;
-                    font-weight:400;
-                    font-size:14px;
-                    text-align:center;
-                    padding:4px 0 4px 0;
-                    
-                    &:hover {
-                      background:#72c4f6;
-                    }
-
-                    
-                    a {
-                      color:#fff;
-                      text-decoration:none;
-                    }
-                  }
-
-                }
-  
-              }
-            }
-          
-          }
+    .evaluation-student-wrapper {
+      width:160px;
+      height:130px;
+      box-sizing:border-box;
+      margin:10px;
+      display:inline-block;
+      text-align:center;
+      transition:opacity 1s ease-in-out, transform 1s ease-in-out;
+      position:relative;
+      
+      &.evaluation-student-pending {
+        opacity: 0.5;
+      }
+      
+      &.evaluation-student-loaded {
+        opacity: 1;
+        transform: rotate(0deg) scale(1, 1);
+      }
+      
+      /* Workspace has been evaluated by teacher */
+      &.workspace-evaluated {
+      
+        .workspace-evaluation-requested-date {
+          position:absolute;
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+          position:absolute;
+          font-size:0.9em;
+          top:5px;
+          background:#00ccff;
+          color:#fff;
+          font-size:14px;
+        }
         
+        .workspace-evaluated-date {
+          position:absolute;
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+          position:absolute;
+          font-size:0.9em;
+          top:35px;
+          background:#3cdd2a;
+          color:#fff;
+          font-size:14px;
         }
       
+        .evaluation-student-picture {
+          box-shadow:0 0 0 5px #3cdd2a;
+        }
+    
+      }
+      
+      /* Student has sent workspace evaluation request */
+      &.workspace-evaluation-requested {
+      
+        .workspace-evaluation-requested-date {
+          position:absolute;
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+          position:absolute;
+          font-size:0.9em;
+          top:5px;
+          background:#00ccff;
+          color:#fff;
+          font-size:14px;
+        }
+      
+        .evaluation-student-picture {
+          box-shadow:0 0 0 5px #0099ff;
+        }
+      
+      }
+      
+      /* Workspace hasn't been evaluated in acceptable time frame and TIME IS RUNNING OUT */
+      &.workspace-assessment-critical {
+      
+        .workspace-evaluation-requested-date {
+          position:absolute;
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+          position:absolute;
+          font-size:0.9em;
+          top:5px;
+          background:#de5500;
+          color:#fff;
+          font-size:14px;
+        }
+      
+        .evaluation-student-picture {
+          box-shadow:0 0 0 5px #de0000;
+        }
+      
+      }
+      
+      /* Workspace has been reviewed and needs more input from student */
+      &.workspace-reviewed-but-not-evaluated {
+      
+        .evaluation-assessment-request-date {
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+          position:absolute;
+          font-size:0.9em;
+          top:5px;
+          background:#ea7401;
+          color:#fff;
+        }
+      
+        .evaluation-student-picture {
+          box-shadow:0 0 0 5px #ea7401;
+        }
+    
+      }
+      
+      .evaluation-assessment-request-date {
+        width:100%;
+        box-sizing:border-box;
+        padding:3px 4px;
+        background:#fff;
+        border-radius:3px;
+        font-size:16px;
+        line-height:1.3em;
+        white-space:normal;
+        position:absolute;
+        font-size:0.9em;
+        top:5px;
+        background:#fff;
+        color:#000;
+      }
+    
+      .evaluation-student-picture {
+        width:120px;
+        height:120px;
+        margin:0 auto;  
+        box-sizing:border-box;
+        @include background-image('gfx/default-user-picture.jpg');
+        background-size:cover;
+        border-radius:75px;
+        background-position:center center;
+        cursor:pointer;
+        
+        &:hover {
+          box-shadow:0 0 0 5px #8cd1fa;
+        }
+      }
+      
+      .evaluation-student-name {
+        width:100%;
+        box-sizing:border-box;
+        background:#fff;
+        border-radius:3px;
+        font-size:16px;
+        white-space:normal;
+        position:absolute;
+        left:0;
+        right:0;
+        bottom:0;
       }
     
     }
+  }
+  
+  .evaluation-assignments {
+    overflow: hidden;
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 150px;
+    bottom: 0px;
+    white-space: nowrap;
+    transition:margin 0.2s ease-in-out;
+    
+    .ps-scrollbar-y-rail,
+    .ps-scrollbar-x-rail {
+      z-index:9;
+    }
+    
+    .evaluation-assignment-wrapper {
+      width:160px;
+      box-sizing:border-box;
+      margin:10px;
+      display:inline-block;
+      text-align:center;
+      background:#fff;
+      opacity:0.4;
+      position:relative;
+      border-radius:3px;
+      border-top:3px solid #fff;
+      box-shadow:0 0 10px 0px rgba(169, 169, 169, 0.2);
 
+      &.assignment-pending {
+        opacity:0.1;
+      }
+      
+      &.assignment-loading {
+        animation: load-cards 1s infinite ease-in-out;
+      }
+      
+      &:hover {
+        box-shadow:0 0 0 5px #c1e8ff;
+      }
+      
+      &.assignment-unaswered {
+      }
+      
+      &.assignment-aswered {
+      }
+      
+      &.assignment-withdrawn {
+      }
+      
+      &.assignment-submitted {
+        opacity:1;
+        cursor:pointer;
+        
+        .evaluation-assignment-submitted-date {
+
+        }
+        
+      }
+      
+      &.assignment-evaluated {
+        opacity:1;
+        border-top:3px solid #3cdd2a;
+        cursor:pointer;
+        
+        .evaluation-assignment-evaluated-date {
+          color:#1aa00b;
+        }
+        
+        &:hover {
+          box-shadow:0 0 0 5px #b7fbc1;
+        }
+      }
+      
+      .evaluation-assignment-submitted-date,
+      .evaluation-assignment-evaluated-date {
+        width:100%;
+        box-sizing:border-box;
+        padding:2px 4px;
+        text-align:right;
+        min-height:1.7em;
+        font-size:14px;
+        line-height:1.3em;
+        white-space:normal;
+        font-size:12px;
+        margin:1px 0;
+      }
+      
+      .evaluation-assignment-title {
+        width:100%;
+        box-sizing:border-box;
+        padding:6px 4px;
+        font-size:14px;
+        line-height:1.3em;
+        white-space:normal;
+        border-top:1px solid #f2f2f2;
+      }
+    
+    }
   }
 
   .evaluation-evaluate-modal-wrapper {
     position:absolute;
     left:0;
-    top:72px;
+    top:69px;
     bottom:0;
     right:0;
     padding:0;
     margin:0;
     border:0px;
+    overflow:hidden;
 
     #evaluationStudentAssignmentWrapper {
       padding:0 20px 0 10px;
@@ -631,9 +477,8 @@ body.evaluation {
       position:absolute;
       top:0;
       right:50%;
-      bottom:0;
+      bottom:3px;
       left:10px;
-      overflow:auto;
       
       .evaluation-modal-student-wrapper {
         
@@ -674,20 +519,206 @@ body.evaluation {
   
         }
         
-        .evaluation-modal-workspace-assignment-info {
+        .evaluation-modal-workspace-assignment-info,
+        .evaluation-modal-assignment-info {
           
-          /* ASSIGNMENT EVALUATION */
-          .evaluation-modal-workspace-assignment-wrapper {
+          /* WORKSPACE EVALUATION */
+          .evaluation-modal-workspace-assignment-wrapper,
+          .evaluation-modal-workspace-exercise-wrapper {
             margin:20px 0 0 0;
             font-size:14px;
             
-            .evaluation-modal-workspace-single-assignment {
-              margin:10px 0;
+            .evaluation-modal-workspace-single-assignment,
+            .evaluation-modal-workspace-single-exercise {
+              border-bottom:2px solid #f9f9f9;
+              padding:0 0 15px 0;
+              margin:0 0 15px 0;
+              
+              .evaluation-assignmentlist-wrapper,
+              .evaluation-exerciselist-wrapper {
+                clear:both;
+                
+                .evaluation-exercise-title-container {
+                  position:relative;
+                  margin:0;
+                  background:#fff;
+                  border-radius:3px;
+                  color:#000;
+                  
+                  > h2 {
+                    border-left:5px solid $exerciseAssignment;
+                    font-size:20px;
+                    margin:0 120px 0 -5px; 
+                    padding:5px 5px 5px 10px;
+                    font-weight:300;
+                    margin:0;
+                    color:#000;
+                    cursor:pointer;
+                  }
+                  
+                  .evaluation-exercise-assessmentvalue {
+                    position:absolute;
+                    max-width:100px;
+                    right:0;
+                    top:0;
+                    text-align:right;
+                    padding:0 10px;
+                  }
+                  
+                }
+              
+                .evaluation-assignment-title-container {
+                  position:relative;
+                  margin:0;
+                  background:#fff;
+                  border-radius:3px;
+                  color:#000;
+                
+                  > h2 {
+                    border-left:5px solid $evaluatedAssignment;
+                    font-size:20px;
+                    margin:0 120px 0 -5px; 
+                    padding:5px 5px 5px 10px;
+                    font-weight:300;
+                    margin:0;
+                    color:#000;
+                    cursor:pointer;
+                  }
+                  
+                  .evaluation-assignment-assessmentvalue {
+                    position:absolute;
+                    max-width:100px;
+                    right:0;
+                    top:0;
+                    text-align:right;
+                    padding:0 10px;
+                  }
+                
+                }
+                
+                .evaluation-assignment-content,
+                .evaluation-exercise-content {
+                  
+                  .evaluation-assignment-literal-assessment {
+                    background:#d5ffd2;
+                    padding:8px 16px;
+                    border-radius:3px;
+                    margin:10px 0;
+                    
+                    &.no-literal-assessment {
+                      text-align:center;
+                      font-style:italic;
+                    }
+                  }
+
+                  article {
+                    clear:both;
+                  
+                    h2,h3,h4,h5,h6 {
+                      color:#000;
+                      font-weight:300;
+                      padding:0 0 0 5px;
+                      
+                    }
+                    
+                    h2 {
+                      border-left:5px solid $evaluatedAssignment;
+                      font-size:20px;
+                      margin:0 100px 0 -5px; 
+                      padding:5px 5px 5px 10px;
+                      font-weight:300;
+                      margin:0;
+                      color:#000;
+                    }
+                    
+                    h3 {
+                      font-size:22px;
+                    }
+                    
+                    h4 {
+                      font-size:20px;
+                    }
+                    
+                    h5 {
+                      font-size:18px;
+                    }
+                    
+                    h6 {
+                      font-size:16px;
+                    }
+                    
+                    p {
+                      line-height:22px;
+                      margin:10px 0;
+                    }
+                    
+                    textarea,
+                    input[type="text"] {
+                      font-family:'Open Sans',Verdana, sans-serif;
+                      border-radius:3px;
+                      background:#ebf7ff;
+                      padding:5px 10px;
+                      margin:0;
+                      font-weight:300;
+                      font-style:italic;
+                      border:0px;
+                      color:#000;
+                      resize:vertical;
+                      box-sizing:border-box;
+                      
+                      &:focus {
+                        box-shadow:none;
+                        outline:none;
+                      }
+                      
+                    }
+                    
+                    input[type="text"] {
+                      width:auto;
+                      margin:2px 0;
+                    }
+                    
+                    input[type="checkbox"],
+                    input[type="radio"] {
+                      background:#fff;
+                      border:3px solid #c9e0fb;
+                      border-radius:3px;
+                      box-shadow:0 0 0 3px rgba(215, 215, 215, 0.15);
+                      display:inline-block;
+                      margin:0 10px;
+                      outline:none; 
+                    }
+                    
+                    label {
+                      display:inline;
+                      font-weight:400;
+                    }
+                    
+                  }
+                
+                  &[data-open-state="closed"] {
+                    display:none;
+                  }
+                
+                  &[data-open-state="open"] {
+                    display:block;
+                  }
+                }
+              
+              }
+              
+            }
+            
+          }
+              
+          /* ASSIGNMENT EVALUATION */
+          .evaluation-modal-assignment-wrapper {
+            margin:20px 0 0 0;
+            font-size:14px;
+            
+            .evaluation-modal-single-assignment {
               
               article {
-                border-bottom:5px solid #eee;
-                padding:0 0 30px 0;
-                margin:0 0 30px 0;
                 clear:both;
               
                 h2,h3,h4,h5,h6 {
@@ -698,9 +729,14 @@ body.evaluation {
                 }
                 
                 h2 {
-                  font-size:24px;
-                  margin-left:-20px;
-                  border-left:20px solid #ce01bd;
+                  border-left:5px solid $evaluatedAssignment;
+                  font-size:20px;
+                  margin:0 100px 0 -5px; 
+                  padding:5px 5px 5px 10px;
+                  font-weight:300;
+                  margin:0;
+                  color:#000;
+                  cursor:pointer;
                 }
                 
                 h3 {
@@ -735,7 +771,7 @@ body.evaluation {
                   font-style:italic;
                   border:0px;
                   color:#000;
-                  resize:none;
+                  resize:vertical;
                   box-sizing:border-box;
                   
                   &:focus {
@@ -771,80 +807,7 @@ body.evaluation {
             }
           
           }
-          
-          /* EXERCISE EVALUATION */
-          .evaluation-modal-workspace-exercise-wrapper {
-            margin:20px 0 0 0;
-            
-            .evaluation-modal-workspace-single-exercise {
-              margin:10px 0;
-              
-              article {
-                border-bottom:5px solid #eee;
-                padding:0 0 30px 0;
-                margin:0 0 30px 0;
-                clear:both;
 
-                h2,h3,h4,h5,h6 {
-                  color:#000;
-                  font-weight:300;
-                  padding:0 0 0 5px;
-                  
-                }
-                
-                h2 {
-                  font-size:24px;
-                  margin-left:-20px;
-                  border-left:20px solid #ff9900;
-                }
-                
-                h3 {
-                  font-size:22px;
-                }
-                
-                h4 {
-                  font-size:20px;
-                }
-                
-                h5 {
-                  font-size:18px;
-                }
-                
-                h6 {
-                  font-size:16px;
-                }
-                
-                p {
-                  line-height:22px;
-                  margin:10px 0;
-                }
-                
-                textarea {
-                  font-family:'Open Sans',Verdana, sans-serif;
-                  border-radius:3px;
-                  background:#ebf7ff;
-                  padding:5px 10px;
-                  margin:0;
-                  font-weight:300;
-                  font-style:italic;
-                  border:0px; 
-                  color:#000;
-                  resize:none;
-                  box-sizing:border-box;
-                  
-                  &:focus {
-                    box-shadow:none;
-                    outline:none;
-                  }
-                  
-                }
-                
-              }
-            
-            }
-          
-          }
-  
         }
         
       }
@@ -908,15 +871,12 @@ body.evaluation {
       }
   
       .evaluation-modal-evaluateForm-content {
-        padding:10px 20px;
-        overflow-x:hidden;
-        overflow-y:auto;
+        padding:10px 20px 10px 2px;
         position:absolute;
         bottom:65px;
-        top:100px;
+        top:0px;
         right:10px;
         left:10px;
-        border-top:1px solid #eee;
         border-bottom:1px solid #eee;
         
         label {
@@ -1015,15 +975,15 @@ body.evaluation {
     font-size:16px;
     padding:0;
     border:none;
-    border-radius:10px !important;
     z-index:9999;
     position:fixed;
-    top:15px;
-    right:15px;
-    bottom:15px;
-    left:15px;
+    top:0px;
+    right:0px;
+    bottom:0px;
+    left:0px;
     background:#fff;
-    border-radius:10px;
+    border-radius:0px;
+    border:5px solid #3d4f5c;
     overflow:hidden;
     min-width:990px;
     text-transform:none;
@@ -1040,23 +1000,34 @@ body.evaluation {
       height:50px;
       border:0;
       background:#657e90;
-      @include background-image('gfx/default-user-picture.jpg');
-      background-repeat:no-repeat;
-      background-position:left center;
-      background-size:contain;
       
       .ui-dialog-title {
         background-size:cover;
         display:inline-block;
         position:absolute;
         margin:0;
-        top:15px;
-        left:80px;
+        top:12px;
+        left:10px;
         color:#fff;
         
+        span.modal-title-workspace-evaluation,
+        span.modal-title-assignment-evaluation {
+          display:inline-block;
+          padding:0 10px;
+          font-size:26px;
+          margin:0 50px 0 0;
+        }
+        
         span.modal-title-student-name {
+          font-size:24px;
           display:inline-block;
           margin:0 20px 0 0;
+          padding:0 0 0 40px;
+          @include background-image('gfx/default-user-picture.jpg');
+          background-repeat:no-repeat;
+          background-position:left center;
+          background-size:contain;
+          color:#c9e1f2;
         }
         
         span.modal-title-workspace-name {
@@ -1064,6 +1035,7 @@ body.evaluation {
           font-size:24px;
           border-left:1px solid #fff;
           padding:0 0 0 20px;
+          color:#c9e1f2;
         }
         
       }
@@ -1071,12 +1043,12 @@ body.evaluation {
       .ui-dialog-titlebar-close {
         position:absolute;
         right:0px;
-        top:10px;
+        top:20px;
         border:0px;
         background:transparent;
         z-index:999;
-        width:44px;
-        height:38px;
+        width:50px;
+        height:50px;
         
         span {
           display:none;
@@ -1084,12 +1056,11 @@ body.evaluation {
         
         &:before {
           color:#fff;
-          padding:14px;
           border-bottom-left-radius:10px;
           cursor:pointer;
-          content: "\e604";
+          content: "\e63b";
           color:#fff;
-          font-size:16px;
+          font-size:30px;
           font-weight:normal;
           font-family: 'muikku';
           speak: none;

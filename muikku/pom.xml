@@ -361,6 +361,17 @@
     </profile>
     
     <profile>
+      <id>evaluation-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>evaluation-plugin</artifactId>
+          <version>1.0.77-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
       <id>deus-nex-machina-plugin</id>
       <dependencies>
         <dependency>

@@ -51,12 +51,12 @@ $(document).ready(function() {
       _this._clearMessages();       
       _this._addLoading(DiscImpl.msgContainer);  
 
-      mApi().forum.latest.read().on('$', function(msgs, msgsCallback) {
-        mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
+      mApi({async: false}).forum.latest.read().on('$', function(msgs, msgsCallback) {
+        mApi({async: false}).forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
           msgs.areaName = area.name;
         });
         
-        mApi().user.users.basicinfo.read(msgs.creator).callback(function(err, user) {
+        mApi({async: false}).user.users.basicinfo.read(msgs.creator).callback(function(err, user) {
           msgs.creatorFullName = user.firstName + ' ' + user.lastName;
         });
         
@@ -78,7 +78,7 @@ $(document).ready(function() {
 
     _refreshAreas : function() {
 
-      mApi().forum.areas.read().callback(function(err, areas) {
+      mApi({async: false}).forum.areas.read().callback(function(err, areas) {
 
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.selectarea.empty', err));
@@ -114,12 +114,12 @@ $(document).ready(function() {
      _this._clearMessages();
      _this._addLoading(DiscImpl.msgContainer);
      
-      mApi().forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
-        mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+      mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
+        mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
         });
 
-        mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
+        mApi({async: false}).user.users.basicinfo.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
           thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
           
@@ -158,13 +158,13 @@ $(document).ready(function() {
       if (val == 'all') {
         _this._refreshLatest();
       } else {
-        mApi().forum.areas.threads.read(val).on('$', function(thread, threadCallback) {
+        mApi({async: false}).forum.areas.threads.read(val).on('$', function(thread, threadCallback) {
 
-          mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+          mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
             thread.areaName = area.name;
           });
 
-          mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
+          mApi({async: false}).user.users.basicinfo.read(thread.creator).callback(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
           });
 
@@ -226,8 +226,8 @@ $(document).ready(function() {
       var fRes = msgsCount;
       
       if (areaId == undefined){
-        mApi().forum.latest.read({'firstResult' : fRes}).on('$', function(msgs, msgsCallback) {
-          mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
+        mApi({async: false}).forum.latest.read({'firstResult' : fRes}).on('$', function(msgs, msgsCallback) {
+          mApi({async: false}).forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
             msgs.areaName = area.name;
           });
           
@@ -248,13 +248,13 @@ $(document).ready(function() {
         });     
       
       }else{
-        mApi().forum.areas.threads.read(areaId, {'firstResult' : fRes}).on('$', function(thread, threadCallback) {
+        mApi({async: false}).forum.areas.threads.read(areaId, {'firstResult' : fRes}).on('$', function(thread, threadCallback) {
 
-          mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+          mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
             thread.areaName = area.name;
           });
 
-          mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
+          mApi({async: false}).user.users.basicinfo.read(thread.creator).callback(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
           });
 
@@ -307,14 +307,14 @@ $(document).ready(function() {
         
       var fRes = msgsCount - 1;
       
-      mApi().forum.areas.threads.replies.read(areaId, threadId, {'firstResult' : fRes}).on('$', function(replies, repliesCallback) {
+      mApi({async: false}).forum.areas.threads.replies.read(areaId, threadId, {'firstResult' : fRes}).on('$', function(replies, repliesCallback) {
 
-        mApi().forum.areas.read(replies.forumAreaId).callback(function(err, area) {
+        mApi({async: false}).forum.areas.read(replies.forumAreaId).callback(function(err, area) {
           replies.areaName = area.name;
 
         });
 
-        mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
+        mApi({async: false}).user.users.basicinfo.read(replies.creator).callback(function(err, user) {
           replies.creatorFullName = user.firstName + ' ' + user.lastName;
           replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
 
@@ -354,14 +354,14 @@ $(document).ready(function() {
 
       var _this = this;
 
-      mApi().forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
+      mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
 
-        mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+        mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
         
         });
 
-        mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
+        mApi({async: false}).user.users.basicinfo.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
           thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
         });
@@ -401,13 +401,13 @@ $(document).ready(function() {
       _this = this;
       _this._clearReplies();
       _this._addLoading(DiscImpl.msgContainer);
-      mApi().forum.areas.threads.replies.read(areaId, threadId).on('$', function(replies, repliesCallback) {
+      mApi({async: false}).forum.areas.threads.replies.read(areaId, threadId).on('$', function(replies, repliesCallback) {
         
-        mApi().forum.areas.read(replies.forumAreaId).callback(function(err, area) {
+        mApi({async: false}).forum.areas.read(replies.forumAreaId).callback(function(err, area) {
           replies.areaName = area.name;
         });
 
-        mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
+        mApi({async: false}).user.users.basicinfo.read(replies.creator).callback(function(err, user) {
           replies.creatorFullName = user.firstName + ' ' + user.lastName;
           replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
         });
@@ -440,7 +440,7 @@ $(document).ready(function() {
         var areaId = $('input[name="areaId"]').val();
         var threadId = $('input[name="threadId"]').val();
 
-        mApi().forum.areas.threads.del(areaId, threadId).callback($.proxy(function(err, result) {
+        mApi({async: false}).forum.areas.threads.del(areaId, threadId).callback($.proxy(function(err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
@@ -459,16 +459,16 @@ $(document).ready(function() {
       var aId = $(element).find("input[name='areaId']").attr('value');
 
       var sendReply = function(values) {
-        mApi().forum.areas.threads.replies.create(aId, tId, values).callback(function(err, result) {
+        mApi({async: false}).forum.areas.threads.replies.create(aId, tId, values).callback(function(err, result) {
         });
 
         window.discussion._refreshThread(aId, tId);
         $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newreply'));
       }
 
-      mApi().forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
+      mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
 
-        mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+        mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
         });
         
@@ -491,16 +491,16 @@ $(document).ready(function() {
 
       var sendEditedMsg= function(values) {
           values.id = tId;
-          mApi().forum.areas.threads.update(aId, tId, values).callback(function(err, result) {
+          mApi({async: false}).forum.areas.threads.update(aId, tId, values).callback(function(err, result) {
           });
 
           window.discussion._refreshThread(aId, tId);
 
       }
 
-      mApi().forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
+      mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
 
-        mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+        mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
 
         });
@@ -525,7 +525,7 @@ $(document).ready(function() {
 
       var sendEditedReply= function(values) {
         values.id = rId
-        mApi().forum.areas.threads.replies.update(aId, tId, rId, values).callback(function(err, result) {
+        mApi({async: false}).forum.areas.threads.replies.update(aId, tId, rId, values).callback(function(err, result) {
         });
 
         window.discussion._refreshThread(aId, tId);
@@ -533,9 +533,9 @@ $(document).ready(function() {
 
       }
 
-      mApi().forum.areas.threads.replies.read(aId, tId, rId).on('$', function(thread, threadCallback) {
+      mApi({async: false}).forum.areas.threads.replies.read(aId, tId, rId).on('$', function(thread, threadCallback) {
 
-        mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+        mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
 
         });
@@ -640,7 +640,7 @@ $(document).ready(function() {
         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nomessage'));
         return false;
       } else {
-        mApi().forum.areas.threads.create(forumAreaId, values).callback(function(err, result) {
+        mApi({async: false}).forum.areas.threads.create(forumAreaId, values).callback(function(err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
@@ -653,7 +653,7 @@ $(document).ready(function() {
       }
     }
 
-    mApi().forum.areas.read().callback(function(err, areas) {
+    mApi({async: false}).forum.areas.read().callback(function(err, areas) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
       } else {
@@ -667,7 +667,7 @@ $(document).ready(function() {
 
     var createArea = function(values) {
       
-      mApi().forum.areas.create(values).callback(function(err, result) {
+      mApi({async: false}).forum.areas.create(values).callback(function(err, result) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.newarea', err));
         } else {        
@@ -679,7 +679,7 @@ $(document).ready(function() {
 
     }
 
-    mApi().forum.areas.read().callback(function(err, areas) {
+    mApi({async: false}).forum.areas.read().callback(function(err, areas) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
       } else {
@@ -694,7 +694,7 @@ $(document).ready(function() {
     var deleteArea = function(values) {
       var areaId = values.forumAreaId;
       
-      mApi().forum.areas.del(areaId).callback(function(err, result) {
+      mApi({async: false}).forum.areas.del(areaId).callback(function(err, result) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.areadelete', err));
         } else {                  
@@ -707,7 +707,7 @@ $(document).ready(function() {
 
     }
 
-    mApi().forum.areas.read().callback(function(err, areas) {
+    mApi({async: false}).forum.areas.read().callback(function(err, areas) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
       } else {

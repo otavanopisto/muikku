@@ -226,7 +226,7 @@
     },
     
     _createWorkspaceMaterialReply: function (state, callback) {
-      mApi().workspace.workspaces.materials.replies
+      mApi({async: false}).workspace.workspaces.materials.replies
         .create(this.workspaceEntityId(), this.workspaceMaterialId(), {
           state: state
         }) 
@@ -242,7 +242,7 @@
     },
     
     _updateWorkspaceMaterialReply: function (id, state, callback) {
-      mApi().workspace.workspaces.materials.replies
+      mApi({async: false}).workspace.workspaces.materials.replies
         .update(this.workspaceEntityId(), this.workspaceMaterialId(), id, {
           state: state
         }) 
@@ -258,7 +258,7 @@
     },
     
     _findWorkspaceMaterialReply: function (callback) {
-      mApi().workspace.workspaces.materials.replies
+      mApi({async: false}).workspace.workspaces.materials.replies
         .read(this.workspaceEntityId(), this.workspaceMaterialId(), {
           userEntityId: MUIKKU_LOGGED_USER_ID
         }) 

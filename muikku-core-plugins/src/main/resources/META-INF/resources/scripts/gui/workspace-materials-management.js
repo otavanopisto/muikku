@@ -140,13 +140,13 @@
       var hidden = node.hasClass('item-hidden');
       node.removeClass("page-edit-mode");
 
-      mApi().workspace.workspaces.folders.read(workspaceId, node.data('workspace-material-id')).callback(function (err, folder) {
+      mApi({async: false}).workspace.workspaces.folders.read(workspaceId, node.data('workspace-material-id')).callback(function (err, folder) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           folder.title = title;
-          mApi().workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), folder).callback(function (err, html) {
+          mApi({async: false}).workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), folder).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
@@ -176,13 +176,13 @@
       var hidden = node.hasClass('item-hidden');
       node.removeClass("page-edit-mode");
 
-      mApi().workspace.workspaces.materials.read(workspaceId, node.data('workspace-material-id')).callback(function (err, binary) {
+      mApi({async: false}).workspace.workspaces.materials.read(workspaceId, node.data('workspace-material-id')).callback(function (err, binary) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           binary.title = title;
-          mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), binary).callback(function (err, html) {
+          mApi({async: false}).workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), binary).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
@@ -281,7 +281,7 @@
   }
   
   function deletePage(workspaceMaterialId, workspaceId, removeAnswers, errorCallback) {
-    mApi().workspace.workspaces.materials.del(workspaceId,workspaceMaterialId, {}, {removeAnswers: removeAnswers}).callback($.proxy(function (err, jqXHR){
+    mApi({async: false}).workspace.workspaces.materials.del(workspaceId,workspaceMaterialId, {}, {removeAnswers: removeAnswers}).callback($.proxy(function (err, jqXHR){
       if (err) {
         errorCallback(err, jqXHR);
       } else {
@@ -314,7 +314,7 @@
   }
 
   function deleteFolder(workspaceMaterialId, workspaceId, removeAnswers, errorCallback) {
-    mApi().workspace.workspaces.folders.del(workspaceId,workspaceMaterialId).callback($.proxy(function (err, jqXHR){
+    mApi({async: false}).workspace.workspaces.folders.del(workspaceId,workspaceMaterialId).callback($.proxy(function (err, jqXHR){
       if (err) {
         errorCallback(err, jqXHR);
       } else {
@@ -422,23 +422,23 @@
       
       this._workspaceUrl = null;
       
-      mApi().materials.metakeys.read().callback($.proxy(function (metaErr, metaKeys) {
+      mApi({async: false}).materials.metakeys.read().callback($.proxy(function (metaErr, metaKeys) {
         if (metaErr) {
           $('.notification-queue').notificationQueue('notification', 'error', metaErr);
         } else {
           this._metaKeys = metaKeys;
           
-          mApi().workspace.workspaces.read(this.options.workspaceEntityId).callback($.proxy(function (workspaceErr, workspaceEntity) {
+          mApi({async: false}).workspace.workspaces.read(this.options.workspaceEntityId).callback($.proxy(function (workspaceErr, workspaceEntity) {
             if (workspaceErr) {
               $('.notification-queue').notificationQueue('notification', 'error', workspaceErr);
             } else {
               this._workspaceUrl = CONTEXTPATH + '/workspace/' + workspaceEntity.urlName;
               
-              mApi().workspace.workspaces.materials.read(this.options.workspaceEntityId, {
+              mApi({async: false}).workspace.workspaces.materials.read(this.options.workspaceEntityId, {
                 parentId: this.options.parentId
               })
               .on('$', function (workspaceMaterial, callback) {
-                mApi().materials.binary.read(workspaceMaterial.materialId).callback(function (binaryErr, binaryMaterial) {
+                mApi({async: false}).materials.binary.read(workspaceMaterial.materialId).callback(function (binaryErr, binaryMaterial) {
                   if (binaryErr) {
                     $('.notification-queue').notificationQueue('notification', 'error', binaryErr);
                   } else {
@@ -563,7 +563,7 @@
       var fileName = data.files[0].name;
       var contentType = data.files[0].type||'application/octet-stream';
       
-      mApi().materials.binary.create({
+      mApi({async: false}).materials.binary.create({
         title: fileName,
         contentType: contentType,
         fileId: fileId
@@ -572,7 +572,7 @@
         if (materialErr) {
           $('.notification-queue').notificationQueue('notification', 'error', materialErr);
         } else {
-          mApi().workspace.workspaces.materials.create(this.options.workspaceEntityId, {
+          mApi({async: false}).workspace.workspaces.materials.create(this.options.workspaceEntityId, {
             materialId: materialResult.id,
             parentId: this.options.parentId
           })
@@ -609,7 +609,7 @@
       if (workspaceMaterialId) {
         this._confirmRemoval(materialTitle, $.proxy(function () {
           
-          mApi().workspace.workspaces.materials.del(this.options.workspaceEntityId, workspaceMaterialId)
+          mApi({async: false}).workspace.workspaces.materials.del(this.options.workspaceEntityId, workspaceMaterialId)
             .callback($.proxy(function (err) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -630,7 +630,7 @@
         
         var materialId = selectedAttachment.attr('data-material-id');
         if (materialId) {
-          mApi().materials.materials.meta.read(materialId).callback($.proxy(function (err, metas) {
+          mApi({async: false}).materials.materials.meta.read(materialId).callback($.proxy(function (err, metas) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
@@ -670,7 +670,7 @@
       var materialId = $(attachmentElement).attr('data-material-id');
       
       if (!exists) {
-        mApi().materials.materials.meta.create(materialId, {
+        mApi({async: false}).materials.materials.meta.create(materialId, {
           'materialId': materialId,
           'key': key,
           'value': value
@@ -683,7 +683,7 @@
           }
         }, this));
       } else {
-        mApi().materials.materials.meta.update(materialId, key, {
+        mApi({async: false}).materials.materials.meta.update(materialId, key, {
           'materialId': materialId,
           'key': key,
           'value': value
@@ -732,13 +732,13 @@
     var workspaceMaterialId = node.data('workspace-material-id');
     var materialType = node.data('material-type');
     if (materialType == 'folder') {
-      mApi().workspace.workspaces.folders.read(workspaceId, node.data('workspace-material-id')).callback(function (err, folder) {
+      mApi({async: false}).workspace.workspaces.folders.read(workspaceId, node.data('workspace-material-id')).callback(function (err, folder) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           folder.hidden = hidden;
-          mApi().workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), folder).callback(function (err, html) {
+          mApi({async: false}).workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), folder).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
@@ -750,13 +750,13 @@
       });
     }
     else {
-      mApi().workspace.workspaces.materials.read(workspaceId, node.data('workspace-material-id')).callback(function (err, material) {
+      mApi({async: false}).workspace.workspaces.materials.read(workspaceId, node.data('workspace-material-id')).callback(function (err, material) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           material.hidden = hidden;
-          mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), material).callback(function (err, html) {
+          mApi({async: false}).workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), material).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
@@ -854,10 +854,10 @@
       nextSiblingId = null;
     }
     var workspaceId = $('.workspaceEntityId').val();
-    mApi().workspace.workspaces.materials.read(workspaceId, workspaceNodeId).callback(function(err, material) {
+    mApi({async: false}).workspace.workspaces.materials.read(workspaceId, workspaceNodeId).callback(function(err, material) {
       material.parentId = parentId;
       material.nextSiblingId = nextSiblingId;
-      mApi().workspace.workspaces.materials.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
+      mApi({async: false}).workspace.workspaces.materials.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
         if (!err) {
           // Move the "add page" boxes (2) first
           $("#page-" + workspaceNodeId).prev().insertBefore("#page-" + nextSiblingId);
@@ -873,7 +873,7 @@
 
   function moveWorkspaceFolder(workspaceNodeId, nextSiblingId) {
     var workspaceId = $('.workspaceEntityId').val();
-    mApi().workspace.workspaces.folders.read(workspaceId, workspaceNodeId).callback(function(err, folder) {
+    mApi({async: false}).workspace.workspaces.folders.read(workspaceId, workspaceNodeId).callback(function(err, folder) {
       
         if (isNaN(nextSiblingId)) {
           nextSiblingId = null;
@@ -881,7 +881,7 @@
        
         folder.nextSiblingId = nextSiblingId;
       
-        mApi().workspace.workspaces.folders.update(workspaceId, workspaceNodeId, folder).callback(function (err, html) {
+        mApi({async: false}).workspace.workspaces.folders.update(workspaceId, workspaceNodeId, folder).callback(function (err, html) {
           
           if (!err) {
               location.reload(); //TODO: move all child nodes without reloading
@@ -1149,11 +1149,11 @@
   });
   
   function changeAssignmentType(workspaceId, workspaceMaterialId, assignmentType, callback) {
-    mApi().workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback(function (err, workspaceMaterial) {
+    mApi({async: false}).workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback(function (err, workspaceMaterial) {
       if (err) {
         callback(err);
       } else {
-        mApi().workspace.workspaces.materials
+        mApi({async: false}).workspace.workspaces.materials
           .update(workspaceId, workspaceMaterialId, $.extend(workspaceMaterial, { assignmentType: assignmentType }))
           .callback(function (err) {
             callback(err);
@@ -1163,11 +1163,11 @@
   }
 
   function changeCorrectAnswers(workspaceId, workspaceMaterialId, correctAnswers, callback) {
-    mApi().workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback(function (err, workspaceMaterial) {
+    mApi({async: false}).workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback(function (err, workspaceMaterial) {
       if (err) {
         callback(err);
       } else {
-        mApi().workspace.workspaces.materials
+        mApi({async: false}).workspace.workspaces.materials
           .update(workspaceId, workspaceMaterialId, $.extend(workspaceMaterial, { correctAnswers: correctAnswers }))
           .callback(function (err) {
             callback(err);
@@ -1378,7 +1378,7 @@
         }
         
         var materialType = $(this).data('material-type');
-        var typeEndpoint = mApi().materials[materialType];
+        var typeEndpoint = mApi({async: false}).materials[materialType];
         if (typeEndpoint != null) {
           typeEndpoint.create({
             title: getLocaleText("plugin.workspace.materialsManagement.newPageTitle"),
@@ -1392,7 +1392,7 @@
             
             var workspaceEntityId = $('.workspaceEntityId').val();
             
-            mApi().workspace.workspaces.materials.create(workspaceEntityId, {
+            mApi({async: false}).workspace.workspaces.materials.create(workspaceEntityId, {
               materialId: materialResult.id,
               parentId: parentId,
               nextSiblingId: nextSiblingId
@@ -1451,7 +1451,7 @@
           nextSiblingId = $(nextMaterial).data('workspace-material-id');
         }
         
-        mApi().workspace.workspaces.folders.create(workspaceEntityId, {
+        mApi({async: false}).workspace.workspaces.folders.create(workspaceEntityId, {
           nextSiblingId: nextSiblingId
         })
         .callback($.proxy(function (workspaceFolderErr, workspaceFolderResult) {
@@ -1581,7 +1581,7 @@
   
   function publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, title, removeAnswers, errorCallback) {
     var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText("plugin.workspace.materialsManagement.publishingMessage"));
-    mApi().materials.html.publish.create(materialId, {
+    mApi({async: false}).materials.html.publish.create(materialId, {
       fromRevision: publishedRevision,
       toRevision: currentRevision,
       removeAnswers: removeAnswers
@@ -1595,9 +1595,9 @@
         setPagePublishedRevision(workspaceMaterialId, currentRevision);
         // Workspace material title update
         var workspaceId = $('.workspaceEntityId').val();
-        mApi().workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback($.proxy(function(err, workspaceMaterial) {
+        mApi({async: false}).workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback($.proxy(function(err, workspaceMaterial) {
           workspaceMaterial.title = title;
-          mApi().workspace.workspaces.materials.update(workspaceId, workspaceMaterialId, workspaceMaterial).callback($.proxy(function (err, html) {
+          mApi({async: false}).workspace.workspaces.materials.update(workspaceId, workspaceMaterialId, workspaceMaterial).callback($.proxy(function (err, html) {
             if (err) {
               errorCallback(err, jqXHR);
             }
@@ -1689,7 +1689,7 @@
           closeEditor($('#page-' + workspaceMaterialId), false);
         }
         
-        mApi().materials.html.revert.update(materialId, {
+        mApi({async: false}).materials.html.revert.update(materialId, {
           fromRevision: currentRevision,
           toRevision: publishedRevision
         }).callback($.proxy(function (err) {

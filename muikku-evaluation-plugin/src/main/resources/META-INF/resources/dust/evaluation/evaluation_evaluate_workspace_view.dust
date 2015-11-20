@@ -1,0 +1,16 @@
+<section class="evaluation-modal-studentAssignmentWrapper" id="evaluationStudentAssignmentWrapper">
+  <article class="evaluation-modal-student-wrapper">
+    <div class="evaluation-modal-workspace-assignment-info">
+      <div class="evaluation-modal-workspace-assignment-wrapper">
+        {#evaluableAssignments}
+          {>"evaluation/evaluation_evaluate_workspace_single_assigment.dust"/}
+        {/evaluableAssignments}
+      </div>
+      <div class="evaluation-modal-workspace-exercise-wrapper">
+        {#exercises}
+          {>"evaluation/evaluation_evaluate_workspace_single_exercise.dust"/}
+        {/exercises}
+      </div>
+    </div>
+  </article>
+</section>

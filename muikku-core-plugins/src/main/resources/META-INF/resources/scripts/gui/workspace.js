@@ -4,12 +4,12 @@
   $(document).on('click', '.workspace-publish-button', function (event) {
     var workspaceEntityId = $('.workspaceEntityId').val();
 
-    mApi().workspace.workspaces.read(workspaceEntityId).callback(function (err, workspace) {
+    mApi({async: false}).workspace.workspaces.read(workspaceEntityId).callback(function (err, workspace) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', err);
       } else {
         workspace.published = true;        
-        mApi().workspace.workspaces.update(workspaceEntityId, workspace).callback(function (updErr) {
+        mApi({async: false}).workspace.workspaces.update(workspaceEntityId, workspace).callback(function (updErr) {
           if (updErr) {
             $('.notification-queue').notificationQueue('notification', 'error', updErr);
           } else {
@@ -25,12 +25,12 @@
   $(document).on('click', '.workspace-unpublish-button', function (event) {
     var workspaceEntityId = $('.workspaceEntityId').val();
 
-    mApi().workspace.workspaces.read(workspaceEntityId).callback(function (err, workspace) {
+    mApi({async: false}).workspace.workspaces.read(workspaceEntityId).callback(function (err, workspace) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', err);
       } else {
         workspace.published = false;        
-        mApi().workspace.workspaces.update(workspaceEntityId, workspace).callback(function (updErr) {
+        mApi({async: false}).workspace.workspaces.update(workspaceEntityId, workspace).callback(function (updErr) {
           if (updErr) {
             $('.notification-queue').notificationQueue('notification', 'error', updErr);
           } else {
@@ -140,7 +140,7 @@
             var workspaceEntityId = $('.workspaceEntityId').val();
             var message = $('#evaluationRequestAdditionalMessage').val();
 
-            mApi().assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
+            mApi({async: false}).assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
               'requestText': message
             }).callback(function(err, result) {
               if (err) {
@@ -192,10 +192,10 @@
             
             var workspaceEntityId = parseInt($('.workspaceEntityId').val(), 10);
             
-            mApi().assessmentrequest.workspace.request.read(workspaceEntityId).callback(function(err, result) {
+            mApi({async: false}).assessmentrequest.workspace.request.read(workspaceEntityId).callback(function(err, result) {
               var assessmentRequestId = result.id;
               
-              mApi().assessmentrequest.workspace.assessmentRequests.del(workspaceEntityId, assessmentRequestId).callback(function(err, result) {
+              mApi({async: false}).assessmentrequest.workspace.assessmentRequests.del(workspaceEntityId, assessmentRequestId).callback(function(err, result) {
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
                 } else {

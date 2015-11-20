@@ -8,6 +8,7 @@
       loadAnswers: false,
       readOnlyFields: false,
       dustTemplate: 'workspace/materials-page.dust',
+      prependTitle : true,
       renderMode: {
         "html": "raw"
       },
@@ -36,7 +37,7 @@
         $(pageElement).removeAttr('data-material-content');
 
         var parsed = $('<div>');
-        if (material.title) {
+        if (material.title && this.options.prependTitle) {
           parsed.append('<h2>' + material.title + '</h2>');
         }
         if (material.html) {
@@ -101,7 +102,7 @@
           }, page));
         break;
         default:
-          var typeEndpoint = mApi().materials[materialType];
+          var typeEndpoint = mApi({async: false}).materials[materialType];
           if (typeEndpoint != null) {
             typeEndpoint.read(materialId).callback($.proxy(function (err, result) {
               var binaryType = 'unknown';
@@ -146,7 +147,7 @@
     
     loadMaterials: function(pageElements, fieldAnswers) {
       if (this.options.loadAnswers === true) {
-        mApi().workspace.workspaces.compositeReplies.read(this.options.workspaceEntityId).callback($.proxy(function (err, replies) {
+        mApi({async: false}).workspace.workspaces.compositeReplies.read(this.options.workspaceEntityId).callback($.proxy(function (err, replies) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
           } else {

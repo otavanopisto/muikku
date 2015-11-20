@@ -43,9 +43,7 @@
       wheelSpeed:3,
       swipePropagation:false
     });
-    
-    
-    
+
     $(window).data('initializing', true);
     $(document).muikkuMaterialLoader({
       loadAnswers: true,
