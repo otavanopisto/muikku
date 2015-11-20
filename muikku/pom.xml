@@ -381,6 +381,17 @@
         </dependency>
       </dependencies>
     </profile>
+    
+    <profile>
+      <id>developer-tools</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>developer-tools</artifactId>
+          <version>1.0.77-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
 
   </profiles>
 
