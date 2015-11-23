@@ -53,13 +53,14 @@
     init: function (async, service) {
       this._client = new $.RestClient(CONTEXTPATH + '/rest/' + service + '/', {
         cache: 30,
-        cachableMethods: ["GET"],
-        ajax: {
-          async: false
-        }
+        cachableMethods: ["GET"]
       });
       // "temporary workaround": $.RestClient has a shared `async' object in options
-      this._client.opts.ajax = {dataType: 'json', async: async};
+      this._client.opts.ajax = {
+        dataType: 'json', 
+        async: async,
+        contentType: 'application/json' // http://stackoverflow.com/a/17660503
+      };
     },
     add: function (resources) {
       var current = this;
