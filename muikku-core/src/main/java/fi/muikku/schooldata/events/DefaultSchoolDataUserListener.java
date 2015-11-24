@@ -1,7 +1,6 @@
 package fi.muikku.schooldata.events;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,19 +47,8 @@ public class DefaultSchoolDataUserListener {
     SchoolDataIdentifier defaultIdentifier = event.getDefaultIdentifier();
 
     List<SchoolDataIdentifier> discoveredIdentifiers = event.getDiscoveredIdentifiers();
-    if (discoveredIdentifiers == null) {
-      discoveredIdentifiers = Collections.emptyList();
-    }
-    
     List<SchoolDataIdentifier> updatedIdentifiers = event.getUpdatedIdentifiers();
-    if (updatedIdentifiers == null) {
-      updatedIdentifiers = Collections.emptyList();
-    }
-    
     List<SchoolDataIdentifier> removedIdentifiers = event.getRemovedIdentifiers();
-    if (removedIdentifiers == null) {
-      removedIdentifiers = Collections.emptyList();
-    }
 
     List<String> emails = new ArrayList<>();
     if (event.getEmails() != null) {
@@ -113,10 +101,12 @@ public class DefaultSchoolDataUserListener {
           return;
         }
         
-        if (!StringUtils.equals(userEntity.getDefaultIdentifier(), defaultIdentifier.getIdentifier()) || !StringUtils.equals(userEntity.getDefaultSchoolDataSource().getIdentifier(), defaultIdentifier.getDataSource())) {
-          logger.log(Level.FINE, String.format("Updating default identifier for user #%d into %s", userEntity.getId(), defaultIdentifier));
-          userEntityController.updateDefaultSchoolDataSource(userEntity, defaultIdentifier.getDataSource());
-          userEntityController.updateDefaultIdentifier(userEntity, defaultIdentifier.getIdentifier());
+        if (userEntity.getDefaultIdentifier() != null) {
+          if (!StringUtils.equals(userEntity.getDefaultIdentifier(), defaultIdentifier.getIdentifier()) || !StringUtils.equals(userEntity.getDefaultSchoolDataSource().getIdentifier(), defaultIdentifier.getDataSource())) {
+            logger.log(Level.FINE, String.format("Updating default identifier for user #%d into %s", userEntity.getId(), defaultIdentifier));
+            userEntityController.updateDefaultSchoolDataSource(userEntity, defaultIdentifier.getDataSource());
+            userEntityController.updateDefaultIdentifier(userEntity, defaultIdentifier.getIdentifier());
+          }
         }
       }
       
@@ -129,13 +119,8 @@ public class DefaultSchoolDataUserListener {
         }
       }
       
-      // Update users email addresses
-      List<String> existingAddresses = userEmailEntityController.listAddressesByUserEntity(userEntity);
-      for (String email : emails) {
-        if (!existingAddresses.contains(email)) {
-          userEmailEntityController.addUserEmail(userEntity, email);
-        }
-      }
+      // Update user emails
+      userEmailEntityController.setUserEmails(userEntity, emails);
 
       // Update users environment role
       if (event.getEnvironmentRoleIdentifier() != null) {

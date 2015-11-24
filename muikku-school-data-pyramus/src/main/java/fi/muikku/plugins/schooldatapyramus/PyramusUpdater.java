@@ -2,6 +2,7 @@ package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
@@ -51,7 +53,9 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserUpdatedEvent;
 import fi.muikku.users.EnvironmentRoleEntityController;
+import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.RoleSchoolDataIdentifierController;
+import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
@@ -74,7 +78,7 @@ import fi.pyramus.rest.model.UserRole;
 
 @Stateless
 public class PyramusUpdater {
-
+  
   @Inject
   private Logger logger;
 
@@ -114,6 +118,12 @@ public class PyramusUpdater {
   @Inject
   private UserGroupEntityController userGroupEntityController;
 
+  @Inject
+  private EnvironmentUserController environmentUserController;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
+  
   @Inject
   private Event<SchoolDataUserUpdatedEvent> schoolDataUserUpdatedEvent;
 
@@ -909,13 +919,31 @@ public class PyramusUpdater {
     }
     
     // Resolve the user's desired environment role
-    SchoolDataIdentifier enivormentRoleIdentifier = null;
+    SchoolDataIdentifier environmentRoleIdentifier = null;
     if (defaultUserPyramusRole != null) {
       String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(defaultUserPyramusRole);
-      enivormentRoleIdentifier = new SchoolDataIdentifier(roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+      environmentRoleIdentifier = new SchoolDataIdentifier(roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     }
     
     // And finally fire the update event
+    fireSchoolDataUserUpdated(userEntityId, defaultIdentifier, removedIdentifiers, updatedIdentifiers, discoveredIdentifiers, emails, environmentRoleIdentifier);
+  }
+
+  private void fireSchoolDataUserUpdated(Long userEntityId, String defaultIdentifier, List<String> removedIdentifiers, List<String> updatedIdentifiers,
+      List<String> discoveredIdentifiers, List<String> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
+    
+    if (discoveredIdentifiers == null) {
+      discoveredIdentifiers = Collections.emptyList();
+    }
+    
+    if (updatedIdentifiers == null) {
+      updatedIdentifiers = Collections.emptyList();
+    }
+    
+    if (removedIdentifiers == null) {
+      removedIdentifiers = Collections.emptyList();
+    }
+
     schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(userEntityId, enivormentRoleIdentifier, 
         toIdentifiers(discoveredIdentifiers), toIdentifiers(updatedIdentifiers), 
         toIdentifiers(removedIdentifiers), toIdentifier(defaultIdentifier), emails));
@@ -940,13 +968,7 @@ public class PyramusUpdater {
     if (staffMember != null) {
       updatePerson(staffMember.getPersonId());
     } else {
-      schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(null, 
-          null, 
-          null, 
-          null, 
-          toIdentifiers(Arrays.asList(identifierMapper.getStaffIdentifier(staffMemberId))), 
-          null, 
-          null));
+      identifierRemoved(toIdentifier(identifierMapper.getStaffIdentifier(staffMemberId)));
     }
   }
 
@@ -955,14 +977,47 @@ public class PyramusUpdater {
     if (student != null) {
       updatePerson(student.getPersonId());
     } else {
-      schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(null, 
-          null, 
-          null, 
-          null, 
-          toIdentifiers(Arrays.asList(identifierMapper.getStudentIdentifier(studentId))), 
-          null, 
-          null));
+      identifierRemoved(toIdentifier(identifierMapper.getStudentIdentifier(studentId)));
     }
+  }
+
+  private void identifierRemoved(SchoolDataIdentifier identifier) {
+    UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
+    if (schoolDataIdentifier != null) {
+      UserEntity userEntity = schoolDataIdentifier.getUserEntity();
+      
+      List<UserSchoolDataIdentifier> existingIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
+      List<SchoolDataIdentifier> updatedIdentifiers = new ArrayList<>();
+      
+      for (UserSchoolDataIdentifier existingIdentifier : existingIdentifiers) {
+        if (!existingIdentifier.getDataSource().equals(identifier.getDataSource()) && existingIdentifier.getIdentifier().equals(identifier.getIdentifier())) {
+          updatedIdentifiers.add(new SchoolDataIdentifier(existingIdentifier.getIdentifier(), existingIdentifier.getDataSource().getIdentifier()));
+        }
+      }
+      
+      SchoolDataIdentifier roleIdentifier = getUserEntityEnvironmentRoleIdentifier(userEntity);
+      List<String> emails = userEmailEntityController.listAddressesByUserEntity(userEntity);
+      
+      schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(userEntity.getId(), 
+          roleIdentifier, 
+          null, 
+          updatedIdentifiers, 
+          Arrays.asList(identifier), 
+          null, 
+          emails));
+    }
+  }
+  
+  private SchoolDataIdentifier getUserEntityEnvironmentRoleIdentifier(UserEntity userEntity) {
+    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+    if (environmentUser != null) {
+      List<RoleSchoolDataIdentifier> identifiers = environmentRoleEntityController.listRoleSchoolDataIdentifiersByEnvironmentRoleEntity(environmentUser.getRole());
+      for (RoleSchoolDataIdentifier identifier : identifiers) {
+        return new SchoolDataIdentifier(identifier.getIdentifier(), identifier.getDataSource().getIdentifier());
+      }
+    }
+    
+    return null;
   }
   
   public int updatePersons(int offset, int maxCourses) {
