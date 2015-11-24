@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/jsf/evaluation/templates/evaluation-view.xhtml">
+  
+  <ui:define name="evaluation.toolbar">
+    <div class="evaluation-navigation-wrapper">
+      <!-- Lets not show "hamburger" icon if we won't offer that functionality yet 
+      <span class="icon-navicon w-tooltip" title="#{i18n.text['plugin.evaluation.navigation.tooltip']}">
+        <span class="evaluation-workspacelist-tt-container">#{i18n.text['plugin.evaluation.navigation.tooltip']}</span>
+      </span>
+      -->
+      
+      <div class="evaluation-workspacelisting-wrapper">
+        <div class="evaluation-current-workspace">
+          <span>#{evaluationIndexBackingBean.workspaceName}</span>
+        </div>
+        <div class="evaluation-select-workspace">
+          <span class="icon-arrow-down w-tooltip" title="#{i18n.text['plugin.evaluation.workspacelist.selectWorkspace.tooltip']}"></span>
+        </div>
+        <div class="evaluation-available-workspaces" data-hidden="1">
+        <ui:repeat var="myWorkspace" value="#{evaluationIndexBackingBean.myWorkspaces}">
+          <div class="evaluation-workspace-item">
+          <ui:fragment rendered="#{empty myWorkspace.workspace.nameExtension}">
+	          <h:link value="#{myWorkspace.workspace.name}">
+	            <f:param name="workspaceEntityId" value="#{myWorkspace.workspaceEntity.id}" />
+	          </h:link>
+          </ui:fragment>
+          <ui:fragment rendered="#{not empty myWorkspace.workspace.nameExtension}">
+            <h:link value="#{myWorkspace.workspace.name} (#{myWorkspace.workspace.nameExtension})">
+              <f:param name="workspaceEntityId" value="#{myWorkspace.workspaceEntity.id}" />
+            </h:link>
+          </ui:fragment>
+          </div>
+        </ui:repeat>
+        </div>        
+      </div>
+    </div>
+  </ui:define>
+  
+  <ui:define name="evaluation.content.studentAssignmentListing">
+    <div class="evaluation-content-wrapper" id="evaluation" data-workspace-entity-id="#{evaluationIndexBackingBean.workspaceEntityId}" data-workspace-name="#{evaluationIndexBackingBean.workspaceName}"></div>
+  </ui:define>
+  
+</ui:composition>

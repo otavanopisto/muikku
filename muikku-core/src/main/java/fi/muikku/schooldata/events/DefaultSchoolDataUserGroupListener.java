@@ -87,13 +87,13 @@ public class DefaultSchoolDataUserGroupListener {
           discoveredUserGroupUsers.put(discoverId, userGroupUserEntity.getId());
           event.setDiscoveredUserGroupUserEntityId(userGroupUserEntity.getId());
         } else {
-          logger.warning("could not add group user because UserSchoolDataIdentifier for " + event.getUserIdentifier() + "/" + event.getUserDataSource() + " wasn't found");
+          //logger.warning("could not add group user because UserSchoolDataIdentifier for " + event.getUserIdentifier() + "/" + event.getUserDataSource() + " wasn't found");
         }
       } else {
-        logger.warning("UserGroupUserEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
+        //logger.warning("UserGroupUserEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
       }
     } else {
-      logger.warning("could not init user group user because usergroup #" + event.getUserGroupIdentifier() + '/' + event.getUserGroupDataSource() +  " could not be found");
+      //logger.warning("could not init user group user because usergroup #" + event.getUserGroupIdentifier() + '/' + event.getUserGroupDataSource() +  " could not be found");
     }
   }  
 

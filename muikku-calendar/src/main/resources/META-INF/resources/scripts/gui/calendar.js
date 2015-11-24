@@ -80,7 +80,7 @@
 ////      attendees: attendees,
 ////      reminders: calendarEvent.reminders
         
-        mApi().calendar.calendars.events.create(calendarId, values).callback(function (err, result) {
+        mApi({async: false}).calendar.calendars.events.create(calendarId, values).callback(function (err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
@@ -127,7 +127,7 @@
         
         // Get the user calendars and append them to select field
         
-        mApi().calendar.calendars.read().callback($.proxy(function (err, calendars) {
+        mApi({async: false}).calendar.calendars.read().callback($.proxy(function (err, calendars) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
@@ -219,13 +219,13 @@
        var viewEnd = view.end;
          
        var calls = $.map(calendarIds, function (calendarId) {
-         return mApi().calendar.calendars.events.read(parseInt(calendarId), {
+         return mApi({async: false}).calendar.calendars.events.read(parseInt(calendarId), {
            timeMin: viewStart.toISOString(),
            timeMax: viewEnd.toISOString()
          });
        });
        
-       mApi().batch(calls)
+       mApi({async: false}).batch(calls)
          .callback(function (err, results) {
            if (err) {
              $('.notification-queue').notificationQueue('notification', 'error', err);

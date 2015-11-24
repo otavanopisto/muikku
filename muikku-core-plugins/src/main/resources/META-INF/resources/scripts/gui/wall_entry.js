@@ -2,7 +2,7 @@
   
   DefaultWallEntryController = $.klass(WallEntryController, {
     render: function (data, callback) {
-      mApi().wall.walls.read(data.entry.wallId).callback($.proxy(function (err, wall) {
+      mApi({async: false}).wall.walls.read(data.entry.wallId).callback($.proxy(function (err, wall) {
         if (err) {
           callback(err);
         } else {
@@ -10,7 +10,7 @@
             if (typeErr) {
               callback(typeErr);
             } else {
-              mApi().user.users.read(data.entry.creatorId).callback($.proxy(function (creatorErr, creator) {
+              mApi({async: false}).user.users.read(data.entry.creatorId).callback($.proxy(function (creatorErr, creator) {
                 if (creatorErr) {
                   callback(creatorErr);
                 } else {
@@ -53,7 +53,7 @@
           callback(null, {});
         break;
         case 'USER':
-          mApi().user.users.read(wall.typeId).callback(function (err, user) {
+          mApi({async: false}).user.users.read(wall.typeId).callback(function (err, user) {
             if (err) {
               callback(err);
             } else {
@@ -66,7 +66,7 @@
           });
         break;
         case 'WORKSPACE':
-          mApi().workspace.workspaces.read(wall.typeId).callback(function (err, workspace) {
+          mApi({async: false}).workspace.workspaces.read(wall.typeId).callback(function (err, workspace) {
             if (err) {
               callback(err);
             } else {
@@ -81,9 +81,9 @@
     },
     
     _loadReplies: function (entry, callback) {
-      mApi().wall.walls.wallEntries.replies.read(entry.wallId, entry.id)
+      mApi({async: false}).wall.walls.wallEntries.replies.read(entry.wallId, entry.id)
         .on('$', function (reply, replyCallback) {
-          mApi().user.users.read(reply.creatorId).callback(function (err, user) {
+          mApi({async: false}).user.users.read(reply.creatorId).callback(function (err, user) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
@@ -121,9 +121,9 @@
     var wallId = $(this).closest('.wallEntryCommentFormForm').find('input[name="wallId"]').val();
     var text = $(this).closest('.wallEntryCommentFormForm').find('input[name="wallEntryCommentText"]').val();
     
-    mApi().wall.walls.wallEntries.replies.create(wallId, entryId, { text: text })
+    mApi({async: false}).wall.walls.wallEntries.replies.create(wallId, entryId, { text: text })
       .on('$', function (reply, callback) {
-        mApi().user.users.read(reply.creatorId).callback(function (err, user) {
+        mApi({async: false}).user.users.read(reply.creatorId).callback(function (err, user) {
           if (err) {
             callback(err);
           } else {

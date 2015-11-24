@@ -4,8 +4,8 @@ then
   python travis-prepare-maven.py
   pushd .
   cd muikku
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,pyramus-plugins -Dclassifier=otavanopisto
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,pyramus-plugins -Dclassifier=janakkala
+  mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=otavanopisto
+  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=janakkala
   popd
 elif [[ $TRAVIS_BRANCH == 'devel' ]] && [[ $TRAVIS_PULL_REQUEST == 'false' ]]
 then
@@ -15,8 +15,8 @@ then
   python travis-prepare-maven.py
   pushd .
   cd muikku
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,pyramus-plugins -Dclassifier=otavanopisto
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,pyramus-plugins -Dclassifier=janakkala
+  mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=otavanopisto
+  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=janakkala
   popd
 fi
 

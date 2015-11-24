@@ -4,7 +4,7 @@
     var wallId = $(this).closest('.newWallEntry').find('input[name="wallId"]').val();
     var text = $(this).closest('.newWallEntry').find('input[name="newWallEntryText"]').val();
       
-    mApi().wall.walls.wallEntries.create(wallId, {
+    mApi({async: false}).wall.walls.wallEntries.create(wallId, {
       visibility: "PUBLIC",
       text: text,
       archived: false
