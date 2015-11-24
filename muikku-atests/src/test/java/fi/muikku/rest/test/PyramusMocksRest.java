@@ -7,6 +7,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -396,6 +397,41 @@ public class PyramusMocksRest {
         .withHeader("Content-Type", "application/json")
         .withBody(staffArrayJson)
         .withStatus(200)));
+
+    Map<Long, List<Student>> personStudents = new HashMap<>();
+    Map<Long, List<StaffMember>> personStaffMembers = new HashMap<>();
+    
+    for (Student student : studentArray) {
+      if (!personStudents.containsKey(student.getPersonId())) {
+        personStudents.put(student.getPersonId(), new ArrayList<Student>());
+      }
+      
+      personStudents.get(student.getPersonId()).add(student);
+    }
+    
+    for (StaffMember staffMember : staffArray) {
+      if (!personStaffMembers.containsKey(staffMember.getPersonId())) {
+        personStaffMembers.put(staffMember.getPersonId(), new ArrayList<StaffMember>());
+      }
+      
+      personStaffMembers.get(staffMember.getPersonId()).add(staffMember);
+    }
+    
+    for (Long personId : personStudents.keySet()) {
+      stubFor(get(urlMatching(String.format("/1/persons/persons/%d/students", personId)))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(objectMapper.writeValueAsString(personStudents.get(personId)))
+            .withStatus(200)));
+    }
+    
+    for (Long personId : personStaffMembers.keySet()) {
+      stubFor(get(urlMatching(String.format("/1/persons/persons/%d/staffMembers", personId)))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(objectMapper.writeValueAsString(personStaffMembers.get(personId)))
+            .withStatus(200)));
+    }
 
     ContactType contactType = new ContactType((long)1, "Koti", false, false);
     ContactType[] contactTypes = { contactType };
