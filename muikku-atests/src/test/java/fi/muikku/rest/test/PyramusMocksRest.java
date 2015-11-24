@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
+import fi.muikku.AbstractPyramusMocks;
 import fi.pyramus.rest.model.ContactType;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
@@ -86,7 +87,7 @@ import fi.pyramus.webhooks.WebhookStudentGroupStudentCreatePayload;
  * 
  * Login info for student1
  */
-public class PyramusMocksRest {
+public class PyramusMocksRest extends AbstractPyramusMocks {
   
   public static void mockDefaults(List<String> payloads) throws JsonProcessingException {
     mockCommons();
@@ -397,41 +398,9 @@ public class PyramusMocksRest {
         .withHeader("Content-Type", "application/json")
         .withBody(staffArrayJson)
         .withStatus(200)));
-
-    Map<Long, List<Student>> personStudents = new HashMap<>();
-    Map<Long, List<StaffMember>> personStaffMembers = new HashMap<>();
     
-    for (Student student : studentArray) {
-      if (!personStudents.containsKey(student.getPersonId())) {
-        personStudents.put(student.getPersonId(), new ArrayList<Student>());
-      }
-      
-      personStudents.get(student.getPersonId()).add(student);
-    }
-    
-    for (StaffMember staffMember : staffArray) {
-      if (!personStaffMembers.containsKey(staffMember.getPersonId())) {
-        personStaffMembers.put(staffMember.getPersonId(), new ArrayList<StaffMember>());
-      }
-      
-      personStaffMembers.get(staffMember.getPersonId()).add(staffMember);
-    }
-    
-    for (Long personId : personStudents.keySet()) {
-      stubFor(get(urlMatching(String.format("/1/persons/persons/%d/students", personId)))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(objectMapper.writeValueAsString(personStudents.get(personId)))
-            .withStatus(200)));
-    }
-    
-    for (Long personId : personStaffMembers.keySet()) {
-      stubFor(get(urlMatching(String.format("/1/persons/persons/%d/staffMembers", personId)))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(objectMapper.writeValueAsString(personStaffMembers.get(personId)))
-            .withStatus(200)));
-    }
+    mockPersonStudens(studentArray);
+    mockPersonStaffMembers(staffArray);
 
     ContactType contactType = new ContactType((long)1, "Koti", false, false);
     ContactType[] contactTypes = { contactType };
@@ -449,7 +418,7 @@ public class PyramusMocksRest {
         .withBody(contactTypesJson)
         .withStatus(200)));
   }
-  
+
   public static void mockWorkspaces(List<String> payloads) throws JsonProcessingException {
     mockWorkspace(1l, payloads);
   }
