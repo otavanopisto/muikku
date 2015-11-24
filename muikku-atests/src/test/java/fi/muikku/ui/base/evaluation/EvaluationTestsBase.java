@@ -2,7 +2,6 @@ package fi.muikku.ui.base.evaluation;
 
 import org.junit.Test;
 
-import fi.muikku.plugins.material.model.Material;
 import fi.muikku.ui.AbstractUITest;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceFolder;
@@ -12,30 +11,36 @@ public class EvaluationTestsBase extends AbstractUITest {
 
   @Test
   public void evaluateStudentTest() throws Exception {
-    loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
-      WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
-          "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
-          "EVALUATED");
-      try{
-        
-      } finally {
-        
-      }
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+        "Test", "text/html;editor=CKEditor", 
+        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+        "EVALUATED");
       try {
-        navigate("/guider", true);
-        sendKeys(".gt-search .search", "Second User");
-        assertText(".gt-user .gt-user-meta-topic>span", "Second User");
+        loginStudent1();
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        
+        assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
+        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
+        assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+        waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
+        waitForPresentAndVisible(".notification-queue-item-success");
+        waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
+        logout();
+        loginAdmin();
+        navigate(String.format("/evaluation"), true);
+        
       }finally{
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
     } finally {
       deleteWorkspace(workspace.getId());
-
     }
   }
   
