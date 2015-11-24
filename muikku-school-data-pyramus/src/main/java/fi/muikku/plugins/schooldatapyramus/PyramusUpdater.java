@@ -792,76 +792,82 @@ public class PyramusUpdater {
     
     // If person does not have a defaultUserId specified, we try to guess something
     if (defaultUserId == null) {
-      if (staffMembers.length > 0) {
+      if ((staffMembers != null) && (staffMembers.length > 0)) {
         // If person has a staffMember instance, lets use that one
         defaultUserId = staffMembers[0].getId();
       } else {
-        // Otherwise just use first non archived student (if any)
-        for (Student student : students) {
-          if (!student.getArchived()) {
-            defaultUserId = student.getId();
-            break;
+        if (students != null) {
+          // Otherwise just use first non archived student (if any)
+          for (Student student : students) {
+            if (!student.getArchived()) {
+              defaultUserId = student.getId();
+              break;
+            }
           }
         }
       }
     }
     
-    // Iterate over all student instances
-    for (Student student : students) {
-      String identifier = identifierMapper.getStudentIdentifier(student.getId());
-
-      if (!student.getArchived()) {
-        // If student is not archived, add it to identifiers list 
+    if (students != null) {
+      // Iterate over all student instances
+      for (Student student : students) {
+        String identifier = identifierMapper.getStudentIdentifier(student.getId());
+  
+        if (!student.getArchived()) {
+          // If student is not archived, add it to identifiers list 
+          identifiers.add(identifier);
+          
+          // If it's the specified defaultUserId, update defaultIdentifier and role accordingly
+          if ((defaultIdentifier == null) && student.getId().equals(defaultUserId)) {
+            defaultIdentifier = identifier;
+            defaultUserPyramusRole = UserRole.STUDENT;
+          }
+          
+          // List emails and add all emails that are not specified non unique (e.g. contact persons) to the emails list
+          Email[] studentEmails = pyramusClient.get().get("/students/students/" + student.getId() + "/emails", Email[].class);
+          if (studentEmails != null) {
+            for (Email studentEmail : studentEmails) {
+              if (studentEmail.getContactTypeId() != null) {
+                ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
+                if (!contactType.getNonUnique() && !emails.contains(studentEmail.getAddress())) {
+                  emails.add(studentEmail.getAddress());
+                }
+              } else {
+                logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
+              }
+            }
+          }
+        } else {
+          // If the student instance if archived, we add it the the removed indentifiers list
+          removedIdentifiers.add(identifier);
+        }
+      }
+    }
+    
+    if (staffMembers != null) {
+      for (StaffMember staffMember : staffMembers) {
+        // Add staffMember identifier into the identifier list
+        String identifier = identifierMapper.getStaffIdentifier(staffMember.getId());
         identifiers.add(identifier);
         
         // If it's the specified defaultUserId, update defaultIdentifier and role accordingly
-        if ((defaultIdentifier == null) && student.getId().equals(defaultUserId)) {
+        if ((defaultIdentifier == null) && staffMember.getId().equals(defaultUserId)) {
           defaultIdentifier = identifier;
-          defaultUserPyramusRole = UserRole.STUDENT;
+          defaultUserPyramusRole = staffMember.getRole();
         }
-        
+      
         // List emails and add all emails that are not specified non unique (e.g. contact persons) to the emails list
-        Email[] studentEmails = pyramusClient.get().get("/students/students/" + student.getId() + "/emails", Email[].class);
-        if (studentEmails != null) {
-          for (Email studentEmail : studentEmails) {
-            if (studentEmail.getContactTypeId() != null) {
-              ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
-              if (!contactType.getNonUnique() && !emails.contains(studentEmail.getAddress())) {
-                emails.add(studentEmail.getAddress());
+        Email[] staffMemberEmails = pyramusClient.get().get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
+        if (staffMemberEmails != null) {
+          for (Email staffMemberEmail : staffMemberEmails) {
+            if (staffMemberEmail.getContactTypeId() != null) {
+              ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
+              if (!contactType.getNonUnique() && !emails.contains(staffMemberEmail.getAddress())) {
+                emails.add(staffMemberEmail.getAddress());
               }
             } else {
               logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
             }
-          }
-        }
-      } else {
-        // If the student instance if archived, we add it the the removed indentifiers list
-        removedIdentifiers.add(identifier);
-      }
-    }
-        
-    for (StaffMember staffMember : staffMembers) {
-      // Add staffMember identifier into the identifier list
-      String identifier = identifierMapper.getStaffIdentifier(staffMember.getId());
-      identifiers.add(identifier);
-      
-      // If it's the specified defaultUserId, update defaultIdentifier and role accordingly
-      if ((defaultIdentifier == null) && staffMember.getId().equals(defaultUserId)) {
-        defaultIdentifier = identifier;
-        defaultUserPyramusRole = staffMember.getRole();
-      }
-    
-      // List emails and add all emails that are not specified non unique (e.g. contact persons) to the emails list
-      Email[] staffMemberEmails = pyramusClient.get().get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
-      if (staffMemberEmails != null) {
-        for (Email staffMemberEmail : staffMemberEmails) {
-          if (staffMemberEmail.getContactTypeId() != null) {
-            ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
-            if (!contactType.getNonUnique() && !emails.contains(staffMemberEmail.getAddress())) {
-              emails.add(staffMemberEmail.getAddress());
-            }
-          } else {
-            logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
           }
         }
       }
