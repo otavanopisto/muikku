@@ -281,6 +281,26 @@ class WorkspaceSchoolDataController {
 		return null;
 	}
 	
+  public void archiveWorkspaceUser(WorkspaceUser workspaceUser) {
+	  SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserSchoolDataSource());
+    if (schoolDataSource != null) {
+      WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
+      if (workspaceBridge != null) {
+        workspaceBridge.archiveWorkspaceUser(workspaceUser);
+      }
+    }
+	}
+
+  public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserSchoolDataSource());
+    if (schoolDataSource != null) {
+      WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
+      if (workspaceBridge != null) {
+        workspaceBridge.unarchiveWorkspaceUser(workspaceUser);
+      }
+    }
+  }
+	
   public List<WorkspaceUser> listWorkspaceStudents(Workspace workspace, String status) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
     if (schoolDataSource != null) {

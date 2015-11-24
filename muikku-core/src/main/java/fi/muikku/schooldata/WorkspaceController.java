@@ -125,6 +125,14 @@ public class WorkspaceController {
   public Workspace updateWorkspace(Workspace workspace) {
     return workspaceSchoolDataController.updateWorkspace(workspace);
   }
+  
+  public void archiveWorkspaceUser(WorkspaceUser workspaceUser) {
+    workspaceSchoolDataController.archiveWorkspaceUser(workspaceUser);
+  }
+
+  public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser) {
+    workspaceSchoolDataController.unarchiveWorkspaceUser(workspaceUser);
+  }
 
   public void archiveWorkspace(Workspace workspace) {
     WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspace);

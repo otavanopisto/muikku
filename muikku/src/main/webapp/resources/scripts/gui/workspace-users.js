@@ -76,22 +76,20 @@
     },
 
     _onWorkspaceStudentArchiveClick: function (event) {
-      var studentElement = $(event.target).closest('.workspace-users');
-      var studentId = studentElement.data('user-id');
-      this._confirmArchiveStudent($.proxy(function() {
-        this._archiveStudent(studentId);
+      var userElement = $(event.target).closest('.workspace-users');
+      this._confirmArchive($.proxy(function() {
+        this._archive(userElement);
       }, this));
     },
 
     _onWorkspaceStudentUnarchiveClick: function (event) {
-      var studentElement = $(event.target).closest('.workspace-users');
-      var studentId = studentElement.data('user-id');
-      this._confirmUnarchiveStudent($.proxy(function() {
-        this._unarchiveStudent(studentId);
+      var userElement = $(event.target).closest('.workspace-users');
+      this._confirmUnarchive($.proxy(function() {
+        this._unarchive(userElement);
       }, this));
     },
     
-    _confirmArchiveStudent: function(confirmCallback) {
+    _confirmArchive: function(confirmCallback) {
       renderDustTemplate('workspace/workspace-users-archive-request-confirm.dust', {}, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({
@@ -120,7 +118,7 @@
       }, this));
     },
     
-    _confirmArchiveStudent: function(confirmCallback) {
+    _confirmUnarchive: function(confirmCallback) {
       renderDustTemplate('workspace/workspace-users-unarchive-request-confirm.dust', {}, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({
@@ -149,38 +147,48 @@
       }, this));
     },
 
-    /* TODO implement
-    _confirmDeleteStudent: function(confirmCallback) {
-      renderDustTemplate('workspace/workspace-users-delete-request-confirm.dust', {}, $.proxy(function(text) {
-        var dialog = $(text);
-        $(text).dialog({
-          modal : true,
-          minHeight : 200,
-          maxHeight : $(window).height() - 50,
-          resizable : false,
-          width : 560,
-          dialogClass : "workspace-user-confirm-dialog",
-          buttons : [ {
-            'text' : dialog.data('button-delete-text'),
-            'class' : 'delete-button',
-            'click' : function(event) {
-              $(this).dialog("destroy").remove();
+    _archive: function(userElement) {
+      var workspaceEntityId = this.options.workspaceEntityId;
+      var workspaceUserEntityId = userElement.data('user-id');
+      mApi().workspace.workspaces.users.read(workspaceEntityId, workspaceUserEntityId).callback(function (err, workspaceUserEntity) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          workspaceUserEntity.archived = true;
+          mApi().workspace.workspaces.users.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
             }
-          }, {
-            'text' : dialog.data('button-cancel-text'),
-            'class' : 'cancel-button',
-            'click' : function(event) {
-              $(this).dialog("destroy").remove();
+            else {
+              $(userElement).remove();
             }
-          } ]
-        });
-      }, this));
+          });
+        }
+      });
     },
-    */
     
-    _archiveStudent: function(studentId) {
-      // TODO archive student
+    _unarchive: function(userElement) {
+      var workspaceEntityId = this.options.workspaceEntityId;
+      var workspaceUserEntityId = userElement.data('user-id');
+      mApi().workspace.workspaces.users.read(workspaceEntityId, workspaceUserEntityId).callback(function (err, workspaceUserEntity) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          workspaceUserEntity.archived = false;
+          mApi().workspace.workspaces.users.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              $(userElement).remove();
+            }
+          });
+        }
+      });
     }
+
   });
     
   

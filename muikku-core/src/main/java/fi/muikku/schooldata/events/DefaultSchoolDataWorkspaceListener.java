@@ -112,7 +112,7 @@ public class DefaultSchoolDataWorkspaceListener {
             discoveredWorkspaceUsers.put(discoverId, workspaceUserEntity.getId());
             event.setDiscoveredWorkspaceUserEntityId(workspaceUserEntity.getId());
           } else {
-            workspaceUserEntityController.unArchiveWorkspaceUserEntity(workspaceUserEntity);
+            workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
           }
         } else {
           logger.warning("could not add workspace user because userSchoolDataIdentifier #" + event.getUserIdentifier() + '/' + event.getUserDataSource() +  " could not be found");

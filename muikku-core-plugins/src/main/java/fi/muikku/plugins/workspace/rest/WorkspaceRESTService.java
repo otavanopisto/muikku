@@ -377,9 +377,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     // Sorting
     
     if (StringUtils.equals(orderBy, "name")) {
-      Collections.sort(workspaceUsers, new Comparator<fi.muikku.plugins.workspace.rest.model.WorkspaceUser>() {
+      Collections.sort(workspaceUsers, new Comparator<WorkspaceUser>() {
         @Override
-        public int compare(fi.muikku.plugins.workspace.rest.model.WorkspaceUser o1, fi.muikku.plugins.workspace.rest.model.WorkspaceUser o2) {
+        public int compare(WorkspaceUser o1, WorkspaceUser o2) {
           String s1 = String.format("%s, %s", StringUtils.defaultString(o1.getLastName(), ""), StringUtils.defaultString(o1.getFirstName(), ""));
           String s2 = String.format("%s, %s", StringUtils.defaultString(o2.getLastName(), ""), StringUtils.defaultString(o2.getFirstName(), ""));
           return s1.compareTo(s2);
@@ -422,9 +422,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     // Sorting
     
     if (StringUtils.equals(orderBy, "name")) {
-      Collections.sort(workspaceUsers, new Comparator<fi.muikku.plugins.workspace.rest.model.WorkspaceUser>() {
+      Collections.sort(workspaceUsers, new Comparator<WorkspaceUser>() {
         @Override
-        public int compare(fi.muikku.plugins.workspace.rest.model.WorkspaceUser o1, fi.muikku.plugins.workspace.rest.model.WorkspaceUser o2) {
+        public int compare(WorkspaceUser o1, WorkspaceUser o2) {
           String s1 = String.format("%s, %s", StringUtils.defaultString(o1.getLastName(), ""), StringUtils.defaultString(o1.getFirstName(), ""));
           String s2 = String.format("%s, %s", StringUtils.defaultString(o2.getLastName(), ""), StringUtils.defaultString(o2.getFirstName(), ""));
           return s1.compareTo(s2);
@@ -906,7 +906,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntity.getId(),
         userEntity.getId(),
         user.getFirstName(),
-        user.getLastName());
+        user.getLastName(),
+        workspaceUserEntity.getArchived());
   }
 
   private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String description) {
@@ -1090,7 +1091,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     return Response.ok(createRestModel(workspaceFolder)).build();
   }
-
+  
   @PUT
   @Path("/workspaces/{WORKSPACEID}/materials/{WORKSPACEMATERIALID}")
   @RESTPermitUnimplemented
@@ -1457,6 +1458,68 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(createRestModel(result.toArray(new fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation[0]))).build();
   }
   
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/users/{ID}")
+  @RESTPermitUnimplemented
+  public Response findWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") Long workspaceUserEntityId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+    return Response.ok(createRestModel(workspaceUser)).build();
+  }
+
+  @PUT
+  @Path("/workspaces/{WORKSPACEENTITYID}/users/{ID}")
+  @RESTPermitUnimplemented
+  public Response updateWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
+      @PathParam("ID") Long workspaceUserEntityId,
+      WorkspaceUser workspaceUser) {
+
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
+
+    // Workspace
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    // Access check
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Workspace user
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
+      return Response.noContent().build();
+    }
+    
+    if (!workspaceUserEntity.getArchived().equals(workspaceUser.getArchived())) {
+      fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+      if (workspaceUser.getArchived()) {
+        workspaceUserEntity = workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
+        workspaceController.archiveWorkspaceUser(bridgeUser);
+      }
+      else {
+        workspaceUserEntity = workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
+        workspaceController.unarchiveWorkspaceUser(bridgeUser);
+      }
+    }
+
+    return Response.ok(workspaceUser).build();
+  }
+
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
   @RESTPermitUnimplemented

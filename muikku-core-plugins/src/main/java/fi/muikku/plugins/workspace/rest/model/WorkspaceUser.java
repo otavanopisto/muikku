@@ -5,13 +5,14 @@ public class WorkspaceUser {
   public WorkspaceUser() {
   }
 
-  public WorkspaceUser(Long id, Long workspaceId, Long userId, String firstName, String lastName) {
+  public WorkspaceUser(Long id, Long workspaceId, Long userId, String firstName, String lastName, Boolean archived) {
     super();
     this.id = id;
     this.workspaceId = workspaceId;
     this.userId = userId;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.archived = archived;
   }
 
   public Long getId() {
@@ -54,10 +55,19 @@ public class WorkspaceUser {
     this.lastName = lastName;
   }
 
+  public Boolean getArchived() {
+    return archived;
+  }
+
+  public void setArchived(Boolean archived) {
+    this.archived = archived;
+  }
+
   private Long id;
   private String firstName;
   private String lastName;
   private Long workspaceId;
   private Long userId;
+  private Boolean archived;
 
 }
