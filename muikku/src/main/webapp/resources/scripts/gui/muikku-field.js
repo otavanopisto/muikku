@@ -558,9 +558,27 @@
     },
     
     _saveFailed: function() {
-        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingTimedOut'));
+//        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingTimedOut'));
+      this._connectionFailed();
     },
-    
+    _connectionFailed: function() {
+      renderDustTemplate('workspace/materials-connection-lost-dialog.dust', { }, $.proxy(function (text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal: true, 
+          resizable: false,
+          resizable: false,
+          dialogClass: "workspace-materials-connectionlost-dialog",
+          buttons: [{
+            'text': dialog.data('button-reconnect-text'),
+            'class': 'reconnect-button',
+            'click': function(event) {
+              $(this).dialog().remove();
+            }
+          }]
+        });
+      }, this));
+    },
     _propagateChange: function () {
       $(this.element)
         .removeClass('muikku-field-saved muikku-field-saving')
