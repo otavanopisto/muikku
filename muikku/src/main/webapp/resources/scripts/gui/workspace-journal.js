@@ -34,7 +34,7 @@
     var workspaceId = $("input[name='workspaceEntityId']").val();
     var sendJournalEntry = function(values) {
 
-      mApi().workspace.workspaces.journal.create(workspaceId, values).callback(
+      mApi({async: false}).workspace.workspaces.journal.create(workspaceId, values).callback(
           function(err, result) {
             if (!err) {
               window.location.reload();
@@ -55,7 +55,7 @@
         ,message: element.find('.workspace-journal-content').html()
         ,title: element.find('.workspace-journal-title').html()}
       , function(values){
-      mApi().workspace.journal.update(id, values).callback(
+      mApi({async: false}).workspace.journal.update(id, values).callback(
           function(err, result) {
             if (!err) {
               window.location.reload();

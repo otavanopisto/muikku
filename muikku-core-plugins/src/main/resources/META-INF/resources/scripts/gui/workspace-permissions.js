@@ -27,7 +27,7 @@
         'permitted': element.is(':checked')
       };
 
-      mApi().permission.workspaceUserGroupPermissions.update(params).callback(function (err, result) {
+      mApi({async: false}).permission.workspaceUserGroupPermissions.update(params).callback(function (err, result) {
         if (err) {
           alert('Error occured while doing the operation. You may not have the necessary rights to change the permissions.');
         }

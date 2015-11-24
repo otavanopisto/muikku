@@ -60,7 +60,7 @@
     var workspaceEntityId = $("input[name='workspaceEntityId']").val(); 
     
     // Workspace teachers
-    mApi().workspace.workspaces.users.read(workspaceEntityId, {roleArchetype: 'TEACHER', orderBy: 'name'}).callback(function (err, teachers) {
+    mApi({async: false}).workspace.workspaces.users.read(workspaceEntityId, {roleArchetype: 'TEACHER', orderBy: 'name'}).callback(function (err, teachers) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', err);
       }
@@ -72,7 +72,7 @@
     });  
     
     // Workspace students
-    mApi().workspace.workspaces.users.read(workspaceEntityId, {roleArchetype: 'STUDENT', orderBy: 'name'}).callback(function (err, students) {
+    mApi({async: false}).workspace.workspaces.users.read(workspaceEntityId, {roleArchetype: 'STUDENT', orderBy: 'name'}).callback(function (err, students) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', err);
       }

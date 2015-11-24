@@ -2,7 +2,9 @@ package fi.muikku.plugin;
 
 import java.io.Serializable;
 
-public abstract class PluginRESTService implements Serializable {
+import fi.muikku.rest.AbstractCoreRESTService;
+
+public abstract class PluginRESTService extends AbstractCoreRESTService implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

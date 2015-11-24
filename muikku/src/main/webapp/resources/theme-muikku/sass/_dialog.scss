@@ -79,6 +79,11 @@ body {
         font-size:14px;
         margin:5px 0 0 0;
       }
+      
+      textarea {
+        padding:4px 8px;
+        box-sizing:border-box;
+      }
     }
     
     .ui-dialog-buttonpane {

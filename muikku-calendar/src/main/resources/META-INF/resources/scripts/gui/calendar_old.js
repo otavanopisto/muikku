@@ -94,7 +94,7 @@
   	    });
   	    
   	    
-        mApi().calendar.calendars.read().callback($.proxy(function (err, calendars) {
+        mApi({async: false}).calendar.calendars.read().callback($.proxy(function (err, calendars) {
   	      if (err) {
   	     	  $('.notification-queue').notificationQueue('notification', 'error', err);
   	     	} else {
@@ -190,7 +190,7 @@
           var endISO = getISODateTime($('#endDate').datepicker('getDate'), $('#endTime').timepicker('getTime'));
           var recurrence = $('#eventRecurrence').recurrenceInput("rrule");
           
-  	      mApi().calendar.calendars.events.create($('#eventCalendar').val(), {
+  	      mApi({async: false}).calendar.calendars.events.create($('#eventCalendar').val(), {
   	        summary: $('input[name="eventSubject"]').val(),
   	        description: $('input[name="eventContent"]').val(),
   	        recurrence: recurrence,
@@ -261,13 +261,13 @@
     var viewEnd = view.end;
       
     var calls = $.map(calendarIds, function (calendarId) {
-      return mApi().calendar.calendars.events.read(parseInt(calendarId), {
+      return mApi({async: false}).calendar.calendars.events.read(parseInt(calendarId), {
         timeMin: viewStart.toISOString(),
         timeMax: viewEnd.toISOString()
       });
     });
     
-    mApi().batch(calls)
+    mApi({async: false}).batch(calls)
       .callback(function (err, results) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);

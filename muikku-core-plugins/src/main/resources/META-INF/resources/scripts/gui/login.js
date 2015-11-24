@@ -22,7 +22,7 @@
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.required"));  
             } 
             
-            mApi().forgotpassword.reset.read({ email: emailField.val() }).callback(function (err, response) {
+            mApi({async: false}).forgotpassword.reset.read({ email: emailField.val() }).callback(function (err, response) {
               if (err) {
                 if (response.status == 404) {
                   $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.noUserFound", emailField.val()));
