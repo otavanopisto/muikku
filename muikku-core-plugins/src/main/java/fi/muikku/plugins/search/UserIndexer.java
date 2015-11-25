@@ -115,4 +115,12 @@ public class UserIndexer {
     }
   }
   
+  public void removeUser(String dataSource, String identifier) {
+    try {
+      indexer.remove(User.class.getSimpleName(), String.format("%s/%s", identifier, dataSource));
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, String.format("Removal of user %s/%s from index failed", dataSource, identifier), ex);
+    } 
+  }
+  
 }

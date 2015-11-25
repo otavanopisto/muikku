@@ -2,30 +2,43 @@ package fi.muikku.schooldata.events;
 
 import java.util.List;
 
+import fi.muikku.schooldata.SchoolDataIdentifier;
+
 public class SchoolDataUserUpdatedEvent {
 
-  public SchoolDataUserUpdatedEvent(String dataSource, String identifier, String defaultDataSource, String defaultIdentifier, List<String> emails) {
+  public SchoolDataUserUpdatedEvent(Long userEntityId, SchoolDataIdentifier environmentRoleIdentifier, List<SchoolDataIdentifier> discoveredIdentifiers, List<SchoolDataIdentifier> updatedIdentifiers,
+      List<SchoolDataIdentifier> removedIdentifiers, SchoolDataIdentifier defaultIdentifier, List<String> emails) {
     super();
-    this.dataSource = dataSource;
-    this.identifier = identifier;
-    this.defaultDataSource = defaultDataSource;
+    this.userEntityId = userEntityId;
+    this.environmentRoleIdentifier = environmentRoleIdentifier;
+    this.discoveredIdentifiers = discoveredIdentifiers;
+    this.updatedIdentifiers = updatedIdentifiers;
+    this.removedIdentifiers = removedIdentifiers;
     this.defaultIdentifier = defaultIdentifier;
     this.emails = emails;
   }
 
-  public String getDataSource() {
-    return dataSource;
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+  
+  public SchoolDataIdentifier getEnvironmentRoleIdentifier() {
+    return environmentRoleIdentifier;
   }
 
-  public String getIdentifier() {
-    return identifier;
+  public List<SchoolDataIdentifier> getDiscoveredIdentifiers() {
+    return discoveredIdentifiers;
   }
 
-  public String getDefaultDataSource() {
-    return defaultDataSource;
+  public List<SchoolDataIdentifier> getUpdatedIdentifiers() {
+    return updatedIdentifiers;
   }
 
-  public String getDefaultIdentifier() {
+  public List<SchoolDataIdentifier> getRemovedIdentifiers() {
+    return removedIdentifiers;
+  }
+
+  public SchoolDataIdentifier getDefaultIdentifier() {
     return defaultIdentifier;
   }
 
@@ -33,9 +46,11 @@ public class SchoolDataUserUpdatedEvent {
     return emails;
   }
 
-  private String dataSource;
-  private String identifier;
-  private String defaultDataSource;
-  private String defaultIdentifier;
+  private Long userEntityId;
+  private SchoolDataIdentifier environmentRoleIdentifier;
+  private List<SchoolDataIdentifier> discoveredIdentifiers;
+  private List<SchoolDataIdentifier> updatedIdentifiers;
+  private List<SchoolDataIdentifier> removedIdentifiers;
+  private SchoolDataIdentifier defaultIdentifier;
   private List<String> emails;
 }
