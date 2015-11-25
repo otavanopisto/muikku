@@ -122,11 +122,7 @@ $(document).ready(function() {
             thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
           }, this));
         }, this));
-
-
-
-
-      }, this).callback($.proxy(function(err, threads) {
+      }, this)).callback($.proxy(function(err, threads) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
@@ -292,13 +288,12 @@ $(document).ready(function() {
         }
       }, this));
     },       
-    
     _loadThread : function(aId, tId) {
       mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {
 
         mApi({async: false}).forum.areas.read(thread.forumAreaId).callback($.proxy(function(err, area) {
           thread.areaName = area.name;
-          mApi({async: false}).forum.areas.read(thread.forumAreaId).callback($.proxy(function(err, area) {
+          mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
             thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             var d = new Date(thread.created);
@@ -323,7 +318,6 @@ $(document).ready(function() {
         }
       },this));
     },
-
     _loadThreadReplies : function(areaId, threadId) {
       var pageNo = 1;
       this._clearReplies();
@@ -394,7 +388,7 @@ $(document).ready(function() {
           thread.actionType = "reply"
           threadCallback();
         });
-      }, this).callback($.proxy(function(err, thread) {
+      }, this)).callback($.proxy(function(err, thread) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
@@ -412,7 +406,7 @@ $(document).ready(function() {
         values.id = tId;
         mApi({async: false}).forum.areas.threads.update(aId, tId, values).callback($.proxy(function(err, result) {
           window.discussion._refreshThread(aId, tId);
-        , this));
+        }, this));
       }
 
       mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {
@@ -422,7 +416,7 @@ $(document).ready(function() {
           threadCallback();
         },this));
 
-      }, this).callback($.proxy(function(err, thread) {
+      }, this)).callback($.proxy(function(err, thread) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
@@ -564,7 +558,7 @@ $(document).ready(function() {
       } else {
         openInSN('/discussion/discussion_create_message.dust', areas, createMessage);
       }
-    }, this);
+    }, this));
 
   });
 
@@ -590,7 +584,7 @@ $(document).ready(function() {
       } else {
         openInSN('/discussion/discussion_create_area.dust', areas, createArea);
       }
-    }, this);
+    }, this));
   });
   
   $(".di-delete-area-button").click(function() {
@@ -614,7 +608,7 @@ $(document).ready(function() {
       } else {
         openInSN('/discussion/discussion_delete_area.dust', areas, deleteArea);
       }
-    }, this);
+    }, this));
 
   });  
 });
