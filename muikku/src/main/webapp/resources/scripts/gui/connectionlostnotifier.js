@@ -1,6 +1,10 @@
       
 $.widget("custom.connectionLostNotifier", {
   
+  options: {
+    
+  },
+  
   _create: function() {
     this._connectionLostOverlay = null;
     this._connectionLostDialog = null;
@@ -93,10 +97,16 @@ $.widget("custom.connectionLostNotifier", {
   },
   
   notifyReconnected: function() {
-    this._connectionLostOverlay.remove();
-    this._connectionLostDialog.remove();
-    this._connectionLostOverlay = null;
-    this._connectionLostDialog = null;
+    if (this._connectionLostOverlay !== null) {
+      this._connectionLostOverlay.remove();
+      this._connectionLostOverlay = null;
+    }
+
+    if (this._connectionLostDialog !== null) {
+      this._connectionLostDialog.remove();
+      this._connectionLostDialog = null;
+    }
+
     this._noConnection = false;
   }
 });
