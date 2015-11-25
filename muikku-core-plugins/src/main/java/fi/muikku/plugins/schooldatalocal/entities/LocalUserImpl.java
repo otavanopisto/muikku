@@ -3,9 +3,10 @@ package fi.muikku.plugins.schooldatalocal.entities;
 import org.joda.time.DateTime;
 
 import fi.muikku.plugins.schooldatalocal.LocalUserSchoolDataController;
+import fi.muikku.schooldata.entity.AbstractUser;
 import fi.muikku.schooldata.entity.User;
 
-public class LocalUserImpl implements User {
+public class LocalUserImpl  extends AbstractUser implements User {
 
   public LocalUserImpl(String identifier,
                      String firstName,
@@ -65,11 +66,6 @@ public class LocalUserImpl implements User {
   @Override
   public String getStudyProgrammeName() {
     return studyProgrammeName;
-  }
-
-  @Override
-  public String getSearchId() {
-    return getIdentifier() + "/" + getSchoolDataSource();
   }
 
   public String getNationality() {

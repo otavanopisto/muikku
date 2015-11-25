@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
+import fi.muikku.AbstractPyramusMocks;
 import fi.muikku.TestUtilities;
 import fi.pyramus.rest.model.ContactType;
 import fi.pyramus.rest.model.Course;
@@ -43,7 +44,7 @@ import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
 
-public class PyramusMocks{
+public class PyramusMocks extends AbstractPyramusMocks {
    
   public static void student1LoginMock() throws JsonProcessingException {
     loginMock(1l, "testuser@made.up", "Test", "User");   
@@ -440,6 +441,9 @@ public class PyramusMocks{
         .withBody(objectMapper.writeValueAsString(courseStaffMember))
         .withStatus(200)));
     
+    mockPersonStudens(new Student[] { student, student2 } );
+    mockPersonStaffMembers(new StaffMember[] { staffMember1, staffMember2, staffMember3 });
+    
     String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 5));
     TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 5));
@@ -458,6 +462,7 @@ public class PyramusMocks{
     TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookCourseStaffMemberCreatePayload(1l, 1l, 4l));
     TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    
     
   }
   

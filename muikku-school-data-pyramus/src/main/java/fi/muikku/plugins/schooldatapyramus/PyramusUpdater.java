@@ -1,6 +1,8 @@
 package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,42 +10,39 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.AccessTimeout;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
-import fi.muikku.model.users.EnvironmentRoleArchetype;
-import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.users.UserGroupUserEntity;
 import fi.muikku.model.users.UserRoleType;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.events.SchoolDataEnvironmentRoleDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataEnvironmentRoleRemovedEvent;
-import fi.muikku.schooldata.events.SchoolDataUserDiscoveredEvent;
-import fi.muikku.schooldata.events.SchoolDataUserEnvironmentRoleDiscoveredEvent;
-import fi.muikku.schooldata.events.SchoolDataUserEnvironmentRoleRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupUserRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserGroupUserUpdatedEvent;
-import fi.muikku.schooldata.events.SchoolDataUserRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRemovedEvent;
@@ -56,8 +55,10 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceUserUpdatedEvent;
 import fi.muikku.users.EnvironmentRoleEntityController;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.RoleSchoolDataIdentifierController;
+import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserGroupEntityController;
+import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceRoleEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.pyramus.rest.model.ContactType;
@@ -77,7 +78,7 @@ import fi.pyramus.rest.model.UserRole;
 
 @Stateless
 public class PyramusUpdater {
-
+  
   @Inject
   private Logger logger;
 
@@ -92,6 +93,9 @@ public class PyramusUpdater {
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
@@ -109,22 +113,19 @@ public class PyramusUpdater {
   private RoleSchoolDataIdentifierController roleSchoolDataIdentifierController;
   
   @Inject
-  private EnvironmentUserController environmentUserController;
-  
-  @Inject
   private WorkspaceRoleEntityController workspaceRoleEntityController;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+
+  @Inject
+  private EnvironmentUserController environmentUserController;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
   
   @Inject
-  private Event<SchoolDataUserDiscoveredEvent> schoolDataUserDiscoveredEvent;
-
-  @Inject
   private Event<SchoolDataUserUpdatedEvent> schoolDataUserUpdatedEvent;
-
-  @Inject
-  private Event<SchoolDataUserRemovedEvent> schoolDataUserRemovedEvent;
 
   @Inject
   private Event<SchoolDataWorkspaceUserDiscoveredEvent> schoolDataWorkspaceUserDiscoveredEvent;
@@ -157,12 +158,6 @@ public class PyramusUpdater {
   private Event<SchoolDataWorkspaceRoleRemovedEvent> schoolDataWorkspaceRoleRemovedEvent;
 
   @Inject
-  private Event<SchoolDataUserEnvironmentRoleDiscoveredEvent> schoolDataUserEnvironmentRoleDiscoveredEvent;
-
-  @Inject
-  private Event<SchoolDataUserEnvironmentRoleRemovedEvent> schoolDataUserEnvironmentRoleRemovedEvent;
-
-  @Inject
   private Event<SchoolDataUserGroupDiscoveredEvent> schoolDataUserGroupDiscoveredEvent;
 
   @Inject
@@ -179,52 +174,6 @@ public class PyramusUpdater {
 
   @Inject
   private Event<SchoolDataUserGroupUserRemovedEvent> schoolDataUserGroupUserRemovedEvent;
-
-  /**
-   * Updates students from Pyramus.
-   * 
-   * @param offset first student to be updated
-   * @param maxStudents maximum batch size
-   * @return count of updated students or -1 when no students were found with given offset
-   */
-  public int updateStudents(int offset, int maxStudents) {
-    Student[] students = pyramusClient.get().get("/students/students?filterArchived=false&firstResult=" + offset + "&maxResults=" + maxStudents, Student[].class);
-    if (students.length == 0) {
-      return -1;
-    }
-
-    for (Student student : students) {
-      Person person = pyramusClient.get().get(String.format("/persons/persons/%d", student.getPersonId()), Person.class);
-      if (person.getDefaultUserId() != null && person.getDefaultUserId().equals(student.getId())) {
-        updateStudent(person, student, true);
-      }
-    }
-    
-    return students.length;
-  }
-
-  /**
-   * Updates staff members from Pyramus
-   * 
-   * @param offset first staff member to be updated
-   * @param maxStaffMembers maximum batch size
-   * @return count of updates staff membres or -1 when no staff members were found with given offset
-   */
-  public int updateStaffMembers(int offset, int maxStaffMembers) {
-    fi.pyramus.rest.model.StaffMember[] staffMembers = pyramusClient.get().get("/staff/members?firstResult=" + offset + "&maxResults=" + maxStaffMembers, fi.pyramus.rest.model.StaffMember[].class);
-    if (staffMembers.length == 0) {
-      return -1;
-    }
-    
-    for (StaffMember staffMember : staffMembers) {
-      Person person = pyramusClient.get().get(String.format("/persons/persons/%d", staffMember.getPersonId()), Person.class);
-      if (person.getDefaultUserId() != null && person.getDefaultUserId().equals(staffMember.getId())) {
-        updateStaffMember(person, staffMember, true);
-      }
-    }
-    
-    return staffMembers.length;
-  }
 
   public int updateStudyProgrammes() {
     StudyProgramme[] studyProgrammes = pyramusClient.get().get("/students/studyProgrammes", StudyProgramme[].class);
@@ -435,232 +384,6 @@ public class PyramusUpdater {
     }
   }
 
-  /**
-   * Updates staff member from Pyramus
-   * 
-   * @param pyramusId id of staff member in Pyramus
-   * @return returns whether new staff member was created or not
-   */
-  public void updateStaffMember(Long pyramusId) {
-    StaffMember staffMember = pyramusClient.get().get(String.format("/staff/members/%d", pyramusId), StaffMember.class);
-    if (staffMember == null) {
-      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifierMapper.getStaffIdentifier(pyramusId));
-      if (userEntity != null) {
-        fireStaffMemberRemoved(pyramusId);
-      }
-    } else {
-      String defaultIdentifier = null;
-
-      Person person = pyramusClient.get().get(String.format("/persons/persons/%d", staffMember.getPersonId()), Person.class);
-      if (person.getDefaultUserId() != null && person.getDefaultUserId().equals(staffMember.getId())) {
-        updateStaffMember(person, staffMember, false);
-        defaultIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
-      }
-      
-      if (defaultIdentifier == null) {
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifierMapper.getStaffIdentifier(pyramusId));
-        if (userEntity != null) {
-          defaultIdentifier = userEntity.getDefaultIdentifier();
-        }
-      }
-      
-      if (defaultIdentifier != null) {
-        fireStaffMemberUpdated(staffMember, defaultIdentifier);
-      }
-    }
-  }
-
-  /**
-   * Updates a student from Pyramus
-   * 
-   * @param pyramusId id if student in Pyramus
-   * @return whether new student was created
-   */
-  public void updateStudent(Long pyramusId) {
-    Student student = pyramusClient.get().get(String.format("/students/students/%d", pyramusId), Student.class);
-    if (student == null) {
-      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifierMapper.getStudentIdentifier(pyramusId));
-      if (userEntity != null) {
-        fireStudentRemoved(pyramusId);
-      }
-    } else {
-      String defaultIdentifier = null;
-      
-      Person person = pyramusClient.get().get(String.format("/persons/persons/%d", student.getPersonId()), Person.class);
-      if (person.getDefaultUserId() != null && person.getDefaultUserId().equals(student.getId())) {
-        updateStudent(person, student, false);
-        defaultIdentifier = identifierMapper.getStudentIdentifier(student.getId());
-      }
-      
-      if (defaultIdentifier == null) {
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifierMapper.getStudentIdentifier(pyramusId));
-        if (userEntity != null) {
-          defaultIdentifier = userEntity.getDefaultIdentifier();
-        }
-      }
-      
-      if (defaultIdentifier != null) {
-        fireStudentUpdated(student, defaultIdentifier);
-      }
-    }
-  }
-
-  /**
-   * Updates a person from Pyramus
-   * 
-   * @param pyramusId id if student in Pyramus
-   * @return whether new student was created
-   */
-  public void updatePerson(Long personId) {
-    Person person = pyramusClient.get().get(String.format("/persons/persons/%d", personId), Person.class);
-    updatePerson(person);
-  }
-  
-  private void updateStudent(Person person, Student student, boolean fireUpdate) {
-    String userIdentifier = identifierMapper.getStudentIdentifier(student.getId());
-
-    // Student found
-    if (student.getArchived()) {
-      // ...but is archived and we have an UserEntity, so we just fire removed event
-      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier);
-      if (userEntity != null) {
-        fireStudentRemoved(student.getId());
-      }
-    } else {
-      UserRole userPyramusRole = UserRole.STUDENT; 
-      String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(userPyramusRole);
-      EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier);
-      if (environmentRoleEntity == null) {
-        logger.warning(String.format("Could not find a EnvironmentRoleEntity for Pyramus role '%s'", userPyramusRole));
-      } else {
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier);
-        if (userEntity != null) {
-          // Existing user entity found
-          EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-          if ((environmentUser == null)||(environmentUser.getRole() == null)) {
-            // ... but no environment user / environment role, so we add new role for the user
-            fireStudentRoleDiscovered(student.getId(), userPyramusRole);
-          } else {
-            // ... and an existing environment user
-            if (!environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
-              // with an incorrect role
-              RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentUser.getRole());
-              
-              if (environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
-                fireStudentRoleRemoved(student.getId(), removedRoleIdentifier.getIdentifier());
-              } else {
-                Long staffMemberId = null;
-                
-                if (userEntity.getDefaultIdentifier() != null) {
-                  staffMemberId = identifierMapper.getPyramusStaffId(userEntity.getDefaultIdentifier());
-                }
-                
-                if (staffMemberId == null) {
-                  // fall back to student id (staff member role has been assignment to student due a bug)
-                  staffMemberId = student.getId();
-                }
-                
-                fireStudentRoleRemoved(staffMemberId, removedRoleIdentifier.getIdentifier());
-              }
-              
-              fireStudentRoleDiscovered(student.getId(), userPyramusRole);
-            } 
-          }
-          
-          if (fireUpdate) {
-            if (!StringUtils.equals(identifierMapper.getStudentIdentifier(student.getId()), userEntity.getDefaultIdentifier())) {
-              fireStudentUpdated(student, userIdentifier);
-            }
-          }
-          
-        } else {
-          // New user
-          fireStudentDiscovered(student);
-          fireStudentRoleDiscovered(student.getId(), userPyramusRole);
-        }
-      }
-    }
-  }
-
-  private void updateStaffMember(Person person, StaffMember staffMember, boolean fireUpdate) {
-    UserRole userPyramusRole = staffMember.getRole();
-    String userIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
-    
-    String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(userPyramusRole);
-    EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier);
-    if (environmentRoleEntity == null) {
-      logger.warning(String.format("Could not find a EnvironmentRoleEntity for Pyramus role '%s'", userPyramusRole));
-    } else {
-      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier);
-      if (userEntity != null) {
-        // Existing user entity found
-        EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-        if ((environmentUser == null)||(environmentUser.getRole() == null)) {
-          // ... but no environment user / environment role, so we add new role for the user
-          fireStaffMemberRoleDiscovered(staffMember.getId(), userPyramusRole);
-        } else {
-          // ... and an existing environment user
-          if (!environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
-            // with an incorrect role
-            RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentUser.getRole());
-            if (environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
-              Long studentId = null;
-              
-              if (userEntity.getDefaultIdentifier() != null) {
-                studentId = identifierMapper.getPyramusStudentId(userEntity.getDefaultIdentifier());
-              }
-
-              if (studentId == null) {
-                // fall back to staff member id (staff member role has been assignment to student due a bug)
-                studentId = staffMember.getId();
-              }
-              
-              fireStudentRoleRemoved(studentId, removedRoleIdentifier.getIdentifier());
-            } else {
-              fireStaffMemberRoleRemoved(staffMember.getId(), removedRoleIdentifier.getIdentifier());
-            }
-            
-            fireStaffMemberRoleDiscovered(staffMember.getId(), userPyramusRole);
-          } 
-        }
-                
-        if (fireUpdate) {
-          if (!StringUtils.equals(identifierMapper.getStaffIdentifier(staffMember.getId()), userEntity.getDefaultIdentifier())) {
-            fireStaffMemberUpdated(staffMember, userIdentifier);
-          }
-        }
-      } else {
-        // New user
-        fireStaffMemberDiscovered(staffMember);
-        fireStaffMemberRoleDiscovered(staffMember.getId(), userPyramusRole);
-      }
-    }
-  }
-  
-  private void updatePerson(Person person) {
-    Long defaultUserId = person.getDefaultUserId();
-    if (defaultUserId != null) {
-      // Try to find a student from Pyramus
-      Student student = pyramusClient.get().get(String.format("/students/students/%d", defaultUserId), Student.class);
-      if (student != null) {
-        // ... and update it
-        updateStudent(person, student, true);
-      } else {
-        // ... could not find a student, lets try a staff member
-        StaffMember staffMember = pyramusClient.get().get(String.format("/staff/members/%d", defaultUserId), StaffMember.class);
-        if (staffMember != null) {
-          // and update it
-          updateStaffMember(person, staffMember, true);
-        } else {
-          // couldn't find a staff member or student for default user
-          logger.warning(String.format("Could not find student or staff member for defaultUserId: %d", defaultUserId));
-        }          
-      }
-    } else {
-      logger.warning(String.format("Person %d does not have a defaultUserId", person.getId()));
-    }
-  }
-  
   /**
    * Updates a course from Pyramus
    * 
@@ -927,102 +650,7 @@ public class PyramusUpdater {
     
     return count;
   }
- 
-  private void fireStaffMemberDiscovered(fi.pyramus.rest.model.StaffMember staffMember) {
-    String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
-    List<String> emails = new ArrayList<>();
-    
-    Email[] staffMemberEmails = pyramusClient.get().get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
-    for (Email staffMemberEmail : staffMemberEmails) {
-      if (staffMemberEmail.getContactTypeId() != null) {
-        ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
-      
-        if (!contactType.getNonUnique())
-          emails.add(staffMemberEmail.getAddress());
-      } else
-        logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
-    }
-    
-    schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier, emails));
-  }
- 
-  private void fireStaffMemberUpdated(fi.pyramus.rest.model.StaffMember staffMember, String defaultIdentifier) {
-    String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
-    List<String> emails = new ArrayList<>();
-    
-    Email[] staffMemberEmails = pyramusClient.get().get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
-    for (Email staffMemberEmail : staffMemberEmails) {
-      if (staffMemberEmail.getContactTypeId() != null) {
-        ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
-      
-        if (!contactType.getNonUnique())
-          emails.add(staffMemberEmail.getAddress());
-      } else
-        logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
-    }
-    
-    schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, 
-        staffMemberIdentifier, 
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, 
-        defaultIdentifier,
-        emails));
-  }
- 
-  private void fireStaffMemberRemoved(Long staffMemberId) {
-    String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMemberId);
-    String searchId = staffMemberIdentifier + '/' + SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
-    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier, searchId));
-  }
-
-  private void fireStudentDiscovered(Student student) {
-    String studentIdentifier = identifierMapper.getStudentIdentifier(student.getId());
- 
-    List<String> emails = new ArrayList<>();
-
-    Email[] studentEmails = pyramusClient.get().get("/students/students/" + student.getId() + "/emails", Email[].class);
-    for (Email studentEmail : studentEmails) {
-      if (studentEmail.getContactTypeId() != null) {
-        ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
-      
-        if (!contactType.getNonUnique())
-          emails.add(studentEmail.getAddress());
-      } else
-        logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
-    }
-    
-    schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));
-  }
-
-  private void fireStudentUpdated(Student student, String defaultIdentifier) {
-    String studentIdentifier = identifierMapper.getStudentIdentifier(student.getId());
- 
-    List<String> emails = new ArrayList<>();
-    
-    Email[] studentEmails = pyramusClient.get().get("/students/students/" + student.getId() + "/emails", Email[].class);
-    for (Email studentEmail : studentEmails) {
-      if (studentEmail.getContactTypeId() != null) {
-        ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
-      
-        if (!contactType.getNonUnique())
-          emails.add(studentEmail.getAddress());
-      } else {
-        logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
-      }
-    }
-    
-    schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, 
-        studentIdentifier,
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, 
-        defaultIdentifier,
-        emails));
-  }
   
-  private void fireStudentRemoved(Long studentId) {
-    String studentIdentifier = identifierMapper.getStudentIdentifier(studentId);
-    String searchId = studentIdentifier + '/' + SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
-    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, searchId));
-  }
-
   private void fireWorkspaceDiscovered(Course course) {
     String identifier = identifierMapper.getWorkspaceIdentifier(course.getId());
     Map<String, Object> extra = new HashMap<>();
@@ -1043,28 +671,6 @@ public class PyramusUpdater {
     schoolDataWorkspaceRemovedEvent.fire(new SchoolDataWorkspaceRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, searchId));
   }
 
-  private void fireStaffMemberRoleDiscovered(Long pyramusId, UserRole userRole) {
-    String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(userRole);
-    String userIdentifier = identifierMapper.getStaffIdentifier(pyramusId);
-    schoolDataUserEnvironmentRoleDiscoveredEvent.fire(new SchoolDataUserEnvironmentRoleDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
-  }
-
-  private void fireStaffMemberRoleRemoved(Long pyramusId, String roleIdentifier) {
-    String userIdentifier = identifierMapper.getStaffIdentifier(pyramusId);
-    schoolDataUserEnvironmentRoleRemovedEvent.fire(new SchoolDataUserEnvironmentRoleRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
-  }
-  
-  private void fireStudentRoleDiscovered(Long pyramusId, UserRole userRole) {
-    String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(userRole);
-    String userIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
-    schoolDataUserEnvironmentRoleDiscoveredEvent.fire(new SchoolDataUserEnvironmentRoleDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
-  }
-
-  private void fireStudentRoleRemoved(Long pyramusId, String roleIdentifier) {
-    String userIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
-    schoolDataUserEnvironmentRoleRemovedEvent.fire(new SchoolDataUserEnvironmentRoleRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
-  }
-  
   private void fireCourseStaffMemberDiscovered(CourseStaffMember courseStaffMember) {
     String identifier = identifierMapper.getWorkspaceStaffIdentifier(courseStaffMember.getId());
     String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getStaffMemberId());
@@ -1165,6 +771,266 @@ public class PyramusUpdater {
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier,
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier,
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
+  }
+
+  public void updatePerson(Long personId) {
+    Person person = pyramusClient.get().get(String.format("/persons/persons/%d", personId), Person.class);
+    if (person != null) {
+      updatePerson(person);
+    } else {
+      logger.severe(String.format("Person %d could not be found. Skipping synchronization", personId));
+    }
+  }
+  
+  @Lock (LockType.WRITE)
+  @AccessTimeout(value=30000)
+  public void updatePerson(Person person) {
+    Long userEntityId = null;
+    
+    String defaultIdentifier = null;
+    Long defaultUserId = person.getDefaultUserId();
+    UserRole defaultUserPyramusRole = null;
+    List<String> identifiers = new ArrayList<>();
+    List<String> removedIdentifiers = new ArrayList<>();
+    List<String> updatedIdentifiers = new ArrayList<>();
+    List<String> discoveredIdentifiers = new ArrayList<>();
+    List<String> emails = new ArrayList<>();
+    
+    // List all person's students and staffMembers
+    Student[] students = pyramusClient.get().get(String.format("/persons/persons/%d/students", person.getId()), Student[].class);
+    StaffMember[] staffMembers = pyramusClient.get().get(String.format("/persons/persons/%d/staffMembers", person.getId()), StaffMember[].class);
+    
+    // If person does not have a defaultUserId specified, we try to guess something
+    if (defaultUserId == null) {
+      if ((staffMembers != null) && (staffMembers.length > 0)) {
+        // If person has a staffMember instance, lets use that one
+        defaultUserId = staffMembers[0].getId();
+      } else {
+        if (students != null) {
+          // Otherwise just use first non archived student (if any)
+          for (Student student : students) {
+            if (!student.getArchived()) {
+              defaultUserId = student.getId();
+              break;
+            }
+          }
+        }
+      }
+    }
+    
+    if (students != null) {
+      // Iterate over all student instances
+      for (Student student : students) {
+        String identifier = identifierMapper.getStudentIdentifier(student.getId());
+  
+        if (!student.getArchived()) {
+          // If student is not archived, add it to identifiers list 
+          identifiers.add(identifier);
+          
+          // If it's the specified defaultUserId, update defaultIdentifier and role accordingly
+          if ((defaultIdentifier == null) && student.getId().equals(defaultUserId)) {
+            defaultIdentifier = identifier;
+            defaultUserPyramusRole = UserRole.STUDENT;
+          }
+          
+          // List emails and add all emails that are not specified non unique (e.g. contact persons) to the emails list
+          Email[] studentEmails = pyramusClient.get().get("/students/students/" + student.getId() + "/emails", Email[].class);
+          if (studentEmails != null) {
+            for (Email studentEmail : studentEmails) {
+              if (studentEmail.getContactTypeId() != null) {
+                ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
+                if (!contactType.getNonUnique() && !emails.contains(studentEmail.getAddress())) {
+                  emails.add(studentEmail.getAddress());
+                }
+              } else {
+                logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
+              }
+            }
+          }
+        } else {
+          // If the student instance if archived, we add it the the removed indentifiers list
+          removedIdentifiers.add(identifier);
+        }
+      }
+    }
+    
+    if (staffMembers != null) {
+      for (StaffMember staffMember : staffMembers) {
+        // Add staffMember identifier into the identifier list
+        String identifier = identifierMapper.getStaffIdentifier(staffMember.getId());
+        identifiers.add(identifier);
+        
+        // If it's the specified defaultUserId, update defaultIdentifier and role accordingly
+        if ((defaultIdentifier == null) && staffMember.getId().equals(defaultUserId)) {
+          defaultIdentifier = identifier;
+          defaultUserPyramusRole = staffMember.getRole();
+        }
+      
+        // List emails and add all emails that are not specified non unique (e.g. contact persons) to the emails list
+        Email[] staffMemberEmails = pyramusClient.get().get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
+        if (staffMemberEmails != null) {
+          for (Email staffMemberEmail : staffMemberEmails) {
+            if (staffMemberEmail.getContactTypeId() != null) {
+              ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
+              if (!contactType.getNonUnique() && !emails.contains(staffMemberEmail.getAddress())) {
+                emails.add(staffMemberEmail.getAddress());
+              }
+            } else {
+              logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
+            }
+          }
+        }
+      }
+    }
+    
+    // Iterate over all discovered identifiers (students and staff members)
+    for (String identifier : identifiers) {
+      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+      if (userEntity == null) {
+        // If no user entity can be found by the identifier, add it the the discovered identities list
+        discoveredIdentifiers.add(identifier);
+      } else {
+        // user entity found with given identity, so we need to make sure they all belong to same user
+        if (userEntityId == null) {
+          userEntityId = userEntity.getId();
+        } else if (!userEntityId.equals(userEntity.getId())) {
+          logger.warning(String.format("Person %d synchronization failed. Found two userEntitys bound to it (%d and %d)", person.getId(), userEntityId, userEntity.getId()));
+          return;
+        }
+      }
+    }
+    
+    UserEntity userEntity = userEntityId != null ? userEntityController.findUserEntityById(userEntityId) : null;
+    
+    if (userEntity != null) {
+      // User already exists in the system so we check which of the idetifiers have been removed and which just updated
+      List<UserSchoolDataIdentifier> existingSchoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
+      for (UserSchoolDataIdentifier existingSchoolDataIdentifier : existingSchoolDataIdentifiers) {
+        if (existingSchoolDataIdentifier.getDataSource().getIdentifier().equals(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE)) {
+          if (!identifiers.contains(existingSchoolDataIdentifier.getIdentifier())) {
+            if (!removedIdentifiers.contains(existingSchoolDataIdentifier.getIdentifier())) {
+              removedIdentifiers.add(existingSchoolDataIdentifier.getIdentifier());
+            }
+          } else if (!discoveredIdentifiers.contains(existingSchoolDataIdentifier.getIdentifier())) {
+            updatedIdentifiers.add(existingSchoolDataIdentifier.getIdentifier());
+          }
+        }
+      }
+    }
+    
+    // Resolve the user's desired environment role
+    SchoolDataIdentifier environmentRoleIdentifier = null;
+    if (defaultUserPyramusRole != null) {
+      String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(defaultUserPyramusRole);
+      environmentRoleIdentifier = new SchoolDataIdentifier(roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    }
+    
+    // And finally fire the update event
+    fireSchoolDataUserUpdated(userEntityId, defaultIdentifier, removedIdentifiers, updatedIdentifiers, discoveredIdentifiers, emails, environmentRoleIdentifier);
+  }
+
+  private void fireSchoolDataUserUpdated(Long userEntityId, String defaultIdentifier, List<String> removedIdentifiers, List<String> updatedIdentifiers,
+      List<String> discoveredIdentifiers, List<String> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
+    
+    if (discoveredIdentifiers == null) {
+      discoveredIdentifiers = Collections.emptyList();
+    }
+    
+    if (updatedIdentifiers == null) {
+      updatedIdentifiers = Collections.emptyList();
+    }
+    
+    if (removedIdentifiers == null) {
+      removedIdentifiers = Collections.emptyList();
+    }
+
+    schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(userEntityId, enivormentRoleIdentifier, 
+        toIdentifiers(discoveredIdentifiers), toIdentifiers(updatedIdentifiers), 
+        toIdentifiers(removedIdentifiers), toIdentifier(defaultIdentifier), emails));
+  }
+  
+  private SchoolDataIdentifier toIdentifier(String identifier) {
+    return new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+  }
+  
+  private List<SchoolDataIdentifier> toIdentifiers(List<String> identifiers) {
+    List<SchoolDataIdentifier> result = new ArrayList<>();
+    
+    for (String identifier : identifiers) {
+      result.add(toIdentifier(identifier));
+    }
+    
+    return result;
+  }
+
+  public void updateStaffMember(Long staffMemberId) {
+    StaffMember staffMember = pyramusClient.get().get(String.format("/staff/members/%d", staffMemberId), StaffMember.class);
+    if (staffMember != null) {
+      updatePerson(staffMember.getPersonId());
+    } else {
+      identifierRemoved(toIdentifier(identifierMapper.getStaffIdentifier(staffMemberId)));
+    }
+  }
+
+  public void updateStudent(Long studentId) {
+    Student student = pyramusClient.get().get(String.format("/students/students/%d", studentId), Student.class);
+    if (student != null) {
+      updatePerson(student.getPersonId());
+    } else {
+      identifierRemoved(toIdentifier(identifierMapper.getStudentIdentifier(studentId)));
+    }
+  }
+
+  private void identifierRemoved(SchoolDataIdentifier identifier) {
+    UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
+    if (schoolDataIdentifier != null) {
+      UserEntity userEntity = schoolDataIdentifier.getUserEntity();
+      
+      List<UserSchoolDataIdentifier> existingIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
+      List<SchoolDataIdentifier> updatedIdentifiers = new ArrayList<>();
+      
+      for (UserSchoolDataIdentifier existingIdentifier : existingIdentifiers) {
+        if (!existingIdentifier.getDataSource().equals(identifier.getDataSource()) && existingIdentifier.getIdentifier().equals(identifier.getIdentifier())) {
+          updatedIdentifiers.add(new SchoolDataIdentifier(existingIdentifier.getIdentifier(), existingIdentifier.getDataSource().getIdentifier()));
+        }
+      }
+      
+      SchoolDataIdentifier roleIdentifier = getUserEntityEnvironmentRoleIdentifier(userEntity);
+      List<String> emails = userEmailEntityController.listAddressesByUserEntity(userEntity);
+      
+      schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(userEntity.getId(), 
+          roleIdentifier, 
+          null, 
+          updatedIdentifiers, 
+          Arrays.asList(identifier), 
+          null, 
+          emails));
+    }
+  }
+  
+  private SchoolDataIdentifier getUserEntityEnvironmentRoleIdentifier(UserEntity userEntity) {
+    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+    if (environmentUser != null) {
+      List<RoleSchoolDataIdentifier> identifiers = environmentRoleEntityController.listRoleSchoolDataIdentifiersByEnvironmentRoleEntity(environmentUser.getRole());
+      for (RoleSchoolDataIdentifier identifier : identifiers) {
+        return new SchoolDataIdentifier(identifier.getIdentifier(), identifier.getDataSource().getIdentifier());
+      }
+    }
+    
+    return null;
+  }
+  
+  public int updatePersons(int offset, int maxCourses) {
+    Person[] persons = pyramusClient.get().get(String.format("/persons/persons?filterArchived=false&firstResult=%d&maxResults=%d", offset, maxCourses), Person[].class);
+    if ((persons == null) || (persons.length == 0)) {
+      return -1;
+    }
+    
+    for (Person person : persons) {
+      updatePerson(person);
+    }
+    
+    return 0;
   }
 
 }
