@@ -30,6 +30,7 @@ import fi.muikku.schooldata.entity.UserAddress;
 import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.UserImage;
+import fi.muikku.schooldata.entity.UserPhoneNumber;
 import fi.muikku.schooldata.entity.UserProperty;
 import fi.pyramus.rest.model.Address;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
@@ -37,6 +38,7 @@ import fi.pyramus.rest.model.Language;
 import fi.pyramus.rest.model.Municipality;
 import fi.pyramus.rest.model.Nationality;
 import fi.pyramus.rest.model.Person;
+import fi.pyramus.rest.model.PhoneNumber;
 import fi.pyramus.rest.model.School;
 import fi.pyramus.rest.model.StaffMember;
 import fi.pyramus.rest.model.Student;
@@ -605,6 +607,28 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
     
     return entityFactory.createEntities(userIdentifier, addresses);
+  }
+
+  @Override
+  public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier)
+      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    
+    if (!StringUtils.equals(userIdentifier.getDataSource(), getSchoolDataSource())) {
+      throw new SchoolDataBridgeRequestException(String.format("Could not list phone numbers for user from school data source %s", userIdentifier.getDataSource()));
+    }
+    
+    PhoneNumber[] phoneNumbers = null;
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
+    if (pyramusStudentId != null) {
+      phoneNumbers = pyramusClient.get(String.format("/students/students/%d/phoneNumbers", pyramusStudentId), PhoneNumber[].class);
+    } else {
+      Long pyramusStaffId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
+      if (pyramusStaffId != null) {
+        phoneNumbers = pyramusClient.get(String.format("/staff/members/%d/phoneNumbers", pyramusStaffId), PhoneNumber[].class);
+      }
+    }
+    
+    return entityFactory.createEntities(userIdentifier, phoneNumbers);
   }
 
   @Override

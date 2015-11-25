@@ -10,6 +10,7 @@ import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserAddress;
+import fi.muikku.schooldata.entity.UserPhoneNumber;
 
 public class UserController {
   
@@ -42,6 +43,14 @@ public class UserController {
   
   public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listUserAddressses(userIdentifier);
+  }
+
+  public List<UserPhoneNumber> listUserPhoneNumbers(User user) {
+    return listUserPhoneNumbers(new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource()));
+  }
+  
+  public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier) {
+    return userSchoolDataController.listUserPhoneNumbers(userIdentifier);
   }
   
 }
