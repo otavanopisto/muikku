@@ -18,6 +18,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import fi.muikku.TestUtilities;
+import fi.pyramus.rest.model.Grade;
+import fi.pyramus.rest.model.GradingScale;
 import fi.pyramus.rest.model.ContactType;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
@@ -137,6 +139,8 @@ public class PyramusMocks{
         .withHeader("Content-Type", "application/json")
         .withBody(studentArrayJson)
         .withStatus(200)));
+//  TODO: Student assessment    
+//    /students/students/%d/courses/%d/assessments/", studentId, courseId
     
     /* Student #2 for workspace #2*/
     DateTime birthday2 = new DateTime(1992, 2, 2, 0, 0, 0, 0);
@@ -171,7 +175,9 @@ public class PyramusMocks{
         .withHeader("Content-Type", "application/json")
         .withBody(student2ArrayJson)
         .withStatus(200)));
-       
+//      TODO: Student assessment
+//    /students/students/%d/courses/%d/assessments/", studentId, courseId
+    
     /* Student #2 for workspace #2 */
 
     Person staff1 = mockPerson(2l, birthday, "030545-3454", fi.pyramus.rest.model.Sex.MALE, 2l);    
@@ -401,6 +407,13 @@ public class PyramusMocks{
         .withHeader("Content-Type", "application/json")
         .withBody(courseStudenJson)
         .withStatus(200)));
+        
+    stubFor(get(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseStudent.getCourseId())))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(new ArrayList<>()))
+        .withStatus(200)));
+    
     
     CourseStudent courseStudent2 = new CourseStudent(2l, 2l, 5l, new DateTime(2010, 2, 2, 0, 0, 0, 0), false, null, null, null, null, null);
     CourseStudent[] csArray2 = { courseStudent2 };
@@ -423,6 +436,12 @@ public class PyramusMocks{
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(courseStudenJson2)
+        .withStatus(200)));
+
+    stubFor(get(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student2.getId(), courseStudent2.getCourseId())))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(new ArrayList<>()))
         .withStatus(200)));
     
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, 1l, 4l, 7l);
@@ -769,7 +788,49 @@ public class PyramusMocks{
         .withHeader("Content-Type", "application/json")
         .withBody(eduTimeUnitArrayJson)
         .withStatus(200)));
+    
+    List<GradingScale> gradingScales = new ArrayList<GradingScale>();
+    GradingScale gs = new GradingScale(1l, "Pass/Fail", "Passed or failed scale", false);
+    gradingScales.add(gs);
+    stubFor(get(urlEqualTo("/1/common/gradingScales"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(gradingScales))
+        .withStatus(200)));
 
+    stubFor(get(urlEqualTo(String.format("/1/common/gradingScales/%d", gs.getId())))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(gs))
+        .withStatus(200)));
+    
+    Grade grade1 = new Grade(1l, "Excellent", "Excellent answer showing expertise in area of study", 1l, true, "0", null, false);
+    Grade grade2 = new Grade(2l, "Failed", "Failed answer. Not proving any expertise in the matter.", 1l, false, "1", null, false);
+    List<Grade> grades = new ArrayList<Grade>();
+    grades.add(grade1);
+    grades.add(grade2);
+    stubFor(get(urlEqualTo(String.format("/1/common/gradingScales/%d/grades", gs.getId())))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(grades))
+        .withStatus(200)));
+
+    stubFor(get(urlEqualTo(String.format("/1/common/gradingScales/%d/grades/%d", gs.getId(), grade1.getId())))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(grade1))
+        .withStatus(200)));
+    stubFor(get(urlEqualTo(String.format("/1/common/gradingScales/%d/grades/%d", gs.getId(), grade2.getId())))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(grade2))
+        .withStatus(200)));
+    
+    stubFor(get(urlEqualTo(String.format("/1/common/gradingScales/?filterArchived=true")))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(gradingScales))
+        .withStatus(200)));
   }
 
   public static void mockCourseTypes() throws JsonProcessingException {
