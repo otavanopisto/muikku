@@ -600,7 +600,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     } else {
       Long pyramusStaffId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
       if (pyramusStaffId != null) {
-        addresses = new Address[0];
+        addresses = pyramusClient.get(String.format("/staff/members/%d/addresses", pyramusStaffId), Address[].class);
       }
     }
     
