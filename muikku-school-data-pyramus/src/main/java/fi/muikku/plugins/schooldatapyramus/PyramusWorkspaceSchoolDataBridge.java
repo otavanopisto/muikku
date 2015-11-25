@@ -1,18 +1,23 @@
 package fi.muikku.plugins.schooldatapyramus;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
@@ -49,6 +54,14 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Inject
   private PluginSettingsController pluginSettingsController;
+
+  @PostConstruct
+  public void init() throws IOException {
+    String archiveChanges = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypeChange.archive");    
+    participationTypeChangesArchive = new ObjectMapper().readValue(archiveChanges, new TypeReference<Map<String, Long>>() {});
+    String unarchiveChanges = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypeChange.archive");    
+    participationTypeChangesUnarchive = new ObjectMapper().readValue(unarchiveChanges, new TypeReference<Map<String, Long>>() {});
+  }
 
   @Override
   public String getSchoolDataSource() {
@@ -268,37 +281,18 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Override
   public void archiveWorkspaceUser(WorkspaceUser workspaceUser) {
-    // TODO all sorts of error logging
     Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier());
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier());
     CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
+    // conditional CourseStudent.participationType from [A,B,C] to D
     if (courseStudent != null) {
-      // conditional CourseStudent.participationType from [A,B,C] to D
-      // TODO support for multiple type changes, e.g. 1,2,3=4;5,6,7=8 
-      String archiveChange = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypeChange.archive");
-      if (!StringUtils.isEmpty(archiveChange)) {
-        String[] changeTypes = archiveChange.split("=");
-        if (changeTypes.length == 2) {
-          String[] fromTypes = changeTypes[0].split(",");
-          String toType = changeTypes[1];
-          if (fromTypes.length > 0 && NumberUtils.isDigits(toType)) {
-            boolean needsChange = false;
-            Long[] fromIds = new Long[fromTypes.length];
-            for (int i = 0; i < fromTypes.length; i++) {
-              fromIds[i] = NumberUtils.isDigits(fromTypes[i]) ? Long.valueOf(fromTypes[i]) : -1;
-              if (fromIds[i].equals(courseStudent.getParticipationTypeId())) {
-                needsChange = true;
-                break;
-              }
-            }
-            if (needsChange) {
-              CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", Long.valueOf(toType)), CourseParticipationType.class);
-              if (participationType != null) {
-                courseStudent.setParticipationTypeId(participationType.getId());
-                pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
-              }
-            }
-          }
+      Long currentParticipationType = courseStudent.getParticipationTypeId();
+      Long newParticipationType = participationTypeChangesArchive.get(courseStudent.getParticipationTypeId());
+      if (newParticipationType != null && !newParticipationType.equals(currentParticipationType)) {
+        CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
+        if (participationType != null) {
+          courseStudent.setParticipationTypeId(participationType.getId());
+          pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
         }
       }
     }
@@ -310,36 +304,21 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier());
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier());
     CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
+    // conditional CourseStudent.participationType from [A,B,C] to D
     if (courseStudent != null) {
-      // conditional CourseStudent.participationType from [A,B,C] to D
-      // TODO support for multiple type changes, e.g. 1,2,3=4;5,6,7=8 
-      String archiveChange = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypeChange.unarchive");
-      if (!StringUtils.isEmpty(archiveChange)) {
-        String[] changeTypes = archiveChange.split("=");
-        if (changeTypes.length == 2) {
-          String[] fromTypes = changeTypes[0].split(",");
-          String toType = changeTypes[1];
-          if (fromTypes.length > 0 && NumberUtils.isDigits(toType)) {
-            boolean needsChange = false;
-            Long[] fromIds = new Long[fromTypes.length];
-            for (int i = 0; i < fromTypes.length; i++) {
-              fromIds[i] = NumberUtils.isDigits(fromTypes[i]) ? Long.valueOf(fromTypes[i]) : -1;
-              if (fromIds[i].equals(courseStudent.getParticipationTypeId())) {
-                needsChange = true;
-                break;
-              }
-            }
-            if (needsChange) {
-              CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", Long.valueOf(toType)), CourseParticipationType.class);
-              if (participationType != null) {
-                courseStudent.setParticipationTypeId(participationType.getId());
-                pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
-              }
-            }
-          }
+      Long currentParticipationType = courseStudent.getParticipationTypeId();
+      Long newParticipationType = participationTypeChangesUnarchive.get(courseStudent.getParticipationTypeId());
+      if (newParticipationType != null && !newParticipationType.equals(currentParticipationType)) {
+        CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
+        if (participationType != null) {
+          courseStudent.setParticipationTypeId(participationType.getId());
+          pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
         }
       }
     }
   }
 
+  private Map<String,Long> participationTypeChangesArchive;
+  private Map<String,Long> participationTypeChangesUnarchive;
+  
 }
