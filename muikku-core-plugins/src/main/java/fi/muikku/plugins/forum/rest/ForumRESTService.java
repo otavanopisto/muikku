@@ -205,6 +205,31 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
   }
+
+  @PUT
+  @Path ("/areas/{AREAID}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response updateArea(
+      @Context Request request, 
+      @PathParam ("AREAID") Long areaId,
+      ForumAreaRESTModel restModel) throws AuthorizationException {
+    ForumArea forumArea = forumController.getForumArea(areaId);
+    
+    if (forumArea != null) {
+      if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_UPDATEFORUM, forumArea)) {
+        
+        forumController.updateForumAreaName(forumArea, restModel.getName());
+        
+        return Response
+            .noContent()
+            .build();
+      } else {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    } else {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+  }
   
   @DELETE
   @Path ("/areas/{AREAID}")

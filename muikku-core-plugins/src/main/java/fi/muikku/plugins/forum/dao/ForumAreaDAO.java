@@ -14,4 +14,9 @@ public class ForumAreaDAO extends CorePluginsDAO<ForumArea> {
   public void delete(ForumArea forumArea) {
     super.delete(forumArea);
   }
+  
+  public ForumArea updateForumArea(ForumArea forumArea, String name) {
+    forumArea.setName(name);
+    return persist(forumArea);
+  }
 }
