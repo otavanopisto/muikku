@@ -518,6 +518,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void logout() {
+    navigate("/", true);
     waitAndClick("a.lu-action-signout");
     waitForPresent(".index");    
   }
