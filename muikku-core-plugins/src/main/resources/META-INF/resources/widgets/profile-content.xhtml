@@ -14,15 +14,26 @@
     <div class="profile-data-wrapper">
       <h1 class="profile-user-realname">#{profileBackingBean.displayName}</h1>
       
-      <h2>#{i18n.text['plugin.profile.emailsLabel']}</h2>
-      <ui:repeat var="email" value="#{profileBackingBean.emails}">
-        <div class="profile-user-email">#{email}</div>
-      </ui:repeat>
+      <ui:fragment rendered="#{!empty(profileBackingBean.emails)}">
+        <h2>#{i18n.text['plugin.profile.emailsLabel']}</h2>
+        <ui:repeat var="email" value="#{profileBackingBean.emails}">
+          <div class="profile-user-email">#{email}</div>
+        </ui:repeat>
+      </ui:fragment>
       
-      <h2>#{i18n.text['plugin.profile.addressesLabel']}</h2>
-      <ui:repeat var="address" value="#{profileBackingBean.addresses}">
-        <div class="profile-user-address">#{address}</div>
-      </ui:repeat>
+      <ui:fragment rendered="#{!empty(profileBackingBean.addresses)}">
+        <h2>#{i18n.text['plugin.profile.addressesLabel']}</h2>
+        <ui:repeat var="address" value="#{profileBackingBean.addresses}">
+          <div class="profile-user-address">#{address}</div>
+        </ui:repeat>
+      </ui:fragment>
+      
+      <ui:fragment rendered="#{!empty(profileBackingBean.phoneNumbers)}">
+        <h2>#{i18n.text['plugin.profile.phoneNumbers']}</h2>
+        <ui:repeat var="phoneNumber" value="#{profileBackingBean.phoneNumbers}">
+          <div class="profile-user-phone-number">#{phoneNumber}</div>
+        </ui:repeat>
+      </ui:fragment>
       
       <div class="profile-change-password-container">
         <div class="profile-change-password">#{i18n.text['plugin.profile.changePassword.buttonLabel']}</div>

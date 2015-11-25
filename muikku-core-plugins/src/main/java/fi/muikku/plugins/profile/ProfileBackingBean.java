@@ -14,6 +14,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserAddress;
+import fi.muikku.schooldata.entity.UserPhoneNumber;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEmailEntityController;
@@ -40,6 +41,7 @@ public class ProfileBackingBean {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
     List<UserAddress> userAddresses = userController.listUserAddresses(user);
+    List<UserPhoneNumber> userPhoneNumbers = userController.listUserPhoneNumbers(user);
     
     displayName = user.getDisplayName();
     
@@ -47,7 +49,12 @@ public class ProfileBackingBean {
     for (UserAddress userAddress : userAddresses) {
       addresses.add(String.format("%s %s %s %s", userAddress.getStreet(), userAddress.getPostalCode(), userAddress.getCity(), userAddress.getCountry()));
     }
-
+    
+    phoneNumbers = new ArrayList<>();
+    for (UserPhoneNumber userPhoneNumber : userPhoneNumbers) {
+      phoneNumbers.add(userPhoneNumber.getNumber());
+    }
+    
     // TODO: Shouldn't these emails come from school data bridge?
     emails = userEmailEntityController.listAddressesByUserEntity(loggedUserEntity);
     
@@ -66,7 +73,12 @@ public class ProfileBackingBean {
     return emails;
   }
   
+  public List<String> getPhoneNumbers() {
+    return phoneNumbers;
+  }
+  
   private String displayName;
   private List<String> emails;
   private List<String> addresses;
+  private List<String> phoneNumbers;
 }
