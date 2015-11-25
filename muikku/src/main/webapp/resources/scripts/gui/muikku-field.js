@@ -463,6 +463,7 @@
     _create : function() {
       this._saveTimeoutId = null;
       this._saveFailedTimeoutId = null;
+      this._notifyNoConnectionTimeoutId = null;
       
       $(this.element).addClass('muikku-field');
       if (this.trackChange()) {
@@ -556,86 +557,15 @@
         }
       }
     },
-    
     _saveFailed: function() {
-      this._connectionFailed();
-    },
-    _connectionFailed: function() {
+      $(document).connectionLostNotifier("notifyConnectionLost");
       
-      var connectionLostOverlay = $('<div>')
-        .addClass('connection-lost-overlay')
-        .appendTo('body')
-        .fadeIn(500);
-      
-      var connectionLostDialog = $('<div>')
-        .addClass('connection-lost-dialog')
-        .appendTo('body')
-        .fadeIn('50');
-      
-      var connectionLostDialogContainer = $('<div>')
-        .addClass('connection-lost-dialog-container')
-        .appendTo(connectionLostDialog);
-    
-      $('<div>')
-        .addClass('connection-lost-dialog-title')
-        .text(getLocaleText('plugin.workspace.connectionlost.dialog.title'))
-        .appendTo(connectionLostDialogContainer);
-      
-      $('<div>')
-        .addClass('connection-lost-dialog-description')
-        .text(getLocaleText('plugin.workspace.connectionlost.dialog.description'))
-        .appendTo(connectionLostDialogContainer);
-      
-      $('<div>')
-        .addClass('loader')
-        .append($('<div>')
-          .addClass('inner one'))
-        .append($('<div>')
-          .addClass('inner two') )
-        .append($('<div>')
-          .addClass('inner three'))
-        .appendTo(connectionLostDialogContainer);
-
-      this._reconnect();
-        
-    },
-    _reconnect: function() {
-      
-      setTimeout(function() {
-        
-        $('.loader').remove();
-        
-        $('.connection-lost-dialog-description')
-        .animate({
-            opacity: 0
-          }, {
-            duration : 150,
-            easing : "easeInOutQuint",
-            complete: function() {
-              $('.connection-lost-dialog-description').text(getLocaleText('plugin.workspace.connectionlost.dialog.automaticReconnectFailed'));
-              
-              $('.connection-lost-dialog-description').animate({
-                opacity: 1
-              }, {
-                duration : 150,
-                easing : "easeInOutQuint",
-                complete: function() {
-                 
-                }
-              });
-              
-              $('<div>')
-                .addClass('connection-lost-dialog-reconnectButton')
-                .text(getLocaleText('plugin.workspace.connectionlost.dialog.reconnectButtonLabel'))
-                .click(function(){
-                  location.reload();
-                })
-                .appendTo('.connection-lost-dialog-container');
-            }
-          });
-
-      }, 7000);
-      
+      if (this._notifyNoConnectionTimeoutId == null) {
+        this._notifyNoConnectionTimeoutId = setTimeout(
+            function() {
+              $(document).connectionLostNotifier("notifyNoConnection");
+            }, 10000);
+      }
     },
     _propagateChange: function () {
       $(this.element)
@@ -671,6 +601,13 @@
           clearTimeout(this._saveFailedTimeoutId);
       }
       this._saveFailedTimeoutId = null;
+
+      if (this._notifyNoConnectionTimeoutId != null) {
+          clearTimeout(this._notifyNoConnectionTimeoutId);
+      }
+      this._notifyNoConnectionTimeoutId = null;
+      
+      $(document).connectionLostNotifier("notifyReconnected");
 
       // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
       if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
