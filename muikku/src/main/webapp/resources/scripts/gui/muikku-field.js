@@ -562,22 +562,78 @@
       this._connectionFailed();
     },
     _connectionFailed: function() {
-      renderDustTemplate('workspace/materials-connection-lost-dialog.dust', { }, $.proxy(function (text) {
-        var dialog = $(text);
-        $(text).dialog({
-          modal: true, 
-          resizable: false,
-          resizable: false,
-          dialogClass: "workspace-materials-connectionlost-dialog",
-          buttons: [{
-            'text': dialog.data('button-reconnect-text'),
-            'class': 'reconnect-button',
-            'click': function(event) {
-              $(this).dialog().remove();
+      
+      var connectionLostOverlay = $('<div>')
+        .addClass('connection-lost-overlay')
+        .appendTo('body')
+        .fadeIn(500);
+      
+      var connectionLostDialog = $('<div>')
+        .addClass('connection-lost-dialog')
+        .appendTo('body')
+        .fadeIn('50');
+      
+      var connectionLostDialogContainer = $('<div>')
+        .addClass('connection-lost-dialog-container')
+        .appendTo(connectionLostDialog);
+    
+      $('<div>')
+        .addClass('connection-lost-dialog-title')
+        .text(getLocaleText('plugin.workspace.connectionlost.dialog.title'))
+        .appendTo(connectionLostDialogContainer);
+      
+      $('<div>')
+        .addClass('connection-lost-dialog-description')
+        .text(getLocaleText('plugin.workspace.connectionlost.dialog.description'))
+        .appendTo(connectionLostDialogContainer);
+      
+      $('<div>')
+        .addClass('loader')
+        .append($('<div>')
+          .addClass('inner one'))
+        .append($('<div>')
+          .addClass('inner two') )
+        .append($('<div>')
+          .addClass('inner three'))
+        .appendTo(connectionLostDialogContainer);
+
+      this._reconnect();
+        
+    },
+    _reconnect: function() {
+      
+      setTimeout(function() {
+        
+        $('.loader').remove();
+        
+        $('.connection-lost-dialog-description')
+        .animate({
+            opacity: 0
+          }, {
+            duration : 150,
+            easing : "easeInOutQuint",
+            complete: function() {
+              $('.connection-lost-dialog-description').text(getLocaleText('plugin.workspace.connectionlost.dialog.automaticReconnectFailed'));
+              
+              $('.connection-lost-dialog-description').animate({
+                opacity: 1
+              }, {
+                duration : 150,
+                easing : "easeInOutQuint",
+                complete: function() {
+                 
+                }
+              });
+              
+              $('<div>')
+                .addClass('connection-lost-dialog-reconnectButton')
+                .text(getLocaleText('plugin.workspace.connectionlost.dialog.reconnectButtonLabel'))
+                .appendTo('.connection-lost-dialog-container');
             }
-          }]
-        });
-      }, this));
+          });
+
+      }, 7000);
+      
     },
     _propagateChange: function () {
       $(this.element)

@@ -1,3 +1,0 @@
-<div class="workspace-material-connectionlost-dialog" title="{#localize key="plugin.workspace.connectionlost.dialog.title"/}" data-button-reconnect-text="{#localize key="plugin.workspace.connectionlost.dialog.reconnectButtonLabel"/}">
-  {#localize key="plugin.workspace.connectionlost.dialog.description"/}
-</div>
