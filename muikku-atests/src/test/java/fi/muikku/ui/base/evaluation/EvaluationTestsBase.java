@@ -11,6 +11,7 @@ public class EvaluationTestsBase extends AbstractUITest {
 
   @Test
   public void evaluateStudentTest() throws Exception {
+    loginStudent1();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -20,7 +21,6 @@ public class EvaluationTestsBase extends AbstractUITest {
         "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
         "EVALUATED");
       try {
-        loginStudent1();
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
@@ -35,7 +35,14 @@ public class EvaluationTestsBase extends AbstractUITest {
         logout();
         loginAdmin();
         navigate(String.format("/evaluation"), true);
-        
+        waitAndClick(".assignment-submitted");
+        waitAndClick(".cke_contents");
+        getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
+        selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
+        selectOption("select[name='assessor']", "3");
+        click(".save-evaluation-button");
+        waitForPresentAndVisible(".evaluation-assignment-wrapper");
+        assertClassPresent(".evaluation-assignment-wrapper", "assignment-evaluated");
       }finally{
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
