@@ -853,7 +853,7 @@
       maxFileSize = Number($("input[name='max-file-size']").val());
     }
     
-    renderDustTemplate('workspace/materials-assignment-attachement-delete-confirm.dust', { }, $.proxy(function (text) {
+    renderDustTemplate('workspace/materials-assignment-attachement-remove-confirm.dust', { }, $.proxy(function (text) {
       // File field support
       $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
         $(field)
