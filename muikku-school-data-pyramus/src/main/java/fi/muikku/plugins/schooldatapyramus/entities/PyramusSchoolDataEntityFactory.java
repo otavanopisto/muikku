@@ -12,11 +12,13 @@ import org.joda.time.DateTime;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserAddress;
 import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
@@ -25,6 +27,7 @@ import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
+import fi.pyramus.rest.model.Address;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseAssessment;
 import fi.pyramus.rest.model.CourseAssessmentRequest;
@@ -345,6 +348,21 @@ public class PyramusSchoolDataEntityFactory {
     }
 
     return WorkspaceRoleArchetype.CUSTOM;
+  }
+
+  public List<UserAddress> createEntities(SchoolDataIdentifier userIdentifier, Address[] addresses) {
+    List<UserAddress> result = new ArrayList<>();
+    
+    for (Address address : addresses) {
+      result.add(new PyramusUserAddress(userIdentifier, 
+          address.getStreetAddress(), 
+          address.getPostalCode(), 
+          address.getCity(), 
+          null, 
+          address.getCountry()));
+    }
+    
+    return result;
   }
 
 }

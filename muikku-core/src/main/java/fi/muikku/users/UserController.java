@@ -6,8 +6,10 @@ import javax.inject.Inject;
 
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserAddress;
 
 public class UserController {
   
@@ -32,6 +34,14 @@ public class UserController {
 
   public List<User> listUsers() {
     return userSchoolDataController.listUsers();
+  }
+  
+  public List<UserAddress> listUserAddresses(User user) {
+    return listUserAddresses(new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource()));
+  }
+  
+  public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier) {
+    return userSchoolDataController.listUserAddressses(userIdentifier);
   }
   
 }

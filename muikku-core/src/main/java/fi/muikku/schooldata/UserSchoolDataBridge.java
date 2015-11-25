@@ -6,6 +6,7 @@ import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserAddress;
 import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
@@ -261,4 +262,5 @@ public interface UserSchoolDataBridge {
 
   public String findUsername(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
+  public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 }

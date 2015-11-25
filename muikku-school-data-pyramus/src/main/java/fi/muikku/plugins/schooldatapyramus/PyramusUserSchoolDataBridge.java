@@ -20,15 +20,18 @@ import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.muikku.plugins.schooldatapyramus.rest.PyramusRestClientUnauthorizedException;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.UserSchoolDataBridge;
 import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserAddress;
 import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
+import fi.pyramus.rest.model.Address;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.Language;
 import fi.pyramus.rest.model.Municipality;
@@ -585,6 +588,26 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
+  public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    if (!StringUtils.equals(userIdentifier.getDataSource(), getSchoolDataSource())) {
+      throw new SchoolDataBridgeRequestException(String.format("Could not list email addresses for user from school data source %s", userIdentifier.getDataSource()));
+    }
+    
+    Address[] addresses = null;
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
+    if (pyramusStudentId != null) {
+      addresses = pyramusClient.get(String.format("/students/students/%d/addresses", pyramusStudentId), Address[].class);
+    } else {
+      Long pyramusStaffId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
+      if (pyramusStaffId != null) {
+        addresses = new Address[0];
+      }
+    }
+    
+    return entityFactory.createEntities(userIdentifier, addresses);
+  }
+
+  @Override
   public boolean confirmResetPassword(String resetCode, String newPassword) {
     String clientApplicationSecret = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.clientSecret");
     
@@ -617,7 +640,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
     }
   }
-
 
 
 }
