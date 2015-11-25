@@ -284,7 +284,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier());
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier());
     CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
-    // conditional CourseStudent.participationType from [A,B,C] to D
     if (courseStudent != null) {
       Long currentParticipationType = courseStudent.getParticipationTypeId();
       Long newParticipationType = participationTypeChangesArchive.get(courseStudent.getParticipationTypeId());
@@ -300,11 +299,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Override
   public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser) {
-    // TODO all sorts of error logging
     Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier());
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier());
     CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
-    // conditional CourseStudent.participationType from [A,B,C] to D
     if (courseStudent != null) {
       Long currentParticipationType = courseStudent.getParticipationTypeId();
       Long newParticipationType = participationTypeChangesUnarchive.get(courseStudent.getParticipationTypeId());
