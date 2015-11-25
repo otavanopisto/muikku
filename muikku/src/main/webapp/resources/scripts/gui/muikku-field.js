@@ -558,7 +558,6 @@
     },
     
     _saveFailed: function() {
-//        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingTimedOut'));
       this._connectionFailed();
     },
     _connectionFailed: function() {
@@ -628,6 +627,9 @@
               $('<div>')
                 .addClass('connection-lost-dialog-reconnectButton')
                 .text(getLocaleText('plugin.workspace.connectionlost.dialog.reconnectButtonLabel'))
+                .click(function(){
+                  location.reload();
+                })
                 .appendTo('.connection-lost-dialog-container');
             }
           });
