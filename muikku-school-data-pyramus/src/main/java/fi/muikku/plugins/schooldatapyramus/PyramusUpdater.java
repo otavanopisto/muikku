@@ -1013,7 +1013,9 @@ public class PyramusUpdater {
     if (environmentUser != null) {
       List<RoleSchoolDataIdentifier> identifiers = environmentRoleEntityController.listRoleSchoolDataIdentifiersByEnvironmentRoleEntity(environmentUser.getRole());
       for (RoleSchoolDataIdentifier identifier : identifiers) {
-        return new SchoolDataIdentifier(identifier.getIdentifier(), identifier.getDataSource().getIdentifier());
+        if (SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE.equals(identifier.getDataSource().getIdentifier())) {
+          return new SchoolDataIdentifier(identifier.getIdentifier(), identifier.getDataSource().getIdentifier());
+        }
       }
     }
     
