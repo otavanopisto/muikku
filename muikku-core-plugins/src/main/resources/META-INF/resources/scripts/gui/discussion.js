@@ -62,7 +62,7 @@ $(document).ready(function() {
           msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
           msgsCallback();
         });
-      }, this)).callback($.proxy(function(err, threads) {
+      }, this).callback($.proxy(function(err, threads) {
 
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
@@ -126,7 +126,7 @@ $(document).ready(function() {
         });
 
 
-      }, this)).callback($.proxy(function(err, threads) {
+      }, this).callback($.proxy(function(err, threads) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
@@ -169,7 +169,7 @@ $(document).ready(function() {
           thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
 
           threadCallback();
-        }, this)).callback($.proxy(function(err, threads) {
+        }, this).callback($.proxy(function(err, threads) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
           } else {
@@ -224,7 +224,7 @@ $(document).ready(function() {
           var d = new Date(msgs.created);
           msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
           msgsCallback();
-        }, this)).callback($.proxy(function(err, threads) {
+        }, this).callback($.proxy(function(err, threads) {
   
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
@@ -246,9 +246,9 @@ $(document).ready(function() {
               var d = new Date(thread.created);
               thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
               threadCallback();
-            }, this));
-          }, this));
-        }, this)).callback($.proxy(function(err, threads) {
+            }, this);
+          }, this);
+        }, this).callback($.proxy(function(err, threads) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
           }else{
@@ -301,7 +301,7 @@ $(document).ready(function() {
             });          
         });
 
-      }, this)).callback($.proxy(function(err, replies) {
+      }, this).callback($.proxy(function(err, replies) {
         
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
@@ -331,8 +331,8 @@ $(document).ready(function() {
             thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
             threadCallback();
           });          
-        }, this));
-      }, this)).callback($.proxy(function(err, threads) {
+        }, this);
+      }, this).callback($.proxy(function(err, threads) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
@@ -367,7 +367,7 @@ $(document).ready(function() {
             repliesCallback();
           });          
         });
-      }, this)).callback($.proxy(function(err, replies) {
+      }, this).callback($.proxy(function(err, replies) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
         } else {
@@ -421,7 +421,7 @@ $(document).ready(function() {
           thread.actionType = "reply"
           threadCallback();
         });
-      }, this)).callback($.proxy(function(err, thread) {
+      }, this).callback($.proxy(function(err, thread) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
@@ -449,7 +449,7 @@ $(document).ready(function() {
           threadCallback();
         });
 
-      }, this)).callback($.proxy(function(err, thread) {
+      }, this).callback($.proxy(function(err, thread) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
@@ -480,7 +480,7 @@ $(document).ready(function() {
           threadCallback();
         });
 
-      } ,this)).callback($.proxy(function(err, thread) {
+      } ,this).callback($.proxy(function(err, thread) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
@@ -587,7 +587,7 @@ $(document).ready(function() {
             $("#discussionAreaSelect").val(forumAreaId);
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newmessage'));
           }
-        }, this));
+        }, this);
       }
     }
 
@@ -597,7 +597,7 @@ $(document).ready(function() {
       } else {
         openInSN('/discussion/discussion_create_message.dust', areas, createMessage);
       }
-    }, this));
+    }, this);
 
   });
 
@@ -623,7 +623,7 @@ $(document).ready(function() {
       } else {
         openInSN('/discussion/discussion_create_area.dust', areas, createArea);
       }
-    }, this));
+    }, this);
   });
   
   $(".di-delete-area-button").click(function() {
@@ -647,7 +647,7 @@ $(document).ready(function() {
       } else {
         openInSN('/discussion/discussion_delete_area.dust', areas, deleteArea);
       }
-    }, this));
+    }, this);
 
   });  
 });
