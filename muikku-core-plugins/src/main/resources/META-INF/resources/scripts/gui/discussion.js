@@ -205,7 +205,7 @@ $(document).ready(function() {
       var msgsCount = loadedMsgs.length;
       
       if (areaId == undefined){
-        mApi({async: false}).forum.latest.read({'firstResult' : fRes}).on('$', $.proxy(function(msgs, msgsCallback) {
+        mApi({async: false}).forum.latest.read({'firstResult' : msgsCount}).on('$', $.proxy(function(msgs, msgsCallback) {
           mApi({async: false}).forum.areas.read(msgs.forumAreaId).callback($.proxy(function(err, area) {
             msgs.areaName = area.name;
             var d = new Date(msgs.created);
@@ -224,7 +224,7 @@ $(document).ready(function() {
         }, this));     
       
       }else{
-        mApi({async: false}).forum.areas.threads.read(areaId, {'firstResult' : fRes}).on('$', $.proxy(function(thread, threadCallback) {
+        mApi({async: false}).forum.areas.threads.read(areaId, {'firstResult' : msgsCount}).on('$', $.proxy(function(thread, threadCallback) {
           mApi({async: false}).forum.areas.read(thread.forumAreaId).callback($.proxy(function(err, area) {
             thread.areaName = area.name;
             mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
