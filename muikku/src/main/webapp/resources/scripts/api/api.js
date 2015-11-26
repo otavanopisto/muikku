@@ -268,12 +268,18 @@
     
     callback: function (callback) {
       this._clientRequest.done($.proxy(function (data, textStatus, jqXHR) {
+        if (textStatus === "abort") {
+          return;
+        }
         this.handleResponse(data, function (node) {
           callback(null, data);
         });
       }, this));
       
       this._clientRequest.fail(function (jqXHR, textStatus, errorThrown) {
+        if (textStatus === "abort") {
+          return;
+        }
         callback(textStatus, jqXHR);
       });
       

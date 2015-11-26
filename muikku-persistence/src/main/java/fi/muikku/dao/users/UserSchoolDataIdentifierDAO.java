@@ -77,5 +77,10 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
 
     return entityManager.createQuery(criteria).getResultList();
   }
-
+  
+  @Override
+  public void delete(UserSchoolDataIdentifier e) {
+    super.delete(e);
+  }
+  
 }
