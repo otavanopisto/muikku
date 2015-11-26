@@ -129,6 +129,10 @@ public class WorkspaceMaterialEvaluationDAO extends PluginDAO<WorkspaceMaterialE
     return persist(workspaceMaterialEvaluation);
   }
 
+  public void delete(WorkspaceMaterialEvaluation e) {
+    super.delete(e);
+  }
+  
   @Override
   protected EntityManager getEntityManager() {
     return entityManager;
