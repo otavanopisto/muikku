@@ -595,11 +595,6 @@
       }
       this._saveFailedTimeoutId = null;
 
-      if (this._notifyNoConnectionTimeoutId != null) {
-          clearTimeout(this._notifyNoConnectionTimeoutId);
-      }
-      this._notifyNoConnectionTimeoutId = null;
-      
       $(document).connectionLostNotifier("notifyReconnected");
 
       // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
