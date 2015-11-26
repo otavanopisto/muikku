@@ -38,12 +38,12 @@ $.widget("custom.connectionLostNotifier", {
   
     $('<div>')
       .addClass('connection-lost-dialog-title')
-      .text(getLocaleText('plugin.workspace.connectionlost.dialog.title'))
+      .text(getLocaleText('connectionlost.dialog.title'))
       .appendTo(connectionLostDialogContainer);
     
     $('<div>')
       .addClass('connection-lost-dialog-description')
-      .text(getLocaleText('plugin.workspace.connectionlost.dialog.description'))
+      .text(getLocaleText('connectionlost.dialog.description'))
       .appendTo(connectionLostDialogContainer);
     
     this._spinner = $('<div>')
@@ -74,7 +74,7 @@ $.widget("custom.connectionLostNotifier", {
         duration : 150,
         easing : "easeInOutQuint",
         complete: function() {
-          $('.connection-lost-dialog-description').text(getLocaleText('plugin.workspace.connectionlost.dialog.automaticReconnectFailed'));
+          $('.connection-lost-dialog-description').text(getLocaleText('connectionlost.dialog.automaticReconnectFailed'));
           
           $('.connection-lost-dialog-description').animate({
             opacity: 1
@@ -88,7 +88,7 @@ $.widget("custom.connectionLostNotifier", {
           
           $('<div>')
             .addClass('connection-lost-dialog-reconnectButton')
-            .text(getLocaleText('plugin.workspace.connectionlost.dialog.reconnectButtonLabel'))
+            .text(getLocaleText('connectionlost.dialog.reconnectButtonLabel'))
             .click(function(){
               location.reload();
             })
