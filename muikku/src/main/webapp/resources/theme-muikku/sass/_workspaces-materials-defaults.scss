@@ -18,6 +18,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   .muikku-field-save-state-label {
     position:absolute;
+    z-index:2;
     margin-top:-16px;
     border-top:1px solid #fff;
     border-radius:3px;

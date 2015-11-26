@@ -528,6 +528,9 @@
         $(this.element)
         .before($('<span>')
           .addClass('muikku-field-save-state-label')
+          .css({
+            display:'none'
+          })
         );
       }
     },
@@ -609,7 +612,9 @@
             .finish()
             .fadeIn(10)
             .delay(1000)
-            .fadeOut(300);
+            .fadeOut(300, function() {
+              $(this).remove();
+            });
           
         } else {
           $(this.element)
@@ -622,7 +627,9 @@
           .finish()
           .fadeIn(10)
           .delay(1000)
-          .fadeOut(300);
+          .fadeOut(300, function() {
+            $(this).remove();
+          });
           
           $(this.element)
             .find('.muikku-field-saving-label')
