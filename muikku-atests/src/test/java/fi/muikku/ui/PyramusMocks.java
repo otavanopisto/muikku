@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import fi.muikku.TestUtilities;
+import fi.pyramus.rest.model.CourseAssessment;
 import fi.pyramus.rest.model.Grade;
 import fi.pyramus.rest.model.GradingScale;
 import fi.pyramus.rest.model.ContactType;
@@ -414,6 +415,13 @@ public class PyramusMocks{
         .withBody(objectMapper.writeValueAsString(new ArrayList<>()))
         .withStatus(200)));
     
+    DateTime assessmentCreated = new DateTime(2015, 2, 2, 0, 0, 0, 0);
+    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "");
+    stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseStudent.getCourseId())))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(courseAssessment))
+        .withStatus(200)));
     
     CourseStudent courseStudent2 = new CourseStudent(2l, 2l, 5l, new DateTime(2010, 2, 2, 0, 0, 0, 0), false, null, null, null, null, null);
     CourseStudent[] csArray2 = { courseStudent2 };
@@ -438,10 +446,11 @@ public class PyramusMocks{
         .withBody(courseStudenJson2)
         .withStatus(200)));
 
+    CourseAssessment courseAssessment2 = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "");
     stubFor(get(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student2.getId(), courseStudent2.getCourseId())))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
-        .withBody(objectMapper.writeValueAsString(new ArrayList<>()))
+        .withBody(objectMapper.writeValueAsString(courseAssessment2))
         .withStatus(200)));
     
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, 1l, 4l, 7l);
