@@ -1,4 +1,4 @@
-package fi.muikku.sauce;
+package fi.muikku.ui.sauce;
 
 import java.net.MalformedURLException;
 
