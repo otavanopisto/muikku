@@ -66,6 +66,7 @@ import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.GradingScale;
@@ -1341,9 +1342,14 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}/users/{ID}")
   @RESTPermitUnimplemented
   public Response updateWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
-      @PathParam("ID") Long workspaceUserEntityId,
+      @PathParam("ID") String userId,
       WorkspaceUser workspaceUser) {
-
+    
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
+    if (userId == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
+    }
+    
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
     }
@@ -1359,13 +1365,19 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    
+    fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceIdentifier, userIdentifier);
     if (bridgeUser == null) {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
     
-    // TODO: Active
-
+    if (workspaceUser.getActive() != null) {
+      if (!workspaceUser.getActive().equals(bridgeUser.getActive())) {
+        workspaceController.updateWorkspaceStudentActivity(bridgeUser, workspaceUser.getActive());
+      }
+    }
+    
     return Response.ok(workspaceUser).build();
   }
 

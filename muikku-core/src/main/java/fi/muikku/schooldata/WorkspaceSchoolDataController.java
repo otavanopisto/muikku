@@ -261,6 +261,21 @@ class WorkspaceSchoolDataController {
     return null;
   }
   
+  public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier identifier) {
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceIdentifier.getDataSource());
+    if (workspaceBridge != null) {
+      try {
+        return workspaceBridge.findWorkspaceUser(workspaceIdentifier.getIdentifier(), workspaceIdentifier.getDataSource(), identifier.getIdentifier());
+      } catch (UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge not found: " + workspaceIdentifier.getDataSource());
+    }
+    
+    return null;
+  }
+  
   @Deprecated
   public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
@@ -283,7 +298,7 @@ class WorkspaceSchoolDataController {
   }
   
   public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean activity) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserSchoolDataSource());
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserIdentifier().getDataSource());
     if (schoolDataSource != null) {
       WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
       if (workspaceBridge != null) {

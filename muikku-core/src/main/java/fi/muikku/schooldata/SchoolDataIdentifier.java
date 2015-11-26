@@ -30,7 +30,7 @@ public class SchoolDataIdentifier {
   public static SchoolDataIdentifier fromId(String id) {
     String[] idParts = StringUtils.split(id, '-');
     if (idParts.length != 2) {
-      throw new RuntimeException("Invalid school data identifier");
+      return null;
     };
     
     return new SchoolDataIdentifier(idParts[1], idParts[0]);

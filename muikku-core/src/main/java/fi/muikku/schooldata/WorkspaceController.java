@@ -324,6 +324,10 @@ public class WorkspaceController {
     return workspaceSchoolDataController.findWorkspaceUser(workspaceUserEntity);
   }
   
+  public fi.muikku.schooldata.entity.WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier) {
+    return workspaceSchoolDataController.findWorkspaceUser(workspaceIdentifier, userIdentifier);
+  }
+  
   private void deleteWorkspaceUser(WorkspaceUser workspaceUser) {
     // TODO: Remove users via bridge also
     WorkspaceUserEntity workspaceUserEntity = findWorkspaceUserEntity(workspaceUser);
