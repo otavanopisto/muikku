@@ -691,14 +691,15 @@ $(document).ready(function() {
   $(".di-edit-area-button").click(function() {
 
     var editArea = function(values) {
-      
-      mApi({async: false}).forum.areas.update(values).callback(function(err, result) {
+      var areaId = values.forumAreaId;
+      delete values.forumAreaId;
+      mApi({async: false}).forum.areas.update(areaId, values).callback(function(err, result) {
         if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.newarea', err));
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.editarea', err));
         } else {        
           window.discussion._refreshLatest();
           window.discussion._refreshAreas();
-          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newarea'));
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.editarea'));
         }
       });
 
@@ -717,7 +718,6 @@ $(document).ready(function() {
 
     var deleteArea = function(values) {
       var areaId = values.forumAreaId;
-      
       mApi({async: false}).forum.areas.del(areaId).callback(function(err, result) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.areadelete', err));

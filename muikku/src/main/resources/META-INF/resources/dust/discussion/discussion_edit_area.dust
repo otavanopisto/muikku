@@ -3,7 +3,6 @@
     
     <form>
       <div class="mf-form-header"><h3>{#localize key="plugin.discussion.editarea.topic"/}</h3></div>
-<!--       <div class="mf-form-info">{#localize key="plugin.discussion.deletearea.info"/}</div> -->
       <div class="mf-content">
           <div class="di-area-edit-body">
           <div class="mf-fieldRow">
@@ -11,20 +10,17 @@
                 <select id="forumAreaIdSelect" name="forumAreaId">
                  <option>{#localize key="plugin.discussion.editarea.selectarea"/}</option>
                  {#.}
-                <!--  TODO: removing an area with threads -->
-                <!-- <option value="{id}">{name} ( {@ne key=numThreads value=0}{#localize key="plugin.discussion.deletearea.threads" arg0=numThreads /}{:else}{#localize key="plugin.discussion.deletearea.nothreads" /}{/ne} )</option> -->
-                  {@eq key=numThreads value=0}
                     <option value="{id}">{name}</option>
-                  {:else}
-                    <option disabled="disabled">{name} ({#localize key="plugin.discussion.deletearea.noremove" arg0=numThreads /})</option>
-                  {/eq}
                  {:else}
                    <option>{#localize key="plugin.discussion.selectarea.empty" /}</option>
                  {/.}
                 </select>
               </div>      
               <div class="mf-textfield">
-                <input type="text" value="" name="name" maxlength="105"></input>
+                <div class="mf-textfield-subcontainer">
+                  <span class="mf-textfield-title">{#localize key="plugin.discussion.editarea.newname"/}</span>
+                  <input type="text" value="" name="name" maxlength="105"></input>                
+                </div>
               </div>              
             </div>
           </div>
