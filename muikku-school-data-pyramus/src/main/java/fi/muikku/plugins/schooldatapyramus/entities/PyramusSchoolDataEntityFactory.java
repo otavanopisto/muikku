@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
+import fi.muikku.plugins.schooldatapyramus.PyramusStudentActivityMapper;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.entity.CourseLengthUnit;
@@ -64,6 +65,9 @@ public class PyramusSchoolDataEntityFactory {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private PyramusStudentActivityMapper pyramusStudentActivityMapper;
 
   public WorkspaceRole createCourseStudentRoleEntity() {
     // TODO: Localize
@@ -193,13 +197,17 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
     
-    boolean active = true;
+    SchoolDataIdentifier identifier = toIdentifier(identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId()));
+    SchoolDataIdentifier userIdentifier = toIdentifier(identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId()));
+    SchoolDataIdentifier workspaceIdentifier = toIdentifier(identifierMapper.getWorkspaceIdentifier(staffMember.getCourseId()));
+    SchoolDataIdentifier roleIdentifier = toIdentifier(identifierMapper.getWorkspaceStaffRoleIdentifier(staffMember.getRoleId()));
+    Boolean active = false;
     
     return new PyramusWorkspaceUser(
-      toIdentifier(identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId())),
-      toIdentifier(identifierMapper.getWorkspaceIdentifier(staffMember.getCourseId())),
-      toIdentifier(identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId())),
-      toIdentifier(identifierMapper.getWorkspaceStaffRoleIdentifier(staffMember.getRoleId())),
+      identifier, 
+      userIdentifier, 
+      workspaceIdentifier,
+      roleIdentifier, 
       active
     );
   }
@@ -223,13 +231,19 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
 
-    boolean active = false;
-    // courseStudent.getParticipationTypeId();
+    SchoolDataIdentifier identifier = toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId()));
+    SchoolDataIdentifier userIdentifier = toIdentifier(identifierMapper.getStudentIdentifier(courseStudent.getStudentId()));
+    SchoolDataIdentifier workspaceIdentifier = toIdentifier(identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId()));
+    SchoolDataIdentifier roleIdentifier = toIdentifier(createCourseStudentRoleEntity().getIdentifier());
+    Boolean active = pyramusStudentActivityMapper.isActive(courseStudent.getParticipationTypeId());
     
-    return new PyramusWorkspaceUser(toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId())),
-      toIdentifier(identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId())), 
-      toIdentifier(identifierMapper.getStudentIdentifier(courseStudent.getStudentId())),
-      toIdentifier(createCourseStudentRoleEntity().getIdentifier()), active);
+    return new PyramusWorkspaceUser(
+      identifier, 
+      userIdentifier, 
+      workspaceIdentifier,
+      roleIdentifier, 
+      active
+    );
   }
 
   public List<WorkspaceUser> createEntity(CourseStudent... courseStudents) {
