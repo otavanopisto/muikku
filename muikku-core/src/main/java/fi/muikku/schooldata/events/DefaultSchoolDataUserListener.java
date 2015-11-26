@@ -101,7 +101,7 @@ public class DefaultSchoolDataUserListener {
           return;
         }
         
-        if (userEntity.getDefaultIdentifier() != null) {
+        if (defaultIdentifier != null) {
           if (!StringUtils.equals(userEntity.getDefaultIdentifier(), defaultIdentifier.getIdentifier()) || !StringUtils.equals(userEntity.getDefaultSchoolDataSource().getIdentifier(), defaultIdentifier.getDataSource())) {
             logger.log(Level.FINE, String.format("Updating default identifier for user #%d into %s", userEntity.getId(), defaultIdentifier));
             userEntityController.updateDefaultSchoolDataSource(userEntity, defaultIdentifier.getDataSource());
@@ -153,8 +153,8 @@ public class DefaultSchoolDataUserListener {
     for (SchoolDataIdentifier identifier : removedIdentifiers) {
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
       if (userSchoolDataIdentifier != null) {
-        logger.log(Level.FINE, String.format("Removed user school data identifier %s", identifier));
-        userSchoolDataIdentifierController.deleteUserSchoolDataIdentifier(userSchoolDataIdentifier);
+        logger.log(Level.FINE, String.format("Removing user school data identifier %s", identifier));
+        userSchoolDataIdentifierController.archiveUserSchoolDataIdentifier(userSchoolDataIdentifier);
         
         if (userEntity == null) {
           userEntity = userSchoolDataIdentifier.getUserEntity();
