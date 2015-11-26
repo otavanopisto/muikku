@@ -103,7 +103,7 @@ public class DefaultSchoolDataUserGroupListener {
     
     UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (userGroupUserEntity != null) {
-      userGroupEntityController.deleteUserGroupUserEntity(userGroupUserEntity);
+      userGroupEntityController.archiveUserGroupUserEntity(userGroupUserEntity);
     }
   }  
 

@@ -119,7 +119,7 @@ public class UserSchoolDataController {
   public List<User> listUsersByEntity(UserEntity userEntity) {
     List<User> result = new ArrayList<>();
 
-    List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
+    List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierDAO.listByUserEntityAndArchived(userEntity, Boolean.FALSE);
     for (UserSchoolDataIdentifier identifier : identifiers) {
       UserSchoolDataBridge userBridge = getUserBridge(identifier.getDataSource());
       User user = findUserByIdentifier(userBridge, identifier.getIdentifier());
@@ -176,7 +176,7 @@ public class UserSchoolDataController {
 
   public UserEntity findUserEntity(User user) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, user.getIdentifier());
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(schoolDataSource, user.getIdentifier(), Boolean.FALSE);
     if (userSchoolDataIdentifier != null) {
       return userSchoolDataIdentifier.getUserEntity();
     }
@@ -185,7 +185,7 @@ public class UserSchoolDataController {
   }
 
   public UserEntity findUserEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(dataSource, identifier, Boolean.FALSE);
     if (userSchoolDataIdentifier != null) {
       return userSchoolDataIdentifier.getUserEntity();
     }
