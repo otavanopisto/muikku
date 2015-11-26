@@ -126,12 +126,8 @@ public class WorkspaceController {
     return workspaceSchoolDataController.updateWorkspace(workspace);
   }
   
-  public void archiveWorkspaceUser(WorkspaceUser workspaceUser) {
-    workspaceSchoolDataController.archiveWorkspaceUser(workspaceUser);
-  }
-
-  public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser) {
-    workspaceSchoolDataController.unarchiveWorkspaceUser(workspaceUser);
+  public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean active) {
+    workspaceSchoolDataController.updateWorkspaceStudentActivity(workspaceUser, active);
   }
 
   public void archiveWorkspace(Workspace workspace) {
@@ -293,10 +289,12 @@ public class WorkspaceController {
         workspaceUser.getIdentifier().getIdentifier());
   }
 
+  @Deprecated
   public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
     return workspaceSchoolDataController.listWorkspaceUsers(workspace);
   }
 
+  @Deprecated
   public List<WorkspaceUser> listWorkspaceUsers(WorkspaceEntity workspaceEntity) {
     Workspace workspace = findWorkspace(workspaceEntity);
     if (workspace != null) {
@@ -306,10 +304,10 @@ public class WorkspaceController {
     return null;
   }
   
-  public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity, String status) {
+  public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity, Boolean active) {
     Workspace workspace = findWorkspace(workspaceEntity);
     if (workspace != null) {
-      return workspaceSchoolDataController.listWorkspaceStudents(workspace, status);      
+      return workspaceSchoolDataController.listWorkspaceStudents(workspace, active);      
     }
     return null;
   }

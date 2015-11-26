@@ -79,30 +79,30 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
   }
 
-	@Override
-	public Workspace createWorkspace(String name, String description, WorkspaceType type, String courseIdentifierIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		if (StringUtils.isBlank(name)) {
-			throw new SchoolDataBridgeRequestException("Name is required");
-		}
-		
-		if (name.length() > 255) {
-			throw new SchoolDataBridgeRequestException("Name maximum length is 255 characters");
-		}
-		
-		throw new UnexpectedSchoolDataBridgeException("Not implemented");
-	}
-
-	@Override
-	public Workspace findWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		if (!StringUtils.isNumeric(identifier)) {
-			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
-		}
-
-    return createWorkspaceEntity(pyramusClient.get("/courses/courses/" + identifier, Course.class));
-	}
+  @Override
+  public Workspace createWorkspace(String name, String description, WorkspaceType type, String courseIdentifierIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    if (StringUtils.isBlank(name)) {
+      throw new SchoolDataBridgeRequestException("Name is required");
+    }
+    
+    if (name.length() > 255) {
+      throw new SchoolDataBridgeRequestException("Name maximum length is 255 characters");
+    }
+    
+    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  }
 
   @Override
-	public List<Workspace> listWorkspaces() throws UnexpectedSchoolDataBridgeException {
+  public Workspace findWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    if (!StringUtils.isNumeric(identifier)) {
+      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+    }
+
+    return createWorkspaceEntity(pyramusClient.get("/courses/courses/" + identifier, Course.class));
+  }
+
+  @Override
+  public List<Workspace> listWorkspaces() throws UnexpectedSchoolDataBridgeException {
     Course[] courses = pyramusClient.get("/courses/courses/", Course[].class);
     if (courses == null) {
       throw new UnexpectedSchoolDataBridgeException("Null response");
@@ -115,10 +115,10 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     }
     
     return result;
-	}
+  }
 
-	@Override
-	public List<Workspace> listWorkspacesByCourseIdentifier(String courseIdentifierIdentifier) throws UnexpectedSchoolDataBridgeException {
+  @Override
+  public List<Workspace> listWorkspacesByCourseIdentifier(String courseIdentifierIdentifier) throws UnexpectedSchoolDataBridgeException {
     if (courseIdentifierIdentifier.indexOf("/") == -1)
       throw new UnexpectedSchoolDataBridgeException("Invalid CourseIdentifierId");
     
@@ -136,43 +136,43 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     }
     
     return result;
-	}
-
-	@Override
-	public Workspace updateWorkspace(Workspace workspace) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		if (!StringUtils.isNumeric(workspace.getIdentifier())) {
-			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
-		}
-		
-		throw new UnexpectedSchoolDataBridgeException("Not implemented");
-	}
-
-	@Override
-	public void removeWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		if (!StringUtils.isNumeric(identifier)) {
-			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
-		}
-
-		throw new UnexpectedSchoolDataBridgeException("Not implemented");
-	}
-
-	@Override
-	public WorkspaceType findWorkspaceType(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		if (identifier == null) {
-		  return null;
-		}
-	  
-	  if (!StringUtils.isNumeric(identifier)) {
-			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
-		}
-		
-		return entityFactory.createEntity(pyramusClient.get("/courses/courseTypes/" + identifier, fi.pyramus.rest.model.CourseType.class));
   }
-	
-	@Override
-	public List<WorkspaceType> listWorkspaceTypes() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+
+  @Override
+  public Workspace updateWorkspace(Workspace workspace) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    if (!StringUtils.isNumeric(workspace.getIdentifier())) {
+      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+    }
+    
+    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  }
+
+  @Override
+  public void removeWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    if (!StringUtils.isNumeric(identifier)) {
+      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+    }
+
+    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  }
+
+  @Override
+  public WorkspaceType findWorkspaceType(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    if (identifier == null) {
+      return null;
+    }
+    
+    if (!StringUtils.isNumeric(identifier)) {
+      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+    }
+    
+    return entityFactory.createEntity(pyramusClient.get("/courses/courseTypes/" + identifier, fi.pyramus.rest.model.CourseType.class));
+  }
+  
+  @Override
+  public List<WorkspaceType> listWorkspaceTypes() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     return entityFactory.createEntities(pyramusClient.get("/courses/courseTypes/", fi.pyramus.rest.model.CourseType[].class));
-	}
+  }
 
   @Override
   public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
@@ -184,22 +184,22 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     return Arrays.asList(entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/students", courseStudent))).get(0);
   }
   
-	@Override
-	public WorkspaceUser findWorkspaceUser(String workspaceIdentifier, String workspaceSchoolDataSource, String userIdentifier) throws UnexpectedSchoolDataBridgeException {
-	  if (!StringUtils.equals(workspaceSchoolDataSource, getSchoolDataSource())) {
-	    throw new UnexpectedSchoolDataBridgeException("Invalid school data source");
-	  }
-	  
+  @Override
+  public WorkspaceUser findWorkspaceUser(String workspaceIdentifier, String workspaceSchoolDataSource, String userIdentifier) throws UnexpectedSchoolDataBridgeException {
+    if (!StringUtils.equals(workspaceSchoolDataSource, getSchoolDataSource())) {
+      throw new UnexpectedSchoolDataBridgeException("Invalid school data source");
+    }
+    
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
     return Arrays.asList(entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, studentId), CourseStudent.class))).get(0);
-	}
-	
-	@Override
-	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-	  Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-	  
-	  CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
+  }
+  
+  @Override
+  public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    
+    CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
     if (staffMembers == null) {
       throw new UnexpectedSchoolDataBridgeException("Null response");
     }
@@ -213,7 +213,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     result.addAll(entityFactory.createEntity(courseStudents));
     
     return result;
-	}
+  }
   
   private Workspace createWorkspaceEntity(Course course) {
     if (course == null)
@@ -242,11 +242,13 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public List<WorkspaceUser> listActiveWorkspaceStudents(String workspaceIdentifier) {
+  public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier, boolean active) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    String participationTypes = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.active");
+    String participationTypes = active
+        ? pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.active")
+        : pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.inactive");
     if (StringUtils.isEmpty(participationTypes)) {
-      logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.active", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
+      logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.(in)active", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
     }
     else {
       CourseStudent[] students = pyramusClient.get(String.format("/courses/courses/%d/students?participationTypes=%s", courseId, participationTypes), CourseStudent[].class);
@@ -258,64 +260,15 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public List<WorkspaceUser> listEvaluatedWorkspaceStudents(String workspaceIdentifier) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    String participationTypes = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.evaluated");
-    if (StringUtils.isEmpty(participationTypes)) {
-      logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.evaluated", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
-      return Collections.<WorkspaceUser>emptyList();
-    }
-    else {
-      CourseStudent[] students = pyramusClient.get(String.format("/courses/courses/%d/students?participationTypes=%s", courseId, participationTypes), CourseStudent[].class);
-      if (students != null) {
-        return entityFactory.createEntity(students);
-      }
-    }
-    return Collections.<WorkspaceUser>emptyList();
-  }
-
-  @Override
-  public List<WorkspaceUser> listInactiveWorkspaceStudents(String workspaceIdentifier) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    String participationTypes = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.inactive");
-    if (StringUtils.isEmpty(participationTypes)) {
-      logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.inactive", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
-    }
-    else {
-      CourseStudent[] students = pyramusClient.get(String.format("/courses/courses/%d/students?participationTypes=%s", courseId, participationTypes), CourseStudent[].class);
-      if (students != null) {
-        return entityFactory.createEntity(students);
-      }
-    }
-    return Collections.<WorkspaceUser>emptyList();
-  }
-
-  @Override
-  public void archiveWorkspaceUser(WorkspaceUser workspaceUser) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier().getIdentifier());
-    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier().getIdentifier());
+  public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean active) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier());
+    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier());
     CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
     if (courseStudent != null) {
       Long currentParticipationType = courseStudent.getParticipationTypeId();
-      Long newParticipationType = participationTypeChangesArchive.get(courseStudent.getParticipationTypeId());
-      if (newParticipationType != null && !newParticipationType.equals(currentParticipationType)) {
-        CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
-        if (participationType != null) {
-          courseStudent.setParticipationTypeId(participationType.getId());
-          pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
-        }
-      }
-    }
-  }
-
-  @Override
-  public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier().getIdentifier());
-    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier().getIdentifier());
-    CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
-    if (courseStudent != null) {
-      Long currentParticipationType = courseStudent.getParticipationTypeId();
-      Long newParticipationType = participationTypeChangesUnarchive.get(courseStudent.getParticipationTypeId());
+      Long newParticipationType = active
+          ? participationTypeChangesArchive.get(courseStudent.getParticipationTypeId())
+          : participationTypeChangesUnarchive.get(courseStudent.getParticipationTypeId());
       if (newParticipationType != null && !newParticipationType.equals(currentParticipationType)) {
         CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
         if (participationType != null) {

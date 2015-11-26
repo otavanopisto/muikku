@@ -345,7 +345,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{ID}/students")
   @RESTPermitUnimplemented
   public Response listWorkspaceStudents(@PathParam("ID") Long workspaceEntityId,
-      @QueryParam("status") String status,
+      @QueryParam("active") Boolean active,
       @QueryParam("orderBy") String orderBy) {
     
     // Authorization
@@ -360,7 +360,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Staff via WorkspaceSchoolDataBridge
     
-    List<fi.muikku.schooldata.entity.WorkspaceUser> schoolDataUsers = workspaceController.listWorkspaceStudents(workspaceEntity, status);
+    List<fi.muikku.schooldata.entity.WorkspaceUser> schoolDataUsers = workspaceController.listWorkspaceStudents(workspaceEntity, active);
     if (schoolDataUsers.isEmpty()) {
       return Response.noContent().build();
     }
@@ -1365,7 +1365,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     // TODO: Active
-    
 
     return Response.ok(workspaceUser).build();
   }

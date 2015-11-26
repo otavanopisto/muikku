@@ -37,24 +37,19 @@
       this.element.on("click", ".workspace-users-unarchive", $.proxy(this._onWorkspaceStudentUnarchiveClick, this));
     },
     
-    _loadStudentList: function(status) {
-      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {status: status, orderBy: 'name'}).callback($.proxy(function (err, students) {
+    _loadStudentList: function(active) {
+      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {active: active, orderBy: 'name'}).callback($.proxy(function (err, students) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           this.element.find('.workspace-students-list').empty();
-          if (status == 'active') {
+          if (active === true) {
             renderDustTemplate('workspace/workspace-users-students-active.dust', {students: students}, $.proxy(function (text) {
               this.element.find('.workspace-students-list').append($.parseHTML(text));
             }, this));
           }
-          else if (status =='evaluated') {
-            renderDustTemplate('workspace/workspace-users-students-evaluated.dust', {students: students}, $.proxy(function (text) {
-              this.element.find('.workspace-students-list').append($.parseHTML(text));
-            }, this));
-          }
-          else if (status == 'inactive') {
+          else {
             renderDustTemplate('workspace/workspace-users-students-inactive.dust', {students: students}, $.proxy(function (text) {
               this.element.find('.workspace-students-list').append($.parseHTML(text));
             }, this));
@@ -64,15 +59,11 @@
     },
     
     _onWorkspaceStudentsActiveClick: function (event) {
-      this._loadStudentList('active');
-    },
-
-    _onWorkspaceStudentsEvaluatedClick: function (event) {
-      this._loadStudentList('evaluated');
+      this._loadStudentList(true);
     },
 
     _onWorkspaceStudentsInactiveClick: function (event) {
-      this._loadStudentList('inactive');
+      this._loadStudentList(false);
     },
 
     _onWorkspaceStudentArchiveClick: function (event) {
@@ -155,7 +146,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          workspaceUserEntity.archived = true;
+          workspaceUserEntity.active = false;
           mApi().workspace.workspaces.users.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -176,7 +167,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          workspaceUserEntity.archived = false;
+          workspaceUserEntity.active = true;
           mApi().workspace.workspaces.users.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
