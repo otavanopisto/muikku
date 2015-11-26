@@ -463,7 +463,6 @@
     _create : function() {
       this._saveTimeoutId = null;
       this._saveFailedTimeoutId = null;
-      this._notifyNoConnectionTimeoutId = null;
       
       $(this.element).addClass('muikku-field');
       if (this.trackChange()) {
@@ -560,12 +559,6 @@
     _saveFailed: function() {
       $(document).connectionLostNotifier("notifyConnectionLost");
       
-      if (this._notifyNoConnectionTimeoutId == null) {
-        this._notifyNoConnectionTimeoutId = setTimeout(
-            function() {
-              $(document).connectionLostNotifier("notifyNoConnection");
-            }, 10000);
-      }
     },
     _propagateChange: function () {
       $(this.element)

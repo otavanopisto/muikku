@@ -2,12 +2,13 @@
 $.widget("custom.connectionLostNotifier", {
   
   options: {
-    
+    noConnectionTimeout: 10000
   },
   
   _create: function() {
     this._connectionLostOverlay = null;
     this._connectionLostDialog = null;
+    this._notifyNoConnectionTimeout = null;
     this._noConnection = false;
   },
   
@@ -18,6 +19,8 @@ $.widget("custom.connectionLostNotifier", {
     if (this._connectionLostDialog !== null) {
       return;
     }
+
+    $(".notification-queue").hide();
 
     this._connectionLostOverlay = $('<div>')
       .addClass('connection-lost-overlay')
@@ -53,21 +56,17 @@ $.widget("custom.connectionLostNotifier", {
         .addClass('inner three'));
     
     this._spinner.appendTo(connectionLostDialogContainer);
+    
+    if (this._notifyNoConnectionTimeoutId == null) {
+      this._notifyNoConnectionTimeoutId = setTimeout(
+          $.proxy(function() {
+            this._notifyNoConnection();
+          }, this), 10000);
+    }
   },
   
-  notifyNoConnection: function() {
-    if (this._connectionLostOverlay !== null) {
-      return;
-    }
-    if (this._connectionLostDialog !== null) {
-      return;
-    }
-    if (this._noConnection === true) {
-      return;
-    }
-
+  _notifyNoConnection: function() {
     this._spinner.remove();
-    this._noConnection = true;
     $('.connection-lost-dialog-description')
     .animate({
         opacity: 0
@@ -99,6 +98,11 @@ $.widget("custom.connectionLostNotifier", {
   },
   
   notifyReconnected: function() {
+    if (this._notifyNoConnectionTimeoutId !== null) {
+      clearTimeout(this._notifyNoConnectionTimeoutId);
+      this._notifyNoConnectionTimeoutId = null;
+    }
+    
     if (this._connectionLostOverlay !== null) {
       this._connectionLostOverlay.remove();
       this._connectionLostOverlay = null;
@@ -110,6 +114,8 @@ $.widget("custom.connectionLostNotifier", {
     }
 
     this._noConnection = false;
+    
+    $(".notification-queue").show();
   }
 });
 
