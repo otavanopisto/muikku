@@ -209,6 +209,16 @@
 
     <dependency>
       <groupId>fi.muikku</groupId>
+      <artifactId>evaluation-plugin-rest-model</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>evaluation-plugin-persistence</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
       <artifactId>atests-plugin-rest-model</artifactId>
       <version>${project.version}</version>
     </dependency>    

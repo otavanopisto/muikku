@@ -11,9 +11,9 @@ import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 
 @ApplicationScoped
-public class PyramusSchoolDataStaffMembersUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
+public class PyramusSchoolDataPersonsUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
 
-  private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.staffmembers.batchsize", "20"));
+  private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.persons.batchsize", "20"));
 
   @Inject
   private Logger logger;
@@ -23,7 +23,7 @@ public class PyramusSchoolDataStaffMembersUpdateScheduler extends PyramusDataSch
 
   @Override
   public String getSchedulerName() {
-    return "staffmembers";
+    return "persons";
   }
 
   @Override
@@ -31,8 +31,8 @@ public class PyramusSchoolDataStaffMembersUpdateScheduler extends PyramusDataSch
     int offset = getOffset();
     int count = 0;
     try {
-      logger.fine("Synchronizing Pyramus users");
-      int result = pyramusUpdater.updateStaffMembers(offset, BATCH_SIZE);
+      logger.fine("Synchronizing Pyramus persons");
+      int result = pyramusUpdater.updatePersons(offset, BATCH_SIZE);
       if (result == -1) {
         updateOffset(0);
       } else {
@@ -40,7 +40,7 @@ public class PyramusSchoolDataStaffMembersUpdateScheduler extends PyramusDataSch
         updateOffset(offset + BATCH_SIZE);
       }
     } finally {
-      logger.fine(String.format("Synchronized %d Pyramus users", count));
+      logger.fine(String.format("Synchronized %d Pyramus persons", count));
     }
   }
   

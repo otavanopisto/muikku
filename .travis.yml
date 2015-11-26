@@ -104,6 +104,7 @@ env:
   - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=course/picker
   - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=course/journal
   - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=course/users
+  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=evaluation
   - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="45" browser_resolution="" platform="Linux" package=indexpage
 after_success:
 - bash travis-after-success.sh

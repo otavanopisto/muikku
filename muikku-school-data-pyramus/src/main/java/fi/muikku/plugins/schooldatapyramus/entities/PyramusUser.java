@@ -3,9 +3,10 @@ package fi.muikku.plugins.schooldatapyramus.entities;
 import org.joda.time.DateTime;
 
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.muikku.schooldata.entity.AbstractUser;
 import fi.muikku.schooldata.entity.User;
 
-public class PyramusUser implements User {
+public class PyramusUser extends AbstractUser implements User {
 
   public PyramusUser(String identifier,
                      String firstName,
@@ -73,11 +74,6 @@ public class PyramusUser implements User {
     return studyProgrammeName;
   }
   
-  @Override
-  public String getSearchId() {
-    return getIdentifier() + "/" + getSchoolDataSource();
-  }
-
   @Override
   public String getNationality() {
     return nationality;
