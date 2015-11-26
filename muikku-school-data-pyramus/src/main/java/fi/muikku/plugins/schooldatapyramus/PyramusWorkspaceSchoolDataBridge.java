@@ -1,15 +1,11 @@
 package fi.muikku.plugins.schooldatapyramus;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -17,10 +13,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
@@ -52,27 +44,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
-
+  
   @Inject
-  private PluginSettingsController pluginSettingsController;
-
-  @PostConstruct
-  public void init() throws IOException {
-    String archiveChanges = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypeChange.archive");    
-    if (StringUtils.isNotBlank(archiveChanges)) {
-      participationTypeChangesArchive = new ObjectMapper().readValue(archiveChanges, new TypeReference<Map<String, Long>>() {});
-    }
-    else {
-      logger.log(Level.SEVERE, "Missing plugin setting value: participationTypeChange.archive");
-    }
-    String unarchiveChanges = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypeChange.unarchive");    
-    if (StringUtils.isNotBlank(unarchiveChanges)) {
-      participationTypeChangesUnarchive = new ObjectMapper().readValue(unarchiveChanges, new TypeReference<Map<String, Long>>() {});
-    }
-    else {
-      logger.log(Level.SEVERE, "Missing plugin setting value: participationTypeChange.unarchive");
-    }
-  }
+  private PyramusStudentActivityMapper pyramusStudentActivityMapper;
 
   @Override
   public String getSchoolDataSource() {
@@ -244,9 +218,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   @Override
   public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier, boolean active) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    String participationTypes = active
-        ? pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.active")
-        : pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.inactive");
+    String participationTypes = active ? pyramusStudentActivityMapper.getActiveCDT() : pyramusStudentActivityMapper.getInactiveCDT();
     if (StringUtils.isEmpty(participationTypes)) {
       logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.(in)active", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
     }
@@ -266,20 +238,22 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
     if (courseStudent != null) {
       Long currentParticipationType = courseStudent.getParticipationTypeId();
-      Long newParticipationType = active
-          ? participationTypeChangesArchive.get(courseStudent.getParticipationTypeId())
-          : participationTypeChangesUnarchive.get(courseStudent.getParticipationTypeId());
-      if (newParticipationType != null && !newParticipationType.equals(currentParticipationType)) {
-        CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
-        if (participationType != null) {
-          courseStudent.setParticipationTypeId(participationType.getId());
-          pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
+      if (pyramusStudentActivityMapper.isActive(currentParticipationType) != active) {
+        Long newParticipationType = active ? pyramusStudentActivityMapper.toActive(currentParticipationType) : pyramusStudentActivityMapper.toInactive(currentParticipationType);
+        if (newParticipationType != null) {
+          CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
+          if (participationType != null) {
+            courseStudent.setParticipationTypeId(participationType.getId());
+            pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
+          } else {
+            logger.warning(String.format("Could not find participation type %d", newParticipationType));
+          }
+        } else {
+          logger.warning(String.format("Could not resolve active / inactive counterpart for participation type %d", currentParticipationType));
         }
       }
     }
   }
 
-  private Map<String,Long> participationTypeChangesArchive;
-  private Map<String,Long> participationTypeChangesUnarchive;
   
 }
