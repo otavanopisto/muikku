@@ -39,7 +39,7 @@ public class WorkspaceUserEntityController {
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndIdentifier(WorkspaceEntity workspaceEntity, String identifier) {
-    return workspaceUserEntityDAO.findByWorkspaceAndIdentifier(workspaceEntity, identifier);
+    return workspaceUserEntityDAO.findByWorkspaceAndIdentifierAndArchived(workspaceEntity, identifier, Boolean.FALSE);
   }
   
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
@@ -47,7 +47,7 @@ public class WorkspaceUserEntityController {
   }
   
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifier(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
-    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifier(workspaceEntity, userSchoolDataIdentifier);
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.FALSE);
   }
   
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserDataSourceAndUserIdentifier(WorkspaceEntity workspaceEntity, String dataSource, String identifier) {
@@ -76,7 +76,7 @@ public class WorkspaceUserEntityController {
   }
 
   public List<WorkspaceUserEntity> listWorkspaceUserEntities(WorkspaceEntity workspaceEntity) {
-    return workspaceUserEntityDAO.listByWorkspace(workspaceEntity);
+    return workspaceUserEntityDAO.listByWorkspaceAndArchived(workspaceEntity, Boolean.FALSE);
   }
 
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRole(WorkspaceEntity workspaceEntity, WorkspaceRoleEntity role) {
@@ -129,7 +129,7 @@ public class WorkspaceUserEntityController {
       return null;
     }
     
-    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifier(workspaceEntity, userSchoolDataIdentifier);
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.FALSE);
   }
   
   public WorkspaceRoleEntity findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
