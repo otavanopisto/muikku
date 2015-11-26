@@ -5,24 +5,24 @@ public class WorkspaceUser {
   public WorkspaceUser() {
   }
 
-  public WorkspaceUser(Long id, Long workspaceId, Long userId, String firstName, String lastName, Boolean archived) {
+  public WorkspaceUser(String id, Long workspaceId, Long userId, String firstName, String lastName, Boolean active) {
     super();
     this.id = id;
     this.workspaceId = workspaceId;
     this.userId = userId;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.archived = archived;
+    this.active = active;
   }
 
-  public Long getId() {
+  public String getId() {
     return id;
   }
-
-  public void setId(Long id) {
+  
+  public void setId(String id) {
     this.id = id;
   }
-
+  
   public Long getWorkspaceId() {
     return workspaceId;
   }
@@ -54,20 +54,20 @@ public class WorkspaceUser {
   public void setLastName(String lastName) {
     this.lastName = lastName;
   }
-
-  public Boolean getArchived() {
-    return archived;
+  
+  public Boolean getActive() {
+    return active;
+  }
+  
+  public void setActive(Boolean active) {
+    this.active = active;
   }
 
-  public void setArchived(Boolean archived) {
-    this.archived = archived;
-  }
-
-  private Long id;
+  private String id;
   private String firstName;
   private String lastName;
   private Long workspaceId;
   private Long userId;
-  private Boolean archived;
+  private Boolean active;
 
 }

@@ -282,15 +282,15 @@ public class WorkspaceController {
 
   public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
-        workspaceUser.getWorkspaceSchoolDataSource(),
-        workspaceUser.getWorkspaceIdentifier());
+        workspaceUser.getWorkspaceIdentifier().getDataSource(),
+        workspaceUser.getWorkspaceIdentifier().getIdentifier());
     return findWorkspaceUserEntity(workspaceUser, workspaceEntity); 
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser, WorkspaceEntity workspaceEntity) {
     return workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(
         workspaceEntity,
-        workspaceUser.getIdentifier());
+        workspaceUser.getIdentifier().getIdentifier());
   }
 
   public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {

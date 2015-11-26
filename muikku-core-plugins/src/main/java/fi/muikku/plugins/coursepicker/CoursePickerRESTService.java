@@ -277,9 +277,9 @@ public class CoursePickerRESTService extends PluginRESTService {
     UserSchoolDataIdentifier userIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
         user.getSchoolDataSource(), user.getIdentifier());
     SchoolDataWorkspaceUserDiscoveredEvent discoverEvent = new SchoolDataWorkspaceUserDiscoveredEvent(workspaceUser.getSchoolDataSource(),
-        workspaceUser.getIdentifier(), workspaceUser.getWorkspaceSchoolDataSource(), workspaceUser.getWorkspaceIdentifier(),
-        workspaceUser.getUserSchoolDataSource(), workspaceUser.getUserIdentifier(), workspaceUser.getRoleSchoolDataSource(),
-        workspaceUser.getRoleIdentifier());
+        workspaceUser.getIdentifier().getIdentifier(), workspaceUser.getWorkspaceIdentifier().getDataSource(), workspaceUser.getWorkspaceIdentifier().getIdentifier(),
+        workspaceUser.getUserIdentifier().getDataSource(), workspaceUser.getUserIdentifier().getIdentifier(), workspaceUser.getRoleIdentifier().getDataSource(),
+        workspaceUser.getRoleIdentifier().getIdentifier());
     schoolDataWorkspaceUserDiscoveredEvent.fire(discoverEvent);
 
     // TODO: should this work based on permission? Permission -> Roles -> Recipients

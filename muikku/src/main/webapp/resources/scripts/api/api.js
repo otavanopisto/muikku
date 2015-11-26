@@ -27,7 +27,11 @@
     create: function () {
       var request = new RequestImpl(this._client);
       this._client.opts.stringifyData = true;
-      return request.create.apply(request, arguments);
+      try {
+        return request.create.apply(request, arguments);
+      } finally {
+        this._client.cache.clear();
+      }
     },
 
     read: function () {
@@ -39,13 +43,21 @@
     update: function () {
       var request = new RequestImpl(this._client);
       this._client.opts.stringifyData = true;
-      return request.update.apply(request, arguments);
+      try {
+        return request.update.apply(request, arguments);
+      } finally {
+        this._client.cache.clear();
+      }
     },
 
     del: function () {
       var request = new RequestImpl(this._client);
       this._client.opts.stringifyData = true;
-      return request.del.apply(request, arguments);
+      try {
+        return request.del.apply(request, arguments);
+      } finally {
+        this._client.cache.clear();
+      }
     }
   });
   

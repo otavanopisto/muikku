@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
@@ -191,15 +192,20 @@ public class PyramusSchoolDataEntityFactory {
     if (staffMember == null) {
       return null;
     }
-
+    
+    boolean active = true;
+    
     return new PyramusWorkspaceUser(
-        identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId()),
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        identifierMapper.getWorkspaceIdentifier(staffMember.getCourseId()),
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId()),
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        identifierMapper.getWorkspaceStaffRoleIdentifier(staffMember.getRoleId()));
+      toIdentifier(identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId())),
+      toIdentifier(identifierMapper.getWorkspaceIdentifier(staffMember.getCourseId())),
+      toIdentifier(identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId())),
+      toIdentifier(identifierMapper.getWorkspaceStaffRoleIdentifier(staffMember.getRoleId())),
+      active
+    );
+  }
+  
+  private SchoolDataIdentifier toIdentifier(String identifier) {
+    return new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
 
   public List<WorkspaceUser> createEntity(CourseStaffMember... staffMembers) {
@@ -217,11 +223,13 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
 
-    return new PyramusWorkspaceUser(identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId()),
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifierMapper.getWorkspaceIdentifier(courseStudent
-            .getCourseId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        identifierMapper.getStudentIdentifier(courseStudent.getStudentId()),
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, createCourseStudentRoleEntity().getIdentifier());
+    boolean active = false;
+    // courseStudent.getParticipationTypeId();
+    
+    return new PyramusWorkspaceUser(toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId())),
+      toIdentifier(identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId())), 
+      toIdentifier(identifierMapper.getStudentIdentifier(courseStudent.getStudentId())),
+      toIdentifier(createCourseStudentRoleEntity().getIdentifier()), active);
   }
 
   public List<WorkspaceUser> createEntity(CourseStudent... courseStudents) {

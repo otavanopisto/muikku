@@ -292,8 +292,8 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Override
   public void archiveWorkspaceUser(WorkspaceUser workspaceUser) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier());
-    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier());
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier().getIdentifier());
+    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier().getIdentifier());
     CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
     if (courseStudent != null) {
       Long currentParticipationType = courseStudent.getParticipationTypeId();
@@ -310,8 +310,8 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Override
   public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier());
-    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier());
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier().getIdentifier());
+    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier().getIdentifier());
     CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
     if (courseStudent != null) {
       Long currentParticipationType = courseStudent.getParticipationTypeId();

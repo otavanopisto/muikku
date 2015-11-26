@@ -282,7 +282,7 @@ class WorkspaceSchoolDataController {
 	}
 	
   public void archiveWorkspaceUser(WorkspaceUser workspaceUser) {
-	  SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserSchoolDataSource());
+	  SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserIdentifier().getDataSource());
     if (schoolDataSource != null) {
       WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
       if (workspaceBridge != null) {
@@ -292,7 +292,7 @@ class WorkspaceSchoolDataController {
 	}
 
   public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserSchoolDataSource());
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserIdentifier().getDataSource());
     if (schoolDataSource != null) {
       WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
       if (workspaceBridge != null) {

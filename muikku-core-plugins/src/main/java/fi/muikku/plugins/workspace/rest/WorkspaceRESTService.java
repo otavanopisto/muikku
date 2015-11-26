@@ -898,26 +898,23 @@ public class WorkspaceRESTService extends PluginRESTService {
   private WorkspaceUser createRestModel(fi.muikku.schooldata.entity.WorkspaceUser workspaceUser) {
     
     User user = userController.findUserByDataSourceAndIdentifier(
-        workspaceUser.getUserSchoolDataSource(),
-        workspaceUser.getUserIdentifier());
+        workspaceUser.getUserIdentifier().getDataSource(),
+        workspaceUser.getUserIdentifier().getIdentifier());
 
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
-        workspaceUser.getUserSchoolDataSource(),
-        workspaceUser.getUserIdentifier());
+        workspaceUser.getUserIdentifier().getDataSource(),
+        workspaceUser.getUserIdentifier().getIdentifier());
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(
-        workspaceUser.getWorkspaceSchoolDataSource(),
-        workspaceUser.getWorkspaceIdentifier());
+        workspaceUser.getWorkspaceIdentifier().getDataSource(),
+        workspaceUser.getWorkspaceIdentifier().getIdentifier());
     
-    WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntity(workspaceUser, workspaceEntity);
-    
-    return new WorkspaceUser(
-        workspaceUserEntity.getId(),
+    return new WorkspaceUser(workspaceUser.getIdentifier().toId(),
         workspaceEntity.getId(),
         userEntity.getId(),
         user.getFirstName(),
         user.getLastName(),
-        workspaceUserEntity.getArchived());
+        workspaceUser.getActive());
   }
 
   private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String description) {
@@ -1362,23 +1359,13 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    // Workspace user
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
-    if (workspaceUserEntity == null) {
-      return Response.noContent().build();
+    fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+    if (bridgeUser == null) {
+      return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
     
-    if (!workspaceUserEntity.getArchived().equals(workspaceUser.getArchived())) {
-      fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
-      if (workspaceUser.getArchived()) {
-        workspaceUserEntity = workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
-        workspaceController.archiveWorkspaceUser(bridgeUser);
-      }
-      else {
-        workspaceUserEntity = workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
-        workspaceController.unarchiveWorkspaceUser(bridgeUser);
-      }
-    }
+    // TODO: Active
+    
 
     return Response.ok(workspaceUser).build();
   }
