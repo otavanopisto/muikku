@@ -1,13 +1,11 @@
 package fi.muikku.schooldata.events;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -15,8 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentUser;
-import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.users.EnvironmentRoleEntityController;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserEmailEntityController;
@@ -43,146 +42,134 @@ public class DefaultSchoolDataUserListener {
   @Inject
   private EnvironmentUserController environmentUserController;
   
-  @PostConstruct
-  public void init() {
-    discoveredUsers = new HashMap<>();
-    discoveredEnvironmentUserRoles = new HashMap<>();
-  }
-  
-  public void onSchoolDataUserDiscoveredEvent(@Observes SchoolDataUserDiscoveredEvent event) {
-    String discoverId = "U-" + event.getDataSource() + "/" + event.getIdentifier();
-    if (discoveredUsers.containsKey(discoverId)) {
-      event.setDiscoveredUserEntityId(discoveredUsers.get(discoverId));
-      return;
-    }
-    
-    try {
-      if (userEntityController.findUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier()) == null) {
-        // User does not yet exist on the database
-        
-        List<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(event.getEmails());
-        if (emailUsers.size() > 1) {
-          // TODO: Better exception handling
-          throw new RuntimeException("Multiple users found by emails");
-        }
-        
-        UserEntity userEntity = null;
-        if (emailUsers.size() == 1) {
-          // Matching user found, attach identity
-          userEntity = emailUsers.get(0);
-          userSchoolDataIdentifierController.createUserSchoolDataIdentifier(event.getDataSource(), event.getIdentifier(), userEntity);
-        } else {
-          userEntity = userEntityController.createUserEntity(event.getDataSource(), event.getIdentifier());
-          userSchoolDataIdentifierController.createUserSchoolDataIdentifier(event.getDataSource(), event.getIdentifier(), userEntity);
-        }
-        
-        List<String> existingAddresses = userEmailEntityController.listAddressesByUserEntity(userEntity);
-        for (String email : event.getEmails()) {
-          if (!validEmail(email)) {
-            logger.log(Level.SEVERE, String.format("User %s has invalid email %s", discoverId, email));
-          }
-          else if (!existingAddresses.contains(email)) {
-            userEmailEntityController.addUserEmail(userEntity, email);
-          }
-        }
-        
-        discoveredUsers.put(discoverId, userEntity.getId());
-        event.setDiscoveredUserEntityId(userEntity.getId());
-      }
-    } catch (Exception ex) {
-      logger.log(Level.SEVERE, String.format("User %s creation on discovery failed.", discoverId), ex);
-    }
-  }
-  
   public void onSchoolDataUserUpdatedEvent(@Observes SchoolDataUserUpdatedEvent event) {
-    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    if (userEntity != null) {
-      List<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(event.getEmails());
-      if (emailUsers.size() > 1) {
-        // TODO: Better exception handling
-        throw new RuntimeException("Multiple users found by emails");
-      }
-      
-      if (emailUsers.size() == 1) {
-        if (!emailUsers.get(0).getId().equals(userEntity.getId())) {
-          throw new RuntimeException(String.format("Another user found with email (%d, %d)", emailUsers.get(0).getId(), userEntity.getId()));
-        }
-      }
-      
-      List<String> existingAddresses = userEmailEntityController.listAddressesByUserEntity(userEntity);
-      
+    Long userEntityId = event.getUserEntityId();
+    SchoolDataIdentifier defaultIdentifier = event.getDefaultIdentifier();
+
+    List<SchoolDataIdentifier> discoveredIdentifiers = event.getDiscoveredIdentifiers();
+    List<SchoolDataIdentifier> updatedIdentifiers = event.getUpdatedIdentifiers();
+    List<SchoolDataIdentifier> removedIdentifiers = event.getRemovedIdentifiers();
+
+    List<String> emails = new ArrayList<>();
+    if (event.getEmails() != null) {
       for (String email : event.getEmails()) {
-        if (!existingAddresses.contains(email)) {
-          userEmailEntityController.addUserEmail(userEntity, email);
+        if (!validEmail(email)) {
+          logger.log(Level.SEVERE, "Found invalid email address (%s), removed from synchronization", email);
+        } else {
+          emails.add(email);
         }
-        
-        existingAddresses.remove(email);
       }
-      
-      // TODO: We should remove only emails originating from current school data source
-      
-      for (String removedAddress : existingAddresses) {
-        UserEmailEntity emailEntity = userEmailEntityController.findUserEmailEntityByAddress(removedAddress);
-        userEmailEntityController.removeUserEmailEntity(emailEntity);
-      }
-      
-      // Updated user's school data source default has been changed
-      if ((!StringUtils.equals(userEntity.getDefaultSchoolDataSource().getIdentifier(), event.getDefaultDataSource())) || 
-          (!StringUtils.equals(userEntity.getDefaultIdentifier(), event.getDefaultIdentifier()))) {
-        userEntityController.updateDefaultSchoolDataSource(userEntity, event.getDefaultDataSource());
-        userEntityController.updateDefaultIdentifier(userEntity, event.getDefaultIdentifier());
-      }
-    }
-  }
-  
-  public void onSchoolDataUserRemoved(@Observes SchoolDataUserRemovedEvent event) {
-    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    if (userEntity != null) {
-      userEntityController.archiveUserEntity(userEntity);
-    }    
-  }
-  
-  public void onSchoolDataUserEnvironmentRoleDiscoveredEvent(@Observes SchoolDataUserEnvironmentRoleDiscoveredEvent event) {
-    String discoverId = "UER-" + event.getUserDataSource() + "/" + event.getUserIdentifier() + '-' + event.getRoleDataSource() + "/" + event.getRoleIdentifier();
-    if (discoveredEnvironmentUserRoles.containsKey(discoverId)) {
-      event.setDiscoveredEnvironmentUserRoleEntityId(discoveredEnvironmentUserRoles.get(discoverId));
-      return;
     }
     
-    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
-    if (userEntity != null) {
-      EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getRoleDataSource(), event.getRoleIdentifier());
-      if (environmentRoleEntity != null) {
-        EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-        if (environmentUser == null) {
-          environmentUserController.createEnvironmentUser(userEntity, environmentRoleEntity);
+    if (emails.isEmpty()) {
+      logger.warning("Updating user without email addresses");
+    } else {
+      // Attempt to find existing users by given emails
+      
+      List<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(emails);
+      if (emailUsers.isEmpty()) {
+        // Could not find any users with given emails
+      } else if (emailUsers.size() > 1) {
+        logger.log(Level.SEVERE, String.format("Multiple users found with given emails (%s)", StringUtils.join(emails, ',')));
+        return;
+      } else {
+        UserEntity emailUser = emailUsers.get(0);
+        if (userEntityId != null) {
+          if (!emailUser.getId().equals(userEntityId)) {
+            logger.log(Level.SEVERE, String.format("One or more of emails %s belong to another user", StringUtils.join(emails, ',')));
+            return;
+          }
         } else {
-          environmentUserController.updateEnvironmentUserRole(environmentUser, environmentRoleEntity);
+          userEntityId = emailUser.getId();
+          logger.log(Level.INFO, String.format("Found userEntity (%d) by email, merging user to existing account", userEntityId));
+        }
+      }
+    }
+
+    UserEntity userEntity = null;
+
+    // If it's not an user delete event we need to create / update user into the system
+    if (!discoveredIdentifiers.isEmpty() || !updatedIdentifiers.isEmpty()) {
+      // UserEntityId has not been defined in the event and could not be found by email, so we create new user
+      if (userEntityId == null) {
+        userEntity = userEntityController.createUserEntity(defaultIdentifier.getDataSource(), defaultIdentifier.getIdentifier());
+      } else {
+        // Otherwise we use the existing one
+        userEntity = userEntityController.findUserEntityById(userEntityId);
+        if (userEntity == null) {
+          logger.log(Level.WARNING, "Could not find specified userEntityId %d, aborting synchronization", userEntityId);
+          return;
         }
         
-        discoveredEnvironmentUserRoles.put(discoverId, environmentRoleEntity.getId());
-        event.setDiscoveredEnvironmentUserRoleEntityId(environmentRoleEntity.getId());
-      } else {
-        logger.warning("Could not add environment role " + event.getRoleIdentifier() + '/' + event.getRoleDataSource() + " to user because it does not exist");
-      }
-    } else {
-      logger.warning("Could not add new role to user " + event.getUserIdentifier() + '/' + event.getUserDataSource() + " because it does not exist");
-    }
-  }
-  
-  public void onSchoolDataUserEnvironmentRoleRemovedEvent(@Observes SchoolDataUserEnvironmentRoleRemovedEvent event) {
-    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
-    if (userEntity != null) {
-      EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getRoleDataSource(), event.getRoleIdentifier());
-      if (environmentRoleEntity != null) {
-        EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-        if ((environmentUser != null) && (environmentUser.getRole() != null)) {
-          if (environmentRoleEntity.getId().equals(environmentUser.getRole().getId())) {
-            environmentUserController.updateEnvironmentUserRole(environmentUser, null);          
+        if (userEntity.getDefaultIdentifier() != null) {
+          if (!StringUtils.equals(userEntity.getDefaultIdentifier(), defaultIdentifier.getIdentifier()) || !StringUtils.equals(userEntity.getDefaultSchoolDataSource().getIdentifier(), defaultIdentifier.getDataSource())) {
+            logger.log(Level.FINE, String.format("Updating default identifier for user #%d into %s", userEntity.getId(), defaultIdentifier));
+            userEntityController.updateDefaultSchoolDataSource(userEntity, defaultIdentifier.getDataSource());
+            userEntityController.updateDefaultIdentifier(userEntity, defaultIdentifier.getIdentifier());
           }
         }
       }
+      
+      // Attach discovered identities to user
+      for (SchoolDataIdentifier identifier : discoveredIdentifiers) {
+        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
+        if (userSchoolDataIdentifier == null) {
+          userSchoolDataIdentifierController.createUserSchoolDataIdentifier(identifier.getDataSource(), identifier.getIdentifier(), userEntity);
+          logger.log(Level.FINE, String.format("Added new identifier %s for user %d", identifier, userEntity.getId()));
+        }
+      }
+      
+      // Update user emails
+      userEmailEntityController.setUserEmails(userEntity, emails);
+
+      // Update users environment role
+      if (event.getEnvironmentRoleIdentifier() != null) {
+        EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getEnvironmentRoleIdentifier().getDataSource(), event.getEnvironmentRoleIdentifier().getIdentifier());
+        if (environmentRoleEntity != null) {
+          EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+          if (environmentUser == null) {
+            logger.fine(String.format("UserEntity %d did not have an environment user so created new one into role %s", userEntity.getId(), environmentRoleEntity.getName()));
+            environmentUserController.createEnvironmentUser(userEntity, environmentRoleEntity);
+          } else {
+            if (!environmentRoleEntity.getId().equals(environmentUser.getRole().getId())) {
+              logger.fine(String.format("Updated UserEntity %d role into %s", userEntity.getId(), environmentRoleEntity.getName()));
+              environmentUserController.updateEnvironmentUserRole(environmentUser, environmentRoleEntity);
+            }
+          }
+        } else {
+          logger.severe(String.format("Could not find specified environment role entity %s", event.getEnvironmentRoleIdentifier()));
+        }
+      } else {
+        // Users new role has been set to null which means that we need to remove the environment role from the user
+        EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+        if (environmentUser != null) {
+          logger.info(String.format("Removed UserEntity %d environment role", userEntity.getId()));
+          environmentUserController.updateEnvironmentUserRole(environmentUser, null);
+        }
+      }
     }
+
+    // Remove identifiers in the removed list
+    for (SchoolDataIdentifier identifier : removedIdentifiers) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
+      if (userSchoolDataIdentifier != null) {
+        logger.log(Level.FINE, String.format("Removed user school data identifier %s", identifier));
+        userSchoolDataIdentifierController.deleteUserSchoolDataIdentifier(userSchoolDataIdentifier);
+        
+        if (userEntity == null) {
+          userEntity = userSchoolDataIdentifier.getUserEntity();
+        }
+      }
+    }
+
+    // Finally check if user has any identifiers left, if not archive the user from the system
+    if (userEntity != null) {
+      if (userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity).isEmpty()) {
+        logger.log(Level.INFO, String.format("UserEntity #%d has no identities left, archiving userEntity", userEntity.getId()));
+        userEntityController.archiveUserEntity(userEntity);
+      }
+    }
+    
   }
   
   private boolean validEmail(String email) {
@@ -190,7 +177,4 @@ public class DefaultSchoolDataUserListener {
   }
 
   private Pattern emailPattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-  private Map<String, Long> discoveredUsers;
-  private Map<String, Long> discoveredEnvironmentUserRoles;
-
 }

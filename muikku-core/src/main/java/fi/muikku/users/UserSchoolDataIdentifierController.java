@@ -53,6 +53,10 @@ public class UserSchoolDataIdentifierController {
   public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByUserEntity(UserEntity userEntity) {
     return userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
   }
+
+  public void deleteUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    userSchoolDataIdentifierDAO.delete(userSchoolDataIdentifier);
+  }
   
   
 }
