@@ -12,12 +12,13 @@ $.widget("custom.connectionLostNotifier", {
   },
   
   notifyConnectionLost: function() { 
-    if (this._connectionLostOverlay === null) {
+    if (this._connectionLostOverlay !== null) {
       return;
     }
-    if (this._connectionLostDialog === null) {
+    if (this._connectionLostDialog !== null) {
       return;
     }
+
     this._connectionLostOverlay = $('<div>')
       .addClass('connection-lost-overlay')
       .appendTo('body')
@@ -55,15 +56,16 @@ $.widget("custom.connectionLostNotifier", {
   },
   
   notifyNoConnection: function() {
-    if (this._connectionLostOverlay === null) {
+    if (this._connectionLostOverlay !== null) {
       return;
     }
-    if (this._connectionLostDialog === null) {
+    if (this._connectionLostDialog !== null) {
       return;
     }
     if (this._noConnection === true) {
       return;
     }
+
     this._spinner.remove();
     this._noConnection = true;
     $('.connection-lost-dialog-description')
