@@ -77,9 +77,8 @@ public class UserGroupEntityController {
     return userGroupUserEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
   }
 
-  public void deleteUserGroupUserEntity(UserGroupUserEntity userGroupUserEntity) {
-    // TODO: archive instead of delete? Though, identifier being unique is tough on implementation
-    userGroupUserEntityDAO.delete(userGroupUserEntity);
+  public void archiveUserGroupUserEntity(UserGroupUserEntity userGroupUserEntity) {
+    userGroupUserEntityDAO.updateArchived(userGroupUserEntity, Boolean.TRUE);
   }
 
   public List<UserGroupEntity> listUserGroupEntitiesByDataSource(String dataSource, int firstResult, int maxResults) {

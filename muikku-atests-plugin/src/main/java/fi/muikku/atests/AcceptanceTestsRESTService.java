@@ -182,8 +182,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   public Response test_importmock() {
     pyramusUpdater.updateUserRoles();
     pyramusUpdater.updateCourses(0, 100);
-    pyramusUpdater.updateStaffMembers(0, 100);
-    pyramusUpdater.updateStudents(0, 100);
+    pyramusUpdater.updatePersons(0, 200);
     
     return Response.ok().build();
   }
