@@ -2,14 +2,13 @@
 $.widget("custom.connectionLostNotifier", {
   
   options: {
-    noConnectionTimeout: 10000
+    noConnectionTimeout: 5000
   },
   
   _create: function() {
     this._connectionLostOverlay = null;
     this._connectionLostDialog = null;
     this._notifyNoConnectionTimeout = null;
-    this._noConnection = false;
   },
   
   notifyConnectionLost: function() { 
@@ -61,40 +60,22 @@ $.widget("custom.connectionLostNotifier", {
       this._notifyNoConnectionTimeoutId = setTimeout(
           $.proxy(function() {
             this._notifyNoConnection();
-          }, this), 10000);
+          }, this), this.options.noConnectionTimeout);
     }
   },
   
   _notifyNoConnection: function() {
     this._spinner.remove();
-    $('.connection-lost-dialog-description')
-    .animate({
-        opacity: 0
-      }, {
-        duration : 150,
-        easing : "easeInOutQuint",
-        complete: function() {
-          $('.connection-lost-dialog-description').text(getLocaleText('connectionlost.dialog.automaticReconnectFailed'));
-          
-          $('.connection-lost-dialog-description').animate({
-            opacity: 1
-          }, {
-            duration : 150,
-            easing : "easeInOutQuint",
-            complete: function() {
-             
-            }
-          });
-          
-          $('<div>')
-            .addClass('connection-lost-dialog-reconnectButton')
-            .text(getLocaleText('connectionlost.dialog.reconnectButtonLabel'))
-            .click(function(){
-              location.reload();
-            })
-            .appendTo('.connection-lost-dialog-container');
-        }
-    });
+
+    $('<div>')
+      .addClass('connection-lost-dialog-reconnectButton')
+      .text(getLocaleText('connectionlost.dialog.reconnectButtonLabel'))
+      .click(function(){
+        location.reload();
+      })
+      .appendTo('.connection-lost-dialog-container')
+      .css({display: 'none'})
+      .fadeIn(100);
   },
   
   notifyReconnected: function() {
@@ -112,8 +93,6 @@ $.widget("custom.connectionLostNotifier", {
       this._connectionLostDialog.remove();
       this._connectionLostDialog = null;
     }
-
-    this._noConnection = false;
     
     $(".notification-queue").show();
   }
