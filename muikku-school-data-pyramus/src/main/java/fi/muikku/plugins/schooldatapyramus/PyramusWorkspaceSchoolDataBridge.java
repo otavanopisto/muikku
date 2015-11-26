@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -58,9 +59,19 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   @PostConstruct
   public void init() throws IOException {
     String archiveChanges = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypeChange.archive");    
-    participationTypeChangesArchive = new ObjectMapper().readValue(archiveChanges, new TypeReference<Map<String, Long>>() {});
-    String unarchiveChanges = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypeChange.archive");    
-    participationTypeChangesUnarchive = new ObjectMapper().readValue(unarchiveChanges, new TypeReference<Map<String, Long>>() {});
+    if (StringUtils.isNotBlank(archiveChanges)) {
+      participationTypeChangesArchive = new ObjectMapper().readValue(archiveChanges, new TypeReference<Map<String, Long>>() {});
+    }
+    else {
+      logger.log(Level.SEVERE, "Missing plugin setting value: participationTypeChange.archive");
+    }
+    String unarchiveChanges = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypeChange.unarchive");    
+    if (StringUtils.isNotBlank(unarchiveChanges)) {
+      participationTypeChangesUnarchive = new ObjectMapper().readValue(unarchiveChanges, new TypeReference<Map<String, Long>>() {});
+    }
+    else {
+      logger.log(Level.SEVERE, "Missing plugin setting value: participationTypeChange.unarchive");
+    }
   }
 
   @Override
