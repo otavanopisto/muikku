@@ -59,7 +59,7 @@ public class UserEntityController implements Serializable {
   }
   
   public UserEntity findUserEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(dataSource, identifier, Boolean.FALSE);
     if (userSchoolDataIdentifier != null) {
       return userSchoolDataIdentifier.getUserEntity();
     }
@@ -115,7 +115,7 @@ public class UserEntityController implements Serializable {
   }
   
   public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByDataSource(SchoolDataSource dataSource) {
-    return userSchoolDataIdentifierDAO.listByDataSource(dataSource);
+    return userSchoolDataIdentifierDAO.listByDataSourceAndArchived(dataSource, Boolean.FALSE);
   }
 
   public List<UserEntity> listUserEntities() {

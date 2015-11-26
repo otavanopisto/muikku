@@ -23,7 +23,7 @@ public class UserSchoolDataIdentifierController {
   private SchoolDataSourceDAO schoolDataSourceDAO;
   
   public UserSchoolDataIdentifier createUserSchoolDataIdentifier(SchoolDataSource dataSource, String identifier, UserEntity userEntity) {
-    return userSchoolDataIdentifierDAO.create(dataSource, identifier, userEntity);
+    return userSchoolDataIdentifierDAO.create(dataSource, identifier, userEntity, Boolean.FALSE);
   }
 
   public UserSchoolDataIdentifier createUserSchoolDataIdentifier(String schoolDataSource, String identifier, UserEntity userEntity) {
@@ -47,15 +47,15 @@ public class UserSchoolDataIdentifierController {
   }
   
   public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
-    return userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+    return userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(dataSource, identifier, Boolean.FALSE);
   }
 
   public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByUserEntity(UserEntity userEntity) {
-    return userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
+    return userSchoolDataIdentifierDAO.listByUserEntityAndArchived(userEntity, Boolean.FALSE);
   }
 
-  public void deleteUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
-    userSchoolDataIdentifierDAO.delete(userSchoolDataIdentifier);
+  public void archiveUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    userSchoolDataIdentifierDAO.updateArchived(userSchoolDataIdentifier, Boolean.TRUE);
   }
   
   

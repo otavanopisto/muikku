@@ -90,6 +90,7 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
   }
 
   public List<UserGroupEntity> listByUser(UserEntity userEntity) {
+    // TODO: Move descriptive name
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -101,11 +102,12 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
     criteria.select(root.get(UserGroupUserEntity_.userGroupEntity));
 
     criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.equal(join.get(UserSchoolDataIdentifier_.userEntity), userEntity),
-            criteriaBuilder.equal(join2.get(UserGroupEntity_.archived), Boolean.FALSE),
-            criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
-        )
+      criteriaBuilder.and(
+        criteriaBuilder.equal(join.get(UserSchoolDataIdentifier_.userEntity), userEntity),
+        criteriaBuilder.equal(join.get(UserSchoolDataIdentifier_.archived), Boolean.FALSE),
+        criteriaBuilder.equal(join2.get(UserGroupEntity_.archived), Boolean.FALSE),
+        criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
+      )
     );
    
     return entityManager.createQuery(criteria).getResultList();
