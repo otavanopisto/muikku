@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -674,6 +675,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
 
+  protected void deleteMaterialEvalutionByMaterialIdAndUseremail(Long workspaceMaterialId, String email) {
+    try {
+      Long studentId = getUserIdByEmail(email);
+      asAdmin()
+      .delete("/test/workspace/evaluations/student/{STUDENTID}/htmlmaterials/{WORKSPACEMATERIALID}", studentId, workspaceMaterialId)
+      .then()
+      .statusCode(204);
+    } catch (ClassNotFoundException | SQLException e) {
+      // TODO Do something?
+      System.out.print(e.getMessage());
+    }
+  }
+  
   protected void deleteCommunicatorMessages() {
     asAdmin()
       .delete("/test/communicator/messages")
