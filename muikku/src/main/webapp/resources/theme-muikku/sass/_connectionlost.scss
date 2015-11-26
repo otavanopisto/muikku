@@ -1,12 +1,11 @@
 .connection-lost-overlay {
-  opacity:0.9;
+  opacity:0.8;
   position:fixed;
   z-index:99998;
-  background: linear-gradient(270deg, #112729, #000, #0F2D28);
-  background-size: 800% 800%;
-  -webkit-animation: connectionLost 24s ease infinite;
-  -moz-animation: connectionLost 24s ease infinite;
-  animation: connectionLost 24s ease infinite;
+  background:#000;
+  -webkit-animation: connectionLost 14s ease infinite;
+  -moz-animation: connectionLost 14s ease infinite;
+  animation: connectionLost 14s ease infinite;
   top:0;
   right:0;
   bottom:0;
