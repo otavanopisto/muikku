@@ -31,7 +31,6 @@
     _create: function () {
       this._loadStudentList('active');
       this.element.on("click", ".workspace-students-active", $.proxy(this._onWorkspaceStudentsActiveClick, this));
-      this.element.on("click", ".workspace-students-evaluated", $.proxy(this._onWorkspaceStudentsEvaluatedClick, this));
       this.element.on("click", ".workspace-students-inactive", $.proxy(this._onWorkspaceStudentsInactiveClick, this));
       this.element.on("click", ".workspace-users-archive", $.proxy(this._onWorkspaceStudentArchiveClick, this));
       this.element.on("click", ".workspace-users-unarchive", $.proxy(this._onWorkspaceStudentUnarchiveClick, this));
