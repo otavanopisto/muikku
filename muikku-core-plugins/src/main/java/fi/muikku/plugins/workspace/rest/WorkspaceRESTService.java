@@ -345,7 +345,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{ID}/students")
   @RESTPermitUnimplemented
   public Response listWorkspaceStudents(@PathParam("ID") Long workspaceEntityId,
-      @QueryParam("status") String status,
+      @QueryParam("active") Boolean active,
       @QueryParam("orderBy") String orderBy) {
     
     // Authorization
@@ -360,7 +360,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Staff via WorkspaceSchoolDataBridge
     
-    List<fi.muikku.schooldata.entity.WorkspaceUser> schoolDataUsers = workspaceController.listWorkspaceStudents(workspaceEntity, status);
+    List<fi.muikku.schooldata.entity.WorkspaceUser> schoolDataUsers = workspaceController.listWorkspaceStudents(workspaceEntity, active);
     if (schoolDataUsers.isEmpty()) {
       return Response.noContent().build();
     }
@@ -909,7 +909,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceUser.getWorkspaceSchoolDataSource(),
         workspaceUser.getWorkspaceIdentifier());
     
-    WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntity(workspaceUser, workspaceEntity);
+    WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityIncludeArchived(workspaceUser, workspaceEntity);
     
     return new WorkspaceUser(
         workspaceUserEntity.getId(),
@@ -1371,12 +1371,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (!workspaceUserEntity.getArchived().equals(workspaceUser.getArchived())) {
       fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
       if (workspaceUser.getArchived()) {
+        workspaceController.updateWorkspaceStudentActivity(bridgeUser, true);
         workspaceUserEntity = workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
-        workspaceController.archiveWorkspaceUser(bridgeUser);
       }
       else {
+        workspaceController.updateWorkspaceStudentActivity(bridgeUser, false);
         workspaceUserEntity = workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
-        workspaceController.unarchiveWorkspaceUser(bridgeUser);
       }
     }
 

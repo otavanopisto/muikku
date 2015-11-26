@@ -242,11 +242,13 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public List<WorkspaceUser> listActiveWorkspaceStudents(String workspaceIdentifier) {
+  public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier, boolean active) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    String participationTypes = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.active");
+    String participationTypes = active
+        ? pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.active")
+        : pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.inactive");
     if (StringUtils.isEmpty(participationTypes)) {
-      logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.active", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
+      logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.(in)active", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
     }
     else {
       CourseStudent[] students = pyramusClient.get(String.format("/courses/courses/%d/students?participationTypes=%s", courseId, participationTypes), CourseStudent[].class);
@@ -258,64 +260,15 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public List<WorkspaceUser> listEvaluatedWorkspaceStudents(String workspaceIdentifier) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    String participationTypes = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.evaluated");
-    if (StringUtils.isEmpty(participationTypes)) {
-      logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.evaluated", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
-      return Collections.<WorkspaceUser>emptyList();
-    }
-    else {
-      CourseStudent[] students = pyramusClient.get(String.format("/courses/courses/%d/students?participationTypes=%s", courseId, participationTypes), CourseStudent[].class);
-      if (students != null) {
-        return entityFactory.createEntity(students);
-      }
-    }
-    return Collections.<WorkspaceUser>emptyList();
-  }
-
-  @Override
-  public List<WorkspaceUser> listInactiveWorkspaceStudents(String workspaceIdentifier) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    String participationTypes = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypes.workspace.inactive");
-    if (StringUtils.isEmpty(participationTypes)) {
-      logger.warning(String.format("Undefined plugin setting:%s-participationTypes.workspace.inactive", SchoolDataPyramusPluginDescriptor.PLUGIN_NAME));
-    }
-    else {
-      CourseStudent[] students = pyramusClient.get(String.format("/courses/courses/%d/students?participationTypes=%s", courseId, participationTypes), CourseStudent[].class);
-      if (students != null) {
-        return entityFactory.createEntity(students);
-      }
-    }
-    return Collections.<WorkspaceUser>emptyList();
-  }
-
-  @Override
-  public void archiveWorkspaceUser(WorkspaceUser workspaceUser) {
+  public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean active) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier());
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier());
     CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
     if (courseStudent != null) {
       Long currentParticipationType = courseStudent.getParticipationTypeId();
-      Long newParticipationType = participationTypeChangesArchive.get(courseStudent.getParticipationTypeId());
-      if (newParticipationType != null && !newParticipationType.equals(currentParticipationType)) {
-        CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
-        if (participationType != null) {
-          courseStudent.setParticipationTypeId(participationType.getId());
-          pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
-        }
-      }
-    }
-  }
-
-  @Override
-  public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceUser.getWorkspaceIdentifier());
-    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUser.getIdentifier());
-    CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
-    if (courseStudent != null) {
-      Long currentParticipationType = courseStudent.getParticipationTypeId();
-      Long newParticipationType = participationTypeChangesUnarchive.get(courseStudent.getParticipationTypeId());
+      Long newParticipationType = active
+          ? participationTypeChangesArchive.get(courseStudent.getParticipationTypeId())
+          : participationTypeChangesUnarchive.get(courseStudent.getParticipationTypeId());
       if (newParticipationType != null && !newParticipationType.equals(currentParticipationType)) {
         CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
         if (participationType != null) {

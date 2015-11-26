@@ -261,7 +261,8 @@ class WorkspaceSchoolDataController {
     return null;
   }
 	
-	public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
+	@Deprecated
+  public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
 		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
 		if (schoolDataSource != null) {
 			WorkspaceSchoolDataBridge schoolDataBridge = getWorkspaceBridge(schoolDataSource);
@@ -281,41 +282,22 @@ class WorkspaceSchoolDataController {
 		return null;
 	}
 	
-  public void archiveWorkspaceUser(WorkspaceUser workspaceUser) {
+  public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean activity) {
 	  SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserSchoolDataSource());
     if (schoolDataSource != null) {
       WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
       if (workspaceBridge != null) {
-        workspaceBridge.archiveWorkspaceUser(workspaceUser);
+        workspaceBridge.updateWorkspaceStudentActivity(workspaceUser, activity);
       }
     }
 	}
 
-  public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserSchoolDataSource());
-    if (schoolDataSource != null) {
-      WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
-      if (workspaceBridge != null) {
-        workspaceBridge.unarchiveWorkspaceUser(workspaceUser);
-      }
-    }
-  }
-	
-  public List<WorkspaceUser> listWorkspaceStudents(Workspace workspace, String status) {
+  public List<WorkspaceUser> listWorkspaceStudents(Workspace workspace, boolean active) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
     if (schoolDataSource != null) {
       WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
       if (workspaceBridge != null) {
-        if ("active".equals(status)) {
-          return workspaceBridge.listActiveWorkspaceStudents(workspace.getIdentifier());
-        }
-        else if ("evaluated".equals(status)) {
-          return workspaceBridge.listEvaluatedWorkspaceStudents(workspace.getIdentifier());
-        }
-        else if ("inactive".equals(status)) {
-          return workspaceBridge.listInactiveWorkspaceStudents(workspace.getIdentifier());
-        }
-        logger.log(Level.SEVERE, String.format("Unknown student status: %s", status));
+        return workspaceBridge.listWorkspaceStudents(workspace.getIdentifier(), active);
       }
     }
     return Collections.<WorkspaceUser>emptyList();

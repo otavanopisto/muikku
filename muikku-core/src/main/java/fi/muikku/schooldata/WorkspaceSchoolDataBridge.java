@@ -42,13 +42,12 @@ public interface WorkspaceSchoolDataBridge {
 	
 	public WorkspaceUser findWorkspaceUser(String workspaceIdentifier, String workspaceSchoolDataSource, String userIdentifier) throws UnexpectedSchoolDataBridgeException;
 	
+	@Deprecated
 	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	public List<WorkspaceUser> listWorkspaceStaffMembers(String workspaceIdentifier);
-	public List<WorkspaceUser> listActiveWorkspaceStudents(String workspaceIdentifier);
-	public List<WorkspaceUser> listEvaluatedWorkspaceStudents(String workspaceIdentifier);
-	public List<WorkspaceUser> listInactiveWorkspaceStudents(String workspaceIdentifier);
-	public void archiveWorkspaceUser(WorkspaceUser workspaceUser);
-	public void unarchiveWorkspaceUser(WorkspaceUser workspaceUser);
+	public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier, boolean active);
+	public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean active);
+
 
 }
