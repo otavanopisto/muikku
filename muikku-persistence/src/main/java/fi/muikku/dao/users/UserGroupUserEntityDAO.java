@@ -95,6 +95,7 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(join.get(UserSchoolDataIdentifier_.userEntity), userEntity),
+            criteriaBuilder.equal(join.get(UserSchoolDataIdentifier_.archived), Boolean.FALSE),
             criteriaBuilder.equal(join2.get(UserGroupEntity_.archived), Boolean.FALSE),
             criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
         )
@@ -103,8 +104,9 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  @Override
-  public void delete(UserGroupUserEntity e) {
-    super.delete(e);
+  public UserGroupUserEntity updateArchived(UserGroupUserEntity userGroupUserEntity, Boolean archived) {
+    userGroupUserEntity.setArchived(archived);
+    return persist(userGroupUserEntity);
   }
+
 }
