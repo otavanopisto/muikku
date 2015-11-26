@@ -11,6 +11,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.ContentNode;
+import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialException;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
@@ -71,6 +72,12 @@ public class EvaluationController {
     }
     
     return evaluation;
+  }
+  
+  public void deleteWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation evaluation) {
+    if (evaluation != null) {
+      workspaceMaterialEvaluationDAO.delete(evaluation);
+    }
   }
   
   public WorkspaceMaterialEvaluation findWorkspaceMaterialEvaluation(Long id) {
