@@ -209,10 +209,9 @@ public class ForumRESTService extends PluginRESTService {
   @PUT
   @Path ("/areas/{AREAID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response updateArea(
-      @Context Request request, 
+  public Response updateArea( 
       @PathParam ("AREAID") Long areaId,
-      ForumAreaRESTModel restModel) throws AuthorizationException {
+      ForumAreaRESTModel restModel) {
     ForumArea forumArea = forumController.getForumArea(areaId);
     
     if (forumArea != null) {
