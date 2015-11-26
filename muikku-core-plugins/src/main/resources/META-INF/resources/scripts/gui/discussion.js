@@ -586,7 +586,32 @@ $(document).ready(function() {
       }
     }, this));
   });
-  
+  $(".di-edit-area-button").click(function() {
+
+    var editArea = function(values) {
+      var areaId = values.forumAreaId;
+      delete values.forumAreaId;
+      mApi({async: false}).forum.areas.update(areaId, values).callback(function(err, result) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.editarea', err));
+        } else {        
+          window.discussion._refreshLatest();
+          window.discussion._refreshAreas();
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.editarea'));
+        }
+      });
+
+    }
+
+    mApi({async: false}).forum.areas.read().callback(function(err, areas) {
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
+      } else {
+        openInSN('/discussion/discussion_edit_area.dust', areas, editArea);
+      }
+    });
+
+  });  
   $(".di-delete-area-button").click(function() {
 
     var deleteArea = function(values) {

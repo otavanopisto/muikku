@@ -3,7 +3,7 @@
     
     <form>
       <div class="mf-form-header"><h3>{#localize key="plugin.discussion.deletearea.topic"/}</h3></div>
-      <div class="mf-form-info">{#localize key="plugin.discussion.deletearea.info"/}</div>
+<!--       <div class="mf-form-info">{#localize key="plugin.discussion.deletearea.info"/}</div> -->
       <div class="mf-content">
           <div class="di-area-new-body">
             <div class="mf-fieldRow">
