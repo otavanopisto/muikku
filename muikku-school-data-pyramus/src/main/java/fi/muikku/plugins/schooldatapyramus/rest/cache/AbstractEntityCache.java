@@ -5,11 +5,10 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Stateful;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
-@Stateful
-public class EntityCache {
+public abstract class AbstractEntityCache {
   
   @Inject
   private Logger logger;
@@ -17,10 +16,23 @@ public class EntityCache {
   @Inject
   private CacheSettingsController cacheSettingsController;
   
+  @Inject
+  private EntityCacheEvictor entityCacheEvictor;
+  
   @PostConstruct
   public void init() {
     cache = new HashMap<>();
+    logger.info(String.format("(%s) New cache created", getType()));
+    entityCacheEvictor.addCache(this);
   }
+  
+  @PreDestroy
+  public void deinit() {
+    logger.info(String.format("(%s) Cache removed", getType()));
+    entityCacheEvictor.removeCache(this);
+  }
+  
+  public abstract String getType();
   
   public <T> CachedEntity<T> put(String path, T data) {
     CacheSetting cacheSettings = cacheSettingsController.getCacheSettings(path);
@@ -37,7 +49,12 @@ public class EntityCache {
   }
   
   public void remove(String path) {
-    cache.remove(path);
+    if (cache.containsKey(path)) {
+      logger.info(String.format("(%s) Cache cleared for %s", getType(), path));
+      cache.remove(path);
+    } else {
+      logger.info(String.format("(%s) Did not find any cached resources for %s", getType(), path));
+    }
   }
   
   public <T> CachedEntity<T> get(String path, Class<? extends T> clazz) {
@@ -46,15 +63,15 @@ public class EntityCache {
     if (cachedEntity != null) {
       if ((cachedEntity.getExpires() != null) || (cachedEntity.getExpires().longValue() < System.currentTimeMillis())) {
         cachedEntity.incHit();
-        logger.info(String.format("Cache hit (%s), hits %d", path, cachedEntity.getHits()));
+        logger.info(String.format("(%s) Cache hit (%s), hits %d", getType(), path, cachedEntity.getHits()));
         return cachedEntity;
       } else {
-        cache.remove(path);
+        remove(path);
       }
     }
     
     return null;
   }
-  
+
   private Map<String, CachedEntity<?>> cache;
 }
