@@ -929,9 +929,9 @@ public class PyramusUpdater {
     fireSchoolDataUserUpdated(userEntityId, defaultIdentifier, removedIdentifiers, updatedIdentifiers, discoveredIdentifiers, emails, environmentRoleIdentifier);
   }
 
-  private void fireSchoolDataUserUpdated(Long userEntityId, String defaultIdentifier, List<String> removedIdentifiers, List<String> updatedIdentifiers,
-      List<String> discoveredIdentifiers, List<String> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
-    
+  private void fireSchoolDataUserUpdated(Long userEntityId, SchoolDataIdentifier defaultIdentifier, List<SchoolDataIdentifier> removedIdentifiers, List<SchoolDataIdentifier> updatedIdentifiers,
+      List<SchoolDataIdentifier> discoveredIdentifiers, List<String> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
+
     if (discoveredIdentifiers == null) {
       discoveredIdentifiers = Collections.emptyList();
     }
@@ -944,9 +944,27 @@ public class PyramusUpdater {
       removedIdentifiers = Collections.emptyList();
     }
 
-    schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(userEntityId, enivormentRoleIdentifier, 
-        toIdentifiers(discoveredIdentifiers), toIdentifiers(updatedIdentifiers), 
-        toIdentifiers(removedIdentifiers), toIdentifier(defaultIdentifier), emails));
+    schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(userEntityId, 
+        enivormentRoleIdentifier, 
+        discoveredIdentifiers, 
+        updatedIdentifiers, 
+        removedIdentifiers, 
+        defaultIdentifier, 
+        emails));
+    
+  }
+  
+  private void fireSchoolDataUserUpdated(Long userEntityId, String defaultIdentifier, List<String> removedIdentifiers, List<String> updatedIdentifiers,
+      List<String> discoveredIdentifiers, List<String> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
+    
+    fireSchoolDataUserUpdated(userEntityId, 
+        toIdentifier(defaultIdentifier), 
+        toIdentifiers(removedIdentifiers),
+        toIdentifiers(updatedIdentifiers),
+        toIdentifiers(discoveredIdentifiers),
+        emails,
+        enivormentRoleIdentifier
+    );
   }
   
   private SchoolDataIdentifier toIdentifier(String identifier) {
@@ -987,24 +1005,29 @@ public class PyramusUpdater {
       UserEntity userEntity = schoolDataIdentifier.getUserEntity();
       
       List<UserSchoolDataIdentifier> existingIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
+      
+      SchoolDataIdentifier defaultIdentifier = null;
+      List<SchoolDataIdentifier> removedIdentifiers = Arrays.asList(identifier);
       List<SchoolDataIdentifier> updatedIdentifiers = new ArrayList<>();
+      List<SchoolDataIdentifier> discoveredIdentifiers = new ArrayList<>();
       
       for (UserSchoolDataIdentifier existingIdentifier : existingIdentifiers) {
-        if (!existingIdentifier.getDataSource().equals(identifier.getDataSource()) && existingIdentifier.getIdentifier().equals(identifier.getIdentifier())) {
+        if (!(existingIdentifier.getDataSource().getIdentifier().equals(identifier.getDataSource()) && 
+            existingIdentifier.getIdentifier().equals(identifier.getIdentifier()))) {
           updatedIdentifiers.add(new SchoolDataIdentifier(existingIdentifier.getIdentifier(), existingIdentifier.getDataSource().getIdentifier()));
         }
       }
       
-      SchoolDataIdentifier roleIdentifier = getUserEntityEnvironmentRoleIdentifier(userEntity);
+      SchoolDataIdentifier enivormentRoleIdentifier = getUserEntityEnvironmentRoleIdentifier(userEntity);
       List<String> emails = userEmailEntityController.listAddressesByUserEntity(userEntity);
       
-      schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(userEntity.getId(), 
-          roleIdentifier, 
-          null, 
+      fireSchoolDataUserUpdated(userEntity.getId(), 
+          defaultIdentifier, 
+          removedIdentifiers, 
           updatedIdentifiers, 
-          Arrays.asList(identifier), 
-          null, 
-          emails));
+          discoveredIdentifiers, 
+          emails, 
+          enivormentRoleIdentifier);
     }
   }
   
@@ -1013,7 +1036,9 @@ public class PyramusUpdater {
     if (environmentUser != null) {
       List<RoleSchoolDataIdentifier> identifiers = environmentRoleEntityController.listRoleSchoolDataIdentifiersByEnvironmentRoleEntity(environmentUser.getRole());
       for (RoleSchoolDataIdentifier identifier : identifiers) {
-        return new SchoolDataIdentifier(identifier.getIdentifier(), identifier.getDataSource().getIdentifier());
+        if (SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE.equals(identifier.getDataSource().getIdentifier())) {
+          return new SchoolDataIdentifier(identifier.getIdentifier(), identifier.getDataSource().getIdentifier());
+        }
       }
     }
     

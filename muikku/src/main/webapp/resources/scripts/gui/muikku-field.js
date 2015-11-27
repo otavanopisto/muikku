@@ -528,6 +528,9 @@
         $(this.element)
         .before($('<span>')
           .addClass('muikku-field-save-state-label')
+          .css({
+            display:'none'
+          })
         );
       }
     },
@@ -556,11 +559,10 @@
         }
       }
     },
-    
     _saveFailed: function() {
-        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingTimedOut'));
+      $(document).connectionLostNotifier("notifyConnectionLost");
+      
     },
-    
     _propagateChange: function () {
       $(this.element)
         .removeClass('muikku-field-saved muikku-field-saving')
@@ -596,6 +598,8 @@
       }
       this._saveFailedTimeoutId = null;
 
+      $(document).connectionLostNotifier("notifyReconnected");
+
       // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
       if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
         if (message.originTicket == $(document).muikkuWebSocket("ticket")) {
@@ -609,7 +613,9 @@
             .finish()
             .fadeIn(10)
             .delay(1000)
-            .fadeOut(300);
+            .fadeOut(300, function() {
+              $(this).remove();
+            });
           
         } else {
           $(this.element)
@@ -622,7 +628,9 @@
           .finish()
           .fadeIn(10)
           .delay(1000)
-          .fadeOut(300);
+          .fadeOut(300, function() {
+            $(this).remove();
+          });
           
           $(this.element)
             .find('.muikku-field-saving-label')
