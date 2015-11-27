@@ -33,6 +33,7 @@ import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
@@ -80,6 +81,7 @@ import fi.muikku.session.SessionController;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
+import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
 
 @RequestScoped
@@ -107,7 +109,10 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private UserEntityController userEntityController;
-
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
 
@@ -1352,8 +1357,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       @PathParam("ID") String userId,
       WorkspaceUser workspaceUser) {
     
-    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
-    if (userIdentifier == null) {
+    SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(userId);
+    if (workspaceUserIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
     }
     
@@ -1374,7 +1379,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
     
-    fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceIdentifier, userIdentifier);
+    fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceIdentifier, workspaceUserIdentifier);
     if (bridgeUser == null) {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
@@ -1382,6 +1387,19 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceUser.getActive() != null) {
       if (!workspaceUser.getActive().equals(bridgeUser.getActive())) {
         workspaceController.updateWorkspaceStudentActivity(bridgeUser, workspaceUser.getActive());
+        // TODO Optimize
+        UserSchoolDataIdentifier userIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
+            bridgeUser.getUserIdentifier().getDataSource(),
+            bridgeUser.getUserIdentifier().getIdentifier());
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(
+            workspaceEntity,
+            userIdentifier);
+        if (workspaceUser.getActive() && workspaceUserEntity.getArchived()) {
+          workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
+        }
+        else if (!workspaceUser.getActive() && !workspaceUserEntity.getArchived()) {
+          workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
+        }
       }
     }
     
