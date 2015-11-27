@@ -49,36 +49,52 @@ public class UserGroupEntityController {
   }
   
   public UserGroupEntity findUserGroupEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
+    return findUserGroupEntityByDataSourceAndIdentifier(dataSource, identifier, false);
+  }
+  
+  public UserGroupEntity findUserGroupEntityByDataSourceAndIdentifier(String dataSource, String identifier, boolean includeArchived) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {
       logger.severe("Could not find datasource " + dataSource);
       return null;
     }
-    
-    return userGroupEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+
+    if (includeArchived) {
+      return userGroupEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+    } else {
+      return userGroupEntityDAO.findByDataSourceAndIdentifierAndArchived(schoolDataSource, identifier, false);
+    }
   }
 
   public Long getGroupUserCount(UserGroupEntity userGroupEntity) {
     return userGroupEntityDAO.countGroupUsers(userGroupEntity);
   }
   
-  public void deleteUserGroupEntity(UserGroupEntity userGroupEntity) {
-    // TODO: archive instead of delete? Though, identifier being unique is tough on implementation
-    userGroupEntityDAO.delete(userGroupEntity);
-  }
-
   public UserGroupUserEntity findUserGroupUserEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
+    return findUserGroupUserEntityByDataSourceAndIdentifier(dataSource, identifier, false);
+  }
+  
+  public UserGroupUserEntity findUserGroupUserEntityByDataSourceAndIdentifier(String dataSource, String identifier, Boolean includeArchived) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {
       logger.severe("Could not find datasource " + dataSource);
       return null;
     }
     
-    return userGroupUserEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+    if (includeArchived) {
+      return userGroupUserEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+    } else {
+      return userGroupUserEntityDAO.findByDataSourceAndIdentifierAndArchived(schoolDataSource, identifier, Boolean.FALSE);
+    }
+    
   }
 
   public void archiveUserGroupUserEntity(UserGroupUserEntity userGroupUserEntity) {
     userGroupUserEntityDAO.updateArchived(userGroupUserEntity, Boolean.TRUE);
+  }
+
+  public void unarchiveUserGroupUserEntity(UserGroupUserEntity userGroupUserEntity) {
+    userGroupUserEntityDAO.updateArchived(userGroupUserEntity, Boolean.FALSE);
   }
 
   public List<UserGroupEntity> listUserGroupEntitiesByDataSource(String dataSource, int firstResult, int maxResults) {
@@ -113,6 +129,18 @@ public class UserGroupEntityController {
 
   public List<UserGroupUserEntity> listUserGroupUsersByUser(UserEntity userEntity) {
     return userGroupUserEntityDAO.listByUserEntity(userEntity);
+  }
+
+  public UserGroupUserEntity updateUserSchoolDataIdentifier(UserGroupUserEntity userGroupUserEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    return userGroupUserEntityDAO.updateUserSchoolDataIdentifier(userGroupUserEntity, userSchoolDataIdentifier);
+  }
+
+  public UserGroupEntity archiveUserGroupEntity(UserGroupEntity userGroupEntity) {
+    return userGroupEntityDAO.updateArchived(userGroupEntity, Boolean.TRUE);
+  }
+
+  public UserGroupEntity unarchiveUserGroupEntity(UserGroupEntity userGroupEntity) {
+    return userGroupEntityDAO.updateArchived(userGroupEntity, Boolean.FALSE);
   }
 
 }

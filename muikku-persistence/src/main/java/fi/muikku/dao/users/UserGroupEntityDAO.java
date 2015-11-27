@@ -51,18 +51,28 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
    
     return getSingleResult(entityManager.createQuery(criteria));
   }
-
-  public UserGroupEntity archive(UserGroupEntity userGroupEntity) {
-    userGroupEntity.setArchived(true);
-    
-    getEntityManager().persist(userGroupEntity);
-    
-    return userGroupEntity;
-  }
   
-  @Override
-  public void delete(UserGroupEntity e) {
-    super.delete(e);
+  public UserGroupEntity findByDataSourceAndIdentifierAndArchived(SchoolDataSource schoolDataSource, String identifier, Boolean archived) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserGroupEntity> criteria = criteriaBuilder.createQuery(UserGroupEntity.class);
+    Root<UserGroupEntity> root = criteria.from(UserGroupEntity.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(          
+        criteriaBuilder.equal(root.get(UserGroupEntity_.archived), archived),
+        criteriaBuilder.equal(root.get(UserGroupEntity_.schoolDataSource), schoolDataSource),
+        criteriaBuilder.equal(root.get(UserGroupEntity_.identifier), identifier)
+      )
+    );
+   
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public UserGroupEntity updateArchived(UserGroupEntity userGroupEntity, Boolean archived) {
+    userGroupEntity.setArchived(archived);
+    return persist(userGroupEntity);
   } 
 
   public List<UserGroupEntity> listByDataSource(SchoolDataSource schoolDataSource, Integer firstResult, Integer maxResults) {
