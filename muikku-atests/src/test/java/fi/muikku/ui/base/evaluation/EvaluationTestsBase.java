@@ -105,7 +105,6 @@ public class EvaluationTestsBase extends AbstractUITest {
         assertSelectedOption("#grade", "Failed");
         
       }finally{
-        deleteMaterialEvalutionByMaterialIdAndUseremail(htmlMaterial.getId(), "testuser@made.up");
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
     } finally {
