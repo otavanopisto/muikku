@@ -50,7 +50,6 @@ public class EvaluationTestsBase extends AbstractUITest {
         waitForPresentAndVisible(".evaluation-assignment-wrapper");
         assertClassPresent(".evaluation-assignment-wrapper", "assignment-evaluated");
       }finally{
-        deleteMaterialEvalutionByMaterialIdAndUseremail(htmlMaterial.getId(), "testuser@made.up");
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
     } finally {

@@ -674,19 +674,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .then()
       .statusCode(204);
   }
-
-  protected void deleteMaterialEvalutionByMaterialIdAndUseremail(Long workspaceMaterialId, String email) {
-    try {
-      Long studentId = getUserIdByEmail(email);
-      asAdmin()
-      .delete("/test/workspace/evaluations/student/{STUDENTID}/htmlmaterials/{WORKSPACEMATERIALID}", studentId, workspaceMaterialId)
-      .then()
-      .statusCode(204);
-    } catch (ClassNotFoundException | SQLException e) {
-      // TODO Do something?
-      System.out.print(e.getMessage());
-    }
-  }
   
   protected void deleteCommunicatorMessages() {
     asAdmin()

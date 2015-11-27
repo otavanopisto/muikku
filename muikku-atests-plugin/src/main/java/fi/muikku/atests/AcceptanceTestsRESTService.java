@@ -322,26 +322,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   }
 
   @DELETE
-  @Path("/workspace/evaluations/student/{STUDENTID}/htmlmaterials/{WORKSPACEMATERIALID}")
-  @RESTPermit (handling = Handling.UNSECURED)
-  public Response deleteWorkspaceMaterialEvalution(@PathParam ("STUDENTID") Long studentId, @PathParam ("WORKSPACEMATERIALID") Long workspaceMaterialId) {
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).entity("Not Found").build();
-    }
-    UserEntity userEntity = userEntityController.findUserEntityById(studentId);
-    if (userEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Not Found").build();
-    }
-    WorkspaceMaterialEvaluation evaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
-    if (evaluation == null) {
-      return Response.status(Status.NOT_FOUND).entity("Not Found").build();
-    }
-    evaluationController.deleteWorkspaceMaterialEvaluation(evaluation);
-    return Response.noContent().build();
-  }
-  
-  @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}/htmlmaterials/{WORKSPACEMATERIALID}")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteWorkspaceMaterial(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("WORKSPACEMATERIALID") Long workspaceMaterialId) {
@@ -359,6 +339,11 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, true);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+    
+    List<WorkspaceMaterialEvaluation> evaluations = evaluationController.findWorkspaceMaterialEvaluationsByWorkspaceMaterialId(workspaceMaterialId);
+    for (WorkspaceMaterialEvaluation evaluation : evaluations) {
+      evaluationController.deleteWorkspaceMaterialEvaluation(evaluation);
     }
     
     htmlMaterialController.deleteHtmlMaterial(htmlMaterial);

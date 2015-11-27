@@ -88,6 +88,10 @@ public class EvaluationController {
     return workspaceMaterialEvaluationDAO.findByWorkspaceMaterialIdAndStudentEntityId(workspaceMaterial.getId(), student.getId());
   }
   
+  public List<WorkspaceMaterialEvaluation> findWorkspaceMaterialEvaluationsByWorkspaceMaterialId(Long workspaceMaterialId){
+    return workspaceMaterialEvaluationDAO.findByWorkspaceMaterialId(workspaceMaterialId);
+  }
+  
   public WorkspaceMaterialEvaluation updateWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
     workspaceMaterialEvaluationDAO.updateGradingScaleIdentifier(workspaceMaterialEvaluation, gradingScale.getIdentifier());
     workspaceMaterialEvaluationDAO.updateGradingScaleSchoolDataSource(workspaceMaterialEvaluation, gradingScale.getSchoolDataSource());
