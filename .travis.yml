@@ -20,7 +20,7 @@ before_install:
     /tmp/sc-4.3.12-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER -f /tmp/sc-ready --vm-version dev-varnish --daemonize --pidfile /tmp/sc.pid;
   fi
 install:
-- mvn install -Pmongo-log-plugin,jndi-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin -Dfindbugs.skip=$findbugs_skip -Dmaven.javadoc.skip=true -Dsource.skip=true
+- mvn install -Pmongo-log-plugin,jndi-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin -Dfindbugs.skip=$findbugs_skip -Dmaven.javadoc.skip=true -Dsource.skip=true
 before_script:
 - if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then 
     while [ ! -f /tmp/sc-ready ]; do
