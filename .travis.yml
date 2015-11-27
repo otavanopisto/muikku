@@ -22,11 +22,6 @@ before_install:
 install:
 - mvn install -Pmongo-log-plugin,jndi-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin -Dfindbugs.skip=$findbugs_skip -Dmaven.javadoc.skip=true -Dsource.skip=true
 before_script:
-- if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then 
-    while [ ! -f /tmp/sc-ready ]; do
-      sleep .5;
-    done
-  fi
 script:
 - set -e;
   if [ $TRAVIS_BRANCH != 'master' ]; then
