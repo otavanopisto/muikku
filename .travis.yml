@@ -42,7 +42,8 @@ script:
     popd;
   fi;
 after_script:
-- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
+#- if [ -e /tmp/sc.pid ] && [ $use_sc = true ]; then kill `cat /tmp/sc.pid`; fi;
+#- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
 env:
   global:
   - secure: CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A=
@@ -104,7 +105,8 @@ env:
 after_success:
 - bash travis-after-success.sh
 after_failure:
-- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
+#- if [ -e /tmp/sc.pid ] && [ $use_sc = true ]; then kill `cat /tmp/sc.pid`; fi;
+#- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
 - pushd .;
 - cat muikku-atests/target/cargo/configurations/wildfly8x/log/server.log;
 notifications:
