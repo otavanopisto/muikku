@@ -1,7 +1,7 @@
 body.workspace-materials #contentWorkspaceMaterials,
 body.workspace-materials-reading #contentWorkspaceMaterialsReading,
 body.workspace-materials-management #contentWorkspaceMaterialsManagement {
-  
+
   /* Material loading */
   .workspace-material-queued-html,
   .workspace-material-loading {
@@ -28,6 +28,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     font-size:12px;
     line-height:12px;
     display:inline-block;
+    z-index:999;
   }
   
   .textfield-wrapper {
