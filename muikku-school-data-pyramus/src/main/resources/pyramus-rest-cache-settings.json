@@ -1,0 +1,54 @@
+{
+  "default": {
+    "cacheStrategy": "NONE",
+    "maxEntries": 0,
+    "expireTime": 0
+  },
+  "settings": {
+    "\/students\/studyProgrammes\/[0-9]*": {
+      "cacheStrategy": "EXPIRES",
+      "maxEntries": 100,
+      "expireTime": 1800000
+    },
+    "\/students\/studentGroups\/[0-9]*": {
+      "cacheStrategy": "EXPIRES",
+      "maxEntries": 100,
+      "expireTime": 1800000
+    },
+    "\/students\/students\/[0-9]*": {
+      "cacheStrategy": "EXPIRES",
+      "maxEntries": 100,
+      "expireTime": 1800000
+    },
+    "\/persons\/persons\/[0-9]*": {
+      "cacheStrategy": "EXPIRES",
+      "maxEntries": 100,
+      "expireTime": 1800000
+    },
+    "\/courses\/staffMemberRoles": {
+      "maxEntries": 100,
+      "expireTime": 1800000
+    },
+    "\/common\/contactTypes\/[0-9]*": {
+      "cacheStrategy": "EXPIRES",
+      "maxEntries": 100,
+      "expireTime": 1800000
+    },
+    "\/common\/subjects\/[0-9]*": {
+      "cacheStrategy": "EXPIRES",
+      "maxEntries": 100,
+      "expireTime": 1800000
+    },
+    "\/staff\/members\/[0-9]*": {
+      "cacheStrategy": "EXPIRES",
+      "maxEntries": 100,
+      "expireTime": 1800000
+    },
+    "\/courses\/courses\/[0-9]*": {
+      "cacheStrategy": "EXPIRES",
+      "maxEntries": 100,
+      "expireTime": 1800000
+    }
+  }
+  
+}

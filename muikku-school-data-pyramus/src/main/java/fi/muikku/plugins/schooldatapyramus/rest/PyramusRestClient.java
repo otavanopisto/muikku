@@ -18,6 +18,8 @@ import javax.ws.rs.core.Response;
 
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.muikku.plugins.schooldatapyramus.rest.cache.CachedEntity;
+import fi.muikku.plugins.schooldatapyramus.rest.cache.EntityCache;
 
 @Dependent
 class PyramusRestClient implements Serializable {
@@ -26,6 +28,9 @@ class PyramusRestClient implements Serializable {
 
   @Inject
   private Logger logger;
+  
+  @Inject
+  private EntityCache entityCache;
 
   @Inject
   private PluginSettingsController pluginSettingsController;
@@ -117,6 +122,11 @@ class PyramusRestClient implements Serializable {
   }
   
   public <T> T get(Client client, String accessToken, String path, Class<T> type) {
+    CachedEntity<T> cachedEntity = entityCache.get(path, type);
+    if (cachedEntity != null) {
+      return cachedEntity.getData();
+    }
+    
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     
@@ -124,10 +134,12 @@ class PyramusRestClient implements Serializable {
     request.header("Authorization", "Bearer " + accessToken);
     Response response = request.get();
     try {
-      return createResponse(response, type, path);
+      T result = createResponse(response, type, path);
+      entityCache.put(path, result);
+      return result;
     } catch (Throwable t) {
       logger.log(Level.SEVERE, "Pyramus GET-request into " + path + " failed", t);
-      throw t;
+      return null;
     } finally {
       response.close();
     }
