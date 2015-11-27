@@ -216,6 +216,16 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
+  public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    CourseStudent[] students = pyramusClient.get(String.format("/courses/courses/%d/students", courseId), CourseStudent[].class);
+    if (students != null) {
+      return entityFactory.createEntity(students);
+    }
+    return Collections.<WorkspaceUser>emptyList();
+  }
+
+  @Override
   public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier, boolean active) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     String participationTypes = active ? pyramusStudentActivityMapper.getActiveCDT() : pyramusStudentActivityMapper.getInactiveCDT();

@@ -304,7 +304,15 @@ public class WorkspaceController {
     return null;
   }
   
-  public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity, Boolean active) {
+  public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity) {
+    Workspace workspace = findWorkspace(workspaceEntity);
+    if (workspace != null) {
+      return workspaceSchoolDataController.listWorkspaceStudents(workspace);      
+    }
+    return null;
+  }
+
+  public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity, boolean active) {
     Workspace workspace = findWorkspace(workspaceEntity);
     if (workspace != null) {
       return workspaceSchoolDataController.listWorkspaceStudents(workspace, active);      

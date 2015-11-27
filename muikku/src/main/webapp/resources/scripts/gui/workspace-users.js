@@ -10,7 +10,7 @@
     },
     
     _loadTeacherList: function () {
-      mApi().workspace.workspaces.staffmembers.read(this.options.workspaceEntityId, {orderBy: 'name'}).callback($.proxy(function (err, teachers) {
+      mApi().workspace.workspaces.staffMembers.read(this.options.workspaceEntityId, {orderBy: 'name'}).callback($.proxy(function (err, teachers) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
