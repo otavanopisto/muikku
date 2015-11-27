@@ -141,8 +141,6 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withHeader("Content-Type", "application/json")
         .withBody(studentArrayJson)
         .withStatus(200)));
-//  TODO: Student assessment    
-//    /students/students/%d/courses/%d/assessments/", studentId, courseId
     
     /* Student #2 for workspace #2*/
     DateTime birthday2 = new DateTime(1992, 2, 2, 0, 0, 0, 0);
@@ -177,8 +175,6 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withHeader("Content-Type", "application/json")
         .withBody(student2ArrayJson)
         .withStatus(200)));
-//      TODO: Student assessment
-//    /students/students/%d/courses/%d/assessments/", studentId, courseId
     
     /* Student #2 for workspace #2 */
 
