@@ -49,15 +49,15 @@ public class PyramusStudentActivityMapper {
   }
     
   public Long toInactive(Long participationTypeId) {
-    return toInactive.get(participationTypeId);
+    return toInactive.get(String.valueOf(participationTypeId));
   }
 
   public Long toActive(Long participationTypeId) {
-    return toActive.get(participationTypeId);
+    return toActive.get(String.valueOf(participationTypeId));
   }
   
   public boolean isActive(Long participationTypeId) {
-    return toInactive.containsKey(participationTypeId);
+    return toInactive.containsKey(String.valueOf(participationTypeId));
   }
   
   public Set<String> getActive() {
@@ -76,6 +76,6 @@ public class PyramusStudentActivityMapper {
     return StringUtils.join(getInactive(), ',');
   }
   
-  private Map<String,Long> toInactive;
+  private Map<String, Long> toInactive;
   private Map<String,Long> toActive;
 }

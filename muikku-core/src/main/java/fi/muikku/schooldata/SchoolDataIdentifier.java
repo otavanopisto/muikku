@@ -28,12 +28,16 @@ public class SchoolDataIdentifier {
   }
   
   public static SchoolDataIdentifier fromId(String id) {
-    String[] idParts = StringUtils.split(id, '-');
-    if (idParts.length != 2) {
+    int index = id == null ? -1 : id.indexOf('-');
+    if (index == -1) {
       return null;
-    };
-    
-    return new SchoolDataIdentifier(idParts[1], idParts[0]);
+    }
+    String dataSource = id.substring(0, index);
+    String identifier = id.substring(index + 1);
+    if (StringUtils.isBlank(dataSource) || StringUtils.isBlank(identifier)) {
+      return null;
+    }
+    return new SchoolDataIdentifier(identifier, dataSource);
   }
 
   private String identifier;
