@@ -3,17 +3,25 @@
     {#.}
         {>"discussion/discussion_item.dust"/}
     {/.} 
-    {?.}  
+    {@lt key=length value=10}
       <div class="mf-items-paging di-messages-paging">
         <div class="mf-paging-toolbar di-paging-toolbar">
-          <div class="mf-paging-tool mf-page-link-load-more di-paging-tool di-page-link-load-more-messages">{#localize key="plugin.discussion.links.more"/}</div>
+            <div class="mf-paging-tool mf-page-link-load-more di-paging-tool di-page-link-load-more disabled">{#localize key="plugin.discussion.links.nomore"/}</div>
         </div>
-      </div>
-    {:else}
-      <div class="mf-items-paging di-messages-paging">
-        <div class="mf-paging-toolbar di-paging-toolbar">
-          <div class="mf-paging-tool mf-page-link-load-more di-paging-tool di-page-link-load-more disabled">{#localize key="plugin.discussion.links.nomore"/}</div>
+      </div>  
+    {:else}       
+      {?.}  
+        <div class="mf-items-paging di-messages-paging">
+          <div class="mf-paging-toolbar di-paging-toolbar">
+            <div class="mf-paging-tool mf-page-link-load-more di-paging-tool di-page-link-load-more-messages">{#localize key="plugin.discussion.links.more"/}</div>
+          </div>
         </div>
-      </div>    
-    {/.}    
+      {:else}
+        <div class="mf-items-paging di-messages-paging">
+          <div class="mf-paging-toolbar di-paging-toolbar">
+            <div class="mf-paging-tool mf-page-link-load-more di-paging-tool di-page-link-load-more disabled">{#localize key="plugin.discussion.links.nomore"/}</div>
+          </div>
+        </div>    
+      {/.}    
+    {/lt}
   </div>

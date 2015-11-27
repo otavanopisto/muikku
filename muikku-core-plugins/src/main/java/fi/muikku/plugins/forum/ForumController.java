@@ -189,6 +189,10 @@ public class ForumController {
     return forumArea;
   }
 
+  public ForumArea updateForumAreaName(ForumArea forumArea, String name) {
+    return forumAreaDAO.updateForumArea(forumArea, name);
+  }
+
   public void deleteArea(ForumArea forumArea) {
     forumAreaDAO.delete(forumArea);
   }

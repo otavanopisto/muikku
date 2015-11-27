@@ -107,6 +107,9 @@
   padding:5px;
 }
 
+/* These are deprecated and are located in mainfunctions 
+ - should be removed and replaced in dust templates whenever YOU are working on the communicator the next time */
+
 .cm-messages-toolbar{
     border:1px solid $brd2;
     background-color: #fff;

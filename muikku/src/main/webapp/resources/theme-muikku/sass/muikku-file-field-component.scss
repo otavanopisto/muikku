@@ -12,6 +12,18 @@
   color:#fff;
   font-size:16px;
   line-height:27px;
+  text-transform:none;
+}
+
+.muikku-file-input-field-file-progress-literal {
+  color: #000;
+  position: absolute;
+  z-index: 99;
+  font-weight: 300;
+  font-size: 12px;
+  font-family: "Open Sans";
+  text-transform:none;
+  right:5px;
 }
 
 .muikku-file-input-field-file-remove, .muikku-file-input-field-file-restore {

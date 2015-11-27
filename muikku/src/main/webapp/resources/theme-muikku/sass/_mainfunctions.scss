@@ -870,6 +870,25 @@
   
 }
 
+.mf-items-toolbar{
+    background-color: #fff;
+    padding:5px;
+    margin-bottom:5px;
+    margin-top:5px;
+  
+  .mf-items-tool{
+    padding:0 10px 0 10px;
+    border:1px solid $brd2;
+    background-color:$bgr1; 
+    font-size:1.5em;
+    float:left;
+    color:#000;
+    cursor:pointer;
+  }
+  
+
+}
+
 .mf-items-paging{
   padding:10px;
 }
