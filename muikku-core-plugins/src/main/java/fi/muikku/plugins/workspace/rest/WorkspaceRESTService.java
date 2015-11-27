@@ -1322,7 +1322,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/users/{ID}")
   @RESTPermitUnimplemented
-  public Response findWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") Long workspaceUserEntityId) {
+  public Response findWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String userId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -1330,12 +1330,19 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
     if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
-    fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
-    return Response.ok(createRestModel(workspaceUser)).build();
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
+    if (userIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
+    }
+    fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceIdentifier, userIdentifier);
+    if (bridgeUser == null) {
+      return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
+    }
+    return Response.ok(createRestModel(bridgeUser)).build();
   }
 
   @PUT
@@ -1346,7 +1353,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       WorkspaceUser workspaceUser) {
     
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
-    if (userId == null) {
+    if (userIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
     }
     

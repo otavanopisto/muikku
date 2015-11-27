@@ -79,14 +79,10 @@ public class UserIndexer {
           Set<Long> workspaceEntityIds = new HashSet<Long>();
           Set<Long> userGroupIds = new HashSet<Long>();
 
-          System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX;;;;;; Indexreeedar mej! " + userEntity.getId());
           List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
           for (WorkspaceEntity workspace : workspaces) {
-            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX;;;;;; " + userEntity.getId() + " in workspace " + workspace.getId());
-            
             workspaceEntityIds.add(workspace.getId());
           }
-          System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXX;;;;;; Indexreeedar NEJ! " + userEntity.getId());
             
           extra.put("workspaces", workspaceEntityIds);
           
