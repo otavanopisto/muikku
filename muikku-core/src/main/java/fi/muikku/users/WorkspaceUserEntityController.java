@@ -111,12 +111,12 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.listByWorkspaceEntityAndUserEntityAndArchived(workspaceEntity, userEntity, Boolean.FALSE);
   }
   
-  public void archiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
-    workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.TRUE);
+  public WorkspaceUserEntity archiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
+    return workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.TRUE);
   }
 
-  public void unArchiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
-    workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.FALSE);
+  public WorkspaceUserEntity unarchiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
+    return workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.FALSE);
   }
 
   public void deleteWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {

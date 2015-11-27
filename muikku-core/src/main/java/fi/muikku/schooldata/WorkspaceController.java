@@ -125,6 +125,10 @@ public class WorkspaceController {
   public Workspace updateWorkspace(Workspace workspace) {
     return workspaceSchoolDataController.updateWorkspace(workspace);
   }
+  
+  public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean active) {
+    workspaceSchoolDataController.updateWorkspaceStudentActivity(workspaceUser, active);
+  }
 
   public void archiveWorkspace(Workspace workspace) {
     WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspace);
@@ -274,15 +278,23 @@ public class WorkspaceController {
 
   public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
-        workspaceUser.getWorkspaceSchoolDataSource(), workspaceUser.getWorkspaceIdentifier());
-    return workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity,
-        workspaceUser.getIdentifier());
+        workspaceUser.getWorkspaceIdentifier().getDataSource(),
+        workspaceUser.getWorkspaceIdentifier().getIdentifier());
+    return findWorkspaceUserEntity(workspaceUser, workspaceEntity); 
   }
 
+  public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser, WorkspaceEntity workspaceEntity) {
+    return workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(
+        workspaceEntity,
+        workspaceUser.getIdentifier().getIdentifier());
+  }
+
+  @Deprecated
   public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
     return workspaceSchoolDataController.listWorkspaceUsers(workspace);
   }
 
+  @Deprecated
   public List<WorkspaceUser> listWorkspaceUsers(WorkspaceEntity workspaceEntity) {
     Workspace workspace = findWorkspace(workspaceEntity);
     if (workspace != null) {
@@ -292,8 +304,28 @@ public class WorkspaceController {
     return null;
   }
   
+  public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity, Boolean active) {
+    Workspace workspace = findWorkspace(workspaceEntity);
+    if (workspace != null) {
+      return workspaceSchoolDataController.listWorkspaceStudents(workspace, active);      
+    }
+    return null;
+  }
+
+  public List<WorkspaceUser> listWorkspaceStaffMembers(WorkspaceEntity workspaceEntity) {
+    Workspace workspace = findWorkspace(workspaceEntity);
+    if (workspace != null) {
+      return workspaceSchoolDataController.listWorkspaceStaffMembers(workspace);      
+    }
+    return null;
+  }
+  
   public WorkspaceUser findWorkspaceUser(WorkspaceUserEntity workspaceUserEntity) {
     return workspaceSchoolDataController.findWorkspaceUser(workspaceUserEntity);
+  }
+  
+  public fi.muikku.schooldata.entity.WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier) {
+    return workspaceSchoolDataController.findWorkspaceUser(workspaceIdentifier, userIdentifier);
   }
   
   private void deleteWorkspaceUser(WorkspaceUser workspaceUser) {

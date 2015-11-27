@@ -46,10 +46,14 @@ public class DefaultSchoolDataUserGroupListener {
       return;
     }
     
-    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier(), true);
     
-    if (userGroupEntity == null) {
-      userGroupEntity = userGroupEntityController.createUserGroupEntity(event.getDataSource(), event.getIdentifier());
+    if ((userGroupEntity == null) || (userGroupEntity.getArchived())) {
+      if (userGroupEntity.getArchived()) {
+        userGroupEntityController.unarchiveUserGroupEntity(userGroupEntity);
+      } else {
+        userGroupEntity = userGroupEntityController.createUserGroupEntity(event.getDataSource(), event.getIdentifier());
+      }
       
       discoveredUserGroups.put(discoverId, userGroupEntity.getId());
       event.setDiscoveredUserGroupEntityId(userGroupEntity.getId());
@@ -61,7 +65,7 @@ public class DefaultSchoolDataUserGroupListener {
   public void onSchoolDataUserGroupRemovedEvent(@Observes SchoolDataUserGroupRemovedEvent event) {
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (userGroupEntity != null) {
-      userGroupEntityController.deleteUserGroupEntity(userGroupEntity);
+      userGroupEntityController.archiveUserGroupEntity(userGroupEntity);
     }
   }  
 
@@ -75,25 +79,30 @@ public class DefaultSchoolDataUserGroupListener {
       return;
     }
     
-    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier(), true);
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getUserGroupDataSource(), event.getUserGroupIdentifier());
 
     if (userGroupEntity != null) {
-      if (userGroupUserEntity == null) {
+      if ((userGroupUserEntity == null) || (userGroupUserEntity.getArchived())) {
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
         if (userSchoolDataIdentifier != null) {
-          userGroupUserEntity = userGroupEntityController.createUserGroupUserEntity(userGroupEntity, event.getDataSource(), event.getIdentifier(), userSchoolDataIdentifier);
+          if (userGroupUserEntity.getArchived()) {
+            userGroupEntityController.unarchiveUserGroupUserEntity(userGroupUserEntity);
+            userGroupEntityController.updateUserSchoolDataIdentifier(userGroupUserEntity, userSchoolDataIdentifier);
+          } else {
+            userGroupUserEntity = userGroupEntityController.createUserGroupUserEntity(userGroupEntity, event.getDataSource(), event.getIdentifier(), userSchoolDataIdentifier);
+          }
           
           discoveredUserGroupUsers.put(discoverId, userGroupUserEntity.getId());
           event.setDiscoveredUserGroupUserEntityId(userGroupUserEntity.getId());
         } else {
-          logger.warning("could not add group user because UserSchoolDataIdentifier for " + event.getUserIdentifier() + "/" + event.getUserDataSource() + " wasn't found");
+          //logger.warning("could not add group user because UserSchoolDataIdentifier for " + event.getUserIdentifier() + "/" + event.getUserDataSource() + " wasn't found");
         }
       } else {
-        logger.warning("UserGroupUserEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
+        //logger.warning("UserGroupUserEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
       }
     } else {
-      logger.warning("could not init user group user because usergroup #" + event.getUserGroupIdentifier() + '/' + event.getUserGroupDataSource() +  " could not be found");
+      //logger.warning("could not init user group user because usergroup #" + event.getUserGroupIdentifier() + '/' + event.getUserGroupDataSource() +  " could not be found");
     }
   }  
 
