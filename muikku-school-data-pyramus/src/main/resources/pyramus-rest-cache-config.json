@@ -33,14 +33,49 @@
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
       "enabledCaches": ["SYSTEM"],
-      "evictOn": ["STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE"] 
+      "evictOn": ["STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE", "STUDENTGROUP_STAFFMEMBER_CREATE", "STUDENTGROUP_STAFFMEMBER_REMOVE", "STUDENTGROUP_STAFFMEMBER_UPDATE"] 
     },
     "/students/studentGroups/{studentGroupId}/students": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
       "enabledCaches": ["SYSTEM"],
-      "evictOn": ["STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE"] 
+      "evictOn": ["STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE", "STUDENTGROUP_STUDENT_CREATE", "STUDENTGROUP_STUDENT_REMOVE", "STUDENTGROUP_STUDENT_UPDATE"] 
+    },
+    "/courses/courses/{courseId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 1800000,
+      "enabledCaches": ["SYSTEM"],
+      "evictOn": ["COURSE_UPDATE", "COURSE_ARCHIVE"] 
+    },
+    "/courses/courses/{courseId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 1800000,
+      "enabledCaches": ["SYSTEM"],
+      "evictOn": ["COURSE_UPDATE", "COURSE_ARCHIVE"] 
+    },
+    "/courses/courses/{courseId}/staffMembers": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 1800000,
+      "enabledCaches": ["SYSTEM"],
+      "evictOn": ["COURSE_STAFF_MEMBER_CREATE", "COURSE_STAFF_MEMBER_UPDATE", "COURSE_STAFF_MEMBER_DELETE"] 
+    },
+    "/courses/courses/{courseId}/staffMembers/{courseStaffMemberId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 1800000,
+      "enabledCaches": ["SYSTEM"],
+      "evictOn": ["COURSE_STAFF_MEMBER_UPDATE", "COURSE_STAFF_MEMBER_DELETE"] 
+    },
+    "/courses/courses/{courseId}/students": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 1800000,
+      "enabledCaches": ["SYSTEM"],
+      "evictOn": ["COURSE_STUDENT_CREATE", "COURSE_STUDENT_UPDATE", "COURSE_STUDENT_ARCHIVE"] 
+    },
+    "/courses/courses/{courseId}/students/{courseStudentId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 1800000,
+      "enabledCaches": ["SYSTEM"],
+      "evictOn": ["COURSE_STUDENT_UPDATE", "COURSE_STUDENT_ARCHIVE"] 
     }
   }
-  
 }
