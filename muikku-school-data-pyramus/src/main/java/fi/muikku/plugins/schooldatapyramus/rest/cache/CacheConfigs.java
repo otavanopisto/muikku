@@ -63,7 +63,7 @@ public class CacheConfigs {
         String path = settingKey.replaceAll("\\{[a-zA-Z]*\\}", "([a-zA-Z0-9]*)");
         
         if (requestPath.matches(path)) {
-          logger.info(String.format("Using cache settings %s for path %s", settingKey, path));
+          logger.fine(String.format("Using cache settings %s for path %s", settingKey, path));
           return config.getSettings().get(settingKey);
         }
       }

@@ -65,10 +65,10 @@ public abstract class AbstractEntityCache {
   
   public void remove(String path) {
     if (cache.containsKey(path)) {
-      logger.info(String.format("(%s) Cache cleared for %s", getType(), path));
+      logger.fine(String.format("(%s) Cache cleared for %s", getType(), path));
       cache.remove(path);
     } else {
-      logger.info(String.format("(%s) Did not find any cached resources for %s", getType(), path));
+      logger.fine(String.format("(%s) Did not find any cached resources for %s", getType(), path));
     }
   }
   
