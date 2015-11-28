@@ -9,10 +9,9 @@ public class CacheConfig {
   public CacheConfig() {
   }
   
-  public CacheConfig(List<String> enabledCaches, CacheStrategy evictStrategy, Long maxEntries, Long expireTime) {
+  public CacheConfig(List<String> enabledCaches, CacheStrategy evictStrategy, Long expireTime) {
     this.enabledCaches = enabledCaches;
     this.cacheStrategy = evictStrategy;
-    this.maxEntries = maxEntries;
     this.expireTime = expireTime;
   }
   
@@ -40,14 +39,6 @@ public class CacheConfig {
     this.expireTime = expireTime;
   }
   
-  public Long getMaxEntries() {
-    return maxEntries;
-  }
-  
-  public void setMaxEntries(Long maxEntries) {
-    this.maxEntries = maxEntries;
-  }
-  
   public List<WebhookType> getEvictOn() {
     return evictOn;
   }
@@ -58,7 +49,6 @@ public class CacheConfig {
   
   private List<String> enabledCaches;
   private CacheStrategy cacheStrategy;
-  private Long maxEntries;
   private Long expireTime;
   private List<WebhookType> evictOn;
 }

@@ -40,7 +40,7 @@ public class CacheConfigs {
     if (settingStream == null) {    
       logger.severe("Could not read Pyramus cache settings file"); 
       config = new PyramusCacheConfig();
-      config.setDefaultSettings(new CacheConfig(new ArrayList<String>(), CacheStrategy.NONE, 0l, 0l));
+      config.setDefaultSettings(new CacheConfig(new ArrayList<String>(), CacheStrategy.NONE, 0l));
     }
   }
   
