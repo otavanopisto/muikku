@@ -30,7 +30,7 @@ public class EntityCacheEvictor {
   private Logger logger;
   
   @Inject
-  private CacheSettingsController cacheSettingsController;
+  private CacheConfigs cacheConfigs;
 
   @PostConstruct
   public void init() {
@@ -46,7 +46,7 @@ public class EntityCacheEvictor {
   }
   
   public void onWebhookNotificationEvent(@Observes WebhookNotificationEvent event) {
-    List<String> evictTypePaths = cacheSettingsController.getEvictTypePaths(event.getType());
+    List<String> evictTypePaths = cacheConfigs.getEvictTypePaths(event.getType());
     
     Map<String, String> data = null;
     try {

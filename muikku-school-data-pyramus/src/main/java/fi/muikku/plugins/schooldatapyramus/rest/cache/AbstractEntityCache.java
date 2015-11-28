@@ -14,7 +14,7 @@ public abstract class AbstractEntityCache {
   private Logger logger;
   
   @Inject
-  private CacheSettingsController cacheSettingsController;
+  private CacheConfigs cacheConfigs;
   
   @Inject
   private EntityCacheEvictor entityCacheEvictor;
@@ -35,11 +35,11 @@ public abstract class AbstractEntityCache {
   public abstract String getType();
   
   public <T> CachedEntity<T> put(String path, T data) {
-    CacheSetting cacheSettings = cacheSettingsController.getCacheSettings(path);
+    CacheConfig cacheConfig = cacheConfigs.getCacheConfig(path);
     Long expires = null;
     
-    if (cacheSettings.getExpireTime() != null) {
-      expires = System.currentTimeMillis() + cacheSettings.getExpireTime();
+    if (cacheConfig.getExpireTime() != null) {
+      expires = System.currentTimeMillis() + cacheConfig.getExpireTime();
     }
     
     CachedEntity<T> cachedEntity = new CachedEntity<T>(data, expires);

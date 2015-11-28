@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.pyramus.webhooks.WebhookType;
 
 @ApplicationScoped
-public class CacheSettingsController {
+public class CacheConfigs {
   
   @Inject
   private Logger logger;
@@ -29,26 +29,26 @@ public class CacheSettingsController {
   public void init() {
     InputStream settingStream = getClass()
       .getClassLoader()
-      .getResourceAsStream("pyramus-rest-cache-settings.json");
+      .getResourceAsStream("pyramus-rest-cache-config.json");
     
     try {
-      settings = new ObjectMapper().readValue(settingStream, PyramusCacheSettings.class);
+      config = new ObjectMapper().readValue(settingStream, PyramusCacheConfig.class);
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Failed to parse Pyramus cache settings file", e);
     }
     
     if (settingStream == null) {    
       logger.severe("Could not read Pyramus cache settings file"); 
-      settings = new PyramusCacheSettings();
-      settings.setDefaultSettings(new CacheSetting(new ArrayList<String>(), CacheStrategy.NONE, 0l, 0l));
+      config = new PyramusCacheConfig();
+      config.setDefaultSettings(new CacheConfig(new ArrayList<String>(), CacheStrategy.NONE, 0l, 0l));
     }
   }
   
   public List<String> getEvictTypePaths(WebhookType type) {
     List<String> result = new ArrayList<>();
     
-    for (String key : settings.getSettings().keySet()) {
-      CacheSetting setting = settings.getSettings().get(key);
+    for (String key : config.getSettings().keySet()) {
+      CacheConfig setting = config.getSettings().get(key);
       if ((setting.getEvictOn() != null) && setting.getEvictOn().contains(type)) {
         result.add(key);
       }
@@ -57,47 +57,47 @@ public class CacheSettingsController {
     return result;
   }
   
-  public CacheSetting getCacheSettings(String requestPath) {
+  public CacheConfig getCacheConfig(String requestPath) {
     if (StringUtils.isNotBlank(requestPath)) {
-      for (String settingKey : settings.getSettings().keySet()) {
+      for (String settingKey : config.getSettings().keySet()) {
         String path = settingKey.replaceAll("\\{[a-zA-Z]*\\}", "([a-zA-Z0-9]*)");
         
         if (requestPath.matches(path)) {
           logger.info(String.format("Using cache settings %s for path %s", settingKey, path));
-          return settings.getSettings().get(settingKey);
+          return config.getSettings().get(settingKey);
         }
       }
     }
     
     logger.info(String.format("Using default cache settings for path %s", requestPath));
     
-    return settings.getDefaultSettings();
+    return config.getDefaultSettings();
   }
   
-  private PyramusCacheSettings settings;
+  private PyramusCacheConfig config;
 
-  public static class PyramusCacheSettings {
+  public static class PyramusCacheConfig {
    
-    public CacheSetting getDefaultSettings() {
+    public CacheConfig getDefaultSettings() {
       return defaultSettings;
     }
     
-    public void setDefaultSettings(CacheSetting defaultSettings) {
+    public void setDefaultSettings(CacheConfig defaultSettings) {
       this.defaultSettings = defaultSettings;
     }
     
-    public Map<String, CacheSetting> getSettings() {
+    public Map<String, CacheConfig> getSettings() {
       return settings;
     }
     
-    public void setSettings(Map<String, CacheSetting> settings) {
+    public void setSettings(Map<String, CacheConfig> settings) {
       this.settings = settings;
     }
     
     @JsonProperty ("default")
-    private CacheSetting defaultSettings;
+    private CacheConfig defaultSettings;
     
-    private Map<String, CacheSetting> settings;
+    private Map<String, CacheConfig> settings;
   }
   
 }

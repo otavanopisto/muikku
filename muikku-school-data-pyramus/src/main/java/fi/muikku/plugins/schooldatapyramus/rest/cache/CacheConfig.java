@@ -4,12 +4,12 @@ import java.util.List;
 
 import fi.pyramus.webhooks.WebhookType;
 
-public class CacheSetting {
+public class CacheConfig {
 
-  public CacheSetting() {
+  public CacheConfig() {
   }
   
-  public CacheSetting(List<String> enabledCaches, CacheStrategy evictStrategy, Long maxEntries, Long expireTime) {
+  public CacheConfig(List<String> enabledCaches, CacheStrategy evictStrategy, Long maxEntries, Long expireTime) {
     this.enabledCaches = enabledCaches;
     this.cacheStrategy = evictStrategy;
     this.maxEntries = maxEntries;
