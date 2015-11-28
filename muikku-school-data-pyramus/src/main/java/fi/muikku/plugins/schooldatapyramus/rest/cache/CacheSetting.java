@@ -1,14 +1,27 @@
 package fi.muikku.plugins.schooldatapyramus.rest.cache;
 
+import java.util.List;
+
+import fi.pyramus.webhooks.WebhookType;
+
 public class CacheSetting {
 
   public CacheSetting() {
   }
   
-  public CacheSetting(CacheStrategy evictStrategy, Long maxEntries, Long expireTime) {
+  public CacheSetting(List<String> enabledCaches, CacheStrategy evictStrategy, Long maxEntries, Long expireTime) {
+    this.enabledCaches = enabledCaches;
     this.cacheStrategy = evictStrategy;
     this.maxEntries = maxEntries;
     this.expireTime = expireTime;
+  }
+  
+  public List<String> getEnabledCaches() {
+    return enabledCaches;
+  }
+  
+  public void setEnabledCaches(List<String> enabledCaches) {
+    this.enabledCaches = enabledCaches;
   }
   
   public CacheStrategy getCacheStrategy() {
@@ -35,7 +48,17 @@ public class CacheSetting {
     this.maxEntries = maxEntries;
   }
   
+  public List<WebhookType> getEvictOn() {
+    return evictOn;
+  }
+  
+  public void setEvictOn(List<WebhookType> evictOn) {
+    this.evictOn = evictOn;
+  }
+  
+  private List<String> enabledCaches;
   private CacheStrategy cacheStrategy;
   private Long maxEntries;
   private Long expireTime;
+  private List<WebhookType> evictOn;
 }

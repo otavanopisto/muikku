@@ -2,52 +2,30 @@
   "default": {
     "cacheStrategy": "NONE",
     "maxEntries": 0,
-    "expireTime": 0
+    "expireTime": 0,
+    "enabledCaches": []
   },
   "settings": {
-    "\/students\/studyProgrammes\/[0-9]*": {
+    "/students/students/{studentId}": {
       "cacheStrategy": "EXPIRES",
       "maxEntries": 100,
-      "expireTime": 1800000
+      "expireTime": 1800000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": ["STUDENT_UPDATE", "STUDENT_ARCHIVE"]
     },
-    "\/students\/studentGroups\/[0-9]*": {
+    "/persons/persons/{personId}": {
       "cacheStrategy": "EXPIRES",
       "maxEntries": 100,
-      "expireTime": 1800000
+      "expireTime": 1800000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": ["PERSON_UPDATE", "PERSON_ARCHIVE"]
     },
-    "\/students\/students\/[0-9]*": {
+    "/staff/members/{staffMemberId}": {
       "cacheStrategy": "EXPIRES",
       "maxEntries": 100,
-      "expireTime": 1800000
-    },
-    "\/persons\/persons\/[0-9]*": {
-      "cacheStrategy": "EXPIRES",
-      "maxEntries": 100,
-      "expireTime": 1800000
-    },
-    "\/courses\/staffMemberRoles": {
-      "maxEntries": 100,
-      "expireTime": 1800000
-    },
-    "\/common\/contactTypes\/[0-9]*": {
-      "cacheStrategy": "EXPIRES",
-      "maxEntries": 100,
-      "expireTime": 1800000
-    },
-    "\/common\/subjects\/[0-9]*": {
-      "cacheStrategy": "EXPIRES",
-      "maxEntries": 100,
-      "expireTime": 1800000
-    },
-    "\/staff\/members\/[0-9]*": {
-      "cacheStrategy": "EXPIRES",
-      "maxEntries": 100,
-      "expireTime": 1800000
-    },
-    "\/courses\/courses\/[0-9]*": {
-      "cacheStrategy": "EXPIRES",
-      "maxEntries": 100,
-      "expireTime": 1800000
+      "expireTime": 1800000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": ["STAFF_MEMBER_UPDATE", "STAFF_MEMBER_DELETE"] 
     }
   }
   

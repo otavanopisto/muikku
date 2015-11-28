@@ -2,6 +2,8 @@ package fi.muikku.plugins.schooldatapyramus.rest.cache;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fi.pyramus.webhooks.WebhookType;
 
 @ApplicationScoped
 public class CacheSettingsController {
@@ -36,21 +40,36 @@ public class CacheSettingsController {
     if (settingStream == null) {    
       logger.severe("Could not read Pyramus cache settings file"); 
       settings = new PyramusCacheSettings();
-      settings.setDefaultSettings(new CacheSetting(CacheStrategy.NONE, 0l, 0l));
+      settings.setDefaultSettings(new CacheSetting(new ArrayList<String>(), CacheStrategy.NONE, 0l, 0l));
     }
   }
   
-  public CacheSetting getCacheSettings(String path) {
-    if (StringUtils.isNotBlank(path)) {
+  public List<String> getEvictTypePaths(WebhookType type) {
+    List<String> result = new ArrayList<>();
+    
+    for (String key : settings.getSettings().keySet()) {
+      CacheSetting setting = settings.getSettings().get(key);
+      if ((setting.getEvictOn() != null) && setting.getEvictOn().contains(type)) {
+        result.add(key);
+      }
+    }
+    
+    return result;
+  }
+  
+  public CacheSetting getCacheSettings(String requestPath) {
+    if (StringUtils.isNotBlank(requestPath)) {
       for (String settingKey : settings.getSettings().keySet()) {
-        if (path.matches(settingKey)) {
+        String path = settingKey.replaceAll("\\{[a-zA-Z]*\\}", "([a-zA-Z0-9]*)");
+        
+        if (requestPath.matches(path)) {
           logger.info(String.format("Using cache settings %s for path %s", settingKey, path));
           return settings.getSettings().get(settingKey);
         }
       }
     }
     
-    logger.info(String.format("Using default cache settings for path %s", path));
+    logger.info(String.format("Using default cache settings for path %s", requestPath));
     
     return settings.getDefaultSettings();
   }
