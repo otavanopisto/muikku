@@ -69,8 +69,6 @@ public class CacheConfigs {
       }
     }
     
-    logger.info(String.format("Using default cache settings for path %s", requestPath));
-    
     return config.getDefaultSettings();
   }
   

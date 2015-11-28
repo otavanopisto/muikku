@@ -2,6 +2,7 @@ package fi.muikku.plugins.schooldatapyramus.rest.cache;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -36,10 +37,24 @@ public abstract class AbstractEntityCache {
   
   public <T> CachedEntity<T> put(String path, T data) {
     CacheConfig cacheConfig = cacheConfigs.getCacheConfig(path);
+    if (!cacheConfig.getEnabledCaches().contains(getType())) {
+      logger.log(Level.INFO, String.format("(%s) Cache disabled for %s", getType(), path));
+      return null;
+    }
+    
     Long expires = null;
     
-    if (cacheConfig.getExpireTime() != null) {
-      expires = System.currentTimeMillis() + cacheConfig.getExpireTime();
+    switch (cacheConfig.getCacheStrategy()) {
+      case NONE:
+        logger.log(Level.INFO, String.format("(%s) Caching strategy is NONE", getType()));
+        return null;
+      case EXPIRES:
+        if (cacheConfig.getExpireTime() != null) {
+          expires = System.currentTimeMillis() + cacheConfig.getExpireTime();
+        }
+      break;
+      case PERSISTENT:
+      break;
     }
     
     CachedEntity<T> cachedEntity = new CachedEntity<T>(data, expires);

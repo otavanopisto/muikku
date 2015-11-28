@@ -26,6 +26,27 @@
       "expireTime": 1800000,
       "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": ["STAFF_MEMBER_UPDATE", "STAFF_MEMBER_DELETE"] 
+    },
+    "/students/studentGroups/{studentGroupId}": {
+      "cacheStrategy": "EXPIRES",
+      "maxEntries": 100,
+      "expireTime": 1800000,
+      "enabledCaches": ["SYSTEM"],
+      "evictOn": ["STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE"] 
+    },
+    "/students/studentGroups/{studentGroupId}/staffmembers": {
+      "cacheStrategy": "EXPIRES",
+      "maxEntries": 100,
+      "expireTime": 1800000,
+      "enabledCaches": ["SYSTEM"],
+      "evictOn": ["STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE"] 
+    },
+    "/students/studentGroups/{studentGroupId}/students": {
+      "cacheStrategy": "EXPIRES",
+      "maxEntries": 100,
+      "expireTime": 1800000,
+      "enabledCaches": ["SYSTEM"],
+      "evictOn": ["STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE"] 
     }
   }
   
