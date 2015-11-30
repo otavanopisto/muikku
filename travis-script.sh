@@ -10,7 +10,7 @@ if [[ $TRAVIS_BRANCH != 'master' ]] && [[ $TRAVIS_BRANCH != 'devel' ]]; then
     -Dit.sauce.browser.resolution="$browser_resolution"
     -Dit.sauce.platform="$platform"
     -Dit.package="$package"
-    -P$it_profile &;
+    -P$it_profile & wait;
   popd;
   if [[ "$?" = "0" ]]; then
     exit 0;
