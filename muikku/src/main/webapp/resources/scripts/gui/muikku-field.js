@@ -559,11 +559,10 @@
         }
       }
     },
-    
     _saveFailed: function() {
-        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingTimedOut'));
+      $(document).connectionLostNotifier("notifyConnectionLost");
+      
     },
-    
     _propagateChange: function () {
       $(this.element)
         .removeClass('muikku-field-saved muikku-field-saving')
@@ -598,6 +597,8 @@
           clearTimeout(this._saveFailedTimeoutId);
       }
       this._saveFailedTimeoutId = null;
+
+      $(document).connectionLostNotifier("notifyReconnected");
 
       // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
       if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {

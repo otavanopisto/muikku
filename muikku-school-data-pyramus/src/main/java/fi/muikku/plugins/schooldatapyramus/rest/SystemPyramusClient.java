@@ -19,6 +19,8 @@ import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.plugins.schooldatapyramus.SystemOauthController;
 import fi.muikku.plugins.schooldatapyramus.model.SystemAccessToken;
+import fi.muikku.plugins.schooldatapyramus.rest.cache.CachedEntity;
+import fi.muikku.plugins.schooldatapyramus.rest.cache.SystemEntityCache;
 import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusSystem;
 
 @ApplicationScoped
@@ -40,6 +42,9 @@ class SystemPyramusClient implements PyramusClient {
 
   @Inject
   private PyramusRestClient restClient;
+  
+  @Inject
+  private SystemEntityCache entityCache;
 
   @Inject
   private SystemOauthController systemOauthController;
@@ -99,7 +104,15 @@ class SystemPyramusClient implements PyramusClient {
   public <T> T get(String path, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.get(client, getAccessToken(), path, type);
+      CachedEntity<T> cachedEntity = entityCache.get(path, type);
+      if (cachedEntity != null) {
+        return cachedEntity.getData();
+      }
+      
+      T result = restClient.get(client, getAccessToken(), path, type);
+      entityCache.put(path, result);
+      
+      return result;
     } finally {
       releaseClient(client);
     }
@@ -149,7 +162,7 @@ class SystemPyramusClient implements PyramusClient {
   private void releaseClient(Client client) {
     clientPool.releaseClient(client);
   }
-  
+
   private String accessToken;
   private DateTime accessTokenExpires;
   private String authCode;

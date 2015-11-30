@@ -93,3 +93,28 @@
     opacity:0.1;
   }
 }
+
+/* Workspace Materials Connection Lost BG */
+
+@keyframes connectionLost { 
+  0%{opacity:0.80}
+  50%{opacity:0.90}
+  100%{opacity:0.80}
+}
+
+/* Workspace Materials Connection Lost */
+
+@keyframes rotate-one {
+  0% {transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);}
+  100% {transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);}
+}
+
+@keyframes rotate-two {
+  0% {transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);}
+  100% {transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);}
+}
+
+@keyframes rotate-three {
+  0% {transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);}
+  100% {transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);}
+}
