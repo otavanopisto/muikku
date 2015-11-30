@@ -48,7 +48,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         selectOption("select[name='assessor']", "3");
         click(".save-evaluation-button");
         waitForPresentAndVisible(".evaluation-assignment-wrapper");
-        assertClassPresent(".evaluation-assignment-wrapperia", "assignment-evaluated");
+        assertClassPresent(".evaluation-assignment-wrapper", "assignment-evaluated");
       }finally{
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
