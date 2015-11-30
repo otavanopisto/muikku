@@ -1,0 +1,4 @@
+    <div class="mf-item an-announcement {?unreadMessagesInThread}unread{/unreadMessagesInThread}" id="{id}">
+      <div class="mf-item-details an-announcement-details">
+      </div>
+    </div >
