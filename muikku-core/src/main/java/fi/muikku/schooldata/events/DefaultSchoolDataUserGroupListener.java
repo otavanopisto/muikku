@@ -49,12 +49,12 @@ public class DefaultSchoolDataUserGroupListener {
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier(), true);
     
     if ((userGroupEntity == null) || (userGroupEntity.getArchived())) {
-      if (userGroupEntity.getArchived()) {
-        userGroupEntityController.unarchiveUserGroupEntity(userGroupEntity);
-      } else {
+      if (userGroupEntity == null) {
         userGroupEntity = userGroupEntityController.createUserGroupEntity(event.getDataSource(), event.getIdentifier());
       }
-      
+      else {
+        userGroupEntityController.unarchiveUserGroupEntity(userGroupEntity);
+      }
       discoveredUserGroups.put(discoverId, userGroupEntity.getId());
       event.setDiscoveredUserGroupEntityId(userGroupEntity.getId());
     } else {
