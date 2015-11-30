@@ -76,6 +76,12 @@
       "expireTime": 1800000,
       "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": ["COURSE_STUDENT_UPDATE", "COURSE_STUDENT_ARCHIVE"] 
+    },
+    "/students/studyProgrammes/{studyProgrammeId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 300000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
     }
   }
 }
