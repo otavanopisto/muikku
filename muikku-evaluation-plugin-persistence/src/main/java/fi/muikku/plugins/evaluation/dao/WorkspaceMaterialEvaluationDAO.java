@@ -73,6 +73,21 @@ public class WorkspaceMaterialEvaluationDAO extends PluginDAO<WorkspaceMaterialE
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
+  public List<WorkspaceMaterialEvaluation> findByWorkspaceMaterialId(Long workspaceMaterialId) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterialEvaluation> criteria = criteriaBuilder.createQuery(WorkspaceMaterialEvaluation.class);
+    Root<WorkspaceMaterialEvaluation> root = criteria.from(WorkspaceMaterialEvaluation.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.workspaceMaterialId), workspaceMaterialId)
+      )
+    );
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   public List<WorkspaceMaterialEvaluation> findByWorkspaceMaterialIdsAndStudentEntityId(List<Long> workspaceMaterialIds, Long studentEntityId) {
     EntityManager entityManager = getEntityManager(); 
     
@@ -129,6 +144,10 @@ public class WorkspaceMaterialEvaluationDAO extends PluginDAO<WorkspaceMaterialE
     return persist(workspaceMaterialEvaluation);
   }
 
+  public void delete(WorkspaceMaterialEvaluation e) {
+    super.delete(e);
+  }
+  
   @Override
   protected EntityManager getEntityManager() {
     return entityManager;
