@@ -56,7 +56,12 @@
       <groupId>fi.muikku</groupId>
       <artifactId>core-plugins</artifactId>
     </dependency>
-  </dependencies>
-  
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>evaluation-plugin</artifactId>
+    </dependency>
+    
+  </dependencies> 
 
 </project>
