@@ -44,25 +44,19 @@
     "/courses/courses/{courseId}": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
-      "enabledCaches": ["SYSTEM"],
-      "evictOn": ["COURSE_UPDATE", "COURSE_ARCHIVE"] 
-    },
-    "/courses/courses/{courseId}": {
-      "cacheStrategy": "EXPIRES",
-      "expireTime": 1800000,
-      "enabledCaches": ["SYSTEM"],
+      "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": ["COURSE_UPDATE", "COURSE_ARCHIVE"] 
     },
     "/courses/courses/{courseId}/staffMembers": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
-      "enabledCaches": ["SYSTEM"],
+      "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": ["COURSE_STAFF_MEMBER_CREATE", "COURSE_STAFF_MEMBER_UPDATE", "COURSE_STAFF_MEMBER_DELETE"] 
     },
     "/courses/courses/{courseId}/staffMembers/{courseStaffMemberId}": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
-      "enabledCaches": ["SYSTEM"],
+      "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": ["COURSE_STAFF_MEMBER_UPDATE", "COURSE_STAFF_MEMBER_DELETE"] 
     },
     "/courses/courses/{courseId}/students": {
@@ -71,10 +65,16 @@
       "enabledCaches": ["SYSTEM"],
       "evictOn": ["COURSE_STUDENT_CREATE", "COURSE_STUDENT_UPDATE", "COURSE_STUDENT_ARCHIVE"] 
     },
+    "/courses/courses/{courseId}/students\\?participationTypes=([0-9\\,]*)": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 1800000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": ["COURSE_STUDENT_CREATE", "COURSE_STUDENT_UPDATE", "COURSE_STUDENT_ARCHIVE"] 
+    },
     "/courses/courses/{courseId}/students/{courseStudentId}": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
-      "enabledCaches": ["SYSTEM"],
+      "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": ["COURSE_STUDENT_UPDATE", "COURSE_STUDENT_ARCHIVE"] 
     }
   }
