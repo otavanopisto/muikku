@@ -28,26 +28,7 @@ install:
 - mvn install -Pmongo-log-plugin,jndi-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin -Dfindbugs.skip=$findbugs_skip -Dmaven.javadoc.skip=true -Dsource.skip=true
 before_script:
 script:
-- if [[ $TRAVIS_BRANCH != 'master' && $TRAVIS_BRANCH != 'devel' ]]; then
-    pushd .;
-    cd muikku-atests;
-    mvn clean verify 
-      -Dmaven.javadoc.skip=true
-      -Dsource.skip=true
-      -Dit.sauce.browser="$browser"
-      -Dit.sauce.browser.version="$browser_version"
-      -Dit.sauce.browser.resolution="$browser_resolution"
-      -Dit.sauce.platform="$platform"
-      -Dit.package="$package"
-      -P$it_profile &;
-    popd;
-    if [[ "$?" = "0" ]]; then
-      exit 0;
-    else
-      echo "There were tests in error";
-      exit 1;
-    fi;
-  fi;
+- bash travis-script.sh
 after_script:
 - if [[ $use_sc = true ]]; then killall sc; fi;
 #- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
