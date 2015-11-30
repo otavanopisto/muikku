@@ -45,8 +45,8 @@ script:
       exit 0;
     else
       echo "There were tests in error";
-      exit 1
-    fi
+      exit 1;
+    fi;
   fi;
 after_script:
 - if [[ $use_sc = true ]]; then killall sc; fi;
