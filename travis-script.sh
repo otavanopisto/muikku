@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ $TRAVIS_BRANCH != 'master' ]] && [[ $TRAVIS_BRANCH != 'devel' ]]; then
+if [[ $TRAVIS_BRANCH != 'master' ]] && [[ $TRAVIS_PULL_REQUEST != false ]]; then
   pushd .;
   cd muikku-atests;
   mvn clean verify 
