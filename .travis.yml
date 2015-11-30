@@ -15,8 +15,8 @@ addons:
   - dev.muikku.fi
 before_install:
 - unset GEM_PATH
-- if [[ $use_sc == true && $TRAVIS_BRANCH != 'master' ]]; then 
-    if [[ $TRAVIS_BRANCH != 'devel' ]]; then
+- if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then 
+    if [ $TRAVIS_BRANCH != 'devel' ]; then
       curl -sS https://saucelabs.com/downloads/sc-4.3.12-linux.tar.gz|tar -xzC /tmp/;
       /tmp/sc-4.3.12-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER -f /tmp/sc-ready -r 10 --pidfile /tmp/sc.pid --vm-version dev-varnish --daemonize;
       while [ ! -f /tmp/sc-ready ]; do
@@ -30,7 +30,7 @@ before_script:
 script:
 - bash travis-script.sh
 after_script:
-- if [[ $use_sc = true ]]; then killall sc; fi;
+- if [ $use_sc = true ]; then killall sc; fi;
 #- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
 env:
   global:
@@ -93,7 +93,7 @@ env:
 after_success:
 - bash travis-after-success.sh
 after_failure:
-- if [[ $use_sc = true ]]; then killall sc; fi;
+- if [ $use_sc = true ]; then killall sc; fi;
 #- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
 - pushd .;
 - cat muikku-atests/target/cargo/configurations/wildfly8x/log/server.log;
