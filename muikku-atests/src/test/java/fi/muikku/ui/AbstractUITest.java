@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -241,6 +242,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   }
 
+  protected void waitForElementToBeClickable(String selector){
+    waitForElementToBeClickable(By.cssSelector(selector));
+  }
+  
   protected void waitForElementToBeClickable(By locator) {
     new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.elementToBeClickable(locator));
   }
@@ -514,6 +519,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void logout() {
+    navigate("/", true);
     waitAndClick("a.lu-action-signout");
     waitForPresent(".index");    
   }
@@ -668,7 +674,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .then()
       .statusCode(204);
   }
-
+  
   protected void deleteCommunicatorMessages() {
     asAdmin()
       .delete("/test/communicator/messages")
