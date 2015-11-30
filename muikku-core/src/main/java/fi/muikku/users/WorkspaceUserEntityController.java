@@ -39,7 +39,11 @@ public class WorkspaceUserEntityController {
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndIdentifier(WorkspaceEntity workspaceEntity, String identifier) {
-    return workspaceUserEntityDAO.findByWorkspaceAndIdentifierAndArchived(workspaceEntity, identifier, Boolean.FALSE);
+    return findWorkspaceUserEntityByWorkspaceAndIdentifierAndArchived(workspaceEntity, identifier, Boolean.FALSE);
+  }
+
+  public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndIdentifierAndArchived(WorkspaceEntity workspaceEntity, String identifier, Boolean archived) {
+    return workspaceUserEntityDAO.findByWorkspaceAndIdentifierAndArchived(workspaceEntity, identifier, archived);
   }
   
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {

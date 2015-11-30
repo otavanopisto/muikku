@@ -11,7 +11,6 @@ import org.joda.time.DateTime;
 
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
-import fi.muikku.plugins.schooldatapyramus.PyramusStudentActivityMapper;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.entity.CourseLengthUnit;
@@ -66,9 +65,6 @@ public class PyramusSchoolDataEntityFactory {
   @Inject
   private PluginSettingsController pluginSettingsController;
   
-  @Inject
-  private PyramusStudentActivityMapper pyramusStudentActivityMapper;
-
   public WorkspaceRole createCourseStudentRoleEntity() {
     // TODO: Localize
     return new PyramusWorkspaceRole(identifierMapper.getWorkspaceStudentRoleIdentifier(), "Course Student",
@@ -201,14 +197,12 @@ public class PyramusSchoolDataEntityFactory {
     SchoolDataIdentifier userIdentifier = toIdentifier(identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId()));
     SchoolDataIdentifier workspaceIdentifier = toIdentifier(identifierMapper.getWorkspaceIdentifier(staffMember.getCourseId()));
     SchoolDataIdentifier roleIdentifier = toIdentifier(identifierMapper.getWorkspaceStaffRoleIdentifier(staffMember.getRoleId()));
-    Boolean active = false;
     
     return new PyramusWorkspaceUser(
       identifier, 
       userIdentifier, 
       workspaceIdentifier,
-      roleIdentifier, 
-      active
+      roleIdentifier
     );
   }
   
@@ -235,14 +229,12 @@ public class PyramusSchoolDataEntityFactory {
     SchoolDataIdentifier userIdentifier = toIdentifier(identifierMapper.getStudentIdentifier(courseStudent.getStudentId()));
     SchoolDataIdentifier workspaceIdentifier = toIdentifier(identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId()));
     SchoolDataIdentifier roleIdentifier = toIdentifier(createCourseStudentRoleEntity().getIdentifier());
-    Boolean active = pyramusStudentActivityMapper.isActive(courseStudent.getParticipationTypeId());
     
     return new PyramusWorkspaceUser(
       identifier, 
       userIdentifier, 
       workspaceIdentifier,
-      roleIdentifier, 
-      active
+      roleIdentifier
     );
   }
 

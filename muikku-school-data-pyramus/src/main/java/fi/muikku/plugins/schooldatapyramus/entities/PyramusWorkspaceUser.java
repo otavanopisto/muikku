@@ -8,8 +8,8 @@ import fi.muikku.schooldata.entity.WorkspaceUser;
 public class PyramusWorkspaceUser extends AbstractWorkspaceUser implements WorkspaceUser {
 
 	public PyramusWorkspaceUser(SchoolDataIdentifier identifier, SchoolDataIdentifier userIdentifier, SchoolDataIdentifier workspaceIdentifier,
-      SchoolDataIdentifier roleIdentifier, Boolean active) {
-    super(identifier, userIdentifier, workspaceIdentifier, roleIdentifier, active);
+      SchoolDataIdentifier roleIdentifier) {
+    super(identifier, userIdentifier, workspaceIdentifier, roleIdentifier);
   }
 
   @Override

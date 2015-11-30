@@ -29,21 +29,21 @@
     },
     
     _create: function () {
-      this._loadStudentList(true);
+      this._loadStudentList(false);
       this.element.on("click", ".workspace-students-active", $.proxy(this._onWorkspaceStudentsActiveClick, this));
       this.element.on("click", ".workspace-students-inactive", $.proxy(this._onWorkspaceStudentsInactiveClick, this));
       this.element.on("click", ".workspace-users-archive", $.proxy(this._onWorkspaceStudentArchiveClick, this));
       this.element.on("click", ".workspace-users-unarchive", $.proxy(this._onWorkspaceStudentUnarchiveClick, this));
     },
     
-    _loadStudentList: function(active) {
-      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {active: active, orderBy: 'name'}).callback($.proxy(function (err, students) {
+    _loadStudentList: function(archived) {
+      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {archived: archived, orderBy: 'name'}).callback($.proxy(function (err, students) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           this.element.find('.workspace-students-list').empty();
-          if (active === true) {
+          if (archived === false) {
             renderDustTemplate('workspace/workspace-users-students-active.dust', {students: students}, $.proxy(function (text) {
               this.element.find('.workspace-students-list').append($.parseHTML(text));
             }, this));
@@ -58,11 +58,11 @@
     },
     
     _onWorkspaceStudentsActiveClick: function (event) {
-      this._loadStudentList(true);
+      this._loadStudentList(false);
     },
 
     _onWorkspaceStudentsInactiveClick: function (event) {
-      this._loadStudentList(false);
+      this._loadStudentList(true);
     },
 
     _onWorkspaceStudentArchiveClick: function (event) {
@@ -145,7 +145,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          workspaceUserEntity.active = false;
+          workspaceUserEntity.archived = true;
           mApi().workspace.workspaces.users.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -166,7 +166,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          workspaceUserEntity.active = true;
+          workspaceUserEntity.archived = false;
           mApi().workspace.workspaces.users.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);

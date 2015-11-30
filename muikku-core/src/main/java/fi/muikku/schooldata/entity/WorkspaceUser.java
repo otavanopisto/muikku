@@ -8,6 +8,5 @@ public interface WorkspaceUser extends SchoolDataEntity {
 	public SchoolDataIdentifier getUserIdentifier();
 	public SchoolDataIdentifier getWorkspaceIdentifier();
 	public SchoolDataIdentifier getRoleIdentifier();
-  public Boolean getActive();
 	
 }

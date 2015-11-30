@@ -5,13 +5,12 @@ import fi.muikku.schooldata.SchoolDataIdentifier;
 public abstract class AbstractWorkspaceUser implements WorkspaceUser {
 
   public AbstractWorkspaceUser(SchoolDataIdentifier identifier, SchoolDataIdentifier userIdentifier, SchoolDataIdentifier workspaceIdentifier,
-      SchoolDataIdentifier roleIdentifier, Boolean active) {
+      SchoolDataIdentifier roleIdentifier) {
     super();
     this.identifier = identifier;
     this.userIdentifier = userIdentifier;
     this.workspaceIdentifier = workspaceIdentifier;
     this.roleIdentifier = roleIdentifier;
-    this.active = active;
   }
 
   @Override
@@ -34,14 +33,9 @@ public abstract class AbstractWorkspaceUser implements WorkspaceUser {
     return roleIdentifier;
   }
   
-  @Override
-  public Boolean getActive() {
-    return active;
-  }
-
   private SchoolDataIdentifier identifier;
   private SchoolDataIdentifier userIdentifier;
   private SchoolDataIdentifier workspaceIdentifier;
   private SchoolDataIdentifier roleIdentifier;
-  private Boolean active;
+
 }
