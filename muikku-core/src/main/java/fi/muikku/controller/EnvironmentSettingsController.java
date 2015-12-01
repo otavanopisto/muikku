@@ -2,6 +2,7 @@ package fi.muikku.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.inject.Model;
@@ -30,6 +31,9 @@ import fi.otavanopisto.security.PermitContext;
 @Named ("environmentSettings")
 public class EnvironmentSettingsController {
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private RoleEntityDAO userEntityDAO;
 
@@ -103,7 +107,15 @@ public class EnvironmentSettingsController {
   
   @Permit(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS)
   public WorkspaceRolePermission addWorkspaceUserRolePermission(@PermitContext WorkspaceEntity course, RoleEntity role, Permission permission) {
-    return courseUserRolePermissionDAO.create(course, role, permission);
+    WorkspaceRolePermission workspaceRolePermission = courseUserRolePermissionDAO.findByRoleAndPermission(course, role, permission);
+    
+    if (workspaceRolePermission == null) {
+      workspaceRolePermission = courseUserRolePermissionDAO.create(course, role, permission);
+    } else {
+      logger.severe(String.format("WorkspaceRolePermission#%d already exists", workspaceRolePermission.getId()));
+    }
+    
+    return workspaceRolePermission;
   }
   
   @Permit(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS)
