@@ -44,10 +44,21 @@ public class EntityCacheEvictor {
   public void removeCache(AbstractEntityCache cache) {
     caches.remove(cache);
   }
+
+  public void evictPath(String path) {
+    try {
+      for (AbstractEntityCache cache : caches) {
+        cache.remove(path);
+      }
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, String.format("Failed to evict path %s", path));
+    }
+  }
+
   
   public void onWebhookNotificationEvent(@Observes WebhookNotificationEvent event) {
     List<String> evictTypePaths = cacheConfigs.getEvictTypePaths(event.getType());
-    
+
     Map<String, String> data = null;
     try {
       data = new ObjectMapper().readValue(event.getData(), new TypeReference<Map<String, String>>() { });
@@ -85,4 +96,5 @@ public class EntityCacheEvictor {
   }
   
   private List<AbstractEntityCache> caches;
+
 }

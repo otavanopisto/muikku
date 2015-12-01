@@ -9,43 +9,43 @@
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
       "enabledCaches": ["USER", "SYSTEM"],
-      "evictOn": ["STUDENT_UPDATE", "STUDENT_ARCHIVE"]
+      "evictOn": ["STUDENT_CREATE", "STUDENT_UPDATE", "STUDENT_ARCHIVE"]
     },
     "/persons/persons/{personId}": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
       "enabledCaches": ["USER", "SYSTEM"],
-      "evictOn": ["PERSON_UPDATE", "PERSON_ARCHIVE"]
+      "evictOn": ["PERSON_CREATE", "PERSON_UPDATE", "PERSON_ARCHIVE"]
     },
     "/staff/members/{staffMemberId}": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
       "enabledCaches": ["USER", "SYSTEM"],
-      "evictOn": ["STAFF_MEMBER_UPDATE", "STAFF_MEMBER_DELETE"] 
+      "evictOn": ["STAFF_MEMBER_CREATE", "STAFF_MEMBER_UPDATE", "STAFF_MEMBER_DELETE"] 
     },
     "/students/studentGroups/{studentGroupId}": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
       "enabledCaches": ["SYSTEM"],
-      "evictOn": ["STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE"] 
+      "evictOn": ["STUDENTGROUP_CREATE", "STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE"] 
     },
     "/students/studentGroups/{studentGroupId}/staffmembers": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
       "enabledCaches": ["SYSTEM"],
-      "evictOn": ["STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE", "STUDENTGROUP_STAFFMEMBER_CREATE", "STUDENTGROUP_STAFFMEMBER_REMOVE", "STUDENTGROUP_STAFFMEMBER_UPDATE"] 
+      "evictOn": ["STUDENTGROUP_CREATE", "STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE", "STUDENTGROUP_STAFFMEMBER_CREATE", "STUDENTGROUP_STAFFMEMBER_REMOVE", "STUDENTGROUP_STAFFMEMBER_UPDATE"] 
     },
     "/students/studentGroups/{studentGroupId}/students": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
       "enabledCaches": ["SYSTEM"],
-      "evictOn": ["STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE", "STUDENTGROUP_STUDENT_CREATE", "STUDENTGROUP_STUDENT_REMOVE", "STUDENTGROUP_STUDENT_UPDATE"] 
+      "evictOn": ["STUDENTGROUP_CREATE"; "STUDENTGROUP_ARCHIVE", "STUDENTGROUP_UPDATE", "STUDENTGROUP_STUDENT_CREATE", "STUDENTGROUP_STUDENT_REMOVE", "STUDENTGROUP_STUDENT_UPDATE"] 
     },
     "/courses/courses/{courseId}": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
       "enabledCaches": ["USER", "SYSTEM"],
-      "evictOn": ["COURSE_UPDATE", "COURSE_ARCHIVE"] 
+      "evictOn": ["COURSE_CREATE", "COURSE_UPDATE", "COURSE_ARCHIVE"] 
     },
     "/courses/courses/{courseId}/staffMembers": {
       "cacheStrategy": "EXPIRES",
@@ -57,7 +57,7 @@
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
       "enabledCaches": ["USER", "SYSTEM"],
-      "evictOn": ["COURSE_STAFF_MEMBER_UPDATE", "COURSE_STAFF_MEMBER_DELETE"] 
+      "evictOn": ["COURSE_STAFF_MEMBER_CREATE", "COURSE_STAFF_MEMBER_UPDATE", "COURSE_STAFF_MEMBER_DELETE"] 
     },
     "/courses/courses/{courseId}/students": {
       "cacheStrategy": "EXPIRES",
@@ -75,7 +75,7 @@
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
       "enabledCaches": ["USER", "SYSTEM"],
-      "evictOn": ["COURSE_STUDENT_UPDATE", "COURSE_STUDENT_ARCHIVE"] 
+      "evictOn": ["COURSE_STUDENT_CREATE", "COURSE_STUDENT_UPDATE", "COURSE_STUDENT_ARCHIVE"] 
     },
     "/students/studyProgrammes/{studyProgrammeId}": {
       "cacheStrategy": "EXPIRES",
