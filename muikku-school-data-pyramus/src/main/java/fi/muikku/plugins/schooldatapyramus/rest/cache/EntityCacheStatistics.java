@@ -5,20 +5,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 @Singleton
 public class EntityCacheStatistics {
-  
-  @Inject
-  private Logger logger;
   
   @PostConstruct
   public void init() {
@@ -27,17 +21,14 @@ public class EntityCacheStatistics {
   
   public void addHit(String type, String path) {
     getStatistics(type).addHit(path);
-    logger.log(Level.INFO, String.format("(%s) Hits %d in %s", type, getStatistics(type).getHits(path), path));
   }
   
   public void addMiss(String type, String path) {
     getStatistics(type).addMiss(path);
-    logger.log(Level.INFO, String.format("(%s) Misses %d in %s", type, getStatistics(type).getMisses(path), path));
   }
 
   public void addSkip(String type, String path) {
     getStatistics(type).addSkip(path);
-    logger.log(Level.INFO, String.format("(%s) Skips %d in %s", type, getStatistics(type).getSkips(path), path));
   }
   
   public List<String> getCacheTypes() {
@@ -86,6 +77,12 @@ public class EntityCacheStatistics {
 
     public int getSkips(String path) {
       return getPathStatistics(path).getSkips();
+    }
+    
+    public List<String> getPaths() {
+      List<String> result = new ArrayList<>(pathStatistics.keySet());
+      Collections.sort(result);
+      return result;
     }
     
     private PathStatistics getPathStatistics(String path) {
