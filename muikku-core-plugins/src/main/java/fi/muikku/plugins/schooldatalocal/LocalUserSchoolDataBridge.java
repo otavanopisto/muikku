@@ -25,6 +25,7 @@ import fi.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserProperty;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.UserSchoolDataBridge;
 import fi.muikku.schooldata.entity.EnvironmentRole;
@@ -32,9 +33,11 @@ import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserAddress;
 import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.UserImage;
+import fi.muikku.schooldata.entity.UserPhoneNumber;
 import fi.muikku.schooldata.entity.UserProperty;
 import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
@@ -534,4 +537,17 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return null;
   }
 
+  @Override
+  public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier)
+      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
 }
