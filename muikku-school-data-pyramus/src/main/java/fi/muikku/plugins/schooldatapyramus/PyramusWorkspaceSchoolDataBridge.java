@@ -68,11 +68,13 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Override
   public Workspace findWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    if (!StringUtils.isNumeric(identifier)) {
-      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+    Long pyramusCourseId = identifierMapper.getPyramusCourseId(identifier);
+    if (pyramusCourseId == null) {
+      logger.severe(String.format("Workspace identifier %s is not valid", identifier));
+      return null;
     }
-
-    return createWorkspaceEntity(pyramusClient.get("/courses/courses/" + identifier, Course.class));
+    
+    return createWorkspaceEntity(pyramusClient.get(String.format("/courses/courses/%d", pyramusCourseId), Course.class));
   }
 
   @Override
