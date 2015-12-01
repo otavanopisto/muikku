@@ -11,5 +11,10 @@ public class UserEntityCache extends AbstractEntityCache {
   public String getType() {
     return "USER";
   }
+  
+  @Override
+  public int getMaxEntries() {
+    return 100;
+  }
  
 }

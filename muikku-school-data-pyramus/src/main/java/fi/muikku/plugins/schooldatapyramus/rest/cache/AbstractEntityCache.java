@@ -2,7 +2,6 @@ package fi.muikku.plugins.schooldatapyramus.rest.cache;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -19,6 +18,9 @@ public abstract class AbstractEntityCache {
   
   @Inject
   private EntityCacheEvictor entityCacheEvictor;
+  
+  @Inject
+  private EntityCacheStatistics entityCacheStatistics;
   
   @PostConstruct
   public void init() {
@@ -38,7 +40,7 @@ public abstract class AbstractEntityCache {
   public <T> CachedEntity<T> put(String path, T data) {
     CacheConfig cacheConfig = cacheConfigs.getCacheConfig(path);
     if (!cacheConfig.getEnabledCaches().contains(getType())) {
-      logger.log(Level.INFO, String.format("(%s) Cache disabled for %s", getType(), path));
+      entityCacheStatistics.addSkip(getType(), path);
       return null;
     }
     
@@ -46,7 +48,7 @@ public abstract class AbstractEntityCache {
     
     switch (cacheConfig.getCacheStrategy()) {
       case NONE:
-        logger.log(Level.INFO, String.format("(%s) Caching strategy is NONE", getType()));
+        entityCacheStatistics.addSkip(getType(), path);
         return null;
       case EXPIRES:
         if (cacheConfig.getExpireTime() != null) {
@@ -55,6 +57,10 @@ public abstract class AbstractEntityCache {
       break;
       case PERSISTENT:
       break;
+    }
+    
+    if (cache.keySet().size() > getMaxEntries()) {
+      cache.clear();
     }
     
     CachedEntity<T> cachedEntity = new CachedEntity<T>(data, expires);
@@ -77,16 +83,19 @@ public abstract class AbstractEntityCache {
     CachedEntity<T> cachedEntity = (CachedEntity<T>) cache.get(path);
     if (cachedEntity != null) {
       if ((cachedEntity.getExpires() != null) || (cachedEntity.getExpires().longValue() < System.currentTimeMillis())) {
-        cachedEntity.incHit();
-        logger.info(String.format("(%s) Cache hit (%s), hits %d", getType(), path, cachedEntity.getHits()));
+        entityCacheStatistics.addHit(getType(), path);
         return cachedEntity;
       } else {
         remove(path);
       }
     }
     
+    entityCacheStatistics.addMiss(getType(), path);
+
     return null;
   }
+  
+  public abstract int getMaxEntries();
 
   private Map<String, CachedEntity<?>> cache;
 }

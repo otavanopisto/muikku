@@ -11,5 +11,10 @@ public class SystemEntityCache extends AbstractEntityCache {
   public String getType() {
     return "SYSTEM";
   }
+  
+  @Override
+  public int getMaxEntries() {
+    return 1000;
+  }
  
 }

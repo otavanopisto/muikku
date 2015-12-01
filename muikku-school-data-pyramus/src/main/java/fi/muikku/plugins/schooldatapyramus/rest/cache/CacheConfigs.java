@@ -3,6 +3,7 @@ package fi.muikku.plugins.schooldatapyramus.rest.cache;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -41,6 +42,7 @@ public class CacheConfigs {
       logger.severe("Could not read Pyramus cache settings file"); 
       config = new PyramusCacheConfig();
       config.setDefaultSettings(new CacheConfig(new ArrayList<String>(), CacheStrategy.NONE, 0l));
+      config.setSettings(new HashMap<String, CacheConfig>());
     }
   }
   
