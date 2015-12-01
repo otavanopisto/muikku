@@ -32,9 +32,9 @@ public class EntityCacheStatistics {
   }
   
   public List<String> getCacheTypes() {
-    List<String> reuslt = new ArrayList<>(statistics.keySet());
-    Collections.sort(reuslt);
-    return reuslt;
+    List<String> result = new ArrayList<>(statistics.keySet());
+    Collections.sort(result);
+    return result;
   }
   
   public Statistics getStatistics(String type) {
