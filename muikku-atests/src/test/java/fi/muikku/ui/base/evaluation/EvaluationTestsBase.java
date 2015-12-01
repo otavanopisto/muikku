@@ -1,17 +1,27 @@
 package fi.muikku.ui.base.evaluation;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.client.VerificationException;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static org.junit.Assert.assertEquals;
 import fi.muikku.ui.AbstractUITest;
+import fi.muikku.ui.PyramusMocks;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
+import fi.pyramus.rest.model.CourseAssessment;
 
 public class EvaluationTestsBase extends AbstractUITest {
 
@@ -49,6 +59,13 @@ public class EvaluationTestsBase extends AbstractUITest {
         click(".save-evaluation-button");
         waitForPresentAndVisible(".evaluation-assignment-wrapper");
         assertClassPresent(".evaluation-assignment-wrapper", "assignment-evaluated");
+        waitAndClick(".assignment-submitted");
+        waitForPresent("#grade");
+        assertValue("#grade", "1/PYRAMUS@1/PYRAMUS");
+        waitForPresent("select[name='assessor']");
+        assertValue("select[name='assessor']", "3");
+        waitForPresent(".cke_contents");
+        assertEquals("Test evaluation." ,getCKEditorContent());
       }finally{
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
@@ -94,6 +111,13 @@ public class EvaluationTestsBase extends AbstractUITest {
         
 //      Re-evaluation
         waitAndClick(".assignment-submitted");
+        waitForPresent("#grade");
+        assertValue("#grade", "1/PYRAMUS@1/PYRAMUS");
+        waitForPresent("select[name='assessor']");
+        assertValue("select[name='assessor']", "3");
+        waitForPresent(".cke_contents");
+        assertEquals("Test evaluation.", getCKEditorContent());
+        
         waitAndClick(".cke_contents");
         getWebDriver().switchTo().activeElement().sendKeys("Test evaluation in re-evaluation.");
         selectOption("#grade", "2/PYRAMUS@1/PYRAMUS");
@@ -102,8 +126,11 @@ public class EvaluationTestsBase extends AbstractUITest {
         waitForPresentAndVisible(".evaluation-assignment-wrapper");
         waitAndClick(".assignment-submitted");
         waitForPresent("#grade");
-        assertSelectedOption("#grade", "Failed");
-        
+        assertValue("#grade", "2/PYRAMUS@1/PYRAMUS");
+        waitForPresent("select[name='assessor']");
+        assertValue("select[name='assessor']", "3");
+        waitForPresent(".cke_contents");
+        assertEquals("Test evaluation.Test evaluation in re-evaluation.", getCKEditorContent());
       }finally{
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
@@ -114,6 +141,7 @@ public class EvaluationTestsBase extends AbstractUITest {
   
   @Test
   public void evaluateWorkspaceStudent() throws Exception {
+    String requestBody =  "{\"id\":null,\"courseStudentId\":3,\"gradeId\":1,\"gradingScaleId\":1,\"assessorId\":4,\"date\":\"2015-12-01T00:00:00.000+02:00\",\"verbalAssessment\":\"<p>Test evaluation.</p>\\n\"}";
     loginStudent1();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
@@ -138,16 +166,27 @@ public class EvaluationTestsBase extends AbstractUITest {
         logout();
         loginAdmin();
         navigate(String.format("/evaluation"), true);
-        waitAndClick("div[data-workspace-student='3']");
+        waitAndClick(".evaluation-student-loaded");
         waitAndClick(".cke_contents");
         getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
         selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
         selectOption("select[name='assessor']", "3");
         click(".save-evaluation-button");
         verify(postRequestedFor(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", 1, 1)))
-          .withHeader("Content-Type", equalTo("application/json")));
+          .withHeader("Content-Type", equalTo("application/json"))
+          .withRequestBody(equalTo(requestBody)));
+
+        PyramusMocks.mockAssessedStudent1Workspace1();
         waitForPresentAndVisible(".evaluation-assignment-wrapper");
         assertClassPresent(".evaluation-student-wrapper", "workspace-evaluated");
+        
+        waitAndClick(".evaluation-student-loaded");
+        waitForPresent("#grade");
+        assertValue("#grade", "1/PYRAMUS@1/PYRAMUS");
+        waitForPresent("select[name='assessor']");
+        assertValue("select[name='assessor']", "3");
+        waitForPresent(".cke_contents");
+        assertEquals("Test evaluation." ,getCKEditorContent());
       }finally{
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
