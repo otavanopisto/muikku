@@ -78,12 +78,15 @@ public class EntityCacheEvictor {
           while (matcher.find()) {
             String variable = StringUtils.substring(matcher.group(0), 1, -1);
             String value = data.get(variable);
+            
             if (value != null) {
               path = matcher.replaceFirst(value);
             } else {
               logger.log(Level.SEVERE, String.format("Failed to parse path %s", evictTypePath));              
               break;
             }
+            
+            matcher = pattern.matcher(path);
           }
           
           cache.remove(path);
