@@ -40,6 +40,7 @@
     },
     
     _loadStudentList: function(archived) {
+      this.element.find('.workspace-students-list').empty();
       this.element.find('.workspace-students-list').addClass('loading');
       
       mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {archived: archived, orderBy: 'name'}).callback($.proxy(function (err, students) {
@@ -50,7 +51,7 @@
           if (archived === false) {
             renderDustTemplate('workspace/workspace-users-students-active.dust', {students: students}, $.proxy(function (text) {
               this.element.find('.workspace-students-list')
-                .removeClass('workspace-students-list-loading')
+                .removeClass('loading')
                 .html($.parseHTML(text));
             }, this));
           }
