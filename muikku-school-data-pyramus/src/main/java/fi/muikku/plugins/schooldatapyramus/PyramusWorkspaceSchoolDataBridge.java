@@ -199,7 +199,12 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     
     if (course.getSubjectId() != null) {
       Subject subject = pyramusClient.get("/common/subjects/" + course.getSubjectId(), fi.pyramus.rest.model.Subject.class);
-      educationTypeIdentifier = identifierMapper.getEducationTypeIdentifier(subject.getEducationTypeId());
+      if (subject == null) {
+        logger.severe(String.format("Subject with id %d not found", course.getSubjectId()));
+      }
+      else {
+        educationTypeIdentifier = identifierMapper.getEducationTypeIdentifier(subject.getEducationTypeId());
+      }
     }
     
     return entityFactory.createEntity(course, educationTypeIdentifier);
