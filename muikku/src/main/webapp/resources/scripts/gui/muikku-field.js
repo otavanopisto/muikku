@@ -331,7 +331,7 @@
                 exampleDetails.append(
                   $('<span>') 
                     .addClass('muikku-field-example')
-                    .text(example)    
+                    .html(example.replace(/\n/g, '<br/>'))    
                 );
               });
               $(field).after(exampleDetails);
@@ -353,7 +353,7 @@
                 exampleDetails.append(
                   $('<span>') 
                     .addClass('muikku-field-example')
-                    .text(example)    
+                    .html(example.replace(/\n/g, '<br/>'))    
                 );
               });
               $(field).after(exampleDetails);
