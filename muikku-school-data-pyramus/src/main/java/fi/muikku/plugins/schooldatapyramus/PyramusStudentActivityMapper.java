@@ -1,6 +1,7 @@
 package fi.muikku.plugins.schooldatapyramus;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -33,18 +34,18 @@ public class PyramusStudentActivityMapper {
       if (StringUtils.isNotBlank(archiveChanges)) {
         toInactive = new ObjectMapper().readValue(archiveChanges, new TypeReference<Map<String, Long>>() {});
       }
-      else {
-        logger.log(Level.SEVERE, "Missing plugin setting value: participationTypeChange.archive");
-      }
       String unarchiveChanges = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "participationTypeChange.unarchive");    
       if (StringUtils.isNotBlank(unarchiveChanges)) {
         toActive = new ObjectMapper().readValue(unarchiveChanges, new TypeReference<Map<String, Long>>() {});
       }
-      else {
-        logger.log(Level.SEVERE, "Missing plugin setting value: participationTypeChange.unarchive");
-      }
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Invalid settings", e);
+    }
+    if (toInactive == null) {
+      toInactive = new HashMap<String, Long>();
+    }
+    if (toActive == null) {
+      toActive = new HashMap<String, Long>();
     }
   }
     

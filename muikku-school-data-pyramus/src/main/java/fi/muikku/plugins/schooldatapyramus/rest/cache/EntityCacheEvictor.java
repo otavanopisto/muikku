@@ -69,6 +69,9 @@ public class EntityCacheEvictor {
             String value = data.get(variable);
             if (value != null) {
               path = matcher.replaceFirst(value);
+            } else {
+              logger.log(Level.SEVERE, String.format("Failed to parse path %s", evictTypePath));              
+              break;
             }
           }
           
