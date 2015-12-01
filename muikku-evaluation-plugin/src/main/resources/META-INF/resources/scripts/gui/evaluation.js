@@ -255,7 +255,7 @@
                 workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
                 materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
                 type: 'html',
-                title: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].title,
+                title: workspaceEvaluableAssignment.workspaceMaterial.title,
                 html: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].html,
                 evaluation: evaluation
               });
@@ -297,6 +297,7 @@
       workspaceName: null,
       studentStudyProgrammeName: null,
       workspaceMaterialId: null,
+      workspaceMaterialTitle: null,
       materialId: null,
       triggeringElement: null,
       ckeditor: {
@@ -466,7 +467,7 @@
           this._loadTemplate(this.options.workspaceMaterialId, 
             htmlMaterial.id, 
             'html', 
-            htmlMaterial.title, 
+            this.options.workspaceMaterialTitle, 
             htmlMaterial.html, 
             callback
           );
@@ -875,6 +876,7 @@
                   workspaceName: workspaceName,
                   studentStudyProgrammeName: studyProgrammeName,
                   workspaceMaterialId: this.options.workspaceMaterialId,
+                  workspaceMaterialTitle: this.options.title,
                   materialId: this.options.materialId,
                   studentEntityId: workspaceStudent.evaluationStudent('studentEntityId'),
                   evaluationId: this.options.evaluation ? this.options.evaluation.id : null,
