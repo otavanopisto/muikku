@@ -367,7 +367,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // WorkspaceUser (SchoolData) to WorkspaceUser (Muikku REST)
-    List<WorkspaceUser> workspaceUsers = createRestModel(schoolDataUsers.toArray(new fi.muikku.schooldata.entity.WorkspaceUser[0]));
+    List<WorkspaceUser> workspaceUsers = createRestModel(workspaceEntity, schoolDataUsers.toArray(new fi.muikku.schooldata.entity.WorkspaceUser[0]));
     if (archived != null) {
       Iterator<WorkspaceUser> iterator = workspaceUsers.iterator();
       while (iterator.hasNext()) {
@@ -418,7 +418,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // WorkspaceUser (SchoolData) to WorkspaceUser (Muikku REST)
-    List<WorkspaceUser> workspaceUsers = createRestModel(schoolDataUsers.toArray(new fi.muikku.schooldata.entity.WorkspaceUser[0]));
+    List<WorkspaceUser> workspaceUsers = createRestModel(workspaceEntity, schoolDataUsers.toArray(new fi.muikku.schooldata.entity.WorkspaceUser[0]));
 
     // Sorting
     if (StringUtils.equals(orderBy, "name")) {
@@ -892,15 +892,15 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
   }
 
-  private List<WorkspaceUser> createRestModel(fi.muikku.schooldata.entity.WorkspaceUser... workspaceUsers) {
+  private List<WorkspaceUser> createRestModel(WorkspaceEntity workspaceEntity, fi.muikku.schooldata.entity.WorkspaceUser... workspaceUsers) {
     List<WorkspaceUser> result = new ArrayList<WorkspaceUser>();
     for (fi.muikku.schooldata.entity.WorkspaceUser workspaceUser : workspaceUsers) {
-      result.add(createRestModel(workspaceUser));
+      result.add(createRestModel(workspaceEntity, workspaceUser));
     }
     return result;
   }
 
-  private WorkspaceUser createRestModel(fi.muikku.schooldata.entity.WorkspaceUser workspaceUser) {
+  private WorkspaceUser createRestModel(WorkspaceEntity workspaceEntity, fi.muikku.schooldata.entity.WorkspaceUser workspaceUser) {
     
     User user = userController.findUserByDataSourceAndIdentifier(
         workspaceUser.getUserIdentifier().getDataSource(),
@@ -909,10 +909,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
         workspaceUser.getUserIdentifier().getDataSource(),
         workspaceUser.getUserIdentifier().getIdentifier());
-
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(
-        workspaceUser.getWorkspaceIdentifier().getDataSource(),
-        workspaceUser.getWorkspaceIdentifier().getIdentifier());
     
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
     
@@ -1358,7 +1354,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (bridgeUser == null) {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
-    return Response.ok(createRestModel(bridgeUser)).build();
+    return Response.ok(createRestModel(workspaceEntity, bridgeUser)).build();
   }
   
   @PUT
