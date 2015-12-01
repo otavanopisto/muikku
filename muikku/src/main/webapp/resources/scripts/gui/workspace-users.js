@@ -10,13 +10,16 @@
     },
     
     _loadTeacherList: function () {
+      this.element.find('.workspace-teachers-list').addClass('loading');
       mApi().workspace.workspaces.staffMembers.read(this.options.workspaceEntityId, {orderBy: 'name'}).callback($.proxy(function (err, teachers) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           renderDustTemplate('workspace/workspace-users-teachers.dust', {teachers: teachers}, $.proxy(function (text) {
-            this.element.append($.parseHTML(text));  
+            this.element.find('.workspace-teachers-list')
+              .removeClass('loading')
+              .html($.parseHTML(text));  
           }, this));
         }
       }, this));  
@@ -37,20 +40,25 @@
     },
     
     _loadStudentList: function(archived) {
+      this.element.find('.workspace-students-list').addClass('loading');
+      
       mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {archived: archived, orderBy: 'name'}).callback($.proxy(function (err, students) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          this.element.find('.workspace-students-list').empty();
           if (archived === false) {
             renderDustTemplate('workspace/workspace-users-students-active.dust', {students: students}, $.proxy(function (text) {
-              this.element.find('.workspace-students-list').append($.parseHTML(text));
+              this.element.find('.workspace-students-list')
+                .removeClass('workspace-students-list-loading')
+                .html($.parseHTML(text));
             }, this));
           }
           else {
             renderDustTemplate('workspace/workspace-users-students-inactive.dust', {students: students}, $.proxy(function (text) {
-              this.element.find('.workspace-students-list').append($.parseHTML(text));
+              this.element.find('.workspace-students-list')
+                .removeClass('loading')
+                .html($.parseHTML(text));
             }, this));
           }
         }
