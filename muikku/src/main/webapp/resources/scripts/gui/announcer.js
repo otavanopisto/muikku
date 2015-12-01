@@ -1,15 +1,27 @@
 (function() {
   
   $.widget("custom.announcer", {
-//    options: {
+//    options: {    
 //    },
     
     _create : function() {
+      
+      var mainfunction = ".mf-content-master";
+      
+     $(mainfunction).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
+      
       this._loadAnnouncements();
     },
+    _onCreateAnnouncementClick: function () {
+      var createAnnouncement = function(values){
+        alert('TODO: CREATE NEW ANNOUNCEMENT!');          
+//        window.location.reload(true);
+      }   
+      openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement);   
+    },    
     
     _loadAnnouncements: function () {
-       alert('TODO: LOAD ANNOUNCEMENTS!');
+      alert('TODO: LOAD ANNOUNCEMENTS!');
     },
     
     _load: function(){
@@ -24,8 +36,8 @@
   });
   
   $(document).ready(function(){
-    $('.an-announcements-view-container').records({
-    });
+    $('.an-announcements-view-container').announcer();
+
   });
   
  
