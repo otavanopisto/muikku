@@ -6,6 +6,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.junit.Assert.assertEquals;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.junit.Test;
 
 import fi.muikku.atests.Workspace;
@@ -132,7 +135,8 @@ public class EvaluationTestsBase extends AbstractUITest {
   
   @Test
   public void evaluateWorkspaceStudent() throws Exception {
-    String requestBody =  "{\"id\":null,\"courseStudentId\":3,\"gradeId\":1,\"gradingScaleId\":1,\"assessorId\":4,\"date\":\"2015-12-01T00:00:00.000+02:00\",\"verbalAssessment\":\"<p>Test evaluation.</p>\\n\"}";
+    String dateToday = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+    String requestBody =  "{\"id\":null,\"courseStudentId\":3,\"gradeId\":1,\"gradingScaleId\":1,\"assessorId\":4,\"date\":\""+ dateToday +"T00:00:00.000+02:00\",\"verbalAssessment\":\"<p>Test evaluation.</p>\\n\"}";
     loginStudent1();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
@@ -166,7 +170,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         verify(postRequestedFor(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", 1, 1)))
           .withHeader("Content-Type", equalTo("application/json"))
           .withRequestBody(equalTo(requestBody)));
-
+        
         PyramusMocks.mockAssessedStudent1Workspace1();
         waitForPresentAndVisible(".evaluation-assignment-wrapper");
         assertClassPresent(".evaluation-student-wrapper", "workspace-evaluated");
