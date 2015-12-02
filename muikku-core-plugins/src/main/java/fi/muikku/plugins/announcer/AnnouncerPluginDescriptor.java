@@ -29,9 +29,9 @@ public class AnnouncerPluginDescriptor implements LocalizedPluginDescriptor, Plu
             LocaleUtils.toLocale("fi"))),
         new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.announcer.AnnouncerPluginMessages",
             LocaleUtils.toLocale("en"))),
-        new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.announcer.AnnouncerPluginJsMessages",
+        new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.announcer.AnnouncerJsPluginMessages",
             LocaleUtils.toLocale("fi"))),
-        new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.announcer.AnnouncerPluginJsMessages",
+        new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.announcer.AnnouncerJsPluginMessages",
             LocaleUtils.toLocale("en"))));
   }
 
