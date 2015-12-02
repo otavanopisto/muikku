@@ -122,6 +122,11 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
     if ("safari".equals(getSauceBrowser())) {
       return;
     }
+
+    if ("internet explorer".equals(getSauceBrowser()) && "10.0".equals(getSauceBrowserVersion())) {
+      return;
+    }
+    
     super.removeFileFieldTestAdmin();
   }
   
@@ -135,5 +140,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
     }
     super.removeFileFieldTestStudent();
   }
+  
+  
   
 }

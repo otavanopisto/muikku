@@ -16,14 +16,5 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   public void tearDown() {
     getWebDriver().quit();
   }
-  
-  @Override
-  public void answerFileFieldTestAdmin() throws Exception {
-    if (getSauceBrowser().equals("internet explorer") && getSauceBrowserVersion().equals("10.0")) {
-      return;
-    }
-    
-    super.answerFileFieldTestAdmin();
-  }
-  
+   
 }
