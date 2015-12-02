@@ -7,13 +7,13 @@ public class WorkspaceAssessment {
   public WorkspaceAssessment() {
   }
   
-  public WorkspaceAssessment(String identifier, Date evaluated, Long assessorEntityId, Long workspaceUserEntityId,
+  public WorkspaceAssessment(String identifier, Date evaluated, Long assessorEntityId, String workspaceStudentId,
       String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String gradeIdentifier, 
       String gradeSchoolDataSource, String verbalAssessment) {
     super();
     this.identifier = identifier;
     this.evaluated = evaluated;
-    this.workspaceUserEntityId = workspaceUserEntityId;
+    this.workspaceStudentId = workspaceStudentId;
     this.assessorEntityId = assessorEntityId;
     this.gradingScaleIdentifier = gradingScaleIdentifier;
     this.gradingScaleSchoolDataSource = gradingScaleSchoolDataSource;
@@ -86,17 +86,17 @@ public class WorkspaceAssessment {
     this.verbalAssessment = verbalAssessment;
   }
 
-  public Long getWorkspaceUserEntityId() {
-    return workspaceUserEntityId;
+  public String getWorkspaceStudentId() {
+    return workspaceStudentId;
   }
-
-  public void setWorkspaceUserEntityId(Long workspaceUserEntityId) {
-    this.workspaceUserEntityId = workspaceUserEntityId;
+  
+  public void setWorkspaceStudentId(String workspaceStudentId) {
+    this.workspaceStudentId = workspaceStudentId;
   }
   
   private String identifier;
   private Date evaluated;
-  private Long workspaceUserEntityId;
+  private String workspaceStudentId;
   private Long assessorEntityId;
   private String gradingScaleIdentifier;
   private String gradingScaleSchoolDataSource;

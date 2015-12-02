@@ -13,6 +13,7 @@
   
   $.widget( "custom.evaluateWorkspaceDialog", {
     options: {
+      workspaceStudentId: null,
       studentStudyProgrammeName: null,
       studentDisplayName: null,
       workspaceName: null,
@@ -146,7 +147,7 @@
                   gradeSchoolDataSource: grade[1],
                   gradingScaleIdentifier: gradingScale[0],
                   gradingScaleSchoolDataSource: gradingScale[1],
-                  workspaceUserEntityId: this.options.workspaceStudentEntityId,
+                  workspaceStudentId: this.options.workspaceStudentId,
                   assessorEntityId: assessorEntityId,
                   verbalAssessment: verbalAssessment
                 }).callback($.proxy(function (err, result) {
@@ -181,7 +182,7 @@
                   gradeSchoolDataSource: grade[1],
                   gradingScaleIdentifier: gradingScale[0],
                   gradingScaleSchoolDataSource: gradingScale[1],
-                  workspaceUserEntityId: this.options.workspaceStudentEntityId,
+                  workspaceStudentId: this.options.workspaceStudentId,
                   assessorEntityId: assessorEntityId,
                   verbalAssessment: verbalAssessment
                 }).callback($.proxy(function (err, result) {
@@ -255,7 +256,7 @@
                 workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
                 materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
                 type: 'html',
-                title: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].title,
+                title: workspaceEvaluableAssignment.workspaceMaterial.title,
                 html: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].html,
                 evaluation: evaluation
               });
@@ -297,6 +298,7 @@
       workspaceName: null,
       studentStudyProgrammeName: null,
       workspaceMaterialId: null,
+      workspaceMaterialTitle: null,
       materialId: null,
       triggeringElement: null,
       ckeditor: {
@@ -466,7 +468,7 @@
           this._loadTemplate(this.options.workspaceMaterialId, 
             htmlMaterial.id, 
             'html', 
-            htmlMaterial.title, 
+            this.options.workspaceMaterialTitle, 
             htmlMaterial.html, 
             callback
           );
@@ -679,8 +681,8 @@
     },
 
     _loadStudents: function () {
-      mApi({async: false}).workspace.workspaces.users
-        .read(this.options.workspaceEntityId, {roleArchetype: "STUDENT"})
+      mApi({async: false}).workspace.workspaces.students
+        .read(this.options.workspaceEntityId, { archived: false })
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -776,7 +778,7 @@
             .attr('data-workspace-student', workspaceUser.id)
             .attr('data-workspace-user', workspaceUser.userId)
             .evaluationStudent({
-              workspaceStudentEntityId: workspaceUser.id,
+              workspaceStudentId: workspaceUser.id,
               studentEntityId: workspaceUser.userId,
               assessment: workspaceAssessment
             })
@@ -809,7 +811,7 @@
                 workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
                 materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
                 title: workspaceEvaluableAssignment.workspaceMaterial.title,
-                workspaceUserEntityId: workspaceUser.id,
+                workspaceStudentId: workspaceUser.id,
                 studentEntityId: workspaceUser.userId,
                 workspaceEvaluableAssignment: workspaceEvaluableAssignment
               })
@@ -828,7 +830,7 @@
       workspaceEntityId: null,
       workspaceMaterialId: null,
       title: null,
-      workspaceUserEntityId: null,
+      workspaceStudentId: null,
       studentEntityId: null,
       workspaceEvaluableAssignment: null
     },
@@ -844,7 +846,7 @@
     },
     
     _onClick: function (event) {
-      var workspaceStudent = $('*[data-workspace-student="' +  this.options.workspaceUserEntityId + '"]');
+      var workspaceStudent = $('*[data-workspace-student="' +  this.options.workspaceStudentId + '"]');
       var studentDisplayName = workspaceStudent.evaluationStudent('displayName');
       var studyProgrammeName = workspaceStudent.evaluationStudent('studyProgrammeName');
       var workspaceName = $('#evaluation').evaluation("workspaceName");
@@ -875,6 +877,7 @@
                   workspaceName: workspaceName,
                   studentStudyProgrammeName: studyProgrammeName,
                   workspaceMaterialId: this.options.workspaceMaterialId,
+                  workspaceMaterialTitle: this.options.title,
                   materialId: this.options.materialId,
                   studentEntityId: workspaceStudent.evaluationStudent('studentEntityId'),
                   evaluationId: this.options.evaluation ? this.options.evaluation.id : null,
@@ -974,7 +977,7 @@
   $.widget("custom.evaluationStudent", {
     
     options: {
-      workspaceStudentEntityId: null,
+      workspaceStudentId: null,
       studentEntityId: null,
       assessment: null
     },
@@ -1004,8 +1007,8 @@
       return this.options.studentEntityId;
     },
     
-    workspaceStudentEntityId: function () {
-      return this.options.workspaceStudentEntityId;
+    workspaceStudentId: function () {
+      return this.options.workspaceStudentId;
     },
     
     _loadBasicInfo: function () {
@@ -1055,7 +1058,7 @@
                   verbalAssessment: this.options.assessment ? this.options.assessment.verbalAssessment : null,
                   assessmentId: this.options.assessment ? this.options.assessment.identifier : null,
                   studentEntityId: this.studentEntityId(),
-                  workspaceStudentEntityId: this.workspaceStudentEntityId(),
+                  workspaceStudentId: this.workspaceStudentId(),
                   workspaceEvaluableAssignments: workspaceEvaluableAssignments,
                   workspaceEntityId: workspaceEntityId,
                   triggeringElement: this

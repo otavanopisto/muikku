@@ -66,12 +66,12 @@ public class DefaultSchoolDataWorkspaceListener {
       }
       // workspace
       workspaceEntity = workspaceEntityController.createWorkspaceEntity(event.getDataSource(), event.getIdentifier(), urlName);
-      // workspace bookkeeping
-      discoveredWorkspaces.put(discoverId, workspaceEntity.getId());
-      event.setDiscoveredWorkspaceEntityId(workspaceEntity.getId());
     } else {
       logger.warning("workspaceEntity #" + event.getDataSource() + '/' + event.getIdentifier() + " already exists");
     }
+    // workspace bookkeeping
+    discoveredWorkspaces.put(discoverId, workspaceEntity.getId());
+    event.setDiscoveredWorkspaceEntityId(workspaceEntity.getId());
   }
   
   public void onSchoolDataWorkspaceUpdated(@Observes SchoolDataWorkspaceUpdatedEvent event) {
@@ -112,7 +112,7 @@ public class DefaultSchoolDataWorkspaceListener {
             discoveredWorkspaceUsers.put(discoverId, workspaceUserEntity.getId());
             event.setDiscoveredWorkspaceUserEntityId(workspaceUserEntity.getId());
           } else {
-            workspaceUserEntityController.unArchiveWorkspaceUserEntity(workspaceUserEntity);
+            workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
           }
         } else {
           logger.warning("could not add workspace user because userSchoolDataIdentifier #" + event.getUserIdentifier() + '/' + event.getUserDataSource() +  " could not be found");

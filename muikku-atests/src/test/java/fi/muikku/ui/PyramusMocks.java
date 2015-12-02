@@ -40,6 +40,7 @@ import fi.pyramus.rest.model.StudyProgrammeCategory;
 import fi.pyramus.rest.model.Subject;
 import fi.pyramus.rest.model.UserRole;
 import fi.pyramus.rest.model.WhoAmI;
+import fi.pyramus.webhooks.WebhookCourseCreatePayload;
 import fi.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookCourseStudentCreatePayload;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
@@ -562,50 +563,51 @@ public class PyramusMocks extends AbstractPyramusMocks {
           .withStatus(200)));
   }
   
-  public static void workspace1PyramusMock() throws JsonProcessingException {
+  public static void workspace1PyramusMock() throws Exception {
     workspacePyramusMock(1l, "testCourse", "test course for testing");
   }
   
-  public static void workspacePyramusMock(Long id, String name, String description) throws JsonProcessingException {
-      DateTime created = new DateTime(1990, 2, 2, 0, 0, 0, 0);
-      DateTime begin = new DateTime(2000, 1, 1, 0, 0, 0, 0);
-      DateTime end = new DateTime(2050, 1, 1, 0, 0, 0, 0);
+  public static void workspacePyramusMock(Long id, String name, String description) throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    DateTime created = new DateTime(1990, 2, 2, 0, 0, 0, 0);
+    DateTime begin = new DateTime(2000, 1, 1, 0, 0, 0, 0);
+    DateTime end = new DateTime(2050, 1, 1, 0, 0, 0, 0);
 
-      Course course = new Course(id, name, created, created, description, false, 1, 
-        (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
-        (double) 15, (double) 45, (double) 45, end, (long) 1,
-        (long) 1, (long) 1, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-        null, null);
+    Course course = new Course(id, name, created, created, description, false, 1, 
+      (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
+      (double) 15, (double) 45, (double) 45, end, (long) 1,
+      (long) 1, (long) 1, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
+      null, null);
+  
+    String courseJson = objectMapper.writeValueAsString(course);
     
-      ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-      String courseJson = objectMapper.writeValueAsString(course);
-      
-      stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", id)))
-        .willReturn(aResponse()
-          .withHeader("Content-Type", "application/json")
-          .withBody(courseJson)
-          .withStatus(200)));
-      
-      Course[] courseArray = { course };
-      String courseArrayJson = objectMapper.writeValueAsString(courseArray);
-      
-      stubFor(get(urlEqualTo("/1/courses/courses"))
-        .willReturn(aResponse()
-          .withHeader("Content-Type", "application/json")
-          .withBody(courseArrayJson)
-          .withStatus(200)));
-      
-      stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
-        .willReturn(aResponse()
-          .withHeader("Content-Type", "application/json")
-          .withBody(courseArrayJson)
-          .withStatus(200)));
-      
-      mockStudyProgrammes();
-      mockCommons();
-      mockCourseTypes();
-      
-    }
+    stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", id)))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(courseJson)
+        .withStatus(200)));
+    
+    Course[] courseArray = { course };
+    String courseArrayJson = objectMapper.writeValueAsString(courseArray);
+    
+    stubFor(get(urlEqualTo("/1/courses/courses"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(courseArrayJson)
+        .withStatus(200)));
+    
+    stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(courseArrayJson)
+        .withStatus(200)));
+    
+    mockStudyProgrammes();
+    mockCommons();
+    mockCourseTypes();
+    String payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId()));
+    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+  }
 
   public static void studentGroupsMocks() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

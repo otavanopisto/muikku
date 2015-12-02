@@ -355,6 +355,8 @@ body.evaluation {
         left:0;
         right:0;
         bottom:0;
+        line-height:22px;
+        padding:2px;
       }
     
     }
@@ -1080,6 +1082,7 @@ body.evaluation {
     }
     
    .ui-dialog-content {
+     line-height:1;
       
       label.muikku-file-input-field-file-label {
         font-weight:400 !important;

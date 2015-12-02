@@ -109,7 +109,8 @@
           .addClass('muikku-file-input-field-file-progress')
           .progressbar({
             value: 0
-          })
+          }).append($('<div>')
+              .addClass('muikku-file-input-field-file-progress-literal'))
         )
         .append($('<label>')
           .addClass('muikku-file-input-field-file-label')
@@ -167,8 +168,10 @@
       }
     },
     
-    _updateFileProgress: function (index, progress) {
+    _updateFileProgress: function (index, progress, loaded, total) {
+      var postfix = (loaded && total) ? Math.round((loaded / 1024)) + ' kB / ' + Math.round((total / 1024)) + ' kB' : '';
       this._findFileElementByIndex(index).find('.muikku-file-input-field-file-progress').progressbar("value", progress);
+      this._findFileElementByIndex(index).find('.muikku-file-input-field-file-progress-literal').text(postfix);
     },
     
     _updateFileLabel: function (index, text, fileId) {
@@ -284,7 +287,7 @@
 
     _onFileUploadProgress : function(e, data) {
       var progress = parseInt(data.loaded / data.total * 100, 10);
-      this._updateFileProgress(data.context.data('file-index'), progress);
+      this._updateFileProgress(data.context.data('file-index'), progress, data.loaded, data.total);
     },
     
     _onFormSubmit: function (event) {

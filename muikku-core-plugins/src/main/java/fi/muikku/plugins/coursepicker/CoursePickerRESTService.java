@@ -39,7 +39,6 @@ import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.workspace.WorkspaceVisitController;
-import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
@@ -54,7 +53,6 @@ import fi.muikku.search.SearchResult;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
-import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -79,9 +77,6 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @Inject
   private UserController userController;
-
-  @Inject
-  private UserEmailEntityController userEmailEntityController;
 
   @Inject
   private RoleController roleController;
@@ -282,9 +277,9 @@ public class CoursePickerRESTService extends PluginRESTService {
     UserSchoolDataIdentifier userIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
         user.getSchoolDataSource(), user.getIdentifier());
     SchoolDataWorkspaceUserDiscoveredEvent discoverEvent = new SchoolDataWorkspaceUserDiscoveredEvent(workspaceUser.getSchoolDataSource(),
-        workspaceUser.getIdentifier(), workspaceUser.getWorkspaceSchoolDataSource(), workspaceUser.getWorkspaceIdentifier(),
-        workspaceUser.getUserSchoolDataSource(), workspaceUser.getUserIdentifier(), workspaceUser.getRoleSchoolDataSource(),
-        workspaceUser.getRoleIdentifier());
+        workspaceUser.getIdentifier().getIdentifier(), workspaceUser.getWorkspaceIdentifier().getDataSource(), workspaceUser.getWorkspaceIdentifier().getIdentifier(),
+        workspaceUser.getUserIdentifier().getDataSource(), workspaceUser.getUserIdentifier().getIdentifier(), workspaceUser.getRoleIdentifier().getDataSource(),
+        workspaceUser.getRoleIdentifier().getIdentifier());
     schoolDataWorkspaceUserDiscoveredEvent.fire(discoverEvent);
 
     // TODO: should this work based on permission? Permission -> Roles -> Recipients
@@ -297,22 +292,12 @@ public class CoursePickerRESTService extends PluginRESTService {
     String workspaceName = workspace.getName();
 
     String userName = user.getFirstName() + " " + user.getLastName();
-    String userEmail = userEmailEntityController.getUserEmailAddress(userIdentifier.getUserEntity(), true);
 
     for (WorkspaceUserEntity cu : workspaceTeachers) {
       teachers.add(cu.getUserSchoolDataIdentifier().getUserEntity());
     }
     
-    WorkspaceUser result = new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(discoverEvent.getDiscoveredWorkspaceUserEntityId(),
-        workspaceEntityId,
-        userIdentifier.getUserEntity().getId(),
-        workspaceStudentRoleId,
-        user.getFirstName(),
-        user.getLastName(),
-        userEmail);
-
-    workspaceController.createWorkspaceUserSignup(
-        workspaceEntity, userIdentifier.getUserEntity(), new Date(), entity.getMessage());
+    workspaceController.createWorkspaceUserSignup(workspaceEntity, userIdentifier.getUserEntity(), new Date(), entity.getMessage());
 
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
     caption = MessageFormat.format(caption, workspaceName);
@@ -331,7 +316,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       messagingWidget.postMessage(userIdentifier.getUserEntity(), "message", caption, content, teachers);
     }
 
-    return Response.ok(result).build();
+    return Response.noContent().build();
   }
 
   private boolean getIsAlreadyOnWorkspace(WorkspaceEntity workspaceEntity) {

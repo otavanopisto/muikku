@@ -1,27 +1,18 @@
 package fi.muikku.ui.base.evaluation;
 
-import org.joda.time.DateTime;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.github.tomakehurst.wiremock.client.VerificationException;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static org.junit.Assert.assertEquals;
-import fi.muikku.ui.AbstractUITest;
-import fi.muikku.ui.PyramusMocks;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
-import fi.pyramus.rest.model.CourseAssessment;
+import fi.muikku.ui.AbstractUITest;
+import fi.muikku.ui.PyramusMocks;
 
 public class EvaluationTestsBase extends AbstractUITest {
 
