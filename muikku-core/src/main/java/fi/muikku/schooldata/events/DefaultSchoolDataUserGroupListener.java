@@ -46,11 +46,15 @@ public class DefaultSchoolDataUserGroupListener {
       return;
     }
     
-    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier(), true);
     
-    if (userGroupEntity == null) {
-      userGroupEntity = userGroupEntityController.createUserGroupEntity(event.getDataSource(), event.getIdentifier());
-      
+    if ((userGroupEntity == null) || (userGroupEntity.getArchived())) {
+      if (userGroupEntity == null) {
+        userGroupEntity = userGroupEntityController.createUserGroupEntity(event.getDataSource(), event.getIdentifier());
+      }
+      else {
+        userGroupEntityController.unarchiveUserGroupEntity(userGroupEntity);
+      }
       discoveredUserGroups.put(discoverId, userGroupEntity.getId());
       event.setDiscoveredUserGroupEntityId(userGroupEntity.getId());
     } else {
@@ -61,7 +65,7 @@ public class DefaultSchoolDataUserGroupListener {
   public void onSchoolDataUserGroupRemovedEvent(@Observes SchoolDataUserGroupRemovedEvent event) {
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (userGroupEntity != null) {
-      userGroupEntityController.deleteUserGroupEntity(userGroupEntity);
+      userGroupEntityController.archiveUserGroupEntity(userGroupEntity);
     }
   }  
 
@@ -75,15 +79,20 @@ public class DefaultSchoolDataUserGroupListener {
       return;
     }
     
-    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier(), true);
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getUserGroupDataSource(), event.getUserGroupIdentifier());
 
     if (userGroupEntity != null) {
-      if (userGroupUserEntity == null) {
+      if ((userGroupUserEntity == null) || (userGroupUserEntity.getArchived())) {
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
         if (userSchoolDataIdentifier != null) {
-          userGroupUserEntity = userGroupEntityController.createUserGroupUserEntity(userGroupEntity, event.getDataSource(), event.getIdentifier(), userSchoolDataIdentifier);
-          
+          if (userGroupUserEntity == null) {
+            userGroupUserEntity = userGroupEntityController.createUserGroupUserEntity(userGroupEntity, event.getDataSource(), event.getIdentifier(), userSchoolDataIdentifier);
+          }
+          else {
+            userGroupEntityController.unarchiveUserGroupUserEntity(userGroupUserEntity);
+            userGroupEntityController.updateUserSchoolDataIdentifier(userGroupUserEntity, userSchoolDataIdentifier);
+          }
           discoveredUserGroupUsers.put(discoverId, userGroupUserEntity.getId());
           event.setDiscoveredUserGroupUserEntityId(userGroupUserEntity.getId());
         } else {

@@ -40,7 +40,7 @@ public class EditUserInfoBackingBean {
 
   public List<UserEmailEntity> listUserEmails() {
     UserEntity user = sessionController.getLoggedUserEntity();
-    return userEmailEntityController.listUserEmailEntitiessByUserEntity(user);
+    return userEmailEntityController.listUserEmailEntitiesByUserEntity(user);
   }
   
   @Permit (UserInfoPermissions.USER_CHANGEEMAIL)

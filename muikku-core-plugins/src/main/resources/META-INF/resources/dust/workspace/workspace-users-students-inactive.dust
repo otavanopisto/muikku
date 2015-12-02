@@ -1,0 +1,8 @@
+<div class="student-list-container">
+  {#students}
+    <div class="workspace-users" data-user-id="{id}">
+      <div class="workspace-users-name">{lastName}, {firstName}</div>
+      <div class="workspace-users-unarchive">{#localize key="plugin.workspace.users.student.unarchiveLink.label"/}</div>
+    </div>
+  {/students}
+</div>

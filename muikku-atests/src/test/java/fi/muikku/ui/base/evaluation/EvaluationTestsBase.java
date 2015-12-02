@@ -1,17 +1,16 @@
 package fi.muikku.ui.base.evaluation;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+
 import org.junit.Test;
 
-import com.github.tomakehurst.wiremock.client.VerificationException;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import fi.muikku.ui.AbstractUITest;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
+import fi.muikku.ui.AbstractUITest;
 
 public class EvaluationTestsBase extends AbstractUITest {
 
@@ -138,7 +137,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         logout();
         loginAdmin();
         navigate(String.format("/evaluation"), true);
-        waitAndClick("div[data-workspace-student='3']");
+        waitAndClick("div[data-workspace-student='PYRAMUS-STUDENT-3']");
         waitAndClick(".cke_contents");
         getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
         selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");

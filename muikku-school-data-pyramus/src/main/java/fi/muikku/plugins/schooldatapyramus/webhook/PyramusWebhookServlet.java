@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -40,6 +41,9 @@ public class PyramusWebhookServlet extends HttpServlet {
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private Event<WebhookNotificationEvent> webhookNotificationEvent;
   
   @Inject
   private PluginSettingsController pluginSettingsController;
@@ -87,6 +91,8 @@ public class PyramusWebhookServlet extends HttpServlet {
       return;
     }
     
+    webhookNotificationEvent.fire(new WebhookNotificationEvent(payload.getType(), payload.getData()));
+
     schoolDataBridgeSessionController.startSystemSession();
     try {
       logger.log(Level.INFO, String.format("Received a webhook notification of type %s", payload.getType().toString()));
@@ -128,6 +134,7 @@ public class PyramusWebhookServlet extends HttpServlet {
           if (studentData == null) {
             return;  
           }
+          
           pyramusUpdater.updateStudent(studentData.getStudentId());
         break;      
         case COURSE_STUDENT_CREATE:

@@ -50,7 +50,24 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(UserGroupUserEntity_.schoolDataSource), schoolDataSource),
+            criteriaBuilder.equal(root.get(UserGroupUserEntity_.identifier), identifier)
+        )
+    );
+   
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public UserGroupUserEntity findByDataSourceAndIdentifierAndArchived(SchoolDataSource schoolDataSource, String identifier, Boolean archived) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserGroupUserEntity> criteria = criteriaBuilder.createQuery(UserGroupUserEntity.class);
+    Root<UserGroupUserEntity> root = criteria.from(UserGroupUserEntity.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), archived),
             criteriaBuilder.equal(root.get(UserGroupUserEntity_.schoolDataSource), schoolDataSource),
             criteriaBuilder.equal(root.get(UserGroupUserEntity_.identifier), identifier)
         )
@@ -71,14 +88,6 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
     );
    
     return entityManager.createQuery(criteria).getResultList();
-  }
-
-  public UserGroupUserEntity archive(UserGroupUserEntity userGroupUserEntity) {
-    userGroupUserEntity.setArchived(true);
-    
-    getEntityManager().persist(userGroupUserEntity);
-    
-    return userGroupUserEntity;
   }
 
   public List<UserGroupUserEntity> listByUserEntity(UserEntity userEntity) {
@@ -106,6 +115,11 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
 
   public UserGroupUserEntity updateArchived(UserGroupUserEntity userGroupUserEntity, Boolean archived) {
     userGroupUserEntity.setArchived(archived);
+    return persist(userGroupUserEntity);
+  }
+
+  public UserGroupUserEntity updateUserSchoolDataIdentifier(UserGroupUserEntity userGroupUserEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    userGroupUserEntity.setUserSchoolDataIdentifier(userSchoolDataIdentifier);
     return persist(userGroupUserEntity);
   }
 
