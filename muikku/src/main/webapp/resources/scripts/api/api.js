@@ -19,7 +19,8 @@
   });
   
   ResourceImpl = $.klass({
-    init: function (client) {
+    init: function (service, client) {
+      this._service = service;
       this._client = client;
       this._clientRequest = null;
     },
@@ -27,7 +28,11 @@
     create: function () {
       var request = new RequestImpl(this._client);
       this._client.opts.stringifyData = true;
-      return request.create.apply(request, arguments);
+      try {
+        return request.create.apply(request, arguments);
+      } finally {
+        this._service.cacheClear();
+      }
     },
 
     read: function () {
@@ -39,13 +44,21 @@
     update: function () {
       var request = new RequestImpl(this._client);
       this._client.opts.stringifyData = true;
-      return request.update.apply(request, arguments);
+      try {
+        return request.update.apply(request, arguments);
+      } finally {
+        this._service.cacheClear();
+      }
     },
 
     del: function () {
       var request = new RequestImpl(this._client);
       this._client.opts.stringifyData = true;
-      return request.del.apply(request, arguments);
+      try {
+        return request.del.apply(request, arguments);
+      } finally {
+        this._service.cacheClear();
+      }
     }
   });
   
@@ -67,11 +80,14 @@
       while (resources.length > 0) {
         var resource = resources.splice(0, 1)[0];
         if (!current[resource]) {
-          current = current[resource] = new ResourceImpl(current._client.add(resource));
+          current = current[resource] = new ResourceImpl(this, current._client.add(resource));
         } else {
           current = current[resource];
         }
       }
+    },
+    cacheClear: function () {
+      this._client.cache.clear();
     }
   });
   

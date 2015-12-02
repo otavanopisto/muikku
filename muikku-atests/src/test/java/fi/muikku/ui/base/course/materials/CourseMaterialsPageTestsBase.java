@@ -74,7 +74,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
       navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-      waitForPresent("#contentWorkspaceMaterials");
+      waitForPresent(".wi-workspace-dock-navi-button-materials-management");
       assertPresent(".wi-workspace-dock-navi-button-materials-management");
     } finally {
       deleteWorkspace(workspace.getId());

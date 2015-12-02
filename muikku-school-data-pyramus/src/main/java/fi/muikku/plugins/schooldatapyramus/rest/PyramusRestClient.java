@@ -127,7 +127,7 @@ class PyramusRestClient implements Serializable {
       return createResponse(response, type, path);
     } catch (Throwable t) {
       logger.log(Level.SEVERE, "Pyramus GET-request into " + path + " failed", t);
-      throw t;
+      return null;
     } finally {
       response.close();
     }

@@ -80,8 +80,10 @@ public class UserIndexer {
           Set<Long> userGroupIds = new HashSet<Long>();
 
           List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
-          for (WorkspaceEntity workspace : workspaces)
+          for (WorkspaceEntity workspace : workspaces) {
             workspaceEntityIds.add(workspace.getId());
+          }
+            
           extra.put("workspaces", workspaceEntityIds);
           
           List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUser(userEntity);

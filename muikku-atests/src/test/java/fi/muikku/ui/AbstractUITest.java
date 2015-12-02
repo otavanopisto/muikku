@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -241,6 +242,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   }
 
+  protected void waitForElementToBeClickable(String selector){
+    waitForElementToBeClickable(By.cssSelector(selector));
+  }
+  
   protected void waitForElementToBeClickable(By locator) {
     new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.elementToBeClickable(locator));
   }
@@ -514,11 +519,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void logout() {
+    navigate("/", true);
     waitAndClick("a.lu-action-signout");
     waitForPresent(".index");    
   }
   
-  protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws IOException {
+  protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
     PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier), name, description);
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -668,7 +674,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .then()
       .statusCode(204);
   }
-
+  
   protected void deleteCommunicatorMessages() {
     asAdmin()
       .delete("/test/communicator/messages")

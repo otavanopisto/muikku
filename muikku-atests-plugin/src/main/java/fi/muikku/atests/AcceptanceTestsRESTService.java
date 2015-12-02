@@ -49,6 +49,8 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.schooldata.WorkspaceEntityController;
+import fi.muikku.plugins.evaluation.EvaluationController;
+import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
@@ -97,6 +99,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Inject
   private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
 
+  @Inject
+  private EvaluationController evaluationController;
+  
   @Inject
   private ForumController forumController;
 
@@ -336,6 +341,11 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
     
+    List<WorkspaceMaterialEvaluation> evaluations = evaluationController.findWorkspaceMaterialEvaluationsByWorkspaceMaterialId(workspaceMaterialId);
+    for (WorkspaceMaterialEvaluation evaluation : evaluations) {
+      evaluationController.deleteWorkspaceMaterialEvaluation(evaluation);
+    }
+    
     htmlMaterialController.deleteHtmlMaterial(htmlMaterial);
     
     return Response.noContent().build();
@@ -481,7 +491,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     
     return Response.noContent().build();
   }
-
+  
   private fi.muikku.atests.Workspace createRestEntity(WorkspaceEntity workspaceEntity, String name) {
     return new fi.muikku.atests.Workspace(workspaceEntity.getId(), 
         name, 

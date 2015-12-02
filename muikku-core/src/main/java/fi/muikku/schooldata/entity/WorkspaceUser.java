@@ -1,19 +1,12 @@
 package fi.muikku.schooldata.entity;
 
+import fi.muikku.schooldata.SchoolDataIdentifier;
+
 public interface WorkspaceUser extends SchoolDataEntity {
 	
-	public String getIdentifier();
-
-	public String getUserIdentifier();
-	
-	public String getUserSchoolDataSource();
-	
-	public String getWorkspaceIdentifier();
-	
-	public String getWorkspaceSchoolDataSource();
-	
-	public String getRoleSchoolDataSource();
-	
-	public String getRoleIdentifier();
+	public SchoolDataIdentifier getIdentifier();
+	public SchoolDataIdentifier getUserIdentifier();
+	public SchoolDataIdentifier getWorkspaceIdentifier();
+	public SchoolDataIdentifier getRoleIdentifier();
 	
 }

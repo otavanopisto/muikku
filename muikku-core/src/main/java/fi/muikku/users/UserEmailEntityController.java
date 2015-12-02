@@ -67,14 +67,14 @@ public class UserEmailEntityController {
    * 
    * @return A list of all email addresses belonging to the given user
    */
-  public List<UserEmailEntity> listUserEmailEntitiessByUserEntity(UserEntity user) {
+  public List<UserEmailEntity> listUserEmailEntitiesByUserEntity(UserEntity user) {
     return userEmailEntityDAO.listByUser(user);
   }
 
   public List<String> listAddressesByUserEntity(UserEntity user) {
     List<String> result = new ArrayList<>();
     
-    List<UserEmailEntity> userEmailEntities = listUserEmailEntitiessByUserEntity(user);
+    List<UserEmailEntity> userEmailEntities = listUserEmailEntitiesByUserEntity(user);
     for (UserEmailEntity userEmailEntity : userEmailEntities) {
       result.add(userEmailEntity.getAddress());
     }
