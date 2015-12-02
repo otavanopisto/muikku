@@ -586,7 +586,9 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       background:#e2ffe2;
       font-style:italic;
       margin:1px 3px 1px 3px;
-      display:inline-block;
+      @include flexbox();
+      align-items:flex-start;
+      flex-flow:row nowrap;
       
       span.muikku-field-examples-title {
         font-weight:600;

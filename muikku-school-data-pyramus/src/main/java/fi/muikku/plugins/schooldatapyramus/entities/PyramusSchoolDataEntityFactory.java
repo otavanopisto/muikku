@@ -18,7 +18,9 @@ import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserAddress;
 import fi.muikku.schooldata.entity.UserGroup;
+import fi.muikku.schooldata.entity.UserPhoneNumber;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
@@ -26,6 +28,7 @@ import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
+import fi.pyramus.rest.model.Address;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseAssessment;
 import fi.pyramus.rest.model.CourseAssessmentRequest;
@@ -34,6 +37,7 @@ import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseStudent;
 import fi.pyramus.rest.model.CourseType;
 import fi.pyramus.rest.model.EducationalTimeUnit;
+import fi.pyramus.rest.model.PhoneNumber;
 import fi.pyramus.rest.model.StudentGroup;
 import fi.pyramus.rest.model.StudentGroupStudent;
 import fi.pyramus.rest.model.StudentGroupUser;
@@ -382,6 +386,31 @@ public class PyramusSchoolDataEntityFactory {
     }
 
     return WorkspaceRoleArchetype.CUSTOM;
+  }
+
+  public List<UserAddress> createEntities(SchoolDataIdentifier userIdentifier, Address[] addresses) {
+    List<UserAddress> result = new ArrayList<>();
+    
+    for (Address address : addresses) {
+      result.add(new PyramusUserAddress(userIdentifier, 
+          address.getStreetAddress(), 
+          address.getPostalCode(), 
+          address.getCity(), 
+          null, 
+          address.getCountry()));
+    }
+    
+    return result;
+  }
+
+  public List<UserPhoneNumber> createEntities(SchoolDataIdentifier userIdentifier, PhoneNumber[] phoneNumbers) {
+    List<UserPhoneNumber> result = new ArrayList<>();
+    
+    for (PhoneNumber phoneNumber : phoneNumbers) {
+      result.add(new PyramusUserPhoneNumber(userIdentifier, phoneNumber.getNumber()));
+    }
+    
+    return result;
   }
 
 }
