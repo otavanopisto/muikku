@@ -7,7 +7,6 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
@@ -65,13 +64,12 @@ public class WorkspaceBackingBean {
   }
 
   public Boolean isStudent() {
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-    
-    if (userEntity == null)
+    if (!sessionController.isLoggedIn()) {
       return false;
+    }
     
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(
-        getWorkspaceEntity(), userEntity);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(
+        getWorkspaceEntity(), sessionController.getLoggedUser());
     
     if (workspaceUserEntity != null)
       return workspaceUserEntity.getWorkspaceUserRole().getArchetype().equals(WorkspaceRoleArchetype.STUDENT);
@@ -80,14 +78,11 @@ public class WorkspaceBackingBean {
   }
   
   public String getAssessmentState() {
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-    
-    if (userEntity == null) {
-//      return WorkspaceAssessmentState.UNASSESSED.getStateName();
+    if (!sessionController.isLoggedIn()) {
       return null;
     }
     
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(getWorkspaceEntity(), userEntity);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(getWorkspaceEntity(), sessionController.getLoggedUser());
     
     if (workspaceUserEntity != null) {
       WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);

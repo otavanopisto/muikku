@@ -11,6 +11,7 @@ import javax.enterprise.context.RequestScoped;
 
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
 
@@ -95,6 +96,11 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   @Override
   public String getLoggedUserSchoolDataSource() {
     return activeUserSchoolDataSource;
+  }
+  
+  @Override
+  public SchoolDataIdentifier getLoggedUser() {
+    return new SchoolDataIdentifier(getLoggedUserIdentifier(), getLoggedUserSchoolDataSource());
   }
   
   @Override

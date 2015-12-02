@@ -16,5 +16,5 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   public void tearDown() {
     getWebDriver().quit();
   }
-  
+   
 }
