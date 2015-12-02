@@ -25,13 +25,13 @@ public class AnnouncerPluginDescriptor implements LocalizedPluginDescriptor, Plu
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     return Arrays.asList(
-        new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.announcer.Messages",
+        new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.announcer.AnnouncerPluginMessages",
             LocaleUtils.toLocale("fi"))),
-        new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.announcer.Messages",
+        new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.announcer.AnnouncerPluginMessages",
             LocaleUtils.toLocale("en"))),
-        new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.announcer.JsMessages",
+        new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.announcer.AnnouncerPluginJsMessages",
             LocaleUtils.toLocale("fi"))),
-        new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.announcer.JsMessages",
+        new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.announcer.AnnouncerPluginJsMessages",
             LocaleUtils.toLocale("en"))));
   }
 
