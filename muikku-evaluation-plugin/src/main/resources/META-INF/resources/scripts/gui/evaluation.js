@@ -44,7 +44,6 @@
         ]
       }
     },
-    
     _create: function () {
       this._load($.proxy(function (text) {
         this._dialog = $(text);
@@ -283,6 +282,19 @@
       var content = $(assignment).find('.evaluation-assignment-content');
       var state = content.attr('data-open-state');
       content.attr('data-open-state', state == 'closed' ? 'open' : 'closed');
+      this._adjustTextareaHeight(content);
+    },
+    
+    _adjustTextareaHeight: function(container) {
+      var textareas = $(container).find('.muikku-memo-field');
+      $(textareas).each( function(index,textarea) {        
+        $(textarea).css({
+          height: '1px'
+        });
+        $(textarea).css({
+          height: (textarea.scrollHeight)+"px"
+        });
+      }); 
     }
   });
   
@@ -365,7 +377,7 @@
             if (this.options.verbalAssessment) {
               $(this._dialog).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
             }
-
+            
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
             
             var fieldAnswers = {};
@@ -379,6 +391,8 @@
             }
             
             $(document).muikkuMaterialLoader('loadMaterials', $(this._dialog).find('.evaluation-assignment'), fieldAnswers);
+            
+            this._adjustTextareaHeight($(this._dialog).find('.evaluation-assignment'));
           }, this),
           buttons: [{
             'text': this._dialog.attr('data-button-save-text'),
@@ -489,6 +503,18 @@
           type: materialType
         }]
       }, callback);
+    },
+    
+    _adjustTextareaHeight: function(container) {
+      var textareas = $(container).find('.muikku-memo-field');
+      $(textareas).each( function(index,textarea) {        
+        $(textarea).css({
+          height: '1px'
+        });
+        $(textarea).css({
+          height: (textarea.scrollHeight)+"px"
+        });
+      }); 
     }
   });
   
