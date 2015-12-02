@@ -419,6 +419,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.cssSelector(selector)).sendKeys(keysToSend);
   }
   
+  protected void clearElement(String selector) {
+    getWebDriver().findElement(By.cssSelector(selector)).clear();;
+  }
+  
+  
   protected void waitAndSendKeys(String selector, String keysToSend) {
     waitForPresent(selector);
     sendKeys(selector, keysToSend);
