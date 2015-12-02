@@ -905,16 +905,19 @@ public class WorkspaceRESTService extends PluginRESTService {
     User user = userController.findUserByDataSourceAndIdentifier(
         workspaceUser.getUserIdentifier().getDataSource(),
         workspaceUser.getUserIdentifier().getIdentifier());
+    UserEntity userEntity = null;
 
-    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
-        workspaceUser.getUserIdentifier().getDataSource(),
-        workspaceUser.getUserIdentifier().getIdentifier());
-    
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(workspaceUser.getUserIdentifier().getIdentifier(), workspaceUser.getUserIdentifier().getDataSource());
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier (workspaceEntity, userIdentifier);
+    if (workspaceUserEntity != null) {
+      userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+    } else {
+      userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());  
+    }
     
     return new WorkspaceUser(workspaceUser.getIdentifier().toId(),
         workspaceEntity.getId(),
-        userEntity.getId(),
+        userEntity != null ? userEntity.getId() : null,
         user.getFirstName(),
         user.getLastName(),
         workspaceUserEntity == null);

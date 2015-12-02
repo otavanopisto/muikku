@@ -63,7 +63,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   private WorkspaceEntityController workspaceEntityController;
   
   @Inject
-  private WorkspaceUserEntityController wussy;
+  private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
   private CommunicatorAssessmentRequestController communicatorAssessmentRequestController;
@@ -77,24 +77,16 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-
-    UserEntity student = sessionController.getLoggedUserEntity();
-
-    if (student == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
     }
-
-    WorkspaceUserEntity workspaceUserEntity = wussy.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, student);
     
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
     try {
-      WorkspaceAssessmentRequest assRequest = assessmentRequestController.createWorkspaceAssessmentRequest(workspaceUserEntity, newAssessmentRequest.getRequestText());
-
-      communicatorAssessmentRequestController.sendAssessmentRequestMessage(assRequest);
-      
-      AssessmentRequestRESTModel assessmentRequest = restModel(assRequest);
-    
-      return Response.ok((Object) assessmentRequest).build();
-      
+      WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(workspaceUserEntity, newAssessmentRequest.getRequestText());
+      communicatorAssessmentRequestController.sendAssessmentRequestMessage(assessmentRequest);
+      return Response.ok(restModel(assessmentRequest)).build();
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Couldn't create workspace assessment request.", e);
       
@@ -106,10 +98,12 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   @Path("/workspace/{WORKSPACEENTITYID}/request")
   @RESTPermit(handling = Handling.INLINE)
   public Response findCurrentRequest(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-
-    WorkspaceUserEntity workspaceUserEntity = wussy.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
     
     try {
       List<WorkspaceAssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceUser(workspaceUserEntity);
@@ -196,11 +190,13 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   public Response deleteAssessmentRequest(
       @PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
       @PathParam("ID") String assessmentRequestId) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    UserEntity student = sessionController.getLoggedUserEntity();
-    
-    WorkspaceUserEntity workspaceUserEntity = wussy.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, student);
-    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());    
     assessmentRequestController.deleteWorkspaceAssessmentRequest(workspaceUserEntity, assessmentRequestId);
     
     communicatorAssessmentRequestController.sendAssessmentRequestCancelledMessage(workspaceUserEntity);
@@ -219,7 +215,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   }
   
   private AssessmentRequestRESTModel restModel(WorkspaceAssessmentRequest war) {
-    WorkspaceUserEntity workspaceUserEntity = wussy.findWorkspaceUserEntityByIdentifier(war.getWorkspaceUserIdentifier());
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByIdentifier(war.getWorkspaceUserIdentifier());
     
     AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel(
         war.getIdentifier(), 
