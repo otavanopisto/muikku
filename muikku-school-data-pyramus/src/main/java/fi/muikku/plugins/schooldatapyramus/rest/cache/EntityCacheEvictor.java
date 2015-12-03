@@ -57,44 +57,48 @@ public class EntityCacheEvictor {
 
   
   public void onWebhookNotificationEvent(@Observes WebhookNotificationEvent event) {
-    List<String> evictTypePaths = cacheConfigs.getEvictTypePaths(event.getType());
-
-    Map<String, String> data = null;
     try {
-      data = new ObjectMapper().readValue(event.getData(), new TypeReference<Map<String, String>>() { });
-    } catch (IOException e) {
-      logger.log(Level.SEVERE, "Could not parse webhook notification data", e);
-      return;
-    }
-
-    for (AbstractEntityCache cache : caches) {
+      List<String> evictTypePaths = cacheConfigs.getEvictTypePaths(event.getType());
+  
+      Map<String, String> data = null;
       try {
-        Pattern pattern = Pattern.compile("\\{[a-zA-Z]*\\}");
-        
-        for (String evictTypePath : evictTypePaths) {
-          String path = evictTypePath;
-          
-          Matcher matcher = pattern.matcher(path);
-          while (matcher.find()) {
-            String variable = StringUtils.substring(matcher.group(0), 1, -1);
-            String value = data.get(variable);
-            
-            if (value != null) {
-              path = matcher.replaceFirst(value);
-            } else {
-              logger.log(Level.SEVERE, String.format("Failed to parse path %s", evictTypePath));              
-              break;
-            }
-            
-            matcher = pattern.matcher(path);
-          }
-          
-          cache.remove(path);
-        }
-      } catch (Exception e) {
-        logger.log(Level.SEVERE, "Failed to evict caches", e);
+        data = new ObjectMapper().readValue(event.getData(), new TypeReference<Map<String, String>>() { });
+      } catch (IOException e) {
+        logger.log(Level.SEVERE, "Could not parse webhook notification data", e);
         return;
       }
+  
+      for (AbstractEntityCache cache : caches) {
+        try {
+          Pattern pattern = Pattern.compile("\\{[a-zA-Z]*\\}");
+          
+          for (String evictTypePath : evictTypePaths) {
+            String path = evictTypePath;
+            
+            Matcher matcher = pattern.matcher(path);
+            while (matcher.find()) {
+              String variable = StringUtils.substring(matcher.group(0), 1, -1);
+              String value = data.get(variable);
+              
+              if (value != null) {
+                path = matcher.replaceFirst(value);
+              } else {
+                logger.log(Level.SEVERE, String.format("Failed to parse path %s", evictTypePath));              
+                break;
+              }
+              
+              matcher = pattern.matcher(path);
+            }
+            
+            cache.remove(path);
+          }
+        } catch (Exception e) {
+          logger.log(Level.SEVERE, "Failed to evict caches", e);
+          return;
+        }
+      }
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Cache evict crashed", e);
     }
   }
   
