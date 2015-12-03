@@ -79,7 +79,7 @@ public class Announcement {
   @NotNull
   @Column (nullable=false)
   @Temporal (value=TemporalType.DATE)
-  private Date beginDate;
+  private Date startDate;
 
   @NotNull
   @Column (nullable=false)
