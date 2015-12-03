@@ -13,7 +13,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 
 import fi.muikku.plugins.schooldatapyramus.rest.cache.CachedEntity;
-import fi.muikku.plugins.schooldatapyramus.rest.cache.EntityCacheEvictor;
 import fi.muikku.plugins.schooldatapyramus.rest.cache.UserEntityCache;
 import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusUser;
 import fi.muikku.session.SessionController;
@@ -35,9 +34,6 @@ class UserPyramusClient implements PyramusClient, Serializable {
   private UserEntityCache entityCache;
   
   @Inject
-  private EntityCacheEvictor entityCacheEvictor;
-
-  @Inject
   @LocalSession
   private SessionController sessionController;
 
@@ -50,7 +46,6 @@ class UserPyramusClient implements PyramusClient, Serializable {
     try {
       return restClient.post(client, getAccessToken(), path, entity, type);
     } finally {
-      entityCacheEvictor.evictPath(path);
       releaseClient(client);
     }
   }
@@ -61,7 +56,6 @@ class UserPyramusClient implements PyramusClient, Serializable {
     try {
       return restClient.post(client, getAccessToken(), path, entity);
     } finally {
-      entityCacheEvictor.evictPath(path);
       releaseClient(client);
     }
   }
