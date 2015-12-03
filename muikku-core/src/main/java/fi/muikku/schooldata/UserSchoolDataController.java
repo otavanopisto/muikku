@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -17,17 +15,15 @@ import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.schooldata.entity.UserGroup;
-import fi.muikku.schooldata.entity.UserPhoneNumber;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserAddress;
 import fi.muikku.schooldata.entity.UserEmail;
+import fi.muikku.schooldata.entity.UserGroup;
+import fi.muikku.schooldata.entity.UserPhoneNumber;
 
-@Dependent
-@Stateful
 public class UserSchoolDataController {
 
   // TODO: Caching
