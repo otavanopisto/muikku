@@ -91,6 +91,7 @@ body.evaluation {
         opacity:0;
         height:0px;
         box-shadow:0 10px 10px rgba(0, 0, 0, 0.1);
+        min-width:600px;
         
         &.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
           background-color:#fff;
