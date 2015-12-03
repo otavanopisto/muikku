@@ -14,10 +14,9 @@
     },
     _onCreateAnnouncementClick: function () {
       var createAnnouncement = function(values){
-        alert('TODO: CREATE NEW ANNOUNCEMENT!');          
-//        window.location.reload(true);
+        mApi().announcer.announcements.create(values);
       }   
-      openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement);   
+      openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement);
     },    
     
     _loadAnnouncements: function () {
