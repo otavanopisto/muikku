@@ -76,10 +76,12 @@ public class AnnouncerRESTService extends PluginRESTService {
 
   private AnnouncementRESTModel createRESTModel(Announcement announcement) {
     AnnouncementRESTModel restModel = new AnnouncementRESTModel();
+    restModel.setPublisherUserEntityId(announcement.getPublisherUserEntityId());
     restModel.setCaption(announcement.getCaption());
     restModel.setContent(announcement.getContent());
     restModel.setCreated(announcement.getCreated());
-    restModel.setPublisherUserEntityId(announcement.getPublisherUserEntityId());
+    restModel.setStartDate(announcement.getStartDate());
+    restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
     return restModel;
   }

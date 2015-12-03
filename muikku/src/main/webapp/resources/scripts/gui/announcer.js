@@ -39,8 +39,8 @@
       }
       
       var createAnnouncement = function(values){
-        values.startDate = moment(values.startDate, "DD. MM. YYYY").unix();
-        values.endDate = moment(values.endDate, "DD. MM. YYYY").unix();
+        values.startDate = moment(values.startDate, "DD. MM. YYYY").format("YYYY-MM-DD");
+        values.endDate = moment(values.endDate, "DD. MM. YYYY").format("YYYY-MM-DD");
         mApi()
           .announcer
           .announcements
