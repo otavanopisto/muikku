@@ -1,6 +1,6 @@
 package fi.muikku.plugins.announcer.dao;
 
-import org.joda.time.LocalDate;
+import java.util.Date;
 
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.announcer.model.Announcement;
@@ -12,13 +12,13 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   public Announcement create(
       String caption,
       String content,
-      LocalDate created,
+      Date created,
       Long publisherUserEntityId
   ) {
     Announcement announcement = new Announcement();
     announcement.setCaption(caption);
     announcement.setContent(content);
-    announcement.setCreated(created.toDateTimeAtStartOfDay().toDate());
+    announcement.setCreated(created);
     announcement.setPublisherUserEntityId(publisherUserEntityId);
     
     getEntityManager().persist(announcement);

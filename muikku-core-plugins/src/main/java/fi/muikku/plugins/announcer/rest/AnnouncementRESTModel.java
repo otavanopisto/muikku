@@ -1,6 +1,6 @@
 package fi.muikku.plugins.announcer.rest;
 
-import org.joda.time.LocalDate;
+import java.util.Date;
 
 public class AnnouncementRESTModel {
   public Long getId() {
@@ -27,10 +27,10 @@ public class AnnouncementRESTModel {
   public void setContent(String content) {
     this.content = content;
   }
-  public LocalDate getCreated() {
+  public Date getCreated() {
     return created;
   }
-  public void setCreated(LocalDate created) {
+  public void setCreated(Date created) {
     this.created = created;
   }
 
@@ -38,5 +38,5 @@ public class AnnouncementRESTModel {
   private Long publisherUserEntityId;
   private String caption;
   private String content;
-  private LocalDate created;
+  private Date created;
 }

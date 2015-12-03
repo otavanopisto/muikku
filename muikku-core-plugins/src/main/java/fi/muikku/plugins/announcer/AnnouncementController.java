@@ -1,5 +1,8 @@
 package fi.muikku.plugins.announcer;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.joda.time.LocalDate;
@@ -21,8 +24,12 @@ public class AnnouncementController {
     return announcementDAO.create(
         caption,
         content,
-        new LocalDate(),
+        new Date(),
         publisher.getId()
     );
+  }
+  
+  public List<Announcement> listAll() {
+    return announcementDAO.listAll();
   }
 }
