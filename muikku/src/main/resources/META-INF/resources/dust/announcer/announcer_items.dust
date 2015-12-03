@@ -1,5 +1,7 @@
-  <div class="an-announcements-page">
-    {#.}
-        {>"announcer/announcer_item.dust"/}
-    {/.} 
-  </div>
+<div class="an-announcements">
+  {#.}
+    {>"announcer/announcer_item.dust"/}
+  {:else}
+    {>"announcer/announcer_empty.dust"/}
+  {/.} 
+</div>
