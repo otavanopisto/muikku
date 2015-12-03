@@ -17,9 +17,11 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.announcer.AnnouncementController;
 import fi.muikku.plugins.announcer.model.Announcement;
-import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
+import fi.otavanopisto.security.rest.RESTPermit;
+
+import fi.muikku.plugins.announcer.AnnouncerPermissions;
 
 @RequestScoped
 @Stateful
@@ -38,7 +40,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @POST
   @Path("/announcements")
-  @RESTPermitUnimplemented
+  @RESTPermit(AnnouncerPermissions.CREATE_ANNOUNCEMENT)
   public Response createAnnouncement(AnnouncementRESTModel restModel) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
@@ -54,7 +56,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @GET
   @Path("/announcements")
-  @RESTPermitUnimplemented
+  @RESTPermit(AnnouncerPermissions.LIST_ALL_ANNOUNCEMENTS)
   public Response listAnnouncements(/* TODO filtering */) {
     List<Announcement> announcements = announcementController.listAll();
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
@@ -67,7 +69,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @GET
   @Path("/announcements/{ID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(AnnouncerPermissions.FIND_ANNOUNCEMENT)
   public Response findAnnouncementById(@PathParam("ID") Long announcementId) {
     Announcement announcement = announcementController.findById(announcementId);
     AnnouncementRESTModel restModel = createRESTModel(announcement);
