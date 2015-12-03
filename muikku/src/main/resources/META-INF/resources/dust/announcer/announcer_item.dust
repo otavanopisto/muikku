@@ -4,6 +4,6 @@
   </div>
   <div class="mf-item-details an-announcement-details">
    <div class="an-announcement-topic">{caption}</div>
-   <div class="an-announcement-content">{content}</div>
+   <div class="an-announcement-content">{content|s}</div>
   </div>
 </div>
