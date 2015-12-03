@@ -4,7 +4,7 @@
 
 	<groupId>fi.muikku</groupId>
 	<artifactId>bom</artifactId>
-	<version>1.0.81</version>
+	<version>1.0.82-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku BOM</name>
 
@@ -37,7 +37,7 @@
 
 		<!-- Muikku -->
 
-		<muikku.version>1.0.81</muikku.version>
+		<muikku.version>1.0.82-SNAPSHOT</muikku.version>
 
 		<!-- Coops -->
 		<coops-spec.version>1.0.0</coops-spec.version>
