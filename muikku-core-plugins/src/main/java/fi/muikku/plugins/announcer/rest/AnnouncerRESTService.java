@@ -1,9 +1,9 @@
 package fi.muikku.plugins.announcer.rest;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -18,8 +18,10 @@ import fi.muikku.plugins.announcer.AnnouncementController;
 import fi.muikku.plugins.announcer.model.Announcement;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.session.SessionController;
+import fi.muikku.session.local.LocalSession;
 
 @RequestScoped
+@Stateful
 @Path("/announcer")
 @Produces("application/json")
 public class AnnouncerRESTService extends PluginRESTService {
@@ -30,6 +32,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   private AnnouncementController announcementController;
   
   @Inject
+  @LocalSession
   private SessionController sessionController;
   
   @POST
@@ -57,6 +60,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       restModel.setCaption(announcement.getCaption());
       restModel.setContent(announcement.getContent());
       restModel.setCreated(announcement.getCreated());
+      restModel.setPublisherUserEntityId(announcement.getPublisherUserEntityId());
       restModel.setId(announcement.getId());
       restModels.add(restModel);
     }
