@@ -346,12 +346,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void assertCount(String selector, int expectedCount) {
     int count = 0;
     
-    try {
-      count = getWebDriver().findElements(By.cssSelector(selector)).size();
-    } catch (NoSuchElementException e) {
-      // Could not find element, so the element count is zero.
-    }
-    
+    count = getWebDriver().findElements(By.cssSelector(selector)).size();
+
     assertEquals(expectedCount, count);
   }
   
