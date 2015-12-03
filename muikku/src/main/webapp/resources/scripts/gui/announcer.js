@@ -14,7 +14,23 @@
     },
     _onCreateAnnouncementClick: function () {
       var createAnnouncement = function(values){
-        mApi().announcer.announcements.create(values);
+        mApi()
+          .announcer
+          .announcements
+          .create(values)
+          .callback($.proxy(function(err, result) {
+              if (err) {
+                $(".notification-queue").notificationQueue(
+                    'notification',
+                    'error',
+                    err);
+              } else {
+                $(".notification-queue").notificationQueue(
+                    'notification',
+                    'success',
+                    getLocaleText('plugin.announcer.createannouncement.success'));
+              }
+          }, this));
       }   
       openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement);
     },    
