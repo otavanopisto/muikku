@@ -33,6 +33,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   private SessionController sessionController;
   
   @POST
+  @Path("/announcements")
   @RESTPermitUnimplemented
   public Response createAnnouncement(AnnouncementRESTModel restModel) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
@@ -46,6 +47,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   }
   
   @GET
+  @Path("/announcements")
   @RESTPermitUnimplemented
   public Response listAnnouncements(/* TODO filtering */) {
     List<Announcement> announcements = announcementController.listAll();
