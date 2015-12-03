@@ -16,7 +16,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-
 import fi.muikku.AbstractPyramusMocks;
 import fi.muikku.TestUtilities;
 import fi.pyramus.rest.model.CourseAssessment;
@@ -104,7 +103,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
   
   public static void personsPyramusMocks() throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Map<String, String> variables = null;
     List<String> tags = null;
@@ -406,19 +405,20 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withHeader("Content-Type", "application/json")
         .withBody(courseStudenJson)
         .withStatus(200)));
-        
-    stubFor(get(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseStudent.getCourseId())))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(objectMapper.writeValueAsString(new ArrayList<>()))
-        .withStatus(200)));
     
     DateTime assessmentCreated = new DateTime(2015, 2, 2, 0, 0, 0, 0);
-    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "");
+    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "Test evaluation.");
+    
     stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseStudent.getCourseId())))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(objectMapper.writeValueAsString(courseAssessment))
+        .withStatus(200)));
+    
+    stubFor(get(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseStudent.getCourseId())))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(new ArrayList<>()))
         .withStatus(200)));
     
     CourseStudent courseStudent2 = new CourseStudent(2l, 2l, 5l, new DateTime(2010, 2, 2, 0, 0, 0, 0), false, null, null, null, null, null);
@@ -887,4 +887,19 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(contactTypesJson)
         .withStatus(200)));
   }
+  
+  public static void mockAssessedStudent1Workspace1() throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    CourseStudent courseStudent = new CourseStudent(3l, 1l, 1l, new DateTime(2010, 2, 2, 0, 0, 0, 0), false, null, null, null, null, null);
+    DateTime assessmentCreated = new DateTime(2015, 2, 2, 0, 0, 0, 0);
+    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "Test evaluation.");
+    List<CourseAssessment> courseAssessments = new ArrayList<CourseAssessment>();
+    courseAssessments.add(courseAssessment);
+    stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", 1, 1)))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(objectMapper.writeValueAsString(courseAssessments))
+        .withStatus(200)));
+  }
+  
 }

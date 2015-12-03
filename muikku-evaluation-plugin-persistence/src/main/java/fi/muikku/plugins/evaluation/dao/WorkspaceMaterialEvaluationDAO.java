@@ -73,7 +73,7 @@ public class WorkspaceMaterialEvaluationDAO extends PluginDAO<WorkspaceMaterialE
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
-  public List<WorkspaceMaterialEvaluation> findByWorkspaceMaterialId(Long workspaceMaterialId) {
+  public List<WorkspaceMaterialEvaluation> listByWorkspaceMaterialId(Long workspaceMaterialId) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
