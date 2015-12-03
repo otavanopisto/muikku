@@ -15,6 +15,7 @@ import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
@@ -47,7 +48,7 @@ public class CommunicatorAssessmentRequestController {
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @Inject
-  private WorkspaceUserEntityController workspaceUserController;
+  private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
   private AssessmentRequestController assessmentRequestController;
@@ -94,7 +95,10 @@ public class CommunicatorAssessmentRequestController {
   }
 
   public CommunicatorMessage sendAssessmentRequestMessage(WorkspaceAssessmentRequest assessmentRequest) {
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserController.findWorkspaceUserEntityByIdentifier(assessmentRequest.getWorkspaceUserIdentifier());
+    SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(
+        assessmentRequest.getWorkspaceUserIdentifier(),
+        assessmentRequest.getWorkspaceUserSchoolDataSource());
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
     
     UserEntity student = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
