@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -24,8 +22,6 @@ import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 
-@Dependent
-@Stateful
 class WorkspaceSchoolDataController { 
   
   // TODO: Caching 
@@ -250,7 +246,13 @@ class WorkspaceSchoolDataController {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
     if (workspaceBridge != null) {
       try {
-        return workspaceBridge.findWorkspaceUser(workspaceUserEntity.getWorkspaceEntity().getIdentifier(), workspaceUserEntity.getWorkspaceEntity().getDataSource().getIdentifier(), workspaceUserEntity.getIdentifier());
+        SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), 
+            workspaceEntity.getDataSource().getIdentifier());
+        
+        SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), 
+            workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+        
+        return workspaceBridge.findWorkspaceUser(workspaceIdentifier, workspaceUserIdentifier);
       } catch (UnexpectedSchoolDataBridgeException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
       }
@@ -261,11 +263,11 @@ class WorkspaceSchoolDataController {
     return null;
   }
   
-  public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier identifier) {
+  public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier) {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceIdentifier.getDataSource());
     if (workspaceBridge != null) {
       try {
-        return workspaceBridge.findWorkspaceUser(workspaceIdentifier.getIdentifier(), workspaceIdentifier.getDataSource(), identifier.getIdentifier());
+        return workspaceBridge.findWorkspaceUser(workspaceIdentifier, workspaceUserIdentifier);
       } catch (UnexpectedSchoolDataBridgeException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
       }

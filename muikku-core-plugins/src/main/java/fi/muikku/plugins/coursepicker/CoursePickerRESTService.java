@@ -265,8 +265,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     Long workspaceStudentRoleId = getWorkspaceStudentRoleId();
     
     WorkspaceRoleEntity workspaceRole = roleController.findWorkspaceRoleEntityById(workspaceStudentRoleId);
-    if (workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserDataSourceAndUserIdentifier(workspaceEntity,
-        user.getSchoolDataSource(), user.getIdentifier()) != null) {
+    if (workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser()) != null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
 

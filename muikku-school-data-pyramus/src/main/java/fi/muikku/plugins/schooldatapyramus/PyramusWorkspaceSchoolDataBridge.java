@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +14,7 @@ import org.joda.time.DateTime;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceSchoolDataBridge;
 import fi.muikku.schooldata.entity.User;
@@ -29,8 +28,6 @@ import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStudent;
 import fi.pyramus.rest.model.Subject;
 
-@Dependent
-@Stateful
 public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
   
   @Inject
@@ -161,14 +158,15 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
   
   @Override
-  public WorkspaceUser findWorkspaceUser(String workspaceIdentifier, String workspaceSchoolDataSource, String userIdentifier) throws UnexpectedSchoolDataBridgeException {
-    if (!StringUtils.equals(workspaceSchoolDataSource, getSchoolDataSource())) {
+  public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier) throws UnexpectedSchoolDataBridgeException {
+    if (!StringUtils.equals(workspaceIdentifier.getDataSource(), getSchoolDataSource())) {
       throw new UnexpectedSchoolDataBridgeException("Invalid school data source");
     }
     
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
-    return Arrays.asList(entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, studentId), CourseStudent.class))).get(0);
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier.getIdentifier());
+    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier.getIdentifier());
+    
+    return Arrays.asList(entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class))).get(0);
   }
   
   @Override

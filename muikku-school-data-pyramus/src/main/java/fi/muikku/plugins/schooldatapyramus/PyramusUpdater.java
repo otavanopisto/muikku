@@ -472,7 +472,8 @@ public class PyramusUpdater {
     }
     
     if (workspaceEntity != null) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
+      SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
       
       CourseStaffMember staffMember = pyramusClient.get().get("/courses/courses/" + courseId + "/staffMembers/" + courseStaffMemberId, CourseStaffMember.class);
       if (staffMember != null) {
@@ -500,22 +501,17 @@ public class PyramusUpdater {
    * @return count of updated courses staff members
    */
   public int updateCourseStaffMembers(Long courseId) {
-    String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
-    
     CourseStaffMember[] staffMembers = pyramusClient.get().get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
     if (staffMembers != null) {
-      
       for (CourseStaffMember staffMember : staffMembers) {
         String staffIdentifier = identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId());
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, staffIdentifier);
+        SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(staffIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
         if (workspaceUserEntity == null) {
           fireCourseStaffMemberDiscovered(staffMember);
         }
       }
-
     }
-    
     return 0;
   }
   
@@ -599,8 +595,8 @@ public class PyramusUpdater {
     }
     
     if (workspaceEntity != null) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
-
+      SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
       CourseStudent courseStudent = pyramusClient.get().get("/courses/courses/" + courseId + "/students/" + courseStudentId, CourseStudent.class);
       if (courseStudent != null) {
         if (workspaceUserEntity == null) {
@@ -632,8 +628,8 @@ public class PyramusUpdater {
     CourseStudent[] courseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false", CourseStudent[].class);
     if (courseStudents != null) {
       for (CourseStudent courseStudent : courseStudents) {
-        String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
+        SchoolDataIdentifier workspaceUserIdentifier = toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId()));
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
         if (courseStudent.getArchived()) {
           if (workspaceUserEntity != null) {
             fireCourseStudentRemoved(courseStudent.getId(), courseStudent.getStudentId(), courseStudent.getCourseId());
@@ -885,12 +881,13 @@ public class PyramusUpdater {
     
     // Iterate over all discovered identifiers (students and staff members)
     for (String identifier : identifiers) {
-      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
-      if (userEntity == null) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+      if (userSchoolDataIdentifier == null) {
         // If no user entity can be found by the identifier, add it the the discovered identities list
         discoveredIdentifiers.add(identifier);
       } else {
         // user entity found with given identity, so we need to make sure they all belong to same user
+        UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
         if (userEntityId == null) {
           userEntityId = userEntity.getId();
         } else if (!userEntityId.equals(userEntity.getId())) {
