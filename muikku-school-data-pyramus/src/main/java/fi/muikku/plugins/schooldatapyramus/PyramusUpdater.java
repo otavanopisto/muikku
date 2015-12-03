@@ -628,9 +628,8 @@ public class PyramusUpdater {
     CourseStudent[] courseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false", CourseStudent[].class);
     if (courseStudents != null) {
       for (CourseStudent courseStudent : courseStudents) {
-        String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
-        SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+        SchoolDataIdentifier workspaceUserIdentifier = toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId()));
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
         if (courseStudent.getArchived()) {
           if (workspaceUserEntity != null) {
             fireCourseStudentRemoved(courseStudent.getId(), courseStudent.getStudentId(), courseStudent.getCourseId());
@@ -882,12 +881,13 @@ public class PyramusUpdater {
     
     // Iterate over all discovered identifiers (students and staff members)
     for (String identifier : identifiers) {
-      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
-      if (userEntity == null) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+      if (userSchoolDataIdentifier == null) {
         // If no user entity can be found by the identifier, add it the the discovered identities list
         discoveredIdentifiers.add(identifier);
       } else {
         // user entity found with given identity, so we need to make sure they all belong to same user
+        UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
         if (userEntityId == null) {
           userEntityId = userEntity.getId();
         } else if (!userEntityId.equals(userEntity.getId())) {

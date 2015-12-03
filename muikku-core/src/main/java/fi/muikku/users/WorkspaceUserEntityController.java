@@ -42,6 +42,10 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.findByIdentifierAndArchived(workspaceUserIdentifier.getIdentifier(), archived);
   }
 
+  public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(SchoolDataIdentifier workspaceUserIdentifier) {
+    return workspaceUserEntityDAO.findByIdentifierIncludeArchived(workspaceUserIdentifier.getIdentifier());
+  }
+
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserIdentifier(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
         findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
