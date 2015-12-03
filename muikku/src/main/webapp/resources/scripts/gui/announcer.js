@@ -25,16 +25,22 @@
         end.setHours(end.getHours() + 1);
         
         $('#startDate')
-          .datepicker()
+          .datepicker({
+            "dateFormat": "dd. mm. yyyy"
+          })
           .datepicker('setDate', start);
         
         $('#endDate')
-          .datepicker()
+          .datepicker({
+            "dateFormat": "dd. mm. yyyy"
+          })
           .datepicker('setDate', end);
 
       }
       
       var createAnnouncement = function(values){
+        values.startDate = moment(values.startDate, "DD. MM. YYYY").unix();
+        values.endDate = moment(values.endDate, "DD. MM. YYYY").unix();
         mApi()
           .announcer
           .announcements

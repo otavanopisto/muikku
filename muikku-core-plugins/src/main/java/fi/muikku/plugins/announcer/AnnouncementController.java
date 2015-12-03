@@ -15,15 +15,19 @@ public class AnnouncementController {
   private AnnouncementDAO announcementDAO;
   
   public Announcement create(
+      UserEntity publisher,
       String caption,
       String content,
-      UserEntity publisher
+      Date startDate,
+      Date endDate
   ) {
     return announcementDAO.create(
+        publisher.getId(),
         caption,
         content,
         new Date(),
-        publisher.getId()
+        startDate,
+        endDate
     );
   }
   

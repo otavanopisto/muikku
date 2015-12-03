@@ -21,6 +21,14 @@ public class Announcement {
     return id;
   }
 
+  public Long getPublisherUserEntityId() {
+    return publisherUserEntityId;
+  }
+
+  public void setPublisherUserEntityId(Long sender) {
+    this.publisherUserEntityId = sender;
+  }
+
   public String getCaption() {
     return caption;
   }
@@ -45,12 +53,20 @@ public class Announcement {
     this.created = created;
   }
 
-  public Long getPublisherUserEntityId() {
-    return publisherUserEntityId;
+  public Date getStartDate() {
+    return startDate;
   }
 
-  public void setPublisherUserEntityId(Long sender) {
-    this.publisherUserEntityId = sender;
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
+
+  public Date getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(Date endDate) {
+    this.endDate = endDate;
   }
   
   @Id

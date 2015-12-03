@@ -43,9 +43,11 @@ public class AnnouncerRESTService extends PluginRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
     announcementController.create(
+        userEntity,
         restModel.getCaption(),
         restModel.getContent(),
-        userEntity);
+        restModel.getStartDate(),
+        restModel.getEndDate());
     
     return Response.noContent().build();
   }

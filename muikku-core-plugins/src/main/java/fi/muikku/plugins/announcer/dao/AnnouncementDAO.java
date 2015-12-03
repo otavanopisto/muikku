@@ -10,17 +10,21 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   private static final long serialVersionUID = -8721990589622544635L;
   
   public Announcement create(
+      Long publisherUserEntityId,
       String caption,
       String content,
       Date created,
-      Long publisherUserEntityId
+      Date startDate,
+      Date endDate
   ) {
     Announcement announcement = new Announcement();
+    announcement.setPublisherUserEntityId(publisherUserEntityId);
     announcement.setCaption(caption);
     announcement.setContent(content);
     announcement.setCreated(created);
-    announcement.setPublisherUserEntityId(publisherUserEntityId);
-    
+    announcement.setStartDate(startDate);
+    announcement.setEndDate(endDate);
+
     getEntityManager().persist(announcement);
     return announcement;
   }
