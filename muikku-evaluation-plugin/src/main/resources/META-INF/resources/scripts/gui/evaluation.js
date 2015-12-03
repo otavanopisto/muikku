@@ -789,31 +789,33 @@
     _onStudentsLoaded: function (event, data) {
       this._workspaceUsers = data.workspaceUsers;
       
-      $.each(this._workspaceUsers, $.proxy(function (index, workspaceUser) { 
-        mApi({async: false}).workspace.workspaces.assessments.read(
-              this.options.workspaceEntityId,
-              {userEntityId: workspaceUser.userId})
-          .callback($.proxy(function(err, workspaceAssessments) {
-            var workspaceAssessment = null;
-            if (workspaceAssessments != null && workspaceAssessments.length > 0) {
-              workspaceAssessment = workspaceAssessments[0];
-            }
-            workspaceUser.assessment = workspaceAssessment;
-  
-          $('<div>')
-            .attr('data-workspace-student', workspaceUser.id)
-            .attr('data-workspace-user', workspaceUser.userId)
-            .evaluationStudent({
-              workspaceStudentId: workspaceUser.id,
-              studentEntityId: workspaceUser.userId,
-              assessment: workspaceAssessment
-            })
-            .appendTo(this.element.find('.evaluation-students'));
-        }, this));    
-      }, this));
-      
-      this._loadAssessmentRequests();
-      this._loadMaterials();
+      if (this._workspaceUsers) {
+        $.each(this._workspaceUsers, $.proxy(function (index, workspaceUser) { 
+          mApi({async: false}).workspace.workspaces.assessments.read(
+                this.options.workspaceEntityId,
+                {userEntityId: workspaceUser.userId})
+            .callback($.proxy(function(err, workspaceAssessments) {
+              var workspaceAssessment = null;
+              if (workspaceAssessments != null && workspaceAssessments.length > 0) {
+                workspaceAssessment = workspaceAssessments[0];
+              }
+              workspaceUser.assessment = workspaceAssessment;
+    
+            $('<div>')
+              .attr('data-workspace-student', workspaceUser.id)
+              .attr('data-workspace-user', workspaceUser.userId)
+              .evaluationStudent({
+                workspaceStudentId: workspaceUser.id,
+                studentEntityId: workspaceUser.userId,
+                assessment: workspaceAssessment
+              })
+              .appendTo(this.element.find('.evaluation-students'));
+          }, this));    
+        }, this));
+        
+        this._loadAssessmentRequests();
+        this._loadMaterials(); 
+      }
     },
     
     _onMaterialsLoaded: function (event, data) {
@@ -1165,15 +1167,18 @@
       .addClass('icon-arrow-up');
       
       $('.evaluation-available-workspaces')
+      .css({
+        visibility: 'visible'
+      })
       .animate({
         opacity:1,
-        visibility: 'visible',
         height:'160px'
       }, {
         duration : 300,
         easing : "easeInOutQuint",
         complete: function() {
-          $('.evaluation-available-workspaces').attr('data-hidden', '0');
+          $('.evaluation-available-workspaces')
+            .attr('data-hidden', '0');
         }
       });  
     } else {
@@ -1185,13 +1190,16 @@
       $('.evaluation-available-workspaces')
       .animate({
         opacity:0,
-        visibility: 'hidden',
         height:'0px'
       }, {
         duration : 200,
         easing : "easeInOutQuint",
         complete: function() {
-          $('.evaluation-available-workspaces').attr('data-hidden', '1');
+          $('.evaluation-available-workspaces')
+            .attr('data-hidden', '1')
+            .css({
+              visibility: 'hidden'
+            });
         }
       });
     }
