@@ -1,9 +1,7 @@
 package fi.muikku.plugins.schooldatapyramus.rest.cache;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.ejb.Singleton;
 
-@Singleton
 @ApplicationScoped
 public class SystemEntityCache extends AbstractEntityCache {
 
