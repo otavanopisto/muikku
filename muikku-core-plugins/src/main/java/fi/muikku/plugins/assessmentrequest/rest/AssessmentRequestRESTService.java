@@ -28,6 +28,7 @@ import fi.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel
 import fi.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
@@ -214,15 +215,20 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     return restAssessmentRequests;
   }
   
-  private AssessmentRequestRESTModel restModel(WorkspaceAssessmentRequest war) {
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByIdentifier(war.getWorkspaceUserIdentifier());
+  private AssessmentRequestRESTModel restModel(WorkspaceAssessmentRequest workspaceAssessmentRequest) {
+
+    SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(
+        workspaceAssessmentRequest.getWorkspaceUserIdentifier(),
+        workspaceAssessmentRequest.getWorkspaceUserSchoolDataSource());
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
     
     AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel(
-        war.getIdentifier(), 
+        workspaceAssessmentRequest.getIdentifier(), 
         workspaceUserEntity.getWorkspaceEntity().getId(), 
         workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), 
-        war.getRequestText(), 
-        war.getDate());
+        workspaceAssessmentRequest.getRequestText(), 
+        workspaceAssessmentRequest.getDate());
+
     return restAssessmentRequest;
   }
 }
