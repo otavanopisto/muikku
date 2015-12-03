@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -20,8 +18,6 @@ import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EducationType;
 import fi.muikku.schooldata.entity.Subject;
 
-@Dependent
-@Stateful
 public class CourseMetaController {
 	
 	// TODO: Caching 

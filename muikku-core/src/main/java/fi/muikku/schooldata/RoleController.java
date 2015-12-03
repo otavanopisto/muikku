@@ -3,8 +3,6 @@ package fi.muikku.schooldata;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
@@ -19,8 +17,6 @@ import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 
-@Dependent
-@Stateless
 public class RoleController {
 
 	@Inject

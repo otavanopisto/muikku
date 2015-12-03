@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,8 +28,6 @@ import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStudent;
 import fi.pyramus.rest.model.Subject;
 
-@Dependent
-@Stateful
 public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
   
   @Inject
