@@ -19,6 +19,7 @@ import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.AbstractSessionController;
 import fi.muikku.session.AccessToken;
@@ -172,6 +173,11 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   @Override
   public String getLoggedUserSchoolDataSource() {
     return activeUserSchoolDataSource;
+  }
+  
+  @Override
+  public SchoolDataIdentifier getLoggedUser() {
+    return new SchoolDataIdentifier(getLoggedUserIdentifier(), getLoggedUserSchoolDataSource());
   }
 
   @Override

@@ -131,7 +131,7 @@ public class DefaultSchoolDataUserListener {
             logger.fine(String.format("UserEntity %d did not have an environment user so created new one into role %s", userEntity.getId(), environmentRoleEntity.getName()));
             environmentUserController.createEnvironmentUser(userEntity, environmentRoleEntity);
           } else {
-            if (!environmentRoleEntity.getId().equals(environmentUser.getRole().getId())) {
+            if (environmentUser.getRole() == null || !environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
               logger.fine(String.format("Updated UserEntity %d role into %s", userEntity.getId(), environmentRoleEntity.getName()));
               environmentUserController.updateEnvironmentUserRole(environmentUser, environmentRoleEntity);
             }
