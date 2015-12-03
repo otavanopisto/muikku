@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
@@ -56,14 +57,28 @@ public class AnnouncerRESTService extends PluginRESTService {
     List<Announcement> announcements = announcementController.listAll();
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
-      AnnouncementRESTModel restModel = new AnnouncementRESTModel();
-      restModel.setCaption(announcement.getCaption());
-      restModel.setContent(announcement.getContent());
-      restModel.setCreated(announcement.getCreated());
-      restModel.setPublisherUserEntityId(announcement.getPublisherUserEntityId());
-      restModel.setId(announcement.getId());
+      AnnouncementRESTModel restModel = createRESTModel(announcement);
       restModels.add(restModel);
     }
     return Response.ok(restModels).build();
+  }
+  
+  @GET
+  @Path("/announcements/{ID}")
+  @RESTPermitUnimplemented
+  public Response findAnnouncementById(@PathParam("ID") Long announcementId) {
+    Announcement announcement = announcementController.findById(announcementId);
+    AnnouncementRESTModel restModel = createRESTModel(announcement);
+    return Response.ok(restModel).build();
+  }
+
+  private AnnouncementRESTModel createRESTModel(Announcement announcement) {
+    AnnouncementRESTModel restModel = new AnnouncementRESTModel();
+    restModel.setCaption(announcement.getCaption());
+    restModel.setContent(announcement.getContent());
+    restModel.setCreated(announcement.getCreated());
+    restModel.setPublisherUserEntityId(announcement.getPublisherUserEntityId());
+    restModel.setId(announcement.getId());
+    return restModel;
   }
 }

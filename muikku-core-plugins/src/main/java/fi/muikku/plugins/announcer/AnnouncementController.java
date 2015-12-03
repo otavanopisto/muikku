@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.joda.time.LocalDate;
-
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.announcer.dao.AnnouncementDAO;
 import fi.muikku.plugins.announcer.model.Announcement;
@@ -31,5 +29,9 @@ public class AnnouncementController {
   
   public List<Announcement> listAll() {
     return announcementDAO.listAll();
+  }
+  
+  public Announcement findById(Long id) {
+    return announcementDAO.findById(id);
   }
 }
