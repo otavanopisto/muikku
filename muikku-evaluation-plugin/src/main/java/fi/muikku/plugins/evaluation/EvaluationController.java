@@ -11,6 +11,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.ContentNode;
+import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialException;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
@@ -73,12 +74,22 @@ public class EvaluationController {
     return evaluation;
   }
   
+  public void deleteWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation evaluation) {
+    if (evaluation != null) {
+      workspaceMaterialEvaluationDAO.delete(evaluation);
+    }
+  }
+  
   public WorkspaceMaterialEvaluation findWorkspaceMaterialEvaluation(Long id) {
     return workspaceMaterialEvaluationDAO.findById(id);
   }
   
   public WorkspaceMaterialEvaluation findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(WorkspaceMaterial workspaceMaterial, UserEntity student) {
     return workspaceMaterialEvaluationDAO.findByWorkspaceMaterialIdAndStudentEntityId(workspaceMaterial.getId(), student.getId());
+  }
+  
+  public List<WorkspaceMaterialEvaluation> listWorkspaceMaterialEvaluationsByWorkspaceMaterialId(Long workspaceMaterialId){
+    return workspaceMaterialEvaluationDAO.listByWorkspaceMaterialId(workspaceMaterialId);
   }
   
   public WorkspaceMaterialEvaluation updateWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {

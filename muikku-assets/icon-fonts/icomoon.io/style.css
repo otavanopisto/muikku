@@ -1,16 +1,17 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?6yuasy');
-	src:url('fonts/muikku.eot?6yuasy#iefix') format('embedded-opentype'),
-		url('fonts/muikku.ttf?6yuasy') format('truetype'),
-		url('fonts/muikku.woff?6yuasy') format('woff'),
-		url('fonts/muikku.svg?6yuasy#muikku') format('svg');
+	src:url('fonts/muikku.eot?ho3iur');
+	src:url('fonts/muikku.eot?ho3iur#iefix') format('embedded-opentype'),
+		url('fonts/muikku.ttf?ho3iur') format('truetype'),
+		url('fonts/muikku.woff?ho3iur') format('woff'),
+		url('fonts/muikku.svg?ho3iur#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
 
 [class^="icon-"], [class*=" icon-"] {
-	font-family: 'muikku';
+    /* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'muikku' !important;
 	speak: none;
 	font-style: normal;
 	font-weight: normal;
@@ -173,9 +174,6 @@
 .icon-arrow-right2:before {
 	content: "\e608";
 }
-.icon-spinner:before {
-	content: "\e97b";
-}
 .icon-assessment-canceled:before {
 	content: "\e321";
 }
@@ -268,5 +266,8 @@
 }
 .icon-edit-help:before {
 	content: "\e641";
+}
+.icon-spinner:before {
+	content: "\e900";
 }
 

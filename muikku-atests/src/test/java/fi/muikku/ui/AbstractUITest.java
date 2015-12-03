@@ -22,7 +22,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -46,6 +45,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import wiremock.org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -72,10 +73,8 @@ import fi.muikku.atests.WorkspaceDiscussionGroup;
 import fi.muikku.atests.WorkspaceDiscussionThread;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
-import fi.muikku.model.base.Tag;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
-import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -241,6 +240,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   }
 
+  protected void waitForElementToBeClickable(String selector){
+    waitForElementToBeClickable(By.cssSelector(selector));
+  }
+  
   protected void waitForElementToBeClickable(By locator) {
     new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.elementToBeClickable(locator));
   }
@@ -416,6 +419,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.cssSelector(selector)).sendKeys(keysToSend);
   }
   
+  protected void clearElement(String selector) {
+    getWebDriver().findElement(By.cssSelector(selector)).clear();;
+  }
+  
+  
   protected void waitAndSendKeys(String selector, String keysToSend) {
     waitForPresent(selector);
     sendKeys(selector, keysToSend);
@@ -514,11 +522,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void logout() {
+    navigate("/", true);
     waitAndClick("a.lu-action-signout");
     waitForPresent(".index");    
   }
   
-  protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws IOException {
+  protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
     PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier), name, description);
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -668,7 +677,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .then()
       .statusCode(204);
   }
-
+  
   protected void deleteCommunicatorMessages() {
     asAdmin()
       .delete("/test/communicator/messages")
@@ -701,6 +710,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     return element.getAttribute(attribute);
 
+  }
+  
+  protected String getCKEditorContent() {
+    getWebDriver().switchTo().frame(getWebDriver().findElementByCssSelector(".cke_wysiwyg_frame"));
+    String ckeContent = getWebDriver().findElementByTagName("body").getText();
+    getWebDriver().switchTo().defaultContent();
+    return ckeContent;
   }
   
   protected void dragAndDrop(String source, String target){

@@ -7,6 +7,49 @@ body[class^='workspace'] {
   .workspace-teachers-listing-wrapper,
   .workspace-students-listing-wrapper {
     padding:0 30px 30px 30px;
+    
+    .workspace-students-list,
+    .workspace-teachers-list {
+       display:block;
+       
+    
+      &.loading {
+        color:#1beeec;
+        height:40px;
+        width:39px;
+        margin:25px auto 5px auto;
+        -webkit-animation:users-loading 0.7s infinite linear;
+        -moz-animation:users-loading 0.7s infinite linear;
+        animation:users-loading 0.7s infinite linear;
+        
+        &:before {
+          content: "\e900";
+          font-family: 'muikku' !important;
+          speak:none;
+          font-style:normal;
+          font-weight:normal;
+          font-variant:normal;
+          text-transform:none;
+          line-height:1;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          
+          font-size:39px;
+        }
+      }
+
+    }
+    
+    .workspace-students-active,
+    .workspace-students-evaluated,
+    .workspace-students-inactive {
+  	  color:#0099ff;
+  	  text-decoration:none;
+  	  cursor:pointer;
+  	  display:inline-block;
+  	  padding:2px 6px;
+  	  font-size:14px;
+    }
   
     .workspace-users {
       padding:4px 5px;
@@ -23,7 +66,8 @@ body[class^='workspace'] {
         @include flex(1 0 auto);
       }
       
-      .workspace-users-archive,
+  	  .workspace-users-archive,
+  	  .workspace-users-unarchive,
       .workspace-users-delete {
         @include flex(0 0 auto);
         padding:0 5px;
@@ -37,6 +81,10 @@ body[class^='workspace'] {
       
       .workspace-users-archive {
         background:#f6a930;
+      }
+      
+      .workspace-users-unarchive {
+        background:#0099ff;
       }
       
       .workspace-users-delete {

@@ -19,6 +19,7 @@ import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateRolePermissionDAO;
 import fi.muikku.model.security.Permission;
+import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -147,7 +148,12 @@ public class UserRolePermissionObserver {
       WorkspaceEntity workspace = workspaceEntityDAO.findById(event.getDiscoveredWorkspaceEntityId());
   
       for (WorkspaceSettingsTemplateRolePermission rp : roleTemplate) {
-        workspaceRolePermissionDAO.create(workspace, rp.getRole(), rp.getPermission());
+        WorkspaceRolePermission workspaceRolePermission = workspaceRolePermissionDAO.findByRoleAndPermission(workspace, rp.getRole(), rp.getPermission());
+        if (workspaceRolePermission != null) {
+          logger.severe(String.format("WorkspaceRolePermission#%d already exists", workspaceRolePermission.getId()));
+        } else {      
+          workspaceRolePermissionDAO.create(workspace, rp.getRole(), rp.getPermission());
+        }
       }
     } else {
       logger.log(Level.SEVERE, "Could not create workspace role permissions because workspaceEntityiId was not defined");

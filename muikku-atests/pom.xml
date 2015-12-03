@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.80-SNAPSHOT</version>
+    <version>1.0.81-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -96,14 +96,14 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.27-SNAPSHOT</version>
+      <version>0.7.28-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.27-SNAPSHOT</version>
+      <version>0.7.28-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -205,6 +205,16 @@
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>forum-plugin-rest-model</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>evaluation-plugin-rest-model</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>evaluation-plugin-persistence</artifactId>
     </dependency>
 
     <dependency>
@@ -1073,6 +1083,7 @@
                   <type>CREATE</type>
                 </configuration>
               </execution>
+              <!--
               <execution>
                 <id>drop-db-after-test</id>
                 <phase>post-integration-test</phase>
@@ -1084,6 +1095,7 @@
                   <force>true</force>
                 </configuration>
               </execution>
+              -->
             </executions>
           </plugin>
           <plugin>

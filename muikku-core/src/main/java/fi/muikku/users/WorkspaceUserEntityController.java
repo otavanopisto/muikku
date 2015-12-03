@@ -15,6 +15,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 
 public class WorkspaceUserEntityController {
 
@@ -39,7 +40,11 @@ public class WorkspaceUserEntityController {
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndIdentifier(WorkspaceEntity workspaceEntity, String identifier) {
-    return workspaceUserEntityDAO.findByWorkspaceAndIdentifierAndArchived(workspaceEntity, identifier, Boolean.FALSE);
+    return findWorkspaceUserEntityByWorkspaceAndIdentifierAndArchived(workspaceEntity, identifier, Boolean.FALSE);
+  }
+
+  public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndIdentifierAndArchived(WorkspaceEntity workspaceEntity, String identifier, Boolean archived) {
+    return workspaceUserEntityDAO.findByWorkspaceAndIdentifierAndArchived(workspaceEntity, identifier, archived);
   }
   
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
@@ -111,19 +116,28 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.listByWorkspaceEntityAndUserEntityAndArchived(workspaceEntity, userEntity, Boolean.FALSE);
   }
   
-  public void archiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
-    workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.TRUE);
+  public WorkspaceUserEntity archiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
+    return workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.TRUE);
   }
 
-  public void unArchiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
-    workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.FALSE);
+  public WorkspaceUserEntity unarchiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
+    return workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.FALSE);
   }
 
   public void deleteWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
     workspaceUserEntityDAO.delete(workspaceUserEntity);
   }
   
-  public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
+  public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserIdentifier(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
+    if (userSchoolDataIdentifier == null) {
+      return null;
+    }
+    
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.FALSE);
+  }
+  
+  private WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
     if (userSchoolDataIdentifier == null) {
       return null;
