@@ -1345,15 +1345,15 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
     SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceUserId);
     if (workspaceUserIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
     }
-    fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceIdentifier, workspaceUserIdentifier);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace student not found").build();
+    }
+    fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
     if (bridgeUser == null) {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
@@ -1366,15 +1366,12 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response updateWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
       @PathParam("ID") String workspaceUserId,
       WorkspaceUser workspaceUser) {
-
+    
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    // Workspace (school data source)
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
-
     // Access check
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
@@ -1383,32 +1380,33 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    // User (school data source)
+    // Workspace student and school data user
     SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceUserId);
     if (workspaceUserIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
     }
+    
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
     fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceIdentifier, workspaceUserIdentifier);
     if (bridgeUser == null) {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
     
     if (workspaceUser.getArchived() != null) {
-      // Student (school data source)
       workspaceController.updateWorkspaceStudentActivity(bridgeUser, !workspaceUser.getArchived());
-      // Student (Muikku)
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
       if (workspaceUser.getArchived()) {
         // Archive
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
-        if (workspaceUserEntity != null) {
+        if (workspaceUserEntity != null && !workspaceUserEntity.getArchived()) {
           workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
         }
       }
       else {
         // Unarchive
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierAndArchived(
-            workspaceUserIdentifier, Boolean.TRUE);
-        if (workspaceUserEntity != null) {
+        if (workspaceUserEntity == null) {
+          // TODO create new workspace student
+        }
+        else {
           workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
         }
       }
@@ -1420,7 +1418,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}/users/{ID}")
   @RESTPermitUnimplemented
-  public Response deleteWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String userId) {
+  public Response deleteWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String workspaceUserId) {
 
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -1429,12 +1427,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // User (in school data source)
-    SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(userId);
+    SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceUserId);
     if (workspaceUserIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
     }
-    // Workspace (in school data source)
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
 
     // Access check
     if (!sessionController.isLoggedIn()) {
@@ -1444,16 +1440,17 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
 
-    fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceIdentifier, workspaceUserIdentifier);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace student not found").build();
+    }
+    fi.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
     if (bridgeUser == null) {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
     workspaceController.updateWorkspaceStudentActivity(bridgeUser, false);
+    workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
     
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
-    if (workspaceUserEntity != null) {
-      workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
-    }
     return Response.noContent().build();
   }
 

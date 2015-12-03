@@ -316,8 +316,8 @@ public class WorkspaceController {
     return workspaceSchoolDataController.findWorkspaceUser(workspaceUserEntity);
   }
   
-  public fi.muikku.schooldata.entity.WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier) {
-    return workspaceSchoolDataController.findWorkspaceUser(workspaceIdentifier, userIdentifier);
+  public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier) {
+    return workspaceSchoolDataController.findWorkspaceUser(workspaceIdentifier, workspaceUserIdentifier);
   }
   
   public int countWorkspaceUsers(WorkspaceEntity workspaceEntity) {
