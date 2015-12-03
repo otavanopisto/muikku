@@ -82,6 +82,10 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.listByWorkspaceAndArchived(workspaceEntity, Boolean.FALSE);
   }
 
+  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesIncludeArchived(WorkspaceEntity workspaceEntity) {
+    return workspaceUserEntityDAO.listByWorkspaceIncludeArchived(workspaceEntity);
+  }
+
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRole(WorkspaceEntity workspaceEntity, WorkspaceRoleEntity role) {
     return workspaceUserEntityDAO.listByWorkspaceAndRole(workspaceEntity, role);
   }
