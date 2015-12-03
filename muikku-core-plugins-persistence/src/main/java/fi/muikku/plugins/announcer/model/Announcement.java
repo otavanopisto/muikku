@@ -73,6 +73,16 @@ public class Announcement {
 
   @NotNull
   @Column (updatable=false, nullable=false)
-  @Temporal (value=TemporalType.TIMESTAMP)
+  @Temporal (value=TemporalType.DATE)
   private Date created;
+
+  @NotNull
+  @Column (nullable=false)
+  @Temporal (value=TemporalType.DATE)
+  private Date beginDate;
+
+  @NotNull
+  @Column (nullable=false)
+  @Temporal (value=TemporalType.DATE)
+  private Date endDate;
 }

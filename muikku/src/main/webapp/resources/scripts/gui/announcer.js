@@ -36,7 +36,26 @@
     },    
     
     _loadAnnouncements: function () {
-      alert('TODO: LOAD ANNOUNCEMENTS!');
+        mApi()
+          .announcer
+          .announcements
+          .read()
+          .callback($.proxy(function(err, result) {
+              if (err) {
+                $(".notification-queue").notificationQueue(
+                    'notification',
+                    'error',
+                    err);
+              } else {
+                renderDustTemplate(
+                    'announcer/announcer_items.dust',
+                    result,
+                    $.proxy(function (text) {
+                      var element = $(text);
+                      $('.an-announcements-view-container').append(element);
+                    }, this));
+              }
+          }, this));
     },
     
     _load: function(){
