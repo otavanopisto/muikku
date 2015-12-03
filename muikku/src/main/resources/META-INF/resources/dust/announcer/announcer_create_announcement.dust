@@ -5,6 +5,18 @@
       <div class="mf-content">
           <div class="an-announcement-create-body">
             <div class="mf-fieldRow">
+              <div class="mf-textfield an-form-row-container">
+                <div class="mf-textfield-subcontainer ca-form-row-subcontainer">
+                 <div class="mf-textfield-title mf-textfield-subelement"><input id="startTime" class="mf-textfield-time" type="time" name="startTime" data-time-format="H:i"></input></div>
+                 <div class="mf-textfield-title mf-textfield-subelement"><input id="startDate" class="mf-textfield-date" type="date" name="startDate"></input></div>
+                 <div class="mf-textfield-title mf-textfield-subelement"><input id="endTime" class="mf-textfield-time" type="time" name="endTime" data-time-format="H:i"></input></div>
+                 <div class="mf-textfield-title mf-textfield-subelement"><input id="endDate" class="mf-textfield-date" type="date" name="endDate"></input></div>
+                 <div class="mf-textfield-title mf-textfield-subelement"><span class="mf-textfield-title">{#localize key="plugin.calendar.eventForm.allDay"/}</span><input class="mf-textfield-title" type="checkbox" name="allDay"></input></div>
+                 <div class="clear"></div>
+                </div>
+              </div>      
+            </div>          
+            <div class="mf-fieldRow">
               <div class="mf-textfield">
                <div class="mf-textfield-subcontainer">
                  <span class="mf-textfield-title">{#localize key="plugin.announcer.createannouncement.title.topic"/}</span><input class="mf-textfield-subject" type="text" name="caption" maxlength="255"></input>

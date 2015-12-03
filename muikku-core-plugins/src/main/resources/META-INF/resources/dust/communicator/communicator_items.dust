@@ -7,12 +7,10 @@
 {/.}
 
 <div class="cm-messages-pages">
-
-     <h3>Coming soon</h3>
-<!--   {?.} -->
-<!--     {>"communicator/communicator_page.dust"/}   -->
-<!--   {:else} -->
-<!--     {>"communicator/communicator_empty.dust"/}     -->
-<!--   {/.}   -->
+  {?.}
+    {>"communicator/communicator_page.dust"/}  
+  {:else}
+    {>"communicator/communicator_empty.dust"/}    
+  {/.}  
   <div class="clear"></div>
  </div>
