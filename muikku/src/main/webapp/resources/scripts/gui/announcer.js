@@ -13,6 +13,27 @@
       this._loadAnnouncements();
     },
     _onCreateAnnouncementClick: function () {
+      
+      var formFunctions = function() {
+        
+        // Date and timepickers for start and end time/date
+        
+        var start = new Date();
+        start.setMinutes(0);
+        start.setHours(start.getHours() + 1);
+        var end = new Date(start.getTime());
+        end.setHours(end.getHours() + 1);
+        
+        $('#startDate')
+          .datepicker()
+          .datepicker('setDate', start);
+        
+        $('#endDate')
+          .datepicker()
+          .datepicker('setDate', end);
+
+      }
+      
       var createAnnouncement = function(values){
         mApi()
           .announcer
@@ -32,7 +53,7 @@
               }
           }, this));
       }   
-      openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement);
+      openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement, formFunctions);
     },    
     
     _loadAnnouncements: function () {
