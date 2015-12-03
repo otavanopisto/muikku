@@ -36,8 +36,9 @@ public class CourseUsersTestsBase extends AbstractUITest {
       waitAndClick(".archive-button");
       waitForClickable(".workspace-students-list");
       assertNotPresent("div[data-user-id='PYRAMUS-STUDENT-3']");
-      
-//      assertCount(".workspace-students-list>div.workspace-users", 0);
+      reloadCurrentPage();
+      waitForPresent(".workspace-students-list");
+      assertNotPresent("div[data-user-id='PYRAMUS-STUDENT-3']");
     } finally {
       deleteWorkspace(workspace.getId());
     }
@@ -51,12 +52,16 @@ public class CourseUsersTestsBase extends AbstractUITest {
     try {
       navigate(String.format("/workspace/%s/users", workspace.getUrlName()), true);
       waitForPresent(".workspace-students-listing-wrapper .workspace-users-name");
-      waitAndClick("div[data-user-id='PYRAMUS-STUDENT-3']>div.workspace-users-archive");
-      waitAndClick(".archive-button");
+      waitAndClick(".workspace-students-inactive");
+      waitAndClick("div[data-user-id='PYRAMUS-STUDENT-3']>div.workspace-users-unarchive");
+      waitAndClick(".unarchive-button");
       waitForClickable(".workspace-students-list");
       assertNotPresent("div[data-user-id='PYRAMUS-STUDENT-3']");
-      
-//      assertCount(".workspace-students-list>div.workspace-users", 0);
+      reloadCurrentPage();
+      waitForPresent(".workspace-students-list");
+      waitAndClick(".workspace-students-inactive");
+      waitForPresent(".workspace-students-list");
+      assertNotPresent("div[data-user-id='PYRAMUS-STUDENT-3']");      
     } finally {
       deleteWorkspace(workspace.getId());
     }

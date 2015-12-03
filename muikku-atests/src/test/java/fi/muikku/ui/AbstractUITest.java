@@ -227,6 +227,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertEquals(expected, getWebDriver().getTitle());
   }
 
+  protected void reloadCurrentPage() {
+    getWebDriver().get(getWebDriver().getCurrentUrl());
+  }
+  
   protected void testPageElementsByName(String elementName) {
     Boolean elementExists = getWebDriver().findElements(By.name(elementName)).size() > 0;
     assertEquals(true, elementExists);
