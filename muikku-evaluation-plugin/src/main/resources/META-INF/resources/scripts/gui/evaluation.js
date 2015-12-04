@@ -290,9 +290,6 @@
       var textareas = $(container).find('.muikku-memo-field');
       $(textareas).each( function(index,textarea) {        
         $(textarea).css({
-          height: '1px'
-        });
-        $(textarea).css({
           height: (textarea.scrollHeight)+"px"
         });
       }); 
@@ -510,9 +507,6 @@
     _adjustTextareaHeight: function(container) {
       var textareas = $(container).find('.muikku-memo-field');
       $(textareas).each( function(index,textarea) {        
-        $(textarea).css({
-          height: '1px'
-        });
         $(textarea).css({
           height: (textarea.scrollHeight)+"px"
         });
