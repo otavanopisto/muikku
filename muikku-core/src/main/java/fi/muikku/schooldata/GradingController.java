@@ -3,8 +3,6 @@ package fi.muikku.schooldata;
 import java.util.Date;
 import java.util.List;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.grading.GradingScaleEntityDAO;
@@ -19,8 +17,6 @@ import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 
-@Dependent
-@Stateless
 public class GradingController {
   
 	@Inject

@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +26,6 @@ import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
 import fi.otavanopisto.security.Permit;
 
-@Stateful
 @SessionScoped
 @LocalSession
 public class LocalSessionControllerImpl extends AbstractSessionController implements Serializable, LocalSessionController {
@@ -44,6 +42,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   private void init() {
     representedUserId = null;
     locale = httpServletRequest.getLocale();
+    accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());
   }
 
   @Override
@@ -194,5 +193,5 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   
   private String activeUserSchoolDataSource;
   
-  private Map<String, AccessToken> accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());
+  private Map<String, AccessToken> accessTokens;
 }
