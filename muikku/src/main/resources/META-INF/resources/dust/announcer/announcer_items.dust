@@ -1,8 +1,8 @@
 <div class="an-announcements">
-     <h3>Coming soon</h3>
-<!--   {#.} -->
-<!--     {>"announcer/announcer_item.dust"/} -->
-<!--   {:else} -->
-<!--     {>"announcer/announcer_empty.dust"/} -->
-<!--   {/.}  -->
+
+  {#.}
+    {>"announcer/announcer_item.dust"/}
+  {:else}
+    {>"announcer/announcer_empty.dust"/}
+  {/.} 
 </div>
