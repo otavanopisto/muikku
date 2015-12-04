@@ -244,29 +244,40 @@
           
           var assignments = [];
           for (var i = 0; i<this.options.workspaceEvaluableAssignments.length; i++) {
-            var workspaceEvaluableAssignment = this.options.workspaceEvaluableAssignments[i];
-            mApi({async: false}).workspace.workspaces.materials.evaluations
-            .read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {userEntityId: this.options.studentEntityId})
-            .callback($.proxy(function(err, evaluations) {
-              var evaluation = null;
-              if (evaluations != null && evaluations.length > 0) {
-                evaluation = evaluations[0];
-              }
-              assignments.push({
-                workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
-                materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
-                type: 'html',
-                title: workspaceEvaluableAssignment.workspaceMaterial.title,
-                html: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].html,
-                evaluation: evaluation
-              });
-            }, this));
-          }
-          this._loadTemplate(assignments, callback);
+            assignments.push(this._loadAssigmentEvaluation(this.options.workspaceEvaluableAssignments[i], htmlMaterialMap));
+          } 
+          async.parallel(assignments, $.proxy(function(err, results){
+            if(!err){
+              this._loadTemplate(results, callback);
+            }
+          }, this));
         }
       }, this));
     },
-    
+    _loadAssigmentEvaluation: function(workspaceEvaluableAssignment, htmlMaterialMap){
+      return $.proxy(function(cb){
+        mApi().workspace.workspaces.materials.evaluations
+        .read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {userEntityId: this.options.studentEntityId})
+        .callback(function(err, evaluations) {
+          if(err){
+            cb(err);
+          }else{
+            var evaluation = null;
+            if (evaluations != null && evaluations.length > 0) {
+              evaluation = evaluations[0];
+            }
+            cb(null, {
+              workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
+              materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
+              type: 'html',
+              title: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].title,
+              html: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].html,
+              evaluation: evaluation
+            }); 
+          }
+        });
+      },this);
+    },
     _loadTemplate: function (assignments, callback) {
       renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
         studentDisplayName: this.options.studentDisplayName,
