@@ -1,3 +1,3 @@
-<div class="workspace-material-management-confirm-dialog" title="{#localize key="plugin.workspace.materials.assignmentAttachment.removeDialog.title"/}" data-button-delete-text="{#localize key="plugin.workspace.materials.assignmentAttachment.removeDialog.deleteButtonLabel"/}" data-button-cancel-text="{#localize key="plugin.workspace.materials.assignmentAttachment.removeDialog.cancelButtonLabel"/}">
+<div class="workspace-material-management-confirm-dialog" title="{#localize key="plugin.workspace.materials.assignmentAttachment.removeDialog.title"/}" data-button-remove-text="{#localize key="plugin.workspace.materials.assignmentAttachment.removeDialog.removeButtonLabel"/}" data-button-cancel-text="{#localize key="plugin.workspace.materials.assignmentAttachment.removeDialog.cancelButtonLabel"/}">
   {#localize key="plugin.workspace.materials.assignmentAttachment.removeDialog.description"/}
 </div>
