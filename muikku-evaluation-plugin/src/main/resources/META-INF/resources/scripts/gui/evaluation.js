@@ -98,12 +98,12 @@
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
             
             var batchCalls = $.map(this.options.workspaceEvaluableAssignments, $.proxy(function (workspaceEvaluableAssignment) {
-              return mApi({async: false}).workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {
+              return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {
                 userEntityId: this.options.studentEntityId
               });
             }, this));
             
-            mApi({async: false}).batch(batchCalls).callback($.proxy(function (err, results) {
+            mApi().batch(batchCalls).callback($.proxy(function (err, results) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
