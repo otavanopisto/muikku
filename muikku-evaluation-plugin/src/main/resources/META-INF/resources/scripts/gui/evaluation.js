@@ -761,12 +761,14 @@
           } else {
             var workspaceEvaluableAssignments = [];
             
-            for (var i=0; i<workspaceEvaluableAssignmentMaterials.length; i++) {
-              workspaceEvaluableAssignments.push(
-                  {workspaceMaterial: workspaceEvaluableAssignmentMaterials[i]}
-              );
+            if (workspaceEvaluableAssignmentMaterials) {
+              for (var i=0; i<workspaceEvaluableAssignmentMaterials.length; i++) {
+                workspaceEvaluableAssignments.push(
+                    {workspaceMaterial: workspaceEvaluableAssignmentMaterials[i]}
+                );
+              }  
             }
-          
+            
             this.element.trigger("materialsLoaded", {
               workspaceEvaluableAssignments: workspaceEvaluableAssignments
             });
