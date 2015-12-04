@@ -32,7 +32,7 @@ before_install:
     fi;
   fi;
 install:
-- mvn install -Pmongo-log-plugin,jndi-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin -Dfindbugs.skip=$findbugs_skip -Dmaven.javadoc.skip=true -Dsource.skip=true
+- bash travis-install.sh
 before_script:
 script:
 - bash travis-script.sh

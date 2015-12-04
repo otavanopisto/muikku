@@ -32,7 +32,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
   
   @Inject
   private UserEntityCache entityCache;
-
+  
   @Inject
   @LocalSession
   private SessionController sessionController;

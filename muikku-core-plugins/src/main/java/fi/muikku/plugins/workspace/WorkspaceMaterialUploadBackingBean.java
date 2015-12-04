@@ -16,7 +16,6 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.files.TempFileUtils;
-import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
@@ -126,9 +125,8 @@ public class WorkspaceMaterialUploadBackingBean {
       return "/error/internal-error.jsf";
     }
 
-    UserEntity loggedInUserEntity = sessionController.getLoggedUserEntity();
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController
-        .findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, loggedInUserEntity.getDefaultIdentifier());
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(
+        workspaceEntity, sessionController.getLoggedUser());
 
     if (workspaceUserEntity == null || workspaceUserEntity.getWorkspaceUserRole() == null
         || workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
