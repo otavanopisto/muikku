@@ -132,7 +132,7 @@ public class DefaultSchoolDataWorkspaceListener {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getWorkspaceDataSource(), event.getWorkspaceIdentifier());
       if (workspaceEntity != null) {
         SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
         if (workspaceUserEntity != null) {
           String currentUserIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
           if (!StringUtils.equals(currentUserIdentifier, event.getUserIdentifier())) {
