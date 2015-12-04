@@ -12,6 +12,7 @@ import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
@@ -131,7 +132,11 @@ public class AssessmentRequestController {
 
   public void setCommunicatorMessageId(WorkspaceAssessmentRequest assessmentRequest,
       CommunicatorMessageId communicatorMessageId) {
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByIdentifier(assessmentRequest.getWorkspaceUserIdentifier());
+
+    SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(
+        assessmentRequest.getWorkspaceUserIdentifier(),
+        assessmentRequest.getWorkspaceUserSchoolDataSource());
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
     
     AssessmentRequestMessageId requestMessageId = assessmentRequestMessageIdDAO.findByWorkspaceUser(workspaceUserEntity);
     

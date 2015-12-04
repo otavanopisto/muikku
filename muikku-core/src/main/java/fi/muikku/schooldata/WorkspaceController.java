@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
@@ -40,8 +38,6 @@ import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
 
-@Dependent
-@Stateless
 public class WorkspaceController {
   
   // TODO: Why not fi.muikku.workspaces ?
@@ -55,9 +51,6 @@ public class WorkspaceController {
   @Inject
   private UserEntityController userEntityController;
 
-  @Inject
-  private WorkspaceEntityController workspaceEntityController;
-  
   @Inject
   private RoleController roleController;
 
@@ -260,10 +253,10 @@ public class WorkspaceController {
     }
 
     // Workspace Users
-
-    List<WorkspaceUser> workspaceUsers = listWorkspaceUsers(workspaceEntity);
-    for (WorkspaceUser workspaceUser : workspaceUsers) {
-      deleteWorkspaceUser(workspaceUser);
+    
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityDAO.listByWorkspaceIncludeArchived(workspaceEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      workspaceUserEntityDAO.delete(workspaceUserEntity);
     }
 
     workspaceEntityDAO.delete(workspaceEntity);
@@ -274,19 +267,6 @@ public class WorkspaceController {
   public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, Role role) {
     return workspaceSchoolDataController.createWorkspaceUser(workspace, user, role.getSchoolDataSource(),
         role.getIdentifier());
-  }
-
-  public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser) {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
-        workspaceUser.getWorkspaceIdentifier().getDataSource(),
-        workspaceUser.getWorkspaceIdentifier().getIdentifier());
-    return findWorkspaceUserEntity(workspaceUser, workspaceEntity); 
-  }
-
-  public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser, WorkspaceEntity workspaceEntity) {
-    return workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(
-        workspaceEntity,
-        workspaceUser.getIdentifier().getIdentifier());
   }
 
   @Deprecated
@@ -332,18 +312,10 @@ public class WorkspaceController {
     return workspaceSchoolDataController.findWorkspaceUser(workspaceUserEntity);
   }
   
-  public fi.muikku.schooldata.entity.WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier) {
-    return workspaceSchoolDataController.findWorkspaceUser(workspaceIdentifier, userIdentifier);
+  public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier) {
+    return workspaceSchoolDataController.findWorkspaceUser(workspaceIdentifier, workspaceUserIdentifier);
   }
   
-  private void deleteWorkspaceUser(WorkspaceUser workspaceUser) {
-    // TODO: Remove users via bridge also
-    WorkspaceUserEntity workspaceUserEntity = findWorkspaceUserEntity(workspaceUser);
-    if (workspaceUserEntity != null) {
-      workspaceUserEntityDAO.delete(workspaceUserEntity);
-    }
-  }
-
   public int countWorkspaceUsers(WorkspaceEntity workspaceEntity) {
     // TODO Optimize
     return listWorkspaceUsers(workspaceEntity).size();

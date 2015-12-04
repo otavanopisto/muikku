@@ -111,6 +111,21 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<WorkspaceUserEntity> listByWorkspaceIncludeArchived(WorkspaceEntity workspaceEntity) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public List<WorkspaceUserEntity> listByWorkspaceAndArchived(WorkspaceEntity workspaceEntity, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
@@ -244,7 +259,25 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     super.delete(workspaceUserEntity);
   }
 
-  public WorkspaceUserEntity findByIdentifier(String identifier) {
+  public WorkspaceUserEntity findByIdentifierAndArchived(String identifier, Boolean archived) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.identifier), identifier),
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived)
+      )
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public WorkspaceUserEntity findByIdentifierIncludeArchived(String identifier) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
