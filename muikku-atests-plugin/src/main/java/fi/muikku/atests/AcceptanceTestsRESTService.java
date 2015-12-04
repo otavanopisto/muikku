@@ -252,7 +252,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(500).entity(e.getMessage()).build();
     }
     
-    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesIncludeArchived(workspaceEntity);
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
       workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
     }
