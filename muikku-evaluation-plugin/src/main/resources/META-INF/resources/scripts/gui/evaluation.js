@@ -791,6 +791,8 @@
             .evaluationStudent({
               workspaceStudentId: workspaceUser.id,
               studentEntityId: workspaceUser.userId,
+              studentFirstName: workspaceUser.firstName,
+              studentLastName: workspaceUser.lastName,
               assessment: workspaceAssessment
             })
             .appendTo(this.element.find('.evaluation-students'));
@@ -994,11 +996,11 @@
     },
     
     _create : function() {
-      this._displayName = null;
+      this._displayName = this.options.studentFirstName + ' ' + this.options.studentLastName;
       
       this.element.addClass('evaluation-student-wrapper evaluation-student-pending');
       this.element.append($('<div>').addClass('evaluation-student-picture'));
-      this.element.append($('<div>').addClass('evaluation-student-name').text('Loading...'));
+      this.element.append($('<div>').addClass('evaluation-student-name').text(this._displayName));
 
       $('#evaluation').on("viewInitialized", $.proxy(this._onEvaluationViewInitialized, this));
       $('#evaluation').on("viewScroll", $.proxy(this._onEvaluationViewScroll, this));
@@ -1101,9 +1103,7 @@
     },
     
     _onBasicInfoLoaded: function (user) {
-      this._displayName = user.firstName + ' ' + user.lastName;
       this._studyProgrammeName = user.studyProgrammeName;
-      this.element.find('.evaluation-student-name').text(this._displayName);
       if(this.options.assessment){
         this.element.removeClass('workspace-evaluation-requested');
         var evaluatedDate = $('<div>')
