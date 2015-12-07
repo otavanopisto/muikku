@@ -82,6 +82,36 @@
       "expireTime": 300000,
       "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": []
+    },
+    "/students/nationalities/{nationalityId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 300000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/students/languages/{languageId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 300000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/students/municipalities/{municipalityId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 300000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/students/municipalities/{municipalityId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 300000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/schools/schools/{schoolId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 300000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
     }
   }
 }
