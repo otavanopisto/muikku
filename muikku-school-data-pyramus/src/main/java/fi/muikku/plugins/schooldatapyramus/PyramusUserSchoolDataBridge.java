@@ -12,6 +12,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.muikku.DebugTimer;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
@@ -55,6 +56,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Inject
   private PyramusIdentifierMapper identifierMapper;
+  
+  @Inject
+  private DebugTimer timer;
 
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
@@ -82,6 +86,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     List<User> users = new ArrayList<User>();
 
     for (Student student : students) {
+      timer.start("entities");
+      
       StudyProgramme studyProgramme;
       String nationality = null;
       String language = null;
@@ -154,6 +160,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           student.getStudyStartDate(),
           student.getStudyTimeEnd(),
           hidden));
+      
+      timer.end("entities");
     }
     
     return users;
@@ -207,7 +215,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       UnexpectedSchoolDataBridgeException {
     Long studentId = identifierMapper.getPyramusStudentId(identifier);
     if (studentId != null) {
-      return createStudentEntity(findPyramusStudent(studentId));
+      timer.start("studentfind");
+      Student student = findPyramusStudent(studentId);
+      timer.end("studentfind");
+      
+      return createStudentEntity(student);
     }
 
     Long staffId = identifierMapper.getPyramusStaffId(identifier);

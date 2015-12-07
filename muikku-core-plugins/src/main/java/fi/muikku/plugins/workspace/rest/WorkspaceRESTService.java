@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -89,6 +92,9 @@ import fi.muikku.users.WorkspaceUserEntityController;
 public class WorkspaceRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -5286350366083446537L;
+  
+  @Inject
+  private Logger logger;
   
   @Inject
   private WorkspaceController workspaceController;
@@ -348,7 +354,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response listWorkspaceStudents(@PathParam("ID") Long workspaceEntityId,
       @QueryParam("archived") Boolean archived,
       @QueryParam("orderBy") String orderBy) {
-    
+
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -361,26 +367,59 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     // Students via WorkspaceSchoolDataBridge
-    List<fi.muikku.schooldata.entity.WorkspaceUser> schoolDataUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
-    if (schoolDataUsers.isEmpty()) {
+    List<fi.muikku.schooldata.entity.WorkspaceUser> workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
+    if (workspaceUsers.isEmpty()) {
       return Response.noContent().build();
     }
+    
+    List<WorkspaceUser> result = null;
+    result = new ArrayList<>();
 
-    // WorkspaceUser (SchoolData) to WorkspaceUser (Muikku REST)
-    List<WorkspaceUser> workspaceUsers = createRestModel(workspaceEntity, schoolDataUsers.toArray(new fi.muikku.schooldata.entity.WorkspaceUser[0]));
-    if (archived != null) {
-      Iterator<WorkspaceUser> iterator = workspaceUsers.iterator();
-      while (iterator.hasNext()) {
-        WorkspaceUser workspaceUser = iterator.next();
-        if (!workspaceUser.getArchived().equals(archived)) {
-          iterator.remove();
+    Map<String, WorkspaceUserEntity> workspaceUserEntityMap = new HashMap<>();
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      workspaceUserEntityMap.put(new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier()).toId(), 
+          workspaceUserEntity);
+    }
+  
+    for (fi.muikku.schooldata.entity.WorkspaceUser workspaceUser : workspaceUsers) {
+      SchoolDataIdentifier workspaceUserIdentifier = workspaceUser.getIdentifier();
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityMap.get(workspaceUserIdentifier.toId());
+      
+      boolean userArchived = workspaceUserEntity == null;
+      if ((archived == null) || (archived.equals(userArchived))) {
+        SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
+        User user = userController.findUserByIdentifier(userIdentifier);
+        
+        if (user != null) {
+          UserEntity userEntity = null;
+          Long workspaceUserId = null;
+
+          if (workspaceUserEntity != null) {
+            workspaceUserId = workspaceUserEntity.getId();
+            userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+          } else {
+            userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());  
+          }
+          
+          String firstName = user.getFirstName();
+          String lastName = user.getLastName();
+          
+          result.add(new WorkspaceUser(workspaceUserIdentifier.toId(), 
+            workspaceUserId, 
+            userEntity != null ? userEntity.getId() : null, 
+            firstName, 
+            lastName, 
+            userArchived));
+        } else {
+          logger.log(Level.SEVERE, String.format("Could not find user for identifier %s", userIdentifier));
         }
       }
     }
 
     // Sorting
     if (StringUtils.equals(orderBy, "name")) {
-      Collections.sort(workspaceUsers, new Comparator<WorkspaceUser>() {
+      Collections.sort(result, new Comparator<WorkspaceUser>() {
         @Override
         public int compare(WorkspaceUser o1, WorkspaceUser o2) {
           String s1 = String.format("%s, %s", StringUtils.defaultString(o1.getLastName(), ""), StringUtils.defaultString(o1.getFirstName(), ""));
@@ -391,7 +430,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     // Response
-    return Response.ok(workspaceUsers).build();
+    return Response.ok(result).build();
   }
 
   @GET
@@ -417,9 +456,24 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.noContent().build();
     }
 
-    // WorkspaceUser (SchoolData) to WorkspaceUser (Muikku REST)
-    List<WorkspaceUser> workspaceUsers = createRestModel(workspaceEntity, schoolDataUsers.toArray(new fi.muikku.schooldata.entity.WorkspaceUser[0]));
-
+    List<WorkspaceUser> workspaceUsers = new ArrayList<>();
+    
+    for (fi.muikku.schooldata.entity.WorkspaceUser workspaceUser : schoolDataUsers) {
+      SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
+      User user = userController.findUserByIdentifier(userIdentifier);
+      if (user != null) {
+        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());  
+        workspaceUsers.add(new WorkspaceUser(workspaceUser.getIdentifier().toId(), 
+            workspaceEntity.getId(), 
+            userEntity != null ? userEntity.getId() : null,
+            user.getFirstName(), 
+            user.getLastName(), 
+            false));
+      } else {
+        logger.log(Level.SEVERE, String.format("Could not find user %s", userIdentifier));
+      }
+    }
+    
     // Sorting
     if (StringUtils.equals(orderBy, "name")) {
       Collections.sort(workspaceUsers, new Comparator<WorkspaceUser>() {
@@ -892,37 +946,6 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
   }
 
-  private List<WorkspaceUser> createRestModel(WorkspaceEntity workspaceEntity, fi.muikku.schooldata.entity.WorkspaceUser... workspaceUsers) {
-    List<WorkspaceUser> result = new ArrayList<WorkspaceUser>();
-    for (fi.muikku.schooldata.entity.WorkspaceUser workspaceUser : workspaceUsers) {
-      result.add(createRestModel(workspaceEntity, workspaceUser));
-    }
-    return result;
-  }
-
-  private WorkspaceUser createRestModel(WorkspaceEntity workspaceEntity, fi.muikku.schooldata.entity.WorkspaceUser workspaceUser) {
-    
-    User user = userController.findUserByDataSourceAndIdentifier(
-        workspaceUser.getUserIdentifier().getDataSource(),
-        workspaceUser.getUserIdentifier().getIdentifier());
-    UserEntity userEntity = null;
-
-    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(workspaceUser.getUserIdentifier().getIdentifier(), workspaceUser.getUserIdentifier().getDataSource());
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier (workspaceEntity, userIdentifier);
-    if (workspaceUserEntity != null) {
-      userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
-    } else {
-      userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());  
-    }
-    
-    return new WorkspaceUser(workspaceUser.getIdentifier().toId(),
-        workspaceEntity.getId(),
-        userEntity != null ? userEntity.getId() : null,
-        user.getFirstName(),
-        user.getLastName(),
-        workspaceUserEntity == null);
-  }
-
   private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String description) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
@@ -1357,7 +1380,21 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (bridgeUser == null) {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
-    return Response.ok(createRestModel(workspaceEntity, bridgeUser)).build();
+    
+    SchoolDataIdentifier userIdentifier = bridgeUser.getIdentifier();
+    User user = userController.findUserByIdentifier(userIdentifier);
+    if (user == null) {
+      return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
+    }
+    
+    WorkspaceUser workspaceUser = new WorkspaceUser(userIdentifier.toId(), 
+        workspaceEntity.getId(), 
+        workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), 
+        user.getFirstName(), 
+        user.getLastName(), 
+        workspaceUserEntity.getArchived());
+    
+    return Response.ok(workspaceUser).build();
   }
   
   @PUT
