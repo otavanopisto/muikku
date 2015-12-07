@@ -523,7 +523,7 @@
       }, this));
       
   
-      async.series(loads, function (err, results) {
+      async.parallel(loads, function (err, results) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
@@ -545,7 +545,7 @@
           pending: []
         };
         
-        mApi({async: false}).materials.html
+        mApi().materials.html
           .read(materialId)
           .callback($.proxy(function (err, htmlMaterial) {
             if (err) {
