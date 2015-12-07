@@ -65,7 +65,8 @@ import fi.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
-import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
+import fi.muikku.plugins.workspace.rest.model.WorkspaceStaffMember;
+import fi.muikku.plugins.workspace.rest.model.WorkspaceStudent;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
@@ -372,7 +373,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.noContent().build();
     }
     
-    List<WorkspaceUser> result = null;
+    List<WorkspaceStudent> result = null;
     result = new ArrayList<>();
 
     Map<String, WorkspaceUserEntity> workspaceUserEntityMap = new HashMap<>();
@@ -405,7 +406,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           String firstName = user.getFirstName();
           String lastName = user.getLastName();
           
-          result.add(new WorkspaceUser(workspaceUserIdentifier.toId(), 
+          result.add(new WorkspaceStudent(workspaceUserIdentifier.toId(), 
             workspaceUserId, 
             userEntity != null ? userEntity.getId() : null, 
             firstName, 
@@ -419,9 +420,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     // Sorting
     if (StringUtils.equals(orderBy, "name")) {
-      Collections.sort(result, new Comparator<WorkspaceUser>() {
+      Collections.sort(result, new Comparator<WorkspaceStudent>() {
         @Override
-        public int compare(WorkspaceUser o1, WorkspaceUser o2) {
+        public int compare(WorkspaceStudent o1, WorkspaceStudent o2) {
           String s1 = String.format("%s, %s", StringUtils.defaultString(o1.getLastName(), ""), StringUtils.defaultString(o1.getFirstName(), ""));
           String s2 = String.format("%s, %s", StringUtils.defaultString(o2.getLastName(), ""), StringUtils.defaultString(o2.getFirstName(), ""));
           return s1.compareTo(s2);
@@ -456,19 +457,16 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.noContent().build();
     }
 
-    List<WorkspaceUser> workspaceUsers = new ArrayList<>();
+    List<WorkspaceStaffMember> workspaceStaffMembers = new ArrayList<>();
     
     for (fi.muikku.schooldata.entity.WorkspaceUser workspaceUser : schoolDataUsers) {
       SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
       User user = userController.findUserByIdentifier(userIdentifier);
       if (user != null) {
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());  
-        workspaceUsers.add(new WorkspaceUser(workspaceUser.getIdentifier().toId(), 
-            workspaceEntity.getId(), 
-            userEntity != null ? userEntity.getId() : null,
-            user.getFirstName(), 
-            user.getLastName(), 
-            false));
+        workspaceStaffMembers.add(new WorkspaceStaffMember(workspaceUser.getIdentifier().toId(), 
+          user.getFirstName(), 
+          user.getLastName()
+        ));
       } else {
         logger.log(Level.SEVERE, String.format("Could not find user %s", userIdentifier));
       }
@@ -476,9 +474,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Sorting
     if (StringUtils.equals(orderBy, "name")) {
-      Collections.sort(workspaceUsers, new Comparator<WorkspaceUser>() {
+      Collections.sort(workspaceStaffMembers, new Comparator<WorkspaceStaffMember>() {
         @Override
-        public int compare(WorkspaceUser o1, WorkspaceUser o2) {
+        public int compare(WorkspaceStaffMember o1, WorkspaceStaffMember o2) {
           String s1 = String.format("%s, %s", StringUtils.defaultString(o1.getLastName(), ""), StringUtils.defaultString(o1.getFirstName(), ""));
           String s2 = String.format("%s, %s", StringUtils.defaultString(o2.getLastName(), ""), StringUtils.defaultString(o2.getFirstName(), ""));
           return s1.compareTo(s2);
@@ -487,7 +485,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     // Response
-    return Response.ok(workspaceUsers).build();
+    return Response.ok(workspaceStaffMembers).build();
   }
   
   @POST
@@ -1387,14 +1385,14 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
     
-    WorkspaceUser workspaceUser = new WorkspaceUser(userIdentifier.toId(), 
+    WorkspaceStudent workspaceStudent = new WorkspaceStudent(userIdentifier.toId(), 
         workspaceEntity.getId(), 
         workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), 
         user.getFirstName(), 
         user.getLastName(), 
         workspaceUserEntity.getArchived());
     
-    return Response.ok(workspaceUser).build();
+    return Response.ok(workspaceStudent).build();
   }
   
   @PUT
@@ -1402,7 +1400,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @RESTPermitUnimplemented
   public Response updateWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
       @PathParam("ID") String workspaceUserId,
-      WorkspaceUser workspaceUser) {
+      WorkspaceStudent workspaceStudent) {
     
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -1429,10 +1427,10 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
     
-    if (workspaceUser.getArchived() != null) {
-      workspaceController.updateWorkspaceStudentActivity(bridgeUser, !workspaceUser.getArchived());
+    if (workspaceStudent.getArchived() != null) {
+      workspaceController.updateWorkspaceStudentActivity(bridgeUser, !workspaceStudent.getArchived());
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
-      if (workspaceUser.getArchived()) {
+      if (workspaceStudent.getArchived()) {
         // Archive
         if (workspaceUserEntity != null && !workspaceUserEntity.getArchived()) {
           workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
@@ -1449,7 +1447,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
 
-    return Response.ok(workspaceUser).build();
+    return Response.ok(workspaceStudent).build();
   }
 
   @DELETE
