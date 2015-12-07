@@ -142,7 +142,23 @@ public class DefaultSchoolDataWorkspaceListener {
               logger.warning(String.format("Unable to update workspace user. UserSchoolDataIdentifier for %s/%s not found", event.getUserDataSource(), event.getUserIdentifier()));
             }
             else {
-              workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
+              WorkspaceUserEntity existingUser = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(
+                  workspaceEntity, newUserIdentifier);
+              if (existingUser != null) {
+                if (!existingUser.getArchived().equals(workspaceUserEntity.getArchived())) {
+                  if (existingUser.getArchived()) {
+                    workspaceUserEntityController.unarchiveWorkspaceUserEntity(existingUser);
+                  }
+                  else {
+                    workspaceUserEntityController.archiveWorkspaceUserEntity(existingUser);
+                  }
+                }
+                workspaceUserEntityController.updateIdentifier(existingUser, workspaceUserEntity.getIdentifier());
+                workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
+              }
+              else {
+                workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
+              }
             }
           }
         }
