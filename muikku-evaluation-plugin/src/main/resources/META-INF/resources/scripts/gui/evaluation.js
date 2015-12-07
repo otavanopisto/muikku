@@ -1075,7 +1075,8 @@
     var workspaceEntityId = $('#evaluation').attr('data-workspace-entity-id');
     
     $(document).muikkuMaterialLoader({
-      prependTitle : false
+      prependTitle : false,
+      readOnlyFields: true
     });
     
     $('#evaluation').evaluationLoader();
