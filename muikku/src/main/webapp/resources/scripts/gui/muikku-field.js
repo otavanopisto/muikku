@@ -209,7 +209,6 @@
           
         this.element.find('.muikku-show-correct-answers-button').show();
       } else {
-        
         this.element.find('.muikku-show-correct-answers-button').hide();
       }
       
@@ -566,7 +565,7 @@
     _propagateChange: function () {
       $(this.element)
         .removeClass('muikku-field-saved muikku-field-saving')
-        .addClass('muikku-field-unsaved');
+        .addClass('muikku-field-unsaved'); 
       
       if (this._saveTimeoutId) {
         clearTimeout(this._saveTimeoutId);
@@ -599,9 +598,19 @@
       this._saveFailedTimeoutId = null;
 
       $(document).connectionLostNotifier("notifyReconnected");
+      
+      var page = $(this.element).closest('.workspace-materials-view-page');
+      var hideAnswersButton = $(page).find('.muikku-hide-correct-answers-button');
+      if ($(hideAnswersButton).length > 0) {
+        $(hideAnswersButton)
+          .addClass("muikku-show-correct-answers-button")
+          .removeClass("muikku-hide-correct-answers-button")
+          .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'));
+      }
 
       // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
       if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
+
         if (message.originTicket == $(document).muikkuWebSocket("ticket")) {
           $(this.element)
             .removeClass('muikku-field-unsaved muikku-field-saving')
@@ -616,7 +625,7 @@
             .fadeOut(300, function() {
               $(this).remove();
             });
-          
+
         } else {
           $(this.element)
             .removeClass('muikku-field-unsaved muikku-field-saving')
