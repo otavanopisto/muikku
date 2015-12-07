@@ -917,7 +917,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceUserEntity != null) {
       userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
     } else {
-      logger.severe(String.format("Missing WorkspaceUserEntity for user %s in workspace %s", workspaceEntity.getIdentifier(), userIdentifier.getIdentifier()));
+      logger.severe(String.format("Missing WorkspaceUserEntity for user %s in workspace %s", userIdentifier.getIdentifier(), workspaceEntity.getIdentifier()));
       userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());  
     }
     
