@@ -249,6 +249,16 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     
     return entityManager.createQuery(criteria).getSingleResult();
   }
+  
+  public WorkspaceUserEntity updateIdentifier(WorkspaceUserEntity workspaceUserEntity, String identifier) {
+    workspaceUserEntity.setIdentifier(identifier);
+    return persist(workspaceUserEntity);
+  }
+
+  public WorkspaceUserEntity updateUserSchoolDataIdentifier(WorkspaceUserEntity workspaceUserEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    workspaceUserEntity.setUserSchoolDataIdentifier(userSchoolDataIdentifier);
+    return persist(workspaceUserEntity);
+  }
 
   public WorkspaceUserEntity updateArchived(WorkspaceUserEntity workspaceUserEntity, Boolean archived) {
     workspaceUserEntity.setArchived(archived);

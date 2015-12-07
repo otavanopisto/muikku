@@ -125,18 +125,30 @@ public class WorkspaceUserEntityController {
   public WorkspaceUserEntity unarchiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
     return workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.FALSE);
   }
+  
+  public WorkspaceUserEntity updateUserSchoolDataIdentifier(WorkspaceUserEntity workspaceUserEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    return workspaceUserEntityDAO.updateUserSchoolDataIdentifier(workspaceUserEntity, userSchoolDataIdentifier);
+  }
+
+  public WorkspaceUserEntity updateIdentifier(WorkspaceUserEntity workspaceUserEntity, String identifier) {
+    return workspaceUserEntityDAO.updateIdentifier(workspaceUserEntity, identifier);
+  }
 
   public void deleteWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
     workspaceUserEntityDAO.delete(workspaceUserEntity);
   }
   
   public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserIdentifier(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+    return findWorkspaceUserByWorkspaceEntityAndUserIdentifierAndArchived(workspaceEntity, userIdentifier, Boolean.FALSE);
+  }
+
+  public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserIdentifierAndArchived(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier, Boolean archived) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
     if (userSchoolDataIdentifier == null) {
       return null;
     }
     
-    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.FALSE);
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, archived);
   }
   
   private WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {

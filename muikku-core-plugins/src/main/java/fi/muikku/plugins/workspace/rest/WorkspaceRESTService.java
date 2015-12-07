@@ -98,7 +98,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private Logger logger;
-  
+
   @Inject
   private WorkspaceController workspaceController;
   
