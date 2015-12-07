@@ -466,8 +466,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     for (fi.muikku.schooldata.entity.WorkspaceUser workspaceUser : schoolDataUsers) {
       SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
       User user = userController.findUserByIdentifier(userIdentifier);
+      
       if (user != null) {
+        UserEntity userEntity = userEntityController.findUserEntityByUser(user);
         workspaceStaffMembers.add(new WorkspaceStaffMember(workspaceUser.getIdentifier().toId(), 
+          userEntity != null ? userEntity.getId() : null,
           user.getFirstName(), 
           user.getLastName()
         ));

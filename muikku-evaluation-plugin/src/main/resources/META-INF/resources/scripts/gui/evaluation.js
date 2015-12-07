@@ -848,20 +848,19 @@
       var studyProgrammeName = workspaceStudent.evaluationStudent('studyProgrammeName');
       var workspaceName = $('#evaluation').evaluation("workspaceName");
       var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
-      mApi({async: false})
-      .workspace
-      .workspaces
-      .assessors
-      .read(workspaceEntityId)
-      .callback($.proxy(function(err, workspaceUsers) {
+      
+      mApi().workspace.workspaces.staffMembers.read(workspaceEntityId, {orderBy: 'name'}).callback($.proxy(function (err, teachers) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          mApi({async: false})
-            .workspace
-            .workspaces
-            .gradingScales
-            .read(workspaceEntityId)
+          var assessors = $.map(teachers, function (teacher) {
+            return $.extend(teacher, {
+              displayName: teacher.lastName + ' ' + teacher.firstName,
+              selected: teacher.userEntityId == MUIKKU_LOGGED_USER_ID
+            });
+          });
+          
+          mApi().workspace.workspaces.gradingScales.read(workspaceEntityId)
             .callback($.proxy(function(err, gradingScales) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -870,7 +869,7 @@
                   studentDisplayName: studentDisplayName,
                   studentAnswers: this._studentAnswers,
                   gradingScales: gradingScales,
-                  assessors: workspaceUsers,
+                  assessors: assessors,
                   workspaceName: workspaceName,
                   studentStudyProgrammeName: studyProgrammeName,
                   workspaceMaterialId: this.options.workspaceMaterialId,
@@ -887,7 +886,7 @@
               }
             }, this));
         }
-      }, this));
+      }, this)); 
     },
     
     _load: function () {
