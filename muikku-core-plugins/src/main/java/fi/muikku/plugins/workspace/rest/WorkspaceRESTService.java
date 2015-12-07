@@ -85,6 +85,8 @@ import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @RequestScoped
 @Stateful
@@ -405,12 +407,14 @@ public class WorkspaceRESTService extends PluginRESTService {
           
           String firstName = user.getFirstName();
           String lastName = user.getLastName();
+          String studyProgrammeName = user.getStudyProgrammeName();
           
           result.add(new WorkspaceStudent(workspaceUserIdentifier.toId(), 
             workspaceUserId, 
             userEntity != null ? userEntity.getId() : null, 
             firstName, 
             lastName, 
+            studyProgrammeName,
             userArchived));
         } else {
           logger.log(Level.SEVERE, String.format("Could not find user for identifier %s", userIdentifier));
@@ -1356,8 +1360,8 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/users/{ID}")
-  @RESTPermitUnimplemented
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{ID}")
+  @RESTPermit(handling = Handling.INLINE)
   public Response findWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String workspaceUserId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
@@ -1390,18 +1394,18 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), 
         user.getFirstName(), 
         user.getLastName(), 
+        user.getStudyProgrammeName(),
         workspaceUserEntity.getArchived());
     
     return Response.ok(workspaceStudent).build();
   }
   
   @PUT
-  @Path("/workspaces/{WORKSPACEENTITYID}/users/{ID}")
-  @RESTPermitUnimplemented
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{ID}")
+  @RESTPermit(handling = Handling.INLINE)
   public Response updateWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
       @PathParam("ID") String workspaceUserId,
       WorkspaceStudent workspaceStudent) {
-    
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -1451,10 +1455,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @DELETE
-  @Path("/workspaces/{WORKSPACEENTITYID}/users/{ID}")
-  @RESTPermitUnimplemented
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{ID}")
+  @RESTPermit (handling = Handling.INLINE)
   public Response deleteWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String workspaceUserId) {
-
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
