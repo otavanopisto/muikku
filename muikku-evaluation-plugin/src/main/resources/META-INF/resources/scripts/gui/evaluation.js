@@ -657,7 +657,7 @@
     },
 
     _loadStudents: function () {
-      mApi({async: false}).workspace.workspaces.students
+      mApi().workspace.workspaces.students
         .read(this.options.workspaceEntityId, { archived: false })
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
@@ -736,37 +736,55 @@
       this._scrollView(cellWidth * 5, 0);
     },
     
+    _loadStudentAssessments: function (workspaceStudent) {
+      return $.proxy(function (callback) {
+        mApi().workspace.workspaces.assessments
+          .read(this.options.workspaceEntityId, {userEntityId: workspaceStudent.userId})
+          .callback(function(err, workspaceAssessments) {
+            if (err) {
+              callback(err, null);
+            } else {
+              var workspaceAssessment = null;
+              if (workspaceAssessments != null && workspaceAssessments.length > 0) {
+                workspaceAssessment = workspaceAssessments[0];
+              }
+              workspaceStudent.assessment = workspaceAssessment;
+              callback(err, workspaceStudent)
+            };
+          });
+      }, this);
+    },
+    
     _onStudentsLoaded: function (event, data) {
-      this._workspaceUsers = data.workspaceUsers;
-      
-      $.each(this._workspaceUsers, $.proxy(function (index, workspaceUser) { 
-        mApi({async: false}).workspace.workspaces.assessments.read(
-              this.options.workspaceEntityId,
-              {userEntityId: workspaceUser.userId})
-          .callback($.proxy(function(err, workspaceAssessments) {
-            var workspaceAssessment = null;
-            if (workspaceAssessments != null && workspaceAssessments.length > 0) {
-              workspaceAssessment = workspaceAssessments[0];
-            }
-            workspaceUser.assessment = workspaceAssessment;
-  
-          $('<div>')
-            .attr('data-workspace-student', workspaceUser.id)
-            .attr('data-workspace-user', workspaceUser.userId)
-            .evaluationStudent({
-              workspaceStudentId: workspaceUser.id,
-              studentEntityId: workspaceUser.userId,
-              studentFirstName: workspaceUser.firstName,
-              studentLastName: workspaceUser.lastName,
-              studentStudyProgrammeName: workspaceUser.studyProgrammeName,
-              assessment: workspaceAssessment
-            })
-            .appendTo(this.element.find('.evaluation-students'));
-        }, this));    
+      var studentLoads = $.map(data.workspaceUsers, $.proxy(function (workspaceUser) { 
+        return this._loadStudentAssessments(workspaceUser);
       }, this));
       
-      this._loadAssessmentRequests();
-      this._loadMaterials();
+      async.parallel(studentLoads, $.proxy(function (err, workspaceStudents) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._workspaceUsers = workspaceStudents;
+          
+          $.each(workspaceStudents, $.proxy(function (index, workspaceStudent) {
+            $('<div>')
+              .attr('data-workspace-student', workspaceStudent.id)
+              .attr('data-workspace-user', workspaceStudent.userId)
+              .evaluationStudent({
+                workspaceStudentId: workspaceStudent.id,
+                studentEntityId: workspaceStudent.userId,
+                studentFirstName: workspaceStudent.firstName,
+                studentLastName: workspaceStudent.lastName,
+                studentStudyProgrammeName: workspaceStudent.studyProgrammeName,
+                assessment: workspaceStudent.assessment
+              })
+              .appendTo(this.element.find('.evaluation-students'));
+          }, this));
+          
+          this._loadAssessmentRequests();
+          this._loadMaterials();
+        }
+      }, this));
     },
     
     _onMaterialsLoaded: function (event, data) {
