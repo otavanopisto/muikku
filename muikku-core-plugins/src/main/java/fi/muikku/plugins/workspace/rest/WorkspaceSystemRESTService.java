@@ -186,7 +186,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     WorkspaceRoleEntity workspaceTeacherRole = roleController.findWorkspaceRoleEntityById(getWorkspaceTeacherRoleId());
     
     // Workspace teachers in Muikku
-    List<WorkspaceUserEntity> muikkuWorkspaceTeachers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.TEACHER);
+    List<WorkspaceUserEntity> muikkuWorkspaceTeachers = workspaceUserEntityController.listWorkspaceUserEntitiesByRole(workspaceEntity, workspaceTeacherRole);
     logger.info(String.format("Before synchronizing, Muikku course has %d active teachers", muikkuWorkspaceTeachers.size()));
 
     // Course teachers in Pyramus
@@ -208,8 +208,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
         }
       }
       if (muikkuWorkspaceTeacher == null) {
-        muikkuWorkspaceTeacher = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifierAndArchived(
-            workspaceEntity,
+        muikkuWorkspaceTeacher = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierAndArchived(
             pyramusCourseTeacher.getIdentifier(),
             Boolean.TRUE);
         if (muikkuWorkspaceTeacher != null) {
@@ -278,11 +277,12 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
             muikkuWorkspaceStudent.getWorkspaceEntity(),
             pyramusStudentIdentifier);
         if (existingStudent != null && !existingStudent.getId().equals(muikkuWorkspaceStudent.getId())) {
-          // We can, so archive the workspace student we had and use the one we found instead, unarchiving it if needed 
-          workspaceUserEntityController.archiveWorkspaceUserEntity(muikkuWorkspaceStudent);
+          // We can, so delete the workspace student we had and use the one we found instead, unarchiving it if needed 
           if (existingStudent.getArchived()) {
             workspaceUserEntityController.unarchiveWorkspaceUserEntity(existingStudent);
           }
+          workspaceUserEntityController.updateIdentifier(existingStudent, muikkuWorkspaceStudent.getIdentifier());
+          workspaceUserEntityController.deleteWorkspaceUserEntity(muikkuWorkspaceStudent);
           muikkuWorkspaceStudent = existingStudent;
         }
         // Set workspace student to point at the same student as in Pyramus
