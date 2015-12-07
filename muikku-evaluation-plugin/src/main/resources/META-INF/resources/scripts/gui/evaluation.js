@@ -780,7 +780,7 @@
     },
     
     _onStudentsLoaded: function (event, data) {
-      var studentLoads = $.map(data.workspaceUsers, $.proxy(function (workspaceUser) { 
+      var studentLoads = $.map(data.workspaceUsers||[], $.proxy(function (workspaceUser) { 
         return this._loadStudentAssessments(workspaceUser);
       }, this));
       
