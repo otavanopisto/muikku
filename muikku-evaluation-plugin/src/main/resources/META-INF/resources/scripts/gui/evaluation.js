@@ -45,7 +45,6 @@
         ]
       }
     },
-    
     _create: function () {
       this._load($.proxy(function (text) {
         this._dialog = $(text);
@@ -284,6 +283,16 @@
       var content = $(assignment).find('.evaluation-assignment-content');
       var state = content.attr('data-open-state');
       content.attr('data-open-state', state == 'closed' ? 'open' : 'closed');
+      this._adjustTextareaHeight(content);
+    },
+    
+    _adjustTextareaHeight: function(container) {
+      var textareas = $(container).find('.muikku-memo-field');
+      $(textareas).each( function(index,textarea) {        
+        $(textarea).css({
+          height: (textarea.scrollHeight)+"px"
+        });
+      }); 
     }
   });
   
@@ -367,7 +376,7 @@
             if (this.options.verbalAssessment) {
               $(this._dialog).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
             }
-
+            
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
             
             var fieldAnswers = {};
@@ -381,6 +390,8 @@
             }
             
             $(document).muikkuMaterialLoader('loadMaterials', $(this._dialog).find('.evaluation-assignment'), fieldAnswers);
+            
+            this._adjustTextareaHeight($(this._dialog).find('.evaluation-assignment'));
           }, this),
           buttons: [{
             'text': this._dialog.attr('data-button-save-text'),
@@ -491,6 +502,15 @@
           type: materialType
         }]
       }, callback);
+    },
+    
+    _adjustTextareaHeight: function(container) {
+      var textareas = $(container).find('.muikku-memo-field');
+      $(textareas).each( function(index,textarea) {        
+        $(textarea).css({
+          height: (textarea.scrollHeight)+"px"
+        });
+      }); 
     }
   });
   
@@ -735,12 +755,14 @@
           } else {
             var workspaceEvaluableAssignments = [];
             
-            for (var i=0; i<workspaceEvaluableAssignmentMaterials.length; i++) {
-              workspaceEvaluableAssignments.push(
-                  {workspaceMaterial: workspaceEvaluableAssignmentMaterials[i]}
-              );
+            if (workspaceEvaluableAssignmentMaterials) {
+              for (var i=0; i<workspaceEvaluableAssignmentMaterials.length; i++) {
+                workspaceEvaluableAssignments.push(
+                    {workspaceMaterial: workspaceEvaluableAssignmentMaterials[i]}
+                );
+              }  
             }
-          
+            
             this.element.trigger("materialsLoaded", {
               workspaceEvaluableAssignments: workspaceEvaluableAssignments
             });
@@ -763,31 +785,33 @@
     _onStudentsLoaded: function (event, data) {
       this._workspaceUsers = data.workspaceUsers;
       
-      $.each(this._workspaceUsers, $.proxy(function (index, workspaceUser) { 
-        mApi({async: false}).workspace.workspaces.assessments.read(
-              this.options.workspaceEntityId,
-              {userEntityId: workspaceUser.userId})
-          .callback($.proxy(function(err, workspaceAssessments) {
-            var workspaceAssessment = null;
-            if (workspaceAssessments != null && workspaceAssessments.length > 0) {
-              workspaceAssessment = workspaceAssessments[0];
-            }
-            workspaceUser.assessment = workspaceAssessment;
-  
-          $('<div>')
-            .attr('data-workspace-student', workspaceUser.id)
-            .attr('data-workspace-user', workspaceUser.userId)
-            .evaluationStudent({
-              workspaceStudentId: workspaceUser.id,
-              studentEntityId: workspaceUser.userId,
-              assessment: workspaceAssessment
-            })
-            .appendTo(this.element.find('.evaluation-students'));
-        }, this));    
-      }, this));
-      
-      this._loadAssessmentRequests();
-      this._loadMaterials();
+      if (this._workspaceUsers) {
+        $.each(this._workspaceUsers, $.proxy(function (index, workspaceUser) { 
+          mApi({async: false}).workspace.workspaces.assessments.read(
+                this.options.workspaceEntityId,
+                {userEntityId: workspaceUser.userId})
+            .callback($.proxy(function(err, workspaceAssessments) {
+              var workspaceAssessment = null;
+              if (workspaceAssessments != null && workspaceAssessments.length > 0) {
+                workspaceAssessment = workspaceAssessments[0];
+              }
+              workspaceUser.assessment = workspaceAssessment;
+    
+            $('<div>')
+              .attr('data-workspace-student', workspaceUser.id)
+              .attr('data-workspace-user', workspaceUser.userId)
+              .evaluationStudent({
+                workspaceStudentId: workspaceUser.id,
+                studentEntityId: workspaceUser.userId,
+                assessment: workspaceAssessment
+              })
+              .appendTo(this.element.find('.evaluation-students'));
+          }, this));    
+        }, this));
+        
+        this._loadAssessmentRequests();
+        this._loadMaterials(); 
+      }
     },
     
     _onMaterialsLoaded: function (event, data) {
@@ -1139,15 +1163,18 @@
       .addClass('icon-arrow-up');
       
       $('.evaluation-available-workspaces')
+      .css({
+        visibility: 'visible'
+      })
       .animate({
         opacity:1,
-        visibility: 'visible',
         height:'160px'
       }, {
         duration : 300,
         easing : "easeInOutQuint",
         complete: function() {
-          $('.evaluation-available-workspaces').attr('data-hidden', '0');
+          $('.evaluation-available-workspaces')
+            .attr('data-hidden', '0');
         }
       });  
     } else {
@@ -1159,13 +1186,16 @@
       $('.evaluation-available-workspaces')
       .animate({
         opacity:0,
-        visibility: 'hidden',
         height:'0px'
       }, {
         duration : 200,
         easing : "easeInOutQuint",
         complete: function() {
-          $('.evaluation-available-workspaces').attr('data-hidden', '1');
+          $('.evaluation-available-workspaces')
+            .attr('data-hidden', '1')
+            .css({
+              visibility: 'hidden'
+            });
         }
       });
     }
