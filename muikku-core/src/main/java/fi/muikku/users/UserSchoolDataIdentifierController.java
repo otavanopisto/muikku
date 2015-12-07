@@ -10,6 +10,7 @@ import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 
 public class UserSchoolDataIdentifierController {
   
@@ -39,11 +40,20 @@ public class UserSchoolDataIdentifierController {
   public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifier(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource == null) {
-      logger.severe("Could not find dataSource '" + schoolDataSource + "'");
+      logger.severe(String.format("Could not find dataSource %s", schoolDataSource));
       return null;
     }
     
     return findUserSchoolDataIdentifierByDataSourceAndIdentifier(dataSource, identifier);
+  }
+
+  public UserSchoolDataIdentifier findUserSchoolDataIdentifierBySchoolDataIdentifier(SchoolDataIdentifier schoolDataIdentifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataIdentifier.getDataSource());
+    if (dataSource == null) {
+      logger.severe(String.format("Could not find dataSource %s", schoolDataIdentifier.getDataSource()));
+      return null;
+    }
+    return findUserSchoolDataIdentifierByDataSourceAndIdentifier(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier());
   }
   
   public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {

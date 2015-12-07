@@ -25,6 +25,7 @@ import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.schooldata.RoleController;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.WorkspaceUser;
@@ -100,11 +101,9 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
       String pyramusCourseStudentId = pyramusCourseStudent.getIdentifier().getIdentifier();
 
       // Find Muikku student corresponding to Pyramus student
-      String muikkuStudentId = null;
       String muikkuWorkspaceStudentId = null;
       WorkspaceUserEntity muikkuWorkspaceStudent = null;
       for (int i = 0; i < muikkuWorkspaceStudents.size(); i++) {
-        muikkuStudentId = muikkuWorkspaceStudents.get(i).getUserSchoolDataIdentifier().getIdentifier();
         muikkuWorkspaceStudentId = muikkuWorkspaceStudents.get(i).getIdentifier(); 
         if (StringUtils.equals(muikkuWorkspaceStudentId, pyramusCourseStudentId)) {
           muikkuWorkspaceStudent = muikkuWorkspaceStudents.get(i);
@@ -119,21 +118,28 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
         if (muikkuWorkspaceStudent != null) {
           workspaceUserEntityController.unarchiveWorkspaceUserEntity(muikkuWorkspaceStudent);
           logger.info(String.format("Unarchived workspace student %s", pyramusCourseStudentId));
-          ensureCorrectWorkspaceStudent(muikkuWorkspaceStudent, muikkuStudentId, pyramusStudentId);
+          SchoolDataIdentifier muikkuStudentIdentifier = new SchoolDataIdentifier(
+              muikkuWorkspaceStudent.getUserSchoolDataIdentifier().getIdentifier(),
+              muikkuWorkspaceStudent.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+          ensureCorrectWorkspaceStudent(
+              muikkuWorkspaceStudent,
+              muikkuStudentIdentifier,
+              pyramusCourseStudent.getUserIdentifier());
         }
         else {
-          // Create a new workspace student
-          UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
-              "PYRAMUS",
-              pyramusStudentId);
+          // Workspace student with workspace student identifier still not found, even amongst archived workspace students
+          UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(
+              pyramusCourseStudent.getUserIdentifier());
           if (userSchoolDataIdentifier == null) {
             logger.severe(String.format("Unable to fix missing workspace student: UserSchoolDataIdentifier for Pyramus student %s not found", pyramusStudentId));
           }
           else {
+            // Try to find workspace student with workspace + student combo
             muikkuWorkspaceStudent = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(
                 workspaceEntity,
                 userSchoolDataIdentifier);
             if (muikkuWorkspaceStudent != null) {
+              // Found. Might be archived but definitely has the wrong workspace student identifier
               if (muikkuWorkspaceStudent.getArchived()) {
                 workspaceUserEntityController.unarchiveWorkspaceUserEntity(muikkuWorkspaceStudent);
               }
@@ -142,6 +148,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
               }
             }
             else {
+              // Not found. Create a new workspace student
               muikkuWorkspaceStudent = workspaceUserEntityController.createWorkspaceUserEntity(
                   userSchoolDataIdentifier,
                   workspaceEntity,
@@ -153,8 +160,11 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
         }
       }
       else {
-        // Ensure Muikku workspace student points to the same Pyramus student as the course student in Pyramus
-        ensureCorrectWorkspaceStudent(muikkuWorkspaceStudent, muikkuStudentId, pyramusStudentId);
+        // Workspace student found with workspace student identifier. We still need to ensure that the underlying student is the same as in Pyramus
+        SchoolDataIdentifier muikkuStudentIdentifier = new SchoolDataIdentifier(
+            muikkuWorkspaceStudent.getUserSchoolDataIdentifier().getIdentifier(),
+            muikkuWorkspaceStudent.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+        ensureCorrectWorkspaceStudent(muikkuWorkspaceStudent, muikkuStudentIdentifier, pyramusCourseStudent.getUserIdentifier());
       }
     }
     
@@ -252,19 +262,30 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     return null;
   }
   
-  private void ensureCorrectWorkspaceStudent(WorkspaceUserEntity muikkuWorkspaceStudent, String muikkuStudentId, String pyramusStudentId) {
-    if (!StringUtils.equals(pyramusStudentId, muikkuStudentId)) {
-      logger.warning(String.format("Muikku workspace student points to student %s and Pyramus to student %s", muikkuStudentId, pyramusStudentId));
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
-        "PYRAMUS",
-        pyramusStudentId);
+  private void ensureCorrectWorkspaceStudent(WorkspaceUserEntity muikkuWorkspaceStudent, SchoolDataIdentifier muikkuStudentIdentifier, SchoolDataIdentifier pyramusStudentIdentifier) {
+    if (!pyramusStudentIdentifier.equals(muikkuStudentIdentifier)) {
+      logger.warning(String.format("Muikku workspace student points to student %s and Pyramus to student %s", muikkuStudentIdentifier, pyramusStudentIdentifier));
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(pyramusStudentIdentifier);
       if (userSchoolDataIdentifier == null) {
-        logger.severe(String.format("Unable to fix: UserSchoolDataIdentifier for Pyramus student %s not found", pyramusStudentId));
+        logger.severe(String.format("Unable to fix: UserSchoolDataIdentifier for Pyramus student %s not found", pyramusStudentIdentifier));
       }
       else if (!userSchoolDataIdentifier.getUserEntity().getId().equals(muikkuWorkspaceStudent.getUserSchoolDataIdentifier().getUserEntity().getId())) {
         logger.severe("Unable to fix: UserSchoolDataIdentifiers in Muikku and Pyramus point to different users");
       }
       else {
+        // Muikku and Pyramus students are not the same. Let's see if we can find a workspace student with workspace + student combo
+        WorkspaceUserEntity existingStudent = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(
+            muikkuWorkspaceStudent.getWorkspaceEntity(),
+            pyramusStudentIdentifier);
+        if (existingStudent != null && !existingStudent.getId().equals(muikkuWorkspaceStudent.getId())) {
+          // We can, so archive the workspace student we had and use the one we found instead, unarchiving it if needed 
+          workspaceUserEntityController.archiveWorkspaceUserEntity(muikkuWorkspaceStudent);
+          if (existingStudent.getArchived()) {
+            workspaceUserEntityController.unarchiveWorkspaceUserEntity(existingStudent);
+          }
+          muikkuWorkspaceStudent = existingStudent;
+        }
+        // Set workspace student to point at the same student as in Pyramus
         workspaceUserEntityController.updateUserSchoolDataIdentifier(muikkuWorkspaceStudent, userSchoolDataIdentifier);
         logger.info("Muikku workspace student UserSchoolDataIdentifier updated");
       }

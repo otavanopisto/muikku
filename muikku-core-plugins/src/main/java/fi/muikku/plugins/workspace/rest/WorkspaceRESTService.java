@@ -912,7 +912,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = null;
 
     SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(workspaceUser.getUserIdentifier().getIdentifier(), workspaceUser.getUserIdentifier().getDataSource());
-    // TODO Search WorkspaceUserEntity including archived. If not found, not in sync with Pyramus. Create WorkspaceUserEntity?
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userIdentifier);
     if (workspaceUserEntity != null) {
       userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
