@@ -247,7 +247,9 @@
             assignments.push(this._loadAssigmentEvaluation(this.options.workspaceEvaluableAssignments[i], htmlMaterialMap));
           } 
           async.parallel(assignments, $.proxy(function(err, results){
-            if(!err){
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
               this._loadTemplate(results, callback);
             }
           }, this));

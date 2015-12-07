@@ -1365,7 +1365,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{ID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response findWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String workspaceUserId) {
+  public Response findWorkspaceStudent(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String workspaceStudentId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -1373,7 +1373,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceUserId);
+    SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceStudentId);
     if (workspaceUserIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
     }
@@ -1406,8 +1406,8 @@ public class WorkspaceRESTService extends PluginRESTService {
   @PUT
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{ID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response updateWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
-      @PathParam("ID") String workspaceUserId,
+  public Response updateWorkspaceStudent(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
+      @PathParam("ID") String workspaceStudentId,
       WorkspaceStudent workspaceStudent) {
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -1423,7 +1423,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     // Workspace student and school data user
-    SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceUserId);
+    SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceStudentId);
     if (workspaceUserIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
     }
@@ -1460,7 +1460,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{ID}")
   @RESTPermit (handling = Handling.INLINE)
-  public Response deleteWorkspaceUser(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String workspaceUserId) {
+  public Response deleteWorkspaceStudent(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String workspaceStudentId) {
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -1468,7 +1468,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // User (in school data source)
-    SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceUserId);
+    SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceStudentId);
     if (workspaceUserIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
     }
