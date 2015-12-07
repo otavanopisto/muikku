@@ -1025,21 +1025,24 @@
       var workspaceName = $('#evaluation').evaluation("workspaceName");
       var workspaceEvaluableAssignments = $('#evaluation').evaluation("workspaceEvaluableAssignments");
       var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
-      mApi({async: false})
-        .workspace
-        .workspaces
-        .assessors
-        .read(workspaceEntityId)
-        .callback($.proxy(function(err, workspaceUsers) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            mApi({async: false})
-              .workspace
-              .workspaces
-              .gradingScales
-              .read(workspaceEntityId)
-              .callback($.proxy(function(err, gradingScales) {
+
+      mApi().workspace.workspaces.staffMembers.read(workspaceEntityId, {orderBy: 'name'}).callback($.proxy(function (err, teachers) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var assessors = $.map(teachers, function (teacher) {
+            return $.extend(teacher, {
+              displayName: teacher.lastName + ' ' + teacher.firstName,
+              selected: teacher.userEntityId == MUIKKU_LOGGED_USER_ID
+            });
+          });
+
+          mApi()
+            .workspace
+            .workspaces
+            .gradingScales
+            .read(workspaceEntityId)
+            .callback($.proxy(function(err, gradingScales) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
@@ -1048,7 +1051,7 @@
                   studentDisplayName: this.displayName(),
                   workspaceName: workspaceName,
                   gradingScales: gradingScales,
-                  assessors: workspaceUsers,
+                  assessors: assessors,
                   evaluationDate: this.options.assessment ? new Date(this.options.assessment.evaluated) : null,
                   evaluationGradeId: this.options.assessment ? this.options.assessment.gradeIdentifier+'/'+this.options.assessment.gradeSchoolDataSource+'@'+this.options.assessment.gradingScaleIdentifier+'/'+this.options.assessment.gradingScaleSchoolDataSource : null,
                   assessorEntityId: this.options.assessment ? this.options.assessment.assessorEntityId : null,
@@ -1061,9 +1064,9 @@
                   triggeringElement: this
                 });
               }
-            }, this));
-          }
-        }, this));
+          }, this));
+        }
+      }, this));
     }
   
   });
