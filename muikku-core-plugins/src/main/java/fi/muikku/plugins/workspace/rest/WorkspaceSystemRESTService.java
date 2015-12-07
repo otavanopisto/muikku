@@ -219,9 +219,8 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
           }
         }
         else {
-          UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
-              "PYRAMUS",
-              pyramusTeacherId);
+          UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(
+              pyramusCourseTeacher.getUserIdentifier());
           if (userSchoolDataIdentifier == null) {
             logger.severe(String.format("Unable to fix missing workspace teacher: UserSchoolDataIdentifier for Pyramus teacher %s not found", pyramusTeacherId));
           }
