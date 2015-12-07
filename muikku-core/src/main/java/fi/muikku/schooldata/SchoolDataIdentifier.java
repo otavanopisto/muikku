@@ -9,6 +9,13 @@ public class SchoolDataIdentifier {
     this.identifier = identifier;
     this.dataSource = dataSource;
   }
+  
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof SchoolDataIdentifier &&
+        StringUtils.equals(identifier, ((SchoolDataIdentifier) o).identifier) &&
+        StringUtils.equals(dataSource, ((SchoolDataIdentifier) o).dataSource);
+  }
 
   public String getDataSource() {
     return dataSource;

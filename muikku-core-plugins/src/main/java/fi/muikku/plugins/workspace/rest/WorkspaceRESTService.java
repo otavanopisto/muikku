@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -90,6 +91,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -5286350366083446537L;
   
+  @Inject
+  private Logger logger;
+
   @Inject
   private WorkspaceController workspaceController;
   
@@ -908,10 +912,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = null;
 
     SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(workspaceUser.getUserIdentifier().getIdentifier(), workspaceUser.getUserIdentifier().getDataSource());
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier (workspaceEntity, userIdentifier);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userIdentifier);
     if (workspaceUserEntity != null) {
       userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
     } else {
+      logger.severe(String.format("Missing WorkspaceUserEntity for user %s in workspace %s", userIdentifier.getIdentifier(), workspaceEntity.getIdentifier()));
       userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());  
     }
     
