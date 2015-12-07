@@ -508,9 +508,6 @@
   $.widget("custom.evaluationLoader", {
     
     _create : function() {
-      this._pendingStudentLoads = [];
-      this._loadingStudent = false;
-
       this._pendingWorkspaceMaterialReplyLoads = [];
       this._loadingWorkspaceMaterialReplies = false;
       this._materialHtml = {};
@@ -569,17 +566,6 @@
       }
     },
     
-    loadStudent: function (id, callback) {
-      this._pendingStudentLoads.push({
-        id: id,
-        callback: callback
-      });
-      
-      if (!this._loadingStudent) {
-        this._loadNextStudent();
-      }
-    },
-    
     loadWorkspaceMaterialRepliesAndEvaluations: function (workspaceEntityId, workspaceMaterialId, studentEntityId, callback) {
       mApi().workspace.workspaces.materials.compositeMaterialReplies
         .read(workspaceEntityId, workspaceMaterialId, {
@@ -602,28 +588,7 @@
             }
           }, this));
         }, this)); 
-    },
-    
-    _loadNextStudent: function () {
-      if (this._pendingStudentLoads.length) { 
-        this._loadingStudent = true;
-        var pendingLoad = this._pendingStudentLoads.shift();
-        
-        // TODO: remove async false
-        mApi({async: false}).user.users.basicinfo
-          .read(pendingLoad.id)
-          .callback($.proxy(function (err, user) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              pendingLoad.callback(user);
-            }
-            
-            this._loadingStudent = false;
-            this._loadNextStudent();
-          }, this)); 
-      }
-    },
+    }
   });
   
   $.widget("custom.evaluation", {
@@ -793,6 +758,7 @@
               studentEntityId: workspaceUser.userId,
               studentFirstName: workspaceUser.firstName,
               studentLastName: workspaceUser.lastName,
+              studentStudyProgrammeName: workspaceUser.studyProgrammeName,
               assessment: workspaceAssessment
             })
             .appendTo(this.element.find('.evaluation-students'));
@@ -997,13 +963,27 @@
     
     _create : function() {
       this._displayName = this.options.studentFirstName + ' ' + this.options.studentLastName;
+      this._studyProgrammeName = this.options.studentStudyProgrammeName;
       
-      this.element.addClass('evaluation-student-wrapper evaluation-student-pending');
+      this.element.addClass('evaluation-student-wrapper');
       this.element.append($('<div>').addClass('evaluation-student-picture'));
       this.element.append($('<div>').addClass('evaluation-student-name').text(this._displayName));
-
-      $('#evaluation').on("viewInitialized", $.proxy(this._onEvaluationViewInitialized, this));
-      $('#evaluation').on("viewScroll", $.proxy(this._onEvaluationViewScroll, this));
+      
+      if (this.options.assessment) {
+        this.element.removeClass('workspace-evaluation-requested');
+        
+        var evaluatedDate = $('<div>')
+          .addClass('workspace-evaluated-date')
+          .text(formatDate(new Date(this.options.assessment.evaluated)));
+        
+        if (this.element.hasClass('workspace-evaluation-requested')) {
+          this.element.find('workspace-evaluation-requested-date').before(evaluatedDate);
+        } else {
+          evaluatedDate.prependTo(this.element);
+        }
+        
+        this.element.addClass('workspace-evaluated');
+      }
 
       this.element.on("click", $.proxy(this._onClick, this));
     },
@@ -1022,19 +1002,6 @@
     
     workspaceStudentId: function () {
       return this.options.workspaceStudentId;
-    },
-    
-    _loadBasicInfo: function () {
-      this.element
-        .removeClass('evaluation-student-pending')
-        .addClass('evaluation-student-loading');
-      
-      $('#evaluation').evaluationLoader('loadStudent', this.studentEntityId(), $.proxy(function (user) {
-        this.element
-          .removeClass('evaluation-student-pending evaluation-student-loading')
-          .addClass('evaluation-student-loaded');
-        this._onBasicInfoLoaded(user);
-      }, this));
     },
     
     _onClick: function (event) {
@@ -1080,42 +1047,6 @@
             }, this));
           }
         }, this));
-    },
-
-    _onEvaluationViewInitialized: function (event, data) {
-      if (this.element.hasClass('evaluation-student-pending')) {
-        var viewWidth = $(event.target).width();
-        var studentOffset = this.element.offset();
-        if (studentOffset.left < viewWidth) {
-          this._loadBasicInfo();  
-        }
-      }
-    },
-    
-    _onEvaluationViewScroll: function (event, data) {
-      if (this.element.hasClass('evaluation-student-pending')) {
-        var viewWidth = $(event.target).width();
-        var studentOffset = this.element.offset();
-        if ((studentOffset.left - data.viewOffsetChangeX) < (viewWidth)) {
-          this._loadBasicInfo();  
-        }
-      }
-    },
-    
-    _onBasicInfoLoaded: function (user) {
-      this._studyProgrammeName = user.studyProgrammeName;
-      if(this.options.assessment){
-        this.element.removeClass('workspace-evaluation-requested');
-        var evaluatedDate = $('<div>')
-          .addClass('workspace-evaluated-date')
-          .text(formatDate(new Date(this.options.assessment.evaluated)));
-        if(this.element.hasClass('workspace-evaluation-requested')){
-          this.element.find('workspace-evaluation-requested-date').before(evaluatedDate);
-        }else{
-          evaluatedDate.prependTo(this.element);
-        }
-        this.element.addClass('workspace-evaluated');
-      }
     }
   
   });
