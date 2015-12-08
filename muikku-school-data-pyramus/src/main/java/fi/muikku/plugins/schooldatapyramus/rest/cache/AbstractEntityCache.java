@@ -96,7 +96,9 @@ public abstract class AbstractEntityCache {
   }
 
   public void clear() {
+    int size = cache.size();
     cache.clear();
+    logger.info(String.format("(%s) cache was cleared. %d cached entities released", getType(), size));
   }
   
   public abstract int getMaxEntries();
