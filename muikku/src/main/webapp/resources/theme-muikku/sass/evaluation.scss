@@ -134,12 +134,17 @@ body.evaluation {
         border-left:1px solid #abe6ff;
         cursor:pointer;
         
+        &:first-child {
+          border-left:none;
+        }
+        
         label {
           display:inline-block;
           margin:0 0 0 10px;
           font-weight:300;
           font-size:16px;
           cursor:pointer;
+          text-shadow:0 0 5px #fff;
         }
         
         input {
@@ -242,10 +247,6 @@ body.evaluation {
       text-align:center;
       transition:opacity 1s ease-in-out, transform 1s ease-in-out;
       position:relative;
-      
-      &.evaluation-student-pending {
-        opacity: 0.5;
-      }
       
       &.evaluation-student-loaded {
         opacity: 1;
