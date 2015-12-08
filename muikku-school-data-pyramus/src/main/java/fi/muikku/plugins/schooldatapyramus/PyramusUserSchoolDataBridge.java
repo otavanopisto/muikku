@@ -55,7 +55,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Inject
   private PyramusIdentifierMapper identifierMapper;
-
+  
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
   
@@ -207,7 +207,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       UnexpectedSchoolDataBridgeException {
     Long studentId = identifierMapper.getPyramusStudentId(identifier);
     if (studentId != null) {
-      return createStudentEntity(findPyramusStudent(studentId));
+      Student student = findPyramusStudent(studentId);
+      return createStudentEntity(student);
     }
 
     Long staffId = identifierMapper.getPyramusStaffId(identifier);

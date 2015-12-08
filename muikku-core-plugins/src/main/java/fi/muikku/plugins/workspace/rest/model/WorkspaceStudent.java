@@ -1,17 +1,18 @@
 package fi.muikku.plugins.workspace.rest.model;
 
-public class WorkspaceUser {
+public class WorkspaceStudent {
 
-  public WorkspaceUser() {
+  public WorkspaceStudent() {
   }
 
-  public WorkspaceUser(String id, Long workspaceId, Long userId, String firstName, String lastName, Boolean archived) {
+  public WorkspaceStudent(String id, Long workspaceId, Long userId, String firstName, String lastName, String studyProgrammeName, Boolean archived) {
     super();
     this.id = id;
     this.workspaceId = workspaceId;
     this.userId = userId;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.studyProgrammeName = studyProgrammeName;
     this.setArchived(archived);
   }
 
@@ -55,6 +56,14 @@ public class WorkspaceUser {
     this.lastName = lastName;
   }
   
+  public String getStudyProgrammeName() {
+    return studyProgrammeName;
+  }
+  
+  public void setStudyProgrammeName(String studyProgrammeName) {
+    this.studyProgrammeName = studyProgrammeName;
+  }
+  
   public Boolean getArchived() {
     return archived;
   }
@@ -63,9 +72,12 @@ public class WorkspaceUser {
     this.archived = archived;
   }
 
+  // TODO: firstName, lastName and studyProgrammeName do not belong to this resource
+  
   private String id;
   private String firstName;
   private String lastName;
+  private String studyProgrammeName;
   private Long workspaceId;
   private Long userId;
   private Boolean archived;

@@ -29,6 +29,14 @@ public class UserController {
     return userSchoolDataController.findUser(schoolDataSource, userIdentifier);
   }
 
+  public User findUserByIdentifier(SchoolDataIdentifier userIdentifier) {
+    if (userIdentifier == null) {
+      return null; 
+    }
+    
+    return findUserByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
+  }
+
   public User findUserByUserEntityDefaults(UserEntity userEntity) {
     return findUserByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
   }
