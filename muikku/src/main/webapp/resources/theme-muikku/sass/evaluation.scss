@@ -1098,7 +1098,6 @@ body.evaluation {
     }
     
     .ui-dialog-buttonpane {
-      text-align:center;
       width:100%;
       max-width:50%;
       min-width:400px;
@@ -1113,6 +1112,8 @@ body.evaluation {
       .ui-dialog-buttonset {
         float:none;
         position:relative;
+        text-align:right;
+        padding:0 30px 0 0;
         
         button {
           border-radius:0px;
