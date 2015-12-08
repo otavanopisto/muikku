@@ -23,13 +23,6 @@
           <span class="icon-arrow-down w-tooltip" title="#{i18n.text['plugin.evaluation.workspacelist.selectWorkspace.tooltip']}"></span>
         </div>
         
-        <div class="evaluation-filters">
-          <span>Assessment requested</span>
-          <input type="checkbox" id="filter-students-by-assessment-requested" checked="checked"/>
-          <span>Not assessed</span>
-          <input type="checkbox" id="filter-students-by-not-assessed"/>
-        </div>
-         
         <div class="evaluation-available-workspaces" data-hidden="1">
         <ui:repeat var="myWorkspace" value="#{evaluationIndexBackingBean.myWorkspaces}">
           <div class="evaluation-workspace-item">
@@ -46,6 +39,19 @@
           </div>
         </ui:repeat>
         </div>        
+      </div>
+      
+      <div class="evaluation-filters">
+        <div class="evaluation-filter">
+          <label for="filter-students-by-assessment-requested" class="filter-title">#{i18n.text['plugin.evaluation.evaluationFilters.assessmentRequested']}</label>
+          <input type="checkbox" id="filter-students-by-assessment-requested" checked="checked"/>
+        </div>
+        
+        <div class="evaluation-filter">
+          <label for="filter-students-by-not-assessed" class="filter-title">#{i18n.text['plugin.evaluation.evaluationFilters.notAssessed']}</label>
+          <input type="checkbox" id="filter-students-by-not-assessed"/>  
+        </div>
+        
       </div>
     </div>
   </ui:define>
