@@ -615,7 +615,11 @@
   
   $.widget("custom.evaluation", {
     options: {
-      workspaceEntityId: null
+      workspaceEntityId: null,
+      filters: {
+        requestedAssessment: null,
+        assessed: null
+      }
     },
     
     _create : function() {
@@ -623,6 +627,7 @@
       this._workspaceEvaluableAssignments = null;
       this._viewOffsetX = 0;
       this._viewOffsetY = 0;
+      this._filters = this.options.filters;
       
       $('<button>')
         .addClass('prevPage icon-arrow-left')
@@ -677,10 +682,27 @@
         viewOffsetChangeY: y
       });
     },
-
+    
+    filter: function (filter, value) {
+      if (value === undefined) {
+        return this._filters[filter];
+      } else {
+        this._filters[filter] = value;
+        this._reloadStudents();      
+      }
+    },
+    
+    _reloadStudents: function () {
+      this.element.find('.evaluation-student-wrapper').remove();
+      this.element.find('.evaluation-assignments').empty();
+      this._loadStudents();
+    },
+    
     _loadStudents: function () {
+      this.element.addClass('loading');
+      
       mApi().workspace.workspaces.students
-        .read(this.options.workspaceEntityId, { archived: false })
+        .read(this.options.workspaceEntityId,  $.extend({ archived: false }, this._filters))
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -807,6 +829,8 @@
           
           this._loadAssessmentRequests();
           this._loadMaterials();
+          
+          this.element.removeClass('loading');
         }
       }, this));
     },
@@ -1106,8 +1130,20 @@
     
     $('#evaluation').evaluationLoader();
     $('#evaluation').evaluation({
-      workspaceEntityId: workspaceEntityId
+      workspaceEntityId: workspaceEntityId,
+      filters: {
+        requestedAssessment: $('#filter-students-by-assessment-requested').prop('checked') ? true : null,
+        assessed: $('#filter-students-by-not-assessed').prop('checked') ? false : null
+      }
     }); 
+    
+    $('#filter-students-by-assessment-requested').on("click", function () {
+      $('#evaluation').evaluation('filter', 'requestedAssessment', $(this).prop('checked') ? true : null);
+    });
+
+    $('#filter-students-by-not-assessed').on("click", function () {
+      $('#evaluation').evaluation('filter', 'assessed', $(this).prop('checked') ? false : null);
+    });
     
     $('.evaluation-available-workspaces').perfectScrollbar({
       wheelSpeed:3,
