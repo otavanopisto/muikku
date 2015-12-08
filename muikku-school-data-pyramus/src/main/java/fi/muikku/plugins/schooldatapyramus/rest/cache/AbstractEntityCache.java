@@ -60,7 +60,7 @@ public abstract class AbstractEntityCache {
     }
     
     if (cache.keySet().size() > getMaxEntries()) {
-      cache.clear();
+      clear();
     }
     
     CachedEntity<T> cachedEntity = new CachedEntity<T>(data, expires);
@@ -93,6 +93,10 @@ public abstract class AbstractEntityCache {
     entityCacheStatistics.addMiss(getType(), path);
 
     return null;
+  }
+
+  public void clear() {
+    cache.clear();
   }
   
   public abstract int getMaxEntries();
