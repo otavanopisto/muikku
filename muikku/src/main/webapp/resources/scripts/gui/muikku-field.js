@@ -540,7 +540,7 @@
         $(this.element)
           .removeClass('muikku-field-unsaved')
           .addClass('muikku-field-saving');
-
+        
         var page = $(this.element).closest('.workspace-materials-view-page');
         var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
         var workspaceMaterialId =  page.muikkuMaterialPage('workspaceMaterialId'); 
@@ -557,6 +557,14 @@
         if (this._saveFailedTimeoutId == null) {
             this._saveFailedTimeoutId = setTimeout($.proxy(this._saveFailed, this), this.options.saveFailedTimeout);
         }
+        
+        $(this.element).on('muikku-field-progress', $.proxy(function(e){
+          if (this._saveFailedTimeoutId != null) {
+            clearTimeout(this._saveFailedTimeoutId);
+            this._saveFailedTimeoutId = setTimeout($.proxy(this._saveFailed, this), this.options.saveFailedTimeout);
+          }
+        }, this));
+        
       }
     },
     _saveFailed: function() {
