@@ -361,6 +361,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response listWorkspaceStudents(@PathParam("ID") Long workspaceEntityId,
       @QueryParam("archived") Boolean archived,
       @QueryParam("requestedAssessment") Boolean requestedAssessment,
+      @QueryParam("assessed") Boolean assessed,
       @QueryParam("orderBy") String orderBy) {
 
     // Workspace
@@ -399,6 +400,13 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (requestedAssessment != null) {
           boolean hasAssessmentRequest = workspaceUserEntity != null && !assessmentRequestController.listByWorkspaceUser(workspaceUserEntity).isEmpty();
           if (requestedAssessment != hasAssessmentRequest) {
+            continue;
+          }
+        }
+        
+        if (assessed != null) {
+          boolean isAssessed = !gradingController.listWorkspaceAssessments(workspaceUser.getWorkspaceIdentifier(), workspaceUser.getUserIdentifier()).isEmpty();
+          if (assessed != isAssessed) {
             continue;
           }
         }
