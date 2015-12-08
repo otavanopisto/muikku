@@ -199,18 +199,14 @@
       var showAnswersButton = stateOptions['show-answers-button-visible'] && this.correctAnswers() == 'ON_REQUEST' && this._hasDisplayableAnswers();
       if (showAnswersButton) {
         
-        var correctAnswersButton = this.element.find('.muikku-hide-correct-answers-button');  
-        if (correctAnswersButton) {
-          $(correctAnswersButton)
+        this.element.find('.muikku-hide-correct-answers-button, .muikku-show-correct-answers-button')  
           .removeClass("muikku-hide-correct-answers-button")
           .addClass("muikku-show-correct-answers-button")
           .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'));
-        }
-          
+        
         this.element.find('.muikku-show-correct-answers-button').show();
       } else {
-        
-        this.element.find('.muikku-show-correct-answers-button').hide();
+        this.element.find('.muikku-hide-correct-answers-button, .muikku-show-correct-answers-button').hide();
       }
       
       this.workspaceMaterialState(state);
@@ -566,7 +562,7 @@
     _propagateChange: function () {
       $(this.element)
         .removeClass('muikku-field-saved muikku-field-saving')
-        .addClass('muikku-field-unsaved');
+        .addClass('muikku-field-unsaved'); 
       
       if (this._saveTimeoutId) {
         clearTimeout(this._saveTimeoutId);
@@ -602,6 +598,7 @@
 
       // TODO: Shouldn't this be workspaceMaterialId insteadOf materialId?
       if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
+
         if (message.originTicket == $(document).muikkuWebSocket("ticket")) {
           $(this.element)
             .removeClass('muikku-field-unsaved muikku-field-saving')
@@ -616,7 +613,7 @@
             .fadeOut(300, function() {
               $(this).remove();
             });
-          
+
         } else {
           $(this.element)
             .removeClass('muikku-field-unsaved muikku-field-saving')
