@@ -1026,6 +1026,7 @@
         this.element.addClass('workspace-evaluated');
       }
 
+      this.element.addClass('evaluation-student-loaded');
       this.element.on("click", $.proxy(this._onClick, this));
     },
     
