@@ -90,7 +90,9 @@ class UserPyramusClient implements PyramusClient, Serializable {
       }
 
       T result = restClient.get(client, getAccessToken(), path, type);
-      entityCache.put(path, result);
+      if (result != null) {
+        entityCache.put(path, result);
+      }
       
       return result;
     } finally {
