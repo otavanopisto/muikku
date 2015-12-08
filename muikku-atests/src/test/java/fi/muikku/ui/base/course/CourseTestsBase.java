@@ -7,16 +7,12 @@ import org.openqa.selenium.By;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 
-import fi.muikku.SqlAfter;
-import fi.muikku.SqlBefore;
 import fi.muikku.atests.Workspace;
 import fi.muikku.ui.AbstractUITest;
 
 public class CourseTestsBase extends AbstractUITest {
   
   @Test
-  @SqlBefore("sql/workspace1Setup.sql")
-  @SqlAfter("sql/workspace1Delete.sql")
   public void courseExistsTest() throws Exception {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
