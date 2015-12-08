@@ -27,5 +27,10 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
 
     getEntityManager().persist(announcement);
     return announcement;
+ }
+  
+  public void deleteById(Long id) {
+    Announcement announcement = findById(id);
+    getEntityManager().remove(announcement);
   }
 }

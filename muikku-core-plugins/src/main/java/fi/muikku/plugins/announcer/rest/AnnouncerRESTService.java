@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -20,7 +21,6 @@ import fi.muikku.plugins.announcer.model.Announcement;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 import fi.otavanopisto.security.rest.RESTPermit;
-
 import fi.muikku.plugins.announcer.AnnouncerPermissions;
 
 @RequestScoped
@@ -86,5 +86,13 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
     return restModel;
+  }
+
+  @DELETE
+  @Path("/announcements/{ID}")
+  @RESTPermit(AnnouncerPermissions.CREATE_ANNOUNCEMENT)
+  public Response deleteAnnouncement(@PathParam("ID") Long announcementId) {
+    announcementController.deleteById(announcementId);
+    return Response.noContent().build();
   }
 }

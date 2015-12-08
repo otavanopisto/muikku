@@ -38,4 +38,8 @@ public class AnnouncementController {
   public Announcement findById(Long id) {
     return announcementDAO.findById(id);
   }
+  
+  public void deleteById(Long id) {
+    announcementDAO.deleteById(id);
+  }
 }
