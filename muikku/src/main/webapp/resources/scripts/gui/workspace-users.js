@@ -149,13 +149,13 @@
     _archive: function(userElement) {
       var workspaceEntityId = this.options.workspaceEntityId;
       var workspaceUserEntityId = userElement.data('user-id');
-      mApi().workspace.workspaces.users.read(workspaceEntityId, workspaceUserEntityId).callback(function (err, workspaceUserEntity) {
+      mApi().workspace.workspaces.students.read(workspaceEntityId, workspaceUserEntityId).callback(function (err, workspaceUserEntity) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           workspaceUserEntity.archived = true;
-          mApi().workspace.workspaces.users.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
+          mApi().workspace.workspaces.students.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
@@ -170,13 +170,13 @@
     _unarchive: function(userElement) {
       var workspaceEntityId = this.options.workspaceEntityId;
       var workspaceUserEntityId = userElement.data('user-id');
-      mApi().workspace.workspaces.users.read(workspaceEntityId, workspaceUserEntityId).callback(function (err, workspaceUserEntity) {
+      mApi().workspace.workspaces.students.read(workspaceEntityId, workspaceUserEntityId).callback(function (err, workspaceUserEntity) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           workspaceUserEntity.archived = false;
-          mApi().workspace.workspaces.users.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
+          mApi().workspace.workspaces.students.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }

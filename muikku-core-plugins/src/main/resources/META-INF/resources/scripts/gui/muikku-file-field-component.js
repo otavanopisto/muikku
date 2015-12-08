@@ -229,7 +229,7 @@
           modal: true, 
           dialogClass: this.options.confirmRemoveDialogClass,
           buttons: [{
-            'text': dialog.attr('data-button-delete-text'),
+            'text': dialog.attr('data-button-remove-text'),
             'class': 'delete-button',
             'click': $.proxy(function(event) {
               this._removeFiles(file);
