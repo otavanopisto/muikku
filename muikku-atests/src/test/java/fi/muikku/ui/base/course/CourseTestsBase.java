@@ -1,22 +1,16 @@
 package fi.muikku.ui.base.course;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
-import fi.muikku.TestUtilities;
 import fi.muikku.atests.Workspace;
 import fi.muikku.ui.AbstractUITest;
-import fi.muikku.ui.PyramusMocks;
-import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
 public class CourseTestsBase extends AbstractUITest {
   
@@ -24,115 +18,77 @@ public class CourseTestsBase extends AbstractUITest {
   @SqlBefore("sql/workspace1Setup.sql")
   @SqlAfter("sql/workspace1Delete.sql")
   public void courseExistsTest() throws Exception {
-    PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    PyramusMocks.workspace1PyramusMock();  
-
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    
-    asAdmin().get("/test/reindex");
-    
-    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-    waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
-    waitForElementToBePresent(By.className("workspace-title"));
-    boolean elementExists = getWebDriver().findElements(By.className("workspace-title")).size() > 0;
-    WireMock.reset();
-    assertTrue(elementExists);
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    try{
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      waitForElementToBePresent(By.className("workspace-title"));
+      boolean elementExists = getWebDriver().findElements(By.className("workspace-title")).size() > 0;
+      WireMock.reset();
+      assertTrue(elementExists);
+    }finally{
+      deleteWorkspace(workspace.getId());  
+    }
   }
 
   @Test
-  @SqlBefore(value = {"sql/workspace1Setup.sql"})
-  @SqlAfter(value = {"sql/workspace1Delete.sql"})
   public void courseHomeButtonExistsTest() throws Exception {
-    PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    PyramusMocks.workspace1PyramusMock();  
-
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-
-    asAdmin().get("/test/reindex");
-    
-    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-    waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
-    waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
-    boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-home")).size() > 0;
-    WireMock.reset();
-    assertTrue(elementExists);
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    try{
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
+      boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-home")).size() > 0;
+      WireMock.reset();
+      assertTrue(elementExists);
+    }finally{
+      deleteWorkspace(workspace.getId());  
+    }
   }
  
   @Test
-  @SqlBefore(value = {"sql/workspace1Setup.sql"})
-  @SqlAfter(value = {"sql/workspace1Delete.sql"})
   public void courseGuideButtonExistsTest() throws Exception {
-    PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    PyramusMocks.workspace1PyramusMock();  
-
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-
-    asAdmin().get("/test/reindex");
-    
-    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-    waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
-    waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
-    boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-guides")).size() > 0;
-    WireMock.reset();
-    assertTrue(elementExists);
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    try{
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
+      boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-guides")).size() > 0;
+      WireMock.reset();
+      assertTrue(elementExists);
+    }finally{
+      deleteWorkspace(workspace.getId());  
+    }
   }
   
   @Test
-  @SqlBefore("sql/workspace1Setup.sql")
-  @SqlAfter("sql/workspace1Delete.sql")
   public void courseMaterialButtonTest() throws Exception {
-    PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    PyramusMocks.workspace1PyramusMock();  
-
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-
-    asAdmin().get("/test/reindex");
-    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-    waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
-    waitForElementToBePresent(By.className("workspace-title"));
-    boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-materials")).size() > 0;
-    WireMock.reset();
-    assertTrue(elementExists);
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    try{
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      waitForElementToBePresent(By.className("workspace-title"));
+      boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-materials")).size() > 0;
+      WireMock.reset();
+      assertTrue(elementExists);
+    }finally{
+      deleteWorkspace(workspace.getId());  
+    }
   }
   
   @Test
-  @SqlBefore("sql/workspace1Setup.sql")
-  @SqlAfter("sql/workspace1Delete.sql")
   public void courseDiscussionButtonTest() throws Exception {
-    PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    PyramusMocks.workspace1PyramusMock();  
-
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
-    
-    asAdmin().get("/test/reindex");
-    
-    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
-    waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/workspace/testcourse");
-    waitForElementToBePresent(By.className("workspace-title"));
-    boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-discussions")).size() > 0;
-    WireMock.reset();
-    assertTrue(elementExists);
+    loginAdmin();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    try{
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      waitForElementToBePresent(By.className("workspace-title"));
+      boolean elementExists = getWebDriver().findElements(By.className("wi-workspace-dock-navi-button-discussions")).size() > 0;
+      WireMock.reset();
+      assertTrue(elementExists);
+    }finally{
+      deleteWorkspace(workspace.getId());  
+    }
   }
   
   @Test
