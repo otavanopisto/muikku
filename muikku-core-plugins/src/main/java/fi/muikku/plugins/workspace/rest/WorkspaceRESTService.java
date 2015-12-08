@@ -1386,7 +1386,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
     
-    SchoolDataIdentifier userIdentifier = bridgeUser.getIdentifier();
+    SchoolDataIdentifier userIdentifier = bridgeUser.getUserIdentifier();
     User user = userController.findUserByIdentifier(userIdentifier);
     if (user == null) {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
