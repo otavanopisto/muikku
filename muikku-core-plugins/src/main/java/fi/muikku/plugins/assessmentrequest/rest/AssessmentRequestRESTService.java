@@ -140,16 +140,36 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     
-    SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestId);
     if (assessmentRequestId == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid assessmentRequestIdentifier").build();
     }
     
+    SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestId);
+    
+    if(assessmentRequestIdentifier == null){
+      return Response.status(Status.BAD_REQUEST).entity("Invalid assessmentRequestIdentifier").build();
+    }
+    
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    
+    if(workspaceEntity == null){
+      return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build();
+    }
+    
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());    
     
+    if(workspaceUserEntity == null){
+      return Response.status(Status.NOT_FOUND).entity("Workspace user entity not found").build();
+    }
+    
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    
     SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+    
+    if(!sessionController.getLoggedUser().equals(studentIdentifier)){
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     SchoolDataIdentifier workspaceStudentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
     
     WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier, workspaceIdentifier, studentIdentifier);
