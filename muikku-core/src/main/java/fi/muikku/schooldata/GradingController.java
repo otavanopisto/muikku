@@ -1,9 +1,13 @@
 package fi.muikku.schooldata;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.dao.grading.GradingScaleEntityDAO;
 import fi.muikku.dao.grading.GradingScaleItemEntityDAO;
@@ -18,6 +22,9 @@ import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 
 public class GradingController {
+  
+  @Inject
+  private Logger logger;
   
 	@Inject
 	private GradingSchoolDataController gradingSchoolDataController;
@@ -109,6 +116,15 @@ public class GradingController {
   public List<WorkspaceAssessment> listWorkspaceAssessments(String schoolDataSource, String workspaceIdentifier, String studentIdentifier){
     return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);
   }
+
+  public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
+    if (!StringUtils.equals(workspaceIdentifier.getDataSource(), studentIdentifier.getDataSource())) {
+      logger.severe("Could not list workspace student assessments because student school data source and workspace school data sources did not match");
+      return Collections.emptyList();
+    }
+
+    return listWorkspaceAssessments(studentIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
+  }
  
   public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
     return gradingSchoolDataController.updateWorkspaceAssessment(schoolDataSource,
@@ -144,7 +160,7 @@ public class GradingController {
   public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String schoolDataSource, String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     return gradingSchoolDataController.listWorkspaceAssessmentRequests(schoolDataSource, workspaceIdentifier, studentIdentifier);
   }
-
+  
   public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String schoolDataSource, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     return gradingSchoolDataController.listWorkspaceAssessmentRequests(schoolDataSource, studentIdentifier);
   }

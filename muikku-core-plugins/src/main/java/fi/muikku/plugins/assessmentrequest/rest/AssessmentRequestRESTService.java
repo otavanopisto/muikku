@@ -106,18 +106,12 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
     
-    try {
-      List<WorkspaceAssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceUser(workspaceUserEntity);
-      
-      if (!assessmentRequests.isEmpty())
-        return Response.ok(restModel(assessmentRequests.get(0))).build();
-      else
-        return Response.noContent().build();
-    } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-      logger.log(Level.SEVERE, "Couldn't list workspace assessment requests.", e);
-      
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
+    List<WorkspaceAssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceUser(workspaceUserEntity);
+    
+    if (!assessmentRequests.isEmpty())
+      return Response.ok(restModel(assessmentRequests.get(0))).build();
+    else
+      return Response.noContent().build();
   }
   
   @GET
@@ -205,11 +199,14 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
-  private List<AssessmentRequestRESTModel> restModel(List<WorkspaceAssessmentRequest> wars) {
+  private List<AssessmentRequestRESTModel> restModel(List<WorkspaceAssessmentRequest> workspaceAssessmentRequests) {
     List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
 
-    for (WorkspaceAssessmentRequest war : wars) {
-      restAssessmentRequests.add(restModel(war));
+    for (WorkspaceAssessmentRequest workspaceAssessmentRequest : workspaceAssessmentRequests) {
+      AssessmentRequestRESTModel restModel = restModel(workspaceAssessmentRequest);
+      if (restModel != null) {
+        restAssessmentRequests.add(restModel);
+      }
     }
     
     return restAssessmentRequests;
@@ -220,7 +217,12 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(
         workspaceAssessmentRequest.getWorkspaceUserIdentifier(),
         workspaceAssessmentRequest.getWorkspaceUserSchoolDataSource());
+    
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+    if (workspaceUserEntity == null) {
+      logger.log(Level.SEVERE, String.format("Could not find WorkspaceUserEntity for workspace assessment requets %s", workspaceAssessmentRequest.getIdentifier()));
+      return null;
+    }
     
     AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel(
         workspaceAssessmentRequest.getIdentifier(), 

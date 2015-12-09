@@ -1,7 +1,10 @@
 package fi.muikku.plugins.assessmentrequest;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -25,6 +28,9 @@ import fi.otavanopisto.security.PermitContext;
 @Dependent
 public class AssessmentRequestController {
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private AssessmentRequestMessageIdDAO assessmentRequestMessageIdDAO;
 
@@ -59,14 +65,17 @@ public class AssessmentRequestController {
         workspaceEntity.getIdentifier());
   }
 
-  public List<WorkspaceAssessmentRequest> listByWorkspaceUser(WorkspaceUserEntity workspaceUserEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-    
-    List<WorkspaceAssessmentRequest> workspaceAssessmentRequests = gradingController.listWorkspaceAssessmentRequests(
-        workspaceEntity.getDataSource().getIdentifier(), 
-        workspaceEntity.getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-    return workspaceAssessmentRequests;
+  public List<WorkspaceAssessmentRequest> listByWorkspaceUser(WorkspaceUserEntity workspaceUserEntity) {
+    try {
+      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+      return gradingController.listWorkspaceAssessmentRequests(
+          workspaceEntity.getDataSource().getIdentifier(), 
+          workspaceEntity.getIdentifier(),
+          workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+    } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+      logger.log(Level.SEVERE, String.format("Failed tolist assessment requests for %d", workspaceUserEntity.getId()), e);
+      return Collections.emptyList();
+    }
   }
   
   public WorkspaceAssessmentState getWorkspaceAssessmentState(WorkspaceUserEntity workspaceUserEntity) {
