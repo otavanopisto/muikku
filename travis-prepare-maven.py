@@ -29,10 +29,9 @@ ET.SubElement(oo_releases, 'id').text = 'otavanopisto-releases'
 ET.SubElement(oo_releases, 'username').text = os.environ['OOREL_USERNAME']
 ET.SubElement(oo_releases, 'password').text = os.environ['OOREL_PASSWORD']
 
-repositories = settings.find('s:repositories', {'s': ns})
-for elem in (repositories
-        .findall("./s:repository[s:id='codehaus-snapshots']", {'s':ns})):
-    repositories.remove(elem)
+for elem in (settings.findall(".//s:repository[s:id='codehaus-snapshots']", 
+                              {'s':ns})):
+    elem.find('s:url', {'s':ns}).text = 'https://oss.sonatype.org/content/repositories/codehaus-snapshots/'
 
 m2.write(homedir + '/.m2/mySettings.xml',
          xml_declaration = True,
