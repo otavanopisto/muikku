@@ -46,6 +46,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         logout();
         loginAdmin();
         navigate(String.format("/evaluation"), true);
+        waitAndClick("#filter-students-by-assessment-requested");
         waitAndClick(".assignment-submitted");
         waitAndClick(".cke_contents");
         getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
@@ -95,6 +96,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         logout();
         loginAdmin();
         navigate(String.format("/evaluation"), true);
+        waitAndClick("#filter-students-by-assessment-requested");
         waitAndClick(".assignment-submitted");
         waitAndClick(".cke_contents");
         getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
@@ -162,6 +164,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         logout();
         loginAdmin();
         navigate(String.format("/evaluation"), true);
+        waitAndClick("#filter-students-by-assessment-requested");
         waitAndClick(".evaluation-student-loaded");
         waitAndClick(".cke_contents");
         getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
