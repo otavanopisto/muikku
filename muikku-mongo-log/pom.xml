@@ -3,7 +3,7 @@
     <parent>
         <groupId>fi.muikku</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.82</version>
+        <version>1.0.83-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
