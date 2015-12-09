@@ -198,19 +198,27 @@
             
             var workspaceEntityId = parseInt($('.workspaceEntityId').val(), 10);
             
-            mApi({async: false}).assessmentrequest.workspace.request.read(workspaceEntityId).callback(function(err, result) {
-              var assessmentRequestId = result.id;
-              
-              mApi({async: false}).assessmentrequest.workspace.assessmentRequests.del(workspaceEntityId, assessmentRequestId).callback(function(err, result) {
-                if (err) {
-                  $('.notification-queue').notificationQueue('notification', 'error', err);
+            mApi().assessmentrequest.workspace.assessmentRequests.read(workspaceEntityId, { studentIdentifier: MUIKKU_LOGGED_USER }).callback($.proxy(function(err, result) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                if (result && result.length) {
+                  var assessmentRequestId = result[result.length - 1].id;
+                  mApi().assessmentrequest.workspace.assessmentRequests.del(workspaceEntityId, assessmentRequestId).callback($.proxy(function(err, result) {
+                    if (err) {
+                      $('.notification-queue').notificationQueue('notification', 'error', err);
+                    } else {
+                      $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
+                    }
+    
+                    $(this).dialog("destroy").remove();
+                  }, this));
                 } else {
-                  $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
+                  // TODO: Localize
+                  $('.notification-queue').notificationQueue('notification', 'error', 'Could not find assessment request');
                 }
-              });
-            });
-            
-            $(this).dialog("destroy").remove();
+              }
+            }, this));
           }
         }, {
           'text': dialog.data('button-cancel-text'),

@@ -40,6 +40,8 @@ public class SessionBackingBean {
     testsRunning = StringUtils.equals("true", System.getProperty("tests.running"));
     bugsnagApiKey = systemSettingsController.getSetting("bugsnagApiKey");
     bugsnagEnabled = StringUtils.isNotBlank(bugsnagApiKey);    
+    loggedUserId = null;
+    loggedUser = null;
     
     if (sessionController.isLoggedIn()) {
       UserEntity loggedUser = sessionController.getLoggedUserEntity();
@@ -57,6 +59,8 @@ public class SessionBackingBean {
         }
       }
 
+      this.loggedUserId = sessionController.getLoggedUserEntity().getId();
+      this.loggedUser = sessionController.getLoggedUser().toId();
     }
   }
 
@@ -65,7 +69,11 @@ public class SessionBackingBean {
   }
 
   public Long getLoggedUserId() {
-    return sessionController.isLoggedIn() ? sessionController.getLoggedUserEntity().getId() : null;
+    return loggedUserId;
+  }
+  
+  public String getLoggedUser() {
+    return loggedUser;
   }
 
   public String getResourceLibrary() {
@@ -108,6 +116,8 @@ public class SessionBackingBean {
     return bugsnagEnabled;
   }
   
+  private String loggedUser;
+  private Long loggedUserId;
   private EnvironmentRoleArchetype loggedUserRoleArchetype;
   private String loggedUserName;
   private boolean testsRunning;

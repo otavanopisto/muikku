@@ -27,7 +27,7 @@ import fi.otavanopisto.security.PermitContext;
 
 @Dependent
 public class AssessmentRequestController {
-
+  
   @Inject
   private Logger logger;
   
@@ -56,7 +56,18 @@ public class AssessmentRequestController {
         requestText, 
         new Date());
   }
-  
+
+  public WorkspaceAssessmentRequest findWorkspaceAssessmentRequest(SchoolDataIdentifier assessmentRequestIdentifier, SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
+    try {
+      return gradingController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier.getDataSource(), 
+          assessmentRequestIdentifier.getIdentifier(), 
+          workspaceIdentifier.getIdentifier(), 
+          studentIdentifier.getIdentifier());
+    } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+      logger.log(Level.SEVERE, String.format("Failed to find workspace assessment request (%s)", assessmentRequestIdentifier), e);
+      return null;
+    }
+  }
   
   @Permit (AssessmentRequestPermissions.LIST_WORKSPACE_ASSESSMENTREQUESTS)
   public List<WorkspaceAssessmentRequest> listByWorkspace(@PermitContext WorkspaceEntity workspaceEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
@@ -66,14 +77,14 @@ public class AssessmentRequestController {
   }
 
   public List<WorkspaceAssessmentRequest> listByWorkspaceUser(WorkspaceUserEntity workspaceUserEntity) {
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
     try {
-      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
       return gradingController.listWorkspaceAssessmentRequests(
           workspaceEntity.getDataSource().getIdentifier(), 
           workspaceEntity.getIdentifier(),
           workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-      logger.log(Level.SEVERE, String.format("Failed tolist assessment requests for %d", workspaceUserEntity.getId()), e);
+      logger.log(Level.SEVERE, "Failed to list workspace assessment requests for workspace user entity %d", workspaceUserEntity.getId());
       return Collections.emptyList();
     }
   }
@@ -121,10 +132,10 @@ public class AssessmentRequestController {
     }
   }
 
-  public void deleteWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, String assessmentRequestId) {
+  public void deleteWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, SchoolDataIdentifier assessmentRequestIdentifier) {
     gradingController.deleteWorkspaceAssessmentRequest(
-        workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier(), 
-        assessmentRequestId,
+        assessmentRequestIdentifier.getDataSource(), 
+        assessmentRequestIdentifier.getIdentifier(),
         workspaceUserEntity.getWorkspaceEntity().getIdentifier(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
   }

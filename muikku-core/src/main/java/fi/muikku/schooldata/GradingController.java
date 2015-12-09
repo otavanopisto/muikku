@@ -3,6 +3,7 @@ package fi.muikku.schooldata;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -119,11 +120,11 @@ public class GradingController {
 
   public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
     if (!StringUtils.equals(workspaceIdentifier.getDataSource(), studentIdentifier.getDataSource())) {
-      logger.severe("Could not list workspace student assessments because student school data source and workspace school data sources did not match");
+      logger.log(Level.SEVERE, String.format("Failed to list workspace assessents because workspace and student datasources differ", workspaceIdentifier.getDataSource(), studentIdentifier.getDataSource()));
       return Collections.emptyList();
     }
-
-    return listWorkspaceAssessments(studentIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
+    
+    return gradingSchoolDataController.listWorkspaceAssessments(studentIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
   }
  
   public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){

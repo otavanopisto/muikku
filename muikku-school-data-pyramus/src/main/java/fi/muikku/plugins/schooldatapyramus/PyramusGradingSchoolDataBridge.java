@@ -3,6 +3,8 @@ package fi.muikku.plugins.schooldatapyramus;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -26,6 +28,9 @@ import fi.pyramus.rest.model.Grade;
 
 public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private PyramusClient pyramusClient;
   
@@ -173,10 +178,16 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public WorkspaceAssessmentRequest findWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier,
       String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
-    long id = Long.parseLong(identifier);
-    return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), CourseAssessmentRequest.class));
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    Long id = Long.parseLong(identifier);
+    
+    if ((courseId != null) && (studentId != null) && (id != null)) {
+      return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), CourseAssessmentRequest.class));
+    } else {
+      logger.log(Level.SEVERE, String.format("Could not find WorkspaceAssessmentRequest for courseId %d, studentId %d, id %d", courseId, studentId, id));
+      return null;
+    }
   }
 
   @Override
