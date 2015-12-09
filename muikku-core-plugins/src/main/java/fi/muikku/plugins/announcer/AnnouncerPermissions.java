@@ -25,6 +25,10 @@ public class AnnouncerPermissions extends AbstractMuikkuPermissionCollection imp
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  public static final String LIST_UNARCHIVED_ANNOUNCEMENTS = "LIST_UNARCHIVED_ANNOUNCEMENTS";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
   public static final String FIND_ANNOUNCEMENT = "FIND_ANNOUNCEMENT";
   
   @Override
