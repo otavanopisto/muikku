@@ -763,7 +763,7 @@
     _loadStudentAssessments: function (workspaceStudent) {
       return $.proxy(function (callback) {
         mApi().workspace.workspaces.assessments
-          .read(this.options.workspaceEntityId, {userEntityId: workspaceStudent.userId})
+          .read(this.options.workspaceEntityId, { workspaceStudentIdentifier : workspaceStudent.id })
           .callback(function(err, workspaceAssessments) {
             if (err) {
               callback(err, null);
