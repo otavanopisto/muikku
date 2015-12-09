@@ -1,9 +1,16 @@
 package fi.muikku.plugins.announcer.dao;
 
 import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.announcer.model.Announcement;
+import fi.muikku.plugins.announcer.model.Announcement_;
 
 public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
 	
@@ -24,13 +31,29 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     announcement.setCreated(created);
     announcement.setStartDate(startDate);
     announcement.setEndDate(endDate);
-
+    announcement.setArchived(false);
+    
     getEntityManager().persist(announcement);
     return announcement;
  }
   
-  public void deleteById(Long id) {
+  public void archiveById(Long id) {
     Announcement announcement = findById(id);
-    getEntityManager().remove(announcement);
+    if(announcement != null){
+      announcement.setArchived(true);
+      getEntityManager().persist(announcement);
+    }
+  }
+  
+  public List<Announcement> listUnArchived(){
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+    Root<Announcement> root = criteria.from(Announcement.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.equal(root.get(Announcement_.archived), Boolean.FALSE));
+    
+    return entityManager.createQuery(criteria).getResultList();
   }
 }
