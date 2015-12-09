@@ -29,9 +29,15 @@ ET.SubElement(oo_releases, 'id').text = 'otavanopisto-releases'
 ET.SubElement(oo_releases, 'username').text = os.environ['OOREL_USERNAME']
 ET.SubElement(oo_releases, 'password').text = os.environ['OOREL_PASSWORD']
 
-for elem in (settings.findall(".//s:repository[s:id='codehaus-snapshots']", 
-                              {'s':ns})):
-    elem.find('s:url', {'s':ns}).text = 'https://oss.sonatype.org/content/repositories/codehaus-snapshots/'
+mirrors = settings.find('s:mirrors', {'s': ns})
+if mirrors is None:
+    mirrors = ET.SubElement(settings, 'mirrors')
+
+codehaus_snapshots = ET.SubElement(mirrors, 'mirror')
+ET.SubElement(codehaus_snapshots, 'id').text = 'codehaus-snapshots-mirror'
+ET.SubElement(codehaus_snapshots, 'name').text = 'Codehaus snapshots mirror'
+ET.SubElement(codehaus_snapshots, 'url').text = 'https://oss.sonatype.org/content/repositories/codehaus-snapshots/'
+ET.SubElement(codehaus_snapshots, 'mirrorOf').text = 'codehaus-snapshots'
 
 m2.write(homedir + '/.m2/mySettings.xml',
          xml_declaration = True,
