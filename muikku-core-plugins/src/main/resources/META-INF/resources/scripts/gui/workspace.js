@@ -1,6 +1,12 @@
 (function() {
   'use strict';
   
+  $(document).on('click', '.wi-dock-static-navi-button-evaluation > a.icon-evaluate', function(event){
+    event.preventDefault();
+    var evaluationUrl = $(this).attr('href')+'?workspaceEntityId='+$('.workspaceEntityId').val();
+    window.location.href = evaluationUrl;
+  });
+  
   $(document).on('click', '.workspace-publish-button', function (event) {
     var workspaceEntityId = $('.workspaceEntityId').val();
 
