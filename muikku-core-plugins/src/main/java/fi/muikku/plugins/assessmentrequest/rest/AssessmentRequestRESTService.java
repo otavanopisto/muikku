@@ -14,6 +14,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -93,21 +94,38 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   @GET
   @Path("/workspace/{WORKSPACEENTITYID}/assessmentRequests")
   @RESTPermit(handling = Handling.INLINE)
-  public Response listAssessmentRequestsByWorkspaceId(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+  public Response listAssessmentRequestsByWorkspaceId(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("studentIdentifier") String studentId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-
-    if (!sessionController.hasPermission(AssessmentRequestPermissions.LIST_WORKSPACE_ASSESSMENTREQUESTS, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace not found").build();
     }
-
-    try {
-      List<WorkspaceAssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspace(workspaceEntity); 
-  
-      return Response.ok(restModel(assessmentRequests)).build();
-    } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-      logger.log(Level.SEVERE, "Couldn't list workspace assessment requests.", e);
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
+    if (studentIdentifier != null) {
+      if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
+        if (!sessionController.hasPermission(AssessmentRequestPermissions.LIST_WORKSPACE_ASSESSMENTREQUESTS, workspaceEntity)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
+      }
       
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);
+      if (workspaceUserEntity == null) {
+        return Response.status(Status.BAD_REQUEST).entity("WorkspaceUserEntity could not find").build();
+      }
+
+      return Response.ok(restModel(assessmentRequestController.listByWorkspaceUser(workspaceUserEntity))).build();
+    } else {
+      if (!sessionController.hasPermission(AssessmentRequestPermissions.LIST_WORKSPACE_ASSESSMENTREQUESTS, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+  
+      try {
+        List<WorkspaceAssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspace(workspaceEntity); 
+        return Response.ok(restModel(assessmentRequests)).build();
+      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "Couldn't list workspace assessment requests.", e);
+        return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+      }
     }
   }
 
@@ -129,9 +147,23 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());    
-    assessmentRequestController.deleteWorkspaceAssessmentRequest(workspaceUserEntity, assessmentRequestIdentifier);
     
-    communicatorAssessmentRequestController.sendAssessmentRequestCancelledMessage(workspaceUserEntity);
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+    SchoolDataIdentifier workspaceStudentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+    
+    WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier, workspaceIdentifier, studentIdentifier);
+    if (assessmentRequest != null) {
+      SchoolDataIdentifier assessmentRequestWorkspaceUserIdentifier = new SchoolDataIdentifier(assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getSchoolDataSource());
+      if (assessmentRequestWorkspaceUserIdentifier.equals(workspaceStudentIdentifier)) {
+        assessmentRequestController.deleteWorkspaceAssessmentRequest(workspaceUserEntity, assessmentRequestIdentifier);
+        communicatorAssessmentRequestController.sendAssessmentRequestCancelledMessage(workspaceUserEntity);
+      } else {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    } else {
+      return Response.status(Status.NOT_FOUND).entity("Could not find assessment request").build();
+    }
     
     return Response.noContent().build();
   }
