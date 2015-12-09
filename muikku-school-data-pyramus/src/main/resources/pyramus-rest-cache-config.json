@@ -106,6 +106,12 @@
       "expireTime": 300000,
       "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": []
+    },
+    "/common/subjects/{subjectId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 300000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
     }
   }
 }

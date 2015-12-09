@@ -30,7 +30,7 @@ public class AssessmentRequestController {
   
   @Inject
   private Logger logger;
-
+  
   @Inject
   private AssessmentRequestMessageIdDAO assessmentRequestMessageIdDAO;
 

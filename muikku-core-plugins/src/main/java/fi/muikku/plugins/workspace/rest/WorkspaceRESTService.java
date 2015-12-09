@@ -37,6 +37,7 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.search.WorkspaceIndexer;
@@ -104,6 +105,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+  
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
 
   @Inject
   private SessionController sessionController;
@@ -347,9 +351,11 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{ID}/students")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE)
   public Response listWorkspaceStudents(@PathParam("ID") Long workspaceEntityId,
       @QueryParam("archived") Boolean archived,
+      @QueryParam("requestedAssessment") Boolean requestedAssessment,
+      @QueryParam("assessed") Boolean assessed,
       @QueryParam("orderBy") String orderBy) {
 
     // Workspace
@@ -385,6 +391,20 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       boolean userArchived = workspaceUserEntity == null;
       if ((archived == null) || (archived.equals(userArchived))) {
+        if (requestedAssessment != null) {
+          boolean hasAssessmentRequest = workspaceUserEntity != null && !assessmentRequestController.listByWorkspaceUser(workspaceUserEntity).isEmpty();
+          if (requestedAssessment != hasAssessmentRequest) {
+            continue;
+          }
+        }
+        
+        if (assessed != null) {
+          boolean isAssessed = !gradingController.listWorkspaceAssessments(workspaceUser.getWorkspaceIdentifier(), workspaceUser.getUserIdentifier()).isEmpty();
+          if (assessed != isAssessed) {
+            continue;
+          }
+        }
+
         SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
         User user = userController.findUserByIdentifier(userIdentifier);
         

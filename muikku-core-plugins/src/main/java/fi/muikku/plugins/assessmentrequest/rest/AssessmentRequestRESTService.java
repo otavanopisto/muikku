@@ -188,15 +188,13 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
-  private List<AssessmentRequestRESTModel> restModel(List<WorkspaceAssessmentRequest> workspaceAssessmentReqeusts) {
+  private List<AssessmentRequestRESTModel> restModel(List<WorkspaceAssessmentRequest> workspaceAssessmentRequests) {
     List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
 
-    if (workspaceAssessmentReqeusts != null) {
-      for (WorkspaceAssessmentRequest workspaceAssessmentRequest : workspaceAssessmentReqeusts) {
-        AssessmentRequestRESTModel restModel = restModel(workspaceAssessmentRequest);
-        if (restModel != null) {
-          restAssessmentRequests.add(restModel);
-        }
+    for (WorkspaceAssessmentRequest workspaceAssessmentRequest : workspaceAssessmentRequests) {
+      AssessmentRequestRESTModel restModel = restModel(workspaceAssessmentRequest);
+      if (restModel != null) {
+        restAssessmentRequests.add(restModel);
       }
     }
     
@@ -208,7 +206,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(
         workspaceAssessmentRequest.getWorkspaceUserIdentifier(),
         workspaceAssessmentRequest.getWorkspaceUserSchoolDataSource());
-    
+
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
     if (workspaceUserEntity != null) {
       SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), 
