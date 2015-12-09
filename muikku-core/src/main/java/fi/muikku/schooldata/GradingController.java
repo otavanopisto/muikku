@@ -1,9 +1,14 @@
 package fi.muikku.schooldata;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.dao.grading.GradingScaleEntityDAO;
 import fi.muikku.dao.grading.GradingScaleItemEntityDAO;
@@ -18,6 +23,9 @@ import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 
 public class GradingController {
+  
+  @Inject
+  private Logger logger;
   
 	@Inject
 	private GradingSchoolDataController gradingSchoolDataController;
@@ -108,6 +116,15 @@ public class GradingController {
   
   public List<WorkspaceAssessment> listWorkspaceAssessments(String schoolDataSource, String workspaceIdentifier, String studentIdentifier){
     return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);
+  }
+  
+  public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
+    if (!StringUtils.equals(workspaceIdentifier.getDataSource(), studentIdentifier.getDataSource())) {
+      logger.log(Level.SEVERE, String.format("Failed to list workspace assessents because workspace and student datasources differ", workspaceIdentifier.getDataSource(), studentIdentifier.getDataSource()));
+      return Collections.emptyList();
+    }
+    
+    return gradingSchoolDataController.listWorkspaceAssessments(studentIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
   }
  
   public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){

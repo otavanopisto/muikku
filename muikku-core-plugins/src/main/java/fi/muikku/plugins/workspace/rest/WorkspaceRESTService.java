@@ -33,8 +33,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.controller.messaging.MessagingWidget;
-import fi.muikku.model.users.EnvironmentRoleArchetype;
-import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
@@ -81,7 +79,6 @@ import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
-import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
@@ -148,9 +145,6 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private GradingController gradingController;
-  
-  @Inject
-  private EnvironmentUserController environmentUserController;
   
   @Inject
   private WorkspaceIndexer workspaceIndexer;
@@ -1324,18 +1318,30 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/assessments/")
   @RESTPermitUnimplemented
-  public Response listWorkspaceAssessments(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("userEntityId") Long userEntityId) {
+  public Response listWorkspaceAssessments(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("workspaceStudentIdentifier") String workspaceStudentId, @QueryParam ("studentIdentifier") String studentId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     
-    if (userEntityId == null) {
-      return Response.status(Status.NOT_IMPLEMENTED).entity("Listing workspace assessments without userEntityId is not implemented yet").build();
+    if (workspaceStudentId == null && studentId == null) {
+      return Response.status(Status.NOT_IMPLEMENTED).entity("Listing workspace assessments without studentIdentifier or workspaceStudentIdentifier is not implemented yet").build();
     }
     
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    if (userEntity == null) {
-      return Response.status(Status.BAD_REQUEST).entity("userEntityId is invalid").build();
+    SchoolDataIdentifier workspaceStudentIdentifier = null;
+    SchoolDataIdentifier studentIdentifier = null;
+    
+    if (workspaceStudentId != null) {
+      workspaceStudentIdentifier = SchoolDataIdentifier.fromId(workspaceStudentId);
+      if (workspaceStudentIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentIdentifier").build();
+      }
+    }
+    
+    if (studentId != null) {
+      studentIdentifier = SchoolDataIdentifier.fromId(studentId);
+      if (studentIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid studentIdentifier").build();
+      }
     }
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -1343,21 +1349,41 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (!sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
+    WorkspaceUserEntity workspaceUserEntity = null;
+    
+    if (workspaceStudentIdentifier != null) {
+      workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceStudentIdentifier);
+      studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), 
+        workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+    } else if (studentIdentifier != null) {
+      workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
+      workspaceStudentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+    }
+    
+    if (workspaceStudentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Could not resolve workspace student identifier").build();
+    }
+    
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Could not resolve student identifier").build();
+    }
+    
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Could not find workspace student").build();
+    }
+    
+    if (!workspaceUserEntity.getWorkspaceEntity().getId().equals(workspaceEntity.getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("WorkspaceEntityUser's workpsace does not match specified workspace").build();
+    }
+    
+    if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
       if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_USER_EVALUATION, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
     
-    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-    if (environmentUser == null || (environmentUser.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT)) {
-      return Response.noContent().build();
-    }
-    
-    List<fi.muikku.schooldata.entity.WorkspaceAssessment> assessments = gradingController.listWorkspaceAssessments(workspaceEntity.getDataSource(), workspaceEntity.getIdentifier(), userEntity.getDefaultIdentifier());
-    if (assessments.isEmpty()) {
-      return Response.noContent().build();
-    }
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    List<fi.muikku.schooldata.entity.WorkspaceAssessment> assessments = gradingController.listWorkspaceAssessments(workspaceIdentifier, studentIdentifier);
     
     return Response.ok(createRestModel(workspaceEntity, assessments.toArray(new fi.muikku.schooldata.entity.WorkspaceAssessment[0]))).build();
   }
