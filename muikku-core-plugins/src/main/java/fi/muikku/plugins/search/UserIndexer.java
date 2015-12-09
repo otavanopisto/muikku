@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
@@ -17,6 +19,7 @@ import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchIndexer;
 import fi.muikku.users.EnvironmentUserController;
@@ -108,15 +111,35 @@ public class UserIndexer {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
-
-      for (UserSchoolDataIdentifier identifier : identifiers) {
-        indexUser(identifier.getDataSource().getIdentifier(), identifier.getIdentifier());
+      SchoolDataIdentifier defaultIdentifier = null;
+      
+      if (StringUtils.isNotBlank(userEntity.getDefaultIdentifier()) && (userEntity.getDefaultSchoolDataSource() != null)) {
+        defaultIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
       }
+      
+      for (UserSchoolDataIdentifier schoolDataIdentifier : identifiers) {
+        SchoolDataIdentifier identifier = new SchoolDataIdentifier(schoolDataIdentifier.getIdentifier(), schoolDataIdentifier.getDataSource().getIdentifier());
+        
+        if (identifier.equals(defaultIdentifier)) {
+          indexUser(identifier);
+        } else {
+          removeUser(identifier);
+        }
+      }
+      
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
   }
   
+  public void indexUser(SchoolDataIdentifier identifier) {
+    indexUser(identifier.getDataSource(), identifier.getIdentifier());
+  }
+
+  public void removeUser(SchoolDataIdentifier identifier) {
+    removeUser(identifier.getDataSource(), identifier.getIdentifier());
+  }
+
   public void removeUser(String dataSource, String identifier) {
     try {
       indexer.remove(User.class.getSimpleName(), String.format("%s/%s", identifier, dataSource));

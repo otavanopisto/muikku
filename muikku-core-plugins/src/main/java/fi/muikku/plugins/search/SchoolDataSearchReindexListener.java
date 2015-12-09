@@ -124,7 +124,7 @@ public class SchoolDataSearchReindexListener {
         for (int i = userIndex; i < last; i++) {
           try {
             UserEntity userEntity = users.get(i);
-    
+            
             userIndexer.indexUser(userEntity);
           } catch (Exception uex) {
             logger.log(Level.SEVERE, "Failed indexing userentity", uex);
