@@ -13,7 +13,7 @@ then
       python travis-upload-reports.py
   fi
   python travis-prepare-maven.py
-  mvn clean compile
+  mvn clean install
   pushd .
   cd muikku
   mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=otavanopisto
