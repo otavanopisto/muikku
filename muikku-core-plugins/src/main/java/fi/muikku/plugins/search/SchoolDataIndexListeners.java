@@ -1,5 +1,7 @@
 package fi.muikku.plugins.search;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -78,15 +80,19 @@ public class SchoolDataIndexListeners {
   }
 
   public void onSchoolDataUserUpdatedEvent(@Observes SchoolDataUserUpdatedEvent event) {
-    for (SchoolDataIdentifier identifier : event.getDiscoveredIdentifiers()) {
-      userIndexer.indexUser(identifier.getDataSource(), identifier.getIdentifier());
+    List<SchoolDataIdentifier> removeIdentifiers = new ArrayList<>(event.getRemovedIdentifiers());
+    List<SchoolDataIdentifier> updatedIdentifiers = new ArrayList<>(event.getDiscoveredIdentifiers());
+    updatedIdentifiers.addAll(event.getUpdatedIdentifiers());
+    
+    for (SchoolDataIdentifier identifier : updatedIdentifiers) {
+      if (!identifier.equals(event.getDefaultIdentifier())) {
+        removeIdentifiers.add(identifier);
+      } else {
+        userIndexer.indexUser(identifier.getDataSource(), identifier.getIdentifier());
+      }
     }
     
-    for (SchoolDataIdentifier identifier : event.getUpdatedIdentifiers()) {
-      userIndexer.indexUser(identifier.getDataSource(), identifier.getIdentifier());
-    }
-    
-    for (SchoolDataIdentifier identifier : event.getRemovedIdentifiers()) {
+    for (SchoolDataIdentifier identifier : removeIdentifiers) {
       userIndexer.removeUser(identifier.getDataSource(), identifier.getIdentifier());
     }
   }
