@@ -25,8 +25,14 @@
  }
 }
 .an-announcement-select{
-  margin-left:5px;
-  
+    float: left;
+    margin-left: 5px;
+    width: 30px;
+}
+.an-announcement-dates{
+    text-align:right;
+    background-color:$light;
+    padding-right:5px;
 }
 .an-announcement-details{
 
@@ -40,6 +46,8 @@
   background-color:$dimmest;
   font-weight:300;
   font-size:20px;
+  overflow:hidden;
+  text-overflow:ellipsis;  
   color:#fff;
 }
 .an-announcement-content{
