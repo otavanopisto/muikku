@@ -31,6 +31,10 @@ public class AnnouncementController {
     );
   }
   
+  public List<Announcement> listUnArchived() {
+    return announcementDAO.listUnArchived();
+  }
+  
   public List<Announcement> listAll() {
     return announcementDAO.listAll();
   }
@@ -39,7 +43,7 @@ public class AnnouncementController {
     return announcementDAO.findById(id);
   }
   
-  public void deleteById(Long id) {
-    announcementDAO.deleteById(id);
+  public void archiveById(Long id) {
+    announcementDAO.archiveById(id);
   }
 }

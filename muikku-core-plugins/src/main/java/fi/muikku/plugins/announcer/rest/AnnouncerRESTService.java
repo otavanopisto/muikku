@@ -56,9 +56,9 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @GET
   @Path("/announcements")
-  @RESTPermit(AnnouncerPermissions.LIST_ALL_ANNOUNCEMENTS)
+  @RESTPermit(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)
   public Response listAnnouncements(/* TODO filtering */) {
-    List<Announcement> announcements = announcementController.listAll();
+    List<Announcement> announcements = announcementController.listUnArchived();
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
       AnnouncementRESTModel restModel = createRESTModel(announcement);
@@ -92,7 +92,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   @Path("/announcements/{ID}")
   @RESTPermit(AnnouncerPermissions.CREATE_ANNOUNCEMENT)
   public Response deleteAnnouncement(@PathParam("ID") Long announcementId) {
-    announcementController.deleteById(announcementId);
+    announcementController.archiveById(announcementId);
     return Response.noContent().build();
   }
 }
