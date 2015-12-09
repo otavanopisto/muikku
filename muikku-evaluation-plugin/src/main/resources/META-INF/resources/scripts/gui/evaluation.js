@@ -440,7 +440,7 @@
                     this.options.triggeringElement.options.evaluation = result;
                     this.options.triggeringElement.element.addClass('assignment-evaluated');
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
-                      .text(getLocaleText("plugin.evaluation.evaluationGridEvaluated.label") + " " + formatDate(new Date(result.evaluated)));
+                      .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(result.evaluated)));
                     this.element.remove();
                   }
                 }, this));
@@ -462,7 +462,7 @@
                     this.options.triggeringElement.options.evaluation = result;
                     this.options.triggeringElement.element.addClass('assignment-evaluated');
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
-                      .text(getLocaleText("plugin.evaluation.evaluationGridEvaluated.label") + " " + formatDate(new Date(result.evaluated)));
+                      .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(result.evaluated)));
                     this.element.remove();
                     
                   }
@@ -695,6 +695,7 @@
     _reloadStudents: function () {
       this.element.find('.evaluation-student-wrapper').remove();
       this.element.find('.evaluation-assignments').empty();
+      this.element.find('.evaluation-no-students-found').remove();
       this._loadStudents();
     },
     
@@ -812,21 +813,28 @@
         } else {
           this._workspaceUsers = workspaceStudents;
           
-          $.each(workspaceStudents, $.proxy(function (index, workspaceStudent) {
+          if (this._workspaceUsers.length > 0) {
+            $.each(workspaceStudents, $.proxy(function (index, workspaceStudent) {
+              $('<div>')
+                .attr('data-workspace-student', workspaceStudent.id)
+                .attr('data-workspace-user', workspaceStudent.userId)
+                .evaluationStudent({
+                  workspaceStudentId: workspaceStudent.id,
+                  studentEntityId: workspaceStudent.userId,
+                  studentFirstName: workspaceStudent.firstName,
+                  studentLastName: workspaceStudent.lastName,
+                  studentStudyProgrammeName: workspaceStudent.studyProgrammeName,
+                  assessment: workspaceStudent.assessment
+                })
+                .appendTo(this.element.find('.evaluation-students'));
+            }, this));
+          } else {
             $('<div>')
-              .attr('data-workspace-student', workspaceStudent.id)
-              .attr('data-workspace-user', workspaceStudent.userId)
-              .evaluationStudent({
-                workspaceStudentId: workspaceStudent.id,
-                studentEntityId: workspaceStudent.userId,
-                studentFirstName: workspaceStudent.firstName,
-                studentLastName: workspaceStudent.lastName,
-                studentStudyProgrammeName: workspaceStudent.studyProgrammeName,
-                assessment: workspaceStudent.assessment
-              })
+              .addClass('evaluation-no-students-found')
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.noStudentsFound"))
               .appendTo(this.element.find('.evaluation-students'));
-          }, this));
-          
+          }
+
           this._loadAssessmentRequests();
           this._loadMaterials();
           
@@ -992,7 +1000,7 @@
           this.element.addClass('assignment-submitted');
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGridSubmitted.label") + " " + formatDate(new Date(reply.submitted)));   
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
           }
         break;
         case 'WITHDRAWN':
@@ -1003,12 +1011,12 @@
           this.element.addClass('assignment-evaluated');
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGridSubmitted.label") + " " + formatDate(new Date(reply.submitted)));   
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
           }
           if (evaluation && evaluation.evaluated) {
             this.options.evaluation = evaluation;
             this.element.find('.evaluation-assignment-evaluated-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGridEvaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
           }
         break;
       }
