@@ -131,7 +131,7 @@ body.evaluation {
         padding:0;
         margin:0;
         border-radius:3px;
-        border-left:1px solid #abe6ff;
+        border-left:1px solid #cfeefb;
         cursor:pointer;
         
         &:first-child {
@@ -140,11 +140,11 @@ body.evaluation {
         
         label {
           display:inline-block;
-          margin:0 0 0 10px;
+          margin:0 0 0 15px;
           font-weight:300;
           font-size:16px;
           cursor:pointer;
-          text-shadow:0 0 5px #fff;
+          text-shadow:0 0 10px #fff;
         }
         
         input {
@@ -238,6 +238,20 @@ body.evaluation {
     white-space: nowrap;
     transition:margin 0.2s ease-in-out;
     
+    .evaluation-no-students-found {
+      text-align:center;
+      font-weight:300;
+      font-size:20px;
+      font-style:italic;
+      position:absolute;
+      width:100%;
+      top:50%;
+      margin:-15px auto 0 auto;
+      height:30px;
+      text-align:center;
+    }
+    
+    
     .evaluation-student-wrapper {
       width:160px;
       height:130px;
@@ -284,7 +298,6 @@ body.evaluation {
           font-size:16px;
           line-height:1.3em;
           white-space:normal;
-          position:absolute;
           font-size:0.9em;
           top:35px;
           background:#3cdd2a;
@@ -629,7 +642,7 @@ body.evaluation {
                     right:0;
                     top:0;
                     text-align:right;
-                    padding:0 10px;
+                    padding:8px 10px;
                   }
                   
                 }
@@ -658,7 +671,7 @@ body.evaluation {
                     right:0;
                     top:0;
                     text-align:right;
-                    padding:0 10px;
+                    padding:8px 10px;
                   }
                 
                 }
