@@ -14,6 +14,7 @@
       <script type="text/javascript">
           var CONTEXTPATH = "#{request.contextPath}";
           var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
+          var MUIKKU_LOGGED_USER = '#{sessionBackingBean.loggedUser}'||null;
           var MUIKKU_LOGGEDIN = #{muikkuSession.loggedIn};
           var MUIKKU_LOGGEDINROLES = {
             teacher: #{sessionBackingBean.teacherLoggedIn},
