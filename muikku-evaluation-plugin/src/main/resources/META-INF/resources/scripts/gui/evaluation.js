@@ -701,10 +701,11 @@
           } else {
             for(var i = 0; i < workspaceAssessmentRequests.length;i++){
               var workspaceAssessmentRequest = workspaceAssessmentRequests[i];
-              var studentElement = $('.evaluation-students').find('div[data-workspace-user="'+workspaceAssessmentRequest.userEntityId+'"]');
-              if(!studentElement.hasClass('workspace-evaluated')){
+              var studentElement = $('.evaluation-students').find('div[data-workspace-student="' + workspaceAssessmentRequest.workspaceUserIdentifier + '"]');
+              if (!studentElement.hasClass('workspace-evaluated')) {
                 studentElement.addClass('workspace-evaluation-requested');
               }
+              
               if(studentElement.find('.workspace-evaluation-requested-date').length == 0){
                 $('<div>')
                 .attr('data-evaluation-date', workspaceAssessmentRequest.date)
@@ -793,7 +794,6 @@
           $.each(workspaceStudents, $.proxy(function (index, workspaceStudent) {
             $('<div>')
               .attr('data-workspace-student', workspaceStudent.id)
-              .attr('data-workspace-user', workspaceStudent.userId)
               .evaluationStudent({
                 workspaceStudentId: workspaceStudent.id,
                 studentEntityId: workspaceStudent.userId,

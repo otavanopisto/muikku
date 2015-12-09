@@ -112,10 +112,10 @@ public class AssessmentRequestController {
     }
   }
 
-  public void deleteWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, String assessmentRequestId) {
+  public void deleteWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, SchoolDataIdentifier assessmentRequestIdentifier) {
     gradingController.deleteWorkspaceAssessmentRequest(
-        workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier(), 
-        assessmentRequestId,
+        assessmentRequestIdentifier.getDataSource(), 
+        assessmentRequestIdentifier.getIdentifier(),
         workspaceUserEntity.getWorkspaceEntity().getIdentifier(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
   }
