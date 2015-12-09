@@ -2,9 +2,32 @@
 
 .an-announcements-view-container{}
 .an-announcements{
+  padding:5px;
   .an-announcement{
+    width:313px;
+    display:inline-block;
+    box-sizing:border-box;
+    border-left:5px solid $brd3;
+    margin-right:5px;
+    vertical-align:top;
+    overflow:hidden;
+    max-height:300px;
+
+    &:nth-child(3n+3){
+     margin-right:0;
+    }
   }
 }
+.an-announcement-details{
+  padding:0 20px 20px 20px;
+  margin-bottom:10px;
+  max-height:230px;
+}
+.an-announcement-content{
+  max-height:210px;
+  overflow:hidden;
+}
 .an-no-announcements{}
+
 .an-create-announcement{}
 
