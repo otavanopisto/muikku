@@ -16,7 +16,7 @@ import fi.muikku.plugins.announcer.model.Announcement;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/announcements", to = "/jsf/announcement/index.jsf")
+@Join (path = "/announcements", to = "/jsf/announcements/index.jsf")
 public class AnnouncementsViewBackingBean {
   
   @Parameter("announcementId")

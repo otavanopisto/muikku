@@ -1,0 +1,125 @@
+@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+
+body { 
+  
+  main {
+    min-height:800px;
+    background:#fff;
+    margin-top:30px;
+    @include flexbox();
+    flex-flow:row nowrap;
+    justify-content:flex-start;
+    align-items:stretch;
+    
+    &#contextWrapper {
+      padding:20px;
+    }
+    
+    section.section-for-articles {
+      flex:2 1;
+      padding:0 20px 0 0;
+      
+      h1.section-title {
+        font-weight:300;
+        line-height:1.7em;
+        
+      }
+       
+      article {
+        margin:20px 0;
+        
+        &:first-child {
+          margin:0 0 20px 0;
+        }
+      
+        header {
+          position:relative;
+          
+          h2 {
+            font-weight:300;
+            font-size:28px;
+            text-transform:none;
+            padding:14px 0;
+            background:#fff;
+            display:block;
+            font-style:italic;
+            line-height:1.4em;
+            margin:0;
+          }
+
+          .article-image {
+            overflow:hidden;
+            width:100%;
+            min-height:160px;
+            max-height:200px;
+            background-position:center center;
+            background-size:150%;
+            opacity:1;
+          
+            &.image1 {
+              @include background-image('/gfx/article-default-image1.png');
+            }
+            
+            &.image2 {
+              @include background-image('/gfx/article-default-image2.png');
+            }
+            
+            &.image3 {
+              @include background-image('/gfx/article-default-image3.png');
+            }
+            
+            &.image4 {
+              @include background-image('/gfx/article-default-image4.png');
+            }
+            
+            &.image5 {
+              @include background-image('/gfx/article-default-image5.png');
+            }
+            
+            &.image6 {
+              @include background-image('/gfx/article-default-image6.png');
+            }
+
+          }
+
+          .article-datetime {
+            display:inline-block;
+            font-size:20px;
+            font-weight:300;
+            background:#fff;
+            padding:10px;
+          }
+        
+        }
+        
+        .article-context {
+          padding:10px 5px;
+          line-height:1.9em;
+          font-weight:300;
+          font-size:16px;
+          
+          p {
+            margin:10px 0;
+            
+            &:first-child {
+              margin-top:0;
+            }
+            
+          }
+        }
+        
+        
+        
+      }
+       
+    }
+    
+    nav.generic-context-navigation {
+      flex:1 0;
+      border-left:1px solid #cfeefb;
+    }
+  
+  }
+  
+}
+  
