@@ -30,6 +30,22 @@ public class AnnouncementController {
         endDate
     );
   }
+
+  public Announcement update(
+      Announcement announcement,
+      String caption,
+      String content,
+      Date startDate,
+      Date endDate
+  ) {
+    return announcementDAO.update(
+        announcement,
+        caption,
+        content,
+        startDate,
+        endDate
+    );
+  }
   
   public List<Announcement> listAll() {
     return announcementDAO.listAll();

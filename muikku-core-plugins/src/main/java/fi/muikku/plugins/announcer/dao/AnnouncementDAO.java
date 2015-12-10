@@ -28,4 +28,20 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     getEntityManager().persist(announcement);
     return announcement;
   }
+
+  public Announcement update(
+      Announcement announcement,
+      String caption,
+      String content,
+      Date startDate,
+      Date endDate
+  ) {
+    announcement.setCaption(caption);
+    announcement.setContent(content);
+    announcement.setStartDate(startDate);
+    announcement.setEndDate(endDate);
+
+    getEntityManager().persist(announcement);
+    return announcement;
+  }
 }
