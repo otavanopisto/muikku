@@ -6,7 +6,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:c="http://java.sun.com/jsp/jstl/core" 
   xmlns:h="http://java.sun.com/jsf/html"
-  template="/WEB-INF/templates/mainfunction.xhtml">
+  template="/WEB-INF/templates/generic-contenxt-view.xhtml">
 
   <ui:define name="viewCss"></ui:define> 
  
@@ -17,7 +17,16 @@
   <ui:define name="viewScripts">
   </ui:define>
 
-  <ui:define name="content.tools.left"> 
+  <ui:define name="context.area">
+    <article id="announcementContextArea" class="generic-context-area">
+    
+    </article>
   </ui:define>
+  
+  <ui:define name="context.navigation">
+    <nav id="announcementContextNavigation" class="generic-context-navigation">
+    
+    </nav>
+  </ui:definet>
 
 </ui:composition>
