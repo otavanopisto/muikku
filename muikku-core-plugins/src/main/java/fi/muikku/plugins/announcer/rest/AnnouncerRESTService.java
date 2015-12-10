@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -85,9 +86,9 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @GET
   @Path("/announcements")
-  @RESTPermit(AnnouncerPermissions.LIST_ALL_ANNOUNCEMENTS)
+  @RESTPermit(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)
   public Response listAnnouncements(/* TODO filtering */) {
-    List<Announcement> announcements = announcementController.listAll();
+    List<Announcement> announcements = announcementController.listUnArchived();
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
       AnnouncementRESTModel restModel = createRESTModel(announcement);
@@ -115,5 +116,13 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
     return restModel;
+  }
+
+  @DELETE
+  @Path("/announcements/{ID}")
+  @RESTPermit(AnnouncerPermissions.CREATE_ANNOUNCEMENT)
+  public Response deleteAnnouncement(@PathParam("ID") Long announcementId) {
+    announcementController.archiveById(announcementId);
+    return Response.noContent().build();
   }
 }
