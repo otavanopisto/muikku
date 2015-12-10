@@ -28,7 +28,10 @@ public class AnnouncementsViewBackingBean {
   @RequestAction
   public String init() {
     
-    currentAnnouncement = announcementController.findById(announcementId);
+    if (announcementId != null) {
+      currentAnnouncement = announcementController.findById(announcementId);
+    }
+    activeAnnouncements = announcementController.listActive();
     
     return null;
   }
@@ -37,6 +40,10 @@ public class AnnouncementsViewBackingBean {
     return currentAnnouncement;
   }
   
+  public List<Announcement> getActiveAnnouncements() {
+    return activeAnnouncements;
+  }
+  
   private Announcement currentAnnouncement = null;
-  private List<Announcement> announcements = null; 
+  private List<Announcement> activeAnnouncements = null; 
 }
