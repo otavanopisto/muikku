@@ -90,7 +90,7 @@ public class AnnouncerRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/announcements/{ID}")
-  @RESTPermit(AnnouncerPermissions.CREATE_ANNOUNCEMENT)
+  @RESTPermit(AnnouncerPermissions.DELETE_ANNOUNCEMENT)
   public Response deleteAnnouncement(@PathParam("ID") Long announcementId) {
     announcementController.archiveById(announcementId);
     return Response.noContent().build();
