@@ -106,11 +106,14 @@
          var idsInput = titlesContainer.find("input");
          
          
-         $.each(titles, function(index,title){
-           titlesContainer.append("<span>" + title + "</span>");
+         if(titles.length > 0){
+           $.each(titles, function(index,title){
+             titlesContainer.append("<span>" + title + "</span>");
+           });
+         }else{
+           titlesContainer.append("<span>" + getLocaleText('plugin.announcer.archiveannouncements.noneselected') + "</span>");
            
-         });
-         
+         }
          idsInput.val(values);
         
         
