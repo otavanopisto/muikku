@@ -10,8 +10,9 @@
           <div class="mf-textfield an-textfield">
             <div class="mf-textfield-subcontainer an-archiving-container">
               <div class="mf-textfield-title"><span>{#localize key="plugin.announcer.archiveannouncement.archiving.title"/}</span></div>
-              <input type="hidden" name="ids" data-arrray="true" value="" />
-              <div class="mf-textfield-subcontainer an-archiving-ids-container"></div>
+              <div class="an-archiving-ids-container">
+                <input type="hidden" name="ids" data-arrray="true" value="" />
+              </div>
             </div>
           </div>
         </div>

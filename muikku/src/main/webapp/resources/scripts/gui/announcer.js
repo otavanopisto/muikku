@@ -111,7 +111,7 @@
              titlesContainer.append("<span>" + title + "</span>");
            });
          }else{
-           titlesContainer.append("<span>" + getLocaleText('plugin.announcer.archiveannouncements.noneselected') + "</span>");
+           titlesContainer.append("<span>" + getLocaleText('plugin.announcer.archiveannouncement.archiving.noneselected') + "</span>");
            
          }
          idsInput.val(values);
