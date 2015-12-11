@@ -135,9 +135,9 @@
          
          mApi({async: false}).batch(calls).callback(function(err, results){
            if (err) {
-             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.announcer.infomessage.archive.error'));
+             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.announcer.archiveannouncement.error'));
            } else {
-             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.announcer.infomessage.archive.success'));
+             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.announcer.archiveannouncement.success'));
              window.location.reload(true);             
            }
            
