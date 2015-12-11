@@ -17,8 +17,8 @@
         </div>
        </div>
        <div class="mf-toolbar">
-        <input type="button" name="send" value='{#localize key="plugin.announcer.deletearea.send"/}'/>
-        <input type="button" name="cancel" value='{#localize key="plugin.announcer.deletearea.cancel"/}'/>
+        <input type="button" name="send" value='{#localize key="plugin.announcer.archiveannouncement.send"/}'/>
+        <input type="button" name="cancel" value='{#localize key="plugin.announcer.archiveannouncement.cancel"/}'/>
       </div>   
     </form>
   
