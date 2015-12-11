@@ -9,11 +9,16 @@
       var mainfunction = ".mf-content-master";
       
      $(mainfunction).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
+     
+     // TODO: Disable this if nothing is checked //
+     
      $(mainfunction).on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
      
       this._loadAnnouncements();
     },
     _onCreateAnnouncementClick: function () {
+      
+      
       
       var formFunctions = function() {
         
@@ -120,7 +125,24 @@
       }
       
       var archiveAnnouncements = function(values){
-         alert("Arkistoidaan: " + values.ids);
+
+         var ids = values.ids;
+         var arr = ids.split(',');
+          
+        
+         var calls=$.map(arr, function(announcement){
+           return mApi().announcer.announcements.del(announcement);
+         });
+         
+         mApi({async: false}).batch(calls).callback(function(err, results){
+           if (err) {
+             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.announcer.infomessage.sent.loaderror'));
+           } else {
+             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.announcer.infomessage.archive.success'));
+             window.location.reload(true);             
+           }
+           
+         });         
 
       }   
       openInSN('/announcer/announcer_archive_announcement.dust', null, archiveAnnouncements, formFunctions);
