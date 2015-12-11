@@ -128,7 +128,6 @@
 
          var ids = values.ids;
          var arr = ids.split(',');
-          
         
          var calls=$.map(arr, function(announcement){
            return mApi().announcer.announcements.del(announcement);
@@ -136,7 +135,7 @@
          
          mApi({async: false}).batch(calls).callback(function(err, results){
            if (err) {
-             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.announcer.infomessage.sent.loaderror'));
+             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.announcer.infomessage.archive.error'));
            } else {
              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.announcer.infomessage.archive.success'));
              window.location.reload(true);             
