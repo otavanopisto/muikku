@@ -9,7 +9,8 @@
       var mainfunction = ".mf-content-master";
       
      $(mainfunction).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
-      
+     $(mainfunction).on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
+     
       this._loadAnnouncements();
     },
     _onCreateAnnouncementClick: function () {
@@ -84,6 +85,45 @@
               }
           }, this));
     },
+    _onArchiveAnnouncementsClick: function () {
+      
+      var selected = $(".an-announcements").find("input:checked");
+      var values = [];
+      var titles =[];
+      
+      $.each(selected, function(i, val){
+        var parent = $(val).parents(".an-announcement");
+        var child = parent.find(".an-announcement-topic");
+        var title = child.text();
+        
+        values.push($(val).attr("value"));
+        titles.push(title)
+      });
+      
+      
+      var formFunctions = function() {
+         var titlesContainer = $('.an-archiving-ids-container');
+         var idsInput = titlesContainer.find("input");
+         
+         
+         $.each(titles, function(index,title){
+           titlesContainer.append("<span>" + title + "</span>");
+           
+         });
+         
+         idsInput.val(values);
+        
+        
+      }
+      
+      var archiveAnnouncements = function(values){
+         alert("Arkistoidaan: " + values.ids);
+
+      }   
+      openInSN('/announcer/announcer_archive_announcement.dust', null, archiveAnnouncements, formFunctions);
+    },  
+    
+    
     
     _load: function(){
       this.element.empty();      

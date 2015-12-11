@@ -1,6 +1,6 @@
-<div class="mf-item an-announcement" id="{id}">
+<div class="mf-item an-announcement">
   <div class="mf-item-options-container an-announcement-options-container">
-    <div class="mf-item-select an-announcement-select"><input type="checkbox" name="messageSelect" value="{communicatorMessageId}" /></div>
+    <div class="mf-item-select an-announcement-select"><input type="checkbox" class="an-select" value="{id}" /></div>
   </div>
   <div class="mf-item-details an-announcement-details">
    <div class="an-announcement-topic">{caption}</div>

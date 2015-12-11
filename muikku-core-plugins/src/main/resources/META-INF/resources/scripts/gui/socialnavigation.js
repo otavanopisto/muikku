@@ -115,9 +115,9 @@
           }
           
         } else {
-          if (obj[value.name] == undefined)
+          if (obj[value.name] == undefined){
             obj[value.name] = [];
-
+          }
           obj[value.name].push(value.value);
         }
       });
