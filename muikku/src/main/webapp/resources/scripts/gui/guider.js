@@ -63,6 +63,7 @@
     
     _create : function() {
       this._page = 0;
+      this._students = [];
       this._searchString = '';
       this._userGroupIds = null;
       this._workspaceIds = this.options.workspaceIds;
@@ -77,30 +78,29 @@
       
       this.element.on('click', '.gt-user-name', $.proxy(this._onUserNameClick,this));
       this.element.on('click', '.gt-tool-view-profile', $.proxy(this._onUserViewProfileClick,this));
+      this.element.on('click', '.gt-page-link-load-more', $.proxy(this._onLoadMoreClick,this));
     },
     
-    nextPage: function () {
+    loadNextPage: function () {
       this._page++;
-      this._reloadStudents();
-    },
-    
-    prevPage: function () {
-      this._page--;
-      this._reloadStudents();
+      this._loadStudents();
     },
     
     searchTerm: function (searchTerm) {
+      this._page = 0;
       this._searchString = searchTerm;
       this._reloadStudents();
     },
     
     workspaces: function (workspaceIds) {
+      this._page = 0;
       this._workspaceIds = workspaceIds;
       this._reloadStudents();
     },
     
     _reloadStudents: function () {
       if (!this._loading) {
+        this._students = [];
         this.element
           .empty()
           .addClass('loading');
@@ -136,7 +136,10 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
           } else {
-            renderDustTemplate('guider/guider_items.dust', students, $.proxy(function(text) {
+            var hasMore = students.length == this.options.studentsPerPage;
+            
+            this._students = this._students.concat(students);
+            renderDustTemplate('guider/guider_items.dust', { hasMore : hasMore, students: this._students }, $.proxy(function(text) {
               this.element
                 .html(text)
                 .removeClass('loading');
@@ -166,6 +169,10 @@
       var element = $(event.target).closest(".gt-user");
       var userIdentifier = $(element).attr("data-user-identifier");
       this._openStudentProfile(userIdentifier);
+    },
+    
+    _onLoadMoreClick: function (event) {
+      this.loadNextPage();
     },
     
     _openStudentProfile: function (userIdentifier) {
