@@ -5,6 +5,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
 import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.security.LoggedIn;
 
@@ -13,7 +14,11 @@ import fi.otavanopisto.security.LoggedIn;
 @RequestScoped
 @Join (path = "/guider", to = "/jsf/guider/index.jsf")
 @LoggedIn
-
 public class GuidanceToolBackingBean {
 
+  @RequestAction
+  public String init() {
+    return null;
+  }
+  
 }
