@@ -701,9 +701,16 @@
     
     _loadStudents: function () {
       this.element.addClass('loading');
-      
+      var appliedFilters = {};
+      for (var filter in this._filters) {
+        if (this._filters.hasOwnProperty(filter)) {
+            if(typeof(this._filters[filter]) !== 'undefined' && this._filters[filter] !== null){
+              appliedFilters[filter] = this._filters[filter];
+            }
+        }
+      }
       mApi().workspace.workspaces.students
-        .read(this.options.workspaceEntityId,  $.extend({ archived: false }, this._filters))
+        .read(this.options.workspaceEntityId,  $.extend({ archived: false }, appliedFilters))
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
