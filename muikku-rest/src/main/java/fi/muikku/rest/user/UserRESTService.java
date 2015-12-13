@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -40,6 +41,7 @@ import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.rest.model.UserBasicInfo;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
@@ -49,6 +51,8 @@ import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Stateful
 @RequestScoped
@@ -57,6 +61,9 @@ import fi.muikku.users.WorkspaceUserEntityController;
 @Consumes("application/json")
 public class UserRESTService extends AbstractRESTService {
 
+  @Inject
+  private Logger logger;
+  
 	@Inject
 	private UserController userController;
 
@@ -81,11 +88,127 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
+  
+  @GET
+  @Path("/students")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response searchStudents(
+      @QueryParam("searchString") String searchString,
+      @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
+      @QueryParam("maxResults") @DefaultValue("10") Integer maxResults,
+      @QueryParam("userGroupIds") List<Long> userGroupIds,
+      @QueryParam("myUserGroups") Boolean myUserGroups,
+      @QueryParam("workspaceIds") List<Long> workspaceIds,
+      @QueryParam("myWorkspaces") Boolean myWorkspaces) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    if (CollectionUtils.isNotEmpty(userGroupIds) && Boolean.TRUE.equals(myUserGroups)) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    if (CollectionUtils.isNotEmpty(workspaceIds) && Boolean.TRUE.equals(myWorkspaces)) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    List<fi.muikku.rest.model.Student> students = new ArrayList<>();
+
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    
+    Set<Long> userGroupFilters = null;
+    Set<Long> workspaceFilters = new HashSet<Long>();
+
+    if ((myUserGroups != null) && myUserGroups) {
+      userGroupFilters = new HashSet<Long>();
+
+      // Groups where user is a member
+      
+      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUser(loggedUser);
+      for (UserGroupEntity userGroup : userGroups) {
+        userGroupFilters.add(userGroup.getId());
+      }
+    } else if (!CollectionUtils.isEmpty(userGroupIds)) {
+      userGroupFilters = new HashSet<Long>();
+      
+      // Defined user groups
+      userGroupFilters.addAll(userGroupIds);
+    }
+
+    if ((myWorkspaces != null) && myWorkspaces) {
+      // Workspaces where user is a member
+      List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(loggedUser);
+      Set<Long> myWorkspaceIds = new HashSet<Long>();
+      for (WorkspaceEntity ws : workspaces)
+        myWorkspaceIds.add(ws.getId());
+
+      workspaceFilters.addAll(myWorkspaceIds);
+    } else if (!CollectionUtils.isEmpty(workspaceIds)) {
+      // Defined workspaces
+      workspaceFilters.addAll(workspaceIds);
+    }
+
+    SearchProvider elasticSearchProvider = getProvider("elastic-search");
+    if (elasticSearchProvider != null) {
+      String[] fields = new String[] { "firstName", "lastName" };
+
+      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, EnvironmentRoleArchetype.STUDENT, userGroupFilters, workspaceFilters, firstResult, maxResults);
+      
+      List<Map<String, Object>> results = result.getResults();
+      boolean hasImage = false;
+
+      if (results != null && !results.isEmpty()) {
+        for (Map<String, Object> o : results) {
+          String studentId = (String) o.get("id");
+          SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
+          if (studentIdentifier == null) {
+            logger.severe(String.format("Could not process user found from search index with id %s", studentId));
+            continue;
+          }
+          
+          UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+          String emailAddress = userEntity != null ? userEmailEntityController.getUserEmailAddress(userEntity, true) : null;
+            
+          @SuppressWarnings("unchecked")
+          HashMap<String, Object> studyStartDate = (HashMap<String, Object>)o.get("studyStartDate");
+          @SuppressWarnings("unchecked")
+          HashMap<String, Object> studyTimeEnd = (HashMap<String, Object>)o.get("studyTimeEnd");
+          Date studyStartDateDate = null;
+          Date studyTimeEndDate = null;
+          
+          if (studyStartDate != null) {
+            studyStartDateDate = new Date((Long)studyStartDate.get("millis"));
+          }
+          
+          if (studyTimeEnd != null) {
+            studyTimeEndDate = new Date((Long)studyTimeEnd.get("millis"));
+          }
+          
+          students.add(new fi.muikku.rest.model.Student(
+            studentIdentifier.toId(), 
+            (String) o.get("firstName"),
+            (String) o.get("lastName"), 
+            hasImage,
+            (String) o.get("nationality"), 
+            (String) o.get("language"), 
+            (String) o.get("municipality"), 
+            (String) o.get("school"), 
+            emailAddress,
+            studyStartDateDate,
+            studyTimeEndDate));
+        }
+      }
+    }
+
+    return Response.ok(students).build();
+  }
 
 	@GET
 	@Path("/users")
 	@RESTPermitUnimplemented
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public Response searchUsers(
 			@QueryParam("searchString") String searchString,
 			@QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
