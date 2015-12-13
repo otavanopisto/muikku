@@ -135,14 +135,15 @@
 
 
 .gt-user {
-   @extend .co-listItem;
-   .gt-user-details{ 
-   }
-   &.closed{}
-   &.open{
+  @extend .co-listItem;
 
-   }
+  &.closed{
+    .gt-user-details{ 
+      display: none;
+    }
+  }
 }
+
 .gt-user-name{
   width:100%;
   cursor:pointer;
