@@ -114,7 +114,6 @@
       this._loading = true;
       
       var options = {
-        archetype : 'STUDENT',
         firstResult: this._page * this.options.studentsPerPage,
         maxResults : this.options.studentsPerPage
       };
@@ -132,12 +131,12 @@
       }
 
       mApi()
-        .user.users.read(options)
-        .callback($.proxy(function (err, users) {
+        .user.students.read(options)
+        .callback($.proxy(function (err, students) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
           } else {
-            renderDustTemplate('guider/guider_items.dust', users, $.proxy(function(text) {
+            renderDustTemplate('guider/guider_items.dust', students, $.proxy(function(text) {
               this.element
                 .html(text)
                 .removeClass('loading');
@@ -155,39 +154,39 @@
     
     _onUserNameClick: function (event) {
       var element = $(event.target).closest(".gt-user");
-      var userEntityId = $(element).attr("data-user-entity-id");
+      var userIdentifier = $(element).attr("data-user-identifier");
       if (element.hasClass('open')) {
-        this._hideUserDetails(userEntityId);
+        this._hideUserDetails(userIdentifier);
       } else {
-        this._showUserDetails(userEntityId);
+        this._showUserDetails(userIdentifier);
       }
     },
     
     _onUserViewProfileClick: function (event) {
       var element = $(event.target).closest(".gt-user");
-      var userEntityId = $(element).attr("data-user-entity-id");
-      this._openStudentProfile(userEntityId);
+      var userIdentifier = $(element).attr("data-user-identifier");
+      this._openStudentProfile(userIdentifier);
     },
     
-    _openStudentProfile: function (userEntityId) {
+    _openStudentProfile: function (userIdentifier) {
       this.element.find('.gt-users-pages').hide();
       $('<div>')
         .appendTo(this.element)
         .guiderProfile({
-          userEntityId: userEntityId
+          userIdentifier: userIdentifier
         });
       
-      window.location.hash = "userprofile/" + userEntityId;
+      window.location.hash = "userprofile/" + userIdentifier;
     },
     
-    _showUserDetails : function(userEntityId) { 
-      var userElement = this.element.find(".gt-user[data-user-entity-id=" + userEntityId + "]");
+    _showUserDetails : function(userIdentifier) { 
+      var userElement = this.element.find(".gt-user[data-user-identifier='" + userIdentifier + "']");
       
       userElement
         .removeClass('open closed')
         .addClass('loading');
       
-      mApi().user.users.read(userEntityId).callback($.proxy(function(err, user) {
+      mApi().user.students.read(userIdentifier).callback($.proxy(function(err, user) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
         } else {        
@@ -204,8 +203,8 @@
       }, this)); 
     },
     
-    _hideUserDetails: function(userEntityId) {
-      this.element.find(".gt-user[data-user-entity-id=" + userEntityId + "]") 
+    _hideUserDetails: function(userIdentifier) {
+      this.element.find(".gt-user[data-user-identifier='" + userIdentifier + "']") 
         .removeClass('open loading')
         .addClass('closed');
     },  
@@ -214,7 +213,7 @@
 
   $.widget("custom.guiderProfile", {
     options: {
-      userEntityId: null
+      userIdentifier: null
     },
     
     _create : function() {
@@ -224,14 +223,14 @@
     _loadUser: function () {
       this.element.addClass('loading');
       
-      mApi().user.users.read(this.options.userEntityId).callback($.proxy(function(err, user){
+      mApi().user.students.read(this.options.userIdentifier).callback($.proxy(function(err, user){
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
         } else {
           renderDustTemplate('guider/guider_view_profile.dust', user, $.proxy(function(text) {    
             this.element.html(text);
             
-            mApi().workspace.workspaces.read({ userId: this.options.userEntityId }).callback($.proxy(function(err, workspaces) {               
+            mApi().workspace.workspaces.read({ userIdentifier: this.options.userIdentifier }).callback($.proxy(function(err, workspaces) {               
               renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function(text){
                 this.element.find(".gt-data-container-1 div.gt-data").html(text);
                 this.element.removeClass('loading');
