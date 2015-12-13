@@ -7,10 +7,10 @@ public class Student {
   public Student() {
   }
 
-  public Student(String identifier, String firstName, String lastName, boolean hasImage, String nationality, String language, String municipality, String school,
+  public Student(String id, String firstName, String lastName, boolean hasImage, String nationality, String language, String municipality, String school,
       String email, Date studyStartDate, Date studyTimeEnd) {
     super();
-    this.identifier = identifier;
+    this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.hasImage = hasImage;
@@ -23,12 +23,12 @@ public class Student {
     this.studyTimeEnd = studyTimeEnd;
   }
   
-  public String getIdentifier() {
-    return identifier;
+  public String getId() {
+    return id;
   }
   
-  public void setIdentifier(String identifier) {
-    this.identifier = identifier;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getFirstName() {
@@ -111,7 +111,7 @@ public class Student {
     this.studyTimeEnd = studyTimeEnd;
   }
 
-  private String identifier;
+  private String id;
   private String firstName;
   private String lastName;
   private boolean hasImage;

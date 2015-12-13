@@ -1,5 +1,5 @@
 
-<div class="mf-item gt-user closed" data-user-entity-id="{id}">
+<div class="mf-item gt-user closed" data-user-identifier="{id}">
   <div class="mf-item-header-name gt-user-name">
    <div class="gt-user-meta-topic">
      <span>{firstName} {lastName}</span>
