@@ -5,5 +5,8 @@
   <div class="mf-item-details an-announcement-details">
    <div class="an-announcement-topic">{caption}</div>
    <div class="an-announcement-content">{content|s}</div>
+   <div class="an-announcement-tools">
+     <div class="an-announcement-tool an-announcement-edit-link mf-item-tool-btn"><span>{#localize key="plugin.announcement.button.edit"/}</span></div>
+   </div>
   </div>
 </div>

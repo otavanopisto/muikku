@@ -9,7 +9,8 @@
       var mainfunction = ".mf-content-master";
       
      $(mainfunction).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
-      
+     $('.an-announcements-view-container').on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
+     
       this._loadAnnouncements();
     },
     _onCreateAnnouncementClick: function () {
@@ -45,6 +46,61 @@
           .announcer
           .announcements
           .create(values)
+          .callback($.proxy(function(err, result) {
+              if (err) {
+                $(".notification-queue").notificationQueue(
+                    'notification',
+                    'error',
+                    err);
+              } else {
+                $(".notification-queue").notificationQueue(
+                    'notification',
+                    'success',
+                    getLocaleText('plugin.announcer.createannouncement.success'));
+              }
+          }, this));
+      }   
+      openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement, formFunctions);
+    },
+    
+    
+    _onEditAnnouncementClick: function () {
+      var ann = event.target.parents("");
+      
+      
+      var formFunctions = function() {        
+        
+        // Date and timepickers for start and end time/date
+        
+        var start = new Date();
+        start.setMinutes(0);
+        start.setHours(start.getHours() + 1);
+        
+        
+        var end = new Date(start.getTime());
+        end.setHours(end.getHours() + 1);
+        
+        $('#startDate')
+          .datepicker({
+            "dateFormat": "dd. mm. yyyy"
+          })
+          .datepicker('setDate', start);
+        
+        $('#endDate')
+          .datepicker({
+            "dateFormat": "dd. mm. yyyy"
+          })
+          .datepicker('setDate', end);
+
+      }
+      
+      var editAnnouncement = function(values){
+        values.startDate = moment(values.startDate, "DD. MM. YYYY").format("YYYY-MM-DD");
+        values.endDate = moment(values.endDate, "DD. MM. YYYY").format("YYYY-MM-DD");
+        mApi()
+          .announcer
+          .announcements
+          .update(values)
           .callback($.proxy(function(err, result) {
               if (err) {
                 $(".notification-queue").notificationQueue(
