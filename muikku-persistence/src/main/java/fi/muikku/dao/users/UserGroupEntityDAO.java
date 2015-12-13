@@ -99,6 +99,20 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
     return query.getResultList();
   }
 
+  public List<UserGroupEntity> listByArchived(Boolean archived) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserGroupEntity> criteria = criteriaBuilder.createQuery(UserGroupEntity.class);
+    Root<UserGroupEntity> root = criteria.from(UserGroupEntity.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(UserGroupEntity_.archived), archived)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public List<UserGroupEntity> listByUser(UserEntity userEntity) {
     // TODO: Move descriptive name
     EntityManager entityManager = getEntityManager();
