@@ -44,6 +44,10 @@ public class AnnouncementsViewBackingBean {
     return activeAnnouncements;
   }
   
+  public void setAnnouncementId(Long announcementId) {
+    this.announcementId = announcementId;
+  }
+  
   private Announcement currentAnnouncement = null;
   private List<Announcement> activeAnnouncements = null; 
 }
