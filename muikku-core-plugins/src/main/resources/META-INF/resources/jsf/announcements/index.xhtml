@@ -38,7 +38,7 @@
     <nav id="announcementContextNavigation" class="gc-navigation">
       <ui:repeat value="#{announcementsViewBackingBean.activeAnnouncements}" var="announcement">
 	      <div class="gc-navigation-item">
-	        <a class="gc-navigation-title">
+	        <a class="gc-navigation-title" href="?announcementId=#{announcement.id}">
             <h:outputText value="#{announcement.caption}" />
 	        </a>
 	        <div class="gc-navigation-date">
