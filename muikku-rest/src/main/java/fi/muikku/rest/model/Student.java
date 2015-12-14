@@ -7,7 +7,7 @@ public class Student {
   public Student() {
   }
 
-  public Student(String id, String firstName, String lastName, boolean hasImage, String nationality, String language, String municipality, String school,
+  public Student(String id, String firstName, String lastName, Boolean hasImage, String nationality, String language, String municipality, String school,
       String email, Date studyStartDate, Date studyTimeEnd) {
     super();
     this.id = id;
@@ -47,11 +47,11 @@ public class Student {
     this.lastName = lastName;
   }
 
-  public boolean isHasImage() {
+  public Boolean isHasImage() {
     return hasImage;
   }
 
-  public void setHasImage(boolean hasImage) {
+  public void setHasImage(Boolean hasImage) {
     this.hasImage = hasImage;
   }
 
@@ -114,7 +114,7 @@ public class Student {
   private String id;
   private String firstName;
   private String lastName;
-  private boolean hasImage;
+  private Boolean hasImage;
   private String nationality;
   private String language;
   private String municipality;

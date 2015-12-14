@@ -41,7 +41,7 @@
     
     _loadWorkspaces: function (callback) {
       mApi().workspace.workspaces
-        .read({ userId: MUIKKU_LOGGED_USER_ID })
+        .read({ userIdentifier: MUIKKU_LOGGED_USER })
         .callback($.proxy(function (err, workspaces) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
