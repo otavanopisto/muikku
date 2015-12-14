@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  <sql>create table WorkspaceToolSettings ( id bigint not null auto_increment, name varchar(255) not null, visible bit not null, workspaceEntityId bigint not null, primary key (id))</sql>
+  <sql>alter table WorkspaceToolSettings add constraint UK_fw3nyf9me6i6b19xcd0fo42at  unique (name, workspaceEntityId)</sql>
+</update>
