@@ -86,11 +86,12 @@ body.evaluation {
         right:0;
         left:0;
         top:50px;
-        visible:hidden; 
+        visibility:hidden; 
         overflow:hidden;
         opacity:0;
         height:0px;
         box-shadow:0 10px 10px rgba(0, 0, 0, 0.1);
+        min-width:600px;
         
         &.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
           background-color:#fff;
@@ -117,6 +118,45 @@ body.evaluation {
 
     }
     
+    .evaluation-filters {
+      position:absolute;
+      right:20px;
+      top:0;
+      padding:5px 0;
+      font-weight:300;
+      font-size:16px;
+      
+      .evaluation-filter {
+        display:inline-block;
+        padding:0;
+        margin:0;
+        border-radius:3px;
+        border-left:1px solid #cfeefb;
+        cursor:pointer;
+        
+        &:first-child {
+          border-left:none;
+        }
+        
+        label {
+          display:inline-block;
+          margin:0 0 0 15px;
+          font-weight:300;
+          font-size:16px;
+          cursor:pointer;
+          text-shadow:0 0 10px #fff;
+        }
+        
+        input {
+          display:inline-block;
+          margin-right:10px;
+          margin:0 10px 0 0;
+          cursor:pointer;
+        }
+        
+      }
+    }
+    
 
     
   }
@@ -127,6 +167,35 @@ body.evaluation {
     left:0;
     right:0;
     bottom:0;
+    
+    &.loading {
+      color:#7ed9ff;
+
+      &:before {
+        -webkit-animation:evaluation-loading 1.0s infinite linear;
+        -moz-animation:users-loading 1.0s infinite linear;
+        animation:users-loading 1.0s infinite linear;
+        content: "\e900";
+        font-family: 'muikku' !important;
+        speak:none;
+        font-style:normal;
+        font-weight:normal;
+        font-variant:normal;
+        text-transform:none;
+        line-height:1;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+         height:60px;
+        width:59px;
+        font-size:60px;
+        position:absolute;
+        left:50%;
+        top:50%;
+        z-index:99;
+        margin:-30px 0 0 -30px;
+      }
+      
+    }
   }
   
   .prevPage,
@@ -169,6 +238,20 @@ body.evaluation {
     white-space: nowrap;
     transition:margin 0.2s ease-in-out;
     
+    .evaluation-no-students-found {
+      text-align:center;
+      font-weight:300;
+      font-size:20px;
+      font-style:italic;
+      position:absolute;
+      width:100%;
+      top:50%;
+      margin:-15px auto 0 auto;
+      height:30px;
+      text-align:center;
+    }
+    
+    
     .evaluation-student-wrapper {
       width:160px;
       height:130px;
@@ -178,10 +261,6 @@ body.evaluation {
       text-align:center;
       transition:opacity 1s ease-in-out, transform 1s ease-in-out;
       position:relative;
-      
-      &.evaluation-student-pending {
-        opacity: 0.5;
-      }
       
       &.evaluation-student-loaded {
         opacity: 1;
@@ -219,7 +298,6 @@ body.evaluation {
           font-size:16px;
           line-height:1.3em;
           white-space:normal;
-          position:absolute;
           font-size:0.9em;
           top:35px;
           background:#3cdd2a;
@@ -564,7 +642,7 @@ body.evaluation {
                     right:0;
                     top:0;
                     text-align:right;
-                    padding:0 10px;
+                    padding:8px 10px;
                   }
                   
                 }
@@ -593,7 +671,7 @@ body.evaluation {
                     right:0;
                     top:0;
                     text-align:right;
-                    padding:0 10px;
+                    padding:8px 10px;
                   }
                 
                 }
@@ -1097,7 +1175,6 @@ body.evaluation {
     }
     
     .ui-dialog-buttonpane {
-      text-align:center;
       width:100%;
       max-width:50%;
       min-width:400px;
@@ -1112,6 +1189,8 @@ body.evaluation {
       .ui-dialog-buttonset {
         float:none;
         position:relative;
+        text-align:right;
+        padding:0 30px 0 0;
         
         button {
           border-radius:0px;

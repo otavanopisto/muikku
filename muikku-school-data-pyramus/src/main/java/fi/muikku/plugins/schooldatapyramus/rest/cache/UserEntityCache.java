@@ -1,6 +1,10 @@
 package fi.muikku.plugins.schooldatapyramus.rest.cache;
 
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
+
+import fi.muikku.events.LoginEvent;
+
 import java.io.Serializable;
 
 @SessionScoped
@@ -15,7 +19,11 @@ public class UserEntityCache extends AbstractEntityCache implements Serializable
   
   @Override
   public int getMaxEntries() {
-    return 100;
+    return 500;
   }
- 
+
+  public void onLogin(@Observes LoginEvent event) {
+    clear();
+  }
+
 }

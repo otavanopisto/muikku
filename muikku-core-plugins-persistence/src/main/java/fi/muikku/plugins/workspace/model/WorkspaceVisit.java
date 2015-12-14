@@ -6,6 +6,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@Table(uniqueConstraints = 
+    @UniqueConstraint(columnNames = {"userEntityId", "workspaceEntityId"}))
 public class WorkspaceVisit {
 
   public Long getUserEntityId() {

@@ -45,7 +45,6 @@
         ]
       }
     },
-    
     _create: function () {
       this._load($.proxy(function (text) {
         this._dialog = $(text);
@@ -98,12 +97,12 @@
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
             
             var batchCalls = $.map(this.options.workspaceEvaluableAssignments, $.proxy(function (workspaceEvaluableAssignment) {
-              return mApi({async: false}).workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {
+              return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {
                 userEntityId: this.options.studentEntityId
               });
             }, this));
             
-            mApi({async: false}).batch(batchCalls).callback($.proxy(function (err, results) {
+            mApi().batch(batchCalls).callback($.proxy(function (err, results) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
@@ -244,29 +243,42 @@
           
           var assignments = [];
           for (var i = 0; i<this.options.workspaceEvaluableAssignments.length; i++) {
-            var workspaceEvaluableAssignment = this.options.workspaceEvaluableAssignments[i];
-            mApi({async: false}).workspace.workspaces.materials.evaluations
-            .read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {userEntityId: this.options.studentEntityId})
-            .callback($.proxy(function(err, evaluations) {
-              var evaluation = null;
-              if (evaluations != null && evaluations.length > 0) {
-                evaluation = evaluations[0];
-              }
-              assignments.push({
-                workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
-                materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
-                type: 'html',
-                title: workspaceEvaluableAssignment.workspaceMaterial.title,
-                html: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].html,
-                evaluation: evaluation
-              });
-            }, this));
-          }
-          this._loadTemplate(assignments, callback);
+            assignments.push(this._loadAssigmentEvaluation(this.options.workspaceEvaluableAssignments[i], htmlMaterialMap));
+          } 
+          async.parallel(assignments, $.proxy(function(err, results){
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              this._loadTemplate(results, callback);
+            }
+          }, this));
         }
       }, this));
     },
-    
+    _loadAssigmentEvaluation: function(workspaceEvaluableAssignment, htmlMaterialMap){
+      return $.proxy(function(cb){
+        mApi().workspace.workspaces.materials.evaluations
+        .read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {userEntityId: this.options.studentEntityId})
+        .callback(function(err, evaluations) {
+          if(err){
+            cb(err);
+          }else{
+            var evaluation = null;
+            if (evaluations != null && evaluations.length > 0) {
+              evaluation = evaluations[0];
+            }
+            cb(null, {
+              workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
+              materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
+              type: 'html',
+              title: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].title,
+              html: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].html,
+              evaluation: evaluation
+            }); 
+          }
+        });
+      },this);
+    },
     _loadTemplate: function (assignments, callback) {
       renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
         studentDisplayName: this.options.studentDisplayName,
@@ -284,6 +296,16 @@
       var content = $(assignment).find('.evaluation-assignment-content');
       var state = content.attr('data-open-state');
       content.attr('data-open-state', state == 'closed' ? 'open' : 'closed');
+      this._adjustTextareaHeight(content);
+    },
+    
+    _adjustTextareaHeight: function(container) {
+      var textareas = $(container).find('.muikku-memo-field');
+      $(textareas).each( function(index,textarea) {        
+        $(textarea).css({
+          height: (textarea.scrollHeight)+"px"
+        });
+      }); 
     }
   });
   
@@ -367,7 +389,7 @@
             if (this.options.verbalAssessment) {
               $(this._dialog).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
             }
-
+            
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
             
             var fieldAnswers = {};
@@ -381,6 +403,8 @@
             }
             
             $(document).muikkuMaterialLoader('loadMaterials', $(this._dialog).find('.evaluation-assignment'), fieldAnswers);
+            
+            this._adjustTextareaHeight($(this._dialog).find('.evaluation-assignment'));
           }, this),
           buttons: [{
             'text': this._dialog.attr('data-button-save-text'),
@@ -416,7 +440,7 @@
                     this.options.triggeringElement.options.evaluation = result;
                     this.options.triggeringElement.element.addClass('assignment-evaluated');
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
-                      .text(getLocaleText("plugin.evaluation.evaluationGridEvaluated.label") + " " + formatDate(new Date(result.evaluated)));
+                      .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(result.evaluated)));
                     this.element.remove();
                   }
                 }, this));
@@ -438,7 +462,7 @@
                     this.options.triggeringElement.options.evaluation = result;
                     this.options.triggeringElement.element.addClass('assignment-evaluated');
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
-                      .text(getLocaleText("plugin.evaluation.evaluationGridEvaluated.label") + " " + formatDate(new Date(result.evaluated)));
+                      .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(result.evaluated)));
                     this.element.remove();
                     
                   }
@@ -491,15 +515,21 @@
           type: materialType
         }]
       }, callback);
+    },
+    
+    _adjustTextareaHeight: function(container) {
+      var textareas = $(container).find('.muikku-memo-field');
+      $(textareas).each( function(index,textarea) {        
+        $(textarea).css({
+          height: (textarea.scrollHeight)+"px"
+        });
+      }); 
     }
   });
   
   $.widget("custom.evaluationLoader", {
     
     _create : function() {
-      this._pendingStudentLoads = [];
-      this._loadingStudent = false;
-
       this._pendingWorkspaceMaterialReplyLoads = [];
       this._loadingWorkspaceMaterialReplies = false;
       this._materialHtml = {};
@@ -515,7 +545,7 @@
       }, this));
       
   
-      async.series(loads, function (err, results) {
+      async.parallel(loads, function (err, results) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
@@ -537,7 +567,7 @@
           pending: []
         };
         
-        mApi({async: false}).materials.html
+        mApi().materials.html
           .read(materialId)
           .callback($.proxy(function (err, htmlMaterial) {
             if (err) {
@@ -555,17 +585,6 @@
               delete this._materialHtml[materialId].pending;
           }
         }, this));
-      }
-    },
-    
-    loadStudent: function (id, callback) {
-      this._pendingStudentLoads.push({
-        id: id,
-        callback: callback
-      });
-      
-      if (!this._loadingStudent) {
-        this._loadNextStudent();
       }
     },
     
@@ -591,33 +610,16 @@
             }
           }, this));
         }, this)); 
-    },
-    
-    _loadNextStudent: function () {
-      if (this._pendingStudentLoads.length) { 
-        this._loadingStudent = true;
-        var pendingLoad = this._pendingStudentLoads.shift();
-        
-        // TODO: remove async false
-        mApi({async: false}).user.users.basicinfo
-          .read(pendingLoad.id)
-          .callback($.proxy(function (err, user) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              pendingLoad.callback(user);
-            }
-            
-            this._loadingStudent = false;
-            this._loadNextStudent();
-          }, this)); 
-      }
-    },
+    }
   });
   
   $.widget("custom.evaluation", {
     options: {
-      workspaceEntityId: null
+      workspaceEntityId: null,
+      filters: {
+        requestedAssessment: null,
+        assessed: null
+      }
     },
     
     _create : function() {
@@ -625,6 +627,7 @@
       this._workspaceEvaluableAssignments = null;
       this._viewOffsetX = 0;
       this._viewOffsetY = 0;
+      this._filters = this.options.filters;
       
       $('<button>')
         .addClass('prevPage icon-arrow-left')
@@ -679,10 +682,35 @@
         viewOffsetChangeY: y
       });
     },
-
+    
+    filter: function (filter, value) {
+      if (value === undefined) {
+        return this._filters[filter];
+      } else {
+        this._filters[filter] = value;
+        this._reloadStudents();      
+      }
+    },
+    
+    _reloadStudents: function () {
+      this.element.find('.evaluation-student-wrapper').remove();
+      this.element.find('.evaluation-assignments').empty();
+      this.element.find('.evaluation-no-students-found').remove();
+      this._loadStudents();
+    },
+    
     _loadStudents: function () {
-      mApi({async: false}).workspace.workspaces.students
-        .read(this.options.workspaceEntityId, { archived: false })
+      this.element.addClass('loading');
+      var appliedFilters = {};
+      for (var filter in this._filters) {
+        if (this._filters.hasOwnProperty(filter)) {
+            if(typeof(this._filters[filter]) !== 'undefined' && this._filters[filter] !== null){
+              appliedFilters[filter] = this._filters[filter];
+            }
+        }
+      }
+      mApi().workspace.workspaces.students
+        .read(this.options.workspaceEntityId,  $.extend({ archived: false }, appliedFilters))
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -703,10 +731,11 @@
           } else {
             for(var i = 0; i < workspaceAssessmentRequests.length;i++){
               var workspaceAssessmentRequest = workspaceAssessmentRequests[i];
-              var studentElement = $('.evaluation-students').find('div[data-workspace-user="'+workspaceAssessmentRequest.userEntityId+'"]');
-              if(!studentElement.hasClass('workspace-evaluated')){
+              var studentElement = $('.evaluation-students').find('div[data-workspace-student="' + workspaceAssessmentRequest.workspaceUserIdentifier + '"]');
+              if (!studentElement.hasClass('workspace-evaluated')) {
                 studentElement.addClass('workspace-evaluation-requested');
               }
+              
               if(studentElement.find('.workspace-evaluation-requested-date').length == 0){
                 $('<div>')
                 .attr('data-evaluation-date', workspaceAssessmentRequest.date)
@@ -735,12 +764,14 @@
           } else {
             var workspaceEvaluableAssignments = [];
             
-            for (var i=0; i<workspaceEvaluableAssignmentMaterials.length; i++) {
-              workspaceEvaluableAssignments.push(
-                  {workspaceMaterial: workspaceEvaluableAssignmentMaterials[i]}
-              );
+            if (workspaceEvaluableAssignmentMaterials) {
+              for (var i=0; i<workspaceEvaluableAssignmentMaterials.length; i++) {
+                workspaceEvaluableAssignments.push(
+                    {workspaceMaterial: workspaceEvaluableAssignmentMaterials[i]}
+                );
+              }  
             }
-          
+            
             this.element.trigger("materialsLoaded", {
               workspaceEvaluableAssignments: workspaceEvaluableAssignments
             });
@@ -760,34 +791,63 @@
       this._scrollView(cellWidth * 5, 0);
     },
     
+    _loadStudentAssessments: function (workspaceStudent) {
+      return $.proxy(function (callback) {
+        mApi().workspace.workspaces.assessments
+          .read(this.options.workspaceEntityId, { workspaceStudentIdentifier : workspaceStudent.id })
+          .callback(function(err, workspaceAssessments) {
+            if (err) {
+              callback(err, null);
+            } else {
+              var workspaceAssessment = null;
+              if (workspaceAssessments != null && workspaceAssessments.length > 0) {
+                workspaceAssessment = workspaceAssessments[0];
+              }
+              workspaceStudent.assessment = workspaceAssessment;
+              callback(err, workspaceStudent)
+            };
+          });
+      }, this);
+    },
+    
     _onStudentsLoaded: function (event, data) {
-      this._workspaceUsers = data.workspaceUsers;
-      
-      $.each(this._workspaceUsers, $.proxy(function (index, workspaceUser) { 
-        mApi({async: false}).workspace.workspaces.assessments.read(
-              this.options.workspaceEntityId,
-              {userEntityId: workspaceUser.userId})
-          .callback($.proxy(function(err, workspaceAssessments) {
-            var workspaceAssessment = null;
-            if (workspaceAssessments != null && workspaceAssessments.length > 0) {
-              workspaceAssessment = workspaceAssessments[0];
-            }
-            workspaceUser.assessment = workspaceAssessment;
-  
-          $('<div>')
-            .attr('data-workspace-student', workspaceUser.id)
-            .attr('data-workspace-user', workspaceUser.userId)
-            .evaluationStudent({
-              workspaceStudentId: workspaceUser.id,
-              studentEntityId: workspaceUser.userId,
-              assessment: workspaceAssessment
-            })
-            .appendTo(this.element.find('.evaluation-students'));
-        }, this));    
+      var studentLoads = $.map(data.workspaceUsers||[], $.proxy(function (workspaceUser) { 
+        return this._loadStudentAssessments(workspaceUser);
       }, this));
       
-      this._loadAssessmentRequests();
-      this._loadMaterials();
+      async.parallel(studentLoads, $.proxy(function (err, workspaceStudents) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._workspaceUsers = workspaceStudents;
+          
+          if (this._workspaceUsers.length > 0) {
+            $.each(workspaceStudents, $.proxy(function (index, workspaceStudent) {
+              $('<div>')
+                .attr('data-workspace-student', workspaceStudent.id)
+                .evaluationStudent({
+                  workspaceStudentId: workspaceStudent.id,
+                  studentEntityId: workspaceStudent.userId,
+                  studentFirstName: workspaceStudent.firstName,
+                  studentLastName: workspaceStudent.lastName,
+                  studentStudyProgrammeName: workspaceStudent.studyProgrammeName,
+                  assessment: workspaceStudent.assessment
+                })
+                .appendTo(this.element.find('.evaluation-students'));
+            }, this));
+          } else {
+            $('<div>')
+              .addClass('evaluation-no-students-found')
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.noStudentsFound"))
+              .appendTo(this.element.find('.evaluation-students'));
+          }
+
+          this._loadAssessmentRequests();
+          this._loadMaterials();
+          
+          this.element.removeClass('loading');
+        }
+      }, this));
     },
     
     _onMaterialsLoaded: function (event, data) {
@@ -851,20 +911,19 @@
       var studyProgrammeName = workspaceStudent.evaluationStudent('studyProgrammeName');
       var workspaceName = $('#evaluation').evaluation("workspaceName");
       var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
-      mApi({async: false})
-      .workspace
-      .workspaces
-      .assessors
-      .read(workspaceEntityId)
-      .callback($.proxy(function(err, workspaceUsers) {
+      
+      mApi().workspace.workspaces.staffMembers.read(workspaceEntityId, {orderBy: 'name'}).callback($.proxy(function (err, teachers) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          mApi({async: false})
-            .workspace
-            .workspaces
-            .gradingScales
-            .read(workspaceEntityId)
+          var assessors = $.map(teachers, function (teacher) {
+            return $.extend(teacher, {
+              displayName: teacher.lastName + ' ' + teacher.firstName,
+              selected: teacher.userEntityId == MUIKKU_LOGGED_USER_ID
+            });
+          });
+          
+          mApi().workspace.workspaces.gradingScales.read(workspaceEntityId)
             .callback($.proxy(function(err, gradingScales) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -873,7 +932,7 @@
                   studentDisplayName: studentDisplayName,
                   studentAnswers: this._studentAnswers,
                   gradingScales: gradingScales,
-                  assessors: workspaceUsers,
+                  assessors: assessors,
                   workspaceName: workspaceName,
                   studentStudyProgrammeName: studyProgrammeName,
                   workspaceMaterialId: this.options.workspaceMaterialId,
@@ -890,7 +949,7 @@
               }
             }, this));
         }
-      }, this));
+      }, this)); 
     },
     
     _load: function () {
@@ -948,7 +1007,7 @@
           this.element.addClass('assignment-submitted');
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGridSubmitted.label") + " " + formatDate(new Date(reply.submitted)));   
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
           }
         break;
         case 'WITHDRAWN':
@@ -959,12 +1018,12 @@
           this.element.addClass('assignment-evaluated');
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGridSubmitted.label") + " " + formatDate(new Date(reply.submitted)));   
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
           }
           if (evaluation && evaluation.evaluated) {
             this.options.evaluation = evaluation;
             this.element.find('.evaluation-assignment-evaluated-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGridEvaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
           }
         break;
       }
@@ -983,15 +1042,30 @@
     },
     
     _create : function() {
-      this._displayName = null;
+      this._displayName = this.options.studentFirstName + ' ' + this.options.studentLastName;
+      this._studyProgrammeName = this.options.studentStudyProgrammeName;
       
-      this.element.addClass('evaluation-student-wrapper evaluation-student-pending');
+      this.element.addClass('evaluation-student-wrapper');
       this.element.append($('<div>').addClass('evaluation-student-picture'));
-      this.element.append($('<div>').addClass('evaluation-student-name').text('Loading...'));
+      this.element.append($('<div>').addClass('evaluation-student-name').text(this._displayName));
+      
+      if (this.options.assessment) {
+        this.element.removeClass('workspace-evaluation-requested');
+        
+        var evaluatedDate = $('<div>')
+          .addClass('workspace-evaluated-date')
+          .text(formatDate(new Date(this.options.assessment.evaluated)));
+        
+        if (this.element.hasClass('workspace-evaluation-requested')) {
+          this.element.find('workspace-evaluation-requested-date').before(evaluatedDate);
+        } else {
+          evaluatedDate.prependTo(this.element);
+        }
+        
+        this.element.addClass('workspace-evaluated');
+      }
 
-      $('#evaluation').on("viewInitialized", $.proxy(this._onEvaluationViewInitialized, this));
-      $('#evaluation').on("viewScroll", $.proxy(this._onEvaluationViewScroll, this));
-
+      this.element.addClass('evaluation-student-loaded');
       this.element.on("click", $.proxy(this._onClick, this));
     },
     
@@ -1011,38 +1085,28 @@
       return this.options.workspaceStudentId;
     },
     
-    _loadBasicInfo: function () {
-      this.element
-        .removeClass('evaluation-student-pending')
-        .addClass('evaluation-student-loading');
-      
-      $('#evaluation').evaluationLoader('loadStudent', this.studentEntityId(), $.proxy(function (user) {
-        this.element
-          .removeClass('evaluation-student-pending evaluation-student-loading')
-          .addClass('evaluation-student-loaded');
-        this._onBasicInfoLoaded(user);
-      }, this));
-    },
-    
     _onClick: function (event) {
       var workspaceName = $('#evaluation').evaluation("workspaceName");
       var workspaceEvaluableAssignments = $('#evaluation').evaluation("workspaceEvaluableAssignments");
       var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
-      mApi({async: false})
-        .workspace
-        .workspaces
-        .assessors
-        .read(workspaceEntityId)
-        .callback($.proxy(function(err, workspaceUsers) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            mApi({async: false})
-              .workspace
-              .workspaces
-              .gradingScales
-              .read(workspaceEntityId)
-              .callback($.proxy(function(err, gradingScales) {
+
+      mApi().workspace.workspaces.staffMembers.read(workspaceEntityId, {orderBy: 'name'}).callback($.proxy(function (err, teachers) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var assessors = $.map(teachers, function (teacher) {
+            return $.extend(teacher, {
+              displayName: teacher.lastName + ' ' + teacher.firstName,
+              selected: teacher.userEntityId == MUIKKU_LOGGED_USER_ID
+            });
+          });
+
+          mApi()
+            .workspace
+            .workspaces
+            .gradingScales
+            .read(workspaceEntityId)
+            .callback($.proxy(function(err, gradingScales) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
@@ -1051,7 +1115,7 @@
                   studentDisplayName: this.displayName(),
                   workspaceName: workspaceName,
                   gradingScales: gradingScales,
-                  assessors: workspaceUsers,
+                  assessors: assessors,
                   evaluationDate: this.options.assessment ? new Date(this.options.assessment.evaluated) : null,
                   evaluationGradeId: this.options.assessment ? this.options.assessment.gradeIdentifier+'/'+this.options.assessment.gradeSchoolDataSource+'@'+this.options.assessment.gradingScaleIdentifier+'/'+this.options.assessment.gradingScaleSchoolDataSource : null,
                   assessorEntityId: this.options.assessment ? this.options.assessment.assessorEntityId : null,
@@ -1064,47 +1128,9 @@
                   triggeringElement: this
                 });
               }
-            }, this));
-          }
-        }, this));
-    },
-
-    _onEvaluationViewInitialized: function (event, data) {
-      if (this.element.hasClass('evaluation-student-pending')) {
-        var viewWidth = $(event.target).width();
-        var studentOffset = this.element.offset();
-        if (studentOffset.left < viewWidth) {
-          this._loadBasicInfo();  
+          }, this));
         }
-      }
-    },
-    
-    _onEvaluationViewScroll: function (event, data) {
-      if (this.element.hasClass('evaluation-student-pending')) {
-        var viewWidth = $(event.target).width();
-        var studentOffset = this.element.offset();
-        if ((studentOffset.left - data.viewOffsetChangeX) < (viewWidth)) {
-          this._loadBasicInfo();  
-        }
-      }
-    },
-    
-    _onBasicInfoLoaded: function (user) {
-      this._displayName = user.firstName + ' ' + user.lastName;
-      this._studyProgrammeName = user.studyProgrammeName;
-      this.element.find('.evaluation-student-name').text(this._displayName);
-      if(this.options.assessment){
-        this.element.removeClass('workspace-evaluation-requested');
-        var evaluatedDate = $('<div>')
-          .addClass('workspace-evaluated-date')
-          .text(formatDate(new Date(this.options.assessment.evaluated)));
-        if(this.element.hasClass('workspace-evaluation-requested')){
-          this.element.find('workspace-evaluation-requested-date').before(evaluatedDate);
-        }else{
-          evaluatedDate.prependTo(this.element);
-        }
-        this.element.addClass('workspace-evaluated');
-      }
+      }, this));
     }
   
   });
@@ -1113,13 +1139,26 @@
     var workspaceEntityId = $('#evaluation').attr('data-workspace-entity-id');
     
     $(document).muikkuMaterialLoader({
-      prependTitle : false
+      prependTitle : false,
+      readOnlyFields: true
     });
     
     $('#evaluation').evaluationLoader();
     $('#evaluation').evaluation({
-      workspaceEntityId: workspaceEntityId
+      workspaceEntityId: workspaceEntityId,
+      filters: {
+        requestedAssessment: $('#filter-students-by-assessment-requested').prop('checked') ? true : null,
+        assessed: $('#filter-students-by-not-assessed').prop('checked') ? false : null
+      }
     }); 
+    
+    $('#filter-students-by-assessment-requested').on("click", function () {
+      $('#evaluation').evaluation('filter', 'requestedAssessment', $(this).prop('checked') ? true : null);
+    });
+
+    $('#filter-students-by-not-assessed').on("click", function () {
+      $('#evaluation').evaluation('filter', 'assessed', $(this).prop('checked') ? false : null);
+    });
     
     $('.evaluation-available-workspaces').perfectScrollbar({
       wheelSpeed:3,
@@ -1139,15 +1178,18 @@
       .addClass('icon-arrow-up');
       
       $('.evaluation-available-workspaces')
+      .css({
+        visibility: 'visible'
+      })
       .animate({
         opacity:1,
-        visibility: 'visible',
         height:'160px'
       }, {
         duration : 300,
         easing : "easeInOutQuint",
         complete: function() {
-          $('.evaluation-available-workspaces').attr('data-hidden', '0');
+          $('.evaluation-available-workspaces')
+            .attr('data-hidden', '0');
         }
       });  
     } else {
@@ -1159,13 +1201,16 @@
       $('.evaluation-available-workspaces')
       .animate({
         opacity:0,
-        visibility: 'hidden',
         height:'0px'
       }, {
         duration : 200,
         easing : "easeInOutQuint",
         complete: function() {
-          $('.evaluation-available-workspaces').attr('data-hidden', '1');
+          $('.evaluation-available-workspaces')
+            .attr('data-hidden', '1')
+            .css({
+              visibility: 'hidden'
+            });
         }
       });
     }

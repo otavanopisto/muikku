@@ -229,7 +229,7 @@
           modal: true, 
           dialogClass: this.options.confirmRemoveDialogClass,
           buttons: [{
-            'text': dialog.attr('data-button-delete-text'),
+            'text': dialog.attr('data-button-remove-text'),
             'class': 'delete-button',
             'click': $.proxy(function(event) {
               this._removeFiles(file);
@@ -286,6 +286,7 @@
     },
 
     _onFileUploadProgress : function(e, data) {
+      $(this.element).trigger('muikku-field-progress');
       var progress = parseInt(data.loaded / data.total * 100, 10);
       this._updateFileProgress(data.context.data('file-index'), progress, data.loaded, data.total);
     },

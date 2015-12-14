@@ -95,6 +95,7 @@ body {
       .ui-dialog-buttonset {
         float:none;
         position:relative;
+        text-align:right;
       
         button {
           border-radius:0px;
@@ -110,7 +111,6 @@ body {
         
         button.delete-button,
         button.confirm-button {
-          float:right;
           background:#de3211; /* RED */
         }
         
@@ -118,19 +118,16 @@ body {
         button.send-button,
         button.save-evaluation-button,
         button.unarchive-button {
-          float:right;
           background:#27b91c; /* GREEN */
         }
         
         button.revert-button,
         button.archive-button,
         button.cancel-evaluation-button {
-          float:right;
           background:#f6a930; /* ORANGE */
         }
         
         button.cancel-button {
-          float:right;
           background:#7391a7; /* GRAYISH BLUE */
         }
       

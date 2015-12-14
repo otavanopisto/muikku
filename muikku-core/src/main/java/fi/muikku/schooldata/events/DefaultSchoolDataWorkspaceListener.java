@@ -125,6 +125,50 @@ public class DefaultSchoolDataWorkspaceListener {
       logger.warning("could not init workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found"); 
     }
   }
+  
+  public void onSchoolDataWorkspaceUserUpdatedEvent(@Observes SchoolDataWorkspaceUserUpdatedEvent event) {
+    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
+    if (userEntity != null) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getWorkspaceDataSource(), event.getWorkspaceIdentifier());
+      if (workspaceEntity != null) {
+        SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
+        if (workspaceUserEntity != null) {
+          String currentUserIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
+          if (!StringUtils.equals(currentUserIdentifier, event.getUserIdentifier())) {
+            UserSchoolDataIdentifier newUserIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
+                event.getUserDataSource(), event.getUserIdentifier());
+            if (newUserIdentifier == null) {
+              logger.warning(String.format("Unable to update workspace user. UserSchoolDataIdentifier for %s/%s not found", event.getUserDataSource(), event.getUserIdentifier()));
+            }
+            else {
+              WorkspaceUserEntity existingUser = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(
+                  workspaceEntity, newUserIdentifier);
+              if (existingUser != null) {
+                if (!existingUser.getArchived().equals(workspaceUserEntity.getArchived())) {
+                  if (existingUser.getArchived()) {
+                    workspaceUserEntityController.unarchiveWorkspaceUserEntity(existingUser);
+                  }
+                  else {
+                    workspaceUserEntityController.archiveWorkspaceUserEntity(existingUser);
+                  }
+                }
+                workspaceUserEntityController.updateIdentifier(existingUser, workspaceUserEntity.getIdentifier());
+                workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
+              }
+              else {
+                workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
+              }
+            }
+          }
+        }
+      } else {
+        logger.warning("could not update workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found");
+      }
+    } else {
+      logger.warning("could not update workspace user because user entity #" + event.getUserIdentifier() + '/' + event.getUserDataSource() +  " could not be found");
+    }
+  }
 
   public void onSchoolDataWorkspaceUserRemovedEvent(@Observes SchoolDataWorkspaceUserRemovedEvent event) {
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());

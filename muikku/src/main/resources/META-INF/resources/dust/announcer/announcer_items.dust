@@ -1,0 +1,8 @@
+<div class="an-announcements">
+
+  {#.}
+    {>"announcer/announcer_item.dust"/}
+  {:else}
+    {>"announcer/announcer_empty.dust"/}
+  {/.} 
+</div>
