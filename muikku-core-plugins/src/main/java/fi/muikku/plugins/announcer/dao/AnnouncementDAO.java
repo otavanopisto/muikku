@@ -22,7 +22,8 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       String content,
       Date created,
       Date startDate,
-      Date endDate
+      Date endDate,
+      boolean archived
   ) {
     Announcement announcement = new Announcement();
     announcement.setPublisherUserEntityId(publisherUserEntityId);
@@ -31,28 +32,26 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     announcement.setCreated(created);
     announcement.setStartDate(startDate);
     announcement.setEndDate(endDate);
-    announcement.setArchived(false);
+    announcement.setArchived(archived);
     
-    getEntityManager().persist(announcement);
-    return announcement;
+    return persist(announcement);
  }
   
-  public void archiveById(Long id) {
-    Announcement announcement = findById(id);
+  public void archive(Announcement announcement) {
     if(announcement != null){
       announcement.setArchived(true);
       getEntityManager().persist(announcement);
     }
   }
   
-  public List<Announcement> listUnArchived(){
+  public List<Announcement> listByArchived(boolean archived){
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
-    criteria.where(criteriaBuilder.equal(root.get(Announcement_.archived), Boolean.FALSE));
+    criteria.where(criteriaBuilder.equal(root.get(Announcement_.archived), archived));
     
     return entityManager.createQuery(criteria).getResultList();
   }
