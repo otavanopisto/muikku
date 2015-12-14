@@ -10,7 +10,6 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -37,7 +36,6 @@ import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 
 @ApplicationScoped
-@Stateful
 public class ElasticSearchProvider implements SearchProvider {
   
   @Inject
@@ -259,6 +257,12 @@ public class ElasticSearchProvider implements SearchProvider {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
     }
+  }
+
+
+  @Override
+  public SearchResult searchWorkspaces(String searchTerm, int start, int maxResults) {
+    return searchWorkspaces(null, null, null, searchTerm, false, start, maxResults);
   }
   
   @Override

@@ -2,7 +2,7 @@
   
   $.widget("custom.records", {
     options: {
-      userEntityId: null
+      studentIdentifier: null
     },
     
     _create : function() {
@@ -19,7 +19,7 @@
       .read({ userId: this.options.userEntityId })
       .on('$', $.proxy(function (workspaceEntity, callback) {
         mApi({async: false}).workspace.workspaces.assessments
-          .read(workspaceEntity.id, { userEntityId: this.options.userEntityId })
+          .read(workspaceEntity.id, { studentIdentifier: this.options.studentIdentifier })
           .callback($.proxy(function (assessmentsErr, assessments) {
             if( assessmentsErr ){
               $('.notification-queue').notificationQueue('notification', 'error', assessmentsErr );
@@ -138,7 +138,8 @@
   
   $(document).ready(function(){
     $('.tr-records-view-container').records({
-      userEntityId: MUIKKU_LOGGED_USER_ID
+      'userEntityId': MUIKKU_LOGGED_USER_ID,
+      'studentIdentifier': MUIKKU_LOGGED_USER
     });
   });
   

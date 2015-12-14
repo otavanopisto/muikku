@@ -2,6 +2,7 @@ package fi.muikku.plugins.schooldatapyramus.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -44,6 +45,9 @@ import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.UserRole;
 
 public class PyramusSchoolDataEntityFactory {
+  
+  @Inject
+  private Logger logger;
   
   public static class UserWithId {
     private final User user;
@@ -288,13 +292,22 @@ public class PyramusSchoolDataEntityFactory {
 
   public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments) {
     List<WorkspaceAssessment> result = new ArrayList<>();
-    for (CourseAssessment courseAssessment : courseAssessments) {
-      result.add(createEntity(courseAssessment));
+    
+    if (courseAssessments != null) {
+      for (CourseAssessment courseAssessment : courseAssessments) {
+        result.add(createEntity(courseAssessment));
+      }
     }
+    
     return result;
   }
 
   public WorkspaceAssessmentRequest createEntity(CourseAssessmentRequest courseAssessmentRequest) {
+    if (courseAssessmentRequest == null) {
+      logger.severe("Attempted to translate null course assessment request into school data entity");
+      return null;
+    }
+    
     return new PyramusWorkspaceAssessmentRequest(courseAssessmentRequest.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
         courseAssessmentRequest.getRequestText(), courseAssessmentRequest.getCreated().toDate());

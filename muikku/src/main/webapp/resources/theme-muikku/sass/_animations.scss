@@ -67,7 +67,7 @@
   100% { box-shadow:0 0 0px 3px #ffffff ;}
 }
 
-/* Evaluation Grid View Card Loading */
+/* Evaluation Single Card Loading */
 
 @-webkit-keyframes load-cards {
   0% { -webkit-transform: scale(1); opacity:0.1; } 
@@ -85,6 +85,21 @@
   0% { transform: scale(1); opacity:0.1; } 
   50% { transform: scale(0.9); opacity:0.8; }
   100% { transform: scale(1); opacity:0.1; }
+}
+
+/* Evaluation Card View Loading  */
+
+@-webkit-keyframes evaluation-loading {
+  0% { -webkit-transform: rotate(0deg); }
+  10% { -webkit-transform: rotate(360deg);}
+}
+@-moz-keyframes evaluation-loading {
+  0% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg); }
+}
+@keyframes evaluation-loading {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Workspace Materials Connection Lost BG */
