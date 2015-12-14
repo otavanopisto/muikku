@@ -20,7 +20,9 @@
             </h2>
             <div class="article-image image4"></div>
             <div class="article-datetime">
-              <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.startDate}" />
+              <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.startDate}">
+                <f:convertDateTime type="date" dateStyle="short" />
+              </h:outputText>
             </div>
           </header>
           <div class="article-context">
@@ -40,7 +42,9 @@
             <h:outputText value="#{announcement.caption}" />
 	        </div>
 	        <div class="gc-navigation-date">
-	          <h:outputText value="#{announcement.startDate}" />
+	          <h:outputText value="#{announcement.startDate}">
+	            <f:convertDateTime type="date" dateStyle="short" />
+	          </h:outputText>
 	        </div>
 	      </div>
       </ui:repeat>
