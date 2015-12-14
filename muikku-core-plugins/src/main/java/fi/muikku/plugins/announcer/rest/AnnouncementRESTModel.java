@@ -45,10 +45,10 @@ public class AnnouncementRESTModel {
   public void setEndDate(Date endDate) {
     this.endDate = endDate;
   }
-  public boolean isArchived() {
+  public Boolean isArchived() {
     return archived;
   }
-  public void setArchived(boolean archived) {
+  public void setArchived(Boolean archived) {
     this.archived = archived;
   }
 
@@ -59,5 +59,5 @@ public class AnnouncementRESTModel {
   private Date created;
   private Date startDate;
   private Date endDate;
-  private boolean archived;
+  private Boolean archived;
 }

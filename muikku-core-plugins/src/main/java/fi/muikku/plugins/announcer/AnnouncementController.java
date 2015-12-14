@@ -27,12 +27,13 @@ public class AnnouncementController {
         content,
         new Date(),
         startDate,
-        endDate
+        endDate,
+        false
     );
   }
   
-  public List<Announcement> listUnArchived() {
-    return announcementDAO.listUnArchived();
+  public List<Announcement> listUnarchived() {
+    return announcementDAO.listByArchived(false);
   }
   
   public List<Announcement> listAll() {
@@ -43,7 +44,7 @@ public class AnnouncementController {
     return announcementDAO.findById(id);
   }
   
-  public void archiveById(Long id) {
-    announcementDAO.archiveById(id);
+  public void archive(Announcement announcement) {
+    announcementDAO.archive(announcement);
   }
 }
