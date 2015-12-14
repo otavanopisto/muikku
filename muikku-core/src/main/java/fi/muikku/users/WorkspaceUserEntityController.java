@@ -1,6 +1,7 @@
 package fi.muikku.users;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -102,6 +103,18 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.listByWorkspaceAndRoles(workspaceEntity, roles, firstResult, maxResults);
   }
   
+  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUserIdentifier(SchoolDataIdentifier userIdentifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
+        findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
+    
+    if (userSchoolDataIdentifier != null) {
+      return workspaceUserEntityDAO.listByUserSchoolDataIdentifierAndArchived(userSchoolDataIdentifier, Boolean.FALSE);
+    } else {
+      logger.severe(String.format("Could not find UserSchoolDataIdentifier by %s", userIdentifier));
+      return Collections.emptyList();
+    }
+  }
+  
   public Long countWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {
     if ((roles == null)||(roles.isEmpty())) {
       return 0l;
@@ -173,6 +186,17 @@ public class WorkspaceUserEntityController {
     List<WorkspaceEntity> result = new ArrayList<>();
     
     List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByUserEntity(userEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      result.add(workspaceUserEntity.getWorkspaceEntity());
+    }
+    
+    return result;
+  }
+
+  public List<WorkspaceEntity> listWorkspaceEntitiesByUserIdentifier(SchoolDataIdentifier userIdentifier) {
+    List<WorkspaceEntity> result = new ArrayList<>();
+    
+    List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByUserIdentifier(userIdentifier);
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
       result.add(workspaceUserEntity.getWorkspaceEntity());
     }
