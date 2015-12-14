@@ -116,6 +116,10 @@ public class UserGroupEntityController {
   }
 
   public List<UserGroupEntity> listUserGroupEntities() {
+    return userGroupEntityDAO.listByArchived(Boolean.FALSE);
+  }
+
+  public List<UserGroupEntity> listUserGroupEntitiesIncludeArchived() {
     return userGroupEntityDAO.listAll();
   }
 
