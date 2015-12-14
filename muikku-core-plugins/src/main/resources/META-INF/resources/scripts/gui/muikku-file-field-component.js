@@ -286,6 +286,7 @@
     },
 
     _onFileUploadProgress : function(e, data) {
+      $(this.element).trigger('muikku-field-progress');
       var progress = parseInt(data.loaded / data.total * 100, 10);
       this._updateFileProgress(data.context.data('file-index'), progress, data.loaded, data.total);
     },

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -28,6 +29,23 @@ public class WorkspaceVisitDAO extends CorePluginsDAO<WorkspaceVisit> {
     return visit;
   }
   
+  public WorkspaceVisit lockingFindByUserEntityAndWorkspaceEntity(UserEntity userEntity, WorkspaceEntity workspaceEntity) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceVisit> criteria = criteriaBuilder.createQuery(WorkspaceVisit.class);
+    Root<WorkspaceVisit> root = criteria.from(WorkspaceVisit.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.and(
+          criteriaBuilder.equal(root.get(WorkspaceVisit_.userEntityId), userEntity.getId()),
+          criteriaBuilder.equal(root.get(WorkspaceVisit_.workspaceEntityId), workspaceEntity.getId()))
+    );
+
+    TypedQuery<WorkspaceVisit> query = entityManager.createQuery(criteria);
+    query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+    return getSingleResult(query);
+  }
+
   public WorkspaceVisit findByUserEntityAndWorkspaceEntity(UserEntity userEntity, WorkspaceEntity workspaceEntity) {
     EntityManager entityManager = getEntityManager();
 

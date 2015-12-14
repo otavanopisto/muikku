@@ -7,8 +7,10 @@ public class AssessmentRequestRESTModel {
   public AssessmentRequestRESTModel() {
   }
 
-  public AssessmentRequestRESTModel(String id, Long workspaceEntityId, Long userEntityId, String requestText, Date date) {
+  public AssessmentRequestRESTModel(String id, String userIdentifier, String workspaceUserIdentifier, Long workspaceEntityId, Long userEntityId, String requestText, Date date) {
     this.id = id;
+    this.userIdentifier = userIdentifier;
+    this.workspaceUserIdentifier = workspaceUserIdentifier;
     this.workspaceEntityId = workspaceEntityId;
     this.userEntityId = userEntityId;
     this.requestText = requestText;
@@ -38,6 +40,22 @@ public class AssessmentRequestRESTModel {
   public void setId(String id) {
     this.id = id;
   }
+  
+  public String getUserIdentifier() {
+    return userIdentifier;
+  }
+  
+  public void setUserIdentifier(String userIdentifier) {
+    this.userIdentifier = userIdentifier;
+  }
+  
+  public String getWorkspaceUserIdentifier() {
+    return workspaceUserIdentifier;
+  }
+  
+  public void setWorkspaceUserIdentifier(String workspaceUserIdentifier) {
+    this.workspaceUserIdentifier = workspaceUserIdentifier;
+  }
 
   public Long getWorkspaceEntityId() {
     return workspaceEntityId;
@@ -56,6 +74,8 @@ public class AssessmentRequestRESTModel {
   }
 
   private String id;
+  private String userIdentifier;
+  private String workspaceUserIdentifier;
   private String requestText;
   private Date date;
   private Long workspaceEntityId;

@@ -32,7 +32,7 @@ public class WorkspaceVisitController {
       return;
     } else {
       synchronized(userEntity) {
-        WorkspaceVisit workspaceVisit = workspaceVisitDAO.findByUserEntityAndWorkspaceEntity(userEntity, workspaceEntity);
+        WorkspaceVisit workspaceVisit = workspaceVisitDAO.lockingFindByUserEntityAndWorkspaceEntity(userEntity, workspaceEntity);
         if (workspaceVisit == null) {
           workspaceVisit = workspaceVisitDAO.create(userEntity, workspaceEntity, new Date());
         }

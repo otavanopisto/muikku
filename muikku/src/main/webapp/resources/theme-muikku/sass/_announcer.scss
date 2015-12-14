@@ -2,9 +2,60 @@
 
 .an-announcements-view-container{}
 .an-announcements{
+  padding:25px;
   .an-announcement{
+    box-sizing: border-box;
+    display: inline-block;
+    margin-bottom: 25px;
+    margin-right: 25px;
+    max-height: 300px;
+    overflow: hidden;
+    vertical-align: top;
+    width: 286px;
+
+    &:nth-child(3n+3){
+     margin-right:0;
+    }
   }
 }
+.an-announcement-header-container{
+ height:100px;
+ &.default{
+    @include background-image('/gfx/workspace-default-header.jpg');
+ }
+}
+.an-announcement-select{
+    float: left;
+    margin-left: 5px;
+    width: 30px;
+}
+.an-announcement-dates{
+    text-align:right;
+    background-color:$light;
+    padding-right:5px;
+}
+.an-announcement-details{
+
+  margin-bottom:10px;
+  max-height:190px;
+}
+.an-announcement-topic{
+  padding-top:10px;
+  padding-left:10px;
+  padding-bottom:10px;
+  background-color:$dimmest;
+  font-weight:300;
+  font-size:20px;
+  overflow:hidden;
+  text-overflow:ellipsis;  
+  color:#fff;
+}
+.an-announcement-content{
+  padding:0 20px 20px 20px; 
+  max-height:130px;
+  overflow:hidden;
+}
 .an-no-announcements{}
+
 .an-create-announcement{}
 

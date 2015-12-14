@@ -20,9 +20,7 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.plugin.PluginRESTService;
-import fi.muikku.plugins.evaluation.rest.model.WorkspaceAssessor;
 import fi.muikku.plugins.evaluation.rest.model.WorkspaceGrade;
 import fi.muikku.plugins.evaluation.rest.model.WorkspaceGradingScale;
 import fi.muikku.plugins.evaluation.rest.model.WorkspaceMaterialEvaluation;
@@ -30,13 +28,10 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.GradingController;
-import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
-import fi.muikku.schooldata.entity.User;
 import fi.muikku.session.SessionController;
-import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -54,12 +49,6 @@ public class EvaluationRESTService extends PluginRESTService {
 
   @Inject
   private UserEntityController userEntityController;
-  
-  @Inject
-  private UserController userController;
-  
-  @Inject
-  private WorkspaceController workspaceController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -158,43 +147,6 @@ public class EvaluationRESTService extends PluginRESTService {
     return Response.ok(createRestModel(
       evaluationController.createOrUpdateWorkspaceMaterialEvaluation(student, workspaceMaterial, gradingScale, grade, assessor, evaluated, payload.getVerbalAssessment())
     )).build();
-  }
-
-  @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/assessors")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response listWorkspaceAssessors(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    if (!sessionController.hasCoursePermission(EvaluationResourcePermissionCollection.EVALUATION_LISTASSESSORS, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    List<UserEntity> workspaceUsers = workspaceController.listUserEntitiesByWorkspaceEntityAndRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.TEACHER);
-    
-    List<WorkspaceAssessor> result = new ArrayList<>();
-    
-    UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-    
-    for (UserEntity userEntity : workspaceUsers) {
-      User user = userController.findUserByUserEntityDefaults(userEntity);
-      result.add(
-          new WorkspaceAssessor(
-              user.getDisplayName(),
-              userEntity.getId(),
-              // TODO: better to set `selected' in client side
-              userEntity.getId().equals(loggedUserEntity.getId())));
-    }
-    
-    return Response.ok(result).build();
   }
 
   @GET

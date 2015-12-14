@@ -19,7 +19,7 @@ public class UserEntityCache extends AbstractEntityCache implements Serializable
   
   @Override
   public int getMaxEntries() {
-    return 100;
+    return 500;
   }
 
   public void onLogin(@Observes LoginEvent event) {
