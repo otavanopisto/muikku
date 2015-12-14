@@ -56,6 +56,7 @@
                     'notification',
                     'success',
                     getLocaleText('plugin.announcer.createannouncement.success'));
+                    window.location.reload(true);      
               }
           }, this));
       }   
@@ -106,7 +107,7 @@
         mApi()
           .announcer
           .announcements
-          .update(id)
+          .update(id, values)
           .callback($.proxy(function(err, result) {
               if (err) {
                 $(".notification-queue").notificationQueue(
@@ -118,6 +119,7 @@
                     'notification',
                     'success',
                     getLocaleText('plugin.announcer.editannouncement.success'));
+                    window.location.reload(true);      
               }
           }, this));
       }   
@@ -151,6 +153,9 @@
       this.element.empty();      
       $(this.element).append('<div class="mf-loading"><div class"circle1"></div><div class"circle2"></div><div class"circle3"></div></div>');      
     },    
+    _reload: function(){
+      window.location.reload(true);      
+    },
     _clear: function(){
       this.element.empty();      
     },
