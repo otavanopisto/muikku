@@ -18,8 +18,6 @@
     },
     _onCreateAnnouncementClick: function () {
       
-      
-      
       var formFunctions = function() {
         
         // Date and timepickers for start and end time/date
@@ -133,7 +131,7 @@
            return mApi().announcer.announcements.del(announcement);
          });
          
-         mApi({async: false}).batch(calls).callback(function(err, results){
+         mApi().batch(calls).callback(function(err, results){
            if (err) {
              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.announcer.archiveannouncement.error'));
            } else {
