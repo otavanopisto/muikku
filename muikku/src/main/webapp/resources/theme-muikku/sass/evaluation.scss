@@ -608,45 +608,35 @@ body.evaluation {
             margin:20px 0 0 0;
             font-size:14px;
             
+            .evaluation-modal-workspace-single-assignment {
+              .evaluation-assignmentlist-wrapper {
+                .evaluation-assignment-title-container {
+                  > h2 {
+                    border-left:5px solid $evaluatedAssignment;
+                  }
+                }
+              }
+            }
+            
+            .evaluation-modal-workspace-single-exercise {
+              .evaluation-assignmentlist-wrapper {
+                .evaluation-assignment-title-container {
+                  > h2 {
+                    border-left:5px solid $exerciseAssignment;
+                  }
+                }
+              }
+            }
+            
             .evaluation-modal-workspace-single-assignment,
             .evaluation-modal-workspace-single-exercise {
               border-bottom:2px solid #f9f9f9;
               padding:0 0 15px 0;
               margin:0 0 15px 0;
               
-              .evaluation-assignmentlist-wrapper,
-              .evaluation-exerciselist-wrapper {
+              .evaluation-assignmentlist-wrapper {
                 clear:both;
-                
-                .evaluation-exercise-title-container {
-                  position:relative;
-                  margin:0;
-                  background:#fff;
-                  border-radius:3px;
-                  color:#000;
-                  
-                  > h2 {
-                    border-left:5px solid $exerciseAssignment;
-                    font-size:20px;
-                    margin:0 120px 0 -5px; 
-                    padding:5px 5px 5px 10px;
-                    font-weight:300;
-                    margin:0;
-                    color:#000;
-                    cursor:pointer;
-                  }
-                  
-                  .evaluation-exercise-assessmentvalue {
-                    position:absolute;
-                    max-width:100px;
-                    right:0;
-                    top:0;
-                    text-align:right;
-                    padding:8px 10px;
-                  }
-                  
-                }
-              
+
                 .evaluation-assignment-title-container {
                   position:relative;
                   margin:0;
@@ -655,7 +645,6 @@ body.evaluation {
                   color:#000;
                 
                   > h2 {
-                    border-left:5px solid $evaluatedAssignment;
                     font-size:20px;
                     margin:0 120px 0 -5px; 
                     padding:5px 5px 5px 10px;

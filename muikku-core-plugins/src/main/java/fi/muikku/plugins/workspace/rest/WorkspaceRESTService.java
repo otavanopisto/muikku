@@ -160,7 +160,8 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/")
   @RESTPermitUnimplemented
   public Response listWorkspaces(
-        @QueryParam("userId") Long userId,
+        @QueryParam("userId") Long userEntityId,
+        @QueryParam("userIdentifier") String userId,
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("minVisits") Long minVisits,
@@ -170,10 +171,17 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<fi.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
 
     boolean doMinVisitFilter = minVisits != null;
-    UserEntity userEntity = userId != null ? userEntityController.findUserEntityById(userId) : null;
+    UserEntity userEntity = userEntityId != null ? userEntityController.findUserEntityById(userEntityId) : null;
     List<WorkspaceEntity> workspaceEntities = null;
     String schoolDataSourceFilter = null;
     List<String> workspaceIdentifierFilters = null;
+    
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
+    if (userIdentifier != null) {
+      if (doMinVisitFilter && userEntity == null) {
+        userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+      }
+    }
     
     if (doMinVisitFilter) {
       if (userEntity != null) {
@@ -182,7 +190,9 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntities = workspaceVisitController.listWorkspaceEntitiesByMinVisitsOrderByLastVisit(sessionController.getLoggedUserEntity(), minVisits);
       }
     } else {
-      if (userEntity != null) {
+      if (userIdentifier != null) {
+        workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
+      } else if (userEntity != null) {
         workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
       }
     }

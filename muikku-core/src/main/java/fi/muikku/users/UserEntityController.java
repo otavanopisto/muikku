@@ -15,6 +15,7 @@ import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.entity.User;
 
 public class UserEntityController implements Serializable {
@@ -75,6 +76,10 @@ public class UserEntityController implements Serializable {
     }
     
     return findUserEntityByDataSourceAndIdentifier(schoolDataSource, identifier);
+  }
+
+  public UserEntity findUserEntityByUserIdentifier(SchoolDataIdentifier userIdentifier) {
+    return findUserEntityByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
   }
 
   public List<UserEntity> listUserEntitiesByEmails(List<String> emails) {
