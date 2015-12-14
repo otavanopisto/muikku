@@ -68,7 +68,15 @@ public class Announcement {
   public void setEndDate(Date endDate) {
     this.endDate = endDate;
   }
-  
+
+  public boolean isArchived() {
+    return archived;
+  }
+
+  public void setArchived(boolean archived) {
+    this.archived = archived;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -101,4 +109,7 @@ public class Announcement {
   @Column (nullable=false)
   @Temporal (value=TemporalType.DATE)
   private Date endDate;
+
+  @Column (nullable=false)
+  private boolean archived;
 }

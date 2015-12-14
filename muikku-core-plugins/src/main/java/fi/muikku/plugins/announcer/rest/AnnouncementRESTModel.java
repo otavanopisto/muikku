@@ -45,6 +45,12 @@ public class AnnouncementRESTModel {
   public void setEndDate(Date endDate) {
     this.endDate = endDate;
   }
+  public Boolean isArchived() {
+    return archived;
+  }
+  public void setArchived(Boolean archived) {
+    this.archived = archived;
+  }
 
   private Long id;
   private Long publisherUserEntityId;
@@ -53,4 +59,5 @@ public class AnnouncementRESTModel {
   private Date created;
   private Date startDate;
   private Date endDate;
+  private Boolean archived;
 }
