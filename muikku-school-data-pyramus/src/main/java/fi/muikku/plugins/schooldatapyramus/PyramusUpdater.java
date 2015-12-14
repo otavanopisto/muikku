@@ -191,7 +191,7 @@ public class PyramusUpdater {
   public void updateStudyProgramme(Long pyramusId) {
     StudyProgramme studentGroup = pyramusClient.get().get(String.format("/students/studyProgrammes/%d", pyramusId), StudyProgramme.class);
     String identifier = identifierMapper.getStudyProgrammeIdentifier(pyramusId);
-    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, true);
     
     if (studentGroup == null) {
       if (userGroupEntity != null)
@@ -256,7 +256,7 @@ public class PyramusUpdater {
   public void updateStudentGroup(Long pyramusId) {
     StudentGroup studentGroup = pyramusClient.get().get(String.format("/students/studentGroups/%d", pyramusId), StudentGroup.class);
     String identifier = identifierMapper.getStudentGroupIdentifier(pyramusId);
-    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, true);
     
     if (studentGroup == null) {
       if (userGroupEntity != null)
@@ -473,7 +473,7 @@ public class PyramusUpdater {
     
     if (workspaceEntity != null) {
       SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
       
       CourseStaffMember staffMember = pyramusClient.get().get("/courses/courses/" + courseId + "/staffMembers/" + courseStaffMemberId, CourseStaffMember.class);
       if (staffMember != null) {
@@ -596,7 +596,7 @@ public class PyramusUpdater {
     
     if (workspaceEntity != null) {
       SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
       CourseStudent courseStudent = pyramusClient.get().get("/courses/courses/" + courseId + "/students/" + courseStudentId, CourseStudent.class);
       if (courseStudent != null) {
         if (workspaceUserEntity == null) {
