@@ -770,16 +770,25 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          var evaluables = results[0]||[];
-          var exercises = results[1]||[];
-          var workspaceAssignments = $.map(evaluables.concat(exercises), function (assignment) {
+          var evaluableAssignments = $.map(results[0]||[], function (assignment) {
             return {
               workspaceMaterial: assignment
             };
           });
           
+          
+          var exerciseAssignments = $.map(results[1]||[], function (assignment) {
+            return {
+              workspaceMaterial: assignment
+            };
+          });
+          
+          var workspaceAssignments = evaluableAssignments.concat(exerciseAssignments);
+          
           this.element.trigger("materialsLoaded", {
-            workspaceAssignments: workspaceAssignments
+            workspaceAssignments: workspaceAssignments,
+            evaluableAssignments: evaluableAssignments,
+            exerciseAssignments: exerciseAssignments
           });
         }
       }, this));
@@ -857,27 +866,27 @@
     _onMaterialsLoaded: function (event, data) {
       this._workspaceAssignments = data.workspaceAssignments;
       
-      $.each(this._workspaceAssignments, $.proxy(function (materialIndex, workspaceAssignment) {
+      $(".evaluation-assignments").perfectScrollbar({
+        wheelSpeed:3,
+        swipePropagation:false,
+        suppressScrollX:true
+      });
+      
+      $.each(data.evaluableAssignments, $.proxy(function (materialIndex, evaluableAssignment) {
         var materialRow = $('<div>')
           .addClass('evaluation-student-assignment-listing-row')
           .appendTo($('.evaluation-assignments'));
-        
-        $(".evaluation-assignments").perfectScrollbar({
-          wheelSpeed:3,
-          swipePropagation:false,
-          suppressScrollX:true
-        });
         
         $.each(this._workspaceUsers, $.proxy(function (studentIndex, workspaceUser) {
           $('<div>')
               .evaluationAssignment({
                 workspaceEntityId: this.options.workspaceEntityId,
-                workspaceMaterialId: workspaceAssignment.workspaceMaterial.id,
-                materialId: workspaceAssignment.workspaceMaterial.materialId,
-                title: workspaceAssignment.workspaceMaterial.title,
+                workspaceMaterialId: evaluableAssignment.workspaceMaterial.id,
+                materialId: evaluableAssignment.workspaceMaterial.materialId,
+                title: evaluableAssignment.workspaceMaterial.title,
                 workspaceStudentId: workspaceUser.id,
                 studentEntityId: workspaceUser.userId,
-                workspaceAssignment: workspaceAssignment
+                workspaceAssignment: evaluableAssignment
               })
               .appendTo(materialRow);
           }, this));
