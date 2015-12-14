@@ -21,12 +21,17 @@
   </ui:define>
 
   <ui:define name="context.wrapper">
-    <ui:insert name="context.area">
+    <ui:insert name="context.pageTitle">
       
     </ui:insert>
-    <ui:insert name="context.navigation">
-      
-    </ui:insert>
+    <div class="context-wrapper">
+      <ui:insert name="context.area">
+        
+      </ui:insert>
+      <ui:insert name="context.navigation">
+        
+      </ui:insert>
+    </div>
   </ui:define>
 
 </ui:composition>

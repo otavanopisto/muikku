@@ -6,113 +6,111 @@ body {
     min-height:800px;
     background:#fff;
     margin-top:30px;
-    @include flexbox();
-    flex-flow:row wrap;
-    justify-content:flex-start;
-    align-items:stretch;
     
     h1.view-title {
-      flex: 1 0 100%;
-      font-weight:300;
-    }
-    
-    &#contextWrapper {
+      font-weight:300; 
+      line-height:1.7em;
       padding:20px;
+      margin:0;
     }
+
+    .context-wrapper {
+      padding:20px;
+      @include flexbox();
+      flex-flow:row wrap;
+      justify-content:flex-start;
+      align-items:stretch;
     
-    section {
-      flex:2 1;
-      padding:0 20px 0 0;
-      
-      h1.section-title {
-        font-weight:300; 
-        line-height:1.7em;
+      section {
+        flex:2 1;
+        padding:0 20px 0 0;
         
-      }
-       
-      article {
-        margin:20px 0;
-        
-        &:first-child {
-          margin:0 0 20px 0;
-        }
-      
-        header {
-          position:relative;
+        article {
+          margin:20px 0;
           
-          h2 {
-            font-weight:300;
-            font-size:28px;
-            text-transform:none;
-            padding:0 0 14px 0;
-            background:#fff;
-            display:block;
-            font-style:italic;
-            line-height:1.4em;
-            margin:0;
-          }
-          
-          .article-datetime {
-            display:inline-block;
-            font-size:20px;
-            font-weight:300;
-            background:#fff;
-            padding:10px;
-            position:absolute;
-            bottom:20px;
-            border-top-right-radius:5px;
-            border-bottom-right-radius:5px;
+          &:first-child {
+            margin:0 0 20px 0;
           }
         
-        }
-        
-        .article-context {
-          padding:10px 5px;
-          line-height:1.9em;
-          font-weight:300;
-          font-size:16px;
-          
-          p {
-            margin:10px 0;
+          header {
+            position:relative;
             
-            &:first-child {
-              margin-top:0;
+            h2 {
+              font-weight:300;
+              font-size:28px;
+              text-transform:none;
+              padding:0 0 14px 0;
+              background:#fff;
+              display:block;
+              font-style:italic;
+              line-height:1.4em;
+              margin:0;
             }
             
+            .article-datetime {
+              display:inline-block;
+              font-size:20px;
+              font-weight:300;
+              background:#fff;
+              padding:10px;
+              position:absolute;
+              bottom:20px;
+              border-top-right-radius:5px;
+              border-bottom-right-radius:5px;
+            }
+          
+          }
+          
+          .article-context {
+            padding:10px 5px;
+            line-height:1.9em;
+            font-weight:300;
+            font-size:16px;
+            
+            p {
+              margin:10px 0;
+              
+              &:first-child {
+                margin-top:0;
+              }
+              
+            }
+          
+          }
+          
+        }
+  
+      }
+      
+      nav.gc-navigation {
+        flex:1 0;
+        border-left:1px solid #cfeefb;
+        max-height:100%;
+        min-height:670px;
+        
+        .gc-navigation-item {
+          margin:2px 4px 2px 10px;
+          padding:4px 8px;
+          border-radius:2px;
+          
+          a.gc-navigation-title {
+            font-weight:400;
+            cursor:pointer;
+            color:#0099ff;
+            text-decoration:none;
+            font-size:16px;
+            display:block;
+          }
+          
+          .gc-navigation-date {
+            font-weight:400;
+            font-style:italic;
           }
         
         }
-        
+          
       }
 
-    }
-    
-    nav.gc-navigation {
-      flex:1 0;
-      border-left:1px solid #cfeefb;
-      max-height:100%;
-      
-      .gc-navigation-item {
-        margin:2px 4px 2px 10px;
-        padding:4px 8px;
-        border-radius:2px;
-        
-        a.gc-navigation-title {
-          font-weight:400;
-          cursor:pointer;
-          color:#0099ff;
-          text-decoration:none;
-          font-size:16px;
-          display:block;
-        }
-        
-        .gc-navigation-date {
-          font-weight:400;
-          font-style:italic;
-        }
-      
-      }
-        
     }
     
   }

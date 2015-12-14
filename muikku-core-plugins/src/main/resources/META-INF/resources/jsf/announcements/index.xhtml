@@ -8,10 +8,12 @@
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
   template="/jsf/announcements/templates/announcements_base.xhtml">
 
+  <ui:define name="context.pageTitle">
+    <h1 class="view-title">#{i18n.text['plugin.announcements.sectionTitle']}</h1>    
+  </ui:define>
+
   <ui:define name="context.area">
-    <h1 class="view-title">#{i18n.text['plugin.announcements.sectionTitle']}</h1>
     <section class="section-for-articles">
-    
       <ui:fragment rendered="#{not empty announcementsViewBackingBean.currentAnnouncement}">
         <article class="announcement-article">
           <header>
