@@ -142,7 +142,11 @@
       display: none;
     }
   }
-}
+  
+  &.loading {
+    @include generic-loader(50px);
+  }
+}  
 
 .gt-user-name{
   width:100%;
