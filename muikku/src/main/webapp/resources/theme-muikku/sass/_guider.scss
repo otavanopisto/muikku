@@ -137,14 +137,23 @@
 .gt-user {
   @extend .co-listItem;
 
-  &.closed{
+  &.closed,
+  &.loading {
     .gt-user-details{ 
       display: none;
     }
   }
   
   &.loading {
-    @include generic-loader(50px);
+    padding-bottom: 20px;
+  
+    &:after {
+      @include generic-loader(50px);
+    
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
   }
 }  
 
@@ -281,12 +290,29 @@
   }
 }
 
-.gt-user-view-profile{
- > div{padding:15px;}
+.gt-user-view-profile {
+  > div{
+    padding:15px;
+  }
   
   div[class*="gt-data-container"]{
     width:100%;
   }
+  
+  &.loading {
+    background-color: #fff;
+    padding-bottom: 50px;
+    padding-top: 50px;
+    
+    &:after {
+      @include generic-loader(50px);
+    
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+  }
+  
   
 }
 

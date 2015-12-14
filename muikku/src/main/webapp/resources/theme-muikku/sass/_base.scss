@@ -502,27 +502,21 @@ background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1)
 }
 
 @mixin generic-loader($size) {
-  &:before {
-    -webkit-animation:generic-loader 1.0s infinite linear;
-    -moz-animation:generic-loader 1.0s infinite linear;
-    animation:generic-loader 1.0s infinite linear;
-    content: "\e900";
-    font-family: 'muikku' !important;
-    speak:none;
-    font-style:normal;
-    font-weight:normal;
-    font-variant:normal;
-    text-transform:none;
-    line-height:1;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    height:$size;
-    width:$size;
-    font-size:$size;
-    position:absolute;
-    left:50%;
-    top:50%;
-    z-index:99;
-    margin:-$size / 2 0 0 -$size / 2;
-  }
+  -webkit-animation:generic-loader 1.0s infinite linear;
+  -moz-animation:generic-loader 1.0s infinite linear;
+  animation:generic-loader 1.0s infinite linear;
+  content: "\e900";
+  font-family: 'muikku' !important;
+  speak:none;
+  font-style:normal;
+  font-weight:normal;
+  font-variant:normal;
+  text-transform:none;
+  line-height:1;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  height:$size;
+  width:$size;
+  font-size:$size;
+  color:#7ed9ff;
 }

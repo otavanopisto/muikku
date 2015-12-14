@@ -224,6 +224,8 @@
     },
     
     _create : function() {
+      this.element.addClass('gt-user-view-profile');
+      
       this._loadUser();
     },
     
@@ -235,12 +237,13 @@
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
         } else {
           renderDustTemplate('guider/guider_view_profile.dust', user, $.proxy(function(text) {    
-            this.element.html(text);
+            this.element
+              .removeClass('loading')
+              .html(text);
             
             mApi().workspace.workspaces.read({ userIdentifier: this.options.userIdentifier }).callback($.proxy(function(err, workspaces) {               
               renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function(text){
                 this.element.find(".gt-data-container-1 div.gt-data").html(text);
-                this.element.removeClass('loading');
               }, this));
             }, this));
           }, this));
