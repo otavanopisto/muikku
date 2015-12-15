@@ -4,7 +4,7 @@ import fi.pyramus.rest.model.Sex;
 import fi.pyramus.rest.model.UserRole;
 
 
-public class MockStaffMember {
+public class MockStaffMember extends MockLoggable{
 
   public MockStaffMember(Long id, Long personId, String firstName, String lastName, UserRole role, String socialSecurityNumber, String email) {
     super();
@@ -16,6 +16,7 @@ public class MockStaffMember {
     this.socialSecurityNumber = socialSecurityNumber;
     this.setEmail(email);
   }
+  
   public Long getId() {
     return id;
   }
