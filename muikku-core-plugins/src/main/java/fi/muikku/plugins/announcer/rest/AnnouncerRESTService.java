@@ -7,6 +7,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -64,7 +65,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive
   ) {
     if (!onlyActive) {
-      if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ALL_ANNOUNCEMENTS)) {
+      if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
         return Response.status(Status.FORBIDDEN).entity("You're not allowed to list all announcements").build();
       }
     }
@@ -75,6 +76,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     } else {
       announcements = announcementController.listAll();
     }
+
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
       AnnouncementRESTModel restModel = createRESTModel(announcement);
@@ -103,5 +105,17 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
     return restModel;
+  }
+
+  @DELETE
+  @Path("/announcements/{ID}")
+  @RESTPermit(AnnouncerPermissions.DELETE_ANNOUNCEMENT)
+  public Response deleteAnnouncement(@PathParam("ID") Long announcementId) {
+    Announcement announcement = announcementController.findById(announcementId);
+    if (announcement == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    announcementController.archive(announcement);
+    return Response.noContent().build();
   }
 }

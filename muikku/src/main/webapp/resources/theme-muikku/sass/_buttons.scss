@@ -124,6 +124,7 @@
     &:first-child{
       display:inline-block;
       padding:12px;
+      white-space:nowrap;
       &.bt-mainFunction-dropdown-label{
         width:109px;      
       }  

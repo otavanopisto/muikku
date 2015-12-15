@@ -1,3 +1,0 @@
-
-  <li id="{filterType}-{id}"><a class="gu-filter-link" href="#filter/{filterType}/{id}" data-type="workspace">{name}</a></li>
-  
