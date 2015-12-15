@@ -125,7 +125,8 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       
       if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
         switch (reply.getState()) {
-          case EVALUATED:
+          case PASSED:
+          case FAILED:
           case SUBMITTED:
             handleError("Assignment is already submitted thus can not be modified", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
             return;

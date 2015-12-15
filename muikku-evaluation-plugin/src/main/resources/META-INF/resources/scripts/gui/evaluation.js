@@ -1006,7 +1006,8 @@
         case 'WITHDRAWN':
           this.element.addClass('assignment-withdrawn');
         break;
-        case 'EVALUATED':
+        case 'FAILED':
+        case 'PASSED':
           this.element.on("click", $.proxy(this._onClick, this));
           this.element.addClass('assignment-evaluated');
           if (reply.submitted) {

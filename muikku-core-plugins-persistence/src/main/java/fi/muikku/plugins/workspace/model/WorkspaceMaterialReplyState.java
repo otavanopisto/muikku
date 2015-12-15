@@ -20,6 +20,14 @@ public enum WorkspaceMaterialReplyState {
   
   /* Teacher has evaluated the assignment */
   
-  EVALUATED
+  EVALUATED,
+  
+  /* Teacher has evaluated the assignment with a grade that is passing */
+  
+  PASSED,
+  
+  /* Teacher has evaluated the assignment with a grade that is non passing */
+  
+  FAILED
   
 }
