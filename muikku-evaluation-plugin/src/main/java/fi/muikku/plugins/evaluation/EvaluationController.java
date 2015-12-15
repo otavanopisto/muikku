@@ -62,7 +62,7 @@ public class EvaluationController {
           evaluated, 
           verbalAssessment);
     }
-    //grade.is
+    
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
     WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
     if (reply == null) {
