@@ -1,6 +1,7 @@
 package fi.muikku.plugins.workspace.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -33,11 +34,15 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.controller.messaging.MessagingWidget;
+import fi.muikku.i18n.LocaleController;
+import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.muikku.plugins.communicator.CommunicatorController;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.search.WorkspaceIndexer;
@@ -155,6 +160,12 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceJournalController workspaceJournalController;
+  
+  @Inject
+  private CommunicatorController communicatorController;
+  
+  @Inject
+  private LocaleController localeController;
   
   @GET
   @Path("/workspaces/")
@@ -1270,6 +1281,15 @@ public class WorkspaceRESTService extends PluginRESTService {
     fi.muikku.schooldata.entity.WorkspaceUser workspaceStudent = workspaceController.findWorkspaceUser(workspaceStudentEntity);
     
     Date evaluated = payload.getEvaluated();
+
+    UserEntity evaluator = sessionController.getLoggedUserEntity();
+    UserEntity student = userEntityController.findUserEntityByUserIdentifier(
+        workspaceStudent.getUserIdentifier()
+    );
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    
+    sendAssessmentNotification(payload, evaluator, student, workspace);
     
     return Response.ok(createRestModel(workspaceEntity, gradingController.updateWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceAssesmentIdentifier, workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated))).build();
   }
@@ -1342,7 +1362,35 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     Date evaluated = payload.getEvaluated();
     
+    UserEntity evaluator = sessionController.getLoggedUserEntity();
+    UserEntity student = userEntityController.findUserEntityByUserIdentifier(
+        workspaceStudent.getUserIdentifier()
+    );
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+
+    sendAssessmentNotification(payload, evaluator, student, workspace);
+    
     return Response.ok(createRestModel(workspaceEntity, gradingController.createWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated))).build();
+  }
+
+  private void sendAssessmentNotification(WorkspaceAssessment payload, UserEntity evaluator, UserEntity student,
+      Workspace workspace) {
+    CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
+    communicatorController.createMessage(
+        communicatorController.createMessageId(),
+        evaluator,
+        Arrays.asList(student),
+        category,
+        localeController.getText(
+            sessionController.getLocale(),
+            "plugin.workspace.assessment.notificationTitle",
+            new Object[] {workspace.getName()}),
+        localeController.getText(
+            sessionController.getLocale(),
+            "plugin.workspace.assessment.notificationContent",
+            new Object[] {payload.getVerbalAssessment()}),
+        Collections.<Tag>emptySet());
   }
 
   @GET
