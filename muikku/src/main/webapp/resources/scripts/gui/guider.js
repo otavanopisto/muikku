@@ -241,12 +241,26 @@
               .removeClass('loading')
               .html(text);
             
-            mApi().workspace.workspaces.read({ userIdentifier: this.options.userIdentifier }).callback($.proxy(function(err, workspaces) {               
-              renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function(text){
-                this.element.find(".gt-data-container-1 div.gt-data").html(text);
+            mApi().workspace.workspaces
+              .read({ userIdentifier: this.options.userIdentifier })
+              .on('$', $.proxy(function(workspace, workspaceCallback) {
+                mApi().studyactivityanalysis.workspaces.assessments
+                  .read(workspace.id, { userIdentifier: this.options.userIdentifier })
+                  .callback($.proxy(function(err, activity) {  
+                    if (err) {
+                      $('.notification-queue').notificationQueue('notification', 'error', err);
+                    } else {
+                      workspace.activity = activity;
+                      workspaceCallback();
+                    }
+                  }, this));
+              }, this)) 
+              .callback($.proxy(function(err, workspaces) {             
+                renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function(text){
+                  this.element.find(".gt-data-container-1 div.gt-data").html(text);
+                }, this));
               }, this));
             }, this));
-          }, this));
         }
       }, this));
     }
