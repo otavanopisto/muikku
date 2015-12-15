@@ -6,12 +6,14 @@ import java.util.List;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
@@ -20,7 +22,6 @@ import fi.muikku.plugins.announcer.model.Announcement;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 import fi.otavanopisto.security.rest.RESTPermit;
-
 import fi.muikku.plugins.announcer.AnnouncerPermissions;
 
 @RequestScoped
@@ -56,9 +57,9 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @GET
   @Path("/announcements")
-  @RESTPermit(AnnouncerPermissions.LIST_ALL_ANNOUNCEMENTS)
+  @RESTPermit(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)
   public Response listAnnouncements(/* TODO filtering */) {
-    List<Announcement> announcements = announcementController.listAll();
+    List<Announcement> announcements = announcementController.listUnarchived();
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
       AnnouncementRESTModel restModel = createRESTModel(announcement);
@@ -86,5 +87,17 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
     return restModel;
+  }
+
+  @DELETE
+  @Path("/announcements/{ID}")
+  @RESTPermit(AnnouncerPermissions.DELETE_ANNOUNCEMENT)
+  public Response deleteAnnouncement(@PathParam("ID") Long announcementId) {
+    Announcement announcement = announcementController.findById(announcementId);
+    if (announcement == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    announcementController.archive(announcement);
+    return Response.noContent().build();
   }
 }

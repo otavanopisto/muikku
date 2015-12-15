@@ -3,8 +3,9 @@
   
   $(document).on('click', '.wi-dock-static-navi-button-evaluation > a.icon-evaluate', function(event){
     event.preventDefault();
-    var evaluationUrl = $(this).attr('href')+'?workspaceEntityId='+$('.workspaceEntityId').val();
-    window.location.href = evaluationUrl;
+    var workspaceEntityId = $('.workspaceEntityId').length > 0 ? $('.workspaceEntityId').val() : $('input[name="workspaceEntityId"]').val();
+    var evaluationUrl = $(this).attr('href')+'?workspaceEntityId='+workspaceEntityId;
+    window.open(evaluationUrl, '_blank');
   });
   
   $(document).on('click', '.workspace-publish-button', function (event) {

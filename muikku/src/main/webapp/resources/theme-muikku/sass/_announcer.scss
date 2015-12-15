@@ -59,3 +59,23 @@
 
 .an-create-announcement{}
 
+.an-textfield{
+   width:100%;  
+  
+}
+.an-archiving-container{
+  width:100%; 
+}
+
+.an-archiving-ids-container{
+  padding:15px;
+  span{
+   background-color:$dim;
+   padding:5px;
+  }
+  span:not(:first-child){
+   margin-left:5px;
+
+  } 
+ 
+}
