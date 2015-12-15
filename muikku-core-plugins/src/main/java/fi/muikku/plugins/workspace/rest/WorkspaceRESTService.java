@@ -1282,14 +1282,17 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     Date evaluated = payload.getEvaluated();
 
-    UserEntity evaluator = sessionController.getLoggedUserEntity();
     UserEntity student = userEntityController.findUserEntityByUserIdentifier(
         workspaceStudent.getUserIdentifier()
     );
     
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     
-    sendAssessmentNotification(payload, evaluator, student, workspace);
+    if(student == null || workspace == null){
+      logger.log(Level.SEVERE, "Missing workspace or student");
+    }else{
+      sendAssessmentNotification(payload, assessor, student, workspace);
+    }
     
     return Response.ok(createRestModel(workspaceEntity, gradingController.updateWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceAssesmentIdentifier, workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated))).build();
   }
@@ -1362,14 +1365,17 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     Date evaluated = payload.getEvaluated();
     
-    UserEntity evaluator = sessionController.getLoggedUserEntity();
     UserEntity student = userEntityController.findUserEntityByUserIdentifier(
         workspaceStudent.getUserIdentifier()
     );
     
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
 
-    sendAssessmentNotification(payload, evaluator, student, workspace);
+    if(student == null || workspace == null){
+      logger.log(Level.SEVERE, "Missing workspace or student");
+    }else{
+      sendAssessmentNotification(payload, assessor, student, workspace);
+    }
     
     return Response.ok(createRestModel(workspaceEntity, gradingController.createWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated))).build();
   }
