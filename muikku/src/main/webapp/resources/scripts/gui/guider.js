@@ -225,8 +225,18 @@
     
     _create : function() {
       this.element.addClass('gt-user-view-profile');
+      this.element.on("click", ".gt-course-header-name", $.proxy(this._onNameClick, this));
       
       this._loadUser();
+    },
+    
+    _onNameClick: function (event) {
+      var element = $(event.target).closest('.gt-course');
+      if (element.hasClass('open')) {
+        element.removeClass('open');
+      } else {
+        element.addClass('open');
+      }
     },
     
     _loadUser: function () {
@@ -256,7 +266,7 @@
                   }, this));
               }, this)) 
               .callback($.proxy(function(err, workspaces) {             
-                renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function(text){
+                renderDustTemplate('guider/workspaces.dust', workspaces, $.proxy(function(text){
                   this.element.find(".gt-data-container-1 div.gt-data").html(text);
                 }, this));
               }, this));

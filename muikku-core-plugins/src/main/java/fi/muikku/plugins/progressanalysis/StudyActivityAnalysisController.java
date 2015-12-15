@@ -1,13 +1,11 @@
 package fi.muikku.plugins.progressanalysis;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -32,37 +30,30 @@ public class StudyActivityAnalysisController {
     if (userEntity == null) {
       return null;
     }
-    
-    long evaluableUnanswered = 0l;
-    Date lastEvaluableAssignmentAnswerDate = new Date();
-    long evaluableAssignmentAnswered = 0l;
-    long evaluableSubmitted = 0l;
-    Date lastEvaluableSubmitDate = new Date();
-    long evaluableEvaluated = 0l;
-    Date lastEvaluableEvaluationDate = new Date();
-    long exercisesAswered = 0l;
-    long exercisesUnaswered = 0l;
-    Date lastExerciseSubmittedDate = new Date();
+
+    StudyActivityWorkspaceAnalysis analysis = new StudyActivityWorkspaceAnalysis();
 
     List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
     for (WorkspaceMaterial evaluatedAssignment : evaluatedAssignments) {
       WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(evaluatedAssignment, userEntity);
       if (workspaceMaterialReply == null) {
-        evaluableUnanswered++;
+        analysis.getEvaluables().addUnanswered();
       } else {
         switch (workspaceMaterialReply.getState()) {
           case WITHDRAWN:
+            analysis.getEvaluables().addEvaluated(workspaceMaterialReply.getWithdrawn());
+          break;
           case ANSWERED:
-            evaluableAssignmentAnswered++;
+            analysis.getEvaluables().addAnswered(workspaceMaterialReply.getLastModified());
           break;
           case EVALUATED:
-            evaluableEvaluated++;
+            analysis.getEvaluables().addEvaluated(workspaceMaterialReply.getSubmitted());
           break;
           case SUBMITTED:
-            evaluableSubmitted++;
+            analysis.getEvaluables().addSubmitted(workspaceMaterialReply.getSubmitted());
           break;
           case UNANSWERED:
-            evaluableUnanswered++;
+            analysis.getEvaluables().addUnanswered();
           break;
         }
       }
@@ -72,25 +63,29 @@ public class StudyActivityAnalysisController {
     for (WorkspaceMaterial exerciseAssignment : exerciseAssignments) {
       WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(exerciseAssignment, userEntity);
       if (workspaceMaterialReply == null) {
-        exercisesUnaswered++;
+        analysis.getExcercices().addUnanswered();
       } else {
         switch (workspaceMaterialReply.getState()) {
           case WITHDRAWN:
+            analysis.getExcercices().addAnswered(workspaceMaterialReply.getWithdrawn());
+          break;
           case ANSWERED:
+            analysis.getExcercices().addAnswered(workspaceMaterialReply.getLastModified());
+          break;
           case EVALUATED:
+            analysis.getExcercices().addAnswered(workspaceMaterialReply.getSubmitted());
+          break;
           case SUBMITTED:
-            evaluableSubmitted++;
+            analysis.getExcercices().addAnswered(workspaceMaterialReply.getSubmitted());
           break;
           case UNANSWERED:
-            exercisesUnaswered++;
+            analysis.getExcercices().addUnanswered();
           break;
         }
       }
     }
     
-    return new StudyActivityWorkspaceAnalysis(evaluableUnanswered, lastEvaluableAssignmentAnswerDate, 
-        evaluableAssignmentAnswered, evaluableSubmitted, lastEvaluableSubmitDate, evaluableEvaluated, 
-        lastEvaluableEvaluationDate, exercisesUnaswered, exercisesAswered, lastExerciseSubmittedDate);
+    return analysis;
   }
   
 }

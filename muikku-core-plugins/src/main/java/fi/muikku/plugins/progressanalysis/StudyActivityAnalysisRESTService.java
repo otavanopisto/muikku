@@ -1,7 +1,5 @@
 package fi.muikku.plugins.progressanalysis;
 
-import java.util.logging.Logger;
-
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -28,9 +26,6 @@ public class StudyActivityAnalysisRESTService extends PluginRESTService {
   private static final long serialVersionUID = -5286350366083446537L;
   
   @Inject
-  private Logger logger;
-  
-  @Inject
   private WorkspaceEntityController workspaceEntityController;
   
   @Inject
@@ -55,7 +50,21 @@ public class StudyActivityAnalysisRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
     }
     
-    return Response.ok(analysis).build();
+    StudyActivityWorkspaceAnalysisRestModel model = new StudyActivityWorkspaceAnalysisRestModel(
+        analysis.getEvaluables().getUnanswered(), 
+        analysis.getEvaluables().getAnswered(), 
+        analysis.getEvaluables().getAnsweredLastDate(), 
+        analysis.getEvaluables().getSubmitted(), 
+        analysis.getEvaluables().getSubmittedLastDate(), 
+        analysis.getEvaluables().getEvaluated(), 
+        analysis.getEvaluables().getEvaluatedLastDate(), 
+        analysis.getEvaluables().getDonePercent(), 
+        analysis.getExcercices().getUnanswered(), 
+        analysis.getExcercices().getAnswered(), 
+        analysis.getExcercices().getAnsweredLastDate(), 
+        analysis.getExcercices().getDonePercent());
+    
+    return Response.ok(model).build();
   }
   
 }

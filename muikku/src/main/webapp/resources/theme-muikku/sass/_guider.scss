@@ -319,5 +319,50 @@
  .gt-data{
     width:100%;
  }
+ 
+.gt-course {
+  @extend .co-listItem;
+  padding:5px 5px 5px 5px;
+  margin-bottom:10px;
+  border-left: 3px solid $mainFuncFilter1;
+}
 
+.gt-course h4 {
+  margin-top: 1em;
+}
 
+.gt-course .gt-course-activity {
+  display: none; 
+}
+
+.gt-course.open .gt-course-activity {
+  display: block; 
+}
+
+.gt-course-details-container {
+  display: flex; 
+}
+
+.gt-course-description {
+  flex: 1;
+}
+
+.gt-course-activity-short {
+  flex: 1;
+  text-align: right;
+  padding-right: 5px;
+}
+
+.gt-course-activity-row {
+  display: flex;  
+}
+
+.gt-course-activity-row label {
+  flex: 1;
+}
+
+.gt-course-activity-row span {
+  flex: 1;
+  text-align: right;
+  padding-right: 5px;
+}
