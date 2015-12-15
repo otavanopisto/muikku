@@ -84,28 +84,27 @@ body {
       
       nav.gc-navigation {
         flex:1 0;
-        border-left:1px solid #cfeefb;
         max-height:100%;
         min-height:670px;
         padding:0 0 0 10px;
         
         .gc-navigation-item {
-          margin:2px 0;
-          padding:4px 8px;
-          border-radius:2px;
+          margin:0 0 20px 0;
+          border-radius:5px;
           
           a.gc-navigation-title {
-            font-weight:400;
-            cursor:pointer;
-            color:#0099ff;
+            font-weight:300;
+            color:#000;
             text-decoration:none;
             font-size:16px;
             display:block;
+            padding:4px 8px;
           }
           
           .gc-navigation-date {
-            font-weight:400;
-            font-style:italic;
+            font-weight:300;
+            font-size:16px;
+            padding:4px 8px;
           }
         
         }

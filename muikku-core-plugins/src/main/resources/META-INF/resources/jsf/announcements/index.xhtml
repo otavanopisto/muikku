@@ -43,11 +43,11 @@
 	        <a class="gc-navigation-title" href="?announcementId=#{announcement.id}">
             <h:outputText value="#{announcement.caption}" />
 	        </a>
-	        <div class="gc-navigation-date">
-	          <h:outputText value="#{announcement.startDate}">
-	            <f:convertDateTime type="date" dateStyle="short" />
-	          </h:outputText>
-	        </div>
+          <div class="gc-navigation-date">
+            <h:outputText value="#{announcement.startDate}">
+              <f:convertDateTime type="date" dateStyle="short" />
+            </h:outputText>
+          </div>
 	      </div>
       </ui:repeat>
     </nav>
