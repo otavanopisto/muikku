@@ -45,48 +45,28 @@
       var createAnnouncement = function(values){
         values.startDate = moment(values.startDate, "DD. MM. YYYY").format("YYYY-MM-DD");
         values.endDate = moment(values.endDate, "DD. MM. YYYY").format("YYYY-MM-DD");
-        mApi()
-          .announcer
-          .announcements
-          .create(values)
-          .callback($.proxy(function(err, result) {
-              if (err) {
-                $(".notification-queue").notificationQueue(
-                    'notification',
-                    'error',
-                    err);
-              } else {
-                $(".notification-queue").notificationQueue(
-                    'notification',
-                    'success',
-                    getLocaleText('plugin.announcer.createannouncement.success'));
-              }
-          }, this));
+        mApi().announcer.announcements.create(values).callback($.proxy(function(err, result) {
+          if (err) {
+            $(".notification-queue").notificationQueue('notification','error',err);
+          } else {
+            $(".notification-queue").notificationQueue('notification', 'success',getLocaleText('plugin.announcer.createannouncement.success'));
+          }
+        }, this));
       }   
       openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement, formFunctions);
     },    
     
     _loadAnnouncements: function () {
-        mApi()
-          .announcer
-          .announcements
-          .read()
-          .callback($.proxy(function(err, result) {
-              if (err) {
-                $(".notification-queue").notificationQueue(
-                    'notification',
-                    'error',
-                    err);
-              } else {
-                renderDustTemplate(
-                    'announcer/announcer_items.dust',
-                    result,
-                    $.proxy(function (text) {
-                      var element = $(text);
-                      $('.an-announcements-view-container').append(element);
-                    }, this));
-              }
-          }, this));
+        mApi().announcer.announcements.read().callback($.proxy(function(err, result) {
+          if (err) {
+            $(".notification-queue").notificationQueue('notification','error', err);
+          } else {
+            renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
+              var element = $(text);
+              $('.an-announcements-view-container').append(element);
+            }, this));
+          }
+        }, this));
     },
     _onArchiveAnnouncementsClick: function () {
       
@@ -102,24 +82,20 @@
         values.push($(val).attr("value"));
         titles.push(title)
       });
-      
-      
+
       var formFunctions = function() {
          var titlesContainer = $('.an-archiving-ids-container');
          var idsInput = titlesContainer.find("input");
-         
-         
+
          if(titles.length > 0){
            $.each(titles, function(index,title){
              titlesContainer.append("<span>" + title + "</span>");
            });
          }else{
            titlesContainer.append("<span>" + getLocaleText('plugin.announcer.archiveannouncement.archiving.noneselected') + "</span>");
-           
          }
          idsInput.val(values);
-        
-        
+
       }
       
       var archiveAnnouncements = function(values){

@@ -26,16 +26,15 @@
 }
 .an-announcement-select{
     float: left;
-    margin-left: 5px;
+    margin: 4px;
     width: 30px;
 }
 .an-announcement-dates{
     text-align:right;
     background-color:$light;
-    padding-right:5px;
+    padding:5px;
 }
 .an-announcement-details{
-
   margin-bottom:10px;
   max-height:190px;
 }
@@ -51,9 +50,10 @@
   color:#fff;
 }
 .an-announcement-content{
-  padding:0 20px 20px 20px; 
+  padding:5px 10px 10px 10px; 
   max-height:130px;
   overflow:hidden;
+  text-overflow:ellipsis;
 }
 .an-no-announcements{}
 
