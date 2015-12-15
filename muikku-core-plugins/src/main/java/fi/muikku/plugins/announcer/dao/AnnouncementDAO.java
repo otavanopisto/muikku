@@ -56,19 +56,40 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public Announcement update(
+  public Announcement updateCaption(
       Announcement announcement,
-      String caption,
-      String content,
-      Date startDate,
-      Date endDate
+      String caption
   ) {
     announcement.setCaption(caption);
+
+    return persist(announcement);
+  }
+
+  public Announcement updateContent(
+      Announcement announcement,
+      String content
+  ) {
     announcement.setContent(content);
+
+    return persist(announcement);
+  }
+
+  public Announcement updateStartDate(
+      Announcement announcement,
+      Date startDate
+  ) {
     announcement.setStartDate(startDate);
+
+    return persist(announcement);
+  }
+
+  public Announcement updateEndDate(
+      Announcement announcement,
+      Date endDate
+  ) {
     announcement.setEndDate(endDate);
 
-    getEntityManager().persist(announcement);
-    return announcement;
+    return persist(announcement);
   }
+
 }

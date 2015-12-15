@@ -39,13 +39,11 @@ public class AnnouncementController {
       Date startDate,
       Date endDate
   ) {
-    return announcementDAO.update(
-        announcement,
-        caption,
-        content,
-        startDate,
-        endDate
-    );
+    announcementDAO.updateCaption(announcement, caption);
+    announcementDAO.updateContent(announcement, content);
+    announcementDAO.updateStartDate(announcement, startDate);
+    announcementDAO.updateEndDate(announcement, endDate);
+    return announcement;
   }
   
   public List<Announcement> listUnarchived() {
