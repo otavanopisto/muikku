@@ -53,7 +53,7 @@ public class TaskM2Image extends AbstractHtmlMaterialCleanerTask {
       
       if (isModified()) {
         try {
-          logger.info("Fixing image from " + src);
+          logger.info(String.format("Fixing image from %s", src));
           
           String m2Url = pluginSettingsController.getPluginSetting("deus-nex-machina", "m2.url");
           String m2User = pluginSettingsController.getPluginSetting("deus-nex-machina", "m2.user");
@@ -110,7 +110,7 @@ public class TaskM2Image extends AbstractHtmlMaterialCleanerTask {
                 BinaryMaterial material = binaryMaterialController.createBinaryMaterial(name, contentType, data);
                 WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(getWorkspaceMaterial(), material);
                 String workspaceUrl = StringUtils.prependIfMissing(WorkspaceMaterialUtils.getCompletePath(workspaceMaterial), "/");
-                logger.info("Image converted to " + workspaceUrl);
+                logger.info(String.format("Image converted to %s", workspaceUrl));
                 element.setAttribute("src",  workspaceUrl);
 
               }
@@ -131,7 +131,7 @@ public class TaskM2Image extends AbstractHtmlMaterialCleanerTask {
           }
         }
         catch (Exception e) {
-          logger.log(Level.SEVERE, String.format("Failed to fix image from %s" + src), e);
+          logger.log(Level.SEVERE, String.format("Failed to fix image from %s", src), e);
           markClean();
         }
       }
