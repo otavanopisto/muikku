@@ -13,6 +13,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.events.LoginEvent;
 import fi.muikku.plugins.commonlog.LogProvider;
@@ -63,7 +64,7 @@ public class LoginDetailController {
           String userIdentifierId = (String) logEntry.get("userIdentifier");
           String authenticationProvder = (String) logEntry.get("authenticationProvder");
           String address = (String) logEntry.get("address");
-          Long time = (Long) logEntry.get("time");
+          Long time = NumberUtils.createLong((String) logEntry.get("time"));
           
           if (!StringUtils.equals(userIdentifierId, userIdentifier.toId())) {
             logger.severe(String.format("Query returned login details for userIdentifer %s instead of requested %s", userIdentifierId, userIdentifier.toId()));
