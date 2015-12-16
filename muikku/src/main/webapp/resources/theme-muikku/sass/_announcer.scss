@@ -16,6 +16,23 @@
     &:nth-child(3n+3){
      margin-right:0;
     }
+    
+    &.ACTIVE {
+      
+    }
+    
+    &.ENDED {
+      opacity:0.5;
+    }
+    
+    &.UPCOMING {
+    
+      .an-announcement-dates {
+        background:#69cff9;
+        color:#fff;
+        font-weight:600;
+      }
+    }
   }
 }
 .an-announcement-header-container{
@@ -46,12 +63,12 @@
   padding-top:10px;
   padding-left:10px;
   padding-bottom:10px;
-  background-color:$dimmest;
   font-weight:300;
   font-size:20px;
   overflow:hidden;
   text-overflow:ellipsis;  
-  color:#fff;
+  color:#000;
+  border-bottom:1px solid #eee;
 }
 .an-announcement-content{
   padding:5px 10px 10px 10px; 
