@@ -11,9 +11,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceEntityController;
+import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 
 @RequestScoped
@@ -28,7 +32,13 @@ public class GuiderRESTService extends PluginRESTService {
   private WorkspaceEntityController workspaceEntityController;
   
   @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+  
+  @Inject
   private GuiderController guiderController;
+  
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/studentactivity/{USERIDENTIFIER}")
@@ -44,10 +54,17 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
     }
     
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
+    }
+    
     GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
     if (activity == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
     }
+    
+    WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
     
     GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
         activity.getLastVisit(),
@@ -65,7 +82,8 @@ public class GuiderRESTService extends PluginRESTService {
         activity.getExcercices().getUnanswered(), 
         activity.getExcercices().getAnswered(), 
         activity.getExcercices().getAnsweredLastDate(), 
-        activity.getExcercices().getDonePercent());
+        activity.getExcercices().getDonePercent(),
+        assessmentState);
     
     return Response.ok(model).build();
   }

@@ -2,6 +2,8 @@ package fi.muikku.plugins.guider;
 
 import java.util.Date;
 
+import fi.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
+
 public class GuiderStudentWorkspaceActivityRestModel {
   
   public GuiderStudentWorkspaceActivityRestModel() {
@@ -10,7 +12,8 @@ public class GuiderStudentWorkspaceActivityRestModel {
   public GuiderStudentWorkspaceActivityRestModel(Date lastVisit, long numVisits, long journalEntryCount, Date lastJournalEntry,
       long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
       Date evaluablesSubmittedLastDate, long evaluablesEvaluated, Date evaluablesEvaluatedLastDate, double evaluablesDonePercent, 
-      long excercicesUnanswered, long excercicesAnswered, Date excercicesAnsweredLastDate, double excercicesDonePercent) {
+      long excercicesUnanswered, long excercicesAnswered, Date excercicesAnsweredLastDate, double excercicesDonePercent,
+      WorkspaceAssessmentState assessmentState) {
     super();
     this.lastVisit = lastVisit;
     this.numVisits = numVisits;
@@ -28,6 +31,7 @@ public class GuiderStudentWorkspaceActivityRestModel {
     this.excercicesAnswered = excercicesAnswered;
     this.excercicesAnsweredLastDate = excercicesAnsweredLastDate;
     this.excercicesDonePercent = excercicesDonePercent;
+    this.assessmentState = assessmentState;
   }
 
   public void setLastVisit(Date lastVisit) {
@@ -109,6 +113,14 @@ public class GuiderStudentWorkspaceActivityRestModel {
   public void setLastJournalEntry(Date lastJournalEntry) {
     this.lastJournalEntry = lastJournalEntry;
   }
+  
+  public WorkspaceAssessmentState getAssessmentState() {
+    return assessmentState;
+  }
+  
+  public void setAssessmentState(WorkspaceAssessmentState assessmentState) {
+    this.assessmentState = assessmentState;
+  }
 
   private Date lastVisit;
   private long numVisits;
@@ -129,4 +141,6 @@ public class GuiderStudentWorkspaceActivityRestModel {
   private long excercicesAnswered;
   private Date excercicesAnsweredLastDate;
   private double excercicesDonePercent;
+  
+  private WorkspaceAssessmentState assessmentState;
 }

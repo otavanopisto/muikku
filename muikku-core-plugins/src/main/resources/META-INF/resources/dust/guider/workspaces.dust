@@ -23,6 +23,21 @@
         <div class="clear"></div>
       </div>
       <div class="gt-course-activity">
+        <h4>{#localize key="plugin.guider.assessmentStateTitle"/}</h4>
+      
+        <div class="gt-course-activity-row">
+          <label>{#localize key="plugin.guider.assessmentStateLabel"/}</label>
+          <span>
+            {@select key=assessmentState}
+              {@eq value="CANCELED"}{#localize key="plugin.guider.assessmentState.CANCELED"/}{/eq}
+              {@eq value="PENDING"}{#localize key="plugin.guider.assessmentState.PENDING"/}{/eq}
+              {@eq value="PASS"}{#localize key="plugin.guider.assessmentState.PASS"/}{/eq}
+              {@eq value="FAIL"}{#localize key="plugin.guider.assessmentState.FAIL"/}{/eq}
+              {@none}{#localize key="plugin.guider.assessmentState.UNASSESSED"/}{/none}
+            {/select}
+          </span>
+        </div>
+        
         <h4>{#localize key="plugin.guider.visitsTitle"/}</h4>
       
         <div class="gt-course-activity-row">
