@@ -171,7 +171,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       sessionController.login(schoolDataSource.getIdentifier(), user.getIdentifier());
       userEntityController.updateLastLogin(userEntity);
       HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-      userLoggedInEvent.fire(new LoginEvent(userEntity.getId(), this, req.getRemoteAddr()));
+      userLoggedInEvent.fire(new LoginEvent(userEntity.getId(), sessionController.getLoggedUser(), this, req.getRemoteAddr()));
       return new AuthenticationResult(newAccount ? Status.NEW_ACCOUNT : Status.LOGIN);
     } else {
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.LOGGED_IN_AS_DIFFERENT_USER);
