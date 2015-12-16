@@ -1,6 +1,7 @@
 package fi.muikku.plugins.announcer.rest;
 
 import java.util.Date;
+import java.util.List;
 
 public class AnnouncementRESTModel {
   public Long getId() {
@@ -51,6 +52,13 @@ public class AnnouncementRESTModel {
   public void setArchived(Boolean archived) {
     this.archived = archived;
   }
+  public List<Long> getUserGroupEntityIds() {
+    return userGroupEntityIds;
+  }
+  public void setUserGroupEntityIds(List<Long> userGroupEntityIds) {
+    this.userGroupEntityIds = userGroupEntityIds;
+  }
+
 
   private Long id;
   private Long publisherUserEntityId;
@@ -60,4 +68,5 @@ public class AnnouncementRESTModel {
   private Date startDate;
   private Date endDate;
   private Boolean archived;
+  private List<Long> userGroupEntityIds;
 }

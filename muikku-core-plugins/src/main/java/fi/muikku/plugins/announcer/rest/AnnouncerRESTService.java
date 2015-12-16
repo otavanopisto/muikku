@@ -18,11 +18,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.announcer.AnnouncementController;
 import fi.muikku.plugins.announcer.model.Announcement;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
+import fi.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 import fi.muikku.plugins.announcer.AnnouncerPermissions;
@@ -42,18 +44,26 @@ public class AnnouncerRESTService extends PluginRESTService {
   @LocalSession
   private SessionController sessionController;
   
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
   @POST
   @Path("/announcements")
   @RESTPermit(AnnouncerPermissions.CREATE_ANNOUNCEMENT)
   public Response createAnnouncement(AnnouncementRESTModel restModel) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
-    announcementController.create(
+    Announcement announcement = announcementController.create(
         userEntity,
         restModel.getCaption(),
         restModel.getContent(),
         restModel.getStartDate(),
         restModel.getEndDate());
+    
+    for (Long id : restModel.getUserGroupEntityIds()) {
+      UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(id);
+      announcementController.addAnnouncementTargetGroup(announcement, userGroupEntity);
+    }
     
     return Response.noContent().build();
   }
