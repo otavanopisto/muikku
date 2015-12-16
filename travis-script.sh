@@ -1,5 +1,6 @@
 #!/bin/bash
-if [[ $TRAVIS_BRANCH != 'master' ]] && [[ $TRAVIS_PULL_REQUEST != false ]]; then
+
+if [[ ($TRAVIS_BRANCH == 'devel') && ($TRAVIS_PULL_REQUEST != false || $it_profile == 'rest-it') ]]; then
   pushd .;
   cd muikku-atests;
   set -e; 
