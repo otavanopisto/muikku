@@ -7,12 +7,15 @@ public class GuiderStudentWorkspaceActivityRestModel {
   public GuiderStudentWorkspaceActivityRestModel() {
   }
 
-  public GuiderStudentWorkspaceActivityRestModel(Date lastVisit, long numVisits, long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
-      Date evaluablesSubmittedLastDate, long evaluablesEvaluated, Date evaluablesEvaluatedLastDate, double evaluablesDonePercent, long excercicesUnanswered,
-      long excercicesAnswered, Date excercicesAnsweredLastDate, double excercicesDonePercent) {
+  public GuiderStudentWorkspaceActivityRestModel(Date lastVisit, long numVisits, long journalEntryCount, Date lastJournalEntry,
+      long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
+      Date evaluablesSubmittedLastDate, long evaluablesEvaluated, Date evaluablesEvaluatedLastDate, double evaluablesDonePercent, 
+      long excercicesUnanswered, long excercicesAnswered, Date excercicesAnsweredLastDate, double excercicesDonePercent) {
     super();
     this.lastVisit = lastVisit;
     this.numVisits = numVisits;
+    this.journalEntryCount = journalEntryCount;
+    this.lastJournalEntry = lastJournalEntry;
     this.evaluablesUnanswered = evaluablesUnanswered;
     this.evaluablesAnswered = evaluablesAnswered;
     this.evaluablesAnsweredLastDate = evaluablesAnsweredLastDate;
@@ -91,8 +94,27 @@ public class GuiderStudentWorkspaceActivityRestModel {
     return excercicesDonePercent;
   }
 
+  public long getJournalEntryCount() {
+    return journalEntryCount;
+  }
+  
+  public void setJournalEntryCount(long journalEntryCount) {
+    this.journalEntryCount = journalEntryCount;
+  }
+  
+  public Date getLastJournalEntry() {
+    return lastJournalEntry;
+  }
+  
+  public void setLastJournalEntry(Date lastJournalEntry) {
+    this.lastJournalEntry = lastJournalEntry;
+  }
+
   private Date lastVisit;
   private long numVisits;
+  
+  private long journalEntryCount;
+  private Date lastJournalEntry;
   
   private long evaluablesUnanswered;
   private long evaluablesAnswered;

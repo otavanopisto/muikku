@@ -35,6 +35,19 @@
           {/gt}
           </span>
         </div>
+        
+        <h4>{#localize key="plugin.guider.journalTitle"/}</h4>
+      
+        <div class="gt-course-activity-row">
+          <label>{#localize key="plugin.guider.journalEntriesLabel"/}</label>
+          <span>
+          {@gt key=activity.journalEntryCount value=0}
+            {activity.journalEntryCount} ({activity.lastJournalEntry|formatDate})
+          {:else}
+            -
+          {/gt}
+          </span>
+        </div>
       
         <h4>{#localize key="plugin.guider.evaluableAssignmentsTitle"/}</h4>
         

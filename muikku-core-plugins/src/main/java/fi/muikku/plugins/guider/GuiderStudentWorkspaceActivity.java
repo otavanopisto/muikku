@@ -27,11 +27,29 @@ public class GuiderStudentWorkspaceActivity {
   public long getNumVisits() {
     return numVisits;
   }
+
+  public long getJournalEntryCount() {
+    return journalEntryCount;
+  }
+  
+  public void setJournalEntryCount(long journalEntryCount) {
+    this.journalEntryCount = journalEntryCount;
+  }
+  
+  public Date getLastJournalEntry() {
+    return lastJournalEntry;
+  }
+  
+  public void setLastJournalEntry(Date lastJournalEntry) {
+    this.lastJournalEntry = lastJournalEntry;
+  }
   
   private Evaluables evaluables = new Evaluables();
   private Excercices excercices = new Excercices();
   private Date lastVisit;
   private long numVisits;
+  private long journalEntryCount;
+  private Date lastJournalEntry;
   
   public static class Evaluables {
 
