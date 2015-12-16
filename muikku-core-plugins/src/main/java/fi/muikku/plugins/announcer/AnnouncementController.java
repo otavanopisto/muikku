@@ -11,6 +11,7 @@ import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.plugins.announcer.dao.AnnouncementDAO;
 import fi.muikku.plugins.announcer.dao.AnnouncementUserGroupDAO;
 import fi.muikku.plugins.announcer.model.Announcement;
+import fi.muikku.users.UserGroupEntityController;
 
 public class AnnouncementController {
   
@@ -19,6 +20,9 @@ public class AnnouncementController {
   
   @Inject
   private AnnouncementUserGroupDAO announcementUserGroupDAO;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
   
   public Announcement create(
       UserEntity publisher,
@@ -47,7 +51,7 @@ public class AnnouncementController {
   }
   
   public List<Announcement> listActive() {
-    return announcementDAO.listActive();
+    return announcementDAO.listByArchivedAndDate(false, new Date());
   }
   
   public Announcement findById(Long id) {
@@ -69,7 +73,7 @@ public class AnnouncementController {
     );
   }
   
-  public List<Announcement> listByUserGroupEntities(
+  public List<Announcement> listActiveByUserGroupEntities(
       List<UserGroupEntity> userGroupEntities
   ) {
     List<Long> userGroupEntityIds = new ArrayList<>();
@@ -78,6 +82,16 @@ public class AnnouncementController {
       userGroupEntityIds.add(userGroupEntity.getId());
     }
     
-    return announcementDAO.listByArchivedAndUserGroupIds(false, userGroupEntityIds);
+    return announcementDAO.listByArchivedAndDateAndUserGroupEntityIds(false, new Date(), userGroupEntityIds);
+  }
+  
+  public List<Announcement> listActiveByTargetedUserEntity(
+      UserEntity targetedUserEntity
+  ) {
+    List<UserGroupEntity> userGroupEntities = 
+        userGroupEntityController.listUserGroupsByUser(targetedUserEntity);
+    
+    return listActiveByUserGroupEntities(userGroupEntities);
   }
 }
+ 

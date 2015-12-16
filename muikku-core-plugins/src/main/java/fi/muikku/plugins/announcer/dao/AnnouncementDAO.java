@@ -59,8 +59,9 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<Announcement> listByArchivedAndUserGroupIds(
+  public List<Announcement> listByArchivedAndDateAndUserGroupEntityIds(
       boolean archived,
+      Date currentDate,
       List<Long> userGroupEntityIds
   ) {
     EntityManager entityManager = getEntityManager();
@@ -72,15 +73,16 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     criteria.select(announcement);
     criteria.where(
         criteriaBuilder.and(
+          criteriaBuilder.lessThanOrEqualTo(announcement.get(Announcement_.startDate), currentDate),
+          criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), currentDate),
           criteriaBuilder.equal(announcement.get(Announcement_.archived), archived),
           root.get(AnnouncementUserGroup_.userGroupEntityId).in(userGroupEntityIds)));
     
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<Announcement> listActive() {
+  public List<Announcement> listByArchivedAndDate(boolean archived, Date currentDate) {
     EntityManager entityManager = getEntityManager(); 
-    Date currentDate = new Date();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
@@ -88,6 +90,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(Announcement_.archived), false),
         criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
         criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)
       )

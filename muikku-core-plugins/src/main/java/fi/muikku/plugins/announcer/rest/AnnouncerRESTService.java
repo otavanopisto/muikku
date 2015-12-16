@@ -62,9 +62,10 @@ public class AnnouncerRESTService extends PluginRESTService {
   @Path("/announcements")
   @RESTPermit(handling=Handling.INLINE)
   public Response listAnnouncements(
-      @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive
+      @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive,
+      @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine
   ) {
-    if (!onlyActive) {
+    if (!onlyActive || !onlyMine) {
       if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ALL_ANNOUNCEMENTS)) {
         return Response.status(Status.FORBIDDEN).entity("You're not allowed to list all announcements").build();
       }
@@ -72,7 +73,12 @@ public class AnnouncerRESTService extends PluginRESTService {
     
     List<Announcement> announcements = null;
     if (onlyActive) {
-      announcements = announcementController.listActive();
+      if (onlyMine) {
+        UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
+        announcements = announcementController.listActiveByTargetedUserEntity(currentUserEntity);
+      } else {
+        announcements = announcementController.listActive();
+      }
     } else {
       announcements = announcementController.listAll();
     }
