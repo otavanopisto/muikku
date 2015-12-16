@@ -225,30 +225,68 @@
     
     _create : function() {
       this.element.addClass('gt-user-view-profile');
+      this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       
       this._loadUser();
+    },
+    
+    _onNameClick: function (event) {
+      var element = $(event.target).closest('.gt-course');
+      if (element.hasClass('open')) {
+        element.removeClass('open');
+      } else {
+        element.addClass('open');
+      }
     },
     
     _loadUser: function () {
       this.element.addClass('loading');
       
-      mApi().user.students.read(this.options.userIdentifier).callback($.proxy(function(err, user){
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
-        } else {
-          renderDustTemplate('guider/guider_view_profile.dust', user, $.proxy(function(text) {    
-            this.element
-              .removeClass('loading')
-              .html(text);
-            
-            mApi().workspace.workspaces.read({ userIdentifier: this.options.userIdentifier }).callback($.proxy(function(err, workspaces) {               
-              renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function(text){
-                this.element.find(".gt-data-container-1 div.gt-data").html(text);
-              }, this));
-            }, this));
-          }, this));
-        }
-      }, this));
+      mApi().user.students
+        .read(this.options.userIdentifier)
+        .on('$', $.proxy(function(user, userCallback) {
+          mApi().user.students.logins
+            .read(this.options.userIdentifier, { maxResults: 1 })
+            .callback(function(err, loginDetails) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                user.lastLogin = loginDetails && loginDetails.length ? loginDetails[0].time : null;
+                userCallback();
+              }
+            });
+        }, this))
+        .callback($.proxy(function(err, user){
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
+          } else {
+            renderDustTemplate('guider/guider_view_profile.dust', user, $.proxy(function(text) {    
+              this.element
+                .removeClass('loading')
+                .html(text);
+              
+              mApi().workspace.workspaces
+                .read({ userIdentifier: this.options.userIdentifier })
+                .on('$', $.proxy(function(workspace, workspaceCallback) {
+                  mApi().guider.workspaces.studentactivity
+                    .read(workspace.id, this.options.userIdentifier )
+                    .callback($.proxy(function(err, activity) {  
+                      if (err) {
+                        $('.notification-queue').notificationQueue('notification', 'error', err);
+                      } else {
+                        workspace.activity = activity;
+                        workspaceCallback();
+                      }
+                    }, this));
+                }, this)) 
+                .callback($.proxy(function(err, workspaces) {             
+                  renderDustTemplate('guider/guider_profile_workspaces.dust', workspaces, $.proxy(function(text){
+                    this.element.find(".gt-data-container-1 div.gt-data").html(text);
+                  }, this));
+                }, this))
+              }, this)); 
+          }
+        }, this));
     }
   });
 

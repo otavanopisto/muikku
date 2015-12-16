@@ -1,4 +1,4 @@
-package fi.muikku.plugins.guidancetool;
+package fi.muikku.plugins.guider;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -17,7 +17,7 @@ import fi.otavanopisto.security.LoggedIn;
 @RequestScoped
 @Join (path = "/guider", to = "/jsf/guider/index.jsf")
 @LoggedIn
-public class GuidanceToolBackingBean {
+public class GuiderBackingBean {
 
   @Inject
   private SessionController sessionController;
@@ -25,7 +25,7 @@ public class GuidanceToolBackingBean {
   @RequestAction
   public String init() {
 
-    if (!sessionController.hasEnvironmentPermission(GuidanceToolPermissions.GUIDANCE_TOOL)) {
+    if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_VIEW)) {
       return NavigationRules.ACCESS_DENIED;
     }
     

@@ -46,13 +46,17 @@ public class WorkspaceVisitController {
     if (userEntity == null) {
       return 0l;
     } else {
-      WorkspaceVisit workspaceVisit = workspaceVisitDAO.findByUserEntityAndWorkspaceEntity(userEntity, workspaceEntity);
-      if (workspaceVisit == null) {
-        return 0l;
-      }
-      
-      return workspaceVisit.getNumVisits();
+      return getNumVisits(workspaceEntity, userEntity);
     }
+  }
+
+  public long getNumVisits(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
+    WorkspaceVisit workspaceVisit = workspaceVisitDAO.findByUserEntityAndWorkspaceEntity(userEntity, workspaceEntity);
+    if (workspaceVisit == null) {
+      return 0l;
+    }
+    
+    return workspaceVisit.getNumVisits();
   }
   
   public List<WorkspaceEntity> listWorkspaceEntitiesByMinVisitsOrderByLastVisit(UserEntity userEntity, Long numVisits) {
@@ -71,12 +75,16 @@ public class WorkspaceVisitController {
     if (userEntity == null) {
       return null;
     } else {
-      WorkspaceVisit workspaceVisit = workspaceVisitDAO.findByUserEntityAndWorkspaceEntity(userEntity, workspaceEntity);
-      if (workspaceVisit == null) {
-        return null;
-      }
-      
-      return workspaceVisit.getLastVisit();
+      return getLastVisit(workspaceEntity, userEntity);
     }
+  }
+
+  public Date getLastVisit(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
+    WorkspaceVisit workspaceVisit = workspaceVisitDAO.findByUserEntityAndWorkspaceEntity(userEntity, workspaceEntity);
+    if (workspaceVisit == null) {
+      return null;
+    }
+    
+    return workspaceVisit.getLastVisit();
   }
 }

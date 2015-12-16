@@ -1,4 +1,4 @@
-package fi.muikku.plugins.guidancetool;
+package fi.muikku.plugins.guider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 
-public class GuidanceToolPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
+public class GuiderPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
   @Override
   public void init() {
@@ -19,7 +19,7 @@ public class GuidanceToolPluginDescriptor implements PluginDescriptor, Localized
 
   @Override
   public String getName() {
-    return "guidancetool";
+    return "guider";
   }
 
   @Override
