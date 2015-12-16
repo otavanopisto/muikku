@@ -3,11 +3,16 @@ package fi.muikku.plugins.guider;
 import java.util.Date;
 
 public class GuiderStudentWorkspaceActivityRestModel {
+  
+  public GuiderStudentWorkspaceActivityRestModel() {
+  }
 
-  public GuiderStudentWorkspaceActivityRestModel(long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
+  public GuiderStudentWorkspaceActivityRestModel(Date lastVisit, long numVisits, long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
       Date evaluablesSubmittedLastDate, long evaluablesEvaluated, Date evaluablesEvaluatedLastDate, double evaluablesDonePercent, long excercicesUnanswered,
       long excercicesAnswered, Date excercicesAnsweredLastDate, double excercicesDonePercent) {
     super();
+    this.lastVisit = lastVisit;
+    this.numVisits = numVisits;
     this.evaluablesUnanswered = evaluablesUnanswered;
     this.evaluablesAnswered = evaluablesAnswered;
     this.evaluablesAnsweredLastDate = evaluablesAnsweredLastDate;
@@ -22,6 +27,22 @@ public class GuiderStudentWorkspaceActivityRestModel {
     this.excercicesDonePercent = excercicesDonePercent;
   }
 
+  public void setLastVisit(Date lastVisit) {
+    this.lastVisit = lastVisit;
+  }
+  
+  public Date getLastVisit() {
+    return lastVisit;
+  }
+  
+  public void setNumVisits(long numVisits) {
+    this.numVisits = numVisits;
+  }
+  
+  public long getNumVisits() {
+    return numVisits;
+  }
+  
   public long getEvaluablesUnanswered() {
     return evaluablesUnanswered;
   }
@@ -70,6 +91,9 @@ public class GuiderStudentWorkspaceActivityRestModel {
     return excercicesDonePercent;
   }
 
+  private Date lastVisit;
+  private long numVisits;
+  
   private long evaluablesUnanswered;
   private long evaluablesAnswered;
   private Date evaluablesAnsweredLastDate;

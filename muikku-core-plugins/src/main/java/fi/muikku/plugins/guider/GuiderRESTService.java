@@ -50,6 +50,8 @@ public class GuiderRESTService extends PluginRESTService {
     }
     
     GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
+        analysis.getLastVisit(),
+        analysis.getNumVisits(),
         analysis.getEvaluables().getUnanswered(), 
         analysis.getEvaluables().getAnswered(), 
         analysis.getEvaluables().getAnsweredLastDate(), 

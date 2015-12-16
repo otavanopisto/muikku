@@ -8,6 +8,7 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
@@ -25,6 +26,9 @@ public class GuiderController {
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
   
+  @Inject
+  private WorkspaceVisitController workspaceVisitController;
+  
   public GuiderStudentWorkspaceActivity getWorkspaceAssignmentsAnalysis(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
     if (userEntity == null) {
@@ -32,6 +36,9 @@ public class GuiderController {
     }
 
     GuiderStudentWorkspaceActivity analysis = new GuiderStudentWorkspaceActivity();
+    
+    analysis.setLastVisit(workspaceVisitController.getLastVisit(workspaceEntity, userEntity));
+    analysis.setNumVisits(workspaceVisitController.getNumVisits(workspaceEntity, userEntity));
 
     List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
     for (WorkspaceMaterial evaluatedAssignment : evaluatedAssignments) {

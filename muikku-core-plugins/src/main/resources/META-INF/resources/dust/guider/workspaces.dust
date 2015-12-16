@@ -23,6 +23,19 @@
         <div class="clear"></div>
       </div>
       <div class="gt-course-activity">
+        <h4>{#localize key="plugin.guider.visitsTitle"/}</h4>
+      
+        <div class="gt-course-activity-row">
+          <label>{#localize key="plugin.guider.visitedLabel"/}</label>
+          <span>
+          {@gt key=activity.numVisits value=0}
+            {activity.numVisits} ({activity.lastVisit|formatDate})
+          {:else}
+            -
+          {/gt}
+          </span>
+        </div>
+      
         <h4>{#localize key="plugin.guider.evaluableAssignmentsTitle"/}</h4>
         
         <div class="gt-course-activity-row">
