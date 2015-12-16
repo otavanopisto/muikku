@@ -950,10 +950,17 @@ iframe[id^='twitter-widget-']{
   height:65px;
   white-space:nowrap;
   position:relative;
+  a{
+   color:inherit;
+   margin-right:0;
+   border-right:0;
+  }
 }
 
 .wi-item-announcement{
   display:inline-block;
+  box-sizing:border-box;
+  margin-right: -4px;
   border-left:5px solid #4ee23a;
   min-width: 50px;
   padding:15px;
@@ -965,12 +972,10 @@ iframe[id^='twitter-widget-']{
     cursor:pointer;
   }  
   span:not(:first-child){
-     margin-left:5px;
-     
+     margin-left:5px;  
   }
-
-  
 } 
+
   .wi-item-topic{
    overflow:hidden;
    text-overflow:ellipsis;

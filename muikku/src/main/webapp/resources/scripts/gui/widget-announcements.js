@@ -1,8 +1,6 @@
  
 $(document).ready(function(){
   var cont = $('.wi-announcements');
-
-  
   
   mApi()
   .announcer
@@ -22,11 +20,12 @@ $(document).ready(function(){
               var element = $(text);
               cont.append(element);
               cont.perfectScrollbar({"suppressScrollY" : true});
+              
+              
             }, this));
 
       }
 
-  
   }, this));
    
 });
