@@ -6,10 +6,13 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.announcer.model.Announcement;
+import fi.muikku.plugins.announcer.model.AnnouncementUserGroup;
+import fi.muikku.plugins.announcer.model.AnnouncementUserGroup_;
 import fi.muikku.plugins.announcer.model.Announcement_;
 
 public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
@@ -52,6 +55,25 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
     criteria.where(criteriaBuilder.equal(root.get(Announcement_.archived), archived));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public List<Announcement> listByArchivedAndUserGroupIds(
+      boolean archived,
+      List<Long> userGroupEntityIds
+  ) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+    Root<AnnouncementUserGroup> root = criteria.from(AnnouncementUserGroup.class);
+    Join<AnnouncementUserGroup, Announcement> announcement = root.join(AnnouncementUserGroup_.announcement);
+    criteria.select(announcement);
+    criteria.where(
+        criteriaBuilder.and(
+          criteriaBuilder.equal(announcement.get(Announcement_.archived), archived),
+          root.get(AnnouncementUserGroup_.userGroupEntityId).in(userGroupEntityIds)));
     
     return entityManager.createQuery(criteria).getResultList();
   }

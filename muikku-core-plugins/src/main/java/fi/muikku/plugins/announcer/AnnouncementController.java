@@ -2,17 +2,23 @@ package fi.muikku.plugins.announcer;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.plugins.announcer.dao.AnnouncementDAO;
+import fi.muikku.plugins.announcer.dao.AnnouncementUserGroupDAO;
 import fi.muikku.plugins.announcer.model.Announcement;
 
 public class AnnouncementController {
   
   @Inject
   private AnnouncementDAO announcementDAO;
+  
+  @Inject
+  private AnnouncementUserGroupDAO announcementUserGroupDAO;
   
   public Announcement create(
       UserEntity publisher,
@@ -46,5 +52,28 @@ public class AnnouncementController {
   
   public void archive(Announcement announcement) {
     announcementDAO.archive(announcement);
+  }
+  
+  public void addAnnouncementTargetGroup(
+      Announcement announcement,
+      UserGroupEntity userGroupEntity
+  ) {
+    announcementUserGroupDAO.create(
+        announcement,
+        userGroupEntity.getId(),
+        true
+    );
+  }
+  
+  public List<Announcement> listByUserGroupEntities(
+      List<UserGroupEntity> userGroupEntities
+  ) {
+    List<Long> userGroupEntityIds = new ArrayList<>();
+    
+    for (UserGroupEntity userGroupEntity : userGroupEntities) {
+      userGroupEntityIds.add(userGroupEntity.getId());
+    }
+    
+    return announcementDAO.listByArchivedAndUserGroupIds(false, userGroupEntityIds);
   }
 }
