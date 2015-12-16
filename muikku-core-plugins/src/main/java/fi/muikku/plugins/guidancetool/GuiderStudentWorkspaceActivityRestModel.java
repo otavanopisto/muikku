@@ -2,9 +2,9 @@ package fi.muikku.plugins.guidancetool;
 
 import java.util.Date;
 
-public class StudyActivityWorkspaceAnalysisRestModel {
+public class GuiderStudentWorkspaceActivityRestModel {
 
-  public StudyActivityWorkspaceAnalysisRestModel(long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
+  public GuiderStudentWorkspaceActivityRestModel(long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
       Date evaluablesSubmittedLastDate, long evaluablesEvaluated, Date evaluablesEvaluatedLastDate, double evaluablesDonePercent, long excercicesUnanswered,
       long excercicesAnswered, Date excercicesAnsweredLastDate, double excercicesDonePercent) {
     super();

@@ -2,7 +2,7 @@ package fi.muikku.plugins.guidancetool;
 
 import java.util.Date;
 
-public class StudyActivityWorkspaceAnalysis {
+public class GuiderStudentWorkspaceActivity {
 
   public Evaluables getEvaluables() {
     return evaluables;

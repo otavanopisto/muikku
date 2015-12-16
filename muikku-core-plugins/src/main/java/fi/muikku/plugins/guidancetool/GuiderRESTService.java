@@ -21,7 +21,7 @@ import fi.muikku.schooldata.WorkspaceEntityController;
 @Stateful
 @Produces("application/json")
 @Path ("/studyactivityanalysis")
-public class StudyActivityAnalysisRESTService extends PluginRESTService {
+public class GuiderRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -5286350366083446537L;
   
@@ -29,7 +29,7 @@ public class StudyActivityAnalysisRESTService extends PluginRESTService {
   private WorkspaceEntityController workspaceEntityController;
   
   @Inject
-  private StudyActivityAnalysisController studyActivityAnalysisController;
+  private GuiderController guiderController;
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/assessments")
@@ -45,12 +45,12 @@ public class StudyActivityAnalysisRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
     }
     
-    StudyActivityWorkspaceAnalysis analysis = studyActivityAnalysisController.getWorkspaceAssignmentsAnalysis(workspaceEntity, userIdentifier);
+    GuiderStudentWorkspaceActivity analysis = guiderController.getWorkspaceAssignmentsAnalysis(workspaceEntity, userIdentifier);
     if (analysis == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
     }
     
-    StudyActivityWorkspaceAnalysisRestModel model = new StudyActivityWorkspaceAnalysisRestModel(
+    GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
         analysis.getEvaluables().getUnanswered(), 
         analysis.getEvaluables().getAnswered(), 
         analysis.getEvaluables().getAnsweredLastDate(), 

@@ -14,7 +14,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.users.UserEntityController;
 
-public class StudyActivityAnalysisController {
+public class GuiderController {
   
   @Inject
   private UserEntityController userEntityController;
@@ -25,13 +25,13 @@ public class StudyActivityAnalysisController {
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
   
-  public StudyActivityWorkspaceAnalysis getWorkspaceAssignmentsAnalysis(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+  public GuiderStudentWorkspaceActivity getWorkspaceAssignmentsAnalysis(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
     if (userEntity == null) {
       return null;
     }
 
-    StudyActivityWorkspaceAnalysis analysis = new StudyActivityWorkspaceAnalysis();
+    GuiderStudentWorkspaceActivity analysis = new GuiderStudentWorkspaceActivity();
 
     List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
     for (WorkspaceMaterial evaluatedAssignment : evaluatedAssignments) {

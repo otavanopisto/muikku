@@ -13,7 +13,7 @@ import fi.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
 
 @ApplicationScoped
-public class GuidanceToolPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
+public class GuiderPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER } )
@@ -21,7 +21,7 @@ public class GuidanceToolPermissions extends AbstractMuikkuPermissionCollection 
   
   @Override
   public List<String> listPermissions() {
-    return listPermissions(GuidanceToolPermissions.class);
+    return listPermissions(GuiderPermissions.class);
   }
 
   @Override
@@ -31,22 +31,22 @@ public class GuidanceToolPermissions extends AbstractMuikkuPermissionCollection 
   
   @Override
   public String getPermissionScope(String permission) throws NoSuchFieldException {
-    return getPermissionScope(GuidanceToolPermissions.class, permission);
+    return getPermissionScope(GuiderPermissions.class, permission);
   }
 
   @Override
   public String[] getDefaultPseudoRoles(String permission) throws NoSuchFieldException {
-    return getDefaultPseudoRoles(GuidanceToolPermissions.class, permission);
+    return getDefaultPseudoRoles(GuiderPermissions.class, permission);
   }
 
   @Override
   public EnvironmentRoleArchetype[] getDefaultEnvironmentRoles(String permission) throws NoSuchFieldException {
-    return getDefaultEnvironmentRoles(GuidanceToolPermissions.class, permission);
+    return getDefaultEnvironmentRoles(GuiderPermissions.class, permission);
   }
 
   @Override
   public WorkspaceRoleArchetype[] getDefaultWorkspaceRoles(String permission) throws NoSuchFieldException {
-    return getDefaultWorkspaceRoles(GuidanceToolPermissions.class, permission);
+    return getDefaultWorkspaceRoles(GuiderPermissions.class, permission);
   }
 
 }
