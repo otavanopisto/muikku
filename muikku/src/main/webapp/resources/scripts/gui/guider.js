@@ -256,7 +256,7 @@
                   }, this));
               }, this)) 
               .callback($.proxy(function(err, workspaces) {             
-                renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function(text){
+                renderDustTemplate('guider/guider_view_profile_workspaces.dust', workspaces, $.proxy(function(text){
                   this.element.find(".gt-data-container-1 div.gt-data").html(text);
                 }, this));
               }, this));

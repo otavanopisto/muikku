@@ -316,8 +316,39 @@
   
 }
 
- .gt-data{
-    width:100%;
+ .gt-data {
+   width:100%;
+    
+   .gt-course-details {
+   
+     .gt-course-details-container {
+        background-color:#fff;
+        
+        .gt-course-description {
+          display:inline-block;
+          width:100%;
+          background-color:#fff;  
+          cursor:pointer;  
+          
+          .gt-course-header-name { 
+
+            .gt-course-short:after {
+              content : " -"  ;
+            }
+
+          }
+          
+          .gt-course-content-details {
+          
+          }
+          
+        }
+        
+      }
+   
+       
+   }
+    
  }
 
 
