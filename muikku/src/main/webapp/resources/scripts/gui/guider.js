@@ -225,7 +225,7 @@
     
     _create : function() {
       this.element.addClass('gt-user-view-profile');
-      this.element.on("click", ".gt-course-header-name", $.proxy(this._onNameClick, this));
+      this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       
       this._loadUser();
     },
@@ -266,7 +266,7 @@
                   }, this));
               }, this)) 
               .callback($.proxy(function(err, workspaces) {             
-                renderDustTemplate('guider/workspaces.dust', workspaces, $.proxy(function(text){
+                renderDustTemplate('guider/guider_profile_workspaces.dust', workspaces, $.proxy(function(text){
                   this.element.find(".gt-data-container-1 div.gt-data").html(text);
                 }, this));
               }, this));

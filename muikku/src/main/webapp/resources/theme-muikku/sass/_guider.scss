@@ -323,6 +323,7 @@
    
      .gt-course-details-container {
         background-color:#fff;
+        cursor:pointer;
         
         .gt-course-description {
           display:inline-block;
@@ -331,10 +332,6 @@
           cursor:pointer;  
           
           .gt-course-header-name { 
-
-            .gt-course-short:after {
-              content : " -"  ;
-            }
 
           }
           
