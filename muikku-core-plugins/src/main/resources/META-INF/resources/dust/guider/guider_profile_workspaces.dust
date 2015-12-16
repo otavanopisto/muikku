@@ -4,7 +4,6 @@
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
     <div class="gt-course-details">
       <div class="gt-course-details-container">       
-        <div class="gt-course-additionalInfo"></div>
         <div class="gt-course-description">
           <div class="gt-course-header-name">
             <span class="gt-course-long">{name}</span>
