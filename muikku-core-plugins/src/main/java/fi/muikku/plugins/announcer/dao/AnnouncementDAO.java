@@ -52,6 +52,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
     criteria.where(criteriaBuilder.equal(root.get(Announcement_.archived), archived));
+    criteria.orderBy(criteriaBuilder.asc(root.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
   }
