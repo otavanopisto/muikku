@@ -25,7 +25,7 @@ public class GuiderBackingBean {
   @RequestAction
   public String init() {
 
-    if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDANCE_TOOL)) {
+    if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_VIEW)) {
       return NavigationRules.ACCESS_DENIED;
     }
     

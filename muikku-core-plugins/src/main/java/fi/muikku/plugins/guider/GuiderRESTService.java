@@ -12,9 +12,9 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
-import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
 
 @RequestScoped
 @Stateful
@@ -32,7 +32,7 @@ public class GuiderRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/studentactivity/{USERIDENTIFIER}")
-  @RESTPermitUnimplemented
+  @RESTPermit (GuiderPermissions.GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY)
   public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERIDENTIFIER") String userId) {
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
     if (userIdentifier == null) {
