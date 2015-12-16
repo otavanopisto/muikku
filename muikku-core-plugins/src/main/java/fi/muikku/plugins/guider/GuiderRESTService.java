@@ -44,26 +44,26 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
     }
     
-    GuiderStudentWorkspaceActivity analysis = guiderController.getWorkspaceAssignmentsAnalysis(workspaceEntity, userIdentifier);
-    if (analysis == null) {
+    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
+    if (activity == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
     }
     
     GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
-        analysis.getLastVisit(),
-        analysis.getNumVisits(),
-        analysis.getEvaluables().getUnanswered(), 
-        analysis.getEvaluables().getAnswered(), 
-        analysis.getEvaluables().getAnsweredLastDate(), 
-        analysis.getEvaluables().getSubmitted(), 
-        analysis.getEvaluables().getSubmittedLastDate(), 
-        analysis.getEvaluables().getEvaluated(), 
-        analysis.getEvaluables().getEvaluatedLastDate(), 
-        analysis.getEvaluables().getDonePercent(), 
-        analysis.getExcercices().getUnanswered(), 
-        analysis.getExcercices().getAnswered(), 
-        analysis.getExcercices().getAnsweredLastDate(), 
-        analysis.getExcercices().getDonePercent());
+        activity.getLastVisit(),
+        activity.getNumVisits(),
+        activity.getEvaluables().getUnanswered(), 
+        activity.getEvaluables().getAnswered(), 
+        activity.getEvaluables().getAnsweredLastDate(), 
+        activity.getEvaluables().getSubmitted(), 
+        activity.getEvaluables().getSubmittedLastDate(), 
+        activity.getEvaluables().getEvaluated(), 
+        activity.getEvaluables().getEvaluatedLastDate(), 
+        activity.getEvaluables().getDonePercent(), 
+        activity.getExcercices().getUnanswered(), 
+        activity.getExcercices().getAnswered(), 
+        activity.getExcercices().getAnsweredLastDate(), 
+        activity.getExcercices().getDonePercent());
     
     return Response.ok(model).build();
   }
