@@ -7,7 +7,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -20,7 +19,7 @@ import fi.muikku.schooldata.WorkspaceEntityController;
 @RequestScoped
 @Stateful
 @Produces("application/json")
-@Path ("/studyactivityanalysis")
+@Path ("/guider")
 public class GuiderRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -5286350366083446537L;
@@ -32,9 +31,9 @@ public class GuiderRESTService extends PluginRESTService {
   private GuiderController guiderController;
   
   @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/assessments")
+  @Path("/workspaces/{WORKSPACEENTITYID}/studentactivity/{USERIDENTIFIER}")
   @RESTPermitUnimplemented
-  public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("userIdentifier") String userId) {
+  public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERIDENTIFIER") String userId) {
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
     if (userIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();

@@ -254,8 +254,8 @@
             mApi().workspace.workspaces
               .read({ userIdentifier: this.options.userIdentifier })
               .on('$', $.proxy(function(workspace, workspaceCallback) {
-                mApi().studyactivityanalysis.workspaces.assessments
-                  .read(workspace.id, { userIdentifier: this.options.userIdentifier })
+                mApi().guider.workspaces.studentactivity
+                  .read(workspace.id, this.options.userIdentifier )
                   .callback($.proxy(function(err, activity) {  
                     if (err) {
                       $('.notification-queue').notificationQueue('notification', 'error', err);
