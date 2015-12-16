@@ -8,7 +8,7 @@
     display: inline-block;
     margin-bottom: 25px;
     margin-right: 25px;
-    max-height: 300px;
+    max-height: 330px;
     overflow: hidden;
     vertical-align: top;
     width: 286px;
@@ -36,8 +36,12 @@
 }
 .an-announcement-details{
   margin-bottom:10px;
-  max-height:190px;
+  max-height:220px;
 }
+.an-announcement-tools{
+  margin-left:20px;
+}
+
 .an-announcement-topic{
   padding-top:10px;
   padding-left:10px;
