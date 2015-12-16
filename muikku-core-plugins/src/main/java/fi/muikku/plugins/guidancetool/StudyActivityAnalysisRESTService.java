@@ -1,4 +1,4 @@
-package fi.muikku.plugins.progressanalysis;
+package fi.muikku.plugins.guidancetool;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;

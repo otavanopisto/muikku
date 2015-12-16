@@ -1,7 +1,6 @@
-package fi.muikku.plugins.progressanalysis;
+package fi.muikku.plugins.guidancetool;
 
 import java.util.Date;
-import org.apache.commons.lang3.math.NumberUtils;
 
 public class StudyActivityWorkspaceAnalysis {
 

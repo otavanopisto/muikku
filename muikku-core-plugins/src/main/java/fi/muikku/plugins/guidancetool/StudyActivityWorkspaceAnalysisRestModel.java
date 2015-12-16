@@ -1,4 +1,4 @@
-package fi.muikku.plugins.progressanalysis;
+package fi.muikku.plugins.guidancetool;
 
 import java.util.Date;
 
