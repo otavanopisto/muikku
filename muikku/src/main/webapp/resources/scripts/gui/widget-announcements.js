@@ -7,7 +7,7 @@ $(document).ready(function(){
   mApi()
   .announcer
   .announcements
-  .read()
+  .read({onlyActive: "true", onlyMine: "true"})
   .callback($.proxy(function(err, result) {
       if (err) {
         $(".notification-queue").notificationQueue(
