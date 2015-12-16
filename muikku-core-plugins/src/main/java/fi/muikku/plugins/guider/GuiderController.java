@@ -1,22 +1,23 @@
-package fi.muikku.plugins.progressanalysis;
+package fi.muikku.plugins.guider;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.muikku.plugins.workspace.WorkspaceVisitController;
+import fi.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.users.UserEntityController;
 
-public class StudyActivityAnalysisController {
+public class GuiderController {
   
   @Inject
   private UserEntityController userEntityController;
@@ -27,42 +28,50 @@ public class StudyActivityAnalysisController {
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
   
-  public StudyActivityWorkspaceAnalysis getWorkspaceAssignmentsAnalysis(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+  @Inject
+  private WorkspaceVisitController workspaceVisitController;
+  
+  @Inject
+  private WorkspaceJournalController workspaceJournalController;
+  
+  public GuiderStudentWorkspaceActivity getStudentWorkspaceActivity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
     if (userEntity == null) {
       return null;
     }
-    
-    long evaluableUnanswered = 0l;
-    Date lastEvaluableAssignmentAnswerDate = new Date();
-    long evaluableAssignmentAnswered = 0l;
-    long evaluableSubmitted = 0l;
-    Date lastEvaluableSubmitDate = new Date();
-    long evaluableEvaluated = 0l;
-    Date lastEvaluableEvaluationDate = new Date();
-    long exercisesAswered = 0l;
-    long exercisesUnaswered = 0l;
-    Date lastExerciseSubmittedDate = new Date();
 
+    GuiderStudentWorkspaceActivity activity = new GuiderStudentWorkspaceActivity();
+    
+    activity.setLastVisit(workspaceVisitController.getLastVisit(workspaceEntity, userEntity));
+    activity.setNumVisits(workspaceVisitController.getNumVisits(workspaceEntity, userEntity));
+    
+    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.findLatestsEntryByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    if (workspaceJournalEntry != null) {
+      activity.setJournalEntryCount(workspaceJournalController.countEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity));
+      activity.setLastJournalEntry(workspaceJournalEntry.getCreated());
+    }
+    
     List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
     for (WorkspaceMaterial evaluatedAssignment : evaluatedAssignments) {
       WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(evaluatedAssignment, userEntity);
       if (workspaceMaterialReply == null) {
-        evaluableUnanswered++;
+        activity.getEvaluables().addUnanswered();
       } else {
         switch (workspaceMaterialReply.getState()) {
           case WITHDRAWN:
+            activity.getEvaluables().addEvaluated(workspaceMaterialReply.getWithdrawn());
+          break;
           case ANSWERED:
-            evaluableAssignmentAnswered++;
+            activity.getEvaluables().addAnswered(workspaceMaterialReply.getLastModified());
           break;
           case EVALUATED:
-            evaluableEvaluated++;
+            activity.getEvaluables().addEvaluated(workspaceMaterialReply.getSubmitted());
           break;
           case SUBMITTED:
-            evaluableSubmitted++;
+            activity.getEvaluables().addSubmitted(workspaceMaterialReply.getSubmitted());
           break;
           case UNANSWERED:
-            evaluableUnanswered++;
+            activity.getEvaluables().addUnanswered();
           break;
         }
       }
@@ -72,25 +81,29 @@ public class StudyActivityAnalysisController {
     for (WorkspaceMaterial exerciseAssignment : exerciseAssignments) {
       WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(exerciseAssignment, userEntity);
       if (workspaceMaterialReply == null) {
-        exercisesUnaswered++;
+        activity.getExcercices().addUnanswered();
       } else {
         switch (workspaceMaterialReply.getState()) {
           case WITHDRAWN:
+            activity.getExcercices().addAnswered(workspaceMaterialReply.getWithdrawn());
+          break;
           case ANSWERED:
+            activity.getExcercices().addAnswered(workspaceMaterialReply.getLastModified());
+          break;
           case EVALUATED:
+            activity.getExcercices().addAnswered(workspaceMaterialReply.getSubmitted());
+          break;
           case SUBMITTED:
-            evaluableSubmitted++;
+            activity.getExcercices().addAnswered(workspaceMaterialReply.getSubmitted());
           break;
           case UNANSWERED:
-            exercisesUnaswered++;
+            activity.getExcercices().addUnanswered();
           break;
         }
       }
     }
     
-    return new StudyActivityWorkspaceAnalysis(evaluableUnanswered, lastEvaluableAssignmentAnswerDate, 
-        evaluableAssignmentAnswered, evaluableSubmitted, lastEvaluableSubmitDate, evaluableEvaluated, 
-        lastEvaluableEvaluationDate, exercisesUnaswered, exercisesAswered, lastExerciseSubmittedDate);
+    return activity;
   }
   
 }

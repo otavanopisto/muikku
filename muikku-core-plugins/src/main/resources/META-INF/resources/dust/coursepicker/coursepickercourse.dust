@@ -77,22 +77,9 @@
           </div>
 
         </div>       
-        
-        <span>Tehtävät valmiina: {activity.donePercent|formatPercent}%</span>
 
         <div class="clear"></div>
     </div>
-    <div class="cp-course-activity">
-      <div><b>Arvioitavat tehtävät</b></div>
-      <div><label>Aloittamattomat</label><span>{activity.evaluableUnanswered}</span></div>
-      <div><label>Vastannut</label><span>{activity.evaluableAssignmentAnswered} ({activity.lastEvaluableAssignmentAnswerDate|formatDate})</span></div>
-      <div><label>Palauttanut</label><span>{activity.evaluableSubmitted} ({activity.lastEvaluableSubmitDate|formatDate})</span></div>
-      <div><label>Palauttanut</label><span>{activity.evaluableEvaluated} ({activity.lastEvaluableEvaluationDate|formatDate})</span></div>
-      <div><b>Harjoitus tehtävät</b></div>
-      <div><label>Aloittamattomat</label><span>{activity.exercisesUnaswered}</span></div>
-      <div><label>Palauttanut</label><span>{activity.exercisesAswered} ({activity.lastExerciseSubmittedDate|formatDate})</span></div>
-    </div>
-    
   </div>
 </div>
 {:else}
