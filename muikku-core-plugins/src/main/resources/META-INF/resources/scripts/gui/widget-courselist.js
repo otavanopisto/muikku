@@ -15,6 +15,7 @@ $(document).ready(function(){
         
         }, function (text) {
             $('#widgetCourselist').append($.parseHTML(text));
+            $('#widgetCourselist').perfectScrollbar({"suppressScrollX" : true});
           });
         
     	}

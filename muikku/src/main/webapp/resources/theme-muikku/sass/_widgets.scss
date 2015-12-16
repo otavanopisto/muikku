@@ -943,3 +943,36 @@ div[class*="sk-autocomplete-item"]:before {
 iframe[id^='twitter-widget-']{
  width:100% !important;
 }
+
+/* new stuff 15.12.2015 - the old stuff above needs to be reviewed and dealt  */
+
+.wi-announcements{
+  height:50px;
+  white-space:nowrap;
+  position:relative;
+}
+
+.wi-item-announcement{
+  display:inline-block;
+  background: #4ee23a none repeat scroll 0 0;
+  color: #fff;
+  min-width: 50px;
+  padding:15px;
+  font-size:15px;
+  font-weight:300;
+  transition: background-color 0.2s linear 0s, font-size 0.2s linear 0s;
+  &:hover{
+    background-color:#62f64e;
+    cursor:pointer;
+  }  
+  span:not(:first-child){
+     margin-left:5px;
+     
+  }
+  .wi-item-topic{
+   overflow:hidden;
+   text-overflow:ellipsis;
+   max-width:200px;
+  }
+  
+} 
