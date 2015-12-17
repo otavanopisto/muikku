@@ -9,11 +9,11 @@
                 <div class="mf-textfield-subcontainer ca-form-row-subcontainer">
                   <div class="mf-textfield-title mf-textfield-subelement">
                     <span class="mf-textfield-title">{#localize key="plugin.announcer.editannouncement.startdate.label"/}</span>
-                    <input id="startDate" class="mf-textfield-date" type="date" name="startDate"></input>
+                    <input id="startDate" class="mf-textfield-date" type="text" name="startDate"></input>
                   </div>
                   <div class="mf-textfield-title mf-textfield-subelement">
                     <span class="mf-textfield-title">{#localize key="plugin.announcer.editannouncement.enddate.label"/}</span>
-                    <input id="endDate" class="mf-textfield-date" type="date" name="endDate"></input>
+                    <input id="endDate" class="mf-textfield-date" type="text" name="endDate"></input>
                   </div>
                  <div class="clear"></div>
                 </div>

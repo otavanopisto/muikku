@@ -1,6 +1,7 @@
 package fi.muikku.plugins.announcer.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -133,6 +134,14 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setStartDate(announcement.getStartDate());
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
+    Date date = new Date();
+    if (date.before(announcement.getStartDate())) {
+      restModel.setTemporalStatus(AnnouncementTemporalStatus.UPCOMING);
+    } else if (date.after(announcement.getEndDate())) {
+      restModel.setTemporalStatus(AnnouncementTemporalStatus.ENDED);
+    } else {
+      restModel.setTemporalStatus(AnnouncementTemporalStatus.ACTIVE);
+    }
     return restModel;
   }
 
