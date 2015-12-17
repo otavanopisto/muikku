@@ -56,6 +56,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
     criteria.where(criteriaBuilder.equal(root.get(Announcement_.archived), archived));
+    criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
   }
@@ -83,6 +84,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
           criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), currentDate),
           criteriaBuilder.equal(announcement.get(Announcement_.archived), archived),
           root.get(AnnouncementUserGroup_.userGroupEntityId).in(userGroupEntityIds)));
+    criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
   }
@@ -101,6 +103,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
         criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)
       )
     );
+    criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     return entityManager.createQuery(criteria).getResultList();
   }
 
