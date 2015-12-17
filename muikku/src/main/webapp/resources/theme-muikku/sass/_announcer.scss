@@ -69,6 +69,23 @@
     &:nth-child(3n+3){
      margin-right:0;
     }
+    
+    &.ACTIVE {
+      
+    }
+    
+    &.ENDED {
+      opacity:0.5;
+    }
+    
+    &.UPCOMING {
+    
+      .an-announcement-dates {
+        background:#69cff9;
+        color:#fff;
+        font-weight:600;
+      }
+    }
   }
 }
 .an-announcement-header-container{
@@ -79,59 +96,64 @@
 }
 .an-announcement-select{
     float: left;
-    margin-left: 5px;
+    margin: 4px;
     width: 30px;
 }
 .an-announcement-dates{
     text-align:right;
     background-color:$light;
-    padding-right:5px;
+    padding:5px;
 }
 .an-announcement-details{
   margin-bottom:10px;
   max-height:220px;
 }
 .an-announcement-tools{
-  margin-left:20px;
+  margin:5px 10px;
 }
 
 .an-announcement-topic{
   padding-top:10px;
   padding-left:10px;
   padding-bottom:10px;
-  background-color:$dimmest;
   font-weight:300;
   font-size:20px;
   overflow:hidden;
   text-overflow:ellipsis;  
-  color:#fff;
+  color:#000;
+  border-bottom:1px solid #eee;
+  white-space:nowrap;
 }
+
 .an-announcement-content{
-  padding:0 20px 20px 20px; 
+  padding:5px 10px 10px 10px; 
   max-height:130px;
   overflow:hidden;
+  text-overflow:ellipsis;
 }
+
 .an-no-announcements{}
 
 .an-create-announcement{}
 
 .an-textfield{
    width:100%;  
-  
 }
+
 .an-archiving-container{
   width:100%; 
 }
 
 .an-archiving-ids-container{
   padding:15px;
-  span{
+  
+  span {
    background-color:$dim;
    padding:5px;
   }
+  
   span:not(:first-child){
    margin-left:5px;
-
   } 
  
 }

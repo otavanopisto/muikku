@@ -1,6 +1,7 @@
 package fi.muikku.plugins.announcer.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -8,8 +9,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -24,13 +23,13 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.announcer.AnnouncementController;
+import fi.muikku.plugins.announcer.AnnouncerPermissions;
 import fi.muikku.plugins.announcer.model.Announcement;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
-import fi.muikku.plugins.announcer.AnnouncerPermissions;
 
 @RequestScoped
 @Stateful
@@ -153,6 +152,16 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
     restModel.setPubliclyVisible(announcement.isPubliclyVisible());
+
+    Date date = new Date();
+    if (date.before(announcement.getStartDate())) {
+      restModel.setTemporalStatus(AnnouncementTemporalStatus.UPCOMING);
+    } else if (date.after(announcement.getEndDate())) {
+      restModel.setTemporalStatus(AnnouncementTemporalStatus.ENDED);
+    } else {
+      restModel.setTemporalStatus(AnnouncementTemporalStatus.ACTIVE);
+    }
+
     return restModel;
   }
 

@@ -1,8 +1,7 @@
-
-<div class="mf-item an-announcement">
+<div class="mf-item an-announcement {temporalStatus}" data-announcement-id="{id}">
   <div class="mf-item-header-container an-announcement-header-container default">
     <div class="mf-item-select an-announcement-select"><input type="checkbox" class="an-select" value="{id}" /></div>
-    <div class="mf-item-header-label an-announcement-dates"><span>{startDate|formatDate}</span>-<span>{endDate|formatDate}</span></div>
+    <div class="mf-item-header-label an-announcement-dates"><span>{startDate|formatDate}</span> - <span>{endDate|formatDate}</span></div>
   </div>
   <div class="mf-item-details an-announcement-details">
    <div class="an-announcement-topic"><span>{caption}</span></div>
