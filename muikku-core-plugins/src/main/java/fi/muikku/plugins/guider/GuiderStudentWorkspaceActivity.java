@@ -73,12 +73,20 @@ public class GuiderStudentWorkspaceActivity {
       submitted++;
     }
     
-    public void addEvaluated(Date date) {
-      if (evaluatedLastDate == null || evaluatedLastDate.before(date)) {
-        evaluatedLastDate = date;
+    public void addPassed(Date date) {
+      if (passedLastDate == null || passedLastDate.before(date)) {
+        passedLastDate = date;
       }
       
-      evaluated++;
+      passed++;
+    }
+    
+    public void addFailed(Date date) {
+      if (failedLastDate == null || failedLastDate.before(date)) {
+        failedLastDate = date;
+      }
+      
+      failed++;
     }
     
     public long getUnanswered() {
@@ -100,21 +108,29 @@ public class GuiderStudentWorkspaceActivity {
     public Date getSubmittedLastDate() {
       return submittedLastDate;
     }
-
-    public long getEvaluated() {
-      return evaluated;
+    
+    public long getFailed() {
+      return failed;
     }
-
-    public Date getEvaluatedLastDate() {
-      return evaluatedLastDate;
+    
+    public Date getFailedLastDate() {
+      return failedLastDate;
+    }
+    
+    public long getPassed() {
+      return passed;
+    }
+    
+    public Date getPassedLastDate() {
+      return passedLastDate;
     }
     
     public long getCount() {
-      return unanswered + answered + submitted + evaluated;
+      return unanswered + answered + submitted + failed + passed;
     }
     
     public double getDonePercent() {
-      double result = submitted + evaluated;
+      double result = submitted + passed;
       result /= getCount();
       return Math.round(result * 100);
     }
@@ -124,8 +140,10 @@ public class GuiderStudentWorkspaceActivity {
     private Date answeredLastDate = null;
     private long submitted = 0l;
     private Date submittedLastDate = null;
-    private long evaluated = 0l;
-    private Date evaluatedLastDate = null; 
+    private long failed = 0l;
+    private Date failedLastDate = null; 
+    private long passed = 0l;
+    private Date passedLastDate = null; 
   }
   
   public static class Excercices {
