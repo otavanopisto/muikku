@@ -222,7 +222,6 @@
     },
 
     _searchGroups: function (searchTerm, callback) {
-      var _this = this;
       var groups = new Array();
     
       mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
@@ -240,20 +239,18 @@
     },
 
     _onTargetGroupFocus:function(event){
-      var announcerWidget = this;
-      
       $(event.target).autocomplete({
-        create: function(event, ui){
+        create: $.proxy(function(event, ui){
           $('.ui-autocomplete').perfectScrollbar(); 
-        },  
-        source: function (request, response) {
-          announcerWidget._searchGroups(request.term, response);
-        },
-        select: function (event, ui) {
-          announcerWidget._selectRecipient(event, ui.item);
-          $(this).val("");
+        }, this),  
+        source: $.proxy(function (request, response) {
+          this._searchGroups(request.term, response);
+        }, this),
+        select: $.proxy(function (event, ui) {
+          this._selectRecipient(event, ui.item);
+          $(ui).val("");
           return false;
-        }
+        }, this)
       });
     }, 
 
