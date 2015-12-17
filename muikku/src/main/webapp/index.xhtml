@@ -125,27 +125,22 @@
         <m:widgetSpaceSet>
           <m:widgetSpace name="index.content.headlines" keepEmpty="false" sizing="MAXIMIZE" styleClass="nomargin">
             <m:widget name="home-personaltopics" rendered="#{sessionBackingBean.loggedIn}"/>
-            <m:widget name="home-announcements"  rendered="#{sessionBackingBean.loggedIn}" size="24"/>
           </m:widgetSpace>
         </m:widgetSpaceSet>
   
   
         <m:widgetSpaceSet>
           <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="alpha">
-            <m:widget name="home-wallfeed" size="8" />
+            <m:widget name="home-workspaces" size="8"/>
           </m:widgetSpace>
           <m:widgetSpace name="index.content.primary.center" keepEmpty="false" sizing="MINIMIZE" >
-            <m:widget name="home-courses" size="8">
-              <ui:param name="courselist" value="home-courses" />
-            </m:widget>
+            <m:widget name="home-communicator" size="8" />
+          </m:widgetSpace>
+          <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="MINIMIZE" >
+            <m:widget name="home-announcements"  rendered="#{sessionBackingBean.loggedIn}" size="8"/>
           </m:widgetSpace>
         </m:widgetSpaceSet>
     
-        <m:widgetSpaceSet>
-            <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="omega">
-              <m:widget name="home-communicator" size="8" />
-            </m:widgetSpace>
-         </m:widgetSpaceSet>
         <div class="clear"></div>
       
         <m:widgetSpaceSet>
@@ -162,26 +157,24 @@
         <m:widgetSpaceSet>
           <m:widgetSpace name="index.content.headlines" keepEmpty="false" sizing="MAXIMIZE" styleClass="nomargin">
             <m:widget name="home-personaltopics" rendered="#{sessionBackingBean.loggedIn}"/>
-            <m:widget name="home-announcements"  rendered="#{sessionBackingBean.loggedIn}" size="24"/>
           </m:widgetSpace>
         </m:widgetSpaceSet>
   
   
         <m:widgetSpaceSet>
           <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="alpha">
-            <m:widget name="home-wallfeed" size="8" />
+            <m:widget name="home-workspaces" size="8"/>
           </m:widgetSpace>
           <m:widgetSpace name="index.content.primary.center" keepEmpty="false" sizing="MINIMIZE" >
-            <m:widget name="home-courses" size="8">
-              <ui:param name="courselist" value="home-courses" />
-            </m:widget>
+            <m:widget name="home-communicator" size="8" />
+          </m:widgetSpace>
+          <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="MINIMIZE" >
+            <m:widget name="home-announcements"  rendered="#{sessionBackingBean.loggedIn}" size="8"/>
           </m:widgetSpace>
         </m:widgetSpaceSet>
     
         <m:widgetSpaceSet>
             <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="omega">
-              <m:widget name="home-communicator" size="8" />
-
             </m:widgetSpace>
          </m:widgetSpaceSet>
         <div class="clear"></div>
