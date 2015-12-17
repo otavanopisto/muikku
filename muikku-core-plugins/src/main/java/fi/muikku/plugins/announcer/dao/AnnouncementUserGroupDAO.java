@@ -24,7 +24,7 @@ public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGro
     AnnouncementUserGroup announcementUserGroup = new AnnouncementUserGroup();
     announcementUserGroup.setAnnouncement(announcement);
     announcementUserGroup.setUserGroupEntityId(userGroupEntityId);
-    announcementUserGroup.setArchived(true);
+    announcementUserGroup.setArchived(archived);
     
     return persist(announcementUserGroup);
  }
@@ -36,7 +36,7 @@ public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGro
     }
   }
   
-  public List<AnnouncementUserGroup> listUnarchivedByAnnouncement(boolean archived){
+  public List<AnnouncementUserGroup> listByArchived(boolean archived){
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
