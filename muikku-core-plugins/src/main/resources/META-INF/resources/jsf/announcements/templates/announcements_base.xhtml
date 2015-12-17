@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:h="http://java.sun.com/jsf/html"
+  template="/WEB-INF/templates/generic-context-view.xhtml">
+
+  <ui:define name="viewCss">
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/announcement-view.css" /> 
+  </ui:define> 
+ 
+  <ui:define name="hiddenFields">
+    <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
+  </ui:define>
+        
+  <ui:define name="viewScripts">
+    <h:outputScript name="scripts/gui/announcement.js" />
+  </ui:define>
+
+  <ui:define name="context.wrapper">
+    <ui:insert name="context.pageTitle">
+      
+    </ui:insert>
+    <div class="context-wrapper">
+      <ui:insert name="context.area">
+        
+      </ui:insert>
+      <ui:insert name="context.navigation">
+        
+      </ui:insert>
+    </div>
+  </ui:define>
+
+</ui:composition>
