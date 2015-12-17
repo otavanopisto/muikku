@@ -54,6 +54,10 @@ public class AnnouncementController {
     return announcementDAO.listAll();
   }
   
+  public List<Announcement> listActive() {
+    return announcementDAO.listActive();
+  }
+  
   public Announcement findById(Long id) {
     return announcementDAO.findById(id);
   }
