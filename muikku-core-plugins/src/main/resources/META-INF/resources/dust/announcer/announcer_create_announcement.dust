@@ -17,6 +17,11 @@
                   </div>
                  <div class="clear"></div>
                 </div>
+              </div>
+            </div>
+            
+            <div class="mf-fieldRow">
+              <div class="mf-textfield an-form-row-container">
                 <div class="mf-textfield">
                  <div class="mf-textfield-subcontainer">
                    <span class="mf-textfield-title">{#localize key="plugin.announcer.createannouncement.title.label"/}</span><input class="mf-textfield-subject" type="text" name="caption" maxlength="255"></input>
