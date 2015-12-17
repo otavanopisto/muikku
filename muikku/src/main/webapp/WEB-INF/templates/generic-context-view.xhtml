@@ -4,7 +4,6 @@
   xmlns:ui="http://java.sun.com/jsf/facelets" 
   xmlns:f="http://java.sun.com/jsf/core" 
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/default.xhtml">
 
   <!-- Lets set the base body class per view -->
@@ -52,54 +51,11 @@
         </div>
       </div>
 
-      <h:panelGroup id="content" layout="block" styleClass="container_24 #{contentClass}">
-        <ui:insert name="content.tools.top">
-          <m:widgetSpaceSet styleClass="nomargin">
-            <ui:insert name="content.tools.top.left">
-              <ui:include src="/facelets/generic/content-tools-top-left.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="content.tools.top.center">
-              <ui:include src="/facelets/generic/content-tools-top-center.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="content.tools.top.right">
-              <ui:include src="/facelets/generic/content-tools-top-right.xhtml"></ui:include>
-            </ui:insert>
-          </m:widgetSpaceSet>
+      <main class="container_24">
+        <ui:insert name="context.wrapper">
+
         </ui:insert>
-        <div class="clear"></div>
-        <ui:insert name="content.area">
-          <m:widgetSpaceSet>
-            <ui:insert name="content.left.widgetspace">
-              <m:widgetSpace name="generic.content.left" keepEmpty="true" sizing="SUM" styleClass="nomargin">
-                <ui:insert name="content.left.widget"></ui:insert>
-              </m:widgetSpace>
-            </ui:insert>
-            <ui:insert name="content.center.widgetspace">
-              <m:widgetSpace name="generic.content.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="nomargin">
-                <ui:insert name="content.center.widget"></ui:insert>
-              </m:widgetSpace>
-            </ui:insert>
-            <ui:insert name="content.right.widgetspace">
-              <m:widgetSpace name="generic.content.right" keepEmpty="false" sizing="MINIMIZE" styleClass="nomargin">
-                <ui:insert name="content.right.widget"></ui:insert>
-              </m:widgetSpace>
-            </ui:insert>
-          </m:widgetSpaceSet>
-        </ui:insert>
-        <ui:insert name="content.tools.bottom">
-          <m:widgetSpaceSet styleClass="nomargin">
-            <ui:insert name="content.tools.bottom.left">
-              <ui:include src="/facelets/generic/content-tools-bottom-left.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="content.tools.bottom.center">
-              <ui:include src="/facelets/generic/content-tools-bottom-center.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="content.tools.bottom.right">
-              <ui:include src="/facelets/generic/content-tools-bottom-right.xhtml"></ui:include>
-            </ui:insert>
-          </m:widgetSpaceSet>
-        </ui:insert>
-      </h:panelGroup>    
+      </main>  
 
       <div id="socialNavigation" class="sn-container open">
        <div class="sn-container closed" >
@@ -117,14 +73,10 @@
             </m:widgetSpaceSet>
           </ui:insert>
         </div>
-        <div class="footer-link-wrapper">
-          <div id="helpdesk"><span>#{i18n.text['plugin.footer.helpdesk']}</span></div>
-          <div id="guides" jsf:rendered="#{environmentBackingBean.hasWorkspaceUrlName}">
-            <a jsf:outcome="/jsf/workspace/materials.jsf?faces-redirect=true&amp;workspaceUrlName=#{environmentBackingBean.helpWorkspaceUrlName}" target="top">#{i18n.text['plugin.footer.instructions']}</a>
-          </div>
-        </div>
       </div>
       <div id="footer">
+      <!-- TODO: Localize helpdesk -->
+        <div id="helpdesk"><span>Ongelmia Muikussa? helpdesk(a)muikkuverkko.fi</span></div>
         <div id="footerContainer" class="container_24">
           <ui:insert name="footer">
             <m:widgetSpaceSet styleClass="nomargin">

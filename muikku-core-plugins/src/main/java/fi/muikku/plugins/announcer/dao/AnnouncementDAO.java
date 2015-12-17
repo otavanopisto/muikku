@@ -55,6 +55,23 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public List<Announcement> listActive() {
+    EntityManager entityManager = getEntityManager(); 
+    Date currentDate = new Date();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+    Root<Announcement> root = criteria.from(Announcement.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
+        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)
+      )
+    );
+    return entityManager.createQuery(criteria).getResultList();
+  }
 
   public Announcement updateCaption(
       Announcement announcement,
@@ -90,23 +107,6 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     announcement.setEndDate(endDate);
 
     return persist(announcement);
-  }
-
-  public List<Announcement> listActive() {
-    EntityManager entityManager = getEntityManager(); 
-    Date currentDate = new Date();
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
-    Root<Announcement> root = criteria.from(Announcement.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
-        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)
-      )
-    );
-    return entityManager.createQuery(criteria).getResultList();
   }
 
 }

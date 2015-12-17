@@ -26,13 +26,13 @@
         
         $('#startDate')
           .datepicker({
-            "dateFormat": "dd. mm. yyyy"
+            "dateFormat": "dd.mm.yy"
           })
           .datepicker('setDate', start);
         
         $('#endDate')
           .datepicker({
-            "dateFormat": "dd. mm. yyyy"
+            "dateFormat": "dd.mm.yy"
           })
           .datepicker('setDate', end);
 

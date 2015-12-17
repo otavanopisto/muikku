@@ -94,7 +94,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive
   ) {
     if (!onlyActive) {
-      if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ALL_ANNOUNCEMENTS)) {
+      if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
         return Response.status(Status.FORBIDDEN).entity("You're not allowed to list all announcements").build();
       }
     }
@@ -105,6 +105,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     } else {
       announcements = announcementController.listAll();
     }
+    
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
       AnnouncementRESTModel restModel = createRESTModel(announcement);
