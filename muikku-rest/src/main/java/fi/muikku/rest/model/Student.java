@@ -7,12 +7,13 @@ public class Student {
   public Student() {
   }
 
-  public Student(String id, String firstName, String lastName, Boolean hasImage, String nationality, String language, String municipality, String school,
+  public Student(String id, String firstName, String lastName, String studyProgrammeName, Boolean hasImage, String nationality, String language, String municipality, String school,
       String email, Date studyStartDate, Date studyTimeEnd) {
     super();
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.studyProgrammeName = studyProgrammeName;
     this.hasImage = hasImage;
     this.nationality = nationality;
     this.language = language;
@@ -47,6 +48,14 @@ public class Student {
     this.lastName = lastName;
   }
 
+  public String getStudyProgrammeName() {
+    return studyProgrammeName;
+  }
+  
+  public void setStudyProgrammeName(String studyProgrammeName) {
+    this.studyProgrammeName = studyProgrammeName;
+  }
+  
   public Boolean isHasImage() {
     return hasImage;
   }
@@ -114,6 +123,7 @@ public class Student {
   private String id;
   private String firstName;
   private String lastName;
+  private String studyProgrammeName;
   private Boolean hasImage;
   private String nationality;
   private String language;
