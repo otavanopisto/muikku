@@ -257,12 +257,12 @@
     _selectRecipient: function (event, item) {
       var element = $(event.target);
       var targetGroupsContainerElement = $("#targetGroupsContainer");      
-      var prms = {
+      var group = {
         id: item.id,
         name: item.label
       };
 
-      renderDustTemplate('announcer/announcer_targetgroup.dust', prms, function (text) {
+      renderDustTemplate('announcer/announcer_targetgroup.dust', group, function (text) {
         targetGroupsContainerElement.prepend($.parseHTML(text));
       });
     }
