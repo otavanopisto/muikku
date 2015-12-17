@@ -44,6 +44,10 @@ dust.filters.formatTime = function(value) {
   return formatTime(d);
 };
 
+dust.filters.formatPercent = function(value) {
+  return parseFloat(value).toFixed(2);
+};
+
 dust.helpers.contextPath = function(chunk, context, bodies) {
   return chunk.write(CONTEXTPATH);
 };
