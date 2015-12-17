@@ -8,6 +8,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -105,8 +107,8 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive,
       @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine
   ) {
-    if (!onlyActive || !onlyMine) {
-      if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ALL_ANNOUNCEMENTS)) {
+    if (!onlyActive) {
+      if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
         return Response.status(Status.FORBIDDEN).entity("You're not allowed to list all announcements").build();
       }
     }
@@ -122,6 +124,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     } else {
       announcements = announcementController.listUnarchived();
     }
+
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
       AnnouncementRESTModel restModel = createRESTModel(announcement);

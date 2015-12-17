@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html">
+
+  <h:outputScript name="scripts/gui/widget-visits.js" target="head" rendered="#{sessionBackingBean.loggedIn}"/>
+  <h:outputScript name="scripts/gui/widget-courselist.js" target="head" rendered="#{sessionBackingBean.loggedIn}"/>
+
+   <div class="wi-container">
+    <div class="wi-content short">
+      <div id="widgetVisits"></div> 
+
+      <div id="widgetCourselist"></div>
+    </div>
+  </div>
+
+
+
+</ui:composition>
