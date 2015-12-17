@@ -6,6 +6,7 @@
   xmlns:h="http://java.sun.com/jsf/html" 
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/default.xhtml">
 
   <ui:define name="sitebody">
@@ -88,7 +89,9 @@
         </div>
         <div class="footer-link-wrapper">
           <div id="helpdesk"><span>#{i18n.text['plugin.footer.helpdesk']}</span></div>
-          <div id="guides"><a href="/workspace/ohjeet/materials" target="top">#{i18n.text['plugin.footer.instructions']}</a></div>
+          <div id="guides" jsf:rendered="#{environmentBackingBean.hasWorkspaceUrlName}">
+            <a jsf:outcome="/jsf/workspace/materials.jsf?faces-redirect=true&amp;workspaceUrlName=#{environmentBackingBean.helpWorkspaceUrlName}" target="top">#{i18n.text['plugin.footer.instructions']}</a>
+          </div>
         </div>
       </div>
     </ui:insert>

@@ -4,6 +4,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets" 
   xmlns:f="http://java.sun.com/jsf/core" 
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/default.xhtml">
 
   <!-- Lets set the base body class per view -->
@@ -118,7 +119,9 @@
         </div>
         <div class="footer-link-wrapper">
           <div id="helpdesk"><span>#{i18n.text['plugin.footer.helpdesk']}</span></div>
-          <div id="guides"><a href="/workspace/ohjeet/materials" target="top">#{i18n.text['plugin.footer.instructions']}</a></div>
+          <div id="guides" jsf:rendered="#{environmentBackingBean.hasWorkspaceUrlName}">
+            <a jsf:outcome="/jsf/workspace/materials.jsf?faces-redirect=true&amp;workspaceUrlName=#{environmentBackingBean.helpWorkspaceUrlName}" target="top">#{i18n.text['plugin.footer.instructions']}</a>
+          </div>
         </div>
       </div>
       <div id="footer">
