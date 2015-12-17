@@ -88,12 +88,13 @@ $(document).ready(function(){
     	renderDustTemplate('frontpage/widget_visits.dust', {
         	
         	workspaces :  workspaces,
-            lastDay : lastDay,
+          lastDay : lastDay,
         	lastWeek : lastWeek,
         	older : older
              
         }, function (text) {
             $('#widgetVisits').append($.parseHTML(text));
+            $('#widgetVisits').perfectScrollbar({"suppressScrollX" : true});
           });
         
     	}

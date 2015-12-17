@@ -53,7 +53,6 @@
       openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement, formFunctions);
     },
     
-    
     _onEditAnnouncementClick: function (event) {
       var ann = event.target;
       

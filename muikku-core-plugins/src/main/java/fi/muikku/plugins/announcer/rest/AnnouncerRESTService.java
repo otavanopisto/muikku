@@ -106,7 +106,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     } else {
       announcements = announcementController.listAll();
     }
-
+    
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
       AnnouncementRESTModel restModel = createRESTModel(announcement);

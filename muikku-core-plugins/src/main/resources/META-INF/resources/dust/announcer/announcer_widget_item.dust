@@ -1,0 +1,5 @@
+  <div class="wi-item-announcement" id="{id}" onClick="window.location.href = '/announcements?announcementId=' + id;">
+    <div class="wi-item-announcement-details">
+     <div class="wi-item-topic" title="{startDate|formatDate}-{endDate|formatDate}"><span>{caption}</span></div>
+    </div>
+  </div>
