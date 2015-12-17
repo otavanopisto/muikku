@@ -219,8 +219,61 @@
       this.element.empty();      
     },
     _destroy: function () {
+    },
+
+    _searchGroups: function (searchTerm, callback) {
+      var _this = this;
+      var groups = new Array();
+    
+      if (MUIKKU_LOGGEDINROLES.admin || MUIKKU_LOGGEDINROLES.manager || MUIKKU_LOGGEDINROLES.teacher) {
+        mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
+          if (result != undefined) {
+            for (var i = 0, l = result.length; i < l; i++) {
+              groups.push({
+                label : result[i].name + " (" + result[i].userCount + ")",
+                id : result[i].id,
+              });
+            }
+
+            callback(groups);
+          }
+        });
+      }
+    },
+
+    _onTargetGroupFocus:function(event){
+      var announcerWidget = this;
+      
+      $(event.target).autocomplete({
+        create: function(event, ui){
+          $('.ui-autocomplete').perfectScrollbar(); 
+        },  
+        source: function (request, response) {
+          announcerWidget._searchGroups(request.term, response);
+        },
+        select: function (event, ui) {
+          announcerWidget._selectRecipient(event, ui.item);
+          $(this).val("");
+          return false;
+        }
+      });
+    }, 
+
+    _selectRecipient: function (event, item) {
+      var element = $(event.target);
+      var targetGroupsContainerElement = $("#targetGroupsContainer");      
+      var prms = {
+        id: item.id,
+        name: item.label
+      };
+
+      renderDustTemplate('announcer/announcer_targetgroup.dust', prms, function (text) {
+        targetGroupsContainerElement.prepend($.parseHTML(text));
+      });
     }
   });
+  
+  
   
   $(document).ready(function(){
     $('.an-announcements-view-container').announcer();
