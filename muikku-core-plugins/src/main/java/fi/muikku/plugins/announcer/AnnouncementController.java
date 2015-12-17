@@ -1,5 +1,7 @@
 package fi.muikku.plugins.announcer;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -29,7 +31,8 @@ public class AnnouncementController {
       String caption,
       String content,
       Date startDate,
-      Date endDate
+      Date endDate,
+      boolean publiclyVisible
   ) {
     return announcementDAO.create(
         publisher.getId(),
@@ -38,7 +41,8 @@ public class AnnouncementController {
         new Date(),
         startDate,
         endDate,
-        false
+        false,
+        publiclyVisible
     );
   }
 
@@ -96,7 +100,23 @@ public class AnnouncementController {
       userGroupEntityIds.add(userGroupEntity.getId());
     }
     
-    return announcementDAO.listByArchivedAndDateAndUserGroupEntityIds(false, new Date(), userGroupEntityIds);
+    Date currentDate = new Date();
+    List<Announcement> result = new ArrayList<>();
+    result.addAll(announcementDAO.listByArchivedAndDateAndUserGroupEntityIdsAndPubliclyVisible(
+        false,
+        currentDate,
+        userGroupEntityIds,
+        false));
+    result.addAll(announcementDAO.listByArchivedAndDateAndPubliclyVisible(
+        false,
+        currentDate,
+        true));
+    Collections.sort(result, new Comparator<Announcement>() {
+      public int compare(Announcement o1, Announcement o2) {
+        return o1.getStartDate().compareTo(o1.getStartDate());
+      }
+    });
+    return result;
   }
   
   public List<Announcement> listActiveByTargetedUserEntity(

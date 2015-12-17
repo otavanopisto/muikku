@@ -58,7 +58,12 @@ public class AnnouncementRESTModel {
   public void setUserGroupEntityIds(List<Long> userGroupEntityIds) {
     this.userGroupEntityIds = userGroupEntityIds;
   }
-
+  public Boolean getPubliclyVisible() {
+    return publiclyVisible;
+  }
+  public void setPubliclyVisible(Boolean publiclyVisible) {
+    this.publiclyVisible = publiclyVisible;
+  }
 
   private Long id;
   private Long publisherUserEntityId;
@@ -69,4 +74,5 @@ public class AnnouncementRESTModel {
   private Date endDate;
   private Boolean archived;
   private List<Long> userGroupEntityIds;
+  private Boolean publiclyVisible;
 }

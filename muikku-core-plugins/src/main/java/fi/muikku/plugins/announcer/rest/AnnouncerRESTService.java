@@ -59,7 +59,8 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getCaption(),
         restModel.getContent(),
         restModel.getStartDate(),
-        restModel.getEndDate());
+        restModel.getEndDate(),
+        restModel.getPubliclyVisible());
     
     for (Long id : restModel.getUserGroupEntityIds()) {
       UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(id);
@@ -148,6 +149,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setStartDate(announcement.getStartDate());
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
+    restModel.setPubliclyVisible(announcement.isPubliclyVisible());
     return restModel;
   }
 

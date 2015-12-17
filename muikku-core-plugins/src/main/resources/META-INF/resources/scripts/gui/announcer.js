@@ -51,6 +51,12 @@
           return $(element).val();
         });
         
+        if (values.userGroupEntityIds.length) {
+          values.publiclyVisible = false;
+        } else {
+          values.publiclyVisible = true;
+        }
+        
         mApi()
           .announcer
           .announcements
