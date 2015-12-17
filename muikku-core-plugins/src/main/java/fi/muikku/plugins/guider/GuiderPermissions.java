@@ -1,4 +1,4 @@
-package fi.muikku.plugins.guidancetool;
+package fi.muikku.plugins.guider;
 
 import java.util.List;
 
@@ -13,15 +13,19 @@ import fi.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
 
 @ApplicationScoped
-public class GuidanceToolPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
+public class GuiderPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER } )
-  public static final String GUIDANCE_TOOL = "GUIDANCE_TOOL";
+  public static final String GUIDER_VIEW = "GUIDER_VIEW";
   
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER } )
+  public static final String GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY = "GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY";
+
   @Override
   public List<String> listPermissions() {
-    return listPermissions(GuidanceToolPermissions.class);
+    return listPermissions(GuiderPermissions.class);
   }
 
   @Override
@@ -31,22 +35,22 @@ public class GuidanceToolPermissions extends AbstractMuikkuPermissionCollection 
   
   @Override
   public String getPermissionScope(String permission) throws NoSuchFieldException {
-    return getPermissionScope(GuidanceToolPermissions.class, permission);
+    return getPermissionScope(GuiderPermissions.class, permission);
   }
 
   @Override
   public String[] getDefaultPseudoRoles(String permission) throws NoSuchFieldException {
-    return getDefaultPseudoRoles(GuidanceToolPermissions.class, permission);
+    return getDefaultPseudoRoles(GuiderPermissions.class, permission);
   }
 
   @Override
   public EnvironmentRoleArchetype[] getDefaultEnvironmentRoles(String permission) throws NoSuchFieldException {
-    return getDefaultEnvironmentRoles(GuidanceToolPermissions.class, permission);
+    return getDefaultEnvironmentRoles(GuiderPermissions.class, permission);
   }
 
   @Override
   public WorkspaceRoleArchetype[] getDefaultWorkspaceRoles(String permission) throws NoSuchFieldException {
-    return getDefaultWorkspaceRoles(GuidanceToolPermissions.class, permission);
+    return getDefaultWorkspaceRoles(GuiderPermissions.class, permission);
   }
 
 }
