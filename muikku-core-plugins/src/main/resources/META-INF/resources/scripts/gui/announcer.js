@@ -58,7 +58,7 @@
       var ann = event.target;
       
       var par = $(ann).parents(".an-announcement");
-      var id = $(par).attr("id");
+      var id = $(par).attr("data-announcement-id");
         
       var formFunctions = function() {        
         
@@ -83,8 +83,8 @@
             })
             .datepicker('setDate', end);
           
-          $("input[name='caption']").val(announcement.caption);
-          $("textarea[id='textContent']").val(announcement.content);          
+          $("input[name='caption']").val(announcement.caption);  
+          CKEDITOR.instances.textContent.setData(announcement.content);
           
         }, this));
 
