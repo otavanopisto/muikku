@@ -12,7 +12,7 @@ public class MockStudent extends MockLoggable{
     this.personId = personId;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.setEmail(email);
+    this.email = email;
     this.studyProgrammeId = studyProgrammeId;
     this.birthday = birthday;
     this.socialSecurityNumber = socialSecurityNumber;
