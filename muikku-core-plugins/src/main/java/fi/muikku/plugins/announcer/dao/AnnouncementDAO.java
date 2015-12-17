@@ -1,5 +1,6 @@
 package fi.muikku.plugins.announcer.dao;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -64,6 +65,11 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       Date currentDate,
       List<Long> userGroupEntityIds
   ) {
+    
+    if (userGroupEntityIds.isEmpty()) {
+      return Collections.emptyList();
+    }
+    
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
