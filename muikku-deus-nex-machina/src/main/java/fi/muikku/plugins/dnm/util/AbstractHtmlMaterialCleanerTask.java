@@ -39,10 +39,6 @@ public abstract class AbstractHtmlMaterialCleanerTask implements HtmlMaterialCle
     return workspaceMaterial;
   }
   
-  protected void markClean() {
-    modified = false;
-  }
-
   protected void markModified() {
     modified = true;
   }
