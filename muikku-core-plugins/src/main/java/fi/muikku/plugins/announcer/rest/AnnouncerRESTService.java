@@ -120,7 +120,7 @@ public class AnnouncerRESTService extends PluginRESTService {
         announcements = announcementController.listActive();
       }
     } else {
-      announcements = announcementController.listAll();
+      announcements = announcementController.listUnarchived();
     }
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {

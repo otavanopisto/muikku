@@ -113,7 +113,7 @@ public class AnnouncementController {
         true));
     Collections.sort(result, new Comparator<Announcement>() {
       public int compare(Announcement o1, Announcement o2) {
-        return o1.getStartDate().compareTo(o1.getStartDate());
+        return o2.getStartDate().compareTo(o1.getStartDate());
       }
     });
     return result;
