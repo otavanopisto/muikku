@@ -225,20 +225,18 @@
       var _this = this;
       var groups = new Array();
     
-      if (MUIKKU_LOGGEDINROLES.admin || MUIKKU_LOGGEDINROLES.manager || MUIKKU_LOGGEDINROLES.teacher) {
-        mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
-          if (result != undefined) {
-            for (var i = 0, l = result.length; i < l; i++) {
-              groups.push({
-                label : result[i].name + " (" + result[i].userCount + ")",
-                id : result[i].id,
-              });
-            }
-
-            callback(groups);
+      mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
+        if (result != undefined) {
+          for (var i = 0, l = result.length; i < l; i++) {
+            groups.push({
+              label : result[i].name + " (" + result[i].userCount + ")",
+              id : result[i].id,
+            });
           }
-        });
-      }
+
+          callback(groups);
+        }
+      });
     },
 
     _onTargetGroupFocus:function(event){
