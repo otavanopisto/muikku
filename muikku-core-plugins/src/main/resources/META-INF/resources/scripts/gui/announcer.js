@@ -17,6 +17,10 @@
        this._onTargetGroupFocus(event);
      }, this));
      
+     $(document).on('click', '.an-announcement-targetgroup', function(event) {
+       $(this).remove();
+     });
+     
       this._loadAnnouncements();
     },
     _onCreateAnnouncementClick: function () {
