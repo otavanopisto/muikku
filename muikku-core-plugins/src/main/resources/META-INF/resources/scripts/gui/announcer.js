@@ -11,6 +11,12 @@
      $(mainfunction).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
      $('.an-announcements-view-container').on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
      $(mainfunction).on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
+     
+     
+     $(document).on('focus', '#targetGroupContent', $.proxy(function(event) {
+       this._onTargetGroupFocus(event);
+     }, this));
+     
       this._loadAnnouncements();
     },
     _onCreateAnnouncementClick: function () {
@@ -41,7 +47,10 @@
       var createAnnouncement = function(values){
         values.startDate = moment(values.startDate, "DD. MM. YYYY").format("YYYY-MM-DD");
         values.endDate = moment(values.endDate, "DD. MM. YYYY").format("YYYY-MM-DD");
-        values.userGroupEntityIds = [];
+        values.userGroupEntityIds = $.map($("input[name='userGroupEntityIds']"), function(element) {
+          return $(element).val();
+        });
+        
         mApi()
           .announcer
           .announcements
@@ -248,7 +257,7 @@
         }, this),
         select: $.proxy(function (event, ui) {
           this._selectRecipient(event, ui.item);
-          $(ui).val("");
+          $(event.target).val("");
           return false;
         }, this)
       });
@@ -256,7 +265,7 @@
 
     _selectRecipient: function (event, item) {
       var element = $(event.target);
-      var targetGroupsContainerElement = $("#targetGroupsContainer");      
+      var targetGroupsContainerElement = $("#msgTargetGroupsContainer");      
       var group = {
         id: item.id,
         name: item.label

@@ -1,5 +1,5 @@
 <div class="mf-item-user cm-message-recipient">
-  <input type="hidden" data-array="true" name="targetGroupIds" value="{id}" />
+  <input type="hidden" data-array="true" name="userGroupEntityIds" value="{id}" />
   <div class="cm-target-group-name icon-members usergroup">{name}</div>
   <div class="clear"></div>
 </div>
