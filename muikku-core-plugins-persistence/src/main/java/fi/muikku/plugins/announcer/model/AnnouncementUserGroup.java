@@ -50,6 +50,7 @@ public class AnnouncementUserGroup {
   @NotNull
   private Long userGroupEntityId;
   
-  @ManyToOne
+  @ManyToOne(optional=false)
+  @NotNull
   private Announcement announcement;
 }
