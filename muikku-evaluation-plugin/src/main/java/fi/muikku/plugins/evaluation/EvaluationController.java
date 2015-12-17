@@ -62,12 +62,13 @@ public class EvaluationController {
           evaluated, 
           verbalAssessment);
     }
-
+    
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
+    WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
     if (reply == null) {
-      workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.EVALUATED, student);
+      workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, state, student);
     } else {
-      workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.EVALUATED);
+      workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
     
     return evaluation;
@@ -104,10 +105,11 @@ public class EvaluationController {
     UserEntity student = userEntityController.findUserEntityById(workspaceMaterialEvaluation.getStudentEntityId());
     
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
+    WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
     if (reply == null) {
-      workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.EVALUATED, student);
+      workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, state, student);
     } else {
-      workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.EVALUATED);
+      workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
     
     return workspaceMaterialEvaluation;

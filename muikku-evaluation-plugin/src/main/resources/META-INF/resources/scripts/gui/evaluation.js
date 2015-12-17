@@ -55,7 +55,7 @@
           width: 'auto',
           height: 'auto',
           htmlTitle: '<span class="modal-title-student-name">'
-                    +this.options.studentDisplayName
+                    +this.options.studentDisplayName + (this.options.studentStudyProgrammeName ? ' (' + this.options.studentStudyProgrammeName + ')' : '')
                     +'</span><span class="modal-title-workspace-name">'
                     +this.options.workspaceName
                     +'</span>',
@@ -353,7 +353,7 @@
           width: 'auto',
           height: 'auto',
           htmlTitle: '<span class="modal-title-student-name">'
-                    +this.options.studentDisplayName
+                    +this.options.studentDisplayName + (this.options.studentStudyProgrammeName ? ' (' + this.options.studentStudyProgrammeName + ')' : '')
                     +'</span><span class="modal-title-workspace-name">'
                     +this.options.workspaceName
                     +'</span>',
@@ -1026,7 +1026,8 @@
         case 'WITHDRAWN':
           this.element.addClass('assignment-withdrawn');
         break;
-        case 'EVALUATED':
+        case 'FAILED':
+        case 'PASSED':
           this.element.on("click", $.proxy(this._onClick, this));
           this.element.addClass('assignment-evaluated');
           if (reply.submitted) {

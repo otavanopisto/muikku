@@ -59,13 +59,16 @@ public class GuiderController {
       } else {
         switch (workspaceMaterialReply.getState()) {
           case WITHDRAWN:
-            activity.getEvaluables().addEvaluated(workspaceMaterialReply.getWithdrawn());
+            activity.getEvaluables().addAnswered(workspaceMaterialReply.getWithdrawn());
           break;
           case ANSWERED:
             activity.getEvaluables().addAnswered(workspaceMaterialReply.getLastModified());
           break;
-          case EVALUATED:
-            activity.getEvaluables().addEvaluated(workspaceMaterialReply.getSubmitted());
+          case FAILED:
+            activity.getEvaluables().addFailed(workspaceMaterialReply.getSubmitted());
+          break;
+          case PASSED:
+            activity.getEvaluables().addPassed(workspaceMaterialReply.getSubmitted());
           break;
           case SUBMITTED:
             activity.getEvaluables().addSubmitted(workspaceMaterialReply.getSubmitted());
@@ -90,9 +93,8 @@ public class GuiderController {
           case ANSWERED:
             activity.getExcercices().addAnswered(workspaceMaterialReply.getLastModified());
           break;
-          case EVALUATED:
-            activity.getExcercices().addAnswered(workspaceMaterialReply.getSubmitted());
-          break;
+          case PASSED:
+          case FAILED:
           case SUBMITTED:
             activity.getExcercices().addAnswered(workspaceMaterialReply.getSubmitted());
           break;

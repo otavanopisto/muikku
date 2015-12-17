@@ -99,10 +99,21 @@
         </div>
         
         <div class="gt-course-activity-row">
-          <label>{#localize key="plugin.guider.evaluablesEvaluatedLabel"/}</label>
+          <label>{#localize key="plugin.guider.evaluablesFailedLabel"/}</label>
           <span>
-          {@gt key=activity.evaluablesEvaluated value=0}
-            {activity.evaluablesEvaluated} ({activity.evaluablesEvaluatedLastDate|formatDate})
+          {@gt key=activity.evaluablesFailed value=0}
+            {activity.evaluablesFailed} ({activity.evaluablesFailedLastDate|formatDate})
+          {:else}
+            -
+          {/gt}
+          </span>
+        </div>
+        
+        <div class="gt-course-activity-row">
+          <label>{#localize key="plugin.guider.evaluablesPassedLabel"/}</label>
+          <span>
+          {@gt key=activity.evaluablesPassed value=0}
+            {activity.evaluablesPassed} ({activity.evaluablesPassedLastDate|formatDate})
           {:else}
             -
           {/gt}

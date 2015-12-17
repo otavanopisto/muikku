@@ -11,9 +11,10 @@ public class GuiderStudentWorkspaceActivityRestModel {
 
   public GuiderStudentWorkspaceActivityRestModel(Date lastVisit, long numVisits, long journalEntryCount, Date lastJournalEntry,
       long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
-      Date evaluablesSubmittedLastDate, long evaluablesEvaluated, Date evaluablesEvaluatedLastDate, double evaluablesDonePercent, 
-      long excercicesUnanswered, long excercicesAnswered, Date excercicesAnsweredLastDate, double excercicesDonePercent,
-      WorkspaceAssessmentState assessmentState) {
+      Date evaluablesSubmittedLastDate, long evaluablesPassed, Date evaluablesPassedLastDate, 
+      long evaluablesFailed, Date evaluablesFailedLastDate, double evaluablesDonePercent, 
+      long excercicesUnanswered, long excercicesAnswered, Date excercicesAnsweredLastDate, 
+      double excercicesDonePercent, WorkspaceAssessmentState assessmentState) {
     super();
     this.lastVisit = lastVisit;
     this.numVisits = numVisits;
@@ -24,8 +25,10 @@ public class GuiderStudentWorkspaceActivityRestModel {
     this.evaluablesAnsweredLastDate = evaluablesAnsweredLastDate;
     this.evaluablesSubmitted = evaluablesSubmitted;
     this.evaluablesSubmittedLastDate = evaluablesSubmittedLastDate;
-    this.evaluablesEvaluated = evaluablesEvaluated;
-    this.evaluablesEvaluatedLastDate = evaluablesEvaluatedLastDate;
+    this.evaluablesPassed = evaluablesPassed;
+    this.evaluablesPassedLastDate = evaluablesPassedLastDate;
+    this.evaluablesFailed = evaluablesFailed;
+    this.evaluablesFailedLastDate = evaluablesFailedLastDate;
     this.evaluablesDonePercent = evaluablesDonePercent;
     this.excercicesUnanswered = excercicesUnanswered;
     this.excercicesAnswered = excercicesAnswered;
@@ -70,12 +73,20 @@ public class GuiderStudentWorkspaceActivityRestModel {
     return evaluablesSubmittedLastDate;
   }
 
-  public long getEvaluablesEvaluated() {
-    return evaluablesEvaluated;
+  public long getEvaluablesFailed() {
+    return evaluablesFailed;
   }
-
-  public Date getEvaluablesEvaluatedLastDate() {
-    return evaluablesEvaluatedLastDate;
+  
+  public Date getEvaluablesFailedLastDate() {
+    return evaluablesFailedLastDate;
+  }
+  
+  public long getEvaluablesPassed() {
+    return evaluablesPassed;
+  }
+  
+  public Date getEvaluablesPassedLastDate() {
+    return evaluablesPassedLastDate;
   }
 
   public double getEvaluablesDonePercent() {
@@ -133,8 +144,10 @@ public class GuiderStudentWorkspaceActivityRestModel {
   private Date evaluablesAnsweredLastDate;
   private long evaluablesSubmitted;
   private Date evaluablesSubmittedLastDate;
-  private long evaluablesEvaluated;
-  private Date evaluablesEvaluatedLastDate;
+  private long evaluablesPassed;
+  private Date evaluablesPassedLastDate;
+  private long evaluablesFailed;
+  private Date evaluablesFailedLastDate;
   private double evaluablesDonePercent;
 
   private long excercicesUnanswered;
