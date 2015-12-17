@@ -51,6 +51,12 @@ public class AnnouncementRESTModel {
   public void setArchived(Boolean archived) {
     this.archived = archived;
   }
+  public AnnouncementTemporalStatus getTemporalStatus() {
+    return temporalStatus;
+  }
+  public void setTemporalStatus(AnnouncementTemporalStatus temporalStatus) {
+    this.temporalStatus = temporalStatus;
+  }
 
   private Long id;
   private Long publisherUserEntityId;
@@ -60,4 +66,5 @@ public class AnnouncementRESTModel {
   private Date startDate;
   private Date endDate;
   private Boolean archived;
+  private AnnouncementTemporalStatus temporalStatus;
 }

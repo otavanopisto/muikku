@@ -1,11 +1,13 @@
 package fi.muikku.plugins.announcer.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -13,6 +15,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -23,6 +26,7 @@ import fi.muikku.plugins.announcer.model.Announcement;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 import fi.muikku.plugins.announcer.AnnouncerPermissions;
 
 @RequestScoped
@@ -86,14 +90,29 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @GET
   @Path("/announcements")
-  @RESTPermit(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)
-  public Response listAnnouncements(/* TODO filtering */) {
-    List<Announcement> announcements = announcementController.listUnarchived();
+  @RESTPermit(handling=Handling.INLINE)
+  public Response listAnnouncements(
+      @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive
+  ) {
+    if (!onlyActive) {
+      if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
+        return Response.status(Status.FORBIDDEN).entity("You're not allowed to list all announcements").build();
+      }
+    }
+    
+    List<Announcement> announcements = null;
+    if (onlyActive) {
+      announcements = announcementController.listActive();
+    } else {
+      announcements = announcementController.listAll();
+    }
+
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
       AnnouncementRESTModel restModel = createRESTModel(announcement);
       restModels.add(restModel);
     }
+
     return Response.ok(restModels).build();
   }
   
@@ -115,6 +134,14 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setStartDate(announcement.getStartDate());
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
+    Date date = new Date();
+    if (date.before(announcement.getStartDate())) {
+      restModel.setTemporalStatus(AnnouncementTemporalStatus.UPCOMING);
+    } else if (date.after(announcement.getEndDate())) {
+      restModel.setTemporalStatus(AnnouncementTemporalStatus.ENDED);
+    } else {
+      restModel.setTemporalStatus(AnnouncementTemporalStatus.ACTIVE);
+    }
     return restModel;
   }
 

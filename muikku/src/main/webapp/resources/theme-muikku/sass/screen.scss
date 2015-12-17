@@ -22,6 +22,7 @@
 @import "_tasktool.scss";
 @import "_dialog.scss";
 @import "_connectionlost.scss";
+@import "_generic_context-view.scss";
 
 
 /* CKEditor css rules for modals and form element plugins */
@@ -495,16 +496,37 @@ a.header {
   margin: 0 auto;
 }
 
-
-#helpdesk{
+.footer-link-wrapper {
   bottom: 0;
-  font-size: 16px;
-  font-weight: 300;
-  padding: 5px 25px;
   position: fixed;
   right: 0;
-  text-shadow: 0 0 rgba(255, 255, 255, 0.5);
   z-index: 101;
+  height:20px;
+  padding:5px 15px;
+  font-size:14px;
+}
+
+#helpdesk{
+  float:right;
+  padding: 0 10px;
+  text-shadow: 0 0 5px #fff;
+}
+
+#guides {
+  float:left;
+  padding: 0 10px;
+  
+  a {
+    text-decoration: none;
+    color: #0099ff;
+    text-shadow: 0 0 5px #fff;
+    font-weight: 400;
+    
+    &:hover {
+      text-decoration:underline;
+    }
+  }
+  
 }
 
 #dynNaviShell {

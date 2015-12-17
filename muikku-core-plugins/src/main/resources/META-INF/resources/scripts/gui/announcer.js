@@ -26,13 +26,13 @@
         
         $('#startDate')
           .datepicker({
-            "dateFormat": "dd. mm. yyyy"
+            "dateFormat": "dd.mm.yy"
           })
           .datepicker('setDate', start);
         
         $('#endDate')
           .datepicker({
-            "dateFormat": "dd. mm. yyyy"
+            "dateFormat": "dd.mm.yy"
           })
           .datepicker('setDate', end);
 
@@ -41,24 +41,14 @@
       var createAnnouncement = function(values){
         values.startDate = moment(values.startDate, "DD. MM. YYYY").format("YYYY-MM-DD");
         values.endDate = moment(values.endDate, "DD. MM. YYYY").format("YYYY-MM-DD");
-        mApi()
-          .announcer
-          .announcements
-          .create(values)
-          .callback($.proxy(function(err, result) {
-              if (err) {
-                $(".notification-queue").notificationQueue(
-                    'notification',
-                    'error',
-                    err);
-              } else {
-                $(".notification-queue").notificationQueue(
-                    'notification',
-                    'success',
-                    getLocaleText('plugin.announcer.createannouncement.success'));
-                    window.location.reload(true);      
-              }
-          }, this));
+        mApi().announcer.announcements.create(values).callback($.proxy(function(err, result) {
+          if (err) {
+            $(".notification-queue").notificationQueue('notification','error',err);
+          } else {
+            $(".notification-queue").notificationQueue('notification','success',getLocaleText('plugin.announcer.createannouncement.success'));
+            window.location.reload(true);      
+          }
+        }, this));
       }   
       openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement, formFunctions);
     },
@@ -83,13 +73,13 @@
           
           $('#startDate')
             .datepicker({
-              "dateFormat": "dd. mm. yy"
+              "dateFormat": "dd.mm.yy"
             })
             .datepicker('setDate', start);
           
           $('#endDate')
             .datepicker({
-              "dateFormat": "dd. mm. yy"
+              "dateFormat": "dd.mm.yy"
             })
             .datepicker('setDate', end);
           
@@ -104,49 +94,29 @@
       var editAnnouncement = function(values){
         values.startDate = moment(values.startDate, "DD. MM. YYYY").format("YYYY-MM-DD");
         values.endDate = moment(values.endDate, "DD. MM. YYYY").format("YYYY-MM-DD");
-        mApi()
-          .announcer
-          .announcements
-          .update(id, values)
-          .callback($.proxy(function(err, result) {
-              if (err) {
-                $(".notification-queue").notificationQueue(
-                    'notification',
-                    'error',
-                    err);
-              } else {
-                $(".notification-queue").notificationQueue(
-                    'notification',
-                    'success',
-                    getLocaleText('plugin.announcer.editannouncement.success'));
-                    window.location.reload(true);      
-              }
-          }, this));
+        mApi().announcer.announcements.update(id, values).callback($.proxy(function(err, result) {
+          if (err) {
+            $(".notification-queue").notificationQueue('notification','error',err);
+          } else {
+            $(".notification-queue").notificationQueue('notification','success',getLocaleText('plugin.announcer.editannouncement.success'));
+            window.location.reload(true);      
+          }
+        }, this));
       }   
       openInSN('/announcer/announcer_edit_announcement.dust', null, editAnnouncement, formFunctions);
     },    
     
     _loadAnnouncements: function () {
-        mApi()
-          .announcer
-          .announcements
-          .read()
-          .callback($.proxy(function(err, result) {
-              if (err) {
-                $(".notification-queue").notificationQueue(
-                    'notification',
-                    'error',
-                    err);
-              } else {
-                renderDustTemplate(
-                    'announcer/announcer_items.dust',
-                    result,
-                    $.proxy(function (text) {
-                      var element = $(text);
-                      $('.an-announcements-view-container').append(element);
-                    }, this));
-              }
-          }, this));
+        mApi().announcer.announcements.read().callback($.proxy(function(err, result) {
+          if (err) {
+            $(".notification-queue").notificationQueue('notification','error', err);
+          } else {
+            renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
+              var element = $(text);
+              $('.an-announcements-view-container').append(element);
+            }, this));
+          }
+        }, this));
     },
     _onArchiveAnnouncementsClick: function () {
       
@@ -162,24 +132,20 @@
         values.push($(val).attr("value"));
         titles.push(title)
       });
-      
-      
+
       var formFunctions = function() {
          var titlesContainer = $('.an-archiving-ids-container');
          var idsInput = titlesContainer.find("input");
-         
-         
+
          if(titles.length > 0){
            $.each(titles, function(index,title){
              titlesContainer.append("<span>" + title + "</span>");
            });
          }else{
            titlesContainer.append("<span>" + getLocaleText('plugin.announcer.archiveannouncement.archiving.noneselected') + "</span>");
-           
          }
          idsInput.val(values);
-        
-        
+
       }
       
       var archiveAnnouncements = function(values){
