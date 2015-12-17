@@ -68,12 +68,12 @@
       var ann = event.target;
       
       var par = $(ann).parents(".an-announcement");
-      var id = $(par).attr("id");
+      var id = $(par).attr("data-announcement-id");
         
       var formFunctions = function() {        
         
         // Date and timepickers for start and end time/date
-        mApi({async: false})
+        mApi()
         .announcer
         .announcements
         .read(id).callback($.proxy(function(err, announcement){
