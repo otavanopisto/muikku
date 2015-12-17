@@ -1,26 +1,24 @@
 package fi.muikku.plugins.logindetails;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
-import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.events.LoginEvent;
 import fi.muikku.plugins.commonlog.LogProvider;
-import fi.muikku.utils.FacesUtils;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 
-@Dependent
-@Stateless
 public class LoginDetailController {
 
   public static final String COLLECTION_NAME = "loginDetails";
@@ -31,23 +29,19 @@ public class LoginDetailController {
 
   @Any
   @Inject
-  Instance<LogProvider> logProviders;
+  private Instance<LogProvider> logProviders;
 
   public void log(LoginEvent loginEvent) {
     HashMap<String, Object> data = new HashMap<String, Object>();
     data.put("eventType", "login");
-    data.put("userid", loginEvent.getUserEntityId());
-    data.put("authSource", loginEvent.getAuthProvider().getDescription());
+    data.put("userIdentifier", loginEvent.getUserIdentifier().toId());
+    data.put("authenticationProvder", loginEvent.getAuthProvider().getName());
     data.put("address", loginEvent.getUserIPAddr());
-    data.put("time", System.currentTimeMillis());
+    data.put("time", String.valueOf(System.currentTimeMillis()));
     LogProvider provider = getProvider(LOG_PROVIDER);
     if (provider != null) {
       try {
         provider.log(COLLECTION_NAME, data);
-        String detailMsg = getLastLogin(loginEvent.getUserEntityId());
-        if (detailMsg != null) {
-          FacesUtils.addMessage(FacesMessage.SEVERITY_INFO, detailMsg);
-        }
       } catch (Exception e) {
         logger.log(Level.WARNING, "Could not initialize connection to log provider because of an exception " + e.getMessage());
       }
@@ -56,35 +50,44 @@ public class LoginDetailController {
     }
   }
 
-  public ArrayList<HashMap<String, Object>> getLastLogins(Long userid, int count) { // TODO create pojos
+  public List<LoginDetails> getLastLogins(SchoolDataIdentifier userIdentifier, int count) {
+    List<LoginDetails> result = new ArrayList<>();
+    
     HashMap<String, Object> query = new HashMap<String, Object>();
-    query.put("userid", userid);
+    query.put("userIdentifier", userIdentifier.toId());
     LogProvider provider = getProvider(LOG_PROVIDER);
+    
     if (provider != null) {
-      return provider.getLogEntries(COLLECTION_NAME, query, count);
-    }
-    return null;
-  }
-
-  public String getLastLogin(Long userid) {
-    ArrayList<HashMap<String, Object>> logins = getLastLogins(userid, 2);
-    if (logins.size() < 2) {
-      return null;
+      ArrayList<HashMap<String,Object>> logEntries = provider.getLogEntries(COLLECTION_NAME, query, count);
+      for (HashMap<String,Object> logEntry : logEntries) {
+        if (StringUtils.equals((String) logEntry.get("eventType"), "login")) {
+          String userIdentifierId = (String) logEntry.get("userIdentifier");
+          String authenticationProvder = (String) logEntry.get("authenticationProvder");
+          String address = (String) logEntry.get("address");
+          Long time = NumberUtils.createLong((String) logEntry.get("time"));
+          
+          if (!StringUtils.equals(userIdentifierId, userIdentifier.toId())) {
+            logger.severe(String.format("Query returned login details for userIdentifer %s instead of requested %s", userIdentifierId, userIdentifier.toId()));
+            continue;
+          }
+            
+          result.add(new LoginDetails(userIdentifier, authenticationProvder, address, time != null ? new Date(time) : null));
+        }
+      }
     } else {
-      HashMap<String, Object> login = logins.get(logins.size() - 1);
-      String details = "Last login ";
-      if (login.containsKey("time")) {
-        Date date = new Date((long) login.get("time"));
-        details += " " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-      }
-      if (login.containsKey("address")) {
-        details += " from: " + login.get("address");
-      }
-      if (login.containsKey("authSource")) {
-        details += " with authentication method: " + login.get("authSource");
-      }
-      return details;
+      logger.severe(String.format("Could not list user's last logins because log provider %s could not be found", LOG_PROVIDER));
     }
+    
+    return result;
+  }
+  
+  public LoginDetails getLastLogin(SchoolDataIdentifier userIdentifier) {
+    List<LoginDetails> lastLogins = getLastLogins(userIdentifier, 1);
+    if (lastLogins != null && !lastLogins.isEmpty()) {
+      return lastLogins.get(0);
+    }
+    
+    return null;
   }
 
   private LogProvider getProvider(String name) {

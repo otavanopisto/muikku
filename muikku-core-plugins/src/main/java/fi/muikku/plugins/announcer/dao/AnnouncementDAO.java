@@ -107,6 +107,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
         criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)
       )
     );
+    criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     return entityManager.createQuery(criteria).getResultList();
   }
 

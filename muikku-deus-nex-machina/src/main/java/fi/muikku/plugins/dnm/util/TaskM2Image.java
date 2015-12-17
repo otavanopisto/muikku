@@ -37,21 +37,22 @@ public class TaskM2Image extends AbstractHtmlMaterialCleanerTask {
   
   @Override
   protected void cleanElement(Element element) {
+    boolean needsModify = false;
     if ("img".equals(element.getTagName())) {
       
       String src = element.getAttribute("src");
       if (StringUtils.startsWith(src, "https://muikku.otavanopisto.fi/fi")) {
-        markModified();
+        needsModify = true;
       }
       else if (StringUtils.startsWith(src, "http://muikku.otavanopisto.fi/fi")) {
-        markModified();
+        needsModify = true;
       }
       else if (StringUtils.startsWith(src, "muikku.otavanopisto.fi/fi")) {
         src = "http://" + src;
-        markModified();
+        needsModify = true;
       }
       
-      if (isModified()) {
+      if (needsModify) {
         try {
           logger.info(String.format("Fixing image from %s", src));
           
@@ -113,15 +114,14 @@ public class TaskM2Image extends AbstractHtmlMaterialCleanerTask {
                 logger.info(String.format("Image converted to %s", workspaceUrl));
                 element.setAttribute("src",  workspaceUrl);
 
+                markModified();
               }
               else {
                 logger.log(Level.SEVERE, String.format("Skipping image due to questionable content type %s", contentType));
-                markClean();
               }
             }
             else {
               logger.log(Level.SEVERE, "Cookie get fail");
-              markClean();
             }
           }
           finally {
@@ -132,7 +132,6 @@ public class TaskM2Image extends AbstractHtmlMaterialCleanerTask {
         }
         catch (Exception e) {
           logger.log(Level.SEVERE, String.format("Failed to fix image from %s", src), e);
-          markClean();
         }
       }
     }
