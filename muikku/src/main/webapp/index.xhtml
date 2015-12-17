@@ -6,6 +6,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:c="http://java.sun.com/jsp/jstl/core" 
   template="/WEB-INF/templates/main-view.xhtml">
+  
 
 	<ui:define name="header">
 		<c:choose>
@@ -87,7 +88,14 @@
       <m:widgetSpaceSet>
 
         <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="SUM" styleClass="alpha">
-          <m:widget name="home-info" size="12"/>
+          
+          <!-- Cant do this if not logged in = "403 forbidden" 
+          <m:widget name="home-announcements" size="12"/>
+           -->
+          
+           <!-- This is a lie! It's A LIE! -->
+           <m:widget name="home-info" size="12"/>  
+
         </m:widgetSpace>
         <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="SUM" styleClass="omega">
           <m:widget name="home-guide" size="12"/>         
@@ -123,21 +131,16 @@
   
         <m:widgetSpaceSet>
           <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="alpha">
-            <m:widget name="home-wallfeed" size="8" />
+            <m:widget name="home-workspaces" size="8"/>
           </m:widgetSpace>
           <m:widgetSpace name="index.content.primary.center" keepEmpty="false" sizing="MINIMIZE" >
-            <m:widget name="home-courses" size="8">
-              <ui:param name="courselist" value="home-courses" />
-            </m:widget>
+            <m:widget name="home-communicator" size="8" />
+          </m:widgetSpace>
+          <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="MINIMIZE" >
+            <m:widget name="home-announcements"  rendered="#{sessionBackingBean.loggedIn}" size="8"/>
           </m:widgetSpace>
         </m:widgetSpaceSet>
     
-        <m:widgetSpaceSet>
-            <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="omega">
-              <m:widget name="home-communicator" size="8" />
-
-            </m:widgetSpace>
-         </m:widgetSpaceSet>
         <div class="clear"></div>
       
         <m:widgetSpaceSet>
@@ -160,19 +163,18 @@
   
         <m:widgetSpaceSet>
           <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="alpha">
-            <m:widget name="home-wallfeed" size="8" />
+            <m:widget name="home-workspaces" size="8"/>
           </m:widgetSpace>
           <m:widgetSpace name="index.content.primary.center" keepEmpty="false" sizing="MINIMIZE" >
-            <m:widget name="home-courses" size="8">
-              <ui:param name="courselist" value="home-courses" />
-            </m:widget>
+            <m:widget name="home-communicator" size="8" />
+          </m:widgetSpace>
+          <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="MINIMIZE" >
+            <m:widget name="home-announcements"  rendered="#{sessionBackingBean.loggedIn}" size="8"/>
           </m:widgetSpace>
         </m:widgetSpaceSet>
     
         <m:widgetSpaceSet>
             <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="omega">
-              <m:widget name="home-communicator" size="8" />
-
             </m:widgetSpace>
          </m:widgetSpaceSet>
         <div class="clear"></div>

@@ -1,0 +1,7 @@
+<div class="mf-item-user an-announcement-targetgroup">
+  <input type="hidden" data-array="true" name="userGroupEntityIds" value="{id}" />
+  <div class="an-announcement-targetgroup-name icon-members usergroup">{name}</div>
+  <div class="clear"></div>
+</div>
+
+

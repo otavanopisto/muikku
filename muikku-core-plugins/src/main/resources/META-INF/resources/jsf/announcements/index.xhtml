@@ -4,8 +4,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"  
-  xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/jsf/announcements/templates/announcements_base.xhtml">
 
   <ui:define name="context.pageTitle">
@@ -40,7 +39,7 @@
     <nav id="announcementContextNavigation" class="gc-navigation">
       <ui:repeat value="#{announcementsViewBackingBean.activeAnnouncements}" var="announcement">
 	      <div class="gc-navigation-item">
-	        <a class="gc-navigation-title" href="?announcementId=#{announcement.id}">
+	        <a class="gc-navigation-title" jsf:outcome="/jsf/announcements/index.jsf?announcementId=#{announcement.id}">
             <h:outputText value="#{announcement.caption}" />
 	        </a>
           <div class="gc-navigation-date">

@@ -11,6 +11,16 @@
      $(mainfunction).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
      $('.an-announcements-view-container').on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
      $(mainfunction).on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
+     
+     
+     $(document).on('focus', '#targetGroupContent', $.proxy(function(event) {
+       this._onTargetGroupFocus(event);
+     }, this));
+     
+     $(document).on('click', '.an-announcement-targetgroup', function(event) {
+       $(this).remove();
+     });
+     
       this._loadAnnouncements();
     },
     _onCreateAnnouncementClick: function () {
@@ -41,6 +51,17 @@
       var createAnnouncement = function(values){
         values.startDate = moment(values.startDate, "DD. MM. YYYY").format("YYYY-MM-DD");
         values.endDate = moment(values.endDate, "DD. MM. YYYY").format("YYYY-MM-DD");
+        values.userGroupEntityIds = $.map($("input[name='userGroupEntityIds']"), function(element) {
+          return $(element).val();
+        });
+        
+        if (values.userGroupEntityIds.length) {
+          values.publiclyVisible = false;
+        } else {
+          values.publiclyVisible = true;
+        }
+        
+
         mApi().announcer.announcements.create(values).callback($.proxy(function(err, result) {
           if (err) {
             $(".notification-queue").notificationQueue('notification','error',err);
@@ -49,6 +70,7 @@
             window.location.reload(true);      
           }
         }, this));
+
       }   
       openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement, formFunctions);
     },
@@ -184,8 +206,56 @@
       this.element.empty();      
     },
     _destroy: function () {
+    },
+
+    _searchGroups: function (searchTerm, callback) {
+      var groups = new Array();
+    
+      mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
+        if (result != undefined) {
+          for (var i = 0, l = result.length; i < l; i++) {
+            groups.push({
+              label : result[i].name + " (" + result[i].userCount + ")",
+              id : result[i].id,
+            });
+          }
+
+          callback(groups);
+        }
+      });
+    },
+
+    _onTargetGroupFocus:function(event){
+      $(event.target).autocomplete({
+        create: $.proxy(function(event, ui){
+          $('.ui-autocomplete').perfectScrollbar(); 
+        }, this),  
+        source: $.proxy(function (request, response) {
+          this._searchGroups(request.term, response);
+        }, this),
+        select: $.proxy(function (event, ui) {
+          this._selectRecipient(event, ui.item);
+          $(event.target).val("");
+          return false;
+        }, this)
+      });
+    }, 
+
+    _selectRecipient: function (event, item) {
+      var element = $(event.target);
+      var targetGroupsContainerElement = $("#msgTargetGroupsContainer");      
+      var group = {
+        id: item.id,
+        name: item.label
+      };
+
+      renderDustTemplate('announcer/announcer_targetgroup.dust', group, function (text) {
+        targetGroupsContainerElement.prepend($.parseHTML(text));
+      });
     }
   });
+  
+  
   
   $(document).ready(function(){
     $('.an-announcements-view-container').announcer();

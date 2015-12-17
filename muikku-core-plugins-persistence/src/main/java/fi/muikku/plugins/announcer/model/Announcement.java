@@ -76,6 +76,14 @@ public class Announcement {
   public void setArchived(boolean archived) {
     this.archived = archived;
   }
+  
+  public boolean isPubliclyVisible() {
+    return publiclyVisible;
+  }
+  
+  public void setPubliclyVisible(boolean publiclyVisible) {
+    this.publiclyVisible = publiclyVisible;
+  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -112,4 +120,7 @@ public class Announcement {
 
   @Column (nullable=false)
   private boolean archived;
+  
+  @Column (nullable=false)
+  private boolean publiclyVisible;
 }
