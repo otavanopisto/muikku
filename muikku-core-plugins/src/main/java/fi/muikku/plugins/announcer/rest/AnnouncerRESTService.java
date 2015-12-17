@@ -7,8 +7,10 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -55,6 +57,34 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getEndDate());
     
     return Response.noContent().build();
+  }
+
+  @PUT
+  @Path("/announcements/{ID}")
+  @RESTPermit(AnnouncerPermissions.UPDATE_ANNOUNCEMENT)
+  public Response updateAnnouncement(
+      @PathParam("ID") Long announcementId,
+      AnnouncementRESTModel restModel
+  ) {
+
+    if (announcementId == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    Announcement oldAnnouncement = announcementController.findById(announcementId);
+    
+    if (oldAnnouncement == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    Announcement newAnnouncement = announcementController.update(
+        oldAnnouncement,
+        restModel.getCaption(),
+        restModel.getContent(),
+        restModel.getStartDate(),
+        restModel.getEndDate());
+    
+    return Response.ok(createRESTModel(newAnnouncement)).build();
   }
   
   @GET
@@ -103,5 +133,17 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
     return restModel;
+  }
+
+  @DELETE
+  @Path("/announcements/{ID}")
+  @RESTPermit(AnnouncerPermissions.DELETE_ANNOUNCEMENT)
+  public Response deleteAnnouncement(@PathParam("ID") Long announcementId) {
+    Announcement announcement = announcementController.findById(announcementId);
+    if (announcement == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    announcementController.archive(announcement);
+    return Response.noContent().build();
   }
 }

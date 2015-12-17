@@ -22,7 +22,8 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       String content,
       Date created,
       Date startDate,
-      Date endDate
+      Date endDate,
+      boolean archived
   ) {
     Announcement announcement = new Announcement();
     announcement.setPublisherUserEntityId(publisherUserEntityId);
@@ -31,11 +32,66 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     announcement.setCreated(created);
     announcement.setStartDate(startDate);
     announcement.setEndDate(endDate);
-
-    getEntityManager().persist(announcement);
-    return announcement;
+    announcement.setArchived(archived);
+    
+    return persist(announcement);
+ }
+  
+  public void archive(Announcement announcement) {
+    if(announcement != null){
+      announcement.setArchived(true);
+      getEntityManager().persist(announcement);
+    }
   }
   
+  public List<Announcement> listByArchived(boolean archived){
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+    Root<Announcement> root = criteria.from(Announcement.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.equal(root.get(Announcement_.archived), archived));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public Announcement updateCaption(
+      Announcement announcement,
+      String caption
+  ) {
+    announcement.setCaption(caption);
+
+    return persist(announcement);
+  }
+
+  public Announcement updateContent(
+      Announcement announcement,
+      String content
+  ) {
+    announcement.setContent(content);
+
+    return persist(announcement);
+  }
+
+  public Announcement updateStartDate(
+      Announcement announcement,
+      Date startDate
+  ) {
+    announcement.setStartDate(startDate);
+
+    return persist(announcement);
+  }
+
+  public Announcement updateEndDate(
+      Announcement announcement,
+      Date endDate
+  ) {
+    announcement.setEndDate(endDate);
+
+    return persist(announcement);
+  }
+
   public List<Announcement> listActive() {
     EntityManager entityManager = getEntityManager(); 
     Date currentDate = new Date();
@@ -52,4 +108,5 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     );
     return entityManager.createQuery(criteria).getResultList();
   }
+
 }

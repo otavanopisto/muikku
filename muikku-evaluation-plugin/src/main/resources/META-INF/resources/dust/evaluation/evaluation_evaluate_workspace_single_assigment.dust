@@ -1,5 +1,5 @@
+{@eq key=assignmentType value="EVALUATED"}
 <div class="evaluation-modal-workspace-single-assignment">
-
   <div class="evaluation-assignmentlist-wrapper">
     <div class="evaluation-assignment-title-container">
       <h2>{title}</h2>
@@ -27,3 +27,17 @@
 
   <div class="clear"></div>
 </div>
+{:else}
+<div class="evaluation-modal-workspace-single-exercise">
+  <div class="evaluation-assignmentlist-wrapper">
+    <div class="evaluation-assignment-title-container">
+      <h2>{title}</h2>
+    </div>
+    <div class="evaluation-assignment-content" data-open-state="closed">
+      <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" class="evaluation-assignment"></article>
+    </div>
+  </div>
+
+  <div class="clear"></div>
+</div>
+{/eq}

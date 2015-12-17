@@ -27,8 +27,27 @@ public class AnnouncementController {
         content,
         new Date(),
         startDate,
-        endDate
+        endDate,
+        false
     );
+  }
+
+  public Announcement update(
+      Announcement announcement,
+      String caption,
+      String content,
+      Date startDate,
+      Date endDate
+  ) {
+    announcementDAO.updateCaption(announcement, caption);
+    announcementDAO.updateContent(announcement, content);
+    announcementDAO.updateStartDate(announcement, startDate);
+    announcementDAO.updateEndDate(announcement, endDate);
+    return announcement;
+  }
+  
+  public List<Announcement> listUnarchived() {
+    return announcementDAO.listByArchived(false);
   }
   
   public List<Announcement> listAll() {
@@ -41,5 +60,9 @@ public class AnnouncementController {
   
   public Announcement findById(Long id) {
     return announcementDAO.findById(id);
+  }
+  
+  public void archive(Announcement announcement) {
+    announcementDAO.archive(announcement);
   }
 }
