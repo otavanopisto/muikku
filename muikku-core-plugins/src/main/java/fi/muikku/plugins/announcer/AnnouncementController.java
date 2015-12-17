@@ -31,6 +31,20 @@ public class AnnouncementController {
         false
     );
   }
+
+  public Announcement update(
+      Announcement announcement,
+      String caption,
+      String content,
+      Date startDate,
+      Date endDate
+  ) {
+    announcementDAO.updateCaption(announcement, caption);
+    announcementDAO.updateContent(announcement, content);
+    announcementDAO.updateStartDate(announcement, startDate);
+    announcementDAO.updateEndDate(announcement, endDate);
+    return announcement;
+  }
   
   public List<Announcement> listUnarchived() {
     return announcementDAO.listByArchived(false);
