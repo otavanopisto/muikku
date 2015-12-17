@@ -39,6 +39,15 @@
       }     
 
     }
+    
+    &:hover {
+      color:red;
+      
+      &:before {
+        color:red;
+      }
+      
+    }      
         
   }  
   
