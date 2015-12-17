@@ -34,7 +34,7 @@
               <div class="mf-textfield">
                 <div class="mf-textfield-subcontainer">
                   <div class="mf-textfield-title mf-textfield-subelement"><span>{#localize key="plugin.announcer.createannouncement.target.label"/}</span></div>
-                  <div class="an-announcement-recipients" id="msgTargetGroupsContainer"><input id="targetGroupContent" type="text" name="targetgroup"></input></div>
+                  <div class="an-announcement-targetgroups" id="msgTargetGroupsContainer"><input id="targetGroupContent" type="text" name="targetgroup"></input></div>
                   <div class="an-announcement-targetgroup-search mf-textfield-subelement"></div>
                  <div class="clear"></div>
                 </div> 
