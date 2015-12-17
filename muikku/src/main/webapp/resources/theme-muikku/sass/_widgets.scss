@@ -821,7 +821,7 @@ div[class*="wi-dock-static-navi"] {
  .wi-message{
    max-height:3.2em;
    overflow: hidden; 
-   font-size:13px; 
+   font-size:15px; 
    margin-bottom:5px;
     
    &:not(:last-child) {
@@ -952,7 +952,6 @@ iframe[id^='twitter-widget-']{
 
 .wi-item-announcement{
   display:block;
-/*   border-left:5px solid #4ee23a; */
   min-width: 50px;
   padding:0 0 15px 0;
   font-size:15px;
@@ -965,9 +964,25 @@ iframe[id^='twitter-widget-']{
   &:hover{
     cursor:pointer;
   } 
-
-
   
+  .wi-item-topic {
+    font-weight:400;
+  
+    &:hover {
+     
+      a {
+       color:#0099ff;
+      }
+       
+    } 
+   
+    a {
+      color:#3c77a0;
+      text-decoration:none;
+    }
+  
+  }
+
 } 
 
 
