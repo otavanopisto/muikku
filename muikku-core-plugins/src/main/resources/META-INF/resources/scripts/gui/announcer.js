@@ -93,9 +93,9 @@
             })
             .datepicker('setDate', end);
           
-          $("input[name='caption']").val(announcement.caption);
-//          $("textarea[id='textContent']").val(announcement.content);          
-            CKEDITOR.instances.textContent.setData(announcement.content);
+          $("input[name='caption']").val(announcement.caption);  
+          CKEDITOR.instances.textContent.setData(announcement.content);
+          
         }, this));
 
 
