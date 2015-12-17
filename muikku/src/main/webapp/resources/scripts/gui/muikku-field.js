@@ -70,6 +70,15 @@
         'fields-read-only': true
       }, {
         'assignment-type': 'EVALUATED',
+        'state': 'FAILED',
+        'button-class': 'muikku-withdraw-assignment',
+        'button-text': "plugin.workspace.materialsLoader.withdrawAssignmentButton",
+        'success-text': "plugin.workspace.materialsLoader.assignmentWithdrawn",
+        'button-disabled': false,
+        'success-state': 'WITHDRAWN',
+        'fields-read-only': true
+      }, {
+        'assignment-type': 'EVALUATED',
         'state': 'WITHDRAWN',
         'button-class': 'muikku-update-assignment',
         'button-text': "plugin.workspace.materialsLoader.updateAssignmentButton",
@@ -79,7 +88,7 @@
         'fields-read-only': false
       }, {
         'assignment-type': 'EVALUATED',
-        'state': 'EVALUATED',
+        'state': 'PASSED',
         'button-class': 'muikku-evaluated-assignment',
         'button-text': "plugin.workspace.materialsLoader.evaluatedAssignmentButton",
         'button-disabled': true,

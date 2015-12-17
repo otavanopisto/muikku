@@ -21,6 +21,10 @@ public class AnnouncerPermissions extends AbstractMuikkuPermissionCollection imp
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  public static final String UPDATE_ANNOUNCEMENT = "UPDATE_ANNOUNCEMENT";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
   public static final String DELETE_ANNOUNCEMENT = "DELETE_ANNOUNCEMENT";
   
   @Scope (PermissionScope.ENVIRONMENT)
