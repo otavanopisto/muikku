@@ -87,7 +87,7 @@ public class AnnouncementController {
     announcementUserGroupDAO.create(
         announcement,
         userGroupEntity.getId(),
-        true
+        false
     );
   }
   
