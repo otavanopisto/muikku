@@ -819,7 +819,6 @@ div[class*="wi-dock-static-navi"] {
 .wi-messages{
  
  .wi-message{
-   max-height:3.2em;
    overflow: hidden; 
    font-size:15px; 
    margin-bottom:5px;
@@ -950,12 +949,14 @@ iframe[id^='twitter-widget-']{
   position:relative;
 }
 
-.wi-item-announcement{
-  display:block;
+.wi-item-announcement {
+  border-bottom: 1px solid #f7fdff;
+  display: block;
+  font-size: 15px;
+  font-weight: 300;
+  margin: 0 0 5px;
   min-width: 50px;
-  padding:0 0 15px 0;
-  font-size:15px;
-  font-weight:300;
+  padding: 0 0 5px;
   
   &:last-child {
     padding:0;
