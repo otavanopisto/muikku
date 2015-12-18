@@ -43,7 +43,7 @@
     },
     
     _uploadFile: function (file) {
-      mApi().materials.binary.create({
+      mApi({async: false}).materials.binary.create({
         title: file.name,
         contentType: file.contentType||'application/octet-stream',
         fileId: file.id
@@ -61,7 +61,7 @@
         var nextMaterial = $(this.element).next('.workspace-materials-view-page');
         var nextSiblingId = $(nextMaterial) && !$(nextMaterial).hasClass('folder') ? $(nextMaterial).data('workspace-material-id') : undefined;
         
-        mApi().workspace.workspaces.materials.create(workspaceEntityId, {
+        mApi({async: false}).workspace.workspaces.materials.create(workspaceEntityId, {
           materialId: materialResult.id,
           parentId: parentId,
           nextSiblingId: nextSiblingId

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:ui="http://java.sun.com/jsf/facelets" 
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html"
+  template="/WEB-INF/templates/default.xhtml">
+
+  <!-- Lets set the base body class per view -->
+  <ui:param name="bodyClass" value="#{empty bodyClass ? 'index' : bodyClass}"/>
+
+  <ui:define name="sitebody">
+    <div class="index">
+      <ui:insert name="header">
+        <div id="headerSmall">
+          <div id="headerContainerSmall" class="container_24">
+            <div id="headerLogoTextContainerSmall"></div>
+            <div id="headerFishContainerSmall"></div>
+            <m:widgetSpaceSet styleClass="noLid">
+              <ui:insert name="header.left">
+                <ui:include src="/facelets/generic/header-left.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="header.center">
+                <ui:include src="/facelets/generic/header-center.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="header.right">
+                <ui:include src="/facelets/generic/header-right.xhtml"></ui:include>
+              </ui:insert>
+            </m:widgetSpaceSet>
+          </div>
+        </div>
+      </ui:insert>
+
+      <div id="staticNavigationWrapper">
+        <div id="staticNavigationBG"></div>
+        <div id="staticNavigation" class="container_24">
+          <ui:insert name="dock.top">
+            <m:widgetSpaceSet styleClass="noLid">
+              <ui:insert name="dock.top.left">
+                <ui:include src="/facelets/generic/dock-top-left.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="dock.top.center">
+                <ui:include src="/facelets/generic/dock-top-center.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="dock.top.right">
+                <ui:include src="/facelets/generic/dock-top-right.xhtml"></ui:include>
+              </ui:insert>
+            </m:widgetSpaceSet>
+          </ui:insert>
+          <div class="clear"></div>
+        </div>
+      </div>
+
+      <main class="container_24" id="content">
+        <ui:insert name="context.wrapper">
+
+        </ui:insert>
+      </main>  
+
+      <div id="socialNavigation" class="sn-container open">
+       <div class="sn-container closed" >
+         <ui:insert name="dock.bottom">
+            <m:widgetSpaceSet parentStyleClass="container_24">
+              <ui:insert name="dock.bottom.left">
+                <ui:include src="/facelets/generic/dock-bottom-left.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="dock.bottom.center">
+                <ui:include src="/facelets/generic/dock-bottom-center.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="dock.bottom.right">
+                <ui:include src="/facelets/generic/dock-bottom-right.xhtml"></ui:include>
+              </ui:insert>
+            </m:widgetSpaceSet>
+          </ui:insert>
+        </div>
+      </div>
+      <div id="footer">
+      <!-- TODO: Localize helpdesk -->
+        <div id="helpdesk"><span>Ongelmia Muikussa? helpdesk(a)muikkuverkko.fi</span></div>
+        <div id="footerContainer" class="container_24">
+          <ui:insert name="footer">
+            <m:widgetSpaceSet styleClass="nomargin">
+              <ui:insert name="footer.left">
+                <ui:include src="/facelets/generic/footer-left.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="footer.center">
+                <ui:include src="/facelets/generic/footer-center.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="footer.right">
+                <ui:include src="/facelets/generic/footer-right.xhtml"></ui:include>
+              </ui:insert>
+            </m:widgetSpaceSet>
+          </ui:insert>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+  </ui:define>
+
+</ui:composition>

@@ -1,3 +1,18 @@
+/* Generic loader  */
+
+@-webkit-keyframes generic-loader {
+  0% { -webkit-transform: rotate(0deg); }
+  10% { -webkit-transform: rotate(360deg);}
+}
+@-moz-keyframes generic-loader {
+  0% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg); }
+}
+@keyframes generic-loader {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* Animations keyframes */
 
 @keyframes flash {
@@ -7,13 +22,13 @@
 }
 
 @-webkit-keyframes bouncedelay {
-  0%, 80%, 100% { -webkit-transform: scale(0.0) }
-  40% { -webkit-transform: scale(1.0) }
+  0%, 80%, 100% { -webkit-transform: scale(0.0); }
+  40% { -webkit-transform: scale(1.0); }
 }
 
 @-moz-keyframes bouncedelay {
-  0%, 80%, 100% { -moz-transform: scale(0.0) }
-  40% { -moz-transform: scale(1.0) }
+  0%, 80%, 100% { -moz-transform: scale(0.0); }
+  40% { -moz-transform: scale(1.0); }
 }
 
 @keyframes bouncedelay {
@@ -21,60 +36,164 @@
   40% { transform: scale(1.0); }
 }
 
-/* Evaluation Spinner Animations */
-@-webkit-keyframes spinner {
+/* Workspace Material's select, textfield, textarea autosave animations */
+
+@-webkit-keyframes saving-fields {
+  0% { border-color:#e4e630; }
+  25% { border-color:#ffffff; } 
+  50% { border-color:#e4e630; }
+  100% { border-color:#ffffff; }
+}
+
+@-moz-keyframes saving-fields {
+  0% { border-color:#e4e630; }
+  25% { border-color:#ffffff; } 
+  50% { border-color:#e4e630; }
+  100% { border-color:#ffffff; }
+}
+
+@keyframes saving-fields {
+  0% { border-color:#e4e630; }
+  25% { border-color:#ffffff; } 
+  50% { border-color:#e4e630; }
+  100% { border-color:#ffffff; }
+}
+
+/* Workspace Material's checkbox and radio animations */
+
+@-webkit-keyframes saving-checkbox-radio {
+  0% { box-shadow:0 0 0px 3px #e4e630; }
+  25% { box-shadow:0 0 0px 3px #ffffff; }
+  50% { box-shadow:0 0 0px 3px #e4e630; }
+  100% { box-shadow:0 0 0px 3px #ffffff; }
+}
+
+@-moz-keyframes saving-checkbox-radio {
+  0% { box-shadow:0 0 0px 3px #e4e630; }
+  25% { box-shadow:0 0 0px 3px #ffffff; }
+  50% { box-shadow:0 0 0px 3px #e4e630; }
+  100% { box-shadow:0 0 0px 3px #ffffff; }
+}
+
+@keyframes saving-checkbox-radio {
+  0% { box-shadow:0 0 0px 3px #e4e630; }
+  25% { box-shadow:0 0 0px 3px #ffffff; }
+  50% { box-shadow:0 0 0px 3px #e4e630; }
+  100% { box-shadow:0 0 0px 3px #ffffff ;}
+}
+
+/* Evaluation Single Card Loading */
+
+@-webkit-keyframes load-cards {
+  0% { -webkit-transform: scale(1); opacity:0.1; } 
+  50% { -webkit-transform: scale(0.9); opacity:0.8; }
+  100% { -webkit-transform: scale(1); opacity:0.1; }
+}
+
+@-moz-keyframes load-cards {
+  0% { -moz-transform: scale(1); opacity:0.1; } 
+  50% { -moz-transform: scale(0.9); opacity:0.8; }
+  100% { -moz-transform: scale(1); opacity:0.1; }
+}
+
+@keyframes load-cards {
+  0% { transform: scale(1); opacity:0.1; } 
+  50% { transform: scale(0.9); opacity:0.8; }
+  100% { transform: scale(1); opacity:0.1; }
+}
+
+/* Evaluation Card View Loading  */
+
+@-webkit-keyframes evaluation-loading {
   0% { -webkit-transform: rotate(0deg); }
   10% { -webkit-transform: rotate(360deg);}
 }
-@-moz-keyframes spinner {
+@-moz-keyframes evaluation-loading {
   0% { -moz-transform: rotate(0deg); }
   100% { -moz-transform: rotate(360deg); }
 }
-@keyframes spinner {
+@keyframes evaluation-loading {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-/* Workspace Material's select, textfield, textarea autosave animations */
-@-webkit-keyframes saving-fields {
-  0% { border-color:#e4e630 }
-  25% { border-color:#ffffff } 
-  50% { border-color:#e4e630 }
-  100% { border-color:#ffffff }
+/* Workspace Materials Connection Lost BG */
+
+@-webkit-keyframes connectionLost { 
+  0% { opacity:0.80; }
+  50% { opacity:0.90; }
+  100% { opacity:0.80; }
 }
 
-@-moz-keyframes saving-fields {
-  0% { border-color:#e4e630 }
-  25% { border-color:#ffffff } 
-  50% { border-color:#e4e630 }
-  100% { border-color:#ffffff }
+@-moz-keyframes connectionLost { 
+  0% { opacity:0.80; }
+  50% { opacity:0.90; }
+  100% { opacity:0.80; }
 }
 
-@keyframes saving-fields {
-  0% { border-color:#e4e630 }
-  25% { border-color:#ffffff } 
-  50% { border-color:#e4e630 }
-  100% { border-color:#ffffff }
+@keyframes connectionLost { 
+  0% { opacity:0.80; }
+  50% { opacity:0.90; }
+  100% { opacity:0.80; }
 }
 
-/* Workspace Material's checkbox and radio animations */
-@-webkit-keyframes saving-checkbox-radio {
-  0% { box-shadow:0 0 0px 3px #e4e630 }
-  25% { box-shadow:0 0 0px 3px #ffffff }
-  50% { box-shadow:0 0 0px 3px #e4e630 }
-  100% { box-shadow:0 0 0px 3px #ffffff }
+/* Workspace Materials Connection Lost lines */
+
+@-webkit-keyframes rotate-one {
+  0% { -webkit-transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg); }
+  100% { -webkit-transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg); }
 }
 
-@-moz-keyframes saving-checkbox-radio {
-  0% { box-shadow:0 0 0px 3px #e4e630 }
-  25% { box-shadow:0 0 0px 3px #ffffff }
-  50% { box-shadow:0 0 0px 3px #e4e630 }
-  100% { box-shadow:0 0 0px 3px #ffffff }
+@-moz-keyframes rotate-one {
+  0% { -moz-transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg); }
+  100% { -moz-transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg); }
 }
 
-@keyframes saving-checkbox-radio {
-  0% { box-shadow:0 0 0px 3px #e4e630 }
-  25% { box-shadow:0 0 0px 3px #ffffff }
-  50% { box-shadow:0 0 0px 3px #e4e630 }
-  100% { box-shadow:0 0 0px 3px #ffffff }
+@keyframes rotate-one {
+  0% { -moz-transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg); }
+  100% { -moz-transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg); }
+}
+
+@-webkit-keyframes rotate-two {
+  0% {transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);}
+  100% {transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);}
+}
+
+@-moz-keyframes rotate-two {
+  0% { -moz-transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg); }
+  100% { -moz-transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg); }
+}
+
+@keyframes rotate-two {
+  0% { transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg); }
+  100% { transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg); }
+}
+
+@-webkit-keyframes rotate-three {
+  0% { -webkit-transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg); }
+  100% { -webkit-transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg); }
+}
+
+@-moz-keyframes rotate-three {
+  0% { -moz-transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg); }
+  100% { -moz-transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg); }
+}
+
+@keyframes rotate-three {
+  0% { transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg); }
+  100% { transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg); }
+}
+
+/* Workspace Users loading */
+@-webkit-keyframes users-loading {
+  0% { -webkit-transform: rotate(0deg); }
+  10% { -webkit-transform: rotate(360deg);}
+}
+@-moz-keyframes users-loading {
+  0% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg); }
+}
+@keyframes users-loading {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

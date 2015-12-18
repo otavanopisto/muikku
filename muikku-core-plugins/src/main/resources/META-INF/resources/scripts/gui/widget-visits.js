@@ -4,7 +4,7 @@ $(document).ready(function(){
 
 	
 	
-    mApi().workspace.workspaces
+    mApi({async: false}).workspace.workspaces
     .read({ minVisits: 1, orderBy: "lastVisit" }).on('$', function(workspace, workspaceCallback){
 
     	 var td = new Date();
@@ -88,12 +88,13 @@ $(document).ready(function(){
     	renderDustTemplate('frontpage/widget_visits.dust', {
         	
         	workspaces :  workspaces,
-            lastDay : lastDay,
+          lastDay : lastDay,
         	lastWeek : lastWeek,
         	older : older
              
         }, function (text) {
             $('#widgetVisits').append($.parseHTML(text));
+            $('#widgetVisits').perfectScrollbar({"suppressScrollX" : true});
           });
         
     	}

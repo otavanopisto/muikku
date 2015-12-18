@@ -79,6 +79,11 @@ body {
         font-size:14px;
         margin:5px 0 0 0;
       }
+      
+      textarea {
+        padding:4px 8px;
+        box-sizing:border-box;
+      }
     }
     
     .ui-dialog-buttonpane {
@@ -90,6 +95,7 @@ body {
       .ui-dialog-buttonset {
         float:none;
         position:relative;
+        text-align:right;
       
         button {
           border-radius:0px;
@@ -105,26 +111,23 @@ body {
         
         button.delete-button,
         button.confirm-button {
-          float:right;
           background:#de3211; /* RED */
         }
         
         button.publish-button,
         button.send-button,
-        button.save-evaluation-button {
-          float:right;
+        button.save-evaluation-button,
+        button.unarchive-button {
           background:#27b91c; /* GREEN */
         }
         
         button.revert-button,
         button.archive-button,
         button.cancel-evaluation-button {
-          float:right;
           background:#f6a930; /* ORANGE */
         }
         
         button.cancel-button {
-          float:right;
           background:#7391a7; /* GRAYISH BLUE */
         }
       

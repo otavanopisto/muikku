@@ -4,7 +4,7 @@
 
 	<groupId>fi.muikku</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.0.76-SNAPSHOT</version>
+	<version>1.0.87-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku Parent</name>
 
@@ -70,7 +70,11 @@
 		<module>muikku-dummy-mail-bridge-plugin</module>
 		<module>muikku-jndi-mail-bridge-plugin</module>
 		<module>muikku-deus-nex-machina</module>
+    <module>muikku-evaluation-plugin-persistence</module>
+    <module>muikku-evaluation-plugin-rest-model</module>
+    <module>muikku-evaluation-plugin</module>
 		<module>muikku</module>
+    <module>muikku-developer-tools</module>
 		<module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
     <module>muikku-atests-plugin-rest-model</module>
@@ -90,7 +94,7 @@
 			<dependency>
 				<groupId>fi.muikku</groupId>
 				<artifactId>bom</artifactId>
-				<version>1.0.76-SNAPSHOT</version>
+				<version>1.0.87-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>

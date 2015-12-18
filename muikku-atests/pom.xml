@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.76-SNAPSHOT</version>
+    <version>1.0.87-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -96,14 +96,14 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.26-SNAPSHOT</version>
+      <version>0.7.30-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.26-SNAPSHOT</version>
+      <version>0.7.30-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -209,6 +209,16 @@
 
     <dependency>
       <groupId>fi.muikku</groupId>
+      <artifactId>evaluation-plugin-rest-model</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>evaluation-plugin-persistence</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
       <artifactId>atests-plugin-rest-model</artifactId>
       <version>${project.version}</version>
     </dependency>    
@@ -271,6 +281,7 @@
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
         <it.package>**</it.package>
+        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
       </properties>
 
       <dependencies>
@@ -321,6 +332,7 @@
                 <it.report.directory>${it.report.directory}</it.report.directory>
                 <it.build.directory>${it.build.directory}</it.build.directory>
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
+                <it.test.file>${it.test.file}</it.test.file>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -598,6 +610,7 @@
         <it.sauce.browser.resolution />
         <it.sauce.platform />
         <it.package>**</it.package>
+        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
       </properties>
 
       <dependencies>
@@ -656,6 +669,7 @@
                 <it.sauce.browser.resolution>${it.sauce.browser.resolution}</it.sauce.browser.resolution>
                 <it.sauce.platform>${it.sauce.platform}</it.sauce.platform>
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
+                <it.test.file>${it.test.file}</it.test.file>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -961,6 +975,7 @@
         <it.sauce.browser.resolution />
         <it.sauce.platform />
         <it.package>**</it.package>
+        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
       </properties>
 
       <dependencies>
@@ -1018,6 +1033,7 @@
                 <it.sauce.browser.resolution>${it.sauce.browser.resolution}</it.sauce.browser.resolution>
                 <it.sauce.platform>${it.sauce.platform}</it.sauce.platform>
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
+                <it.test.file>${it.test.file}</it.test.file>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -1067,6 +1083,7 @@
                   <type>CREATE</type>
                 </configuration>
               </execution>
+              <!--
               <execution>
                 <id>drop-db-after-test</id>
                 <phase>post-integration-test</phase>
@@ -1078,6 +1095,7 @@
                   <force>true</force>
                 </configuration>
               </execution>
+              -->
             </executions>
           </plugin>
           <plugin>
@@ -1287,6 +1305,7 @@
         <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
+        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
       </properties>
 
       <dependencies>
@@ -1336,6 +1355,7 @@
                 <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
                 <it.report.directory>${it.report.directory}</it.report.directory>
                 <it.build.directory>${it.build.directory}</it.build.directory>
+                <it.test.file>${it.test.file}</it.test.file>
               </systemPropertyVariables>
             </configuration>
             <executions>

@@ -1,0 +1,159 @@
+  /* announcer (.an-*) */
+  
+/* create announcement */
+
+.an-announcement-create-body{
+  
+  .mf-textfield {
+    width:100%;
+  } 
+  
+  .an-announcement-targetgroup {
+    float:left;
+    cursor:pointer;
+    margin-top:0 !important;  
+      
+    &:not(:first-child) {
+      margin-left:10px;
+      margin-top:0 !important;
+    }
+    
+  } 
+  
+  .an-announcement-targetgroup-name {
+    float:left;
+    margin-top:0 !important;
+    font-family:inherit;
+    margin-left: 10px;
+    padding: 9px 0;
+
+    &:before {
+      margin-right:5px;
+      font-family: 'muikku';
+    }     
+
+    &.usergroup {
+
+      &:before {
+       color:green;
+      }     
+
+    }
+    
+    &:hover {
+      color:red;
+      
+      &:before {
+        color:red;
+      }
+      
+    }      
+        
+  }  
+  
+}
+
+.an-announcements-view-container{}
+.an-announcements{
+  padding:25px;
+  .an-announcement{
+    box-sizing: border-box;
+    display: inline-block;
+    margin-bottom: 25px;
+    margin-right: 25px;
+    max-height: 330px;
+    overflow: hidden;
+    vertical-align: top;
+    width: 286px;
+
+    &:nth-child(3n+3){
+     margin-right:0;
+    }
+    
+    &.ACTIVE {
+      
+    }
+    
+    &.ENDED {
+      opacity:0.5;
+    }
+    
+    &.UPCOMING {
+    
+      .an-announcement-dates {
+        background:#69cff9;
+        color:#fff;
+        font-weight:600;
+      }
+    }
+  }
+}
+.an-announcement-header-container{
+ height:100px;
+ &.default{
+    @include background-image('/gfx/workspace-default-header.jpg');
+ }
+}
+.an-announcement-select{
+    float: left;
+    margin: 4px;
+    width: 30px;
+}
+.an-announcement-dates{
+    text-align:right;
+    background-color:$light;
+    padding:5px;
+}
+.an-announcement-details{
+  margin-bottom:10px;
+  max-height:220px;
+}
+.an-announcement-tools{
+  margin:5px 10px;
+}
+
+.an-announcement-topic{
+  padding-top:10px;
+  padding-left:10px;
+  padding-bottom:10px;
+  font-weight:300;
+  font-size:20px;
+  overflow:hidden;
+  text-overflow:ellipsis;  
+  color:#000;
+  border-bottom:1px solid #eee;
+  white-space:nowrap;
+}
+
+.an-announcement-content{
+  padding:5px 10px 10px 10px; 
+  max-height:130px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.an-no-announcements{}
+
+.an-create-announcement{}
+
+.an-textfield{
+   width:100%;  
+}
+
+.an-archiving-container{
+  width:100%; 
+}
+
+.an-archiving-ids-container{
+  padding:15px;
+  
+  span {
+   background-color:$dim;
+   padding:5px;
+  }
+  
+  span:not(:first-child){
+   margin-left:5px;
+  } 
+ 
+}

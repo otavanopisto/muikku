@@ -1,7 +1,7 @@
 (function() {
   
   $(document).ready(function (event) {
-    var api = mApi();
+    var api = mApi({async: false});
 
     // Single request
     

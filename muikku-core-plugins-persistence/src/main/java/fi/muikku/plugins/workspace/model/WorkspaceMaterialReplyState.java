@@ -18,8 +18,12 @@ public enum WorkspaceMaterialReplyState {
   
   WITHDRAWN,
   
-  /* Teacher has evaluated the assignment */
+  /* Teacher has evaluated the assignment with a grade that is passing */
   
-  EVALUATED
+  PASSED,
+  
+  /* Teacher has evaluated the assignment with a grade that is non passing */
+  
+  FAILED
   
 }

@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 
+import fi.muikku.plugins.schooldatapyramus.rest.cache.CachedEntity;
+import fi.muikku.plugins.schooldatapyramus.rest.cache.UserEntityCache;
 import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusUser;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
@@ -27,6 +29,9 @@ class UserPyramusClient implements PyramusClient, Serializable {
   
   @Inject
   private ClientPool clientPool;
+  
+  @Inject
+  private UserEntityCache entityCache;
   
   @Inject
   @LocalSession
@@ -79,12 +84,22 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> T get(String path, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.get(client, getAccessToken(), path, type);
+      CachedEntity<T> cachedEntity = entityCache.get(path, type);
+      if (cachedEntity != null) {
+        return cachedEntity.getData();
+      }
+
+      T result = restClient.get(client, getAccessToken(), path, type);
+      if (result != null) {
+        entityCache.put(path, result);
+      }
+      
+      return result;
     } finally {
       releaseClient(client);
     }
   }
-
+  
   @Override
   public void delete(String path) {
     Client client = obtainClient();
@@ -119,7 +134,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
       releaseClient(client);
     }
   }
-
+  
   private Client obtainClient() {
     return clientPool.obtainClient();
   }

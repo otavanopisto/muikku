@@ -98,7 +98,7 @@ $mainFuncFilter3 : #5dc005;
 /* Generic gradients (Grayscale) */
 
 /* Widgets */
-$w-sc: 0 2px 15px rgba(216, 230, 235, 0.5);
+$w-sc: 0 0 15px rgba(216, 230, 235, 0.2);
 $w-bgr:#fff;
 $w-brd: #f0f0f0;
 $w-tbgr:#596e7d;
@@ -499,4 +499,24 @@ background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1)
   -webkit-flex:$values;
   -ms-flex:$values;
   flex:$values;
+}
+
+@mixin generic-loader($size) {
+  -webkit-animation:generic-loader 1.0s infinite linear;
+  -moz-animation:generic-loader 1.0s infinite linear;
+  animation:generic-loader 1.0s infinite linear;
+  content: "\e900";
+  font-family: 'muikku' !important;
+  speak:none;
+  font-style:normal;
+  font-weight:normal;
+  font-variant:normal;
+  text-transform:none;
+  line-height:1;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  height:$size;
+  width:$size;
+  font-size:$size;
+  color:#7ed9ff;
 }

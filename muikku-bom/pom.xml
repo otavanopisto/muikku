@@ -4,7 +4,7 @@
 
 	<groupId>fi.muikku</groupId>
 	<artifactId>bom</artifactId>
-	<version>1.0.76-SNAPSHOT</version>
+	<version>1.0.87-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku BOM</name>
 
@@ -37,7 +37,7 @@
 
 		<!-- Muikku -->
 
-		<muikku.version>1.0.76-SNAPSHOT</muikku.version>
+		<muikku.version>1.0.87-SNAPSHOT</muikku.version>
 
 		<!-- Coops -->
 		<coops-spec.version>1.0.0</coops-spec.version>
@@ -193,6 +193,24 @@
       <dependency>
         <groupId>fi.muikku</groupId>
         <artifactId>muikku-school-data-pyramus-persistence</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>evaluation-plugin</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>evaluation-plugin-persistence</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>evaluation-plugin-rest-model</artifactId>
         <version>${muikku.version}</version>
       </dependency>
 

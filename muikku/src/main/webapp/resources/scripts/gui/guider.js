@@ -1,402 +1,342 @@
-$(document).ready(function(){
-	
-    GuideImpl = $.klass({
-
-    	init : function(){
-
-          this._loadFilters();
-    	    $(GuideImpl.guideContainer).on("click", '.gt-user:not(.open)', $.proxy(this._showUser,this));  
-          $(GuideImpl.guideContainer).on("click", '.gt-user.open .gt-user-name', $.proxy(this._hideUser,this));  
-    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-view-profile', $.proxy(this._onShowProfileClick,this));
-//    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-send-mail', $.proxy(this.messageToUser,this));
-          $(GuideImpl.guideContainer).on("click", '.gt-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));    	    
-          
-          $(window).on("hashchange", $.proxy(this._onHashChange, this));
-
-          var guiderSearchUsersInput = $("#content").find("input[name='guiderSearch']")
-          this._searchInput = guiderSearchUsersInput;
-          guiderSearchUsersInput.keyup($.proxy(this._onSearchUsersChange, this));                
-    	},
-    	
-      _refreshList: function () {
-        var _this = this;
-        var hash = window.location.hash.substring(1);
-        var term = this._searchInput.val();
-        if (hash.indexOf("filter/") === 0){
-          var first = hash.indexOf("/");
-          var second = hash.indexOf("/", first + 1); 
-          first = first + 1;
-          var filter = hash.substring(first, second);
-          var filterId = hash.substring(second + 1);          
-          switch (filter){
-            case "workspace":
-              _this._loadWorkSpaceUsers(filterId, term);
-              break;
-          }          
-        }else{
-          this._loadUsers(term);
-        }
-      },
-          	
-      _refreshListTimer: function () {
-        var _this = this;
-        
-        clearTimeout(_this.listReloadTimer);
-        _this.listReloadTimer = setTimeout(
-            function () {
-              _this._refreshList();
-            }, 500);
-      },    	
-      _onSearchUsersChange : function (event) {
-        this._refreshListTimer();
-      },
-      
-      _loadFilters : function(){
-        var filterContainer = $('.gu-filters');
-        var _this = this;
-          mApi().workspace.workspaces
-          .read({ userId: MUIKKU_LOGGED_USER_ID })
-          .callback( function (err, workspaces) {
-            if(workspaces){
-              workspaces.filtersTitle = getLocaleText('plugin.guider.filters.workspaces');
-              workspaces.filterType = "workspace";
-            }else{
-              // I have no testcase scenario of a someone who has no workspaces, but this is for now if such a person exists
-              $(window).trigger("hashchange");   
-            }
-            
-            if( err ){
-               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
-            }else{
-              renderDustTemplate('guider/guider_user_filters.dust', workspaces, function (text) {
-                filterContainer.append($.parseHTML(text));
-                
-                // Hashchange is triggered here so that the filters are loaded when it begins. Otherwise it will fail. This can't be the best way, can it?  //  
-                $(window).trigger("hashchange");   
-
-
-              });
-              
-       
-              
-            }
-          });        
-
-        
-      },      
-      _loadUsers : function(params){
-        var _this = this;
-        _this._clearUsers();
-        _this._addLoading($(GuideImpl.guideContainer));
-        var search = $(".gt-search");
-        var searchVisible = search.is(":visible");
-        
-        if(searchVisible == false ){
-          search.show("slide");
-        }
-        mApi().user.users.read({searchString : params, archetype : 'STUDENT', maxResults: 25 })
-        .callback(function (err, users) {
-          
-          if(users != undefined){
-           users.userCount = users.length;
-          }
-          if( err ){
-                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
-          }else{        
+(function() {
   
-           renderDustTemplate('guider/guider_items.dust', users, function(text) {
-             _this._clearLoading();
-            $(GuideImpl.guideContainer).append($.parseHTML(text));
-             
-            });
-          }
-        });   
+  $.widget("custom.guiderSearch", {
+    _create : function() {
+      this.element.on('keyup', '.search', $.proxy(this._inputKeyUp, this));
+    },
     
-  },
-    _loadWorkSpaceUsers : function(workspaceId, params){
-      var _this = this;
-      var workspaceArray = [workspaceId];
-      _this._clearUsers();
-      _this._addLoading($(GuideImpl.guideContainer));
+    _inputKeyUp: function (event) {
+      $('.gt-students-view-container').guiderStudents('searchTerm', this.element.find('.search').val());
+    }
+  });
 
-      mApi().user.users.read({workspaceIds : workspaceId, archetype : 'STUDENT', maxResults: 25, searchString : params })
-      .callback(function (err, users) {
-        if(users != undefined){
-          users.userCount = users.length;
-        }
-        if( err ){
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
-        }else{        
-
-         renderDustTemplate('guider/guider_items.dust', users, function(text) {
-           _this._clearLoading();
-          $(GuideImpl.guideContainer).append($.parseHTML(text));
-           
-          });
-        }
-      });       
-    }, 
-    _refreshUsers : function(){
-      var _this = this;
-      _this._clearUsers();
-      _this._addLoading($(GuideImpl.guideContainer));
-      var container = $(".mf-list");
-      var categories = container.find("li");        
-      categories.removeClass("selected");      
-      var search = $(".gt-search");
-      var searchVisible = search.is(":visible");
+  $.widget("custom.guiderFilters", {
+    
+    _create : function() {
+      this._filters = [];
+      this._loadFilters($.proxy(function () {
+        this.element.on('click', '.gu-filter-link', $.proxy(this._onFilterLink, this));
+      }, this));
+    },
+    
+    _onFilterLink: function (event) {
+      var element = $(event.target).closest('.gu-filter-link');
+      $('.gt-students-view-container').guiderStudents('workspaces', [ element.attr('data-id') ]);
+    },
+    
+    _loadFilters: function (callback) {
+      this._loadWorkspaces($.proxy(function (workspaces) {
+        var filters = [{
+          title: getLocaleText('plugin.guider.filters.workspaces'),
+          type: 'workspace',
+          data: workspaces
+        }];
+        
+        renderDustTemplate('guider/guider_user_filters.dust', { filters: filters }, $.proxy(function (text) {
+          this.element.html(text);
+          callback();
+        }, this));
+      }, this));
+    },
+    
+    _loadWorkspaces: function (callback) {
+      mApi().workspace.workspaces
+        .read({ userIdentifier: MUIKKU_LOGGED_USER })
+        .callback($.proxy(function (err, workspaces) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
+          } else {
+            callback(workspaces);
+          }
+        }, this));
+    }
+    
+  });
+  
+  $.widget("custom.guiderStudents", {
+    
+    options: {
+      studentsPerPage: 25,
+      openStudentProfile: null,
+      workspaceIds: null
+    },
+    
+    _create : function() {
+      this._page = 0;
+      this._students = [];
+      this._searchString = '';
+      this._userGroupIds = null;
+      this._workspaceIds = this.options.workspaceIds;
+      this._loading = false;
+      this._loadPending = false;
       
-      if(searchVisible == false ){
-      	search.show("slide");
+      if (this.options.openStudentProfile) {
+        this._openStudentProfile(this.options.openStudentProfile);
+      } else {
+        this._loadStudents();
       }
       
-	    mApi().user.users.read({archetype : 'STUDENT', maxResults: 25 })
-	    .callback(function (err, users) {
-        if(users != undefined){
-          users.userCount = users.length;
-        }
-		    if( err ){
-		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
-		  	}else{    	  
+      this.element.on('click', '.gt-user-name', $.proxy(this._onUserNameClick,this));
+      this.element.on('click', '.gt-tool-view-profile', $.proxy(this._onUserViewProfileClick,this));
+      this.element.on('click', '.gt-page-link-load-more', $.proxy(this._onLoadMoreClick,this));
+    },
+    
+    loadNextPage: function () {
+      this._page++;
+      this._loadStudents();
+    },
+    
+    searchTerm: function (searchTerm) {
+      this._page = 0;
+      this._searchString = searchTerm;
+      this._reloadStudents();
+    },
+    
+    workspaces: function (workspaceIds) {
+      this._page = 0;
+      this._workspaceIds = workspaceIds;
+      this._reloadStudents();
+    },
+    
+    _reloadStudents: function () {
+      if (!this._loading) {
+        this._students = [];
+        this.element
+          .empty()
+          .addClass('loading');
+        this._loadStudents();
+      } else {
+        this._loadPending = true;
+      }
+    },
+    
+    _loadStudents: function () {
+      this._loading = true;
+      
+      var options = {
+        firstResult: this._page * this.options.studentsPerPage,
+        maxResults : this.options.studentsPerPage
+      };
+      
+      if (this._searchString) {
+        options['searchString'] = this._searchString;
+      }
+      
+      if (this._userGroupIds) {
+        options['userGroupIds'] = this._userGroupIds;
+      }
+      
+      if (this._workspaceIds) {
+        options['workspaceIds'] = this._workspaceIds.join(',');
+      }
 
-		  	 renderDustTemplate('guider/guider_items.dust', users, function(text) {
-		  	   _this._clearLoading();
-  		 		$(GuideImpl.guideContainer).append($.parseHTML(text));
-  		 		 
-  		  	});
-		  	}
-	    });		
-    		
-      },
-
-      _onMoreClick : function(event){
-        var element = $(event.target);
-        element = element.parents(".gt-users-paging");
-        var pageElement = $(".gt-users-pages");
-        var _this = this;  
-
-        $(element).remove(); 
-        _this._addLoading(pageElement);
-        
-
-        var usrsCount = 0;
-        var usrs = $(GuideImpl.guideContainer).find('.gt-user');
-        
-        for(var m = 0; m < usrs.length; m++){
-          usrsCount ++;
-         }
-              
-        var fRes = usrsCount;
-        
-
-          mApi().user.users.read({ archetype : 'STUDENT', 'firstResult' : fRes}).callback(function(err, users) {
+      mApi()
+        .user.students.read(options)
+        .callback($.proxy(function (err, students) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
+          } else {
+            var hasMore = students.length == this.options.studentsPerPage;
             
-            // TODO : what if 25 users and no more? 
-            if(users != undefined){
-             users.userCount = users.length;
-            }
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
-            } else {
-              _this._clearLoading();
-              renderDustTemplate('/guider/guider_page.dust', users, function(text) {
+            this._students = this._students.concat(students);
+            renderDustTemplate('guider/guider_items.dust', { hasMore : hasMore, students: this._students }, $.proxy(function(text) {
+              this.element
+                .html(text)
+                .removeClass('loading');
+            }, this));
+          }
+          
+          this._loading = false;
+          
+          if (this._loadPending) {
+            this._loadPending = false;
+            this._reloadStudents();
+          }
+        }, this));
+    },
     
-               pageElement.append($.parseHTML(text));
+    _onUserNameClick: function (event) {
+      var element = $(event.target).closest(".gt-user");
+      var userIdentifier = $(element).attr("data-user-identifier");
+      if (element.hasClass('open')) {
+        this._hideUserDetails(userIdentifier);
+      } else {
+        this._showUserDetails(userIdentifier);
+      }
+    },
     
-              });
-            }
-          });     
-        
-
-      },      	
-    	
-    	_onShowProfileClick : function(event){
-        var element = $(event.target); 
-        element = element.parents(".gt-user");
-        var uId = $(element).attr("id");
-        window.location.hash = "userprofile/" + uId;    	  
-    	},
-    	
-	    _viewUserProfile : function(uId){
-	      this._clearUsers();
-        var container = $(".mf-list");
-        var categories = container.find("li");        
-        categories.removeClass("selected");	      
-		    mApi().user.users.read(uId).callback(function(err, user){
-				    if( err ){
-				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
-				  	}else{    	  
-					  	renderDustTemplate('guider/guider_view_profile.dust', user, function(text) {				  		
-					        $(GuideImpl.guideContainer).append($.parseHTML(text));
-					        
-//					        searchEl.hide("slide");
-					        
-						  	var cont1 = $(".gt-data-container-1 div.gt-data");
-
-			          mApi().workspace.workspaces.read({ userId: uId}).callback(function(err, wps){						  	
-							  	renderDustTemplate('coursepicker/coursepickercourse.dust',wps,function(text){
-							  		$(cont1).append($.parseHTML(text));
-							  		
-							  	});
-						    });
-					        
-					  	});
-					  	
-			  	
-				  	}	
-		    });  		
-				
-	    },    	
-	    _showUser : function(event){	      
-        var _this = this;
-	    	var element = $(event.target); 
-	      element = element.parents(".gt-user");
-	      var uId = $(element).attr("id");
-		    var det = element.find(".gt-user-details"); 
-	      var detCont = element.find(".gt-user-details-content"); 
-        var detCloseDiv = element.find(".gt-user-name");
-	    	$(element).addClass("open");
-	    	_this._addLoading(detCont);
-	    	$(det).show();	   
-        mApi().user.users.read(uId).callback(function(err, user){
-				    if( err ){
-				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
-				  	}else{    	  
-				  	  renderDustTemplate('guider/guider_item_details.dust', user, function(text) {				  		
-					  		_this._clearLoading();
-				  	    $(detCont).append($.parseHTML(text));				
-					  	});
-				  	}	
-		    });  		
-
-	    },
-      _hideUser : function(event){
-        var element = $(event.target); 
-        element = element.parents(".gt-user");
-        var det = element.find(".gt-user-details"); 
-        var detcont = element.find(".gt-user-details-content"); 
-        $(element).removeClass("open");
-        $(detcont).empty();             
-        $(det).hide();     
-        
-
-      },	    
-	    
-//	   messageToUser : function(event){
-//		   
-//			var element = $(event.target); 
-//			element = element.parents(".gt-user");
-//			var uId = $(element).attr("id");
-//
-//		   
-//			var createMessage = function(values){
-//
-//				for(value in values){
-//					  if(value == "recipienIds"){
-//					  var recipientIds = values[value];
-//					  delete values[value];
-//				  }    	
-//				 }				
-////	               	categoryName: "message",
-////	                caption : subject,
-////	                content : content,
-////	                tags : tags,
-////	                recipientId : recipientId,
-////	                recipientGroupIds : groupIds				
-//				
-//	            mApi().communicator.messages.create(recipientIds,values)
-//	              .callback(function (err, result) {
-//	              });
-//
-//			}	
-//				
-//		    mApi().user.users.read(uId)
-//		      .callback(function (err, user) {
-//		      	if( err ){
-//		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
-//		    	}else{ 		
-//				  openInSN('guider/guider_create_message.dust', user, createMessage );
-//		
-//		    	}
-//		      });		   
-//	   }, 
-      _setSelected : function(sel){
-        var container = $(".mf-list");
-        var categories = container.find("li");        
-        categories.removeClass("selected");
-        categories.off("click");
-        var selFilter = $('li'+ sel);
-        $(selFilter).addClass("selected"); 
-        $(selFilter).on("click", $.proxy(this._clearSelected, this));
-      },
-      _clearSelected : function(event){
-        event.preventDefault();  
-        var filterLink = $(event.target);
-        var filter = filterLink.parent("li")
-        filter.off("click");
-        $(filter).removeClass("selected");
-        window.location.hash = "";  
-
-      },      
-	   _addLoading : function(parentEl){
-	     $(parentEl).append('<div class="mf-loading"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div></div>');  
-	     
-	   },
-	   
-	   _clearLoading : function() {
-	     var loadingDivs = $(GuideImpl.guideContainer).find("div.mf-loading");    
-	     loadingDivs.remove();
-	   },    	   
-	    _clearUsers : function(){
-	    	$(GuideImpl.guideContainer).empty();
-	    },	    
-	    
-	    _onHashChange: function (event) {
-	      var hash = window.location.hash.substring(1);
-	      var _this = this;
-	       
-	        if (hash.indexOf("userprofile/") === 0) {
-	          var studentId = hash.substring(12);
-	          var hI = hash.indexOf('/');
-	          var cHash = hash.substring(0, hI);
-	          this._viewUserProfile(studentId);
-	        }else if (hash.indexOf("filter/") === 0){
-	          var first = hash.indexOf("/");
-	          var second = hash.indexOf("/", first + 1); 
-	          first = first + 1;
-	          var filter = hash.substring(first, second);
-	          var filterId = hash.substring(second + 1);
-	          
-            switch (filter){
-              case "workspace":
-                var clickedId = "#" + filter + "-" + filterId;                
-                  this._setSelected(clickedId);
-                  this._loadWorkSpaceUsers(filterId);
-                break;
-            }
-	        }else
-	          this._refreshUsers();
-
-	    },
-	    _klass : {
-	    	// Variables for the class
-		  guideContainer : ".gt-students-view-container",
-
-	    	  
-	    	  
-	    }
+    _onUserViewProfileClick: function (event) {
+      var element = $(event.target).closest(".gt-user");
+      var userIdentifier = $(element).attr("data-user-identifier");
+      this._openStudentProfile(userIdentifier);
+    },
     
+    _onLoadMoreClick: function (event) {
+      this.loadNextPage();
+    },
     
-    }); 
-	
+    _openStudentProfile: function (userIdentifier) {
+      this.element.find('.gt-users-pages').hide();
+      $('<div>')
+        .appendTo(this.element)
+        .guiderProfile({
+          userIdentifier: userIdentifier
+        });
+      
+      window.location.hash = "userprofile/" + userIdentifier;
+    },
+    
+    _showUserDetails : function(userIdentifier) { 
+      var userElement = this.element.find(".gt-user[data-user-identifier='" + userIdentifier + "']");
+      
+      userElement
+        .removeClass('open closed')
+        .addClass('loading');
+      
+      mApi().user.students.read(userIdentifier).callback($.proxy(function(err, user) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
+        } else {        
+          renderDustTemplate('guider/guider_item_details.dust', user, $.proxy(function(text) {              
+            userElement.find('.gt-user-details-content')
+              .html(text);
 
-   window.guider = new GuideImpl();
+            userElement
+              .removeClass('loading closed')
+              .addClass('open');
+            
+          }, this));
+        } 
+      }, this)); 
+    },
+    
+    _hideUserDetails: function(userIdentifier) {
+      this.element.find(".gt-user[data-user-identifier='" + userIdentifier + "']") 
+        .removeClass('open loading')
+        .addClass('closed');
+    },  
+    
+  });
+
+  $.widget("custom.guiderProfile", {
+    options: {
+      userIdentifier: null
+    },
+    
+    _create : function() {
+      this.element.addClass('gt-user-view-profile');
+      this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
+      
+      this._loadUser();
+    },
+    
+    _onNameClick: function (event) {
+      var element = $(event.target).closest('.gt-course');
+      if (element.hasClass('open')) {
+        element.removeClass('open');
+      } else {
+        element.addClass('open');
+      }
+    },
+    
+    _loadUser: function () {
+      this.element.addClass('loading');
+      
+      mApi().user.students
+        .read(this.options.userIdentifier)
+        .on('$', $.proxy(function(user, userCallback) {
+          mApi().user.students.logins
+            .read(this.options.userIdentifier, { maxResults: 1 })
+            .callback(function(err, loginDetails) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                user.lastLogin = loginDetails && loginDetails.length ? loginDetails[0].time : null;
+                userCallback();
+              }
+            });
+        }, this))
+        .callback($.proxy(function(err, user){
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
+          } else {
+            renderDustTemplate('guider/guider_view_profile.dust', user, $.proxy(function(text) {    
+              this.element
+                .removeClass('loading')
+                .html(text);
+              
+              mApi().workspace.workspaces
+                .read({ userIdentifier: this.options.userIdentifier })
+                .on('$', $.proxy(function(workspace, workspaceCallback) {
+                  mApi().guider.workspaces.studentactivity
+                    .read(workspace.id, this.options.userIdentifier )
+                    .callback($.proxy(function(err, activity) {  
+                      if (err) {
+                        $('.notification-queue').notificationQueue('notification', 'error', err);
+                      } else {
+                        workspace.activity = activity;
+                        workspaceCallback();
+                      }
+                    }, this));
+                }, this)) 
+                .callback($.proxy(function(err, workspaces) {             
+                  renderDustTemplate('guider/guider_profile_workspaces.dust', workspaces, $.proxy(function(text){
+                    this.element.find(".gt-data-container-1 div.gt-data").html(text);
+                  }, this));
+                }, this))
+              }, this)); 
+          }
+        }, this));
+    }
+  });
+
+  $(document).ready(function() {
+    var workspaceIds = null;
+    var openStudentProfile = null;
+    
+    var hash = window.location.hash;
+    if (hash && hash.length > 1) {
+      var settings = hash.substring(1).split(',');
+      for (var i = 0, l = settings.length; i < l; i++) {
+        var setting = settings[i].split('/');
+        if (setting.length > 0) {
+          switch (setting[0]) {
+            case 'filter':
+              if (setting.length === 3) {
+                switch (setting[1]) {
+                  case 'workspace':
+                    workspaceIds = [setting[2]];
+                  break;
+                  default:
+                    console.warn('Could not understand filter ' + setting[1]);
+                  break;
+                }
+              } else {
+                console.warn('Could not understand filter ' + settings[i]);
+              }
+            break;
+            case 'userprofile':
+              if (setting.length === 2) {
+                openStudentProfile = setting[1];
+              } else {
+                console.warn('Could not understand filter ' + settings[i]);
+              }
+            break;
+            default:
+              console.warn('Could not understand hash setting ' + setting[0]);
+            break;
+          }
+        }
+      }
+    }
+    
+    $('.gu-filters').guiderFilters();
+    $('.gt-search').guiderSearch();
+    $('.gt-students-view-container').guiderStudents({
+      workspaceIds: workspaceIds,
+      openStudentProfile: openStudentProfile
+    });
+   
+  });
   
-        
-	$(".gt-main-dropdown-label").click(function(){
-		 window.guider._refreshUsers();   
-     window.location.hash = "";    
-	});
-	
-	
-});
+}).call(this);

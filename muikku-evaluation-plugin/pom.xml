@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>fi.muikku</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.0.87-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>evaluation-plugin</artifactId>
+	<packaging>jar</packaging>
+	<name>Muikku evaluation plugin</name>
+	<description>Muikku evaluation plugin</description>
+  
+  <dependencies>
+  
+    <!-- CDI -->
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.interceptor</groupId>
+      <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- EJB -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- RESTEasy -->
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Rewrite -->
+
+    <dependency>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-servlet</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-integration-faces</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-integration-cdi</artifactId>
+    </dependency>
+
+    <!-- Muikku -->
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>plugin</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core-plugins</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>evaluation-plugin-rest-model</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>evaluation-plugin-persistence</artifactId>
+    </dependency>
+    
+  </dependencies>
+
+</project>

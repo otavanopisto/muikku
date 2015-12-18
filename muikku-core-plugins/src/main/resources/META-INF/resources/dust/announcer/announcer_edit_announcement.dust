@@ -1,0 +1,57 @@
+<div class="mf-form an-create-announcement-form-container wide">
+  <div class="an-announcement-create">
+    <form>
+     <div class="mf-form-header"><h3>{#localize key="plugin.announcer.editannouncement.topic"/} {firstName} {lastName}</h3></div>
+      <div class="mf-content">
+          <div class="an-announcement-create-body">
+            <div class="mf-fieldRow">
+              <div class="mf-textfield an-form-row-container">
+                <div class="mf-textfield-subcontainer ca-form-row-subcontainer">
+                  <div class="mf-textfield-title mf-textfield-subelement">
+                    <span class="mf-textfield-title">{#localize key="plugin.announcer.editannouncement.startdate.label"/}</span>
+                    <input id="startDate" class="mf-textfield-date" type="text" name="startDate"></input>
+                  </div>
+                  <div class="mf-textfield-title mf-textfield-subelement">
+                    <span class="mf-textfield-title">{#localize key="plugin.announcer.editannouncement.enddate.label"/}</span>
+                    <input id="endDate" class="mf-textfield-date" type="text" name="endDate"></input>
+                  </div>
+                 <div class="clear"></div>
+                </div>
+                <div class="mf-textfield">
+                 <div class="mf-textfield-subcontainer">
+                   <span class="mf-textfield-title">{#localize key="plugin.announcer.editannouncement.title.label"/}</span><input class="mf-textfield-subject" type="text" name="caption" maxlength="255"></input>
+                 </div>  
+                </div>                     
+              </div>                     
+            </div>          
+            
+            <div class="mf-fieldRow">
+              <div class="mf-textfield an-form-row-container">
+                <div class="mf-textfield">
+                 <div class="mf-textfield-subcontainer">
+                   <span class="mf-textfield-title">{#localize key="plugin.announcer.createannouncement.target.label"/}</span>
+                   <div class="an-announcement-recipients" id="msgTargetGroupsContainer"><input id="targetGroupContent" type="text" name="targetgroup"></input></div>
+                 </div>  
+                </div>                     
+              </div>                     
+            </div>          
+            
+            <div class="mf-fieldRow">
+              <div class="an-announcement-create-content">
+                <div class="mf-textarea">
+                 <textarea id="textContent" name="content"></textarea>
+                </div>
+              </div>
+             </div> 
+          </div>
+        </div>
+       <div class="mf-toolbar">
+        <input type="button" name="send" value='{#localize key="plugin.announcer.editannouncement.button.send"/}'/>
+        <input type="button" name="cancel" value='{#localize key="plugin.announcer.editannouncement.button.cancel"/}'/>
+      </div>   
+    </form>
+  
+  
+  </div>
+  
+</div>

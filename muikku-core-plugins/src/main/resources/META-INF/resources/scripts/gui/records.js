@@ -2,7 +2,7 @@
   
   $.widget("custom.records", {
     options: {
-      userEntityId: null
+      studentIdentifier: null
     },
     
     _create : function() {
@@ -15,11 +15,11 @@
     
     _loadWorkspaces: function () {
       this._clear();
-      mApi().workspace.workspaces
+      mApi({async: false}).workspace.workspaces
       .read({ userId: this.options.userEntityId })
       .on('$', $.proxy(function (workspaceEntity, callback) {
-        mApi().workspace.workspaces.assessments
-          .read(workspaceEntity.id, { userEntityId: this.options.userEntityId })
+        mApi({async: false}).workspace.workspaces.assessments
+          .read(workspaceEntity.id, { studentIdentifier: this.options.studentIdentifier })
           .callback($.proxy(function (assessmentsErr, assessments) {
             if( assessmentsErr ){
               $('.notification-queue').notificationQueue('notification', 'error', assessmentsErr );
@@ -52,15 +52,15 @@
 
        this._load();
 
-      mApi().workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
+      mApi({async: false}).workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
         .on('$', $.proxy(function (workspaceMaterial, callback) {
           // TODO: support for binary materials?
           
-          mApi().materials.html.read(workspaceMaterial.materialId).callback($.proxy(function (htmlErr, htmlMaterial) {
+          mApi({async: false}).materials.html.read(workspaceMaterial.materialId).callback($.proxy(function (htmlErr, htmlMaterial) {
             if (htmlErr) {
               $('.notification-queue').notificationQueue('notification', 'error', htmlErr);
             } else {
-              mApi().workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterial.id, {
+              mApi({async: false}).workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterial.id, {
                 userEntityId: this.options.userEntityId
               })
               .callback($.proxy(function (evaluationsErr, evaluations) {
@@ -138,7 +138,8 @@
   
   $(document).ready(function(){
     $('.tr-records-view-container').records({
-      userEntityId: MUIKKU_LOGGED_USER_ID
+      'userEntityId': MUIKKU_LOGGED_USER_ID,
+      'studentIdentifier': MUIKKU_LOGGED_USER
     });
   });
   

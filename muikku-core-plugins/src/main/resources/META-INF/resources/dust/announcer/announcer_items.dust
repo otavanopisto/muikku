@@ -1,0 +1,13 @@
+{?.}
+  <div class="mf-items-toolbar an-announcements-toolbar"> 
+     <div class="mf-items-tool an-announcements-tool archive mf-item-tool icon-delete"></div>
+     <div class="clear"></div>
+  </div>
+{/.}
+<div class="an-announcements">
+  {#.}
+    {>"announcer/announcer_item.dust"/}
+  {:else}
+    {>"announcer/announcer_empty.dust"/}
+  {/.} 
+</div>

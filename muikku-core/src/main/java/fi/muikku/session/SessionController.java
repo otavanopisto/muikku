@@ -7,6 +7,7 @@ import java.util.Locale;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.security.ContextReference;
 
 public interface SessionController {
@@ -89,6 +90,8 @@ public interface SessionController {
   public String getLoggedUserIdentifier();
   
   public String getLoggedUserSchoolDataSource();
+  
+  public SchoolDataIdentifier getLoggedUser();
   
   public UserEntity getLoggedUserEntity();
 }

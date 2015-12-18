@@ -15,6 +15,7 @@ import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.entity.User;
 
 public class UserEntityController implements Serializable {
@@ -59,7 +60,7 @@ public class UserEntityController implements Serializable {
   }
   
   public UserEntity findUserEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(dataSource, identifier, Boolean.FALSE);
     if (userSchoolDataIdentifier != null) {
       return userSchoolDataIdentifier.getUserEntity();
     }
@@ -75,6 +76,10 @@ public class UserEntityController implements Serializable {
     }
     
     return findUserEntityByDataSourceAndIdentifier(schoolDataSource, identifier);
+  }
+
+  public UserEntity findUserEntityByUserIdentifier(SchoolDataIdentifier userIdentifier) {
+    return findUserEntityByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
   }
 
   public List<UserEntity> listUserEntitiesByEmails(List<String> emails) {
@@ -115,7 +120,7 @@ public class UserEntityController implements Serializable {
   }
   
   public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByDataSource(SchoolDataSource dataSource) {
-    return userSchoolDataIdentifierDAO.listByDataSource(dataSource);
+    return userSchoolDataIdentifierDAO.listByDataSourceAndArchived(dataSource, Boolean.FALSE);
   }
 
   public List<UserEntity> listUserEntities() {

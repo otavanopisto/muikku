@@ -80,7 +80,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   public void answerCheckboxTestAdmin() throws Exception {
     if (!"microsoftedge".equals(getSauceBrowser())) {
       // FIXME: this test does not work because ms edge does not support window maximization yet
-      super.answerRadioButtonsTestAdmin();
+      super.answerCheckboxTestAdmin();
     }
   }
   
@@ -88,8 +88,59 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   public void answerCheckboxTestStudent() throws Exception {
     if (!"microsoftedge".equals(getSauceBrowser())) {
       // FIXME: this test does not work because ms edge does not support window maximization yet
-      super.answerRadioButtonsTestStudent();
+      super.answerCheckboxTestStudent();
     }
   }
+
+  @Override
+  public void answerFileFieldTestStudent() throws Exception {
+    if ("microsoftedge".equals(getSauceBrowser())) {
+      return;
+    }
+    if ("safari".equals(getSauceBrowser())) {
+      return;
+    }
+    super.answerFileFieldTestStudent();
+  }
+  
+  @Override
+  public void answerFileFieldTestAdmin() throws Exception {
+    if ("microsoftedge".equals(getSauceBrowser())) {
+      return;
+    }
+    if ("safari".equals(getSauceBrowser())) {
+      return;
+    }
+    super.answerFileFieldTestAdmin();
+  }
+
+  @Override
+  public void removeFileFieldTestAdmin() throws Exception {
+    if ("microsoftedge".equals(getSauceBrowser())) {
+      return;
+    }
+    if ("safari".equals(getSauceBrowser())) {
+      return;
+    }
+
+    if ("internet explorer".equals(getSauceBrowser()) && "10.0".equals(getSauceBrowserVersion())) {
+      return;
+    }
+    
+    super.removeFileFieldTestAdmin();
+  }
+  
+  @Override
+  public void removeFileFieldTestStudent() throws Exception {
+    if ("microsoftedge".equals(getSauceBrowser())) {
+      return;
+    }
+    if ("safari".equals(getSauceBrowser())) {
+      return;
+    }
+    super.removeFileFieldTestStudent();
+  }
+  
+  
   
 }

@@ -18,7 +18,7 @@ $(document).ready(function(){
     }
   
     function _refreshMessagesWidgetMessagesList() {
-      mApi().communicator.items.read({
+      mApi({async: false}).communicator.items.read({
         'firstResult': 0,
         'maxResults': 6
       }).callback(function (err, messages) {

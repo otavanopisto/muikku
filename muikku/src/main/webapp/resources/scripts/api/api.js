@@ -19,7 +19,8 @@
   });
   
   ResourceImpl = $.klass({
-    init: function (client) {
+    init: function (service, client) {
+      this._service = service;
       this._client = client;
       this._clientRequest = null;
     },
@@ -27,7 +28,11 @@
     create: function () {
       var request = new RequestImpl(this._client);
       this._client.opts.stringifyData = true;
-      return request.create.apply(request, arguments);
+      try {
+        return request.create.apply(request, arguments);
+      } finally {
+        this._service.cacheClear();
+      }
     },
 
     read: function () {
@@ -39,36 +44,50 @@
     update: function () {
       var request = new RequestImpl(this._client);
       this._client.opts.stringifyData = true;
-      return request.update.apply(request, arguments);
+      try {
+        return request.update.apply(request, arguments);
+      } finally {
+        this._service.cacheClear();
+      }
     },
 
     del: function () {
       var request = new RequestImpl(this._client);
       this._client.opts.stringifyData = true;
-      return request.del.apply(request, arguments);
+      try {
+        return request.del.apply(request, arguments);
+      } finally {
+        this._service.cacheClear();
+      }
     }
   });
   
   ServiceImpl = $.klass({
-    init: function (service) {
+    init: function (async, service) {
       this._client = new $.RestClient(CONTEXTPATH + '/rest/' + service + '/', {
         cache: 30,
-        cachableMethods: ["GET"],
-        ajax: {
-          async: false
-        }
+        cachableMethods: ["GET"]
       });
+      // "temporary workaround": $.RestClient has a shared `async' object in options
+      this._client.opts.ajax = {
+        dataType: 'json', 
+        async: async,
+        contentType: 'application/json' // http://stackoverflow.com/a/17660503
+      };
     },
     add: function (resources) {
       var current = this;
       while (resources.length > 0) {
         var resource = resources.splice(0, 1)[0];
         if (!current[resource]) {
-          current = current[resource] = new ResourceImpl(current._client.add(resource));
+          current = current[resource] = new ResourceImpl(this, current._client.add(resource));
         } else {
           current = current[resource];
         }
       }
+    },
+    cacheClear: function () {
+      this._client.cache.clear();
     }
   });
   
@@ -265,12 +284,20 @@
     
     callback: function (callback) {
       this._clientRequest.done($.proxy(function (data, textStatus, jqXHR) {
+        if ((textStatus === "abort") || (jqXHR.status === 0)) {
+          return;
+        }
+        
         this.handleResponse(data, function (node) {
           callback(null, data);
         });
       }, this));
       
       this._clientRequest.fail(function (jqXHR, textStatus, errorThrown) {
+        if ((textStatus === "abort") || (jqXHR.status === 0)) {
+          return;
+        }
+        
         callback(textStatus, jqXHR);
       });
       
@@ -278,43 +305,78 @@
     }
   });
   
-  function getApi() {
-    if (!window.muikkuApi) {
-      window.muikkuApi = new ApiImpl();
-
-      var resources = new Array();
-      
-      for (var i = 0, l = META_RESOURCES.length; i < l; i++) {
-        var resource = META_RESOURCES[i].replace(/\/\{[a-zA-Z0-9_.]*\}/g, '');
-        if (resource[0] == '/') {
-          resource = resource.substring(1);
-        }
-        
-        if (resource[resource.length - 1] == '/') {
-          resource = resource.substring(0, resource.length - 1);
-        }
-        
-        if (resources.indexOf(resource) == -1) {
-          resources.push(resource);
-        }
+  function getResources() {
+    var resources = new Array();
+    
+    for (var i = 0, l = META_RESOURCES.length; i < l; i++) {
+      var resource = META_RESOURCES[i].replace(/\/\{[a-zA-Z0-9_.]*\}/g, '');
+      if (resource[0] == '/') {
+        resource = resource.substring(1);
       }
+      
+      if (resource[resource.length - 1] == '/') {
+        resource = resource.substring(0, resource.length - 1);
+      }
+      
+      if (resources.indexOf(resource) == -1) {
+        resources.push(resource);
+      }
+    }
+    
+    return resources;
+  }
+  
+  function getApi(options) {
+    options = options || { async: true };
+    var resources;
+    var resource;
+    var serviceIndex;
+    var serviceName;
+    var service;
+
+    if (!window.muikkuApi) {
+      resources = getResources();
+      window.muikkuApi = new ApiImpl();
     
       for (var i = 0, l = resources.length; i < l; i++) {
-        var resource = resources[i];
+        resource = resources[i];
         
-        var serviceIndex = resource.indexOf('/');
-        var serviceName = resource.substring(0, serviceIndex);
-        var service = window.muikkuApi[serviceName];
+        serviceIndex = resource.indexOf('/');
+        serviceName = resource.substring(0, serviceIndex);
+        service = window.muikkuApi[serviceName];
         if (!service) {
-          service = new ServiceImpl(serviceName);
+          service = new ServiceImpl(false, serviceName);
           window.muikkuApi.add(serviceName, service);
         }
         
         service.add(resource.substring(serviceIndex + 1).split('/'));
       }
     }
+
+    if (!window.asyncMuikkuApi) {
+      resources = getResources();
+      window.asyncMuikkuApi = new ApiImpl();
     
-    return window.muikkuApi;
+      for (var i = 0, l = resources.length; i < l; i++) {
+        resource = resources[i];
+        
+        serviceIndex = resource.indexOf('/');
+        serviceName = resource.substring(0, serviceIndex);
+        service = window.asyncMuikkuApi[serviceName];
+        if (!service) {
+          service = new ServiceImpl(true, serviceName);
+          window.asyncMuikkuApi.add(serviceName, service);
+        }
+        
+        service.add(resource.substring(serviceIndex + 1).split('/'));
+      }
+    }
+    
+    if (options.async) {
+      return window.asyncMuikkuApi;
+    } else {
+      return window.muikkuApi;
+    }
   };
   
   window.mApi = getApi;

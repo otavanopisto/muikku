@@ -135,14 +135,28 @@
 
 
 .gt-user {
-   @extend .co-listItem;
-   .gt-user-details{ 
-   }
-   &.closed{}
-   &.open{
+  @extend .co-listItem;
 
-   }
-}
+  &.closed,
+  &.loading {
+    .gt-user-details{ 
+      display: none;
+    }
+  }
+  
+  &.loading {
+    padding-bottom: 20px;
+  
+    &:after {
+      @include generic-loader(50px);
+    
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+  }
+}  
+
 .gt-user-name{
   width:100%;
   cursor:pointer;
@@ -276,17 +290,127 @@
   }
 }
 
-.gt-user-view-profile{
- > div{padding:15px;}
+.gt-user-view-profile {
+  > div{
+    padding:15px;
+  }
   
   div[class*="gt-data-container"]{
     width:100%;
   }
   
+  &.loading {
+    background-color: #fff;
+    padding-bottom: 50px;
+    padding-top: 50px;
+    
+    &:after {
+      @include generic-loader(50px);
+    
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+  }
+  
+  
 }
 
- .gt-data{
-    width:100%;
+ .gt-data {
+   width:100%;
+
+   .gt-course-details-container {
+      cursor:pointer;
+      background:#fff;
+      
+      .gt-course-description {
+        display:inline-block;
+        width:100%;
+        cursor:pointer;  
+      }
+      
+    }
+  
  }
+ 
+.gt-course {
+  @extend .co-listItem;
+  padding:5px 5px 5px 5px;
+  margin-bottom:10px;
+  border-left: 3px solid $mainFuncFilter1; 
 
+  
+  &.open {
+  
+    .gt-course-details-container {
+      margin:-5px;
+      padding:5px;
+      background:$mainFuncFilter1;
+      color:#fff;
+      border-top-right-radius:3px;
+      border-bottom-right-radius:3px;
+      
+      .gt-course-header-name {
+        color:#fff;
+      }
+      
+    }
+    
+  }
+  
+}
 
+.gt-course h4 {
+  margin:5px -5px;
+  text-transform:none;
+  font-size:14px;
+  font-weight:400;
+  background:#f8f8f8;
+  padding:5px;
+}
+
+.gt-course .gt-course-activity {
+  display: none; 
+  font-weight:300;
+}
+
+.gt-course.open .gt-course-activity {
+  display: block; 
+}
+
+.gt-course-details-container {
+  @include flexbox(); 
+}
+
+.gt-course-description {
+  flex: 1;
+}
+
+.gt-course-activity-short {
+  flex: 1;
+  text-align: right;
+  padding-right: 5px;
+}
+
+.gt-course-activity-row {
+  display: flex;  
+  transition:background 0.3s ease-in-out;
+  
+  &:hover {
+    background:#dff7ff;
+    border-radius:3px;
+  }
+}
+
+.gt-course-activity-row label {
+  flex: 1;
+  font-weight:300;
+  padding:5px;
+  margin:0 0 0 5px;
+}
+
+.gt-course-activity-row span {
+  flex: 1;
+  text-align: right;
+  padding:5px;
+}

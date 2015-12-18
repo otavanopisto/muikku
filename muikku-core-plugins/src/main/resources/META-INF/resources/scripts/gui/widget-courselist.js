@@ -1,7 +1,7 @@
  
 $(document).ready(function(){
 
-    mApi().workspace.workspaces
+    mApi({async: false}).workspace.workspaces
     .read({ userId: MUIKKU_LOGGED_USER_ID })
     .callback( function (err, workspaces) {
     	
@@ -15,6 +15,7 @@ $(document).ready(function(){
         
         }, function (text) {
             $('#widgetCourselist').append($.parseHTML(text));
+            $('#widgetCourselist').perfectScrollbar({"suppressScrollX" : true});
           });
         
     	}

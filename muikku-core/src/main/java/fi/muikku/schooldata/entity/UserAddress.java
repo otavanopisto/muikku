@@ -1,8 +1,10 @@
 package fi.muikku.schooldata.entity;
 
+import fi.muikku.schooldata.SchoolDataIdentifier;
+
 public interface UserAddress extends SchoolDataEntity {
 	
-	public String getUserIdentifier();
+	public SchoolDataIdentifier getUserIdentifier();
 
 	public String getStreet();
 	

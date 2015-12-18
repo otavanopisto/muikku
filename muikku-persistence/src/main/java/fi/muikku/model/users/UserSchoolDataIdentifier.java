@@ -50,6 +50,14 @@ public class UserSchoolDataIdentifier {
 		this.identifier = identifier;
 	}
 
+	public Boolean getArchived() {
+    return archived;
+  }
+	
+	public void setArchived(Boolean archived) {
+    this.archived = archived;
+  }
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -64,4 +72,8 @@ public class UserSchoolDataIdentifier {
 
 	@ManyToOne
 	private UserEntity userEntity;
+	
+	@NotNull
+  @Column(nullable = false)
+  private Boolean archived;
 }

@@ -6,7 +6,6 @@ import javax.inject.Inject;
 
 import fi.muikku.plugins.search.SearchResultProcessor;
 import fi.muikku.plugins.seeker.SeekerResult;
-import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 
@@ -19,8 +18,7 @@ public class WorkspaceSeekerResultProvider extends AbstractSeekerResultProvider 
   public List<SeekerResult> search(String searchTerm) {
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
     if (elasticSearchProvider != null) {
-      String[] fields = new String[] { "name", "description", "courseIdentifierIdentifier" };
-      SearchResult result = elasticSearchProvider.search(searchTerm, fields, 0, 10, Workspace.class);
+      SearchResult result = elasticSearchProvider.searchWorkspaces(searchTerm, 0, 10);
       return searchResultProcessor.process(result);
     }
     return null;

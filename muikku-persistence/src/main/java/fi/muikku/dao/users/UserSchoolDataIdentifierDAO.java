@@ -17,19 +17,35 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
 
 	private static final long serialVersionUID = 6176973178652139440L;
 
-	public UserSchoolDataIdentifier create(SchoolDataSource dataSource, String identifier, UserEntity userEntity) {
+	public UserSchoolDataIdentifier create(SchoolDataSource dataSource, String identifier, UserEntity userEntity, Boolean archived) {
 		UserSchoolDataIdentifier userSchoolDataIdentifier = new UserSchoolDataIdentifier();
 
 		userSchoolDataIdentifier.setIdentifier(identifier);
 		userSchoolDataIdentifier.setDataSource(dataSource);
 		userSchoolDataIdentifier.setUserEntity(userEntity);
+		userSchoolDataIdentifier.setArchived(archived);
 		
-		getEntityManager().persist(userSchoolDataIdentifier);
-
-		return userSchoolDataIdentifier;
+		return persist(userSchoolDataIdentifier);
 	}
 
-	public UserSchoolDataIdentifier findByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
+  public UserSchoolDataIdentifier findByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserSchoolDataIdentifier> criteria = criteriaBuilder.createQuery(UserSchoolDataIdentifier.class);
+    Root<UserSchoolDataIdentifier> root = criteria.from(UserSchoolDataIdentifier.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.dataSource), dataSource),
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.identifier), identifier)
+      )
+    );
+
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+	public UserSchoolDataIdentifier findByDataSourceAndIdentifierAndArchived(SchoolDataSource dataSource, String identifier, Boolean archived) {
 		EntityManager entityManager = getEntityManager();
 
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -39,14 +55,15 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
 		criteria.where(
 	    criteriaBuilder.and(
 	      criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.dataSource), dataSource),
-        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.identifier), identifier)
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.identifier), identifier),
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.archived), archived)
 	    )
     );
 
 		return getSingleResult(entityManager.createQuery(criteria));
 	}
 
-	public List<UserSchoolDataIdentifier> listByUserEntity(UserEntity userEntity) {
+	public List<UserSchoolDataIdentifier> listByUserEntityAndArchived(UserEntity userEntity, Boolean archived) {
 		EntityManager entityManager = getEntityManager();
 
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -55,14 +72,15 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
 		criteria.select(root);
 		criteria.where(
 	    criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.userEntity), userEntity)
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.userEntity), userEntity),
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.archived), archived)
 	    )
     );
 
 		return entityManager.createQuery(criteria).getResultList();
 	}
 
-  public List<UserSchoolDataIdentifier> listByDataSource(SchoolDataSource dataSource) {
+  public List<UserSchoolDataIdentifier> listByDataSourceAndArchived(SchoolDataSource dataSource, Boolean archived) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -71,11 +89,17 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.dataSource), dataSource)
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.dataSource), dataSource),
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.archived), archived)
       )
     );
 
     return entityManager.createQuery(criteria).getResultList();
   }
-
+  
+  public UserSchoolDataIdentifier updateArchived(UserSchoolDataIdentifier userSchoolDataIdentifier, Boolean archived) {
+    userSchoolDataIdentifier.setArchived(archived);
+    return persist(userSchoolDataIdentifier);
+  }
+  
 }

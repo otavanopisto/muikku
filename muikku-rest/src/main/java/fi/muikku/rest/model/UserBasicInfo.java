@@ -8,11 +8,13 @@ public class UserBasicInfo {
   public UserBasicInfo(Long id,
               String firstName,
               String lastName, 
+              String studyProgrammeName,
               boolean hasImage) {
     super();
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.studyProgrammeName = studyProgrammeName;
     this.hasImage = hasImage;
   }
 
@@ -39,6 +41,14 @@ public class UserBasicInfo {
   public void setLastName(String lastName) {
     this.lastName = lastName;
   }
+  
+  public String getStudyProgrammeName() {
+    return studyProgrammeName;
+  }
+  
+  public void setStudyProgrammeName(String studyProgrammeName) {
+    this.studyProgrammeName = studyProgrammeName;
+  }
 
   public boolean isHasImage() {
     return hasImage;
@@ -51,5 +61,6 @@ public class UserBasicInfo {
   private Long id;
   private String firstName;
   private String lastName;
+  private String studyProgrammeName;
   private boolean hasImage;
 }
