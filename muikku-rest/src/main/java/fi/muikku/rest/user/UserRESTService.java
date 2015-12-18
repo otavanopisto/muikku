@@ -127,7 +127,7 @@ public class UserRESTService extends AbstractRESTService {
 
       // Groups where user is a member
       
-      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUser(loggedUser);
+      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
       for (UserGroupEntity userGroup : userGroups) {
         userGroupFilters.add(userGroup.getId());
       }
@@ -309,7 +309,7 @@ public class UserRESTService extends AbstractRESTService {
 
 	    // Groups where user is a member
 	    
-	    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUser(loggedUser);
+	    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
 	    for (UserGroupEntity userGroup : userGroups) {
 	      userGroupFilters.add(userGroup.getId());
 	    }
