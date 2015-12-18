@@ -1,7 +1,5 @@
 package fi.muikku.plugins.workspace;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,8 +8,6 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.rewrite.annotation.Join;
@@ -19,6 +15,7 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.controller.SystemSettingsController;
+import fi.muikku.jsf.NavigationController;
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
@@ -40,9 +37,6 @@ public class WorkspaceMaterialsBackingBean {
   private String workspaceUrlName;
 
   @Inject
-  private HttpServletRequest httpServletRequest;
-
-  @Inject
   private WorkspaceController workspaceController;
 
   @Inject
@@ -57,9 +51,12 @@ public class WorkspaceMaterialsBackingBean {
   
   @Inject
   private SystemSettingsController systemSettingsController;
+  
+  @Inject
+  private NavigationController navigationController;
 
   @RequestAction
-  public String init() throws UnsupportedEncodingException {
+  public String init() {
     String urlName = getWorkspaceUrlName();
 
     if (StringUtils.isBlank(urlName)) {
@@ -80,12 +77,7 @@ public class WorkspaceMaterialsBackingBean {
 
     if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_MATERIALS, workspaceEntity)) {
       if (!sessionController.isLoggedIn()) {
-        String redirectUrl = (String) httpServletRequest.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
-        if (redirectUrl == null) {
-          redirectUrl = httpServletRequest.getRequestURL().toString();
-        }
-        
-        return "/login.jsf?faces-redirect=true&redirectUrl=" + URLEncoder.encode(redirectUrl, "UTF-8");
+        return navigationController.requireLogin();
       } else {
         return NavigationRules.ACCESS_DENIED;
       }
