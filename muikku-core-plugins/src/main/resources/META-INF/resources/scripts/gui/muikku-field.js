@@ -472,9 +472,11 @@
       $(this.element).addClass('muikku-field');
       if (this.trackChange()) {
         $(this.element).on("change", $.proxy(this._onChange, this));
+        $(this.element).on("paste", $.proxy(this._onPaste, this));
       }
       if (this.trackKeyUp()) {
         $(this.element).on("keyup", $.proxy(this._onKeyUp, this));
+        $(this.element).on("paste", $.proxy(this._onPaste, this));
       }
       
       $(document).on('workspace:field-answer-saved', $.proxy(this._onFieldAnswerSaved, this));
@@ -593,6 +595,10 @@
     },
     
     _onChange: function (event) {
+      this._propagateChange();
+    },
+
+    _onPaste: function (event) {
       this._propagateChange();
     },
     
