@@ -138,7 +138,7 @@
               var assessorEntityId = $(this._dialog).find('select[name="assessor"]').val();
               var workspaceEntityId = this.options.workspaceEntityId;
               var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
-              
+              this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
               if(this.options.assessmentId){
                 mApi({async: false}).workspace.workspaces.assessments.update(workspaceEntityId, this.options.assessmentId, {
                   evaluated: assessedDate,
@@ -158,7 +158,7 @@
                     if(studentElement.hasClass('workspace-evaluated')){
                       studentElement.find('.workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
-                    }else{
+                    } else {
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
@@ -171,6 +171,8 @@
                       studentElement.removeClass('workspace-evaluation-requested');
                       studentElement.addClass('workspace-evaluated');
                     }
+                    this._loader.remove();
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
                     this.element.remove();
                   }
                 }, this));
@@ -186,27 +188,29 @@
                   verbalAssessment: verbalAssessment
                 }).callback($.proxy(function (err, result) {
                   if (err) {
+                    this._loader.remove();
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.assessment = result;
                     var studentElement = $(this.options.triggeringElement.element);
-                    if(studentElement.hasClass('workspace-evaluated')){
+                    if (studentElement.hasClass('workspace-evaluated')) {
                       studentElement.find('.workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
-                    }else{
+                    } else {
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
                     
-                      if(studentElement.hasClass('workspace-evaluation-requested')){
+                      if (studentElement.hasClass('workspace-evaluation-requested')) {
                         studentElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
-                      }else{
+                      } else {
                         evaluatedDate.prependTo(studentElement);
                       }
                       studentElement.removeClass('workspace-evaluation-requested');
                       studentElement.addClass('workspace-evaluated');
                     }
-
+                    this._loader.remove();
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.successful"));
                     this.element.remove();
                   }
                 }, this));
@@ -228,6 +232,7 @@
     },
     
     _load: function (callback) {
+      this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
       var materialIds = $.map(this.options.workspaceAssignments, function (workspaceAssignment) {
         return workspaceAssignment.workspaceMaterial.materialId;
       });
@@ -250,6 +255,7 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
               this._loadTemplate(results, callback);
+              this._loader.remove();
             }
           }, this));
         }
@@ -423,6 +429,7 @@
               var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
               var workspaceMaterialId = this.options.workspaceMaterialId;
               var workspaceEntityId = this.options.workspaceEntityId;
+              this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
               
               if (this.options.evaluationId) {
                 mApi({async: false}).workspace.workspaces.materials.evaluations.update(workspaceEntityId, workspaceMaterialId, this.options.evaluationId, {
@@ -437,12 +444,15 @@
                   verbalAssessment: verbalAssessment
                 }).callback($.proxy(function (err, result) {
                   if (err) {
+                    this._loader.remove();
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.evaluation = result;
                     this.options.triggeringElement.element.addClass('assignment-evaluated');
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
                       .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(result.evaluated)));
+                    this._loader.remove();
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.assignmentEvaluationDialog.evaluation.updateSuccessful"));
                     this.element.remove();
                   }
                 }, this));
@@ -459,14 +469,16 @@
                   verbalAssessment: verbalAssessment
                 }).callback($.proxy(function (err, result) {
                   if (err) {
+                    this._loader.remove();
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.evaluation = result;
                     this.options.triggeringElement.element.addClass('assignment-evaluated');
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
                       .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(result.evaluated)));
+                    this._loader.remove();
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.assignmentEvaluationDialog.evaluation.successful"));
                     this.element.remove();
-                    
                   }
                 }, this));
               }
@@ -487,6 +499,7 @@
     },
     
     _load: function (callback) {
+      this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
       $('#evaluation').evaluationLoader("loadHtml", this.options.materialId, $.proxy(function (err, htmlMaterial) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -498,6 +511,7 @@
             htmlMaterial.html, 
             callback
           );
+          this._loader.remove();
         }
       }, this));
     },
