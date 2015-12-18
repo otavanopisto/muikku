@@ -58,7 +58,7 @@ public class GuiderStudentWorkspaceActivity {
     }
     
     public void addAnswered(Date date) {
-      if (answeredLastDate == null || answeredLastDate.before(date)) {
+      if ((date != null) && (answeredLastDate == null || answeredLastDate.before(date))) {
         answeredLastDate = date;
       }
       
@@ -66,7 +66,7 @@ public class GuiderStudentWorkspaceActivity {
     }
     
     public void addSubmitted(Date date) {
-      if (submittedLastDate == null || submittedLastDate.before(date)) {
+      if ((date != null) && (submittedLastDate == null || submittedLastDate.before(date))) {
         submittedLastDate = date;
       }
       
@@ -74,7 +74,7 @@ public class GuiderStudentWorkspaceActivity {
     }
     
     public void addPassed(Date date) {
-      if (passedLastDate == null || passedLastDate.before(date)) {
+      if ((date != null) && (passedLastDate == null || passedLastDate.before(date))) {
         passedLastDate = date;
       }
       
@@ -82,7 +82,7 @@ public class GuiderStudentWorkspaceActivity {
     }
     
     public void addFailed(Date date) {
-      if (failedLastDate == null || failedLastDate.before(date)) {
+      if ((date != null) && (failedLastDate == null || failedLastDate.before(date))) {
         failedLastDate = date;
       }
       
@@ -153,7 +153,7 @@ public class GuiderStudentWorkspaceActivity {
     }
     
     public void addAnswered(Date date) {
-      if (answeredLastDate == null || answeredLastDate.before(date)) {
+      if ((date != null) && (answeredLastDate == null || answeredLastDate.before(date))) {
         answeredLastDate = date;
       }
       
