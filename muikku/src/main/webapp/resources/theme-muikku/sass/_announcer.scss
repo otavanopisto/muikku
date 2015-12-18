@@ -1,4 +1,57 @@
   /* announcer (.an-*) */
+  
+/* create announcement */
+
+.an-announcement-create-body{
+  
+  .mf-textfield {
+    width:100%;
+  } 
+  
+  .an-announcement-targetgroup {
+    float:left;
+    cursor:pointer;
+    margin-top:0 !important;  
+      
+    &:not(:first-child) {
+      margin-left:10px;
+      margin-top:0 !important;
+    }
+    
+  } 
+  
+  .an-announcement-targetgroup-name {
+    float:left;
+    margin-top:0 !important;
+    font-family:inherit;
+    margin-left: 10px;
+    padding: 9px 0;
+
+    &:before {
+      margin-right:5px;
+      font-family: 'muikku';
+    }     
+
+    &.usergroup {
+
+      &:before {
+       color:green;
+      }     
+
+    }
+    
+    &:hover {
+      color:red;
+      
+      &:before {
+        color:red;
+      }
+      
+    }      
+        
+  }  
+  
+}
 
 .an-announcements-view-container{}
 .an-announcements{

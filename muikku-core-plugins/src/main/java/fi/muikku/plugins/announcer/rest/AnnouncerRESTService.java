@@ -7,8 +7,8 @@ import java.util.List;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -20,14 +20,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.announcer.AnnouncementController;
+import fi.muikku.plugins.announcer.AnnouncerPermissions;
 import fi.muikku.plugins.announcer.model.Announcement;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
+import fi.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
-import fi.muikku.plugins.announcer.AnnouncerPermissions;
 
 @RequestScoped
 @Stateful
@@ -44,18 +46,27 @@ public class AnnouncerRESTService extends PluginRESTService {
   @LocalSession
   private SessionController sessionController;
   
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
   @POST
   @Path("/announcements")
   @RESTPermit(AnnouncerPermissions.CREATE_ANNOUNCEMENT)
   public Response createAnnouncement(AnnouncementRESTModel restModel) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
-    announcementController.create(
+    Announcement announcement = announcementController.create(
         userEntity,
         restModel.getCaption(),
         restModel.getContent(),
         restModel.getStartDate(),
-        restModel.getEndDate());
+        restModel.getEndDate(),
+        restModel.getPubliclyVisible());
+    
+    for (Long id : restModel.getUserGroupEntityIds()) {
+      UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(id);
+      announcementController.addAnnouncementTargetGroup(announcement, userGroupEntity);
+    }
     
     return Response.noContent().build();
   }
@@ -92,7 +103,8 @@ public class AnnouncerRESTService extends PluginRESTService {
   @Path("/announcements")
   @RESTPermit(handling=Handling.INLINE)
   public Response listAnnouncements(
-      @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive
+      @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive,
+      @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine
   ) {
     if (!onlyActive) {
       if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
@@ -102,9 +114,14 @@ public class AnnouncerRESTService extends PluginRESTService {
     
     List<Announcement> announcements = null;
     if (onlyActive) {
-      announcements = announcementController.listActive();
+      if (onlyMine) {
+        UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
+        announcements = announcementController.listActiveByTargetedUserEntity(currentUserEntity);
+      } else {
+        announcements = announcementController.listActive();
+      }
     } else {
-      announcements = announcementController.listAll();
+      announcements = announcementController.listUnarchived();
     }
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
@@ -134,6 +151,8 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setStartDate(announcement.getStartDate());
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
+    restModel.setPubliclyVisible(announcement.isPubliclyVisible());
+
     Date date = new Date();
     if (date.before(announcement.getStartDate())) {
       restModel.setTemporalStatus(AnnouncementTemporalStatus.UPCOMING);
@@ -142,6 +161,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     } else {
       restModel.setTemporalStatus(AnnouncementTemporalStatus.ACTIVE);
     }
+
     return restModel;
   }
 
