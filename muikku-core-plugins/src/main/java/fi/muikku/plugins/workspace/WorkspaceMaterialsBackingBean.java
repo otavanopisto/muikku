@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,6 +10,8 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.rewrite.annotation.Join;
@@ -22,13 +26,11 @@ import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
-import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/materials", to = "/jsf/workspace/materials.jsf")
-@LoggedIn
 public class WorkspaceMaterialsBackingBean {
 
   @Inject
@@ -36,6 +38,9 @@ public class WorkspaceMaterialsBackingBean {
 
   @Parameter
   private String workspaceUrlName;
+
+  @Inject
+  private HttpServletRequest httpServletRequest;
 
   @Inject
   private WorkspaceController workspaceController;
@@ -54,7 +59,7 @@ public class WorkspaceMaterialsBackingBean {
   private SystemSettingsController systemSettingsController;
 
   @RequestAction
-  public String init() {
+  public String init() throws UnsupportedEncodingException {
     String urlName = getWorkspaceUrlName();
 
     if (StringUtils.isBlank(urlName)) {
@@ -66,13 +71,26 @@ public class WorkspaceMaterialsBackingBean {
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
     }
-    
+
     if (!workspaceEntity.getPublished()) {
       if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
         return NavigationRules.NOT_FOUND;
       }
     }
 
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_MATERIALS, workspaceEntity)) {
+      if (!sessionController.isLoggedIn()) {
+        String redirectUrl = (String) httpServletRequest.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
+        if (redirectUrl == null) {
+          redirectUrl = httpServletRequest.getRequestURL().toString();
+        }
+        
+        return "/login.jsf?faces-redirect=true&redirectUrl=" + URLEncoder.encode(redirectUrl, "UTF-8");
+      } else {
+        return NavigationRules.ACCESS_DENIED;
+      }
+    }
+    
     rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);
