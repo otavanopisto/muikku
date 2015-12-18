@@ -49,8 +49,8 @@
       }
       
       var createAnnouncement = function(values){
-        values.startDate = moment(values.startDate, "DD. MM. YYYY").format("YYYY-MM-DD");
-        values.endDate = moment(values.endDate, "DD. MM. YYYY").format("YYYY-MM-DD");
+        values.startDate = moment(values.startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+        values.endDate = moment(values.endDate, "DD.MM.YYYY").format("YYYY-MM-DD");
         values.userGroupEntityIds = $.map($("input[name='userGroupEntityIds']"), function(element) {
           return $(element).val();
         });
@@ -75,7 +75,6 @@
       openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement, formFunctions);
     },
     
-    
     _onEditAnnouncementClick: function (event) {
       var ann = event.target;
       
@@ -89,33 +88,69 @@
         .announcer
         .announcements
         .read(id).callback($.proxy(function(err, announcement){
-          var start = moment(announcement.startDate, "YYYY-MM-DD").format("DD. MM. YYYY");
-          var end = moment(announcement.endDate,  "YYYY-MM-DD").format("DD. MM. YYYY");
+          var start = moment(announcement.startDate, "YYYY-MM-DD").format("DD.MM.YYYY");
+          var end = moment(announcement.endDate,  "YYYY-MM-DD").format("DD.MM.YYYY");
+          var groups = [];
+          var callbacks = [];
+          
+          var retrieveUserGroup = function(userGroupEntityId, callback) {
+            mApi().usergroup.groups.read(userGroupEntityId).callback(function(err, result) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(null, {
+                  name : result.name + " (" + result.userCount + ")",
+                  id : result.id,
+                });
+              }
+            });
+          };
+          
+          async.map(announcement.userGroupEntityIds, retrieveUserGroup, $.proxy(function(err, userGroups) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              var targetGroupsContainerElement = $("#msgTargetGroupsContainer");      
 
-          
-          $('#startDate')
-            .datepicker({
-              "dateFormat": "dd.mm.yy"
-            })
-            .datepicker('setDate', start);
-          
-          $('#endDate')
-            .datepicker({
-              "dateFormat": "dd.mm.yy"
-            })
-            .datepicker('setDate', end);
-          
-          $("input[name='caption']").val(announcement.caption);  
-          CKEDITOR.instances.textContent.setData(announcement.content);
-          
+              for (var i=0; i<userGroups.length; i++) {
+                renderDustTemplate('announcer/announcer_targetgroup.dust', userGroups[i], function (text) {
+                  targetGroupsContainerElement.prepend($.parseHTML(text));
+                });
+              }
+              
+              $('#startDate')
+                .datepicker({
+                  "dateFormat": "dd.mm.yy"
+                })
+                .datepicker('setDate', start);
+              
+              $('#endDate')
+                .datepicker({
+                  "dateFormat": "dd.mm.yy"
+                })
+                .datepicker('setDate', end);
+              
+              $("input[name='caption']").val(announcement.caption);  
+              CKEDITOR.instances.textContent.setData(announcement.content);
+                  
+            }
+          }, this));
         }, this));
-
-
       }
       
       var editAnnouncement = function(values){
-        values.startDate = moment(values.startDate, "DD. MM. YYYY").format("YYYY-MM-DD");
-        values.endDate = moment(values.endDate, "DD. MM. YYYY").format("YYYY-MM-DD");
+        values.startDate = moment(values.startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+        values.endDate = moment(values.endDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+        values.userGroupEntityIds = $.map($("input[name='userGroupEntityIds']"), function(element) {
+          return $(element).val();
+        });
+        
+        if (values.userGroupEntityIds.length) {
+          values.publiclyVisible = false;
+        } else {
+          values.publiclyVisible = true;
+        }
+        
         mApi().announcer.announcements.update(id, values).callback($.proxy(function(err, result) {
           if (err) {
             $(".notification-queue").notificationQueue('notification','error',err);

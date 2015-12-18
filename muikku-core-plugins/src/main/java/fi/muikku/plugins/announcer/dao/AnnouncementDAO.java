@@ -86,6 +86,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
           criteriaBuilder.lessThanOrEqualTo(announcement.get(Announcement_.startDate), currentDate),
           criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), currentDate),
           criteriaBuilder.equal(announcement.get(Announcement_.archived), archived),
+          criteriaBuilder.equal(root.get(AnnouncementUserGroup_.archived), false),
           root.get(AnnouncementUserGroup_.userGroupEntityId).in(userGroupEntityIds),
           criteriaBuilder.equal(announcement.get(Announcement_.publiclyVisible), publiclyVisible)));
     criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
@@ -184,6 +185,15 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       Date endDate
   ) {
     announcement.setEndDate(endDate);
+
+    return persist(announcement);
+  }
+
+  public Announcement updatePubliclyVisible(
+      Announcement announcement,
+      boolean publiclyVisible
+  ) {
+    announcement.setPubliclyVisible(publiclyVisible);
 
     return persist(announcement);
   }

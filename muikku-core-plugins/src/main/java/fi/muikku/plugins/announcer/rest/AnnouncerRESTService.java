@@ -25,6 +25,7 @@ import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.announcer.AnnouncementController;
 import fi.muikku.plugins.announcer.AnnouncerPermissions;
 import fi.muikku.plugins.announcer.model.Announcement;
+import fi.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.users.UserGroupEntityController;
@@ -94,9 +95,20 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getCaption(),
         restModel.getContent(),
         restModel.getStartDate(),
-        restModel.getEndDate());
+        restModel.getEndDate(),
+        restModel.getPubliclyVisible());
+
+    announcementController.clearAnnouncementTargetGroups(newAnnouncement);
+    for (Long id : restModel.getUserGroupEntityIds()) {
+      UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(id);
+      announcementController.addAnnouncementTargetGroup(newAnnouncement, userGroupEntity);
+    }
     
-    return Response.ok(createRESTModel(newAnnouncement)).build();
+    return Response.ok(
+        createRESTModel(
+            newAnnouncement,
+            announcementController.listUserGroups(newAnnouncement)))
+        .build();
   }
   
   @GET
@@ -126,7 +138,9 @@ public class AnnouncerRESTService extends PluginRESTService {
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
-      AnnouncementRESTModel restModel = createRESTModel(announcement);
+      AnnouncementRESTModel restModel = createRESTModel(
+          announcement,
+          announcementController.listUserGroups(announcement));
       restModels.add(restModel);
     }
 
@@ -138,11 +152,17 @@ public class AnnouncerRESTService extends PluginRESTService {
   @RESTPermit(AnnouncerPermissions.FIND_ANNOUNCEMENT)
   public Response findAnnouncementById(@PathParam("ID") Long announcementId) {
     Announcement announcement = announcementController.findById(announcementId);
-    AnnouncementRESTModel restModel = createRESTModel(announcement);
+    AnnouncementRESTModel restModel = createRESTModel(
+        announcement,
+        announcementController.listUserGroups(announcement));
     return Response.ok(restModel).build();
   }
 
-  private AnnouncementRESTModel createRESTModel(Announcement announcement) {
+  private AnnouncementRESTModel createRESTModel(
+      Announcement announcement,
+      List<AnnouncementUserGroup> userGroups
+  ) {
+      
     AnnouncementRESTModel restModel = new AnnouncementRESTModel();
     restModel.setPublisherUserEntityId(announcement.getPublisherUserEntityId());
     restModel.setCaption(announcement.getCaption());
@@ -152,6 +172,12 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
     restModel.setPubliclyVisible(announcement.isPubliclyVisible());
+
+    List<Long> userGroupEntityIds = new ArrayList<>();
+    for (AnnouncementUserGroup announcementUserGroup : userGroups) {
+      userGroupEntityIds.add(announcementUserGroup.getId());
+    }
+    restModel.setUserGroupEntityIds(userGroupEntityIds);
 
     Date date = new Date();
     if (date.before(announcement.getStartDate())) {
