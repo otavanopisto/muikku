@@ -123,7 +123,7 @@ public class AnnouncementController {
       UserEntity targetedUserEntity
   ) {
     List<UserGroupEntity> userGroupEntities = 
-        userGroupEntityController.listUserGroupsByUser(targetedUserEntity);
+        userGroupEntityController.listUserGroupsByUserEntity(targetedUserEntity);
     
     return listActiveByUserGroupEntities(userGroupEntities);
   }
