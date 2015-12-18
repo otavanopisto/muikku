@@ -28,6 +28,23 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
 		return persist(userSchoolDataIdentifier);
 	}
 
+  public UserSchoolDataIdentifier findByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserSchoolDataIdentifier> criteria = criteriaBuilder.createQuery(UserSchoolDataIdentifier.class);
+    Root<UserSchoolDataIdentifier> root = criteria.from(UserSchoolDataIdentifier.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.dataSource), dataSource),
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.identifier), identifier)
+      )
+    );
+
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+
 	public UserSchoolDataIdentifier findByDataSourceAndIdentifierAndArchived(SchoolDataSource dataSource, String identifier, Boolean archived) {
 		EntityManager entityManager = getEntityManager();
 

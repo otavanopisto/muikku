@@ -112,10 +112,15 @@ public class DefaultSchoolDataUserListener {
       
       // Attach discovered identities to user
       for (SchoolDataIdentifier identifier : discoveredIdentifiers) {
-        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
+        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(
+            identifier.getDataSource(),
+            identifier.getIdentifier());
         if (userSchoolDataIdentifier == null) {
           userSchoolDataIdentifierController.createUserSchoolDataIdentifier(identifier.getDataSource(), identifier.getIdentifier(), userEntity);
           logger.log(Level.FINE, String.format("Added new identifier %s for user %d", identifier, userEntity.getId()));
+        }
+        else if (userSchoolDataIdentifier.getArchived()) {
+          userSchoolDataIdentifierController.unarchiveUserSchoolDataIdentifier(userSchoolDataIdentifier);
         }
       }
       
