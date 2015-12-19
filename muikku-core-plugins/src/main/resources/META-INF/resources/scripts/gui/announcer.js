@@ -34,17 +34,25 @@
         var end = new Date(start.getTime());
         end.setHours(end.getHours() + 1);
         
-        $('#startDate')
-          .datepicker({
-            "dateFormat": "dd.mm.yy"
-          })
-          .datepicker('setDate', start);
+        $('#startDate').datepicker({
+            "dateFormat": "dd.mm.yy",
+            onClose: function( selectedDate ) {
+              if(moment(selectedDate, "DD.MM.YYYY").isBefore()){
+                $("#endDate").datepicker( "option", "minDate", 0 );
+              }else{
+                $("#endDate").datepicker( "option", "minDate", selectedDate );
+              }
+              
+            }
+        }).datepicker('setDate', start);
         
-        $('#endDate')
-          .datepicker({
-            "dateFormat": "dd.mm.yy"
-          })
-          .datepicker('setDate', end);
+        $('#endDate').datepicker({
+            "dateFormat": "dd.mm.yy",
+            "minDate": 0,
+            onClose: function( selectedDate ) {
+              $("#startDate").datepicker( "option", "maxDate", selectedDate );
+            }
+        }).datepicker('setDate', end);
 
       }
       
@@ -118,17 +126,31 @@
                 });
               }
               
-              $('#startDate')
-                .datepicker({
-                  "dateFormat": "dd.mm.yy"
-                })
-                .datepicker('setDate', start);
+              $('#startDate').datepicker({
+                  "dateFormat": "dd.mm.yy",
+                  onClose: function( selectedDate ) {
+                    if(moment(selectedDate, "DD.MM.YYYY").isBefore()){
+                      $("#endDate").datepicker( "option", "minDate", 0 );
+                    }else{
+                      $("#endDate").datepicker( "option", "minDate", selectedDate );
+                    }
+                    
+                  }
+              }).datepicker('setDate', start);
               
-              $('#endDate')
-                .datepicker({
-                  "dateFormat": "dd.mm.yy"
-                })
-                .datepicker('setDate', end);
+              var endMinDate = 0;
+              
+              if(moment(end, "DD.MM.YYYY").isBefore()){
+                endMinDate = end;
+              }
+              
+              $('#endDate').datepicker({
+                  "dateFormat": "dd.mm.yy",
+                  "minDate": endMinDate,
+                  onClose: function( selectedDate ) {
+                    $("#startDate").datepicker( "option", "maxDate", selectedDate );
+                  }
+              }).datepicker('setDate', end);
               
               $("input[name='caption']").val(announcement.caption);  
               CKEDITOR.instances.textContent.setData(announcement.content);
