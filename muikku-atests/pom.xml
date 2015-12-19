@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.87-SNAPSHOT</version>
+    <version>1.0.87</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -96,14 +96,14 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.30-SNAPSHOT</version>
+      <version>0.7.29</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.30-SNAPSHOT</version>
+      <version>0.7.29</version>
       <scope>test</scope>
     </dependency>
 
