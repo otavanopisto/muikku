@@ -116,7 +116,6 @@
     }
     
   });
-  
 
   function confirmEvaluationRequest() {
     renderDustTemplate('workspace/workspace-evaluation-request-confirm.dust', { }, $.proxy(function (text) {
@@ -133,17 +132,6 @@
           'class': 'save-evaluation-button',
           'click': function(event) {
             
-            var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
-
-            evalButton
-              .children('.icon-assessment-' + evalButton.attr('data-state'))
-                .removeClass('icon-assessment-' + evalButton.attr('data-state'))
-                .addClass('icon-assessment-pending')
-                .children('span')
-                  .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
-          
-            evalButton.attr('data-state', 'pending');
-            
             var workspaceEntityId = $('.workspaceEntityId').val();
             var message = $('#evaluationRequestAdditionalMessage').val();
 
@@ -153,6 +141,17 @@
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
+                
+                var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+
+                evalButton
+                  .children('.icon-assessment-' + evalButton.attr('data-state'))
+                    .removeClass('icon-assessment-' + evalButton.attr('data-state'))
+                    .addClass('icon-assessment-pending')
+                    .children('span')
+                      .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
+              
+                evalButton.attr('data-state', 'pending');
                 $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
               }
             });
@@ -186,17 +185,6 @@
           'class': 'cancel-evaluation-button',
           'click': function(event) {
             
-            var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
-
-            evalButton
-              .children('.icon-assessment-' + evalButton.attr('data-state'))
-                .removeClass('icon-assessment-' + evalButton.attr('data-state'))
-                .addClass('icon-assessment-unassessed')
-                .children('span')
-                  .text(getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"));
-          
-            evalButton.attr('data-state', 'canceled');
-            
             var workspaceEntityId = parseInt($('.workspaceEntityId').val(), 10);
             
             mApi().assessmentrequest.workspace.assessmentRequests.read(workspaceEntityId, { studentIdentifier: MUIKKU_LOGGED_USER }).callback($.proxy(function(err, result) {
@@ -209,6 +197,18 @@
                     if (err) {
                       $('.notification-queue').notificationQueue('notification', 'error', err);
                     } else {
+                      
+                      var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+
+                      evalButton
+                        .children('.icon-assessment-' + evalButton.attr('data-state'))
+                          .removeClass('icon-assessment-' + evalButton.attr('data-state'))
+                          .addClass('icon-assessment-unassessed')
+                          .children('span')
+                            .text(getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"));
+                    
+                      evalButton.attr('data-state', 'canceled');
+                      
                       $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
                     }
     
@@ -224,11 +224,9 @@
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
-          'click': function(event) {
-            
+          'click': function(event) {         
             var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
 
-            
             evalButton.attr('data-state', 'pending');
             evalButton.children('.icon-assessment-cancel').removeClass('icon-assessment-cancel').addClass('icon-assessment-pending');
             $(this).dialog("destroy").remove();
