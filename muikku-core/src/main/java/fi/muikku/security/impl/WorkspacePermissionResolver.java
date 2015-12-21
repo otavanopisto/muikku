@@ -96,7 +96,7 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
   }
   
   private boolean checkWorkspaceGroupRole(WorkspaceEntity workspaceEntity, UserEntity userEntity, Permission perm) {
-    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUser(userEntity);
+    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
     
     for (UserGroupEntity userGroup : userGroups) {
       if (workspaceGroupPermissionDAO.hasWorkspacePermissionAccess(workspaceEntity, userGroup, perm))

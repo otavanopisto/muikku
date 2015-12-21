@@ -13,6 +13,7 @@ import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.plugins.announcer.dao.AnnouncementDAO;
 import fi.muikku.plugins.announcer.dao.AnnouncementUserGroupDAO;
 import fi.muikku.plugins.announcer.model.Announcement;
+import fi.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.muikku.users.UserGroupEntityController;
 
 public class AnnouncementController {
@@ -51,12 +52,14 @@ public class AnnouncementController {
       String caption,
       String content,
       Date startDate,
-      Date endDate
+      Date endDate,
+      boolean publiclyVisible
   ) {
     announcementDAO.updateCaption(announcement, caption);
     announcementDAO.updateContent(announcement, content);
     announcementDAO.updateStartDate(announcement, startDate);
     announcementDAO.updateEndDate(announcement, endDate);
+    announcementDAO.updatePubliclyVisible(announcement, publiclyVisible);
     return announcement;
   }
   
@@ -91,6 +94,15 @@ public class AnnouncementController {
     );
   }
   
+  public void clearAnnouncementTargetGroups(
+      Announcement announcement
+  ) {
+    for (AnnouncementUserGroup announcementUserGroup :
+        announcementUserGroupDAO.listByAnnouncementAndArchived(announcement, false)) {
+      announcementUserGroupDAO.archive(announcementUserGroup);
+    }
+  }
+  
   public List<Announcement> listActiveByUserGroupEntities(
       List<UserGroupEntity> userGroupEntities
   ) {
@@ -123,9 +135,15 @@ public class AnnouncementController {
       UserEntity targetedUserEntity
   ) {
     List<UserGroupEntity> userGroupEntities = 
-        userGroupEntityController.listUserGroupsByUser(targetedUserEntity);
+        userGroupEntityController.listUserGroupsByUserEntity(targetedUserEntity);
     
     return listActiveByUserGroupEntities(userGroupEntities);
+  }
+  
+  public List<AnnouncementUserGroup> listUserGroups(Announcement announcement) {
+    return announcementUserGroupDAO.listByAnnouncementAndArchived(
+        announcement,
+        false);
   }
 }
  

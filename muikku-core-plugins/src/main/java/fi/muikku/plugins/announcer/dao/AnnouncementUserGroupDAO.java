@@ -47,4 +47,22 @@ public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGro
     
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public List<AnnouncementUserGroup> listByAnnouncementAndArchived(
+      Announcement announcement,
+      boolean archived
+  ) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<AnnouncementUserGroup> criteria = criteriaBuilder.createQuery(AnnouncementUserGroup.class);
+    Root<AnnouncementUserGroup> root = criteria.from(AnnouncementUserGroup.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+          criteriaBuilder.equal(root.get(AnnouncementUserGroup_.announcement), announcement),
+          criteriaBuilder.equal(root.get(AnnouncementUserGroup_.archived), archived)));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
 }

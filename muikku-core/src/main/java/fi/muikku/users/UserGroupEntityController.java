@@ -1,5 +1,6 @@
 package fi.muikku.users;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -13,6 +14,7 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.users.UserGroupUserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 
 public class UserGroupEntityController {
 
@@ -27,6 +29,9 @@ public class UserGroupEntityController {
   
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
+
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   public UserGroupEntity createUserGroupEntity(String dataSource, String identifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
@@ -111,10 +116,24 @@ public class UserGroupEntityController {
     return userGroupUserEntityDAO.listByUserGroupEntity(userGroupEntity);
   }
 
-  public List<UserGroupEntity> listUserGroupsByUser(UserEntity userEntity) {
-    return userGroupEntityDAO.listByUser(userEntity);
+  public List<UserGroupEntity> listUserGroupsByUserEntity(UserEntity userEntity) {
+    return userGroupEntityDAO.listByUserEntityExcludeArchived(userEntity);
   }
 
+  public List<UserGroupEntity> listUserGroupsByUserIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    return userGroupEntityDAO.listByUserIdentifierExcludeArchived(userSchoolDataIdentifier);
+  }
+
+  public List<UserGroupEntity> listUserGroupsByUserIdentifier(SchoolDataIdentifier userIdentifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+    if (userSchoolDataIdentifier == null) {
+      logger.severe(String.format("Could not find userSchoolDataIdentifier by userIdentifer %s", userIdentifier));
+      return Collections.emptyList();
+    }
+    
+    return userGroupEntityDAO.listByUserIdentifierExcludeArchived(userSchoolDataIdentifier);
+  }
+  
   public List<UserGroupEntity> listUserGroupEntities() {
     return userGroupEntityDAO.listByArchived(Boolean.FALSE);
   }
