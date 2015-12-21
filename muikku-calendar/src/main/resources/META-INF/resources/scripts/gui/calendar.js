@@ -65,8 +65,8 @@
          values.start = eventStart;
          values.end = eventStop;
          values.status = 'CONFIRMED';
-         values.startTimeZone = 'GMT+3';
-         values.endTimeZone = 'GMT+3';        
+         values.startTimeZone = 'GMT+2';
+         values.endTimeZone = 'GMT+2';        
    
 
 
