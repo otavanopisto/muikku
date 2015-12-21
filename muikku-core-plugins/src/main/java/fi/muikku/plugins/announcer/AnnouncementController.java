@@ -82,6 +82,10 @@ public class AnnouncementController {
   public void archive(Announcement announcement) {
     announcementDAO.archive(announcement);
   }
+
+  public void delete(Announcement announcement) {
+    announcementDAO.delete(announcement);
+  }
   
   public void addAnnouncementTargetGroup(
       Announcement announcement,

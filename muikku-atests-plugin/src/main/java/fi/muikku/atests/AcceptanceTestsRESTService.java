@@ -27,6 +27,8 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.plugins.announcer.AnnouncementController;
+import fi.muikku.plugins.announcer.model.Announcement;
 import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
@@ -113,6 +115,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceIndexer workspaceIndexer;
+
+  @Inject
+  private AnnouncementController announcementController;
   
   @GET
   @Path("/login")
@@ -463,6 +468,18 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.ok(createRestEntity(forumController.createForumThread(discussion, payload.getTitle(), payload.getMessage(), payload.getSticky(), payload.getLocked()))).build();
   }
 
+  @DELETE
+  @Path("/announcements")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteAnnouncements() {
+    
+    for(Announcement announcement : announcementController.listAll()) {
+      announcementController.delete(announcement);
+    }
+
+    return Response.noContent().build();
+  }  
+  
   @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}")
   @RESTPermit (handling = Handling.UNSECURED)

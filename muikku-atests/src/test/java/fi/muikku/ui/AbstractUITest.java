@@ -378,7 +378,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void click(String selector) {
     getWebDriver().findElement(By.cssSelector(selector)).click();
   }
-  
+
   protected void waitForClickable(String selector){
     waitForPresent(selector);
   }
@@ -414,13 +414,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertEquals(StringUtils.lowerCase(text), StringUtils.lowerCase(element.getText()));
   }
   
-  
   protected void sendKeys(String selector, String keysToSend) {
     getWebDriver().findElement(By.cssSelector(selector)).sendKeys(keysToSend);
   }
   
   protected void clearElement(String selector) {
-    getWebDriver().findElement(By.cssSelector(selector)).clear();;
+    getWebDriver().findElement(By.cssSelector(selector)).clear();
   }
   
   
@@ -709,6 +708,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     CommunicatorMessageRESTModel result = objectMapper.readValue(response.asString(), CommunicatorMessageRESTModel.class);
     assertNotNull(result);
     assertNotNull(result.getId());
+  }
+  
+  protected void deleteAnnouncements() {
+    asAdmin()
+      .delete("/test/announcements")
+      .then()
+      .statusCode(204);
   }
   
   protected String getAttributeValue(String selector, String attribute){
