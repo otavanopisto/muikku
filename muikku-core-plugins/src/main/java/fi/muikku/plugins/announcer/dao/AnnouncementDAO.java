@@ -1,5 +1,6 @@
 package fi.muikku.plugins.announcer.dao;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -69,7 +70,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       List<Long> userGroupEntityIds,
       boolean publiclyVisible
   ) {
-    
+    currentDate = onlyDateFields(currentDate);
     if (userGroupEntityIds.isEmpty()) {
       return Collections.emptyList();
     }
@@ -93,10 +94,22 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  private Date onlyDateFields(Date currentDate) {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(currentDate);
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MILLISECOND, 0);
+    currentDate = cal.getTime();
+    return currentDate;
+  }
   
   public List<Announcement> listActive() {
     EntityManager entityManager = getEntityManager(); 
     Date currentDate = new Date();
+    currentDate = onlyDateFields(currentDate);
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
@@ -118,7 +131,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       boolean publiclyVisible
   ) {
     EntityManager entityManager = getEntityManager();
-    Date nextDay = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
+    currentDate = onlyDateFields(currentDate);
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
@@ -127,7 +140,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     criteria.where(
         criteriaBuilder.and(
           criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
-          criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), nextDay),
+          criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate),
           criteriaBuilder.equal(root.get(Announcement_.archived), archived),
           criteriaBuilder.equal(root.get(Announcement_.publiclyVisible), publiclyVisible)));
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
@@ -137,7 +150,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   
   public List<Announcement> listByArchivedAndDate(boolean archived, Date currentDate) {
     EntityManager entityManager = getEntityManager(); 
-    Date nextDay = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
+    currentDate = onlyDateFields(currentDate);
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
@@ -147,7 +160,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(Announcement_.archived), false),
         criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
-        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), nextDay)));
+        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)));
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     return entityManager.createQuery(criteria).getResultList();
   }
