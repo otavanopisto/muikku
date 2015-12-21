@@ -4,6 +4,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets" 
   xmlns:f="http://java.sun.com/jsf/core" 
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/default.xhtml">
 
   <!-- Lets set the base body class per view -->
@@ -116,10 +117,14 @@
             </m:widgetSpaceSet>
           </ui:insert>
         </div>
+        <div class="footer-link-wrapper">
+          <div id="helpdesk"><span>#{i18n.text['plugin.footer.helpdesk']}</span></div>
+          <div id="guides" jsf:rendered="#{environmentBackingBean.hasWorkspaceUrlName}">
+            <a jsf:outcome="/jsf/workspace/materials.jsf?faces-redirect=true&amp;workspaceUrlName=#{environmentBackingBean.helpWorkspaceUrlName}" target="top">#{i18n.text['plugin.footer.instructions']}</a>
+          </div>
+        </div>
       </div>
       <div id="footer">
-      <!-- TODO: Localize helpdesk -->
-        <div id="helpdesk"><span>Ongelmia Muikussa? helpdesk(a)muikkuverkko.fi</span></div>
         <div id="footerContainer" class="container_24">
           <ui:insert name="footer">
             <m:widgetSpaceSet styleClass="nomargin">

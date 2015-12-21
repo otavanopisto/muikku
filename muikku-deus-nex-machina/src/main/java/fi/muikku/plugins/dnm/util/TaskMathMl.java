@@ -32,20 +32,21 @@ public class TaskMathMl extends AbstractHtmlMaterialCleanerTask {
   
   @Override
   protected void cleanElement(Element element) {
+    boolean needsModify = false;
     if ("img".equals(element.getTagName()) && element.hasAttribute("ix_mathmldata")) {
       String src = element.getAttribute("src");
       if (StringUtils.startsWith(src, "/~Repository/ResourceAPI/RenderMathML")) {
         src = "http://muikku.otavanopisto.fi" + src;
-        markModified();
+        needsModify = true;
       }
       else if (StringUtils.startsWith(src, "muikku.otavanopisto.fi/~Repository/ResourceAPI/RenderMathML")) {
         src = "http://" + src;
-        markModified();
+        needsModify = true;
       }
       else if (StringUtils.startsWith(src, "http://muikku.otavanopisto.fi/~Repository/ResourceAPI/RenderMathML")) {
-        markModified();
+        needsModify = true;
       }
-      if (isModified()) {
+      if (needsModify) {
         try {
           logger.info("Converting MathML from " + src);
           URL url = new URL(src);
@@ -65,10 +66,11 @@ public class TaskMathMl extends AbstractHtmlMaterialCleanerTask {
           element.setAttribute("src",  workspaceUrl);
           element.removeAttribute("ix_mathml");
           element.removeAttribute("ix_mathmldata");
+          
+          markModified();
         }
         catch (Exception e) {
           logger.log(Level.SEVERE, "Failed to process MathML from URL " + src, e);
-          markClean();
         }
       }
     }

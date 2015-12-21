@@ -17,7 +17,7 @@
       studentStudyProgrammeName: null,
       studentDisplayName: null,
       workspaceName: null,
-      workspaceEvaluableAssignments: null,
+      workspaceAssignments: null,
       gradingScales: [],
       assessors: [],
       evaluationDate: null,
@@ -55,7 +55,7 @@
           width: 'auto',
           height: 'auto',
           htmlTitle: '<span class="modal-title-student-name">'
-                    +this.options.studentDisplayName
+                    +this.options.studentDisplayName + (this.options.studentStudyProgrammeName ? ' (' + this.options.studentStudyProgrammeName + ')' : '')
                     +'</span><span class="modal-title-workspace-name">'
                     +this.options.workspaceName
                     +'</span>',
@@ -96,8 +96,8 @@
 
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
             
-            var batchCalls = $.map(this.options.workspaceEvaluableAssignments, $.proxy(function (workspaceEvaluableAssignment) {
-              return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {
+            var batchCalls = $.map(this.options.workspaceAssignments, $.proxy(function (workspaceAssignment) {
+              return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {
                 userEntityId: this.options.studentEntityId
               });
             }, this));
@@ -138,7 +138,7 @@
               var assessorEntityId = $(this._dialog).find('select[name="assessor"]').val();
               var workspaceEntityId = this.options.workspaceEntityId;
               var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
-              
+              this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
               if(this.options.assessmentId){
                 mApi({async: false}).workspace.workspaces.assessments.update(workspaceEntityId, this.options.assessmentId, {
                   evaluated: assessedDate,
@@ -158,7 +158,7 @@
                     if(studentElement.hasClass('workspace-evaluated')){
                       studentElement.find('.workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
-                    }else{
+                    } else {
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
@@ -171,6 +171,8 @@
                       studentElement.removeClass('workspace-evaluation-requested');
                       studentElement.addClass('workspace-evaluated');
                     }
+                    this._loader.remove();
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
                     this.element.remove();
                   }
                 }, this));
@@ -186,27 +188,29 @@
                   verbalAssessment: verbalAssessment
                 }).callback($.proxy(function (err, result) {
                   if (err) {
+                    this._loader.remove();
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.assessment = result;
                     var studentElement = $(this.options.triggeringElement.element);
-                    if(studentElement.hasClass('workspace-evaluated')){
+                    if (studentElement.hasClass('workspace-evaluated')) {
                       studentElement.find('.workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
-                    }else{
+                    } else {
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
                     
-                      if(studentElement.hasClass('workspace-evaluation-requested')){
+                      if (studentElement.hasClass('workspace-evaluation-requested')) {
                         studentElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
-                      }else{
+                      } else {
                         evaluatedDate.prependTo(studentElement);
                       }
                       studentElement.removeClass('workspace-evaluation-requested');
                       studentElement.addClass('workspace-evaluated');
                     }
-
+                    this._loader.remove();
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.successful"));
                     this.element.remove();
                   }
                 }, this));
@@ -228,8 +232,9 @@
     },
     
     _load: function (callback) {
-      var materialIds = $.map(this.options.workspaceEvaluableAssignments, function (workspaceEvaluableAssignment) {
-        return workspaceEvaluableAssignment.workspaceMaterial.materialId;
+      this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
+      var materialIds = $.map(this.options.workspaceAssignments, function (workspaceAssignment) {
+        return workspaceAssignment.workspaceMaterial.materialId;
       });
       
       $('#evaluation').evaluationLoader("loadHtmls", materialIds, $.proxy(function (err, htmlMaterials) {
@@ -242,23 +247,24 @@
           });
           
           var assignments = [];
-          for (var i = 0; i<this.options.workspaceEvaluableAssignments.length; i++) {
-            assignments.push(this._loadAssigmentEvaluation(this.options.workspaceEvaluableAssignments[i], htmlMaterialMap));
+          for (var i = 0; i<this.options.workspaceAssignments.length; i++) {
+            assignments.push(this._loadAssigmentEvaluation(this.options.workspaceAssignments[i], htmlMaterialMap));
           } 
           async.parallel(assignments, $.proxy(function(err, results){
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
               this._loadTemplate(results, callback);
+              this._loader.remove();
             }
           }, this));
         }
       }, this));
     },
-    _loadAssigmentEvaluation: function(workspaceEvaluableAssignment, htmlMaterialMap){
+    _loadAssigmentEvaluation: function(workspaceAssignment, htmlMaterialMap){
       return $.proxy(function(cb){
         mApi().workspace.workspaces.materials.evaluations
-        .read(this.options.workspaceEntityId, workspaceEvaluableAssignment.workspaceMaterial.id, {userEntityId: this.options.studentEntityId})
+        .read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {userEntityId: this.options.studentEntityId})
         .callback(function(err, evaluations) {
           if(err){
             cb(err);
@@ -267,13 +273,15 @@
             if (evaluations != null && evaluations.length > 0) {
               evaluation = evaluations[0];
             }
+            
             cb(null, {
-              workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
-              materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
+              workspaceMaterialId: workspaceAssignment.workspaceMaterial.id,
+              materialId: workspaceAssignment.workspaceMaterial.materialId,
               type: 'html',
-              title: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].title,
-              html: htmlMaterialMap[workspaceEvaluableAssignment.workspaceMaterial.materialId].html,
-              evaluation: evaluation
+              title: workspaceAssignment.workspaceMaterial.title,
+              html: htmlMaterialMap[workspaceAssignment.workspaceMaterial.materialId].html,
+              evaluation: evaluation,
+              assignmentType: workspaceAssignment.workspaceMaterial.assignmentType
             }); 
           }
         });
@@ -286,7 +294,7 @@
         assessors: this.options.assessors,
         workspaceName: this.options.workspaceName,
         studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-        evaluableAssignments: assignments,
+        assignments: assignments,
         exercises: []
       }, callback);
     },
@@ -351,7 +359,7 @@
           width: 'auto',
           height: 'auto',
           htmlTitle: '<span class="modal-title-student-name">'
-                    +this.options.studentDisplayName
+                    +this.options.studentDisplayName + (this.options.studentStudyProgrammeName ? ' (' + this.options.studentStudyProgrammeName + ')' : '')
                     +'</span><span class="modal-title-workspace-name">'
                     +this.options.workspaceName
                     +'</span>',
@@ -421,6 +429,7 @@
               var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
               var workspaceMaterialId = this.options.workspaceMaterialId;
               var workspaceEntityId = this.options.workspaceEntityId;
+              this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
               
               if (this.options.evaluationId) {
                 mApi({async: false}).workspace.workspaces.materials.evaluations.update(workspaceEntityId, workspaceMaterialId, this.options.evaluationId, {
@@ -435,12 +444,15 @@
                   verbalAssessment: verbalAssessment
                 }).callback($.proxy(function (err, result) {
                   if (err) {
+                    this._loader.remove();
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.evaluation = result;
                     this.options.triggeringElement.element.addClass('assignment-evaluated');
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
                       .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(result.evaluated)));
+                    this._loader.remove();
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.assignmentEvaluationDialog.evaluation.updateSuccessful"));
                     this.element.remove();
                   }
                 }, this));
@@ -457,14 +469,16 @@
                   verbalAssessment: verbalAssessment
                 }).callback($.proxy(function (err, result) {
                   if (err) {
+                    this._loader.remove();
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.evaluation = result;
                     this.options.triggeringElement.element.addClass('assignment-evaluated');
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
                       .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(result.evaluated)));
+                    this._loader.remove();
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.assignmentEvaluationDialog.evaluation.successful"));
                     this.element.remove();
-                    
                   }
                 }, this));
               }
@@ -485,6 +499,7 @@
     },
     
     _load: function (callback) {
+      this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
       $('#evaluation').evaluationLoader("loadHtml", this.options.materialId, $.proxy(function (err, htmlMaterial) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -496,6 +511,7 @@
             htmlMaterial.html, 
             callback
           );
+          this._loader.remove();
         }
       }, this));
     },
@@ -624,7 +640,7 @@
     
     _create : function() {
       this._workspaceUsers = null;
-      this._workspaceEvaluableAssignments = null;
+      this._assignments = null;
       this._viewOffsetX = 0;
       this._viewOffsetY = 0;
       this._filters = this.options.filters;
@@ -661,8 +677,8 @@
       return this.options.workspaceEntityId;
     },
     
-    workspaceEvaluableAssignments: function () {
-      return this._workspaceEvaluableAssignments;
+    workspaceAssignments: function () {
+      return this._workspaceAssignments;
     },
     
     _scrollView: function (x, y) {
@@ -756,29 +772,40 @@
     },
     
     _loadMaterials: function () {
-      mApi({async: true}).workspace.workspaces.materials
-        .read(this.options.workspaceEntityId, { assignmentType : 'EVALUATED'})
-        .callback($.proxy(function (err, workspaceEvaluableAssignmentMaterials) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            var workspaceEvaluableAssignments = [];
-            
-            if (workspaceEvaluableAssignmentMaterials) {
-              for (var i=0; i<workspaceEvaluableAssignmentMaterials.length; i++) {
-                workspaceEvaluableAssignments.push(
-                    {workspaceMaterial: workspaceEvaluableAssignmentMaterials[i]}
-                );
-              }  
-            }
-            
-            this.element.trigger("materialsLoaded", {
-              workspaceEvaluableAssignments: workspaceEvaluableAssignments
-            });
-            
-            this._workspaceEvaluableAssignments = workspaceEvaluableAssignments;
-          }
-        }, this)); 
+      var loads = $.map(["EVALUATED", "EXERCISE"], $.proxy(function (assignmentType) {
+        return $.proxy(function (callback) {
+          mApi().workspace.workspaces.materials
+            .read(this.options.workspaceEntityId, { assignmentType : assignmentType})
+            .callback(callback)
+        }, this);
+      }, this));
+      
+      async.parallel(loads, $.proxy(function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var evaluableAssignments = $.map(results[0]||[], function (assignment) {
+            return {
+              workspaceMaterial: assignment
+            };
+          });
+          
+          
+          var exerciseAssignments = $.map(results[1]||[], function (assignment) {
+            return {
+              workspaceMaterial: assignment
+            };
+          });
+          
+          var workspaceAssignments = evaluableAssignments.concat(exerciseAssignments);
+          
+          this.element.trigger("materialsLoaded", {
+            workspaceAssignments: workspaceAssignments,
+            evaluableAssignments: evaluableAssignments,
+            exerciseAssignments: exerciseAssignments
+          });
+        }
+      }, this));
     },
     
     _onPrevPageClick: function () {
@@ -851,29 +878,29 @@
     },
     
     _onMaterialsLoaded: function (event, data) {
-      this._workspaceEvaluableAssignments = data.workspaceEvaluableAssignments;
+      this._workspaceAssignments = data.workspaceAssignments;
       
-      $.each(this._workspaceEvaluableAssignments, $.proxy(function (materialIndex, workspaceEvaluableAssignment) {
+      $(".evaluation-assignments").perfectScrollbar({
+        wheelSpeed:3,
+        swipePropagation:false,
+        suppressScrollX:true
+      });
+      
+      $.each(data.evaluableAssignments, $.proxy(function (materialIndex, evaluableAssignment) {
         var materialRow = $('<div>')
           .addClass('evaluation-student-assignment-listing-row')
           .appendTo($('.evaluation-assignments'));
-        
-        $(".evaluation-assignments").perfectScrollbar({
-          wheelSpeed:3,
-          swipePropagation:false,
-          suppressScrollX:true
-        });
         
         $.each(this._workspaceUsers, $.proxy(function (studentIndex, workspaceUser) {
           $('<div>')
               .evaluationAssignment({
                 workspaceEntityId: this.options.workspaceEntityId,
-                workspaceMaterialId: workspaceEvaluableAssignment.workspaceMaterial.id,
-                materialId: workspaceEvaluableAssignment.workspaceMaterial.materialId,
-                title: workspaceEvaluableAssignment.workspaceMaterial.title,
+                workspaceMaterialId: evaluableAssignment.workspaceMaterial.id,
+                materialId: evaluableAssignment.workspaceMaterial.materialId,
+                title: evaluableAssignment.workspaceMaterial.title,
                 workspaceStudentId: workspaceUser.id,
                 studentEntityId: workspaceUser.userId,
-                workspaceEvaluableAssignment: workspaceEvaluableAssignment
+                workspaceAssignment: evaluableAssignment
               })
               .appendTo(materialRow);
           }, this));
@@ -892,7 +919,7 @@
       title: null,
       workspaceStudentId: null,
       studentEntityId: null,
-      workspaceEvaluableAssignment: null
+      workspaceAssignment: null
     },
     
     _create : function() {
@@ -964,7 +991,7 @@
           this.options.studentEntityId,
           $.proxy(function (reply, evaluation) {
         
-        this.options.workspaceEvaluableAssignment.evaluation = evaluation;
+        this.options.workspaceAssignment.evaluation = evaluation;
         this.element
           .removeClass('assignment-loading')
           .addClass('assignment-loaded');
@@ -1013,7 +1040,8 @@
         case 'WITHDRAWN':
           this.element.addClass('assignment-withdrawn');
         break;
-        case 'EVALUATED':
+        case 'FAILED':
+        case 'PASSED':
           this.element.on("click", $.proxy(this._onClick, this));
           this.element.addClass('assignment-evaluated');
           if (reply.submitted) {
@@ -1087,7 +1115,7 @@
     
     _onClick: function (event) {
       var workspaceName = $('#evaluation').evaluation("workspaceName");
-      var workspaceEvaluableAssignments = $('#evaluation').evaluation("workspaceEvaluableAssignments");
+      var workspaceAssignments = $('#evaluation').evaluation("workspaceAssignments");
       var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
 
       mApi().workspace.workspaces.staffMembers.read(workspaceEntityId, {orderBy: 'name'}).callback($.proxy(function (err, teachers) {
@@ -1123,7 +1151,7 @@
                   assessmentId: this.options.assessment ? this.options.assessment.identifier : null,
                   studentEntityId: this.studentEntityId(),
                   workspaceStudentId: this.workspaceStudentId(),
-                  workspaceEvaluableAssignments: workspaceEvaluableAssignments,
+                  workspaceAssignments: workspaceAssignments,
                   workspaceEntityId: workspaceEntityId,
                   triggeringElement: this
                 });

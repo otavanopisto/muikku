@@ -1,0 +1,5 @@
+  {#.}
+    {>"announcer/announcer_widget_item.dust"/}
+  {:else}
+    {>"announcer/announcer_empty.dust"/}
+  {/.}

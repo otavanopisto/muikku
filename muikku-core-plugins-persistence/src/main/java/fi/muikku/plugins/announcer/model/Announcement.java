@@ -68,7 +68,23 @@ public class Announcement {
   public void setEndDate(Date endDate) {
     this.endDate = endDate;
   }
+
+  public boolean isArchived() {
+    return archived;
+  }
+
+  public void setArchived(boolean archived) {
+    this.archived = archived;
+  }
   
+  public boolean isPubliclyVisible() {
+    return publiclyVisible;
+  }
+  
+  public void setPubliclyVisible(boolean publiclyVisible) {
+    this.publiclyVisible = publiclyVisible;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -101,4 +117,10 @@ public class Announcement {
   @Column (nullable=false)
   @Temporal (value=TemporalType.DATE)
   private Date endDate;
+
+  @Column (nullable=false)
+  private boolean archived;
+  
+  @Column (nullable=false)
+  private boolean publiclyVisible;
 }

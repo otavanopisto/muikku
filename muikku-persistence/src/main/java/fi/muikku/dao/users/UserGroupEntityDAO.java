@@ -99,8 +99,41 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
     return query.getResultList();
   }
 
-  public List<UserGroupEntity> listByUser(UserEntity userEntity) {
-    // TODO: Move descriptive name
+  public List<UserGroupEntity> listByArchived(Boolean archived) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserGroupEntity> criteria = criteriaBuilder.createQuery(UserGroupEntity.class);
+    Root<UserGroupEntity> root = criteria.from(UserGroupEntity.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(UserGroupEntity_.archived), archived)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<UserGroupEntity> listByUserIdentifierExcludeArchived(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserGroupEntity> criteria = criteriaBuilder.createQuery(UserGroupEntity.class);
+    Root<UserGroupUserEntity> root = criteria.from(UserGroupUserEntity.class);
+    Join<UserGroupUserEntity, UserGroupEntity> groupJoin = root.join(UserGroupUserEntity_.userGroupEntity);
+    criteria.select(root.get(UserGroupUserEntity_.userGroupEntity));
+
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(UserGroupUserEntity_.userSchoolDataIdentifier), userSchoolDataIdentifier),
+        criteriaBuilder.equal(groupJoin.get(UserGroupEntity_.archived), Boolean.FALSE),
+        criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
+      )
+    );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<UserGroupEntity> listByUserEntityExcludeArchived(UserEntity userEntity) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

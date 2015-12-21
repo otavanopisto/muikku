@@ -15,6 +15,7 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.controller.SystemSettingsController;
+import fi.muikku.jsf.NavigationController;
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
@@ -22,13 +23,11 @@ import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
-import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/materials", to = "/jsf/workspace/materials.jsf")
-@LoggedIn
 public class WorkspaceMaterialsBackingBean {
 
   @Inject
@@ -52,6 +51,9 @@ public class WorkspaceMaterialsBackingBean {
   
   @Inject
   private SystemSettingsController systemSettingsController;
+  
+  @Inject
+  private NavigationController navigationController;
 
   @RequestAction
   public String init() {
@@ -66,13 +68,21 @@ public class WorkspaceMaterialsBackingBean {
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
     }
-    
+
     if (!workspaceEntity.getPublished()) {
       if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
         return NavigationRules.NOT_FOUND;
       }
     }
 
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_MATERIALS, workspaceEntity)) {
+      if (!sessionController.isLoggedIn()) {
+        return navigationController.requireLogin();
+      } else {
+        return NavigationRules.ACCESS_DENIED;
+      }
+    }
+    
     rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);

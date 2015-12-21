@@ -26,6 +26,14 @@ public class WorkspaceJournalController {
   public List<WorkspaceJournalEntry> listEntriesByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity){
     return workspaceJournalEntryDAO.listByWorkspaceEntityIdAndUserEntityId(workspaceEntity.getId(), userEntity.getId());
   }
+
+  public long countEntriesByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
+    return workspaceJournalEntryDAO.countByWorkspaceEntityIdAndUserEntityId(workspaceEntity.getId(), userEntity.getId());
+  }
+  
+  public WorkspaceJournalEntry findLatestsEntryByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
+    return workspaceJournalEntryDAO.findLatestByWorkspaceEntityIdAndUserEntityId(workspaceEntity.getId(), userEntity.getId());
+  }
   
   public WorkspaceJournalEntry findJournalEntry(Long workspaceJournalEntryId) {
     return workspaceJournalEntryDAO.findById(workspaceJournalEntryId);

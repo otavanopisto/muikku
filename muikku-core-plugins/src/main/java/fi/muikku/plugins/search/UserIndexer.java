@@ -75,6 +75,8 @@ public class UserIndexer {
         }
         
         if ((archetype != null) && (userEntity != null)) {
+          SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
+          
           Map<String, Object> extra = new HashMap<>();
           extra.put("archetype", archetype);
           extra.put("userEntityId", userEntity.getId());
@@ -82,16 +84,18 @@ public class UserIndexer {
           Set<Long> workspaceEntityIds = new HashSet<Long>();
           Set<Long> userGroupIds = new HashSet<Long>();
 
-          List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+          List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
           for (WorkspaceEntity workspace : workspaces) {
             workspaceEntityIds.add(workspace.getId());
           }
             
           extra.put("workspaces", workspaceEntityIds);
           
-          List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUser(userEntity);
-          for (UserGroupEntity userGroup : userGroups)
+          List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
+          for (UserGroupEntity userGroup : userGroups) {
             userGroupIds.add(userGroup.getId());
+          }
+          
           extra.put("groups", userGroupIds);
           
           indexer.index(User.class.getSimpleName(), user, extra);

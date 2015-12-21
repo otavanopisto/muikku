@@ -47,6 +47,16 @@ public class UserSchoolDataIdentifierController {
     return findUserSchoolDataIdentifierByDataSourceAndIdentifier(dataSource, identifier);
   }
 
+  public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(String schoolDataSource, String identifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource == null) {
+      logger.severe(String.format("Could not find dataSource %s", schoolDataSource));
+      return null;
+    }
+    
+    return findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(dataSource, identifier);
+  }
+
   public UserSchoolDataIdentifier findUserSchoolDataIdentifierBySchoolDataIdentifier(SchoolDataIdentifier schoolDataIdentifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataIdentifier.getDataSource());
     if (dataSource == null) {
@@ -54,6 +64,10 @@ public class UserSchoolDataIdentifierController {
       return null;
     }
     return findUserSchoolDataIdentifierByDataSourceAndIdentifier(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier());
+  }
+
+  public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(SchoolDataSource dataSource, String identifier) {
+    return userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
   }
   
   public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
@@ -66,6 +80,10 @@ public class UserSchoolDataIdentifierController {
 
   public void archiveUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
     userSchoolDataIdentifierDAO.updateArchived(userSchoolDataIdentifier, Boolean.TRUE);
+  }
+
+  public void unarchiveUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    userSchoolDataIdentifierDAO.updateArchived(userSchoolDataIdentifier, Boolean.FALSE);
   }
   
   

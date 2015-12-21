@@ -17,9 +17,6 @@
                  <div class="cm-message-recipient-search mf-textfield-subelement"></div>
                  <div class="clear"></div>
                 </div>
-                <div class="cm-message-recipients" id="msgRecipientsContainer">
-                 <div class="clear"></div>
-                </div>
               </div>      
             </div>
             <div class="mf-fieldRow">
