@@ -14,13 +14,13 @@
   
   <ui:define name="workspace.content.top.center"> 
     <m:widget name="workspace-discussion-browse-areas" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+    <m:widget name="workspace-discussion-edit-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/>    
     <m:widget name="workspace-discussion-new-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/>
     <m:widget name="workspace-discussion-delete-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/> 
   </ui:define>
   
   <ui:define name="workspace.content.center.widget">
     <m:widget name="discussion-messages" size="24" /> 
-
     <input type="hidden" name="userEntityId" value="#{muikkuSession.loggedUserEntity.id}"/>
     <input type="hidden" name="workspaceEntityId" value="#{workspaceDiscussionsBackingBean.workspaceEntityId}"/>
     <input type="hidden" name="areaPermissions" value="#{workspaceDiscussionsBackingBean.areaPermissions}"/>

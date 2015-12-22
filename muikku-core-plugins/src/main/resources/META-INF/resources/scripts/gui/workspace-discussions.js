@@ -601,8 +601,8 @@ $(document).ready(function() {
       });
 
     }
-
-    mApi({async: false}).forum.areas.read().callback(function(err, areas) {
+    var workspaceId = $("input[name='workspaceEntityId']").val();
+    mApi({async: false}).forum.workspace.areas.read(workspaceId).callback(function(err, areas) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
       } else {
