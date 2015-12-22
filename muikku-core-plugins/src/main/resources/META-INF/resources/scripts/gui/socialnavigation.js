@@ -104,14 +104,13 @@
       } else if (CKEDITOR.instances.length > 0) {
         ckContent = CKEDITOR.instances[0].textContent.getData();
       }
-      
+
       elements.find(':input').each(function(index, element) {
         element0r = $(element);
         varIsArray[element.name] = element0r.data('array') || false;
       });
 
       $.each(vals, function(index, value) {
-        
         
         if (varIsArray[value.name] != true) {
           
