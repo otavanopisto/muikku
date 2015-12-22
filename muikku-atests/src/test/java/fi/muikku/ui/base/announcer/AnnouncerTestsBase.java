@@ -33,6 +33,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
       getWebDriver().switchTo().activeElement().sendKeys("Announcer test announcement");
       click("*[name='send']");
       waitForPresent(".an-announcement");
+      reloadCurrentPage();
+      waitForPresent(".an-announcement");
       assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
       assertTextIgnoreCase(".an-announcement-content>p", "Announcer test announcement"); 
     }finally{
