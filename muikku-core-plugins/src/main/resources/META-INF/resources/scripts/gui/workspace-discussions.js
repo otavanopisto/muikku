@@ -120,23 +120,14 @@ $(document).ready(function() {
       mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
         mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
+          mApi({async: false}).user.users.basicinfo.read(thread.creator).callback(function(err, user) {
+            thread.creatorFullName = user.firstName + ' ' + user.lastName;
+            thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
+            var d = new Date(thread.created);
+            thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+            threadCallback();            
+          });          
         });
-
-        mApi({async: false}).user.users.basicinfo.read(thread.creator).callback(function(err, user) {
-          thread.creatorFullName = user.firstName + ' ' + user.lastName;
-          if(thread.creator == MUIKKU_LOGGED_USER_ID){
-            thread.canEdit = true;
-          }else{
-            thread.canEdit = false;
-            
-          }
-        });
-
-        var d = new Date(thread.created);
-
-        thread.prettyDate = d.toLocaleString();
-
-        threadCallback();
       }).callback(function(err, threads) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
