@@ -67,14 +67,14 @@ public class UserEmailEntityController {
    * 
    * @return A list of all email addresses belonging to the given user
    */
-  public List<UserEmailEntity> listUserEmailEntitiessByUserEntity(UserEntity user) {
+  public List<UserEmailEntity> listUserEmailEntitiesByUserEntity(UserEntity user) {
     return userEmailEntityDAO.listByUser(user);
   }
 
   public List<String> listAddressesByUserEntity(UserEntity user) {
     List<String> result = new ArrayList<>();
     
-    List<UserEmailEntity> userEmailEntities = listUserEmailEntitiessByUserEntity(user);
+    List<UserEmailEntity> userEmailEntities = listUserEmailEntitiesByUserEntity(user);
     for (UserEmailEntity userEmailEntity : userEmailEntities) {
       result.add(userEmailEntity.getAddress());
     }
@@ -120,7 +120,7 @@ public class UserEmailEntityController {
    * 
    * @return The created email address
    */
-  public synchronized UserEmailEntity addUserEmail(UserEntity user, String address) {
+  public UserEmailEntity addUserEmail(UserEntity user, String address) {
     // TODO is address a valid email?
     UserEmailEntity userEmail = userEmailEntityDAO.findByAddress(address);
     if (userEmail != null) {
@@ -134,6 +134,23 @@ public class UserEmailEntityController {
     }
     
     return userEmailEntityDAO.create(user, address);
+  }
+
+  /**
+   * Removed email address from given user.
+   * 
+   * @param userEntity user
+   * @param address The email address
+   */
+  public void removeUserEmail(UserEntity userEntity, String address) {
+    UserEmailEntity userEmail = userEmailEntityDAO.findByAddress(address);
+    if (userEmail != null) {
+      if (userEmail.getUser().getId().equals(userEntity.getId())) {
+        userEmailEntityDAO.delete(userEmail);
+      } else {
+        logger.severe(String.format("email address %s does not belong to user %d, skipping removal", address, userEntity.getId()));
+      }
+    }
   }
 
   public String getUserEmailAddress(UserEntity userEntity, boolean obfuscate) {
@@ -162,4 +179,21 @@ public class UserEmailEntityController {
     return emailAddress;
   }
 
+  public void setUserEmails(UserEntity userEntity, List<String> emails) {
+    List<String> existingEmails = listAddressesByUserEntity(userEntity);
+    
+    for (String email : emails) {
+      if (!existingEmails.contains(email)) {
+        addUserEmail(userEntity, email);
+      }
+      
+      existingEmails.remove(email);
+    }
+    
+    for (String email : existingEmails) {
+      removeUserEmail(userEntity, email);
+    }
+    
+  }
+  
 }

@@ -16,6 +16,7 @@ import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.users.UserEntityController;
@@ -66,12 +67,12 @@ public class DefaultSchoolDataWorkspaceListener {
       }
       // workspace
       workspaceEntity = workspaceEntityController.createWorkspaceEntity(event.getDataSource(), event.getIdentifier(), urlName);
-      // workspace bookkeeping
-      discoveredWorkspaces.put(discoverId, workspaceEntity.getId());
-      event.setDiscoveredWorkspaceEntityId(workspaceEntity.getId());
     } else {
       logger.warning("workspaceEntity #" + event.getDataSource() + '/' + event.getIdentifier() + " already exists");
     }
+    // workspace bookkeeping
+    discoveredWorkspaces.put(discoverId, workspaceEntity.getId());
+    event.setDiscoveredWorkspaceEntityId(workspaceEntity.getId());
   }
   
   public void onSchoolDataWorkspaceUpdated(@Observes SchoolDataWorkspaceUpdatedEvent event) {
@@ -112,7 +113,7 @@ public class DefaultSchoolDataWorkspaceListener {
             discoveredWorkspaceUsers.put(discoverId, workspaceUserEntity.getId());
             event.setDiscoveredWorkspaceUserEntityId(workspaceUserEntity.getId());
           } else {
-            workspaceUserEntityController.unArchiveWorkspaceUserEntity(workspaceUserEntity);
+            workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
           }
         } else {
           logger.warning("could not add workspace user because userSchoolDataIdentifier #" + event.getUserIdentifier() + '/' + event.getUserDataSource() +  " could not be found");
@@ -124,13 +125,58 @@ public class DefaultSchoolDataWorkspaceListener {
       logger.warning("could not init workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found"); 
     }
   }
+  
+  public void onSchoolDataWorkspaceUserUpdatedEvent(@Observes SchoolDataWorkspaceUserUpdatedEvent event) {
+    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
+    if (userEntity != null) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getWorkspaceDataSource(), event.getWorkspaceIdentifier());
+      if (workspaceEntity != null) {
+        SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
+        if (workspaceUserEntity != null) {
+          String currentUserIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
+          if (!StringUtils.equals(currentUserIdentifier, event.getUserIdentifier())) {
+            UserSchoolDataIdentifier newUserIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
+                event.getUserDataSource(), event.getUserIdentifier());
+            if (newUserIdentifier == null) {
+              logger.warning(String.format("Unable to update workspace user. UserSchoolDataIdentifier for %s/%s not found", event.getUserDataSource(), event.getUserIdentifier()));
+            }
+            else {
+              WorkspaceUserEntity existingUser = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(
+                  workspaceEntity, newUserIdentifier);
+              if (existingUser != null) {
+                if (!existingUser.getArchived().equals(workspaceUserEntity.getArchived())) {
+                  if (existingUser.getArchived()) {
+                    workspaceUserEntityController.unarchiveWorkspaceUserEntity(existingUser);
+                  }
+                  else {
+                    workspaceUserEntityController.archiveWorkspaceUserEntity(existingUser);
+                  }
+                }
+                workspaceUserEntityController.updateIdentifier(existingUser, workspaceUserEntity.getIdentifier());
+                workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
+              }
+              else {
+                workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
+              }
+            }
+          }
+        }
+      } else {
+        logger.warning("could not update workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found");
+      }
+    } else {
+      logger.warning("could not update workspace user because user entity #" + event.getUserIdentifier() + '/' + event.getUserDataSource() +  " could not be found");
+    }
+  }
 
   public void onSchoolDataWorkspaceUserRemovedEvent(@Observes SchoolDataWorkspaceUserRemovedEvent event) {
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
     if (userEntity != null) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getWorkspaceDataSource(), event.getWorkspaceIdentifier());
       if (workspaceEntity != null) {
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, event.getIdentifier());
+        SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
         if (workspaceUserEntity != null) {
           workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
         }

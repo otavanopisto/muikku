@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -28,6 +29,7 @@ import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserGroupController;
 import fi.muikku.users.UserGroupEntityController;
 
 @Stateful
@@ -41,10 +43,16 @@ public class UserGroupRESTService extends AbstractRESTService {
 
   @Inject
   private UserGroupEntityController userGroupEntityController; 
+
+  @Inject
+  private UserGroupController userGroupController;
   
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+  
+  @Inject
+  private Logger logger;
 
   @GET
   @Path("/groups")
@@ -80,9 +88,8 @@ public class UserGroupRESTService extends AbstractRESTService {
           String[] id = ((String) o.get("id")).split("/", 2);
 
           UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(id[1], id[0]);
-          Long userCount = userGroupEntityController.getGroupUserCount(userGroupEntity);
-          
           if (userGroupEntity != null) {
+            Long userCount = userGroupEntityController.getGroupUserCount(userGroupEntity);
             ret.add(new fi.muikku.rest.model.UserGroup(
                 userGroupEntity.getId(), 
                 (String) o.get("name"),
@@ -100,8 +107,34 @@ public class UserGroupRESTService extends AbstractRESTService {
 
   @GET
   @Path("/groups/{ID}")
+  @RESTPermitUnimplemented
   public Response findById(@PathParam("ID") Long groupId) {
-    return null;
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(groupId);
+
+    if (userGroupEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+
+    UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
+    if (userGroup == null) {
+      logger.severe("UserGroupEntity without UserGroup");
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    Long userCount = userGroupEntityController.getGroupUserCount(userGroupEntity);
+    
+    return Response
+        .ok(new fi.muikku.rest.model.UserGroup(
+          userGroupEntity.getId(),
+          userGroup.getName(),
+          userCount))
+        .build();
   }
 
   @GET

@@ -7,6 +7,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
+import fi.muikku.AbstractPyramusMocks;
 import fi.pyramus.rest.model.ContactType;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
@@ -85,7 +87,7 @@ import fi.pyramus.webhooks.WebhookStudentGroupStudentCreatePayload;
  * 
  * Login info for student1
  */
-public class PyramusMocksRest {
+public class PyramusMocksRest extends AbstractPyramusMocks {
   
   public static void mockDefaults(List<String> payloads) throws JsonProcessingException {
     mockCommons();
@@ -396,6 +398,9 @@ public class PyramusMocksRest {
         .withHeader("Content-Type", "application/json")
         .withBody(staffArrayJson)
         .withStatus(200)));
+    
+    mockPersonStudens(studentArray);
+    mockPersonStaffMembers(staffArray);
 
     ContactType contactType = new ContactType((long)1, "Koti", false, false);
     ContactType[] contactTypes = { contactType };
@@ -413,7 +418,7 @@ public class PyramusMocksRest {
         .withBody(contactTypesJson)
         .withStatus(200)));
   }
-  
+
   public static void mockWorkspaces(List<String> payloads) throws JsonProcessingException {
     mockWorkspace(1l, payloads);
   }

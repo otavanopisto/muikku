@@ -800,7 +800,7 @@ div[class*="wi-dock-static-navi"] {
 .wi-content {
   @include padding;
   &.short{
-   height:400px;
+   height:600px;
    overflow: auto;
   }
   ul{
@@ -819,9 +819,8 @@ div[class*="wi-dock-static-navi"] {
 .wi-messages{
  
  .wi-message{
-   max-height:3.2em;
    overflow: hidden; 
-   font-size:13px; 
+   font-size:15px; 
    margin-bottom:5px;
     
    &:not(:last-child) {
@@ -942,4 +941,52 @@ div[class*="sk-autocomplete-item"]:before {
 
 iframe[id^='twitter-widget-']{
  width:100% !important;
+}
+
+/* new stuff 15.12.2015 - the old stuff above needs to be reviewed and dealt  */
+
+.wi-announcements{
+  position:relative;
+}
+
+.wi-item-announcement {
+  border-bottom: 1px solid #f7fdff;
+  display: block;
+  font-size: 15px;
+  font-weight: 300;
+  margin: 0 0 5px;
+  min-width: 50px;
+  padding: 0 0 5px;
+  
+  &:last-child {
+    padding:0;
+  }
+  
+  &:hover{
+    cursor:pointer;
+  } 
+  
+  .wi-item-topic {
+    font-weight:400;
+  
+    &:hover {
+     
+      a {
+       color:#0099ff;
+      }
+       
+    } 
+   
+    a {
+      color:#3c77a0;
+      text-decoration:none;
+    }
+  
+  }
+
+} 
+
+
+#widgetVisits {
+  margin-bottom: 40px;
 }

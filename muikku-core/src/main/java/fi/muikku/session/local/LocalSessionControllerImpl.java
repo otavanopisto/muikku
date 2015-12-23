@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +18,7 @@ import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.AbstractSessionController;
 import fi.muikku.session.AccessToken;
@@ -26,7 +26,6 @@ import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
 import fi.otavanopisto.security.Permit;
 
-@Stateful
 @SessionScoped
 @LocalSession
 public class LocalSessionControllerImpl extends AbstractSessionController implements Serializable, LocalSessionController {
@@ -43,6 +42,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   private void init() {
     representedUserId = null;
     locale = httpServletRequest.getLocale();
+    accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());
   }
 
   @Override
@@ -173,6 +173,11 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   public String getLoggedUserSchoolDataSource() {
     return activeUserSchoolDataSource;
   }
+  
+  @Override
+  public SchoolDataIdentifier getLoggedUser() {
+    return new SchoolDataIdentifier(getLoggedUserIdentifier(), getLoggedUserSchoolDataSource());
+  }
 
   @Override
   public void login(String dataSource, String identifier) {
@@ -188,5 +193,5 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   
   private String activeUserSchoolDataSource;
   
-  private Map<String, AccessToken> accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());
+  private Map<String, AccessToken> accessTokens;
 }

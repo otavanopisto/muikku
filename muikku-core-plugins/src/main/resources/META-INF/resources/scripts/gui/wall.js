@@ -27,9 +27,9 @@
   $(document).ready(function () {
     var wallId = $('.wallWidget>input[name="wallId"]').val();
     
-    mApi().wall.walls.feed.read(wallId)
+    mApi({async: false}).wall.walls.feed.read(wallId)
       .on('$', function (item, itemCallback) {
-        mApi().wall.walls[item.type].read(wallId, item.identifier).callback(function (entryErr, entry) {
+        mApi({async: false}).wall.walls[item.type].read(wallId, item.identifier).callback(function (entryErr, entry) {
           if (entryErr) {
             $('.notification-queue').notificationQueue('notification', 'error', entryErr);
           } else {

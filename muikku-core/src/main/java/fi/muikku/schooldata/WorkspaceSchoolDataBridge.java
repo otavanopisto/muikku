@@ -40,9 +40,15 @@ public interface WorkspaceSchoolDataBridge {
 
   public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
-	public WorkspaceUser findWorkspaceUser(String workspaceIdentifier, String workspaceSchoolDataSource, String userIdentifier) throws UnexpectedSchoolDataBridgeException;
+	public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier) throws UnexpectedSchoolDataBridgeException;
 	
+	@Deprecated
 	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
+	public List<WorkspaceUser> listWorkspaceStaffMembers(String workspaceIdentifier);
+  public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier);
+	public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier, boolean active);
+	public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean active);
+
 
 }

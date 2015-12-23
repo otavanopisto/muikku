@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
@@ -40,8 +38,6 @@ import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
 
-@Dependent
-@Stateless
 public class WorkspaceController {
   
   // TODO: Why not fi.muikku.workspaces ?
@@ -55,9 +51,6 @@ public class WorkspaceController {
   @Inject
   private UserEntityController userEntityController;
 
-  @Inject
-  private WorkspaceEntityController workspaceEntityController;
-  
   @Inject
   private RoleController roleController;
 
@@ -124,6 +117,10 @@ public class WorkspaceController {
 
   public Workspace updateWorkspace(Workspace workspace) {
     return workspaceSchoolDataController.updateWorkspace(workspace);
+  }
+  
+  public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean active) {
+    workspaceSchoolDataController.updateWorkspaceStudentActivity(workspaceUser, active);
   }
 
   public void archiveWorkspace(Workspace workspace) {
@@ -256,10 +253,10 @@ public class WorkspaceController {
     }
 
     // Workspace Users
-
-    List<WorkspaceUser> workspaceUsers = listWorkspaceUsers(workspaceEntity);
-    for (WorkspaceUser workspaceUser : workspaceUsers) {
-      deleteWorkspaceUser(workspaceUser);
+    
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityDAO.listByWorkspaceIncludeArchived(workspaceEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      workspaceUserEntityDAO.delete(workspaceUserEntity);
     }
 
     workspaceEntityDAO.delete(workspaceEntity);
@@ -272,17 +269,12 @@ public class WorkspaceController {
         role.getIdentifier());
   }
 
-  public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser) {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
-        workspaceUser.getWorkspaceSchoolDataSource(), workspaceUser.getWorkspaceIdentifier());
-    return workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity,
-        workspaceUser.getIdentifier());
-  }
-
+  @Deprecated
   public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
     return workspaceSchoolDataController.listWorkspaceUsers(workspace);
   }
 
+  @Deprecated
   public List<WorkspaceUser> listWorkspaceUsers(WorkspaceEntity workspaceEntity) {
     Workspace workspace = findWorkspace(workspaceEntity);
     if (workspace != null) {
@@ -292,18 +284,38 @@ public class WorkspaceController {
     return null;
   }
   
+  public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity) {
+    Workspace workspace = findWorkspace(workspaceEntity);
+    if (workspace != null) {
+      return workspaceSchoolDataController.listWorkspaceStudents(workspace);      
+    }
+    return null;
+  }
+
+  public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity, boolean active) {
+    Workspace workspace = findWorkspace(workspaceEntity);
+    if (workspace != null) {
+      return workspaceSchoolDataController.listWorkspaceStudents(workspace, active);      
+    }
+    return null;
+  }
+
+  public List<WorkspaceUser> listWorkspaceStaffMembers(WorkspaceEntity workspaceEntity) {
+    Workspace workspace = findWorkspace(workspaceEntity);
+    if (workspace != null) {
+      return workspaceSchoolDataController.listWorkspaceStaffMembers(workspace);      
+    }
+    return null;
+  }
+  
   public WorkspaceUser findWorkspaceUser(WorkspaceUserEntity workspaceUserEntity) {
     return workspaceSchoolDataController.findWorkspaceUser(workspaceUserEntity);
   }
   
-  private void deleteWorkspaceUser(WorkspaceUser workspaceUser) {
-    // TODO: Remove users via bridge also
-    WorkspaceUserEntity workspaceUserEntity = findWorkspaceUserEntity(workspaceUser);
-    if (workspaceUserEntity != null) {
-      workspaceUserEntityDAO.delete(workspaceUserEntity);
-    }
+  public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier) {
+    return workspaceSchoolDataController.findWorkspaceUser(workspaceIdentifier, workspaceUserIdentifier);
   }
-
+  
   public int countWorkspaceUsers(WorkspaceEntity workspaceEntity) {
     // TODO Optimize
     return listWorkspaceUsers(workspaceEntity).size();

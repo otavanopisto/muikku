@@ -1,16 +1,17 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?d835dl');
-	src:url('fonts/muikku.eot?#iefixd835dl') format('embedded-opentype'),
-		url('fonts/muikku.ttf?d835dl') format('truetype'),
-		url('fonts/muikku.woff?d835dl') format('woff'),
-		url('fonts/muikku.svg?d835dl#muikku') format('svg');
+	src:url('fonts/muikku.eot?55j6vw');
+	src:url('fonts/muikku.eot?55j6vw#iefix') format('embedded-opentype'),
+		url('fonts/muikku.ttf?55j6vw') format('truetype'),
+		url('fonts/muikku.woff?55j6vw') format('woff'),
+		url('fonts/muikku.svg?55j6vw#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
 
 [class^="icon-"], [class*=" icon-"] {
-	font-family: 'muikku';
+    /* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'muikku' !important;
 	speak: none;
 	font-style: normal;
 	font-weight: normal;
@@ -23,17 +24,8 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.icon-edit-index:before {
-	content: "\e640";
-}
-.icon-edit-help:before {
-	content: "\e641";
-}
-.icon-forgotpassword:before {
-	content: "\e63f";
-}
-.icon-correct-answers:before {
-	content: "\e642";
+.icon-announcer:before {
+	content: "\e901";
 }
 .icon-download:before {
 	content: "\f019";
@@ -185,9 +177,6 @@
 .icon-arrow-right2:before {
 	content: "\e608";
 }
-.icon-spinner:before {
-	content: "\e97b";
-}
 .icon-assessment-canceled:before {
 	content: "\e321";
 }
@@ -269,3 +258,19 @@
 .icon-new-section:before {
 	content: "\e92f";
 }
+.icon-forgotpassword:before {
+	content: "\e63f";
+}
+.icon-correct-answers:before {
+	content: "\e642";
+}
+.icon-edit-index:before {
+	content: "\e640";
+}
+.icon-edit-help:before {
+	content: "\e641";
+}
+.icon-spinner:before {
+	content: "\e900";
+}
+

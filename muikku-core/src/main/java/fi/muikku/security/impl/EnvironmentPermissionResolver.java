@@ -56,7 +56,7 @@ public class EnvironmentPermissionResolver extends AbstractPermissionResolver im
   }
 
   private boolean checkWorkspaceGroupRole(UserEntity userEntity, Permission perm) {
-    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUser(userEntity);
+    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
     
     for (UserGroupEntity userGroup : userGroups) {
       if (environmentGroupPermissionDAO.hasEnvironmentPermissionAccess(userGroup, perm))

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -56,6 +57,44 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceJournalEntry_.created)));
 
     return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public WorkspaceJournalEntry findLatestByWorkspaceEntityIdAndUserEntityId(Long workspaceEntityId, Long userEntityId){
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceJournalEntry> criteria = criteriaBuilder.createQuery(WorkspaceJournalEntry.class);
+    Root<WorkspaceJournalEntry> root = criteria.from(WorkspaceJournalEntry.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntityId),
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId)
+        )
+    );
+    criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceJournalEntry_.created)));
+    TypedQuery<WorkspaceJournalEntry> query = entityManager.createQuery(criteria);
+    
+    query.setMaxResults(1);
+    
+    return getSingleResult(query);
+  }
+  
+  public long countByWorkspaceEntityIdAndUserEntityId(Long workspaceEntityId, Long userEntityId){
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<WorkspaceJournalEntry> root = criteria.from(WorkspaceJournalEntry.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntityId),
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId)
+        )
+    );
+
+    return entityManager.createQuery(criteria).getSingleResult();
   }
   
   public WorkspaceJournalEntry updateTitle(WorkspaceJournalEntry workspaceJournalEntry, String title){

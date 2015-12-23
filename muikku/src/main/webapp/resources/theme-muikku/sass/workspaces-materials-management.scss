@@ -133,6 +133,7 @@ body.workspace-materials-management {
             list-style:none;
             position:relative;
             margin:1px 0;
+            word-wrap:break-word;
             
             &.item-hidden {
               opacity:0.4;

@@ -1,5 +1,6 @@
 package fi.muikku.users;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -13,6 +14,7 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.users.UserGroupUserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 
 public class UserGroupEntityController {
 
@@ -27,6 +29,9 @@ public class UserGroupEntityController {
   
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
+
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   public UserGroupEntity createUserGroupEntity(String dataSource, String identifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
@@ -49,37 +54,52 @@ public class UserGroupEntityController {
   }
   
   public UserGroupEntity findUserGroupEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
+    return findUserGroupEntityByDataSourceAndIdentifier(dataSource, identifier, false);
+  }
+  
+  public UserGroupEntity findUserGroupEntityByDataSourceAndIdentifier(String dataSource, String identifier, boolean includeArchived) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {
       logger.severe("Could not find datasource " + dataSource);
       return null;
     }
-    
-    return userGroupEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+
+    if (includeArchived) {
+      return userGroupEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+    } else {
+      return userGroupEntityDAO.findByDataSourceAndIdentifierAndArchived(schoolDataSource, identifier, false);
+    }
   }
 
   public Long getGroupUserCount(UserGroupEntity userGroupEntity) {
     return userGroupEntityDAO.countGroupUsers(userGroupEntity);
   }
   
-  public void deleteUserGroupEntity(UserGroupEntity userGroupEntity) {
-    // TODO: archive instead of delete? Though, identifier being unique is tough on implementation
-    userGroupEntityDAO.delete(userGroupEntity);
-  }
-
   public UserGroupUserEntity findUserGroupUserEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
+    return findUserGroupUserEntityByDataSourceAndIdentifier(dataSource, identifier, false);
+  }
+  
+  public UserGroupUserEntity findUserGroupUserEntityByDataSourceAndIdentifier(String dataSource, String identifier, Boolean includeArchived) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {
       logger.severe("Could not find datasource " + dataSource);
       return null;
     }
     
-    return userGroupUserEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+    if (includeArchived) {
+      return userGroupUserEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+    } else {
+      return userGroupUserEntityDAO.findByDataSourceAndIdentifierAndArchived(schoolDataSource, identifier, Boolean.FALSE);
+    }
+    
   }
 
-  public void deleteUserGroupUserEntity(UserGroupUserEntity userGroupUserEntity) {
-    // TODO: archive instead of delete? Though, identifier being unique is tough on implementation
-    userGroupUserEntityDAO.delete(userGroupUserEntity);
+  public void archiveUserGroupUserEntity(UserGroupUserEntity userGroupUserEntity) {
+    userGroupUserEntityDAO.updateArchived(userGroupUserEntity, Boolean.TRUE);
+  }
+
+  public void unarchiveUserGroupUserEntity(UserGroupUserEntity userGroupUserEntity) {
+    userGroupUserEntityDAO.updateArchived(userGroupUserEntity, Boolean.FALSE);
   }
 
   public List<UserGroupEntity> listUserGroupEntitiesByDataSource(String dataSource, int firstResult, int maxResults) {
@@ -96,11 +116,29 @@ public class UserGroupEntityController {
     return userGroupUserEntityDAO.listByUserGroupEntity(userGroupEntity);
   }
 
-  public List<UserGroupEntity> listUserGroupsByUser(UserEntity userEntity) {
-    return userGroupEntityDAO.listByUser(userEntity);
+  public List<UserGroupEntity> listUserGroupsByUserEntity(UserEntity userEntity) {
+    return userGroupEntityDAO.listByUserEntityExcludeArchived(userEntity);
   }
 
+  public List<UserGroupEntity> listUserGroupsByUserIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    return userGroupEntityDAO.listByUserIdentifierExcludeArchived(userSchoolDataIdentifier);
+  }
+
+  public List<UserGroupEntity> listUserGroupsByUserIdentifier(SchoolDataIdentifier userIdentifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+    if (userSchoolDataIdentifier == null) {
+      logger.severe(String.format("Could not find userSchoolDataIdentifier by userIdentifer %s", userIdentifier));
+      return Collections.emptyList();
+    }
+    
+    return userGroupEntityDAO.listByUserIdentifierExcludeArchived(userSchoolDataIdentifier);
+  }
+  
   public List<UserGroupEntity> listUserGroupEntities() {
+    return userGroupEntityDAO.listByArchived(Boolean.FALSE);
+  }
+
+  public List<UserGroupEntity> listUserGroupEntitiesIncludeArchived() {
     return userGroupEntityDAO.listAll();
   }
 
@@ -114,6 +152,18 @@ public class UserGroupEntityController {
 
   public List<UserGroupUserEntity> listUserGroupUsersByUser(UserEntity userEntity) {
     return userGroupUserEntityDAO.listByUserEntity(userEntity);
+  }
+
+  public UserGroupUserEntity updateUserSchoolDataIdentifier(UserGroupUserEntity userGroupUserEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    return userGroupUserEntityDAO.updateUserSchoolDataIdentifier(userGroupUserEntity, userSchoolDataIdentifier);
+  }
+
+  public UserGroupEntity archiveUserGroupEntity(UserGroupEntity userGroupEntity) {
+    return userGroupEntityDAO.updateArchived(userGroupEntity, Boolean.TRUE);
+  }
+
+  public UserGroupEntity unarchiveUserGroupEntity(UserGroupEntity userGroupEntity) {
+    return userGroupEntityDAO.updateArchived(userGroupEntity, Boolean.FALSE);
   }
 
 }

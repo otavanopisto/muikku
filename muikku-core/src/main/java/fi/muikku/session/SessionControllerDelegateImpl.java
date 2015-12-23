@@ -10,6 +10,7 @@ import javax.inject.Named;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.security.ContextReference;
 
 @RequestScoped 
@@ -93,6 +94,11 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
   @Override
   public String getLoggedUserSchoolDataSource() {
     return implementation.getLoggedUserSchoolDataSource();
+  }
+  
+  @Override
+  public SchoolDataIdentifier getLoggedUser() {
+    return implementation.getLoggedUser();
   }
   
   @Override

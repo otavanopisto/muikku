@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -17,15 +15,15 @@ import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserAddress;
 import fi.muikku.schooldata.entity.UserEmail;
+import fi.muikku.schooldata.entity.UserGroup;
+import fi.muikku.schooldata.entity.UserPhoneNumber;
 
-@Dependent
-@Stateful
 public class UserSchoolDataController {
 
   // TODO: Caching
@@ -119,7 +117,7 @@ public class UserSchoolDataController {
   public List<User> listUsersByEntity(UserEntity userEntity) {
     List<User> result = new ArrayList<>();
 
-    List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
+    List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierDAO.listByUserEntityAndArchived(userEntity, Boolean.FALSE);
     for (UserSchoolDataIdentifier identifier : identifiers) {
       UserSchoolDataBridge userBridge = getUserBridge(identifier.getDataSource());
       User user = findUserByIdentifier(userBridge, identifier.getIdentifier());
@@ -176,7 +174,7 @@ public class UserSchoolDataController {
 
   public UserEntity findUserEntity(User user) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, user.getIdentifier());
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(schoolDataSource, user.getIdentifier(), Boolean.FALSE);
     if (userSchoolDataIdentifier != null) {
       return userSchoolDataIdentifier.getUserEntity();
     }
@@ -185,7 +183,7 @@ public class UserSchoolDataController {
   }
 
   public UserEntity findUserEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(dataSource, identifier, Boolean.FALSE);
     if (userSchoolDataIdentifier != null) {
       return userSchoolDataIdentifier.getUserEntity();
     }
@@ -331,6 +329,38 @@ public class UserSchoolDataController {
         }
       }
     }
+    return null;
+  }
+  
+  public List<UserAddress> listUserAddressses(SchoolDataIdentifier userIdentifier){
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        try {
+          return schoolDataBridge.listUserAddresses(userIdentifier);
+        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user addresses", e);
+        }
+      }
+    }
+    
+    return null;
+  }
+  
+  public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier){
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        try {
+          return schoolDataBridge.listUserPhoneNumbers(userIdentifier);
+        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user phone numbers", e);
+        }
+      }
+    }
+    
     return null;
   }
 

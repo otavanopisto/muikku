@@ -16,12 +16,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,11 +39,14 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import wiremock.org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -70,10 +73,8 @@ import fi.muikku.atests.WorkspaceDiscussionGroup;
 import fi.muikku.atests.WorkspaceDiscussionThread;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
-import fi.muikku.model.base.Tag;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
-import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -175,7 +176,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
     }
     
-    return new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
+    RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
+    
+    remoteWebDriver.setFileDetector(new LocalFileDetector());
+
+    return remoteWebDriver; 
+
   }
   
   protected RemoteWebDriver createChromeDriver() {
@@ -221,6 +227,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertEquals(expected, getWebDriver().getTitle());
   }
 
+  protected void reloadCurrentPage() {
+    getWebDriver().get(getWebDriver().getCurrentUrl());
+  }
+  
   protected void testPageElementsByName(String elementName) {
     Boolean elementExists = getWebDriver().findElements(By.name(elementName)).size() > 0;
     assertEquals(true, elementExists);
@@ -234,6 +244,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   }
 
+  protected void waitForElementToBeClickable(String selector){
+    waitForElementToBeClickable(By.cssSelector(selector));
+  }
+  
   protected void waitForElementToBeClickable(By locator) {
     new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.elementToBeClickable(locator));
   }
@@ -241,7 +255,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void waitForElementToBePresent(By locator) {
     new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.presenceOfElementLocated(locator));
   }
-
+  
   protected void waitForUrlNotMatches(final String regex) {
     WebDriver driver = getWebDriver();
     new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
@@ -308,7 +322,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void assertPresent(String selector) {
-    assertTrue(String.format("Could not find element %s", selector), getWebDriver().findElements(By.cssSelector(selector)).size() > 0);
+    assertTrue(String.format("Unexpectedly found element %s", selector), getWebDriver().findElements(By.cssSelector(selector)).size() > 0);
   }
   
   protected void assertNotPresent(String selector) {
@@ -331,6 +345,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
   }
   
+  protected void assertCount(String selector, int expectedCount) {
+    int count = 0;
+    
+    count = getWebDriver().findElements(By.cssSelector(selector)).size();
+
+    assertEquals(expectedCount, count);
+  }
+  
   protected void navigate(String path, boolean secure) {
     getWebDriver().get(String.format("%s%s", getAppUrl(secure), path));
   }
@@ -342,7 +364,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void waitForPresent(String selector) {
     waitForElementToBePresent(By.cssSelector(selector));
   }
-  
+
   protected boolean isElementPresent(String selector) {
     try {
       getWebDriver().findElement(By.cssSelector(selector));
@@ -386,9 +408,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertEquals(text, element.getText());
   }
 
+
+  protected void assertTextIgnoreCase(String selector, String text) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    assertEquals(StringUtils.lowerCase(text), StringUtils.lowerCase(element.getText()));
+  }
+  
+  
   protected void sendKeys(String selector, String keysToSend) {
     getWebDriver().findElement(By.cssSelector(selector)).sendKeys(keysToSend);
   }
+  
+  protected void clearElement(String selector) {
+    getWebDriver().findElement(By.cssSelector(selector)).clear();;
+  }
+  
   
   protected void waitAndSendKeys(String selector, String keysToSend) {
     waitForPresent(selector);
@@ -488,11 +522,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void logout() {
+    navigate("/", true);
     waitAndClick("a.lu-action-signout");
     waitForPresent(".index");    
   }
   
-  protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws IOException {
+  protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
     PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier), name, description);
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -642,7 +677,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .then()
       .statusCode(204);
   }
-
+  
   protected void deleteCommunicatorMessages() {
     asAdmin()
       .delete("/test/communicator/messages")
@@ -675,6 +710,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     return element.getAttribute(attribute);
 
+  }
+  
+  protected String getCKEditorContent() {
+    getWebDriver().switchTo().frame(getWebDriver().findElementByCssSelector(".cke_wysiwyg_frame"));
+    String ckeContent = getWebDriver().findElementByTagName("body").getText();
+    getWebDriver().switchTo().defaultContent();
+    return ckeContent;
   }
   
   protected void dragAndDrop(String source, String target){

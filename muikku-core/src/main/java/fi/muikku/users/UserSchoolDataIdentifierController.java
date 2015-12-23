@@ -10,6 +10,7 @@ import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 
 public class UserSchoolDataIdentifierController {
   
@@ -23,7 +24,7 @@ public class UserSchoolDataIdentifierController {
   private SchoolDataSourceDAO schoolDataSourceDAO;
   
   public UserSchoolDataIdentifier createUserSchoolDataIdentifier(SchoolDataSource dataSource, String identifier, UserEntity userEntity) {
-    return userSchoolDataIdentifierDAO.create(dataSource, identifier, userEntity);
+    return userSchoolDataIdentifierDAO.create(dataSource, identifier, userEntity, Boolean.FALSE);
   }
 
   public UserSchoolDataIdentifier createUserSchoolDataIdentifier(String schoolDataSource, String identifier, UserEntity userEntity) {
@@ -39,19 +40,50 @@ public class UserSchoolDataIdentifierController {
   public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifier(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource == null) {
-      logger.severe("Could not find dataSource '" + schoolDataSource + "'");
+      logger.severe(String.format("Could not find dataSource %s", schoolDataSource));
       return null;
     }
     
     return findUserSchoolDataIdentifierByDataSourceAndIdentifier(dataSource, identifier);
   }
+
+  public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(String schoolDataSource, String identifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource == null) {
+      logger.severe(String.format("Could not find dataSource %s", schoolDataSource));
+      return null;
+    }
+    
+    return findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(dataSource, identifier);
+  }
+
+  public UserSchoolDataIdentifier findUserSchoolDataIdentifierBySchoolDataIdentifier(SchoolDataIdentifier schoolDataIdentifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataIdentifier.getDataSource());
+    if (dataSource == null) {
+      logger.severe(String.format("Could not find dataSource %s", schoolDataIdentifier.getDataSource()));
+      return null;
+    }
+    return findUserSchoolDataIdentifierByDataSourceAndIdentifier(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier());
+  }
+
+  public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(SchoolDataSource dataSource, String identifier) {
+    return userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+  }
   
   public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
-    return userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+    return userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(dataSource, identifier, Boolean.FALSE);
   }
 
   public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByUserEntity(UserEntity userEntity) {
-    return userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
+    return userSchoolDataIdentifierDAO.listByUserEntityAndArchived(userEntity, Boolean.FALSE);
+  }
+
+  public void archiveUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    userSchoolDataIdentifierDAO.updateArchived(userSchoolDataIdentifier, Boolean.TRUE);
+  }
+
+  public void unarchiveUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    userSchoolDataIdentifierDAO.updateArchived(userSchoolDataIdentifier, Boolean.FALSE);
   }
   
   

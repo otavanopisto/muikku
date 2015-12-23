@@ -2,6 +2,7 @@ package fi.muikku.plugins.schooldatapyramus.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -12,12 +13,15 @@ import org.joda.time.DateTime;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserAddress;
 import fi.muikku.schooldata.entity.UserGroup;
+import fi.muikku.schooldata.entity.UserPhoneNumber;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
@@ -25,6 +29,7 @@ import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
+import fi.pyramus.rest.model.Address;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseAssessment;
 import fi.pyramus.rest.model.CourseAssessmentRequest;
@@ -33,12 +38,16 @@ import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseStudent;
 import fi.pyramus.rest.model.CourseType;
 import fi.pyramus.rest.model.EducationalTimeUnit;
+import fi.pyramus.rest.model.PhoneNumber;
 import fi.pyramus.rest.model.StudentGroup;
 import fi.pyramus.rest.model.StudentGroupStudent;
 import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.UserRole;
 
 public class PyramusSchoolDataEntityFactory {
+  
+  @Inject
+  private Logger logger;
   
   public static class UserWithId {
     private final User user;
@@ -63,7 +72,7 @@ public class PyramusSchoolDataEntityFactory {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
-
+  
   public WorkspaceRole createCourseStudentRoleEntity() {
     // TODO: Localize
     return new PyramusWorkspaceRole(identifierMapper.getWorkspaceStudentRoleIdentifier(), "Course Student",
@@ -88,8 +97,19 @@ public class PyramusSchoolDataEntityFactory {
       break;
     }
 
-    return new PyramusUser(identifierMapper.getStaffIdentifier(staffMember.getId()), staffMember.getFirstName(),
-        staffMember.getLastName(), displayName, null, null, null, null, null, null, null, false);
+    return new PyramusUser(
+        identifierMapper.getStaffIdentifier(staffMember.getId()),
+        staffMember.getFirstName(),
+        staffMember.getLastName(),
+        displayName,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        false);
   }
 
   public List<User> createEntity(fi.pyramus.rest.model.StaffMember... staffMembers) {
@@ -115,9 +135,19 @@ public class PyramusSchoolDataEntityFactory {
       displayName.append(String.format(" (%s)", studyProgrammeName));
     }
 
-    return new PyramusUser(identifierMapper.getStudentIdentifier(student.getId()), student.getFirstName(),
-        student.getLastName(), displayName.toString(), studyProgrammeName, nationality, language, municipality, school,
-        studyStartDate, studyTimeEnd, hidden);
+    return new PyramusUser(
+        identifierMapper.getStudentIdentifier(student.getId()),
+        student.getFirstName(),
+        student.getLastName(),
+        displayName.toString(),
+        studyProgrammeName,
+        nationality,
+        language,
+        municipality,
+        school,
+        studyStartDate,
+        studyTimeEnd,
+        hidden);
   }
 
   public EnvironmentRole createEntity(fi.pyramus.rest.model.UserRole role) {
@@ -170,13 +200,22 @@ public class PyramusSchoolDataEntityFactory {
     if (staffMember == null) {
       return null;
     }
-
-    return new PyramusWorkspaceUser(identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId()),
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifierMapper.getWorkspaceIdentifier(staffMember
-            .getCourseId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId()),
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        identifierMapper.getWorkspaceStaffRoleIdentifier(staffMember.getRoleId()));
+    
+    SchoolDataIdentifier identifier = toIdentifier(identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId()));
+    SchoolDataIdentifier userIdentifier = toIdentifier(identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId()));
+    SchoolDataIdentifier workspaceIdentifier = toIdentifier(identifierMapper.getWorkspaceIdentifier(staffMember.getCourseId()));
+    SchoolDataIdentifier roleIdentifier = toIdentifier(identifierMapper.getWorkspaceStaffRoleIdentifier(staffMember.getRoleId()));
+    
+    return new PyramusWorkspaceUser(
+      identifier, 
+      userIdentifier, 
+      workspaceIdentifier,
+      roleIdentifier
+    );
+  }
+  
+  private SchoolDataIdentifier toIdentifier(String identifier) {
+    return new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
 
   public List<WorkspaceUser> createEntity(CourseStaffMember... staffMembers) {
@@ -194,11 +233,17 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
 
-    return new PyramusWorkspaceUser(identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId()),
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifierMapper.getWorkspaceIdentifier(courseStudent
-            .getCourseId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        identifierMapper.getStudentIdentifier(courseStudent.getStudentId()),
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, createCourseStudentRoleEntity().getIdentifier());
+    SchoolDataIdentifier identifier = toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId()));
+    SchoolDataIdentifier userIdentifier = toIdentifier(identifierMapper.getStudentIdentifier(courseStudent.getStudentId()));
+    SchoolDataIdentifier workspaceIdentifier = toIdentifier(identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId()));
+    SchoolDataIdentifier roleIdentifier = toIdentifier(createCourseStudentRoleEntity().getIdentifier());
+    
+    return new PyramusWorkspaceUser(
+      identifier, 
+      userIdentifier, 
+      workspaceIdentifier,
+      roleIdentifier
+    );
   }
 
   public List<WorkspaceUser> createEntity(CourseStudent... courseStudents) {
@@ -247,13 +292,22 @@ public class PyramusSchoolDataEntityFactory {
 
   public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments) {
     List<WorkspaceAssessment> result = new ArrayList<>();
-    for (CourseAssessment courseAssessment : courseAssessments) {
-      result.add(createEntity(courseAssessment));
+    
+    if (courseAssessments != null) {
+      for (CourseAssessment courseAssessment : courseAssessments) {
+        result.add(createEntity(courseAssessment));
+      }
     }
+    
     return result;
   }
 
   public WorkspaceAssessmentRequest createEntity(CourseAssessmentRequest courseAssessmentRequest) {
+    if (courseAssessmentRequest == null) {
+      logger.severe("Attempted to translate null course assessment request into school data entity");
+      return null;
+    }
+    
     return new PyramusWorkspaceAssessmentRequest(courseAssessmentRequest.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
         courseAssessmentRequest.getRequestText(), courseAssessmentRequest.getCreated().toDate());
@@ -345,6 +399,31 @@ public class PyramusSchoolDataEntityFactory {
     }
 
     return WorkspaceRoleArchetype.CUSTOM;
+  }
+
+  public List<UserAddress> createEntities(SchoolDataIdentifier userIdentifier, Address[] addresses) {
+    List<UserAddress> result = new ArrayList<>();
+    
+    for (Address address : addresses) {
+      result.add(new PyramusUserAddress(userIdentifier, 
+          address.getStreetAddress(), 
+          address.getPostalCode(), 
+          address.getCity(), 
+          null, 
+          address.getCountry()));
+    }
+    
+    return result;
+  }
+
+  public List<UserPhoneNumber> createEntities(SchoolDataIdentifier userIdentifier, PhoneNumber[] phoneNumbers) {
+    List<UserPhoneNumber> result = new ArrayList<>();
+    
+    for (PhoneNumber phoneNumber : phoneNumbers) {
+      result.add(new PyramusUserPhoneNumber(userIdentifier, phoneNumber.getNumber()));
+    }
+    
+    return result;
   }
 
 }

@@ -71,11 +71,6 @@
     </init-param>
   </filter>
   
-  <filter>
-    <filter-name>JsessionIdAvoiderFilter</filter-name>
-    <filter-class>fi.muikku.JsessionIdAvoiderFilter</filter-class>
-  </filter>
-
   <filter-mapping>
     <filter-name>EncodingFilter</filter-name>
     <url-pattern>/*</url-pattern>

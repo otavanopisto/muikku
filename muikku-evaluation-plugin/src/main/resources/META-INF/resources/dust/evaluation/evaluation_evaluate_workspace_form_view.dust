@@ -1,0 +1,57 @@
+<section class="evaluation-modal-evaluateFormWrapper" id="evaluationEvaluateFormWrapper">
+  <!--
+  <header class="evaluation-modal-evaluateForm-header">
+    <h2 class="evaluation-modal-evaluateForm-title">Työtilan arviointi</h2>
+    <div class="evaluation-modal-evaluateForm-meta-wrapper">
+      <div class="meta-education-type">
+        <span class="title">Opiskelijan linja</span><span class="desc">{studentStudyProgrammeName}</span>
+      </div>
+      <div class="meta-workspace">
+        <span class="title">Kurssi</span><span class="desc">{workspaceName}</span>
+      </div>
+    </div>
+  </header>
+  -->
+  <div class="evaluation-modal-evaluateForm-content"> 
+    <div class="evaluation-modal-evaluateForm-literal-eval-wrapper">
+      <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.literalAssessment"/}</label>
+      <textarea id="evaluateFormLiteralEvaluation"></textarea>
+    </div>
+    <div class="evaluation-modal-evaluateForm-date-wrapper">
+      <label for="evaluationDate">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentDate"/}</label>
+      <input required="required" type="date" name="evaluationDate" id="evaluationDate"/>
+    </div>
+    <div class="evaluation-modal-evaluateForm-grade-wrapper">
+      <label for="grade">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentGrade"/}</label>
+      <select name="grade" id="grade">
+        {#gradingScales}
+          <optgroup label="{name}">
+          {#grades scaleid=id scaleds=dataSource}
+            <option value="{id}/{dataSource}@{scaleid}/{scaleds}">
+              {name}
+            </option>
+          {/grades}
+          </optgroup>
+        {/gradingScales}
+      </select>
+    </div>
+    <!--
+    <div class="evaluation-modal-evaluateForm-basedOfPhenomenon-wrapper">
+      <label for="evaluateFormLiteralEvaluation">Ilmiön osuus suorituksesta</label>
+    
+    </div>
+    -->
+    <div class="evaluation-modal-evaluateForm-valuer-wrapper">
+      <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentAssessor"/}</label>
+      <select name="assessor">
+      {#assessors}
+        {@eq key=selected value="true" type="boolean"}
+          <option value="{userEntityId}" selected="selected">{displayName}</option>
+        {:else}
+          <option value="{userEntityId}">{displayName}</option>
+        {/eq}
+      {/assessors}
+      </select>
+    </div>
+  </div>
+</section>

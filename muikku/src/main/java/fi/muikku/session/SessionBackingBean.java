@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.muikku.controller.SystemSettingsController;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
@@ -28,13 +29,20 @@ public class SessionBackingBean {
 
   @Inject
   private UserController userController;
+  
+  @Inject
+  private SystemSettingsController systemSettingsController;
 
   @PostConstruct
   public void init() {
     loggedUserRoleArchetype = null;
     loggedUserName = null;
     testsRunning = StringUtils.equals("true", System.getProperty("tests.running"));
-
+    bugsnagApiKey = systemSettingsController.getSetting("bugsnagApiKey");
+    bugsnagEnabled = StringUtils.isNotBlank(bugsnagApiKey);    
+    loggedUserId = null;
+    loggedUser = null;
+    
     if (sessionController.isLoggedIn()) {
       UserEntity loggedUser = sessionController.getLoggedUserEntity();
       if (loggedUser != null) {
@@ -51,6 +59,8 @@ public class SessionBackingBean {
         }
       }
 
+      this.loggedUserId = sessionController.getLoggedUserEntity().getId();
+      this.loggedUser = sessionController.getLoggedUser().toId();
     }
   }
 
@@ -59,7 +69,11 @@ public class SessionBackingBean {
   }
 
   public Long getLoggedUserId() {
-    return sessionController.isLoggedIn() ? sessionController.getLoggedUserEntity().getId() : null;
+    return loggedUserId;
+  }
+  
+  public String getLoggedUser() {
+    return loggedUser;
   }
 
   public String getResourceLibrary() {
@@ -94,7 +108,19 @@ public class SessionBackingBean {
     return testsRunning;
   }
   
+  public String getBugsnagApiKey() {
+    return bugsnagApiKey;
+  }
+  
+  public boolean getBugsnagEnabled() {
+    return bugsnagEnabled;
+  }
+  
+  private String loggedUser;
+  private Long loggedUserId;
   private EnvironmentRoleArchetype loggedUserRoleArchetype;
   private String loggedUserName;
   private boolean testsRunning;
+  private String bugsnagApiKey;
+  private boolean bugsnagEnabled;
 }

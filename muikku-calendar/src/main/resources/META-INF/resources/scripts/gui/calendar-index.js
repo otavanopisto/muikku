@@ -77,7 +77,7 @@
                     var newEventStart = startDateISO + "T" + $("#startTime").val() + ":00.000Z";
                     var newEventEnd = endDateISO + "T" + $("#endTime").val() + ":00.000Z";
                     
-                    mApi().calendar.calendars.events.create($("#calendarList").val(), {
+                    mApi({async: false}).calendar.calendars.events.create($("#calendarList").val(), {
                       summary: $('#eventName').val(),
                       description: null,
                       recurrence: null,
@@ -105,7 +105,7 @@
               $("#endTime").timepicker().timepicker({"timeFormat": "H:i",
                                                      "useSelect": true});
               
-              mApi().calendar.calendars.read().callback($.proxy(function (err, calendars) {
+              mApi({async: false}).calendar.calendars.read().callback($.proxy(function (err, calendars) {
             if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
@@ -174,7 +174,7 @@
                           var newEnd = "" + oldEnd.substring(0, 10) + "T"
                                             + $("#newEndTime").val() + ":00.000Z";
                           
-                          mApi().calendar.calendars.events.update(kalenteri, Id, {
+                          mApi({async: false}).calendar.calendars.events.update(kalenteri, Id, {
                             summary: $("#newTitle").val(),
                             description: null,
                             recurrence: null,
@@ -219,7 +219,7 @@
                 buttons: [{
                   text: "Kyllä",
                   click: function() {
-                    mApi().calendar.calendars.events.del(kalenteri, Id);
+                    mApi({async: false}).calendar.calendars.events.del(kalenteri, Id);
                     $("#fpWeekView").fullCalendar("removeEvents", kalenteri + ":" + Id);
                     window.location.reload(true);
                   }

@@ -11,8 +11,6 @@
     background-color:$mainFuncSide;
   }
 
-
-
 .mf-loading{
   
   margin: 100px auto 0;
@@ -39,7 +37,7 @@
    -webkit-animation-delay: -0.32s;
    animation-delay: -0.32s;
   }  
-  .circle2{
+  .circle3{
    -webkit-animation-delay: -0.16s;
    animation-delay: -0.16s;
   }  
@@ -148,7 +146,7 @@
       > div:first-child{
         width:170px;
         margin-left:31px;
-        margin-top:13px;
+        margin-top:16px;
       }
   }
   
@@ -433,7 +431,6 @@
     display:inline-block;
     color:#fff;
     margin-top:5px;
-    box-shadow:0 0 5px rgba(0,0,0,0.25);
   }   
 
 .mf-item{
@@ -868,6 +865,25 @@
   }
   
   
+}
+
+.mf-items-toolbar{
+    background-color: #fff;
+    padding:5px;
+    margin-bottom:5px;
+    margin-top:5px;
+  
+  .mf-items-tool{
+    padding:0 10px 0 10px;
+    border:1px solid $brd2;
+    background-color:$bgr1; 
+    font-size:1.5em;
+    float:left;
+    color:#000;
+    cursor:pointer;
+  }
+  
+
 }
 
 .mf-items-paging{
