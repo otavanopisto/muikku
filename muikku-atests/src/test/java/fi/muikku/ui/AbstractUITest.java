@@ -65,6 +65,7 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
 import fi.muikku.TestUtilities;
+import fi.muikku.atests.Announcement;
 import fi.muikku.atests.CommunicatorMessageRESTModel;
 import fi.muikku.atests.CommunicatorNewMessageRESTModel;
 import fi.muikku.atests.Workspace;
@@ -722,6 +723,22 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .delete("/test/announcements")
       .then()
       .statusCode(204);
+  }
+  
+  protected Announcement createAnnouncement(Long userGroup, Long publisherUserEntityId, String caption, String content, Date startDate, Date endDate, boolean archived, boolean publiclyVisible) throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    Announcement payload = new Announcement(null, userGroup, publisherUserEntityId, caption, content, new Date(), startDate, endDate, archived, publiclyVisible);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/announcements");
+    
+    response.then()
+      .statusCode(200);
+    Announcement announcement = objectMapper.readValue(response.asString(), Announcement.class);
+    return announcement;
   }
   
   protected String getAttributeValue(String selector, String attribute){

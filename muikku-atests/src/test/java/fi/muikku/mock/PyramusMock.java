@@ -147,6 +147,14 @@ public class PyramusMock {
         }
         return this;
       }
+//      TODO: UserGroup mockings
+      public Builder addUserGroup() {
+        return this;
+      }
+      
+      public Builder addStudentToUserGroup(Long userGroupId, MockStudent student) {
+        return this;
+      }
       
       public Builder addCourseStudents(HashMap<Long, List<MockCourseStudent>> mockCourseStudents){
         HashMap<Long, List<CourseStudent>> cStudents = new HashMap<>();

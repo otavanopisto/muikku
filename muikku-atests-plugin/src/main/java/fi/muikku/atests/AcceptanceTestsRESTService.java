@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
@@ -57,6 +58,7 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
 import fi.muikku.users.UserEntityController;
+import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -118,6 +120,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
   @Inject
   private AnnouncementController announcementController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
   
   @GET
   @Path("/login")
@@ -478,7 +483,20 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
 
     return Response.noContent().build();
-  }  
+  }
+  
+  @POST
+  @Path("/announcements")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createAnnouncement(fi.muikku.atests.Announcement payload) {
+    UserEntity user = userEntityController.findUserEntityById(payload.getPublisherUserEntityId());
+    Announcement announcement = announcementController.create(user, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.isPubliclyVisible());
+    if(payload.getUserGroupId() != null) {
+      UserGroupEntity userGroup = userGroupEntityController.findUserGroupEntityById(payload.getUserGroupId());
+      announcementController.addAnnouncementTargetGroup(announcement, userGroup);
+    }
+    return Response.ok(createRestEntity(announcement)).build();
+  }
   
   @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}")
@@ -552,4 +570,17 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         entity.getSticky(), 
         entity.getLocked());
   }
+  
+  private fi.muikku.atests.Announcement createRestEntity(Announcement entity) {
+    return new fi.muikku.atests.Announcement(entity.getId(), null,
+        entity.getPublisherUserEntityId(), 
+        entity.getCaption(), 
+        entity.getContent(), 
+        entity.getCreated(),
+        entity.getStartDate(),
+        entity.getEndDate(),
+        entity.isArchived(),
+        entity.isPubliclyVisible());
+  }
+  
 }

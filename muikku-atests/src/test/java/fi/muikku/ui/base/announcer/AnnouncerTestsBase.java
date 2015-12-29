@@ -28,7 +28,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       waitAndClick(".bt-mainFunction-content");
       waitForPresent("#endDate");
       clearElement("#endDate");
-      sendKeys("#endDate", "21.12.2017");
+      sendKeys("#endDate", "21.12.2025");
       sendKeys(".mf-textfield-subject", "Test title");
       click(".mf-form-header");
       waitForNotVisible("#ui-datepicker-div");
@@ -57,7 +57,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       waitAndClick(".bt-mainFunction-content");
       waitForPresent("#endDate");
       clearElement("#endDate");
-      sendKeys("#endDate", "21.12.2017");
+      sendKeys("#endDate", "21.12.2025");
       sendKeys(".mf-textfield-subject", "Test title");
       click(".mf-form-header");
       waitForNotVisible("#ui-datepicker-div");
@@ -78,7 +78,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
   }
   
   @Test
-  public void announcementVisibleFrontpageWidgetTest() throws JsonProcessingException, Exception {
+  public void announcementVisibleInFrontpageWidgetTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
     mocker().addStaffMember(admin).addStudent(student).mockLogin(admin).build();
@@ -89,7 +89,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       waitAndClick(".bt-mainFunction-content");
       waitForPresent("#endDate");
       clearElement("#endDate");
-      sendKeys("#endDate", "21.12.2017");
+      sendKeys("#endDate", "21.12.2025");
       sendKeys(".mf-textfield-subject", "Test title");
       click(".mf-form-header");
       waitForNotVisible("#ui-datepicker-div");
@@ -110,6 +110,49 @@ public class AnnouncerTestsBase extends AbstractUITest {
       deleteAnnouncements();
     }
   }
-  
-  
+
+  @Test
+  public void announcementListTest() throws JsonProcessingException, Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    mocker().addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+    login();
+    try{
+      maximizeWindow();
+      navigate("/announcer", true);
+      waitAndClick(".bt-mainFunction-content");
+      waitForPresent("#startDate");
+      clearElement("#startDate");
+      sendKeys("#startDate", "21.12.2015");
+      waitForPresent("#endDate");
+      clearElement("#endDate");
+      sendKeys("#endDate", "21.12.2025");
+      sendKeys(".mf-textfield-subject", "Test title");
+      click(".mf-form-header");
+      waitForNotVisible("#ui-datepicker-div");
+      switchToFrame(".cke_wysiwyg_frame");
+      sendKeys(".cke_editable", "Announcer test announcement");
+      switchToDefaultFrame();
+      waitAndClick(".mf-toolbar input[name='send']");
+      waitForPresent(".an-announcement");
+      reloadCurrentPage();
+      waitForPresent(".an-announcement");
+      assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
+      logout();
+      mocker().mockLogin(student);
+      login();
+      waitForPresent(".wi-item-topic");
+      assertTextIgnoreCase(".wi-item-topic>a", "Test title");
+      navigate("/announcements", true);
+      waitForPresent("#announcementContextNavigation .gc-navigation-item");
+      assertTextIgnoreCase("#announcementContextNavigation .gc-navigation-item a", "Test title");
+      click("#announcementContextNavigation .gc-navigation-item a");
+      waitForPresent(".announcement-article h2");
+      assertTextIgnoreCase(".announcement-article h2", "Test title");
+      assertTextIgnoreCase(".announcement-article div.article-datetime", "12/21/15");
+      assertTextIgnoreCase(".announcement-article div.article-context", "announcer test announcement");
+    }finally{
+      deleteAnnouncements();
+    }
+  }
 }
