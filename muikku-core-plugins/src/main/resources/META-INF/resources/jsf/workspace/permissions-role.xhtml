@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  template="/jsf/workspace/templates/workspace-permissions.xhtml">
+  
+  <!-- Workspace view title -->
+  <ui:define name="workspace.content.top.static">
+    <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.rolepermissions.viewTitle']}</h1>
+  </ui:define>
+
+  <ui:define name="workspace.content">
+    <h:outputScript name="scripts/gui/workspace-permissions-role.js" target="head" />
+    
+    <article class="workspaceRolePermissionsWidget">
+      <input type="hidden" name="workspaceId" value="#{workspacePermissionsRoleManagementBackingBean.workspaceEntityId}"/>
+      <table id="environmentUserRolePermissionsTable">
+        <tr>
+          <td class="workspace-permission-column-label">#{i18n.text['plugin.workspace.rolepermissions.permissionsColumn.label']}</td>
+          <c:forEach var="role" items="#{workspacePermissionsRoleManagementBackingBean.roles}">
+            <td class="workspace-permission-column-label">${role.name}</td>
+          </c:forEach>
+        </tr>
+        <c:forEach var="permission" items="#{workspacePermissionsRoleManagementBackingBean.permissions}">
+          <tr>
+            <td class="workspace-permission-column-data">#{permission.name}</td>
+            <c:forEach var="role" items="#{workspacePermissionsRoleManagementBackingBean.roles}">
+              <td class="workspace-permission-column-input">
+                <input type="hidden" name="permissionId" value="#{permission.id}"/>
+                <input type="hidden" name="roleId" value="#{role.id}"/>
+                <c:choose>
+                  <c:when test="#{workspacePermissionsRoleManagementBackingBean.hasWorkspaceRolePermission(role, permission)}">
+                    <input type="checkbox" class="workspaceRolePermissionsCheckbox" name="workspaceRolePermission.#{role.id}.#{permission.id}" checked="checked"/>
+                  </c:when>
+                  <c:otherwise>
+                    <input type="checkbox" class="workspaceRolePermissionsCheckbox" name="workspaceRolePermission.#{role.id}.#{permission.id}"/>
+                  </c:otherwise>
+                </c:choose>
+              </td>            
+            </c:forEach>
+          </tr>
+        </c:forEach>
+      </table>
+    </article>
+  </ui:define>
+
+</ui:composition>
