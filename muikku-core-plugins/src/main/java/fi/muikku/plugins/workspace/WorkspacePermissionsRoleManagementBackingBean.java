@@ -18,26 +18,25 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.muikku.controller.PermissionController;
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.security.Permission;
-import fi.muikku.model.users.UserGroupEntity;
+import fi.muikku.model.users.EnvironmentRoleEntity;
+import fi.muikku.model.users.RoleEntity;
+import fi.muikku.model.users.SystemRoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.security.MuikkuPermissions;
+import fi.muikku.security.PermissionScope;
 import fi.muikku.session.SessionController;
-import fi.muikku.users.UserGroupController;
-import fi.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/workspace/{workspaceUrlName}/permissions", to = "/jsf/workspace/permissions.jsf")
+@Join(path = "/workspace/{workspaceUrlName}/rolepermissions", to = "/jsf/workspace/permissions-role.jsf")
 @LoggedIn
-public class WorkspacePermissionsManagementBackingBean {
-
-//  @Inject
-//  private Logger logger;
+public class WorkspacePermissionsRoleManagementBackingBean {
 
   @Parameter
   private String workspaceUrlName;
@@ -50,13 +49,10 @@ public class WorkspacePermissionsManagementBackingBean {
   private WorkspaceBackingBean workspaceBackingBean;
 
   @Inject
-  private UserGroupController userGroupController;
-  
-  @Inject
-  private UserGroupEntityController userGroupEntityController;
+  private PermissionController permissionController;
 
   @Inject
-  private PermissionController permissionController;
+  private RoleController roleController;
 
   @Inject
   private SessionController sessionController;
@@ -82,27 +78,46 @@ public class WorkspacePermissionsManagementBackingBean {
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
-    
-    things = new ArrayList<WorkspacePermissionsManagementBackingBean.UserGroupThing>();
 
-    permissions = new ArrayList<Permission>();
-    // TODO: atm we only support the sign up permission
-    Permission permission = permissionController.findByName(MuikkuPermissions.WORKSPACE_SIGNUP);
-    permissions.add(permission);
+    /**
+     * View data
+     */
+
+    permissions = permissionController.listPermissionsByScope(PermissionScope.WORKSPACE);
     
-    List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupEntities();
-    for (UserGroupEntity userGroupEntity : userGroupEntities) {
-      UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
-      
-      things.add(new UserGroupThing(userGroupEntity.getId(), userGroup.getName()));
-    }
-    
-    Collections.sort(things, new Comparator<UserGroupThing>() {
+    Collections.sort(permissions, new Comparator<Permission>() {
       @Override
-      public int compare(UserGroupThing o1, UserGroupThing o2) {
+      public int compare(Permission o1, Permission o2) {
         return o1.getName().compareTo(o2.getName());
       }
     });
+    
+    roles = new ArrayList<RoleEntity>();
+    
+    List<SystemRoleEntity> systemRoles = roleController.listSystemRoleEntities();
+    List<EnvironmentRoleEntity> envRoles = roleController.listEnvironmentRoleEntities();
+    List<WorkspaceRoleEntity> wsRoles = roleController.listWorkspaceRoleEntities();
+    
+    Collections.sort(envRoles, new Comparator<EnvironmentRoleEntity>() {
+      @Override
+      public int compare(EnvironmentRoleEntity o1, EnvironmentRoleEntity o2) {
+        return o1.getArchetype().compareTo(o2.getArchetype());
+      }
+    });
+
+    Collections.sort(wsRoles, new Comparator<WorkspaceRoleEntity>() {
+      @Override
+      public int compare(WorkspaceRoleEntity o1, WorkspaceRoleEntity o2) {
+        return o1.getArchetype().compareTo(o2.getArchetype());
+      }
+    });
+
+    for (SystemRoleEntity sre : systemRoles)
+      roles.add(sre);
+    for (EnvironmentRoleEntity ere : envRoles)
+      roles.add(ere);
+    for (WorkspaceRoleEntity wsr : wsRoles)
+      roles.add(wsr);
     
     return null;
   }
@@ -123,44 +138,22 @@ public class WorkspacePermissionsManagementBackingBean {
     return workspaceEntityId;
   }
 
-  public List<UserGroupThing> getUserGroups() {
-    return things;
-  }
-
   public List<Permission> getPermissions() {
     return permissions;
   }
   
-  public boolean hasUserGroupPermission(UserGroupThing userGroup, Permission permission) {
-    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroup.getId());
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(getWorkspaceEntityId());
-    
-    return permissionController.hasWorkspaceGroupPermission(workspaceEntity, userGroupEntity, permission);
+  public List<? extends RoleEntity> getRoles() {
+    return roles;
   }
   
-  public class UserGroupThing {
-    public UserGroupThing(Long id, String name) {
-      this.id = id;
-      this.name = name;
-    }
-    public Long getId() {
-      return id;
-    }
-    public void setId(Long id) {
-      this.id = id;
-    }
-    public String getName() {
-      return name;
-    }
-    public void setName(String name) {
-      this.name = name;
-    }
-    private Long id;
-    private String name;
+  public boolean hasWorkspaceRolePermission(RoleEntity role, Permission permission) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(getWorkspaceEntityId());
+
+    return permissionController.hasWorkspacePermission(workspaceEntity, role, permission);
   }
   
   private String workspaceName;
   private Long workspaceEntityId;
-  private List<UserGroupThing> things;
+  private List<RoleEntity> roles;
   private List<Permission> permissions;
 }

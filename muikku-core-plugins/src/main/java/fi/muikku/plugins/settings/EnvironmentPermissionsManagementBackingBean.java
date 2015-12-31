@@ -14,12 +14,15 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.controller.PermissionController;
+import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.SystemRoleEntity;
 import fi.muikku.schooldata.RoleController;
+import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.security.PermissionScope;
+import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -35,6 +38,9 @@ public class EnvironmentPermissionsManagementBackingBean {
   @Inject
   private RoleController roleController;
 
+  @Inject
+  private SessionController sessionController;
+  
   @RequestAction
   public String init() {
     permissions = permissionController.listPermissionsByScope(PermissionScope.ENVIRONMENT);
@@ -45,6 +51,9 @@ public class EnvironmentPermissionsManagementBackingBean {
         return o1.getName().compareTo(o2.getName());
       }
     });
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_PERMISSIONS))
+      return NavigationRules.NOT_FOUND;
     
     roles = new ArrayList<RoleEntity>();
     
