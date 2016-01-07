@@ -45,7 +45,7 @@
 
 		<!-- Webapp-permission -->
 
-		<webapp-permission.version>1.0.1</webapp-permission.version>
+		<webapp-permission.version>1.0.2</webapp-permission.version>
 		
 		<!--  Mail -->
 		<mail-api.version>1.5.4</mail-api.version>
