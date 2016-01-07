@@ -1,6 +1,7 @@
 package fi.muikku.plugins.announcer.rest;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +50,16 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+
+  private Date currentDate() {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date());
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MILLISECOND, 0);
+    return cal.getTime();
+  }
   
   @POST
   @Path("/announcements")
@@ -179,7 +190,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
     restModel.setUserGroupEntityIds(userGroupEntityIds);
 
-    Date date = new Date();
+    Date date = currentDate();
     if (date.before(announcement.getStartDate())) {
       restModel.setTemporalStatus(AnnouncementTemporalStatus.UPCOMING);
     } else if (date.after(announcement.getEndDate())) {
