@@ -71,7 +71,7 @@ public class WorkspacePermissionsRoleManagementBackingBean {
     }
 
     if (!sessionController.hasCoursePermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
-      return NavigationRules.NOT_FOUND;
+      return NavigationRules.ACCESS_DENIED;
     }
     
     workspaceEntityId = workspaceEntity.getId();
@@ -92,32 +92,37 @@ public class WorkspacePermissionsRoleManagementBackingBean {
       }
     });
     
-    roles = new ArrayList<RoleEntity>();
+    roleEntities = new ArrayList<RoleEntity>();
     
-    List<SystemRoleEntity> systemRoles = roleController.listSystemRoleEntities();
-    List<EnvironmentRoleEntity> envRoles = roleController.listEnvironmentRoleEntities();
-    List<WorkspaceRoleEntity> wsRoles = roleController.listWorkspaceRoleEntities();
+    List<SystemRoleEntity> systemRoleEntities = roleController.listSystemRoleEntities();
+    List<EnvironmentRoleEntity> environmentRoleEnties = roleController.listEnvironmentRoleEntities();
+    List<WorkspaceRoleEntity> workspaceRoleEntities = roleController.listWorkspaceRoleEntities();
     
-    Collections.sort(envRoles, new Comparator<EnvironmentRoleEntity>() {
+    Collections.sort(environmentRoleEnties, new Comparator<EnvironmentRoleEntity>() {
       @Override
       public int compare(EnvironmentRoleEntity o1, EnvironmentRoleEntity o2) {
         return o1.getArchetype().compareTo(o2.getArchetype());
       }
     });
 
-    Collections.sort(wsRoles, new Comparator<WorkspaceRoleEntity>() {
+    Collections.sort(workspaceRoleEntities, new Comparator<WorkspaceRoleEntity>() {
       @Override
       public int compare(WorkspaceRoleEntity o1, WorkspaceRoleEntity o2) {
         return o1.getArchetype().compareTo(o2.getArchetype());
       }
     });
 
-    for (SystemRoleEntity sre : systemRoles)
-      roles.add(sre);
-    for (EnvironmentRoleEntity ere : envRoles)
-      roles.add(ere);
-    for (WorkspaceRoleEntity wsr : wsRoles)
-      roles.add(wsr);
+    for (SystemRoleEntity systemRoleEntity : systemRoleEntities) {
+      roleEntities.add(systemRoleEntity);
+    }
+    
+    for (EnvironmentRoleEntity environmentRoleEntity : environmentRoleEnties) {
+      roleEntities.add(environmentRoleEntity);
+    }
+    
+    for (WorkspaceRoleEntity workspaceRoleEntity : workspaceRoleEntities) {
+      roleEntities.add(workspaceRoleEntity);
+    }
     
     return null;
   }
@@ -142,8 +147,8 @@ public class WorkspacePermissionsRoleManagementBackingBean {
     return permissions;
   }
   
-  public List<? extends RoleEntity> getRoles() {
-    return roles;
+  public List<RoleEntity> getRoleEntities() {
+    return roleEntities;
   }
   
   public boolean hasWorkspaceRolePermission(RoleEntity role, Permission permission) {
@@ -154,6 +159,6 @@ public class WorkspacePermissionsRoleManagementBackingBean {
   
   private String workspaceName;
   private Long workspaceEntityId;
-  private List<RoleEntity> roles;
+  private List<RoleEntity> roleEntities;
   private List<Permission> permissions;
 }

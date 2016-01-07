@@ -8,6 +8,8 @@
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
   template="/jsf/workspace/templates/workspace-permissions.xhtml">
   
+  <!-- TODO: this file uses JSTL functions in JSF code. This can cause serious performance problsm -->
+  
   <!-- Workspace view title -->
   <ui:define name="workspace.content.top.static">
     <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.rolepermissions.viewTitle']}</h1>
@@ -21,14 +23,14 @@
       <table id="environmentUserRolePermissionsTable">
         <tr>
           <td class="workspace-permission-column-label">#{i18n.text['plugin.workspace.rolepermissions.permissionsColumn.label']}</td>
-          <c:forEach var="role" items="#{workspacePermissionsRoleManagementBackingBean.roles}">
+          <c:forEach var="role" items="#{workspacePermissionsRoleManagementBackingBean.roleEntities}">
             <td class="workspace-permission-column-label">${role.name}</td>
           </c:forEach>
         </tr>
         <c:forEach var="permission" items="#{workspacePermissionsRoleManagementBackingBean.permissions}">
           <tr>
             <td class="workspace-permission-column-data">#{permission.name}</td>
-            <c:forEach var="role" items="#{workspacePermissionsRoleManagementBackingBean.roles}">
+            <c:forEach var="role" items="#{workspacePermissionsRoleManagementBackingBean.roleEntities}">
               <td class="workspace-permission-column-input">
                 <input type="hidden" name="permissionId" value="#{permission.id}"/>
                 <input type="hidden" name="roleId" value="#{role.id}"/>

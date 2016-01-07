@@ -43,6 +43,10 @@ public class EnvironmentPermissionsManagementBackingBean {
   
   @RequestAction
   public String init() {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_PERMISSIONS)) {
+      return NavigationRules.ACCESS_DENIED;
+    }
+    
     permissions = permissionController.listPermissionsByScope(PermissionScope.ENVIRONMENT);
     
     Collections.sort(permissions, new Comparator<Permission>() {
@@ -52,25 +56,25 @@ public class EnvironmentPermissionsManagementBackingBean {
       }
     });
     
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_PERMISSIONS))
-      return NavigationRules.NOT_FOUND;
+    roleEntities = new ArrayList<RoleEntity>();
     
-    roles = new ArrayList<RoleEntity>();
+    List<SystemRoleEntity> systemRoleEntities = roleController.listSystemRoleEntities();
+    List<EnvironmentRoleEntity> environmentRoleEntities = roleController.listEnvironmentRoleEntities();
     
-    List<SystemRoleEntity> systemRoles = roleController.listSystemRoleEntities();
-    List<EnvironmentRoleEntity> envRoles = roleController.listEnvironmentRoleEntities();
-    
-    Collections.sort(envRoles, new Comparator<EnvironmentRoleEntity>() {
+    Collections.sort(environmentRoleEntities, new Comparator<EnvironmentRoleEntity>() {
       @Override
       public int compare(EnvironmentRoleEntity o1, EnvironmentRoleEntity o2) {
         return o1.getArchetype().compareTo(o2.getArchetype());
       }
     });
 
-    for (SystemRoleEntity sre : systemRoles)
-      roles.add(sre);
-    for (EnvironmentRoleEntity ere : envRoles)
-      roles.add(ere);
+    for (SystemRoleEntity systemRoleEntity : systemRoleEntities) {
+      roleEntities.add(systemRoleEntity);
+    }
+    
+    for (EnvironmentRoleEntity environmentRoleEntity : environmentRoleEntities) {
+      roleEntities.add(environmentRoleEntity);
+    }
     
     return null;
   }
@@ -79,14 +83,14 @@ public class EnvironmentPermissionsManagementBackingBean {
     return permissions;
   }
   
-  public List<? extends RoleEntity> getRoles() {
-    return roles;
+  public List<RoleEntity> getRoleEntities() {
+    return roleEntities;
   }
   
   public boolean hasRolePermission(RoleEntity role, Permission permission) {
     return permissionController.hasEnvironmentPermission(role, permission);
   }
   
-  private List<RoleEntity> roles;
+  private List<RoleEntity> roleEntities;
   private List<Permission> permissions;
 }
