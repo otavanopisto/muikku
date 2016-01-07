@@ -2,6 +2,8 @@ package fi.muikku.rest;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
@@ -32,6 +34,9 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Provider
 public class RestSessionFilter implements javax.ws.rs.container.ContainerRequestFilter {
 
+  @Inject
+  private Logger logger;
+  
   @Context
   private HttpServletRequest request;
 
@@ -79,10 +84,10 @@ public class RestSessionFilter implements javax.ws.rs.container.ContainerRequest
     RESTPermit permit = method.getAnnotation(RESTPermit.class);
 
     if (permit != null) {
-      // Inline checks are handled in the rest endpoint code so they are skipped here. 
-      if ((permit.handling() == Handling.INLINE) || (permit.handling() == Handling.UNSECURED))
-        return true;
-
+      /**
+       * Identity bean must be satisfied and unambiguous.
+       */
+      
       if (identityInstance.isUnsatisfied())
         throw new RuntimeException("PermitInterceptor - Identity bean unavailable");
       if (identityInstance.isAmbiguous())
@@ -90,6 +95,16 @@ public class RestSessionFilter implements javax.ws.rs.container.ContainerRequest
       
       Identity identity = identityInstance.get();
       
+      // If login is required, check that first as it's unrelated to the permission check
+      if (permit.requireLoggedIn()) {
+        if (!identity.isLoggedIn())
+          return false;
+      }
+      
+      // Inline checks are handled in the rest endpoint code so they are skipped here. 
+      if ((permit.handling() == Handling.INLINE) || (permit.handling() == Handling.UNSECURED))
+        return true;
+
       String[] permissions = permit.value();
       Style style = permit.style();
       ContextReference permitContext = null;
@@ -102,7 +117,9 @@ public class RestSessionFilter implements javax.ws.rs.container.ContainerRequest
         return true; // Return true for unimplemented rest endpoints
       /** Temporary workaround until all rest permissions are fully implemented **/
 
-      // Return false in a normal situation where RESTPermit is not defined 
+      // Return false in a normal situation where RESTPermit is not defined
+      String methodName = method != null ? method.getName() : "unknown";
+      logger.log(Level.WARNING, String.format("Execution of REST endpoint which doesn't have RESTPermit annotation (%s) was blocked.", methodName));
       return false;
     }
   }
