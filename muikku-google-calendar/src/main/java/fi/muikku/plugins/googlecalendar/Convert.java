@@ -10,9 +10,13 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.EventDateTime;
 
 import fi.muikku.calendar.CalendarEventTemporalField;
+import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEventTemporalField;
 
 import java.util.Date;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 /**
@@ -32,9 +36,23 @@ public abstract class Convert {
   public static DateTime toDateTime(CalendarEventTemporalField d) {
     long timestamp = d.getDateTime().getTime();
     long offset = d.getTimeZone().getOffset(timestamp);
-    return new DateTime(timestamp + offset, (int) msToMinutes(offset));
+    return new DateTime(timestamp, (int) msToMinutes(offset));
   }
-
+  
+  public static CalendarEventTemporalField toCalendarEventTemporalField(EventDateTime eventDateTime) {
+    return new GoogleCalendarEventTemporalField(
+        toDate(eventDateTime), 
+        getJavaTimeZone(eventDateTime.getTimeZone()));
+  }
+  
+  private static TimeZone getJavaTimeZone(String timeZone) {
+    if (StringUtils.isNotBlank(timeZone)) {
+      return SimpleTimeZone.getTimeZone(timeZone);
+    }
+    // TODO: this should fallback to calendar default timezone
+    return null;
+  }
+  
   public static Date toDate(EventDateTime dt) {
     if (dt.getDateTime() != null) {
       return toDate(dt.getDateTime());
@@ -44,7 +62,7 @@ public abstract class Convert {
   }
 
   public static Date toDate(DateTime dt) {
-    return new Date(dt.getValue() - minutesToMs(dt.getTimeZoneShift()));
+    return new Date(dt.getValue());
   }
 
   static EventDateTime toEventDateTime(boolean dateOnly, CalendarEventTemporalField datetime) {

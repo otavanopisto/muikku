@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.SimpleTimeZone;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,11 +45,9 @@ import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.calendar.DefaultCalendarEvent;
 import fi.muikku.calendar.DefaultCalendarEventLocation;
 import fi.muikku.plugins.googlecalendar.model.GoogleCalendar;
-import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEventTemporalField;
 import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEventUser;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
-
 
 @Dependent
 @Stateless
@@ -281,8 +277,8 @@ public class GoogleCalendarClient {
     // TODO: attendees
     List<CalendarEventAttendee> attendees = null;
     CalendarEventUser organizer = new GoogleCalendarEventUser(event.getOrganizer().getDisplayName(), event.getOrganizer().getEmail());
-    CalendarEventTemporalField start = new GoogleCalendarEventTemporalField(Convert.toDate(event.getStart()), getJavaTimeZone(event.getStart().getTimeZone()));
-    CalendarEventTemporalField end = new GoogleCalendarEventTemporalField(Convert.toDate(event.getEnd()), getJavaTimeZone(event.getEnd().getTimeZone()));
+    CalendarEventTemporalField start = Convert.toCalendarEventTemporalField(event.getStart());
+    CalendarEventTemporalField end = Convert.toCalendarEventTemporalField(event.getEnd());
     boolean allDay = event.getStart().getDate() != null;
     Map<String, String> extendedProperties = Collections.emptyMap();
     // TODO: reminders
@@ -328,14 +324,6 @@ public class GoogleCalendarClient {
         extendedProperties, 
         reminders, 
         recurrence);
-  }
-  
-  private static TimeZone getJavaTimeZone(String timeZone) {
-    if (StringUtils.isNotBlank(timeZone)) {
-      return SimpleTimeZone.getTimeZone(timeZone);
-    }
-    // TODO: this should fallback to calendar default timezone
-    return null;
   }
 
   public void deleteEvent(fi.muikku.calendar.Calendar calendar, String eventId) throws CalendarServiceException {
