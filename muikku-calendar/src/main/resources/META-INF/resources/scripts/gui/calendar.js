@@ -61,17 +61,15 @@
            delete values.allDay;           
            values.allDay = 'false';           
          }         
+         var timezone = jstz.determine().name();
+         
          values.recurrence = recurrence;
          values.start = eventStart;
          values.end = eventStop;
          values.status = 'CONFIRMED';
-         values.startTimeZone = 'GMT+2';
-         values.endTimeZone = 'GMT+2';        
-   
-
-
-        
-        
+         values.startTimeZone = timezone;
+         values.endTimeZone = timezone;        
+         
 
 ////      location: calendarEvent.location,
 ////      latitude:calendarEvent.latitude,
@@ -219,13 +217,13 @@
        var viewEnd = view.end;
          
        var calls = $.map(calendarIds, function (calendarId) {
-         return mApi({async: false}).calendar.calendars.events.read(parseInt(calendarId), {
+         return mApi().calendar.calendars.events.read(parseInt(calendarId), {
            timeMin: viewStart.toISOString(),
            timeMax: viewEnd.toISOString()
          });
        });
        
-       mApi({async: false}).batch(calls)
+       mApi().batch(calls)
          .callback(function (err, results) {
            if (err) {
              $('.notification-queue').notificationQueue('notification', 'error', err);
