@@ -201,10 +201,13 @@ $(document).ready(function() {
       if (areaId == undefined){
         mApi({async: false}).forum.workspace.latest.read(workspaceId, {'firstResult' : msgsCount}).on('$', $.proxy(function(msgs, msgsCallback) {
           mApi({async: false}).forum.areas.read(msgs.forumAreaId).callback($.proxy(function(err, area) {
-            msgs.areaName = area.name;
-            var d = new Date(msgs.created);
-            msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
-            msgsCallback();
+            mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
+              thread.creatorFullName = user.firstName + ' ' + user.lastName;            
+              msgs.areaName = area.name;
+              var d = new Date(msgs.created);
+              msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              msgsCallback();
+            }, this));            
           },this));
         }, this)).callback($.proxy(function(err, threads) {  
           if (err) {

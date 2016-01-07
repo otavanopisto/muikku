@@ -4,7 +4,7 @@
 
 	<groupId>fi.muikku</groupId>
 	<artifactId>bom</artifactId>
-	<version>1.0.87-SNAPSHOT</version>
+	<version>1.0.90-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku BOM</name>
 
@@ -37,7 +37,7 @@
 
 		<!-- Muikku -->
 
-		<muikku.version>1.0.87-SNAPSHOT</muikku.version>
+		<muikku.version>1.0.90-SNAPSHOT</muikku.version>
 
 		<!-- Coops -->
 		<coops-spec.version>1.0.0</coops-spec.version>
@@ -45,7 +45,7 @@
 
 		<!-- Webapp-permission -->
 
-		<webapp-permission.version>1.0.1</webapp-permission.version>
+		<webapp-permission.version>1.0.2</webapp-permission.version>
 		
 		<!--  Mail -->
 		<mail-api.version>1.5.4</mail-api.version>
