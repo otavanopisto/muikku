@@ -38,6 +38,9 @@ import fi.pyramus.rest.model.GradingScale;
 import fi.pyramus.rest.model.Person;
 import fi.pyramus.rest.model.StaffMember;
 import fi.pyramus.rest.model.Student;
+import fi.pyramus.rest.model.StudentGroup;
+import fi.pyramus.rest.model.StudentGroupStudent;
+import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.StudyProgramme;
 import fi.pyramus.rest.model.StudyProgrammeCategory;
 import fi.pyramus.rest.model.Subject;
@@ -47,6 +50,9 @@ import fi.pyramus.webhooks.WebhookCourseStudentCreatePayload;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
+import fi.pyramus.webhooks.WebhookStudentGroupCreatePayload;
+import fi.pyramus.webhooks.WebhookStudentGroupStaffMemberCreatePayload;
+import fi.pyramus.webhooks.WebhookStudentGroupStudentCreatePayload;
 
 public class PyramusMock {
   
@@ -63,6 +69,8 @@ public class PyramusMock {
   private List<CourseType> courseTypes = new ArrayList<>();
   private HashMap<Long, List<CourseStudent>> courseStudents = new HashMap<>();
   private HashMap<Long, List<CourseStaffMember>> courseStaffMembers = new HashMap<>();
+  private HashMap<Long, List<Object>> studentGroupUsers = new HashMap<>();
+  private List<StudentGroup> studentGroups = new ArrayList<>();
   private List<String> payloads = new ArrayList<>();
   
   private PyramusMock() {
@@ -148,11 +156,90 @@ public class PyramusMock {
         return this;
       }
 //      TODO: UserGroup mockings
-      public Builder addUserGroup() {
+      public Builder addStudentGroup(Long id, String name, String description, Long creatorId, boolean archived) {
+        DateTime date = new DateTime(2015, 2, 2, 0, 0, 0, 0);
+        List<String> tags = new ArrayList<>();
+        pmock.studentGroups.add(new StudentGroup(id, name, description, date, creatorId, date, creatorId, date, tags, archived));
         return this;
       }
       
-      public Builder addStudentToUserGroup(Long userGroupId, MockStudent student) {
+      public Builder addStudentToStudentGroup(Long userGroupId, MockStudent student) {
+        StudentGroupStudent studentGroupStudent = new StudentGroupStudent(student.getId(), student.getId());
+          if(pmock.studentGroupUsers.containsKey(userGroupId)){
+            pmock.studentGroupUsers.get(userGroupId).add(studentGroupStudent);
+          }else{
+            List<Object> sgsList = new ArrayList<>();
+            sgsList.add(studentGroupStudent);
+            pmock.studentGroupUsers.put(userGroupId, sgsList);
+          }
+        return this;
+      }
+      
+      public Builder addStaffMemberToStudentGroup(Long userGroupId, MockStaffMember staffMember) {
+        StudentGroupUser studentGroupUser = new StudentGroupUser(staffMember.getId(), staffMember.getId());
+          if(pmock.studentGroupUsers.containsKey(userGroupId)){
+            pmock.studentGroupUsers.get(userGroupId).add(studentGroupUser);
+          }else{
+            List<Object> sgsList = new ArrayList<>();
+            sgsList.add(studentGroupUser);
+            pmock.studentGroupUsers.put(userGroupId, sgsList);
+          }
+        return this;
+      }
+      
+      public Builder mockStudentGroups() throws JsonProcessingException {
+        stubFor(get(urlMatching(String.format("/1/students/studentGroups")))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(pmock.studentGroups))
+              .withStatus(200)));
+        for(StudentGroup sg : pmock.studentGroups) {
+          stubFor(get(urlMatching(String.format("/1/students/studentGroups/%d", sg.getId())))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(sg))
+              .withStatus(200)));
+          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentGroupCreatePayload(sg.getId())));          
+        }
+        
+        for (Long groupId : pmock.studentGroupUsers.keySet()) {
+          List<StudentGroupStudent> students = new ArrayList<>();
+          List<StudentGroupUser> users = new ArrayList<>();
+          for (Object o : pmock.studentGroupUsers.get(groupId)) {
+            if(o instanceof StudentGroupStudent){            
+            StudentGroupStudent sgStudent = (StudentGroupStudent) o;
+            students.add(sgStudent);
+              stubFor(get(urlMatching(String.format("/1/students/studentGroups/%d/students/%d", groupId, sgStudent.getStudentId())))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(sgStudent))
+                .withStatus(200)));
+
+            pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentGroupStudentCreatePayload(sgStudent.getId(), groupId, sgStudent.getStudentId())));
+            }else if(o instanceof StudentGroupUser){
+              StudentGroupUser sgUser = (StudentGroupUser) o;
+              users.add(sgUser);
+                stubFor(get(urlMatching(String.format("/1/students/studentGroups/%d/staffmembers/%d", groupId, sgUser.getStaffMemberId())))
+                .willReturn(aResponse()
+                  .withHeader("Content-Type", "application/json")
+                  .withBody(pmock.objectMapper.writeValueAsString(sgUser))
+                  .withStatus(200)));
+              pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentGroupStaffMemberCreatePayload(sgUser.getId(), groupId, sgUser.getStaffMemberId())));
+            }
+          }
+//        students
+          stubFor(get(urlMatching(String.format("/1/students/studentGroups/%d/students", groupId)))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(students))
+            .withStatus(200)));
+//        users
+          stubFor(get(urlMatching(String.format("/1/students/studentGroups/%d/staffmembers", groupId)))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(users))
+            .withStatus(200)));            
+        }
         return this;
       }
       
@@ -578,7 +665,7 @@ public class PyramusMock {
         mockCourseStaffMembers();
         mockCourseStudents();
         mockCourseStaffMemberRoles();
-        
+        mockStudentGroups();
         for(String payload : pmock.payloads) {
           TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
         }
@@ -637,6 +724,14 @@ public class PyramusMock {
 
   public HashMap<Long, List<CourseStaffMember>> getCourseStaffMembers() {
     return courseStaffMembers;
+  }
+
+  public HashMap<Long, List<Object>> getStudentGroups() {
+    return studentGroupUsers;
+  }
+
+  public void setStudentGroups(HashMap<Long, List<Object>> studentGroups) {
+    this.studentGroupUsers = studentGroups;
   }
 
 }

@@ -1,5 +1,7 @@
 package fi.muikku.ui.base.announcer;
 
+import java.sql.Date;
+
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -118,6 +120,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
     mocker().addStaffMember(admin).addStudent(student).mockLogin(admin).build();
     login();
     try{
+//      createAnnouncement(null, 1l, "Test title", "Announcer test announcement", new Date(2015, 12, 12), new Date(2025, 12, 12), false, true);
       maximizeWindow();
       navigate("/announcer", true);
       waitAndClick(".bt-mainFunction-content");
@@ -155,4 +158,77 @@ public class AnnouncerTestsBase extends AbstractUITest {
       deleteAnnouncements();
     }
   }
+//  TODO: Delete userGroups and members
+  @Test
+  public void userGroupAnnouncementVisibleTest() throws JsonProcessingException, Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    mocker().addStaffMember(admin).addStudent(student).addStudentGroup(1l, "Test group", "Test group for users", 1l, false).addStudentToStudentGroup(1l, student).addStaffMemberToStudentGroup(1l, admin).mockLogin(admin).build();
+    login();
+    try{
+      maximizeWindow();
+      navigate("/announcer", true);
+      waitAndClick(".bt-mainFunction-content");
+      waitForPresent("#endDate");
+      clearElement("#endDate");
+      sendKeys("#endDate", "21.12.2025");
+      sendKeys(".mf-textfield-subject", "Test title");
+      click(".mf-form-header");
+      waitForNotVisible("#ui-datepicker-div");
+      sendKeys("#targetGroupContent", "Test group");
+      waitAndClick("li.ui-menu-item");
+      switchToFrame(".cke_wysiwyg_frame");
+      sendKeys(".cke_editable", "Announcer test announcement");
+      switchToDefaultFrame();
+      waitAndClick(".mf-toolbar input[name='send']");
+      waitForPresent(".an-announcement");
+      reloadCurrentPage();
+      waitForPresent(".an-announcement");
+      assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
+      logout();
+      mocker().mockLogin(student);
+      login();
+      waitForPresent(".wi-item-topic");
+      assertTextIgnoreCase(".wi-item-topic>a", "Test title");
+    }finally{
+      deleteAnnouncements();
+    }
+  }
+  
+  @Test
+  public void userGroupAnnouncementNotVisibleTest() throws JsonProcessingException, Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    mocker().addStaffMember(admin).addStudent(student).addStudentGroup(1l, "Test group", "Test group for users", 1l, false).addStaffMemberToStudentGroup(1l, admin).mockLogin(admin).build();
+    login();
+    try{
+      maximizeWindow();
+      navigate("/announcer", true);
+      waitAndClick(".bt-mainFunction-content");
+      waitForPresent("#endDate");
+      clearElement("#endDate");
+      sendKeys("#endDate", "21.12.2025");
+      sendKeys(".mf-textfield-subject", "Test title");
+      click(".mf-form-header");
+      waitForNotVisible("#ui-datepicker-div");
+      sendKeys("#targetGroupContent", "Test");
+      waitAndClick("li.ui-menu-item");
+      switchToFrame(".cke_wysiwyg_frame");
+      sendKeys(".cke_editable", "Announcer test announcement");
+      switchToDefaultFrame();
+      waitAndClick(".mf-toolbar input[name='send']");
+      waitForPresent(".an-announcement");
+      reloadCurrentPage();
+      waitForPresent(".an-announcement");
+      assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
+      logout();
+      mocker().mockLogin(student);
+      login();
+      waitForPresent(".wi-announcements");
+      assertTrue("Element found even though it shouldn't be there", isElementPresent(".wi-item-topic>a") == false);
+    }finally{
+      deleteAnnouncements();
+    }
+  }
+  
 }

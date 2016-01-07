@@ -479,6 +479,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   public Response deleteAnnouncements() {
     
     for(Announcement announcement : announcementController.listAll()) {
+      announcementController.deleteAnnouncementTargetGroups(announcement);
       announcementController.delete(announcement);
     }
 
