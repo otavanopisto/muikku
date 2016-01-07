@@ -87,6 +87,12 @@ public class AnnouncementController {
     announcementDAO.delete(announcement);
   }
   
+  public void deleteAnnouncementTargetGroups(Announcement announcement) {
+    for (AnnouncementUserGroup announcementUserGroup : announcementUserGroupDAO.listByAnnouncementAndArchived(announcement, false)) {
+      announcementUserGroupDAO.delete(announcementUserGroup);
+    }
+  }
+  
   public void addAnnouncementTargetGroup(
       Announcement announcement,
       UserGroupEntity userGroupEntity
