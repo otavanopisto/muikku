@@ -126,11 +126,13 @@
     workspaces: function (workspaceIds) {
       this._page = 0;
       this._workspaceIds = workspaceIds;
+      this._studentFlagTypes = null;
       this._reloadStudents();
     },
     
     studentFlagTypes: function (studentFlagTypes) {
       this._page = 0;
+      this._workspaceIds = null;
       this._studentFlagTypes = studentFlagTypes;
       this._reloadStudents();
     },
