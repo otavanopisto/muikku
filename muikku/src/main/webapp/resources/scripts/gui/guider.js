@@ -54,9 +54,11 @@
             callback(null, {
               title: getLocaleText('plugin.guider.filters.studentFlagTypes'),
               type: 'studentFlagType',
-              data: $.map(studentFlagTypes, function (studentFlagTypes) {
+              data: $.map(studentFlagTypes, function (studentFlagType) {
                 return {
-                  'id': studentFlagTypes.type
+                  'id': studentFlagType.type,
+                  'name': getLocaleText('plugin.guider.studentFlags.' + studentFlagType.type),
+                  'iconClass': 'icon-flag'
                 };
               })
             });
@@ -263,6 +265,9 @@
     
     _create : function() {
       this.element.addClass('gt-user-view-profile');
+      
+      
+      this.element.on("click", ".gt-user-view-flags-select", $.proxy(this._onFlagSelectClick, this));
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       this._loadFlags($.proxy(function (err, studentFlagTypes) {
         // TODO: ERRRR!
@@ -281,7 +286,13 @@
           if (err) {
             callback(err);
           } else {
-            this._studentFlagTypes = studentFlagTypes;
+            this._studentFlagTypes = $.map(studentFlagTypes, function (studentFlagType) {
+              return {
+                type: studentFlagType.type,
+                name: getLocaleText('plugin.guider.studentFlags.' + studentFlagType.type)
+              }
+            });
+            
             callback(err, this._studentFlagTypes);
           }
         }, this));
@@ -294,6 +305,12 @@
       } else {
         element.addClass('open');
       }
+    },
+    
+    _onFlagSelectClick: function (event) {
+      var element = $(event.target);
+      var container = element.closest('.gt-user-view-flags-container');
+      container.find('.gt-user-view-flags-dropdown-container').show();
     },
     
     _loadUser: function (studentFlagTypes) {

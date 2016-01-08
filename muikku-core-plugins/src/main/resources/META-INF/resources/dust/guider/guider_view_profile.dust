@@ -2,13 +2,16 @@
   <div class="gt-user-view-headline mf-widget">
     <h1>{firstName} {lastName}</h1>
     <div class="gt-user-view-flags-container">
-      <div class="gt-user-view-flags-selected mf-dropdown-selected">
-        <span class="mf-dropdown-selected-name">Selected</span><span class="mf-dropdown-selected-decoration icon-arrow-down"></span>
+      <div class="gt-user-view-flags-select mf-dropdown-select">
+        <span class="mf-dropdown-selected-name">Selected</span><span class="mf-dropdown-selected-decoration icon-arrow-down gt-user-view-flags-dropdown-arrow"></span>
       </div>
       <div class="gt-user-view-flags-dropdown-container mf-dropdown-list-container"> 
         <ul class="gt-user-view-flags mf-dropdown-list-items">
           {#studentFlagTypes} 
-            <li data-type="{type}" class="gt-user-view-flag mf-dropdown-list-item">TODO: {type}</li>
+            <li data-type="{type}" class="gt-user-view-flag mf-dropdown-list-item">
+              <span class="icon-flag"></span>
+              <span>{name}</span>
+            </li>
           {/studentFlagTypes}
         </ul>
       </div>

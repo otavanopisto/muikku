@@ -683,17 +683,20 @@
  /* Forms */
  
 
-.mf-dropdown-selected{
-  .mf-dropdown-selected-name{
-   display:inline-block;
+.mf-dropdown-select{
+
+  .mf-dropdown-select-name{
+    display:inline-block;
   }
-  .mf-dropdown-selected-decoration{
-   display:inline-block;
+  
+  .mf-dropdown-select-decoration{
+    display:inline-block;
   }  
 }
+
 .mf-dropdown-list-container{
   display:none;
-  min-width:170px;
+  width:170px;
   background-color:#fff;
   border : 1px solid $brd;
   z-index: 100;
@@ -706,7 +709,6 @@
     font-size:0.9em;   
 
     span {
-      display:block;
       padding:5px;
       cursor:pointer;
     }

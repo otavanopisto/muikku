@@ -414,3 +414,67 @@
   text-align: right;
   padding:5px;
 }
+
+.gu-filter-link[data-type="studentFlagType"] {
+
+  &[data-id="RED"] .icon-flag {
+    color: red;
+  }
+  
+  &[data-id="BLUE"] .icon-flag {
+    color: blue;
+  }
+
+  &[data-id="GREEN"] .icon-flag {
+    color: green;
+  }
+
+  &[data-id="ORANGE"] .icon-flag {
+    color: orange;
+  }
+
+  &[data-id="PURPLE"] .icon-flag {
+    color: purple;
+  }
+
+  &[data-id="SILVER"] .icon-flag {
+    color: silver;
+  }
+
+  &[data-id="YELLOW"] .icon-flag {
+    color: yellow;
+  }
+
+}
+
+.gt-user-view-flag {
+  
+  &[data-type="RED"] .icon-flag {
+    color: red;
+  }
+
+  &[data-type="BLUE"] .icon-flag {
+    color: blue;
+  }
+
+  &[data-type="GREEN"] .icon-flag {
+    color: green;
+  }
+
+  &[data-type="ORANGE"] .icon-flag {
+    color: orange;
+  }
+
+  &[data-type="PURPLE"] .icon-flag {
+    color: purple;
+  }
+
+  &[data-type="SILVER"] .icon-flag {
+    color: silver;
+  }
+
+  &[data-type="YELLOW"] .icon-flag {
+    color: yellow;
+  }
+  
+}
