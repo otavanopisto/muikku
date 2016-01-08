@@ -89,7 +89,8 @@
     options: {
       studentsPerPage: 25,
       openStudentProfile: null,
-      workspaceIds: null
+      workspaceIds: null,
+      studentFlagTypes: null
     },
     
     _create : function() {
@@ -98,6 +99,7 @@
       this._searchString = '';
       this._userGroupIds = null;
       this._workspaceIds = this.options.workspaceIds;
+      this._studentFlagTypes = this.options.studentFlagTypes;
       this._loading = false;
       this._loadPending = false;
       
@@ -438,6 +440,7 @@
 
   $(document).ready(function() {
     var workspaceIds = null;
+    var studentFlagTypes = null;
     var openStudentProfile = null;
     
     var hash = window.location.hash;
@@ -452,6 +455,9 @@
                 switch (setting[1]) {
                   case 'workspace':
                     workspaceIds = [setting[2]];
+                  break;
+                  case 'studentFlagType':
+                    studentFlagTypes = [setting[2]];
                   break;
                   default:
                     console.warn('Could not understand filter ' + setting[1]);
@@ -480,6 +486,7 @@
     $('.gt-search').guiderSearch();
     $('.gt-students-view-container').guiderStudents({
       workspaceIds: workspaceIds,
+      studentFlagTypes: studentFlagTypes,
       openStudentProfile: openStudentProfile
     });
    
