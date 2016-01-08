@@ -314,6 +314,8 @@
     },
     
     _loadUser: function (studentFlagTypes) {
+      
+
       this.element.addClass('loading');
       
       mApi().user.students
