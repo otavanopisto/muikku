@@ -118,8 +118,8 @@ $(document).ready(function() {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
             var d = new Date(thread.created);
             thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
-            threadCallback();          
             thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
+            threadCallback();          
           }, this));
         }, this));
       }, this)).callback($.proxy(function(err, threads) {
