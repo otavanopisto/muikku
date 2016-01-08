@@ -21,34 +21,63 @@
     
     _onFilterLink: function (event) {
       var element = $(event.target).closest('.gu-filter-link');
-      $('.gt-students-view-container').guiderStudents('workspaces', [ element.attr('data-id') ]);
+      switch (element.attr('data-type')) {
+        case 'workspace':
+          $('.gt-students-view-container').guiderStudents('workspaces', [ element.attr('data-id') ]);
+        break;
+        case 'studentFlagType':
+          $('.gt-students-view-container').guiderStudents('studentFlagTypes', [ element.attr('data-id') ]);
+        break;
+      }
     },
     
     _loadFilters: function (callback) {
-      this._loadWorkspaces($.proxy(function (workspaces) {
-        var filters = [{
-          title: getLocaleText('plugin.guider.filters.workspaces'),
-          type: 'workspace',
-          data: workspaces
-        }];
-        
-        renderDustTemplate('guider/guider_user_filters.dust', { filters: filters }, $.proxy(function (text) {
-          this.element.html(text);
-          callback();
-        }, this));
+      async.parallel([this._loadWorkspaces, this._loadFlags], $.proxy(function(err, filters){
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
+        } else {
+          renderDustTemplate('guider/guider_user_filters.dust', { filters: filters }, $.proxy(function (text) {
+            this.element.html(text);
+            callback();
+          }, this));
+        }
       }, this));
+    },
+    
+    _loadFlags: function (callback) {
+      mApi().user.studentFlagTypes
+        .read({ ownerIdentifier: MUIKKU_LOGGED_USER })
+        .callback(function (err, studentFlagTypes) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, {
+              title: getLocaleText('plugin.guider.filters.studentFlagTypes'),
+              type: 'studentFlagType',
+              data: $.map(studentFlagTypes, function (studentFlagTypes) {
+                return {
+                  'id': studentFlagTypes.type
+                };
+              })
+            });
+          }
+        });
     },
     
     _loadWorkspaces: function (callback) {
       mApi().workspace.workspaces
-        .read({ userIdentifier: MUIKKU_LOGGED_USER })
-        .callback($.proxy(function (err, workspaces) {
+        .read({ ownerIdentifier: MUIKKU_LOGGED_USER })
+        .callback(function (err, workspaces) {
           if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
+            callback(err);
           } else {
-            callback(workspaces);
+            callback(null, {
+              title: getLocaleText('plugin.guider.filters.workspaces'),
+              type: 'workspace',
+              data: workspaces
+            });
           }
-        }, this));
+        });
     }
     
   });
@@ -98,6 +127,12 @@
       this._reloadStudents();
     },
     
+    studentFlagTypes: function (studentFlagTypes) {
+      this._page = 0;
+      this._studentFlagTypes = studentFlagTypes;
+      this._reloadStudents();
+    },
+    
     _reloadStudents: function () {
       if (!this._loading) {
         this._students = [];
@@ -128,6 +163,10 @@
       
       if (this._workspaceIds) {
         options['workspaceIds'] = this._workspaceIds.join(',');
+      }
+      
+      if (this._studentFlagTypes) {
+        options['studentFlagTypes'] = this._studentFlagTypes.join(',');
       }
 
       mApi()
@@ -204,7 +243,6 @@
             userElement
               .removeClass('loading closed')
               .addClass('open');
-            
           }, this));
         } 
       }, this)); 
@@ -226,8 +264,27 @@
     _create : function() {
       this.element.addClass('gt-user-view-profile');
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
+      this._loadFlags($.proxy(function (err, studentFlagTypes) {
+        // TODO: ERRRR!
+        this._loadUser(studentFlagTypes);
+      }, this));
+    },
+
+    _loadFlags: function (callback) {
+      if (this._studentFlagTypes) {
+        callback(err, this._studentFlagTypes);
+      }
       
-      this._loadUser();
+      mApi().user.studentFlagTypes
+        .read()
+        .callback($.proxy(function (err, studentFlagTypes) {
+          if (err) {
+            callback(err);
+          } else {
+            this._studentFlagTypes = studentFlagTypes;
+            callback(err, this._studentFlagTypes);
+          }
+        }, this));
     },
     
     _onNameClick: function (event) {
@@ -239,7 +296,7 @@
       }
     },
     
-    _loadUser: function () {
+    _loadUser: function (studentFlagTypes) {
       this.element.addClass('loading');
       
       mApi().user.students
@@ -260,7 +317,7 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
           } else {
-            renderDustTemplate('guider/guider_view_profile.dust', user, $.proxy(function(text) {    
+            renderDustTemplate('guider/guider_view_profile.dust', { student: user, studentFlagTypes: studentFlagTypes }, $.proxy(function(text) {    
               this.element
                 .removeClass('loading')
                 .html(text);

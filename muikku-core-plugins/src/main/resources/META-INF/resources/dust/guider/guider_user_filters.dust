@@ -2,7 +2,7 @@
   <div class="mf-list-title"><span>{title}</span></div>
   <ul class="mf-list gu-filters">
     {#data}
-      <li id="{type}-{id}"><a class="gu-filter-link" href="#filter/{type}/{id}" data-type="workspace" data-id="{id}">{name}</a></li>    
+      <li id="{type}-{id}"><a class="gu-filter-link" href="#filter/{type}/{id}" data-type="{type}" data-id="{id}">{name}</a></li>    
     {/data}
   </ul>
 {:else}
