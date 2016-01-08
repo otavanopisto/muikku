@@ -684,7 +684,7 @@
  
 
 .mf-dropdown-select{
-
+  cursor:pointer;
   .mf-dropdown-select-name{
     display:inline-block;
   }
@@ -700,8 +700,9 @@
   background-color:#fff;
   border : 1px solid $brd;
   z-index: 100;
-  position:relative;
-  top:0;
+  position: absolute;
+  top:auto;
+
   
   ul{list-style-type:none;}  
   

@@ -415,6 +415,24 @@
   padding:5px;
 }
 
+.gt-user-view-flags-container{
+  margin-top: -34px;
+  float:right;
+  .gt-user-view-flags-select{
+    border: 1px solid #ededed;
+    padding: 5px;
+    display:inline-block;
+
+    span{
+     padding:5px;
+    }
+
+    .gt-user-view-flags-dropdown-arrow{
+      padding:2px;
+    }
+  }    
+}
+
 .gu-filter-link[data-type="studentFlagType"] {
 
   &[data-id="RED"] .icon-flag {
