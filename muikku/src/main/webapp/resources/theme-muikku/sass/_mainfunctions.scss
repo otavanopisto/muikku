@@ -682,21 +682,54 @@
  
  /* Forms */
  
-/*  .mf-fieldRow{ */
-/*    > div{ */
-/*     display:inline-block; */
-/*     box-sizing:border-box; */
-/*    } */
-/*  } */
- 
-/*  .mf-select { */
-/*    select { */
-/*      height:37px; */
-/*      line-height:37px; */
-/*      min-width:200px; */
-/*   } */
+
+.mf-dropdown-selected{
+  .mf-dropdown-selected-name{
+   display:inline-block;
+  }
+  .mf-dropdown-selected-decoration{
+   display:inline-block;
+  }  
+}
+.mf-dropdown-list-container{
+  display:none;
+  min-width:170px;
+  background-color:#fff;
+  border : 1px solid $brd;
+  z-index: 100;
+  position:relative;
+  top:0;
   
-/* } */
+  ul{list-style-type:none;}  
+  
+  li{
+    font-size:0.9em;   
+
+    span {
+      display:block;
+      padding:5px;
+      cursor:pointer;
+    }
+    
+    a{
+     text-decoration:none;
+     color:#000;
+    }
+
+
+    }
+  li:hover{
+    background-color:#1a9bfc;  
+    color:#fff;
+
+    a{
+    text-decoration:none;
+    color:#fff;
+     }
+
+    }
+}
+
 .mf-option-name{
   font-weight:700;
 }
