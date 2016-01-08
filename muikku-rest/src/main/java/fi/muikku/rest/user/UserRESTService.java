@@ -17,8 +17,11 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -37,6 +40,7 @@ import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.StudentFlag;
 import fi.muikku.model.users.StudentFlagType;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
@@ -301,6 +305,140 @@ public class UserRESTService extends AbstractRESTService {
         .tag(tag)
         .build();
   }
+  
+  @GET
+  @Path("/students/{ID}/flags")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response listStudentFlags(@Context Request request, @PathParam("ID") String id, @QueryParam("ownerIdentifier") String ownerId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
+    }
+    
+    if (StringUtils.isBlank(ownerId)) {
+      return Response.status(Response.Status.NOT_IMPLEMENTED).entity("Listing student flags without owner is not implemented").build();
+    }
+    
+    SchoolDataIdentifier ownerIdentifier = SchoolDataIdentifier.fromId(ownerId);
+    if (ownerIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("ownerIdentifier is malformed").build();
+    }
+
+    if (!ownerIdentifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    List<StudentFlag> studentFlags = studentFlagController.listStudentFlagsByOwner(studentIdentifier, ownerIdentifier);
+    
+    return Response.ok(createRestModel(studentFlags.toArray(new StudentFlag[0]))).build();
+  }
+  
+  @POST
+  @Path("/students/{ID}/flags")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createStudentFlag(@Context Request request, @PathParam("ID") String id, fi.muikku.rest.model.StudentFlag payload) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
+    }
+    
+    if ((payload.getOwnerIdentifier() != null) && (!payload.getOwnerIdentifier().equals(sessionController.getLoggedUser().toId()))) {
+      return Response.status(Response.Status.NOT_IMPLEMENTED).entity("Creating flags for other users is not implemented yet").build();
+    }
+    
+    if (StringUtils.isBlank(payload.getType())) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Missing type").build();
+    }
+     
+    StudentFlagType flagType = EnumUtils.getEnum(StudentFlagType.class, payload.getType());
+    if (flagType == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid type %s", payload.getType())).build();
+    }
+    
+    StudentFlag studentFlag = studentFlagController.createStudentFlag(sessionController.getLoggedUser(), studentIdentifier, flagType);
+    
+    return Response.ok(createRestModel(studentFlag)).build();
+  }
+  
+  @PUT
+  @Path("/students/{STUDENTID}/flags/{ID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateStudentFlag(@Context Request request, @PathParam("STUDENTID") String studentId, @PathParam("ID") Long id, fi.muikku.rest.model.StudentFlag payload) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", studentId)).build();
+    }
+    
+    if (payload.getOwnerIdentifier() == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Missing owner identifier").build();
+    }
+    
+    if (StringUtils.isBlank(payload.getType())) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Missing type").build();
+    }
+    
+    if (!payload.getOwnerIdentifier().equals(sessionController.getLoggedUser().toId())) {
+      return Response.status(Response.Status.FORBIDDEN).entity("It is forbidden to change the owner of the flag").build();
+    }
+     
+    StudentFlagType flagType = EnumUtils.getEnum(StudentFlagType.class, payload.getType());
+    if (flagType == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid type %s", payload.getType())).build();
+    }
+    
+    StudentFlag studentFlag = studentFlagController.findStudentFlagById(id);
+    if (studentFlag == null) {
+      return Response.status(Response.Status.NOT_FOUND).entity(String.format("Flag not found %d", id)).build();
+    }
+    
+    SchoolDataIdentifier flagOwnerIdentifier = new SchoolDataIdentifier(studentFlag.getOwnerIdentifier().getIdentifier(), studentFlag.getOwnerIdentifier().getDataSource().getIdentifier());
+    if (!flagOwnerIdentifier.toId().equals(payload.getOwnerIdentifier())) {
+      return Response.status(Response.Status.FORBIDDEN).entity("It is forbidden to update someone else's flags").build();
+    }
+    
+    studentFlagController.updateStudentFlag(studentFlag, flagType);
+    
+    return Response.noContent().build();
+  }
+  
+  @DELETE
+  @Path("/students/{STUDENTID}/flags/{ID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteStudentFlag(@Context Request request, @PathParam("STUDENTID") String studentId, @PathParam("ID") Long id) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", studentId)).build();
+    }
+    
+    StudentFlag studentFlag = studentFlagController.findStudentFlagById(id);
+    if (studentFlag == null) {
+      return Response.status(Response.Status.NOT_FOUND).entity(String.format("Flag not found %d", id)).build();
+    }
+    
+    if (!studentFlag.getOwnerIdentifier().equals(sessionController.getLoggedUser())) {
+      return Response.status(Response.Status.FORBIDDEN).entity("It is forbidden to remove someone else's flags").build();
+    }
+    
+    studentFlagController.deleteStudentFlag(studentFlag);
+    
+    return Response.noContent().build();
+  }
 
   @GET
   @Path("/studentFlagTypes")
@@ -549,6 +687,22 @@ public class UserRESTService extends AbstractRESTService {
 				startDate, endDate);
 	}
 
+  private fi.muikku.rest.model.StudentFlag createRestModel(StudentFlag studentFlag) {
+    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(studentFlag.getStudentIdentifier().getIdentifier(), studentFlag.getStudentIdentifier().getDataSource().getIdentifier());
+    SchoolDataIdentifier ownerIdentifier = new SchoolDataIdentifier(studentFlag.getOwnerIdentifier().getIdentifier(), studentFlag.getOwnerIdentifier().getDataSource().getIdentifier());
+    return new fi.muikku.rest.model.StudentFlag(studentFlag.getId(), studentIdentifier.toId(), ownerIdentifier.toId(), studentFlag.getType().name());
+  }
+
+  private List<fi.muikku.rest.model.StudentFlag> createRestModel(StudentFlag[] studentFlags) {
+    List<fi.muikku.rest.model.StudentFlag> result = new ArrayList<>();
+    
+    for (StudentFlag studentFlag : studentFlags) {
+      result.add(createRestModel(studentFlag));
+    }
+    
+    return result;
+  }
+  
 	//
 	// FIXME: Re-enable this service
 	//

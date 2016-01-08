@@ -18,11 +18,29 @@ public class StudentFlagDAO extends CoreDAO<StudentFlag> {
 
 	private static final long serialVersionUID = 7781839501190084061L;
 
-  public StudentFlag create(UserSchoolDataIdentifier ownerIdentifier, UserSchoolDataIdentifier studentIdentifier) {
+  public StudentFlag create(UserSchoolDataIdentifier ownerIdentifier, UserSchoolDataIdentifier studentIdentifier, StudentFlagType type) {
     StudentFlag studentFlag = new StudentFlag();
     studentFlag.setOwnerIdentifier(ownerIdentifier);
     studentFlag.setStudentIdentifier(studentIdentifier);
+    studentFlag.setType(type);
     return persist(studentFlag);
+  }
+
+  public List<StudentFlag> listByStudentIdentifierAndOwnerIdentifier(UserSchoolDataIdentifier studentIdentifier, UserSchoolDataIdentifier ownerIdentifier) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<StudentFlag> criteria = criteriaBuilder.createQuery(StudentFlag.class);
+    Root<StudentFlag> root = criteria.from(StudentFlag.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(StudentFlag_.studentIdentifier), studentIdentifier),
+        criteriaBuilder.equal(root.get(StudentFlag_.ownerIdentifier), ownerIdentifier)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
   }
 
   public List<StudentFlag> listByOwnerAndTypes(UserSchoolDataIdentifier ownerIdentifier, List<StudentFlagType> types) {
@@ -60,4 +78,14 @@ public class StudentFlagDAO extends CoreDAO<StudentFlag> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public StudentFlag updateType(StudentFlag studentFlag, StudentFlagType type) {
+    studentFlag.setType(type);
+    return persist(studentFlag);
+  }
+
+  @Override
+  public void delete(StudentFlag e) {
+    super.delete(e);
+  }
+  
 }

@@ -40,6 +40,14 @@ public class StudentFlag {
     this.studentIdentifier = studentIdentifier;
   }
 	
+	public StudentFlagType getType() {
+    return type;
+  }
+	
+	public void setType(StudentFlagType type) {
+    this.type = type;
+  }
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
