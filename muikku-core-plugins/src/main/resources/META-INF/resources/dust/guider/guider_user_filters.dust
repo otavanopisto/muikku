@@ -1,15 +1,17 @@
 {#filters}
-  <div class="mf-list-title"><span>{title}</span></div>
-  <ul class="mf-list gu-filters"> 
-    {#data}
-      <li id="{type}-{id}">
-        <a class="gu-filter-link" href="#filter/{type}/{id}" data-type="{type}" data-id="{id}">
-          <span class="{iconClass}"></span>
-          <span>{name}</span>
-        </a></li>    
-      </li>    
-    {/data}
-  </ul>
+  {?data}
+    <div class="mf-list-title"><span>{title}</span></div>
+    <ul class="mf-list gu-filters"> 
+      {#data}
+        <li id="{type}-{id}">
+          <a class="gu-filter-link" href="#filter/{type}/{id}" data-type="{type}" data-id="{id}">
+            <span class="{iconClass}"></span>
+            <span>{name}</span>
+          </a></li>    
+        </li>    
+      {/data}
+    </ul>
+  {/data}
 {:else}
   <div class="mf-list-title no-items"><span>{#localize key="plugin.guider.empty.filters"/}</span></div>
 {/filters}
