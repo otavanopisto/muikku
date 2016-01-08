@@ -31,6 +31,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
@@ -87,7 +88,7 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, 
-      Collection<Long> groups, Collection<Long> workspaces, int start, int maxResults) {
+      Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, int start, int maxResults) {
     try {
       text = sanitizeSearchString(text);
 

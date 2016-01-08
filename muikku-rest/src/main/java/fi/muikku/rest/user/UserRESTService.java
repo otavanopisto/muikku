@@ -1,6 +1,7 @@
 package fi.muikku.rest.user;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,9 +33,11 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.StudentFlagType;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -48,6 +51,7 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.StudentFlagController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
@@ -88,6 +92,9 @@ public class UserRESTService extends AbstractRESTService {
   private WorkspaceUserEntityController workspaceUserEntityController; 
   
   @Inject
+  private StudentFlagController studentFlagController;
+  
+  @Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
   
@@ -101,7 +108,8 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("userGroupIds") List<Long> userGroupIds,
       @QueryParam("myUserGroups") Boolean myUserGroups,
       @QueryParam("workspaceIds") List<Long> workspaceIds,
-      @QueryParam("myWorkspaces") Boolean myWorkspaces) {
+      @QueryParam("myWorkspaces") Boolean myWorkspaces,
+      @QueryParam("studentFlagTypes") String flagTypes) {
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
@@ -113,6 +121,20 @@ public class UserRESTService extends AbstractRESTService {
     
     if (CollectionUtils.isNotEmpty(workspaceIds) && Boolean.TRUE.equals(myWorkspaces)) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    List<StudentFlagType> studentFlagTypes = null;
+    
+    if (StringUtils.isNotBlank(flagTypes)) {
+      studentFlagTypes = new ArrayList<>();
+      for (String flagType : StringUtils.split(flagTypes, ",")) {
+        StudentFlagType studentFlag = EnumUtils.getEnum(StudentFlagType.class, flagType);
+        if (studentFlag == null) {
+          return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid student flag: %s", flagType)).build();
+        }
+        
+        studentFlagTypes.add(studentFlag);
+      }
     }
     
     List<fi.muikku.rest.model.Student> students = new ArrayList<>();
@@ -137,6 +159,15 @@ public class UserRESTService extends AbstractRESTService {
       // Defined user groups
       userGroupFilters.addAll(userGroupIds);
     }
+    
+    List<SchoolDataIdentifier> userIdentifiers = null;    
+    if (studentFlagTypes != null) {
+      if (userIdentifiers == null) {
+        userIdentifiers = new ArrayList<>();
+      }
+      
+      userIdentifiers.addAll(studentFlagController.listOwnerFlaggedUserIdentifiersByTypes(sessionController.getLoggedUser(), studentFlagTypes));
+    }
 
     if ((myWorkspaces != null) && myWorkspaces) {
       // Workspaces where user is a member
@@ -155,7 +186,7 @@ public class UserRESTService extends AbstractRESTService {
     if (elasticSearchProvider != null) {
       String[] fields = new String[] { "firstName", "lastName" };
 
-      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, EnvironmentRoleArchetype.STUDENT, userGroupFilters, workspaceFilters, firstResult, maxResults);
+      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, EnvironmentRoleArchetype.STUDENT, userGroupFilters, workspaceFilters, userIdentifiers, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
       boolean hasImage = false;
@@ -271,6 +302,39 @@ public class UserRESTService extends AbstractRESTService {
         .build();
   }
 
+  @GET
+  @Path("/studentFlagTypes")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudentFlags(@QueryParam("ownerIdentifier") String ownerId) {
+    SchoolDataIdentifier ownerIdentifier = null;
+
+    if (StringUtils.isNotBlank(ownerId)) {
+      ownerIdentifier = SchoolDataIdentifier.fromId(ownerId);
+      if (ownerIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity("ownerIdentifier is malformed").build();
+      }
+
+      if (!ownerIdentifier.equals(sessionController.getLoggedUser())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    List<StudentFlagType> studentFlagTypes = null;
+    
+    if (ownerIdentifier != null) {
+      studentFlagTypes = studentFlagController.listOwnerFlagTypes(ownerIdentifier);
+    } else {
+      studentFlagTypes = Arrays.asList(StudentFlagType.values());
+    }
+    
+    List<fi.muikku.rest.model.StudentFlagType> response = new ArrayList<>();
+    for (StudentFlagType studentFlagType : studentFlagTypes) {
+      response.add(new fi.muikku.rest.model.StudentFlagType(studentFlagType.name()));
+    }
+    
+    return Response.ok(response).build();
+  }
+  
 	@GET
 	@Path("/users")
 	@RESTPermitUnimplemented
@@ -337,7 +401,7 @@ public class UserRESTService extends AbstractRESTService {
 		if (elasticSearchProvider != null) {
 			String[] fields = new String[] { "firstName", "lastName" };
 
-			SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, roleArchetype, userGroupFilters, workspaceFilters, firstResult, maxResults);
+			SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, roleArchetype, userGroupFilters, workspaceFilters, null, firstResult, maxResults);
 			
 			List<Map<String, Object>> results = result.getResults();
 			boolean hasImage = false;
