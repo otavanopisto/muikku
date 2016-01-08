@@ -434,6 +434,10 @@
 }
 
 .gu-filter-link[data-type="studentFlagType"] {
+  
+  .icon-flag {
+    margin-right: 5px;
+  }
 
   &[data-id="RED"] .icon-flag {
     color: red;
@@ -465,6 +469,7 @@
 
 }
 
+.gt-user-view-flags-select .mf-dropdown-selected-name,
 .gt-user-view-flag {
   
   &[data-type="RED"] .icon-flag {

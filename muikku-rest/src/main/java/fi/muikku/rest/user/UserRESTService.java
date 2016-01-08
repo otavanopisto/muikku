@@ -430,8 +430,9 @@ public class UserRESTService extends AbstractRESTService {
     if (studentFlag == null) {
       return Response.status(Response.Status.NOT_FOUND).entity(String.format("Flag not found %d", id)).build();
     }
-    
-    if (!studentFlag.getOwnerIdentifier().equals(sessionController.getLoggedUser())) {
+
+    SchoolDataIdentifier flagOwnerIdentifier = new SchoolDataIdentifier(studentFlag.getOwnerIdentifier().getIdentifier(), studentFlag.getOwnerIdentifier().getDataSource().getIdentifier());
+    if (!flagOwnerIdentifier.equals(sessionController.getLoggedUser())) {
       return Response.status(Response.Status.FORBIDDEN).entity("It is forbidden to remove someone else's flags").build();
     }
     

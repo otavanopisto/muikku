@@ -288,7 +288,7 @@
           if (err) {
             callback(err);
           } else {
-            callback(err, $.map(studentFlagTypes, function (studentFlagType) {
+            callback(err, $.map([{type: 'NONE'}].concat(studentFlagTypes), function (studentFlagType) {
               return {
                 type: studentFlagType.type,
                 name: getLocaleText('plugin.guider.studentFlags.' + studentFlagType.type)
@@ -324,17 +324,29 @@
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
             if (flags && flags.length) {
-              mApi().user.students.flags
-                .update(this.options.userIdentifier, flags[0].id, $.extend(flags[0], {
-                  type: type
-                }))
-                .callback($.proxy(function(updateErr, flags) {
-                  if (updateErr) {
-                    $('.notification-queue').notificationQueue('notification', 'error', updateErr);
-                  } else {
-                    window.location.reload();
-                  }
-                }, this))
+              if (type == 'NONE') {
+                mApi().user.students.flags
+                  .del(this.options.userIdentifier, flags[0].id)
+                  .callback($.proxy(function(deleteErr, flags) {
+                    if (deleteErr) {
+                      $('.notification-queue').notificationQueue('notification', 'error', deleteErr);
+                    } else {
+                      window.location.reload();
+                    }
+                  }, this))
+              } else {
+                mApi().user.students.flags
+                  .update(this.options.userIdentifier, flags[0].id, $.extend(flags[0], {
+                    type: type
+                  }))
+                  .callback($.proxy(function(updateErr, flags) {
+                    if (updateErr) {
+                      $('.notification-queue').notificationQueue('notification', 'error', updateErr);
+                    } else {
+                      window.location.reload();
+                    }
+                  }, this))
+              }
             } else {
               mApi().user.students.flags
                 .create(this.options.userIdentifier, {
@@ -355,8 +367,6 @@
     },
     
     _loadUser: function (studentFlagTypes) {
-      
-
       this.element.addClass('loading');
       
       mApi().user.students
@@ -364,14 +374,24 @@
         .on('$', $.proxy(function(user, userCallback) {
           mApi().user.students.logins
             .read(this.options.userIdentifier, { maxResults: 1 })
-            .callback(function(err, loginDetails) {
+            .callback($.proxy(function(err, loginDetails) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
-                user.lastLogin = loginDetails && loginDetails.length ? loginDetails[0].time : null;
-                userCallback();
+                mApi().user.students.flags
+                  .read(this.options.userIdentifier, {ownerIdentifier: MUIKKU_LOGGED_USER })
+                  .callback($.proxy(function(flagErr, flags) {
+                    if (flagErr) {
+                      $('.notification-queue').notificationQueue('notification', 'error', flagErr);
+                    } else {
+                      user.studentFlagType = (flags && flags.length ? flags[0].type : 'NONE')||'NONE';
+                      user.studentFlagName = getLocaleText('plugin.guider.studentFlags.' + user.studentFlagType);
+                      user.lastLogin = loginDetails && loginDetails.length ? loginDetails[0].time : null;
+                      userCallback();
+                    }
+                  }, this));
               }
-            });
+            }, this));
         }, this))
         .callback($.proxy(function(err, user){
           if (err) {
