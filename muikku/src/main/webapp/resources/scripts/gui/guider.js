@@ -272,6 +272,8 @@
       this.element.on("click", ".gt-user-view-flags-select", $.proxy(this._onFlagSelectClick, this));
       this.element.on("click", ".gt-user-view-flag", $.proxy(this._onFlagClick, this));
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
+      $(document).on("mouseup", $.proxy(this._onDocumentMouseUp, this));
+      
       this._loadFlags($.proxy(function (err, studentFlagTypes) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -364,6 +366,13 @@
             }
           }
         }, this));
+    },
+    
+    _onDocumentMouseUp: function (event) {
+      var flagsContainer = $(event.target).closest('.gt-user-view-flags-container');
+      if (!flagsContainer.length) {
+        $('.gt-user-view-flags-dropdown-container').hide();
+      }
     },
     
     _loadUser: function (studentFlagTypes) {
