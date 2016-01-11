@@ -21,7 +21,7 @@
           {#localize key="plugin.evaluation.workspaceEvaluationDialog.assignmentNoLiteralAssessment"/}
         </div>
       {/evaluation}
-      <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" class="evaluation-assignment"></article>
+      <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" data-path="{path}" class="evaluation-assignment"></article>
     </div>
   </div>
 
@@ -34,7 +34,7 @@
       <h2>{title}</h2>
     </div>
     <div class="evaluation-assignment-content" data-open-state="closed">
-      <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" class="evaluation-assignment"></article>
+      <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" data-path="{path}" class="evaluation-assignment"></article>
     </div>
   </div>
 

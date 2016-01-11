@@ -47,7 +47,8 @@
     $(window).data('initializing', true);
     $(document).muikkuMaterialLoader({
       loadAnswers: true,
-      workspaceEntityId: $('.workspaceEntityId').val()
+      workspaceEntityId: $('.workspaceEntityId').val(),
+      baseUrl: $('.materialsBaseUrl').val()
     }).muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
 
     $('.workspace-materials-view-page').waypoint(function(direction) {
