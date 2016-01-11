@@ -50,7 +50,7 @@
         
         // Convert relative urls to point to correct url
         
-        parsed.find('a,div.lazy-pdf,img,embed,iframe,object,audio,video').each($.proxy(function (index, element) {
+        parsed.find('a,div.lazy-pdf,img,embed,iframe,object,source').each($.proxy(function (index, element) {
           var urlAttribute = '';
           
           switch (element.tagName.toLowerCase()) {
@@ -65,8 +65,7 @@
             break;
             case 'embed':
             case 'iframe':
-            case 'audio':
-            case 'video':
+            case 'source':
               urlAttribute = 'src';
             break;
             case 'object':
