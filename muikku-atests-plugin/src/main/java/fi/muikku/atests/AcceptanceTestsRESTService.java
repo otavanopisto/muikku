@@ -58,6 +58,7 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
 import fi.muikku.users.UserEntityController;
+import fi.muikku.users.UserGroupController;
 import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -477,7 +478,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Path("/announcements")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteAnnouncements() {
-    
     for(Announcement announcement : announcementController.listAll()) {
       announcementController.deleteAnnouncementTargetGroups(announcement);
       announcementController.delete(announcement);
@@ -490,13 +490,20 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Path("/announcements")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response createAnnouncement(fi.muikku.atests.Announcement payload) {
+    logger.info("TRYING TO FIND LOGGED IN USER");
     UserEntity user = userEntityController.findUserEntityById(payload.getPublisherUserEntityId());
-    Announcement announcement = announcementController.create(user, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.isPubliclyVisible());
-    if(payload.getUserGroupId() != null) {
-      UserGroupEntity userGroup = userGroupEntityController.findUserGroupEntityById(payload.getUserGroupId());
-      announcementController.addAnnouncementTargetGroup(announcement, userGroup);
+    logger.info("LOGGED IN USER USERID: " + user.getId());
+    Announcement announcement = announcementController.create(user, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.getPubliclyVisible());
+    logger.info("Announcement created with id: " + announcement.getId());
+    if(payload.getUserGroupEntityIds() != null) {
+      List<Long> userGroups = payload.getUserGroupEntityIds();
+      for (Long userGroupId : userGroups) {
+        UserGroupEntity userGroup = userGroupEntityController.findUserGroupEntityById(userGroupId);
+        announcementController.addAnnouncementTargetGroup(announcement, userGroup);
+      }
     }
-    return Response.ok(createRestEntity(announcement)).build();
+    return Response.noContent().build();
+//    return Response.ok(createRestEntity(announcement)).build();
   }
   
   @DELETE
@@ -572,16 +579,16 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         entity.getLocked());
   }
   
-  private fi.muikku.atests.Announcement createRestEntity(Announcement entity) {
-    return new fi.muikku.atests.Announcement(entity.getId(), null,
-        entity.getPublisherUserEntityId(), 
-        entity.getCaption(), 
-        entity.getContent(), 
-        entity.getCreated(),
-        entity.getStartDate(),
-        entity.getEndDate(),
-        entity.isArchived(),
-        entity.isPubliclyVisible());
-  }
+//  private fi.muikku.atests.Announcement createRestEntity(Announcement entity) {
+//    return new fi.muikku.atests.Announcement(entity.getId(), null,
+//        entity.getPublisherUserEntityId(), 
+//        entity.getCaption(), 
+//        entity.getContent(), 
+//        entity.getCreated(),
+//        entity.getStartDate(),
+//        entity.getEndDate(),
+//        entity.isArchived(),
+//        entity.isPubliclyVisible());
+//  }
   
 }

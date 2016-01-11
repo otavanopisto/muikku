@@ -1,14 +1,18 @@
 package fi.muikku.atests;
 
 import java.util.Date;
+import java.util.List;
 
 public class Announcement {
-
-  public Announcement(Long id, Long userGroupId, Long publisherUserEntityId, String caption, String content, Date created, Date startDate, Date endDate, boolean archived,
-    boolean publiclyVisible) {
+  
+  public Announcement() {
+  }
+  
+  public Announcement(Long id, Long publisherUserEntityId, List<Long> userGroupIds, String caption, String content, Date created, Date startDate, Date endDate, Boolean archived, Boolean publiclyVisible) {
     super();
     this.id = id;
     this.publisherUserEntityId = publisherUserEntityId;
+    this.userGroupEntityIds = userGroupIds;
     this.caption = caption;
     this.content = content;
     this.created = created;
@@ -21,21 +25,17 @@ public class Announcement {
   public Long getId() {
     return id;
   }
-  
-  public Long getUserGroupId() {
-    return userGroupId;
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
-  public void setUserGroupId(Long userGroupId) {
-    this.userGroupId = userGroupId;
-  }
-  
   public Long getPublisherUserEntityId() {
     return publisherUserEntityId;
   }
 
-  public void setPublisherUserEntityId(Long sender) {
-    this.publisherUserEntityId = sender;
+  public void setPublisherUserEntityId(Long publisherUserEntityId) {
+    this.publisherUserEntityId = publisherUserEntityId;
   }
 
   public String getCaption() {
@@ -78,30 +78,39 @@ public class Announcement {
     this.endDate = endDate;
   }
 
-  public boolean isArchived() {
+  public Boolean isArchived() {
     return archived;
   }
 
-  public void setArchived(boolean archived) {
+  public void setArchived(Boolean archived) {
     this.archived = archived;
   }
-  
-  public boolean isPubliclyVisible() {
-    return publiclyVisible;
-  }
-  
-  public void setPubliclyVisible(boolean publiclyVisible) {
-    this.publiclyVisible = publiclyVisible;
+
+  public List<Long> getUserGroupEntityIds() {
+    return userGroupEntityIds;
   }
 
+  public void setUserGroupEntityIds(List<Long> userGroupEntityIds) {
+    this.userGroupEntityIds = userGroupEntityIds;
+  }
+
+  public Boolean getPubliclyVisible() {
+    return publiclyVisible;
+  }
+
+  public void setPubliclyVisible(Boolean publiclyVisible) {
+    this.publiclyVisible = publiclyVisible;
+  }
+  
   private Long id;
-  private Long userGroupId;
   private Long publisherUserEntityId;
   private String caption;
   private String content;
   private Date created;
   private Date startDate;
   private Date endDate;
-  private boolean archived;
-  private boolean publiclyVisible;
+  private Boolean archived;
+  private List<Long> userGroupEntityIds;
+  private Boolean publiclyVisible;
+
 }

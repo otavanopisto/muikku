@@ -725,20 +725,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
-  protected Announcement createAnnouncement(Long userGroup, Long publisherUserEntityId, String caption, String content, Date startDate, Date endDate, boolean archived, boolean publiclyVisible) throws Exception {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-    Announcement payload = new Announcement(null, userGroup, publisherUserEntityId, caption, content, new Date(), startDate, endDate, archived, publiclyVisible);
-    
-    Response response = asAdmin()
+  protected void createAnnouncement(Long publisherUserEntityId, String caption, String content, Date startDate, Date endDate, Boolean archived, Boolean publiclyVisible, List<Long> userGroupIds) throws Exception {
+    Announcement payload = new Announcement(null, publisherUserEntityId, userGroupIds, caption, content, new Date(), startDate, endDate, archived, publiclyVisible);                 
+    asAdmin()
       .contentType("application/json")
       .body(payload)
       .post("/test/announcements");
-    
-    response.then()
-      .statusCode(200);
-    Announcement announcement = objectMapper.readValue(response.asString(), Announcement.class);
-    return announcement;
   }
   
   protected String getAttributeValue(String selector, String attribute){
