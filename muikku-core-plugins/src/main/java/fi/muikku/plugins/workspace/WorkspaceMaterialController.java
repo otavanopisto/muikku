@@ -225,7 +225,7 @@ public class WorkspaceMaterialController {
   }
 
   public String getCompletePath(WorkspaceNode workspaceNode) {
-    return "workspace/" + getWorkspaceNodeWorkspaceUrlName(workspaceNode) + "/materials/" + workspaceNode.getPath();
+    return String.format("workspace/%s/materials/%s", getWorkspaceNodeWorkspaceUrlName(workspaceNode), workspaceNode.getPath());
   }
 
   public WorkspaceMaterial findWorkspaceMaterialByRootPath(String path) {

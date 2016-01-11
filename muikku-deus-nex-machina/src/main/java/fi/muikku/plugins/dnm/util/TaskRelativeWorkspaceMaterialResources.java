@@ -22,6 +22,7 @@ public class TaskRelativeWorkspaceMaterialResources extends AbstractHtmlMaterial
   
   @Override
   protected void cleanElement(Element element) {
+    boolean resourceConflict = false;
     // TODO: Treats all relative links as immediate child resources of this material ONLY  
     String elementName = element.getTagName();
     if ("img".equals(elementName) || "source".equals(elementName) || "embed".equals(elementName) || "object".equals(elementName)) {
@@ -51,12 +52,21 @@ public class TaskRelativeWorkspaceMaterialResources extends AbstractHtmlMaterial
                 childMaterial = workspaceMaterialController.createWorkspaceMaterial(workspaceHtmlMaterial, resourceMaterial, resourceUrlName, null, null);
                 logger.info(String.format("Created resource %d with relative url %s", childMaterial.getId(), resourceUrlName));
               }
+              else {
+                resourceConflict = !resourceMaterial.getId().equals(childMaterial.getMaterialId());
+                if (resourceConflict) {
+                  logger.warning(String.format("Skipping resource because WorkspaceMaterial %d has conflicting child resource %s", workspaceHtmlMaterial.getId(), resourceUrlName));
+                  break;
+                }
+              }
             }
             
             // Change source link to resource URL name
             
-            element.setAttribute(attributeName, resourceUrlName);
-            markModified();
+            if (!resourceConflict) {
+              element.setAttribute(attributeName, resourceUrlName);
+              markModified();
+            }
           }
           else {
             logger.warning("Resource does not resolve to Material");
