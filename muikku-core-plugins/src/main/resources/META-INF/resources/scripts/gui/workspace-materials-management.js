@@ -103,10 +103,12 @@
       // html
       var materialId = $(node).data('material-id');
       var materialTitle = $(node).data('material-title');
+      var path = $(node).attr('data-path');
       var workspaceMaterialId = $(node).data('workspace-material-id');
       var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
       var pageElement = $('#page-' + workspaceMaterialId);
       var pageSection = $(pageElement).closest(".workspace-materials-view-page");
+      var materialPath = $('.materialsBaseUrl').val() + '/' + path;
       
       pageSection.addClass("page-edit-mode");
       
@@ -116,7 +118,8 @@
         
         editor.call(pageElement, {
           materialId: materialId,
-          materialTitle: materialTitle
+          materialTitle: materialTitle,
+          materialPath: materialPath
         });
         
       } else {

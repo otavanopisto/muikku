@@ -133,6 +133,7 @@
           stylesSet : 'workspace-material-styles:' + CONTEXTPATH + '/scripts/ckplugins/styles/workspace-material-styles.js',
           contentsCss : CONTEXTPATH +  '/css/custom-ckeditor-contentcss.css',
           format_tags : 'p;h3;h4',
+          baseHref: this.options.materialPath + '/', 
           toolbar: [
             { name: 'document', items : [ 'Source' ] },
             { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
