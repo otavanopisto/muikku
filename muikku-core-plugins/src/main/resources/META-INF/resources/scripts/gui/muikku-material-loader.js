@@ -50,7 +50,7 @@
         
         // Convert relative urls to point to correct url
         
-        parsed.find('a,div.lazy-pdf,img,embed,iframe,object').each($.proxy(function (index, element) {
+        parsed.find('a,div.lazy-pdf,img,embed,iframe,object,audio,video').each($.proxy(function (index, element) {
           var urlAttribute = '';
           
           switch (element.tagName.toLowerCase()) {
@@ -65,6 +65,8 @@
             break;
             case 'embed':
             case 'iframe':
+            case 'audio':
+            case 'video':
               urlAttribute = 'src';
             break;
             case 'object':
@@ -74,9 +76,9 @@
           
           var src = urlAttribute ? $(element).attr(urlAttribute) : null;
           if (src) {
-            var absolute = src.match("^(?:[a-zA-Z]+:)?\/\/");
+            var absolute = (src.indexOf('/') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
             if (!absolute) {
-              if (src.lastIndexOf('/') == src.length) {
+              if (src.lastIndexOf('/') == src.length - 1) {
                 $(element).attr(urlAttribute, this.options.baseUrl + '/' + material.path + src);
               } else {
                 $(element).attr(urlAttribute, this.options.baseUrl + '/' + material.path + '/' + src);
