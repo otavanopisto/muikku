@@ -51,9 +51,6 @@ public class TaskRelativeWorkspaceMaterialResources extends AbstractHtmlMaterial
                 childMaterial = workspaceMaterialController.createWorkspaceMaterial(workspaceHtmlMaterial, resourceMaterial, resourceUrlName, null, null);
                 logger.info(String.format("Created resource %d with relative url %s", childMaterial.getId(), resourceUrlName));
               }
-              else {
-                logger.warning(String.format("Child resource %s already exists", resourceUrlName));
-              }
             }
             
             // Change source link to resource URL name
