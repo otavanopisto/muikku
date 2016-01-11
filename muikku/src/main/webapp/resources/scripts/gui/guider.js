@@ -21,34 +21,65 @@
     
     _onFilterLink: function (event) {
       var element = $(event.target).closest('.gu-filter-link');
-      $('.gt-students-view-container').guiderStudents('workspaces', [ element.attr('data-id') ]);
+      switch (element.attr('data-type')) {
+        case 'workspace':
+          $('.gt-students-view-container').guiderStudents('workspaces', [ element.attr('data-id') ]);
+        break;
+        case 'studentFlagType':
+          $('.gt-students-view-container').guiderStudents('studentFlagTypes', [ element.attr('data-id') ]);
+        break;
+      }
     },
     
     _loadFilters: function (callback) {
-      this._loadWorkspaces($.proxy(function (workspaces) {
-        var filters = [{
-          title: getLocaleText('plugin.guider.filters.workspaces'),
-          type: 'workspace',
-          data: workspaces
-        }];
-        
-        renderDustTemplate('guider/guider_user_filters.dust', { filters: filters }, $.proxy(function (text) {
-          this.element.html(text);
-          callback();
-        }, this));
+      async.parallel([this._loadWorkspaces, this._loadFlags], $.proxy(function(err, filters){
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
+        } else {
+          renderDustTemplate('guider/guider_user_filters.dust', { filters: filters }, $.proxy(function (text) {
+            this.element.html(text);
+            callback();
+          }, this));
+        }
       }, this));
+    },
+    
+    _loadFlags: function (callback) {
+      mApi().user.studentFlagTypes
+        .read({ ownerIdentifier: MUIKKU_LOGGED_USER })
+        .callback(function (err, studentFlagTypes) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, {
+              title: getLocaleText('plugin.guider.filters.studentFlagTypes'),
+              type: 'studentFlagType',
+              data: $.map(studentFlagTypes, function (studentFlagType) {
+                return {
+                  'id': studentFlagType.type,
+                  'name': getLocaleText('plugin.guider.studentFlags.' + studentFlagType.type),
+                  'iconClass': 'icon-flag'
+                };
+              })
+            });
+          }
+        });
     },
     
     _loadWorkspaces: function (callback) {
       mApi().workspace.workspaces
-        .read({ userIdentifier: MUIKKU_LOGGED_USER })
-        .callback($.proxy(function (err, workspaces) {
+        .read({ ownerIdentifier: MUIKKU_LOGGED_USER })
+        .callback(function (err, workspaces) {
           if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
+            callback(err);
           } else {
-            callback(workspaces);
+            callback(null, {
+              title: getLocaleText('plugin.guider.filters.workspaces'),
+              type: 'workspace',
+              data: workspaces
+            });
           }
-        }, this));
+        });
     }
     
   });
@@ -58,7 +89,8 @@
     options: {
       studentsPerPage: 25,
       openStudentProfile: null,
-      workspaceIds: null
+      workspaceIds: null,
+      studentFlagTypes: null
     },
     
     _create : function() {
@@ -67,6 +99,7 @@
       this._searchString = '';
       this._userGroupIds = null;
       this._workspaceIds = this.options.workspaceIds;
+      this._studentFlagTypes = this.options.studentFlagTypes;
       this._loading = false;
       this._loadPending = false;
       
@@ -95,6 +128,14 @@
     workspaces: function (workspaceIds) {
       this._page = 0;
       this._workspaceIds = workspaceIds;
+      this._studentFlagTypes = null;
+      this._reloadStudents();
+    },
+    
+    studentFlagTypes: function (studentFlagTypes) {
+      this._page = 0;
+      this._workspaceIds = null;
+      this._studentFlagTypes = studentFlagTypes;
       this._reloadStudents();
     },
     
@@ -128,6 +169,10 @@
       
       if (this._workspaceIds) {
         options['workspaceIds'] = this._workspaceIds.join(',');
+      }
+      
+      if (this._studentFlagTypes) {
+        options['studentFlagTypes'] = this._studentFlagTypes.join(',');
       }
 
       mApi()
@@ -204,7 +249,6 @@
             userElement
               .removeClass('loading closed')
               .addClass('open');
-            
           }, this));
         } 
       }, this)); 
@@ -225,9 +269,37 @@
     
     _create : function() {
       this.element.addClass('gt-user-view-profile');
-      this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       
-      this._loadUser();
+      
+      this.element.on("click", ".gt-user-view-flags-select", $.proxy(this._onFlagSelectClick, this));
+      this.element.on("click", ".gt-user-view-flag", $.proxy(this._onFlagClick, this));
+      this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
+      $(document).on("mouseup", $.proxy(this._onDocumentMouseUp, this));
+      
+      this._loadFlags($.proxy(function (err, studentFlagTypes) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._loadUser(studentFlagTypes);
+        }
+      }, this));
+    },
+
+    _loadFlags: function (callback) {
+      mApi().user.studentFlagTypes
+        .read()
+        .callback($.proxy(function (err, studentFlagTypes) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(err, $.map([{type: 'NONE'}].concat(studentFlagTypes), function (studentFlagType) {
+              return {
+                type: studentFlagType.type,
+                name: getLocaleText('plugin.guider.studentFlags.' + studentFlagType.type)
+              }
+            }));
+          }
+        }, this));
     },
     
     _onNameClick: function (event) {
@@ -239,7 +311,73 @@
       }
     },
     
-    _loadUser: function () {
+    _onFlagSelectClick: function (event) {
+      var element = $(event.target);
+      var container = element.closest('.gt-user-view-flags-container');
+      container.find('.gt-user-view-flags-dropdown-container').show();
+    },
+    
+    _onFlagClick: function (event) {
+      var element = $(event.target).closest('.gt-user-view-flag');
+      var type = $(element).attr("data-type");
+      
+      mApi().user.students.flags
+        .read(this.options.userIdentifier, {ownerIdentifier: MUIKKU_LOGGED_USER })
+        .callback($.proxy(function(err, flags) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            if (flags && flags.length) {
+              if (type == 'NONE') {
+                mApi().user.students.flags
+                  .del(this.options.userIdentifier, flags[0].id)
+                  .callback($.proxy(function(deleteErr, flags) {
+                    if (deleteErr) {
+                      $('.notification-queue').notificationQueue('notification', 'error', deleteErr);
+                    } else {
+                      window.location.reload();
+                    }
+                  }, this))
+              } else {
+                mApi().user.students.flags
+                  .update(this.options.userIdentifier, flags[0].id, $.extend(flags[0], {
+                    type: type
+                  }))
+                  .callback($.proxy(function(updateErr, flags) {
+                    if (updateErr) {
+                      $('.notification-queue').notificationQueue('notification', 'error', updateErr);
+                    } else {
+                      window.location.reload();
+                    }
+                  }, this))
+              }
+            } else {
+              mApi().user.students.flags
+                .create(this.options.userIdentifier, {
+                  studentIdentifier: this.options.userIdentifier,
+                  ownerIdentifier: MUIKKU_LOGGED_USER,
+                  type: type
+                })
+                .callback($.proxy(function(createErr, flags) {
+                  if (createErr) {
+                    $('.notification-queue').notificationQueue('notification', 'error', createErr);
+                  } else {
+                    window.location.reload();
+                  }
+                }, this))
+            }
+          }
+        }, this));
+    },
+    
+    _onDocumentMouseUp: function (event) {
+      var flagsContainer = $(event.target).closest('.gt-user-view-flags-container');
+      if (!flagsContainer.length) {
+        $('.gt-user-view-flags-dropdown-container').hide();
+      }
+    },
+    
+    _loadUser: function (studentFlagTypes) {
       this.element.addClass('loading');
       
       mApi().user.students
@@ -247,20 +385,30 @@
         .on('$', $.proxy(function(user, userCallback) {
           mApi().user.students.logins
             .read(this.options.userIdentifier, { maxResults: 1 })
-            .callback(function(err, loginDetails) {
+            .callback($.proxy(function(err, loginDetails) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
-                user.lastLogin = loginDetails && loginDetails.length ? loginDetails[0].time : null;
-                userCallback();
+                mApi().user.students.flags
+                  .read(this.options.userIdentifier, {ownerIdentifier: MUIKKU_LOGGED_USER })
+                  .callback($.proxy(function(flagErr, flags) {
+                    if (flagErr) {
+                      $('.notification-queue').notificationQueue('notification', 'error', flagErr);
+                    } else {
+                      user.studentFlagType = (flags && flags.length ? flags[0].type : 'NONE')||'NONE';
+                      user.studentFlagName = getLocaleText('plugin.guider.studentFlags.' + user.studentFlagType);
+                      user.lastLogin = loginDetails && loginDetails.length ? loginDetails[0].time : null;
+                      userCallback();
+                    }
+                  }, this));
               }
-            });
+            }, this));
         }, this))
         .callback($.proxy(function(err, user){
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
           } else {
-            renderDustTemplate('guider/guider_view_profile.dust', user, $.proxy(function(text) {    
+            renderDustTemplate('guider/guider_view_profile.dust', { student: user, studentFlagTypes: studentFlagTypes }, $.proxy(function(text) {    
               this.element
                 .removeClass('loading')
                 .html(text);
@@ -292,6 +440,7 @@
 
   $(document).ready(function() {
     var workspaceIds = null;
+    var studentFlagTypes = null;
     var openStudentProfile = null;
     
     var hash = window.location.hash;
@@ -306,6 +455,9 @@
                 switch (setting[1]) {
                   case 'workspace':
                     workspaceIds = [setting[2]];
+                  break;
+                  case 'studentFlagType':
+                    studentFlagTypes = [setting[2]];
                   break;
                   default:
                     console.warn('Could not understand filter ' + setting[1]);
@@ -334,6 +486,7 @@
     $('.gt-search').guiderSearch();
     $('.gt-students-view-container').guiderStudents({
       workspaceIds: workspaceIds,
+      studentFlagTypes: studentFlagTypes,
       openStudentProfile: openStudentProfile
     });
    
