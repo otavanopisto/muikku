@@ -343,7 +343,7 @@ public class WorkspaceMaterialController {
   }
 
   public Material getMaterialForWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
-    return materialController.findMaterialById(workspaceMaterial.getMaterialId());
+    return workspaceMaterial.getMaterialId() == null ? null : materialController.findMaterialById(workspaceMaterial.getMaterialId());
   }
 
   public WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent) {
