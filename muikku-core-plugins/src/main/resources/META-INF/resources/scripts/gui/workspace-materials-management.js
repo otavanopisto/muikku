@@ -958,6 +958,7 @@
 
     $(document).muikkuMaterialLoader({
       workspaceEntityId: $('.workspaceEntityId').val(),
+      baseUrl: $('.materialsBaseUrl').val(),
       dustTemplate: 'workspace/materials-management-page.dust',
       renderMode: {
         "html": "dust"
