@@ -89,10 +89,7 @@
   }
 }
 .an-announcement-header-container{
- height:100px;
- &.default{
-    @include background-image('/gfx/workspace-default-header.jpg');
- }
+
 }
 .an-announcement-select{
     float: left;
@@ -106,7 +103,7 @@
 }
 .an-announcement-details{
   margin-bottom:10px;
-  max-height:220px;
+  max-height:252px;
 }
 .an-announcement-tools{
   margin:5px 10px;
@@ -127,7 +124,7 @@
 
 .an-announcement-content{
   padding:5px 10px 10px 10px; 
-  max-height:130px;
+  max-height:160px;
   overflow:hidden;
   text-overflow:ellipsis;
 }
