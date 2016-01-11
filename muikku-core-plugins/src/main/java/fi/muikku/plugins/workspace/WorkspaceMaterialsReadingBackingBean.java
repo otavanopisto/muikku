@@ -76,7 +76,8 @@ public class WorkspaceMaterialsReadingBackingBean {
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
     workspaceEntityId = workspaceEntity.getId();
-
+    materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
+    
     try {
       contentNodes = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false);
     }
@@ -115,9 +116,14 @@ public class WorkspaceMaterialsReadingBackingBean {
   public List<ContentNode> getContentNodes() {
     return contentNodes;
   }
+  
+  public String getMaterialsBaseUrl() {
+    return materialsBaseUrl;
+  }
 
   private WorkspaceRootFolder rootFolder;
   private String workspaceName;
   private Long workspaceEntityId;
   private List<ContentNode> contentNodes;
+  private String materialsBaseUrl;
 }

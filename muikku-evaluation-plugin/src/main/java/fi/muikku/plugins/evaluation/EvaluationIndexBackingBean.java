@@ -110,6 +110,8 @@ public class EvaluationIndexBackingBean {
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
+    
+    materialsBaseUrl = String.format("/workspace/%s/materials", workspaceEntity.getUrlName());
 
     return null;
   }
@@ -129,9 +131,13 @@ public class EvaluationIndexBackingBean {
   public String getWorkspaceName() {
     return workspaceName;
   }
+  
+  public String getMaterialsBaseUrl() {
+    return materialsBaseUrl;
+  }
  
   private String workspaceName;
-  
   private List<WorkspaceWithEntity> myWorkspaces;
+  private String materialsBaseUrl;
 
 }

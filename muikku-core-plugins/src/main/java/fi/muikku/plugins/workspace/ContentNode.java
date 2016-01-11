@@ -11,7 +11,7 @@ public class ContentNode {
 
   public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
-      Long parentId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision) {
+      Long parentId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -26,6 +26,7 @@ public class ContentNode {
     this.html = html;
     this.currentRevision = currentRevision;
     this.publishedRevision = publishedRevision;
+    this.path = path;
   }
 
   public void addChild(ContentNode child) {
@@ -115,7 +116,15 @@ public class ContentNode {
   public void setCorrectAnswers(WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
     this.correctAnswers = correctAnswers;
   }
-
+ 
+  public String getPath() {
+    return path;
+  }
+  
+  public void setPath(String path) {
+    this.path = path;
+  }
+  
   private String title;
   private String type;
   private List<ContentNode> children;
@@ -129,5 +138,5 @@ public class ContentNode {
   private String html;
   private Long currentRevision;
   private Long publishedRevision;
-
+  private String path;
 }
