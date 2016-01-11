@@ -58,7 +58,6 @@ import fi.muikku.plugins.material.model.BinaryMaterial;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.muikku.plugins.workspace.WorkspaceMaterialUtils;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
@@ -75,7 +74,7 @@ public class DeusNexMachinaController {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
-
+  
   @Inject
   private MaterialUnEmbedder materialUnEmbedder;
 
@@ -265,7 +264,7 @@ public class DeusNexMachinaController {
         // Resource has been imported before
         WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceNodeId);
         if (workspaceMaterial != null) {
-          path = "/" + WorkspaceMaterialUtils.getCompletePath(workspaceMaterial);
+          path = "/" + workspaceMaterialController.getCompletePath(workspaceMaterial);
           type = "POOL";
         }
       } else {
@@ -276,7 +275,7 @@ public class DeusNexMachinaController {
             reference = importRoot;
           }
 
-          String rootPath = WorkspaceMaterialUtils.getCompletePath(reference);
+          String rootPath = workspaceMaterialController.getCompletePath(reference);
           if (!rootPath.endsWith("/")) {
             rootPath += '/';
           }

@@ -14,7 +14,6 @@ import org.w3c.dom.Element;
 import fi.muikku.plugins.material.BinaryMaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.muikku.plugins.workspace.WorkspaceMaterialUtils;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 
 public class TaskMathMl extends AbstractHtmlMaterialCleanerTask {
@@ -61,7 +60,7 @@ public class TaskMathMl extends AbstractHtmlMaterialCleanerTask {
           String name = "mathml" + StringUtils.leftPad(++imageCounter + "", 3, '0') + ".png";
           BinaryMaterial material = binaryMaterialController.createBinaryMaterial(name, "image/png", data);
           WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(getWorkspaceMaterial(), material);
-          String workspaceUrl = StringUtils.prependIfMissing(WorkspaceMaterialUtils.getCompletePath(workspaceMaterial), "/");
+          String workspaceUrl = StringUtils.prependIfMissing(workspaceMaterialController.getCompletePath(workspaceMaterial), "/");
           logger.info("MathML converted to " + workspaceUrl);
           element.setAttribute("src",  workspaceUrl);
           element.removeAttribute("ix_mathml");

@@ -61,6 +61,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.session.SessionController;
 
 // TODO Should probably be split or renamed WorkspaceNodeController
@@ -74,6 +75,9 @@ public class WorkspaceMaterialController {
 
   @Inject
   private SessionController sessionController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
 
   @Inject
   private WorkspaceRootFolderDAO workspaceRootFolderDAO;
@@ -218,6 +222,46 @@ public class WorkspaceMaterialController {
     }
 
     return findWorkspaceNodeByParentAndUrlName(parent, pathElements[pathElements.length - 1]);
+  }
+
+  public String getCompletePath(WorkspaceNode workspaceNode) {
+    return "workspace/" + getWorkspaceNodeWorkspaceUrlName(workspaceNode) + "/materials/" + workspaceNode.getPath();
+  }
+
+  public WorkspaceMaterial findWorkspaceMaterialByRootPath(String path) {
+    if (path.contains("?")) {
+      path = StringUtils.substringBefore(path, "?");
+    }
+    String[] pathElements = StringUtils.split(path, "/");
+    if (pathElements.length >= 3 && StringUtils.equals("workspace", pathElements[0]) && StringUtils.equals("materials", pathElements[2])) {
+      String workspaceUrlName = pathElements[1];
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByUrlName(workspaceUrlName);
+      if (workspaceEntity != null) {
+        WorkspaceNode workspaceNode = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+        for (int i = 3; i < pathElements.length; i++) {
+          workspaceNode = findWorkspaceNodeByParentAndUrlName(workspaceNode, pathElements[i]);
+          if (workspaceNode == null) {
+            return null;
+          }
+        }
+        return workspaceNode instanceof WorkspaceMaterial ? (WorkspaceMaterial) workspaceNode : null;
+      }
+    }
+    return null;
+  }
+  
+  public String getWorkspaceNodeWorkspaceUrlName(WorkspaceNode workspaceNode) {
+    WorkspaceNode node = workspaceNode;
+    
+    while (node != null) {
+      if (node instanceof WorkspaceRootFolder) {
+        return ((WorkspaceRootFolder) node).getUrlName();
+      }
+      
+      node = node.getParent();
+    }
+
+    return null;
   }
   
   public List<WorkspaceNode> listWorkspaceNodesByParent(WorkspaceNode parent) {
