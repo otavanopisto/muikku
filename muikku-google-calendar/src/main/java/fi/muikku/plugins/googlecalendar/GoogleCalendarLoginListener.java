@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import fi.muikku.calendar.Calendar;
 import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.events.LoginEvent;
 import fi.muikku.model.users.UserEntity;
@@ -44,15 +43,13 @@ public class GoogleCalendarLoginListener {
       UserCalendar userCalendar = calendarController.findUserCalendarByUserAndProvider(userEntity, "google");
       if (userCalendar == null) {
         logger.info("User does not have a calendar, creating one");
-        Calendar calendar = null;
         try {
           userCalendar = calendarController.createCalendar(userEntity, "google", CALENDAR_SUMMARY, CALENDAR_DESCRIPTION, Boolean.TRUE);
-          calendar = calendarController.loadCalendar(userCalendar);
 
           for (String email : userEmailEntityController.listAddressesByUserEntity(userEntity)) {
             try {
               logger.info(String.format("Sharing Google calendar with %s", email));
-              googleCalendarClient.insertCalendarUserAclRule(calendar.getId(), email, "owner");
+              googleCalendarClient.insertCalendarUserAclRule(userCalendar.getCalendarId(), email, "owner");
             } catch (CalendarServiceException e) {
               logger.log(Level.WARNING, String.format("Could not share calendar with %s", email), e);
             }

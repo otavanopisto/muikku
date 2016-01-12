@@ -23,7 +23,6 @@ public class GoogleCalendar implements fi.muikku.calendar.Calendar {
     this.writable = writable;
   }
 
-  @SuppressWarnings(value = "unused")
   public GoogleCalendar(com.google.api.services.calendar.model.Calendar cal) {
     this(cal.getSummary(), cal.getDescription(), cal.getId(), true);
   }
