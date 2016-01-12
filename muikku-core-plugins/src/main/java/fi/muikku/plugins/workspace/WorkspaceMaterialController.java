@@ -346,25 +346,41 @@ public class WorkspaceMaterialController {
     return workspaceMaterial.getMaterialId() == null ? null : materialController.findMaterialById(workspaceMaterial.getMaterialId());
   }
 
-  public WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent) {
+  public WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent, boolean cloneMaterials) {
+    return cloneWorkspaceNode(workspaceNode, parent, cloneMaterials, false);
+  }
+
+  private WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent, boolean cloneMaterials, boolean overrideCloneMaterials) {
     WorkspaceNode newNode;
+    boolean isHtmlMaterial = false;
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
     if (workspaceNode instanceof WorkspaceMaterial) {
       WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) workspaceNode;
       Material material = getMaterialForWorkspaceMaterial(workspaceMaterial);
-      Material clonedMaterial = materialController.cloneMaterial(material);
-      newNode = workspaceMaterialDAO.create(parent, clonedMaterial.getId(), generateUniqueUrlName(parent, clonedMaterial.getTitle()), index,
-          workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers());
-    } else if (workspaceNode instanceof WorkspaceFolder) {
-      newNode = workspaceFolderDAO.create(parent, ((WorkspaceFolder) workspaceNode).getTitle(),
-          generateUniqueUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()), index);
-    } else {
+      isHtmlMaterial = material instanceof HtmlMaterial;
+      Material clonedMaterial = cloneMaterials && !overrideCloneMaterials ? materialController.cloneMaterial(material) : material;
+      newNode = workspaceMaterialDAO.create(
+          parent,
+          clonedMaterial.getId(),
+          generateUniqueUrlName(parent, clonedMaterial.getTitle()),
+          index,
+          workspaceMaterial.getAssignmentType(),
+          workspaceMaterial.getCorrectAnswers());
+    }
+    else if (workspaceNode instanceof WorkspaceFolder) {
+      newNode = workspaceFolderDAO.create(
+          parent,
+          ((WorkspaceFolder) workspaceNode).getTitle(),
+          generateUniqueUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()),
+          index);
+    }
+    else {
       throw new IllegalArgumentException("Uncloneable workspace node " + workspaceNode.getClass());
     }
     List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceNode);
     for (WorkspaceNode childNode : childNodes) {
-      cloneWorkspaceNode(childNode, newNode);
+      cloneWorkspaceNode(childNode, newNode, cloneMaterials, isHtmlMaterial);
     }
     return newNode;
   }

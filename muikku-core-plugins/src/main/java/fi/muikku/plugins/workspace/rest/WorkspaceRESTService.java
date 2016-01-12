@@ -1297,6 +1297,67 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(createRestModel(workspaceEntity, gradingController.updateWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceAssesmentIdentifier, workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated))).build();
   }
   
+  @GET
+  @Path("/copymaterials")
+  @RESTPermit(handling=Handling.INLINE)
+  public Response copyWorkspaceMaterials(
+      @QueryParam("sourceNodeId") Long sourceNodeId,
+      @QueryParam("targetNodeId") Long targetNodeId,
+      @QueryParam("copySourceChildren") Boolean copySourceChildren,
+      @QueryParam("cloneMaterials") @DefaultValue ("false") Boolean cloneMaterials) {
+    
+    // Source folder
+
+    WorkspaceNode sourceNode = workspaceMaterialController.findWorkspaceNodeById(sourceNodeId);
+    if (sourceNode == null) {
+      return Response.status(Status.BAD_REQUEST).entity("null source").build();      
+    }
+    Long sourceWorkspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(sourceNode);
+    WorkspaceEntity sourceWorkspaceEntity = workspaceEntityController.findWorkspaceEntityById(sourceWorkspaceEntityId);
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, sourceWorkspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // Target folder
+    
+    WorkspaceNode targetNode = workspaceMaterialController.findWorkspaceNodeById(targetNodeId);
+    if (targetNode == null) {
+      return Response.status(Status.BAD_REQUEST).entity("null target").build();      
+    }
+    Long targetWorkspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(targetNode);
+    WorkspaceEntity targetWorkspaceEntity = workspaceEntityController.findWorkspaceEntityById(targetWorkspaceEntityId);
+    if (!sourceWorkspaceEntityId.equals(targetWorkspaceEntityId)) {
+      if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, targetWorkspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Circular reference check
+    
+    WorkspaceNode node = targetNode;
+    while (node != null) {
+      if (node.getId().equals(sourceNode.getId())) {
+        return Response.status(Status.BAD_REQUEST).entity("Circular copy reference").build();      
+      }
+      node = node.getParent();
+    }
+    
+    // Copying
+    
+    if (copySourceChildren) {
+      List<WorkspaceNode> sourceChildren = workspaceMaterialController.listWorkspaceNodesByParent(sourceNode);
+      for (WorkspaceNode sourceChild : sourceChildren) {
+        workspaceMaterialController.cloneWorkspaceNode(sourceChild, targetNode, cloneMaterials);
+      }
+    }
+    else {
+      workspaceMaterialController.cloneWorkspaceNode(sourceNode, targetNode, cloneMaterials);
+    }
+    
+    // All done
+    return Response.noContent().build();
+  }
+  
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/assessments/")
   @RESTPermitUnimplemented
