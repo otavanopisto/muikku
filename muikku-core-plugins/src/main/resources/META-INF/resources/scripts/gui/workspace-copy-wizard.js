@@ -22,6 +22,8 @@
             this._hidePage('materials');
           }
         }, this));
+        
+        this.element.on("pageChange", $.proxy(this._onPageChange, this));
 
         this._dialog.find('.wizard-page').each($.proxy(function (index, page) {
           var pageId = $(page)
@@ -63,6 +65,17 @@
             'click': $.proxy(function(event) {
               this._nextPage();
             }, this)
+          }, {
+            'text': this._dialog.attr('data-copy'),
+            'class': 'button-copy',
+            'disabled': true,
+            'click': $.proxy(function(event) {
+              var steps = $.map(this._dialog.find('.summary li'), function (li) {
+                return $(li).attr('data-id');
+              });
+              
+              this._doCopy(steps);
+            }, this)
           }]
         });
 
@@ -79,6 +92,7 @@
         .find('.wizard-page[data-page-id="' + pageId + '"]')
         .addClass('wizard-page-visible');
       
+      this._updateButtons();
       this._updatePageNumbers();
     },
 
@@ -91,6 +105,7 @@
         .find('.wizard-page[data-page-id="' + pageId + '"]')
         .removeClass('wizard-page-visible');
       
+      this._updateButtons();
       this._updatePageNumbers();
     },
     
@@ -105,30 +120,15 @@
       
       var visiblePages = this._dialog.find('.wizard-page-visible');
       
-      $(visiblePages[index + 1])
+      var visiblePage = $(visiblePages[index + 1])
         .addClass('wizard-page-active');
       
-      if ((visiblePages.length - 1) <= (index + 1)) {
-        this._dialog.dialog("widget")
-          .find('.button-next')
-          .button('disable');
-      } else {
-        this._dialog.dialog("widget")
-          .find('.button-next')
-          .button('enable');
-      }
-      
-      if ((index + 1) >= 0) {
-        this._dialog.dialog("widget")
-          .find('.button-prev')
-          .button('enable');
-      } else {
-        this._dialog.dialog("widget")
-          .find('.button-prev')
-          .button('disable');
-      }
-
+      this._updateButtons();
       this._updatePageNumbers();
+      
+      this.element.trigger('pageChange', {
+        id: visiblePage.attr('data-page-id')
+      });
     },
     
     _prevPage: function () {
@@ -141,31 +141,15 @@
         .removeClass('wizard-page-active');
       
       var visiblePages = this._dialog.find('.wizard-page-visible');
-      
-      $(visiblePages[index - 1])
+      var visiblePage = $(visiblePages[index - 1])
         .addClass('wizard-page-active');
       
-      if ((visiblePages.length - 1) <= (index + 1)) {
-        this._dialog.dialog("widget")
-          .find('.button-next')
-          .button('disable');
-      } else {
-        this._dialog.dialog("widget")
-          .find('.button-next')
-          .button('enable');
-      }
-      
-      if ((index - 1) > 0) {
-        this._dialog.dialog("widget")
-          .find('.button-prev')
-          .button('enable');
-      } else {
-        this._dialog.dialog("widget")
-          .find('.button-prev')
-          .button('disable');
-      }
-
+      this._updateButtons();
       this._updatePageNumbers();
+      
+      this.element.trigger('pageChange', {
+        id: visiblePage.attr('data-page-id')
+      });
     },
     
     _load: function (callback) {
@@ -177,12 +161,105 @@
     _updatePageNumbers: function () {
       this._dialog.find('.currentPage').text(this._dialog.find('.wizard-page-active').index('.wizard-page-visible') + 1);
       this._dialog.find('.totalPages').text(this._dialog.find('.wizard-page-visible').length);
+    },
+    
+    _updateButtons: function () {
+      var index = this._dialog
+        .find('.wizard-page-active')
+        .index('.wizard-page-visible');
+      
+      var visiblePages = this._dialog.find('.wizard-page-visible');
+      
+      if ((visiblePages.length - 1) <= index) {
+        this._dialog.dialog("widget")
+          .find('.button-next')
+          .button('disable');
+      } else {
+        this._dialog.dialog("widget")
+          .find('.button-next')
+          .button('enable');
+      }
+      
+      if (index > 0) {
+        this._dialog.dialog("widget")
+          .find('.button-prev')
+          .button('enable');
+      } else {
+        this._dialog.dialog("widget")
+          .find('.button-prev')
+          .button('disable');
+      }
+    },
+    
+    _onPageChange: function (event, data) {
+      this._dialog.dialog("widget")
+        .find('.button-copy')
+        .button(data.id == 'summary' ? 'enable' : 'disable');
+      
+      switch (data.id) {
+        case 'summary':
+          $(this._dialog).find('.summary').empty();
+          
+          this._addSummaryStep("copy-course", "Copy course");
+          if (this._dialog.find('input[name="copy-materials"]').prop('checked')) {
+            this._addSummaryStep('copy-materials', "Copy materials");
+          }
+        break;
+      }
+    },
+    
+    _addSummaryStep: function (id, text) {
+      return $('<li>')
+        .text(text)
+        .attr({
+          'data-id': id
+        })
+        .appendTo($(this._dialog).find('.summary')); 
+    },
+    
+    _doCopy: function (stepIds) {
+      var steps = $.map(stepIds, $.proxy(function (stepId) {
+        return $.proxy(function (callback) {
+          $(this._dialog)
+            .find('.summary li[data-id="' + stepId + '"]')
+            .addClass('inProgress');
+          
+          this.options.steps[stepId]($.proxy(function (err, result) {
+            $(this._dialog)
+              .find('.summary li[data-id="' + stepId + '"]')
+              .removeClass('inProgress')
+              .addClass(err ? 'error' : 'success');
+            callback(err, result);
+          }, this));
+        }, this);
+      }, this));
+      
+      async.series(steps, $.proxy(function(err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          // All done
+        }
+      }, this));
     }
     
   });
   
   $(document).ready(function () {
-    $('<div>').workspaceCopyWizard();
+    $('<div>').workspaceCopyWizard({
+      steps: {
+        'copy-course': function (callback) {
+          setTimeout(function () {
+            callback(null, {});
+          }, 3000);
+        },
+        'copy-materials': function (callback) {
+          setTimeout(function () {
+            callback('Errori', {});
+          }, 1000);
+        }
+      }
+    });
   });
   
 }).call(this);

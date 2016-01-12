@@ -1,4 +1,4 @@
-<div title="TODO: Localize" class="wizard" data-button-next="Next" data-button-prev="Prev">
+<div title="TODO: Localize" class="wizard" data-button-next="Next" data-button-prev="Prev" data-copy="Copy">
 
   <section class="wizard-page wizard-page-visible" data-page-id="name">
     Kurssin nimi, jne
@@ -40,8 +40,12 @@
     Keskustelualueet
   </section>
 
-  <section class="wizard-page wizard-page-visible" data-page-id="discussions">
+  <section class="wizard-page wizard-page-visible" data-page-id="summary">
     Yhteenveto
+    
+    <ul class="summary">
+      
+    </ul>
   </section>
   
   <div class="progress">
