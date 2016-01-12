@@ -13,7 +13,7 @@
           .find('.wizard-page')
           .first()
           .addClass('wizard-page-active');
-        
+
         this._dialog.on('click', 'input[name="copy-materials"]', $.proxy(function (event) {
           var materialPage = this._dialog.find('section[data-page-id="materials"]');
           if ($(event.target).prop('checked')) {
@@ -33,7 +33,7 @@
             })
             .text(pageId);
           
-          this._dialog.find('.progress')
+          this._dialog.find('.progress-pages')
             .append(progressPage);
           
           if ($(page).hasClass('wizard-page-visible')) {
@@ -65,28 +65,33 @@
             }, this)
           }]
         });
-        
+
+        this._updatePageNumbers();
       }, this));
     },
     
     _showPage: function (pageId) {
       this._dialog
-        .find('.progress').find('li[data-page-id="' + pageId + '"]')
+        .find('.progress-pages').find('li[data-page-id="' + pageId + '"]')
         .show();
       
       this._dialog
         .find('.wizard-page[data-page-id="' + pageId + '"]')
         .addClass('wizard-page-visible');
+      
+      this._updatePageNumbers();
     },
 
     _hidePage: function (pageId) {
       this._dialog
-        .find('.progress').find('li[data-page-id="' + pageId + '"]')
+        .find('.progress-pages').find('li[data-page-id="' + pageId + '"]')
         .hide();
       
       this._dialog
         .find('.wizard-page[data-page-id="' + pageId + '"]')
         .removeClass('wizard-page-visible');
+      
+      this._updatePageNumbers();
     },
     
     _nextPage: function () {
@@ -123,6 +128,7 @@
           .button('disable');
       }
 
+      this._updatePageNumbers();
     },
     
     _prevPage: function () {
@@ -159,12 +165,18 @@
           .button('disable');
       }
 
+      this._updatePageNumbers();
     },
     
     _load: function (callback) {
       renderDustTemplate('workspacecopywizard/workspace-copy-wizard.dust', {}, function (text) {
         callback(text);
       });
+    },
+    
+    _updatePageNumbers: function () {
+      this._dialog.find('.currentPage').text(this._dialog.find('.wizard-page-active').index('.wizard-page-visible') + 1);
+      this._dialog.find('.totalPages').text(this._dialog.find('.wizard-page-visible').length);
     }
     
   });

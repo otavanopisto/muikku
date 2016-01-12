@@ -44,6 +44,11 @@
     Yhteenveto
   </section>
   
-  <ul class="progress"/>
-
+  <div class="progress">
+    <span class="currentPage"/>
+    <span class="totalPages"/>
+  </div>
+  
+  <ul class="progress-pages"/>
+  
 </div>
