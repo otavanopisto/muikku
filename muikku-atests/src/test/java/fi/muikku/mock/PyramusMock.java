@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.muikku.TestUtilities;
 import fi.muikku.mock.model.MockCourseStudent;
@@ -124,6 +125,17 @@ public class PyramusMock {
           List<CourseStudent> courseStudentList = new ArrayList<>();
           courseStudentList.add(courseStudent);
           pyramusMocker.courseStudents.put(courseId, courseStudentList);
+        }
+        return this;
+      }
+      
+      public Builder addCourseStaffMember(Long courseId, CourseStaffMember courseStaffMember){
+        if(pyramusMocker.courseStaffMembers.containsKey(courseId)){
+          pyramusMocker.courseStaffMembers.get(courseId).add(courseStaffMember);
+        }else{
+          List<CourseStaffMember> courseStaffMemberList = new ArrayList<>();
+          courseStaffMemberList.add(courseStaffMember);
+          pyramusMocker.courseStaffMembers.put(courseId, courseStaffMemberList);
         }
         return this;
       }
@@ -506,8 +518,7 @@ public class PyramusMock {
         stubFor(get(urlMatching("/users/authorize.*"))
           .willReturn(aResponse()
             .withStatus(302)
-            .withHeader("Location",
-              "http://" + System.getProperty("it.host") + ":8080/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+            .withHeader("Location", String.format("http://%s:%s/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111", System.getProperty("it.host"), System.getProperty("it.port.http")))));
 
         stubFor(post(urlEqualTo("/1/oauth/token"))
           .willReturn(aResponse()
@@ -525,15 +536,15 @@ public class PyramusMock {
             .withBody(pyramusMocker.objectMapper.writeValueAsString(whoAmI))
             .withStatus(200)));
         
-        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://" + System.getProperty("it.host") + ":8443"))
+        stubFor(get(urlEqualTo(String.format("/users/logout.page?redirectUrl=https://%s:%s", System.getProperty("it.host"), System.getProperty("it.port.https"))))
           .willReturn(aResponse()
             .withStatus(302)
-            .withHeader("Location", "http://" + System.getProperty("it.host") + ":8080/")));
+            .withHeader("Location", String.format("http://%s:%s/", System.getProperty("it.host"), System.getProperty("it.port.http")))));
         
         return this;
       }
       
-      public void addGrade(GradingScale gradingScale, Grade grade){
+      public Builder addGrade(GradingScale gradingScale, Grade grade){
         List<Grade> grades = new ArrayList<>();
         if(pyramusMocker.gradingScales.containsKey(gradingScale)) {
           grades = pyramusMocker.gradingScales.get(gradingScale);
@@ -543,30 +554,37 @@ public class PyramusMock {
           grades.add(grade);
           pyramusMocker.gradingScales.put(gradingScale, grades);
         }
+        return this;
       }
       
-      public void addEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit) {
+      public Builder addEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit) {
         pyramusMocker.educationalTimeUnits.add(educationalTimeUnit);
+        return this;
       }
       
-      public void addEducationType(EducationType educationType) {
+      public Builder addEducationType(EducationType educationType) {
         pyramusMocker.educationTypes.add(educationType);
+        return this;
       }
       
-      public void addSubject(Subject subject) {
+      public Builder addSubject(Subject subject) {
         pyramusMocker.subjects.add(subject);
+        return this;
       }
 
-      public void addStudyProgrammeCategory(StudyProgrammeCategory studyProgrammeCategory) {
+      public Builder addStudyProgrammeCategory(StudyProgrammeCategory studyProgrammeCategory) {
         pyramusMocker.studyProgrammeCategories.add(studyProgrammeCategory);
+        return this;
       }
       
-      public void addStudyProgramme(StudyProgramme studyProgramme) {
+      public Builder addStudyProgramme(StudyProgramme studyProgramme) {
         pyramusMocker.studyProgrammes.add(studyProgramme);
+        return this;
       }
       
-      public void addCourseType(CourseType courseType){
+      public Builder addCourseType(CourseType courseType){
         pyramusMocker.courseTypes.add(courseType);
+        return this;
       }
       
       public PyramusMock build() throws Exception {
@@ -582,16 +600,22 @@ public class PyramusMock {
         mockEducationTypes();
         mockSubjects();
         mockCourseTypes();
-        mockCourseStaffMembers();
         mockCourseStudents();
         mockCourseStaffMemberRoles();
+        mockCourseStaffMembers();
         
         for(String payload : pyramusMocker.payloads) {
-          TestUtilities.webhookCall("http://" + System.getProperty("it.host") + ":8080/pyramus/webhook", payload);
+          TestUtilities.webhookCall(String.format("http://%s:%s/pyramus/webhook", System.getProperty("it.host"), System.getProperty("it.port.http")), payload);
         }
         
         return pyramusMocker;
       }
+      
+      public Builder reset() {
+        WireMock.reset();
+        return this;
+      }
+      
   }
   
   public List<MockStudent> getStudents() {
