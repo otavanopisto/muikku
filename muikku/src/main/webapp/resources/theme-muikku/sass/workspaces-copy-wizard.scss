@@ -1,0 +1,18 @@
+@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+
+.wizard-page {
+  width: 400px;
+  height: 400px;
+  display: none;
+  
+  &.wizard-page-active {
+    display: inline-block;
+  }
+}
+
+button {
+  &.next-button, 
+  &.prev-button {
+    background:#7391a7;
+  }
+}

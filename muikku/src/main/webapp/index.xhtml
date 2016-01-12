@@ -9,6 +9,9 @@
   
 
 	<ui:define name="header">
+    <h:outputScript target="head" name="/scripts/gui/workspace-copy-wizard.js"/>
+  <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-copy-wizard.css" />
+  
 		<c:choose>
 			<c:when test="#{sessionBackingBean.loggedIn}">
 				<header id="headerSmall">

@@ -1,0 +1,49 @@
+<div title="TODO: Localize" class="wizard" data-button-next="Next" data-button-prev="Prev">
+
+  <section class="wizard-page wizard-page-visible" data-page-id="name">
+    Kurssin nimi, jne
+  </section>
+
+  <section class="wizard-page wizard-page-visible" data-page-id="dates">
+    Päiväämäät jne,
+  </section>
+
+  <section class="wizard-page wizard-page-visible" data-page-id="description">
+    Kuvaus
+  </section>
+
+  <section class="wizard-page wizard-page-visible" data-page-id="settings">
+    <div>
+      <input type="checkbox" name="copy-materials"/>
+      <label>Kurssin materiaalit</label>
+    </div>
+    
+    <div>
+      <input type="checkbox" name="copy-discussions"/>
+      <label>Keskustelualueet</label>
+    </div>
+  </section>
+
+  <section class="wizard-page" data-page-id="materials">
+    <label>Kurssin materiaalit</label>
+    <div>
+      <input type="radio" value="copy" name="material-copy-style"/> 
+      <label>Tee materiaaleista erilliset kopiot</label>
+    </div>
+    <div>
+      <input type="radio" value="link" name="material-copy-style"/> 
+      <label>Linkitä materiaalit alkuperäisiin materiaaleihin</label>
+    </div>
+  </section>
+
+  <section class="wizard-page" data-page-id="discussions">
+    Keskustelualueet
+  </section>
+
+  <section class="wizard-page wizard-page-visible" data-page-id="discussions">
+    Yhteenveto
+  </section>
+  
+  <ul class="progress"/>
+
+</div>
