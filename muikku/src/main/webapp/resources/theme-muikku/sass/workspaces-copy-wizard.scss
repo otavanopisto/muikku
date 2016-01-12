@@ -8,6 +8,20 @@
   &.wizard-page-active {
     display: inline-block;
   }
+  
+  .summary {
+    .inProgress {
+      color: yellow;
+    }
+    
+    .success {
+      color: green;
+    }
+    
+    .error {
+      color: red;
+    }
+  }
 }
 
 button {
@@ -16,3 +30,5 @@ button {
     background:#7391a7;
   }
 }
+
+
