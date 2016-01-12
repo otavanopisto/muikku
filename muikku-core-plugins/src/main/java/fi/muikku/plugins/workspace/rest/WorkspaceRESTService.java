@@ -1299,7 +1299,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/copymaterials")
-  @RESTPermit(handling=Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE)
   public Response copyWorkspaceMaterials(
       @QueryParam("sourceNodeId") Long sourceNodeId,
       @QueryParam("targetNodeId") Long targetNodeId,
@@ -1355,6 +1355,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     // All done
+    
     return Response.noContent().build();
   }
   
