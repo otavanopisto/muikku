@@ -742,7 +742,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void deleteUserGroupUser(Long userGroupId, Long userId) {
     asAdmin()
-      .delete("/userGroups/{USERGROUPID}/{USERID}", userGroupId, userId)
+      .delete("test/userGroups/{USERGROUPID}/{USERID}", userGroupId, userId)
       .then()
       .statusCode(204);
   }

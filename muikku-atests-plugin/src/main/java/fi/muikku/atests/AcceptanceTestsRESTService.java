@@ -492,11 +492,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Path("/announcements")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response createAnnouncement(fi.muikku.atests.Announcement payload) {
-    logger.info("TRYING TO FIND LOGGED IN USER");
     UserEntity user = userEntityController.findUserEntityById(payload.getPublisherUserEntityId());
-    logger.info("LOGGED IN USER USERID: " + user.getId());
     Announcement announcement = announcementController.create(user, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.getPubliclyVisible());
-    logger.info("Announcement created with id: " + announcement.getId());
     if(payload.getUserGroupEntityIds() != null) {
       List<Long> userGroups = payload.getUserGroupEntityIds();
       for (Long userGroupId : userGroups) {
@@ -505,7 +502,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       }
     }
     return Response.noContent().build();
-//    return Response.ok(createRestEntity(announcement)).build();
   }
 
   @DELETE
@@ -522,11 +518,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteUserGroup(@PathParam ("USERGROUPID") Long userGroupId) {
     UserGroupEntity userGroup = userGroupEntityController.findUserGroupEntityById(userGroupId);
-    int i = 1;
     for(UserGroupUserEntity userGroupUser : userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroup)) {
       userGroupEntityController.deleteUserGroupUserEntity(userGroupUser);
-      logger.severe("Round and round we go: " + i);
-      i++;
     }
     userGroupEntityController.deleteUserGroupEntity(userGroup);
     return Response.noContent().build();

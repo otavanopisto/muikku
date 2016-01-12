@@ -25,7 +25,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
   public void createAnnouncementTest() throws JsonProcessingException, Exception {
     try{
       MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-      mocker().addStaffMember(admin).mockLogin(admin).build();
+      Builder mockBuilder = mocker();
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
       login();
       maximizeWindow();
       navigate("/announcer", true);
@@ -54,7 +55,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
   public void deleteAnnouncementTest() throws JsonProcessingException, Exception {
     try{
       MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-      mocker().addStaffMember(admin).mockLogin(admin).build();
+      Builder mockBuilder = mocker();
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
       login();
       maximizeWindow();
       navigate("/announcer", true);
@@ -85,17 +87,22 @@ public class AnnouncerTestsBase extends AbstractUITest {
   public void announcementVisibleInFrontpageWidgetTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
-    mocker().addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-    login();
-    try{
-      createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
-      logout();
-      mocker().mockLogin(student);
+    Builder mockBuilder = mocker();
+    try {
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
-      waitForPresent(".wi-item-topic");
-      assertTextIgnoreCase(".wi-item-topic>a", "Test title");
-    }finally{
-      deleteAnnouncements();
+      try{
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+        waitForPresent(".wi-item-topic");
+        assertTextIgnoreCase(".wi-item-topic>a", "Test title");
+      }finally{
+        deleteAnnouncements();
+      }
+    }finally {
+      mockBuilder.reset();
     }
   }
 
@@ -104,45 +111,56 @@ public class AnnouncerTestsBase extends AbstractUITest {
   public void announcementListTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
-    mocker().addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-    login();
+    Builder mockBuilder = mocker();
     try{
-      createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
-      logout();
-      mocker().mockLogin(student);
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
-      waitForPresent(".wi-item-topic");
-      assertTextIgnoreCase(".wi-item-topic>a", "Test title");
-      navigate("/announcements", true);
-      waitForPresent("#announcementContextNavigation .gc-navigation-item");
-      assertTextIgnoreCase("#announcementContextNavigation .gc-navigation-item a", "Test title");
-      click("#announcementContextNavigation .gc-navigation-item a");
-      waitForPresent(".announcement-article h2");
-      assertTextIgnoreCase(".announcement-article h2", "Test title");
-      assertTextIgnoreCase(".announcement-article div.article-datetime", "11/12/15");
-      assertTextIgnoreCase(".announcement-article div.article-context", "announcer test announcement");
-    }finally{
-      deleteAnnouncements();
+      try{
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+        waitForPresent(".wi-item-topic");
+        assertTextIgnoreCase(".wi-item-topic>a", "Test title");
+        navigate("/announcements", true);
+        waitForPresent("#announcementContextNavigation .gc-navigation-item");
+        assertTextIgnoreCase("#announcementContextNavigation .gc-navigation-item a", "Test title");
+        click("#announcementContextNavigation .gc-navigation-item a");
+        waitForPresent(".announcement-article h2");
+        assertTextIgnoreCase(".announcement-article h2", "Test title");
+        assertTextIgnoreCase(".announcement-article div.article-datetime", "11/12/15");
+        assertTextIgnoreCase(".announcement-article div.article-context", "announcer test announcement");
+      }finally{
+        deleteAnnouncements();
+      }
+    }finally {
+      mockBuilder.reset();
     }
   }
-//  TODO: Delete userGroups and members
+
   @Test
   public void userGroupAnnouncementVisibleTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
-    mocker().addStaffMember(admin).addStudent(student).addStudentGroup(2l, "Test group", "Test group for users", 1l, false).addStudentToStudentGroup(2l, student).addStaffMemberToStudentGroup(2l, admin).mockLogin(admin).build();
-    login();
+    Builder mockBuilder = mocker();
     try{
-      List<Long> userGroups = new ArrayList<>();
-      userGroups.add(2l);
-      createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, false, userGroups);
-      logout();
-      mocker().mockLogin(student);
+      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, "Test group", "Test group for users", 1l, false).addStudentToStudentGroup(2l, student).addStaffMemberToStudentGroup(2l, admin).mockLogin(admin).build();
       login();
-      waitForPresent(".wi-item-topic");
-      assertTextIgnoreCase(".wi-item-topic>a", "Test title");
-    }finally{
-      deleteAnnouncements();
+      try{
+        List<Long> userGroups = new ArrayList<>();
+        userGroups.add(2l);
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, false, userGroups);
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+        waitForPresent(".wi-item-topic");
+        assertTextIgnoreCase(".wi-item-topic>a", "Test title");
+      }finally{
+        deleteAnnouncements();
+        deleteUserGroup(2l);
+      }
+    }finally {
+      mockBuilder.reset();
     }
   }
   
@@ -150,20 +168,24 @@ public class AnnouncerTestsBase extends AbstractUITest {
   public void userGroupAnnouncementNotVisibleTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
-    mocker().addStaffMember(admin).addStudent(student).addStudentGroup(2l, "Test group", "Test group for users", 1l, false).addStaffMemberToStudentGroup(2l, admin).mockLogin(admin).build();
-    login();
-    try{
-      List<Long> userGroups = new ArrayList<>();
-      userGroups.add(2l);
-      createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, false, userGroups);
-      logout();
-      mocker().mockLogin(student);
+    Builder mockBuilder = mocker();
+    try {
+      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, "Test group", "Test group for users", 1l, false).addStaffMemberToStudentGroup(2l, admin).mockLogin(admin).build();
       login();
-      waitForPresent(".wi-announcements");
-      assertTrue("Element found even though it shouldn't be there", isElementPresent(".wi-item-topic>a") == false);
-    }finally{
-      deleteAnnouncements();
-      deleteUserGroupUser(2l, 2l);
+      try{
+        List<Long> userGroups = new ArrayList<>();
+        userGroups.add(2l);
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, false, userGroups);
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+        waitForPresent(".wi-announcements");
+        assertTrue("Element found even though it shouldn't be there", isElementPresent(".wi-item-topic>a") == false);
+      }finally{
+        deleteAnnouncements();
+      }
+    }finally {
+      mockBuilder.reset();
     }
   }
   

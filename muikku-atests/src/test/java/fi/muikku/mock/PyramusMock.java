@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.muikku.TestUtilities;
 import fi.muikku.mock.model.MockCourseStudent;
@@ -672,6 +673,12 @@ public class PyramusMock {
         
         return pmock;
       }
+      
+      public Builder reset() {
+        WireMock.reset();
+        return this;
+      }
+      
   }
   
   public List<MockStudent> getStudents() {
