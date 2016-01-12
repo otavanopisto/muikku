@@ -733,6 +733,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .post("/test/announcements");
   }
   
+  protected void deleteUserGroup(Long userGroupId) {
+    asAdmin()
+      .delete("/test/userGroups/{USERGROUPID}", userGroupId)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void deleteUserGroupUser(Long userGroupId, Long userId) {
+    asAdmin()
+      .delete("/userGroups/{USERGROUPID}/{USERID}", userGroupId, userId)
+      .then()
+      .statusCode(204);
+  }
+    
   protected String getAttributeValue(String selector, String attribute){
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     return element.getAttribute(attribute);

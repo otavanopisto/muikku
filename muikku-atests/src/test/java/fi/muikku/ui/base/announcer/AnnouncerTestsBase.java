@@ -150,7 +150,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
   public void userGroupAnnouncementNotVisibleTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
-    mocker().addStaffMember(admin).addStudent(student).addStudentGroup(2l, "Test group", "Test group for users", 1l, false).addStaffMemberToStudentGroup(1l, admin).mockLogin(admin).build();
+    mocker().addStaffMember(admin).addStudent(student).addStudentGroup(2l, "Test group", "Test group for users", 1l, false).addStaffMemberToStudentGroup(2l, admin).mockLogin(admin).build();
     login();
     try{
       List<Long> userGroups = new ArrayList<>();
@@ -163,6 +163,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       assertTrue("Element found even though it shouldn't be there", isElementPresent(".wi-item-topic>a") == false);
     }finally{
       deleteAnnouncements();
+      deleteUserGroupUser(2l, 2l);
     }
   }
   

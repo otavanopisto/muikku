@@ -25,6 +25,7 @@ import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
+import fi.muikku.model.users.UserGroupUserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
@@ -51,6 +52,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.muikku.rest.model.UserGroup;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.plugins.evaluation.EvaluationController;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
@@ -504,6 +506,30 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     return Response.noContent().build();
 //    return Response.ok(createRestEntity(announcement)).build();
+  }
+
+  @DELETE
+  @Path("/userGroups/{USERGROUPID}/{USERID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteUserGroupUser(@PathParam ("USERGROUPID") Long userGroupId, @PathParam ("USERID") Long userId) {
+    UserGroupUserEntity userGroupUser = userGroupEntityController.findUserGroupUserEntityById(userId);
+    userGroupEntityController.deleteUserGroupUserEntity(userGroupUser);
+    return Response.noContent().build();
+  }
+  
+  @DELETE
+  @Path("/userGroups/{USERGROUPID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteUserGroup(@PathParam ("USERGROUPID") Long userGroupId) {
+    UserGroupEntity userGroup = userGroupEntityController.findUserGroupEntityById(userGroupId);
+    int i = 1;
+    for(UserGroupUserEntity userGroupUser : userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroup)) {
+      userGroupEntityController.deleteUserGroupUserEntity(userGroupUser);
+      logger.severe("Round and round we go: " + i);
+      i++;
+    }
+    userGroupEntityController.deleteUserGroupEntity(userGroup);
+    return Response.noContent().build();
   }
   
   @DELETE
