@@ -25,13 +25,18 @@ import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.rest.model.EnvironmentUserRolePermission;
 import fi.muikku.rest.model.WorkspaceUserGroupPermission;
+import fi.muikku.rest.model.WorkspaceUserRolePermission;
+import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.Admin;
 import fi.otavanopisto.security.AuthorizationException;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Stateful
 @RequestScoped
@@ -62,6 +67,9 @@ public class PermissionRESTService extends AbstractRESTService {
   
   @Inject
   private PermissionController permissionController;
+  
+  @Inject
+  private RoleController roleController;
   
   @Inject
   private SessionController sessionController;
@@ -255,9 +263,71 @@ public class PermissionRESTService extends AbstractRESTService {
 //  }
 
   @PUT
+  @Path ("/environmentUserRolePermissions")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response setEnvironmentUserRolePermission(EnvironmentUserRolePermission payload) {
+    RoleEntity roleEntity = roleController.findRoleEntityById(payload.getUserRoleId());
+    Permission permission = permissionDAO.findById(payload.getPermissionId());
+
+    if ((roleEntity == null) || (permission == null)) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!sessionController.hasPermission(MuikkuPermissions.MANAGE_PERMISSIONS, null)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    try {
+      EnvironmentRolePermission rolePermission = permissionController.findEnvironmentRolePermission(roleEntity, permission);
+      
+      if (payload.getPermitted() && (rolePermission == null))
+        permissionController.addEnvironmentRolePermission(roleEntity, permission);
+      else {
+        if (rolePermission != null)
+          permissionController.removeEnvironmentRolePermission(rolePermission);
+      }
+
+      return Response.noContent().build();
+    } catch (ConstraintViolationException violationException) {
+      return getConstraintViolations(violationException);
+    }
+  }
+  
+  @PUT
+  @Path ("/workspaceUserRolePermissions")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response setWorkspaceUserRolePermission(WorkspaceUserRolePermission payload) {
+    RoleEntity roleEntity = roleController.findRoleEntityById(payload.getUserRoleId());
+    Permission permission = permissionDAO.findById(payload.getPermissionId());
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(payload.getWorkspaceId());
+
+    if ((roleEntity == null) || (permission == null) || (workspaceEntity == null)) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!sessionController.hasPermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    try {
+      WorkspaceRolePermission rolePermission = permissionController.findWorkspaceRolePermission(workspaceEntity, roleEntity, permission);
+      
+      if (payload.getPermitted() && (rolePermission == null))
+        permissionController.addWorkspaceRolePermission(workspaceEntity, roleEntity, permission);
+      else {
+        if (rolePermission != null)
+          permissionController.removeWorkspaceRolePermission(rolePermission);
+      }
+
+      return Response.noContent().build();
+    } catch (ConstraintViolationException violationException) {
+      return getConstraintViolations(violationException);
+    }
+  }
+  
+  @PUT
   @Path ("/workspaceUserGroupPermissions")
-//  @Admin
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response setWorkspaceUserGroupPermission(WorkspaceUserGroupPermission payload) {
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(payload.getUserGroupId());
     Permission permission = permissionDAO.findById(payload.getPermissionId());

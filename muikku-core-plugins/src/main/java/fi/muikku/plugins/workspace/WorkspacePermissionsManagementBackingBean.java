@@ -24,6 +24,7 @@ import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.security.MuikkuPermissions;
+import fi.muikku.session.SessionController;
 import fi.muikku.users.UserGroupController;
 import fi.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.LoggedIn;
@@ -56,6 +57,9 @@ public class WorkspacePermissionsManagementBackingBean {
 
   @Inject
   private PermissionController permissionController;
+
+  @Inject
+  private SessionController sessionController;
   
   @RequestAction
   public String init() {
@@ -70,6 +74,10 @@ public class WorkspacePermissionsManagementBackingBean {
       return NavigationRules.NOT_FOUND;
     }
 
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
+      return NavigationRules.NOT_FOUND;
+    }
+    
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
