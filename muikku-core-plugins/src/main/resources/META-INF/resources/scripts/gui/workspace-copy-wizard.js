@@ -85,13 +85,17 @@
       }, this));
     },
     
+    _getPage: function (pageId) {
+      return this._dialog
+        .find('.wizard-page[data-page-id="' + pageId + '"]')
+    },
+    
     _showPage: function (pageId) {
       this._dialog
         .find('.progress-pages').find('li[data-page-id="' + pageId + '"]')
         .show();
       
-      this._dialog
-        .find('.wizard-page[data-page-id="' + pageId + '"]')
+      this._getPage(pageId)
         .addClass('wizard-page-visible');
       
       this._updateButtons();
@@ -226,7 +230,7 @@
             .find('.summary li[data-id="' + stepId + '"]')
             .addClass('inProgress');
           
-          this.options.steps[stepId]($.proxy(function (err, result) {
+          this.options.steps[stepId].call(this, $.proxy(function (err, result) {
             $(this._dialog)
               .find('.summary li[data-id="' + stepId + '"]')
               .removeClass('inProgress')
@@ -245,23 +249,6 @@
       }, this));
     }
     
-  });
-  
-  $(document).ready(function () {
-    $('<div>').workspaceCopyWizard({
-      steps: {
-        'copy-course': function (callback) {
-          setTimeout(function () {
-            callback(null, {});
-          }, 3000);
-        },
-        'copy-materials': function (callback) {
-          setTimeout(function () {
-            callback('Errori', {});
-          }, 1000);
-        }
-      }
-    });
   });
   
 }).call(this);

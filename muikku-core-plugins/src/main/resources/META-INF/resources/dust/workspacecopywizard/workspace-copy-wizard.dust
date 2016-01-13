@@ -1,7 +1,11 @@
 <div title="TODO: Localize" class="wizard" data-button-next="Next" data-button-prev="Prev" data-copy="Copy">
 
   <section class="wizard-page wizard-page-visible" data-page-id="name">
-    Kurssin nimi, jne
+    <label>Työtilan nimi</label>
+    <input name="workspace-name"/>
+    
+    <label>Työtilan nimen tarkenne</label>
+    <input name="workspace-name-extension"/>
   </section>
 
   <section class="wizard-page wizard-page-visible" data-page-id="dates">

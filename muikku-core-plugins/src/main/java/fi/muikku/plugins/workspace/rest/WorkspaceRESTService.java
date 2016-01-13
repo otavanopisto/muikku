@@ -167,6 +167,54 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Inject
   private LocaleController localeController;
   
+  @POST
+  @Path("/workspaces/")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createWorkspace(@QueryParam ("sourceWorkspaceIdentifier") String sourceWorkspaceId, @QueryParam ("sourceWorkspaceEntityId") Long sourceWorkspaceEntityId, fi.muikku.plugins.workspace.rest.model.Workspace payload) {
+    SchoolDataIdentifier workspaceIdentifier = null;
+    if (sourceWorkspaceId != null) {
+      workspaceIdentifier = SchoolDataIdentifier.fromId(sourceWorkspaceId);
+      if (workspaceIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid source workspace identifier %s", sourceWorkspaceId)).build();
+      }
+    }
+    
+    if (sourceWorkspaceEntityId != null) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(sourceWorkspaceEntityId);
+      if (workspaceEntity == null) {
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid source workspace entity id %d", sourceWorkspaceEntityId)).build();
+      }
+      
+      workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    }
+    
+    if (workspaceIdentifier == null) {
+      return Response.status(Status.NOT_IMPLEMENTED).entity("Creating new workspaces without sourceWorkspace is not not implemented yet").build();
+    }
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.COPY_WORKSPACE)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    if (StringUtils.isBlank(payload.getName())) {
+      return Response.status(Status.BAD_REQUEST).entity("Name is required").build();
+    }
+    
+    Workspace workspace = workspaceController.copyWorkspace(workspaceIdentifier, payload.getName(), payload.getNameExtension());
+    if (workspace == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to create copy of workspace %s", sourceWorkspaceId)).build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
+    if (workspaceEntity == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to create local copy of workspace %s", sourceWorkspaceId)).build();
+    }
+   
+    return Response
+        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription()))
+        .build();
+  }
+
   @GET
   @Path("/workspaces/")
   @RESTPermitUnimplemented
@@ -240,8 +288,10 @@ public class WorkspaceRESTService extends PluginRESTService {
             if (workspaceEntity != null) {
               String name = (String) result.get("name");
               String description = (String) result.get("description");
+              String nameExtension = (String) result.get("nameExtension");
+              
               if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, description));
+                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description));
               }
             }
           }
@@ -302,7 +352,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getDescription())).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription())).build();
   }
   
   @PUT
@@ -367,7 +417,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
     workspaceIndexer.indexWorkspace(workspaceEntity);
     
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getDescription())).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription())).build();
   }
   
   @GET
@@ -986,11 +1036,11 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
   }
 
-  private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String description) {
+  private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     return new fi.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
-        workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, description, numVisits, lastVisit);
+        workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, nameExtension, description, numVisits, lastVisit);
   }
 
   private fi.muikku.plugins.workspace.rest.model.WorkspaceFolder createRestModel(WorkspaceFolder workspaceFolder) {

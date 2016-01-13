@@ -66,12 +66,15 @@
                 <input class="bt-coursepicker cp-course-tour-button" type="button"
                   value='{#localize key="plugin.coursepicker.course.checkout" /}' />
               {/isCourseMember}
-            
               {#isLoggedIn}
                 {#canSignup}
                   <input class="bt-coursepicker cp-course-attend-button" type="button"
                     value='{#localize key="plugin.coursepicker.course.signup" /}' />
                 {/canSignup}
+                {#canCopyWorkspace}
+                  <input class="bt-coursepicker cp-course-copy-button" type="button"
+                    value='{#localize key="plugin.coursepicker.course.copy" /}' />
+                {/canCopyWorkspace}
               {/isLoggedIn}
             </div>
           </div>
