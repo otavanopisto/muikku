@@ -778,7 +778,8 @@
           'type': "file",
           'placeholder': data.meta.help,
           'title': data.meta.hint,
-          'name': data.name
+          'name': data.name,
+          'data-readonly': $(object).attr('data-readonly')
         })
         .data({
           'field-name': data.name,
@@ -868,7 +869,7 @@
             fieldName: $(field).data('field-name'),
             embedId: $(field).data('embed-id'),
             materialId: $(field).data('material-id'),
-            readonly: data.readOnlyFields||false,
+            readonly: $(field).attr('data-readonly') || data.readOnlyFields || false,
             answer: function (val) {
               // TODO: Support setter for files
               return JSON.stringify($(this.element).muikkuFileField('files'));
