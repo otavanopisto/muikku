@@ -3,7 +3,8 @@
   
   $.widget("custom.workspaceCopyWizard", {
     options: {
-      
+      workspaceEntityId: null,
+      steps: null
     },
     
     _create : function() {
@@ -51,6 +52,7 @@
         this.element.on('click', '.next', $.proxy(this._onNextClick, this));
         this.element.on('click', '.copy', $.proxy(this._onCopyClick, this));
         
+        this._updateButtons();
         this._updatePageNumbers();
       }, this));
     },
