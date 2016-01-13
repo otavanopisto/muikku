@@ -1347,7 +1347,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(createRestModel(workspaceEntity, gradingController.updateWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceAssesmentIdentifier, workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated))).build();
   }
   
-  @GET
+  @POST
   @Path("/copymaterials")
   @RESTPermit(handling = Handling.INLINE)
   public Response copyWorkspaceMaterials(
@@ -1356,16 +1356,17 @@ public class WorkspaceRESTService extends PluginRESTService {
       @QueryParam("copySourceChildren") Boolean copySourceChildren,
       @QueryParam("cloneMaterials") @DefaultValue ("false") Boolean cloneMaterials) {
     
+    // Access
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.COPY_WORKSPACE)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     // Source
 
     WorkspaceNode sourceNode = workspaceMaterialController.findWorkspaceNodeById(sourceNodeId);
     if (sourceNode == null) {
       return Response.status(Status.BAD_REQUEST).entity("null source").build();      
-    }
-    Long sourceWorkspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(sourceNode);
-    WorkspaceEntity sourceWorkspaceEntity = workspaceEntityController.findWorkspaceEntityById(sourceWorkspaceEntityId);
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, sourceWorkspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
     }
 
     // Target
@@ -1373,13 +1374,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode targetNode = workspaceMaterialController.findWorkspaceNodeById(targetNodeId);
     if (targetNode == null) {
       return Response.status(Status.BAD_REQUEST).entity("null target").build();      
-    }
-    Long targetWorkspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(targetNode);
-    WorkspaceEntity targetWorkspaceEntity = workspaceEntityController.findWorkspaceEntityById(targetWorkspaceEntityId);
-    if (!sourceWorkspaceEntityId.equals(targetWorkspaceEntityId)) {
-      if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, targetWorkspaceEntity)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
     }
     
     // Circular reference check
