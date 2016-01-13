@@ -49,8 +49,10 @@
         this._dialog.dialog({
           modal: true, 
           resizable: false,
+          draggable: false,
           width: 'auto',
           height: 'auto',
+          dialogClass: "workspace-copy-wizard-dialog",
           buttons: [{
             'text': this._dialog.attr('data-button-prev'),
             'class': 'button-prev',

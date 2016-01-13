@@ -1,34 +1,144 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 
-.wizard-page {
-  width: 400px;
-  height: 400px;
-  display: none;
-  
-  &.wizard-page-active {
-    display: inline-block;
+body {
+
+/* JQuery UI Dialog Overrides */
+  .ui-widget-overlay {
+    display:none;
   }
   
-  .summary {
-    .inProgress {
-      color: yellow;
+  .ui-dialog.workspace-copy-wizard-dialog {
+    box-shadow:none;
+    background:#84c5c8;
+    font-family: 'Open Sans',Verdana, sans-serif;
+    font-size:16px;
+    font-weight:300;
+    padding:0;
+    text-transform:none;
+    border:none;
+    z-index:9999;
+    display:-webkit-box !important; 
+    display:-moz-box !important;
+    display:-ms-flexbox !important;
+    display:-webkit-flex !important;
+    display:flex !important;
+    flex-flow:row nowrap;
+    
+    &.ui-corner-all {
+      border-radius:0px;
     }
     
-    .success {
-      color: green;
+    .ui-dialog-titlebar {
+      border:0px;
+      background:#84c5c8;
+      color:#fff;
+      border-radius:0px;
+      padding:0;
+      font-weight:300;
+      
+      .ui-dialog-title {
+        margin:0;
+        font-size:18px;
+        width:100%;
+        font-weight:300;
+      }
+      
+      .ui-dialog-titlebar-close {
+        position:absolute;
+        right:20px;
+        top:30px;
+        border:0px;
+        background:transparent;
+        z-index:999;
+        width:50px;
+        height:50px;
+        
+        span {
+          display:none;
+        }
+        
+        &:before {
+          color:#c2e2e4;
+          border-bottom-left-radius:10px;
+          cursor:pointer;
+          content: "\e903";
+          font-size:50px;
+          font-weight:normal;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          
+          /* Better Font Rendering =========== */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+      }
+      
     }
     
-    .error {
-      color: red;
+    .ui-dialog-content {
+      margin:10px 0 0 0;
+      line-height:1.5em;
+      
+      label {
+        font-weight:400;
+        font-size:14px;
+        margin:5px 0 0 0;
+      }
+      
+      textarea {
+        padding:4px 8px;
+        box-sizing:border-box;
+      }
     }
+    
+    .ui-dialog-buttonpane {
+      border:0;
+      background:transparent;
+      padding:0px 10px 10px 10px;
+      margin:10px 0 0 0;
+      
+      .ui-dialog-buttonset {
+        float:none;
+        position:relative;
+        text-align:right;
+      
+        button {
+          border-radius:0px;
+          border:0;
+          color:#fff;
+          font-weight:400;
+          text-transform:uppercase;
+          margin:5px;
+          outline:none;
+          font-family:"Open Sans";
+          min-width:90px;
+        }
+        
+        button.prev {
+          background:#de3211; /* RED */
+        }
+        
+        button.next {
+          background:#27b91c; /* GREEN */
+        }
+        
+        button.copy {
+          background:#f6a930; /* ORANGE */
+        }
+      
+      }
+      
+    }
+    
   }
+  
 }
 
-button {
-  &.next-button, 
-  &.prev-button {
-    background:#7391a7;
-  }
-}
 
 
