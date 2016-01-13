@@ -363,17 +363,21 @@ public class WorkspaceMaterialController {
       newNode = workspaceMaterialDAO.create(
           parent,
           clonedMaterial.getId(),
-          generateUniqueUrlName(parent, clonedMaterial.getTitle()),
+          generateUniqueUrlName(parent, workspaceMaterial.getUrlName()),
           index,
+          workspaceMaterial.getHidden(),
           workspaceMaterial.getAssignmentType(),
-          workspaceMaterial.getCorrectAnswers());
+          workspaceMaterial.getCorrectAnswers(),
+          workspaceMaterial.getTitle());
     }
     else if (workspaceNode instanceof WorkspaceFolder) {
       newNode = workspaceFolderDAO.create(
           parent,
           ((WorkspaceFolder) workspaceNode).getTitle(),
           generateUniqueUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()),
-          index);
+          index,
+          workspaceNode.getHidden(),
+          ((WorkspaceFolder) workspaceNode).getFolderType());
     }
     else {
       throw new IllegalArgumentException("Uncloneable workspace node " + workspaceNode.getClass());
