@@ -63,17 +63,14 @@
             <div class="cp-course-description-text">{description|s}</div>          
             <div class="cp-course-details-toolbar">
               {#isCourseMember}
-                <input class="bt-coursepicker cp-course-tour-button" type="button"
-                  value='{#localize key="plugin.coursepicker.course.goto" /}' />
+                <div class="mf-item-tool-btn cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.goto" /}</span></div>
               {:else}
-                <input class="bt-coursepicker cp-course-tour-button" type="button"
-                  value='{#localize key="plugin.coursepicker.course.checkout" /}' />
+                <div class="mf-item-tool-btn cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.checkout" /}</span></div>
               {/isCourseMember}
             
               {#isLoggedIn}
                 {#canSignup}
-                  <input class="bt-coursepicker cp-course-attend-button" type="button"
-                    value='{#localize key="plugin.coursepicker.course.signup" /}' />
+                  <div class="mf-item-tool-btn cp-course-attend-button"><span>{#localize key="plugin.coursepicker.course.signup" /}</span></div>
                 {/canSignup}
               {/isLoggedIn}
             </div>

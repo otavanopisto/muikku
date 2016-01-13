@@ -29,7 +29,7 @@
         var workspaceId = $(this).parents('.cp-course').find("input[name='workspaceId']").val();
         var workspaceUrl = $(this).parents('.cp-course').find("input[name='workspaceUrl']").val();
      
-        dDiv.show( function(){        	
+        dDiv.show(10, function(){        	
         	var odDiv = $(this) ;
         	var title = $(par).find($('.cp-course-long'));
         	var desc = $(par).find($('.cp-course-description-text'));
