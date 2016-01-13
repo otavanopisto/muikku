@@ -16,7 +16,6 @@ import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.material.BinaryMaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.muikku.plugins.workspace.WorkspaceMaterialUtils;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 
 public class TaskM2Image extends AbstractHtmlMaterialCleanerTask {
@@ -110,7 +109,7 @@ public class TaskM2Image extends AbstractHtmlMaterialCleanerTask {
                 String name = String.format("img%s.%s", StringUtils.leftPad(++imageCounter + "", 3, '0'), prefix);
                 BinaryMaterial material = binaryMaterialController.createBinaryMaterial(name, contentType, data);
                 WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(getWorkspaceMaterial(), material);
-                String workspaceUrl = StringUtils.prependIfMissing(WorkspaceMaterialUtils.getCompletePath(workspaceMaterial), "/");
+                String workspaceUrl = StringUtils.prependIfMissing(workspaceMaterialController.getCompletePath(workspaceMaterial), "/");
                 logger.info(String.format("Image converted to %s", workspaceUrl));
                 element.setAttribute("src",  workspaceUrl);
 

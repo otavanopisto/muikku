@@ -6,12 +6,16 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
+import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
 import fi.muikku.dao.users.RoleSchoolDataIdentifierDAO;
+import fi.muikku.dao.users.SystemRoleEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
+import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
+import fi.muikku.model.users.SystemRoleEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.schooldata.entity.Role;
@@ -32,7 +36,13 @@ public class RoleController {
   private RoleEntityDAO roleEntityDAO;
   
   @Inject
+  private EnvironmentRoleEntityDAO environmentRoleEntityDAO;
+
+  @Inject
   private WorkspaceRoleEntityDAO workspaceRoleEntityDAO;
+
+  @Inject
+  private SystemRoleEntityDAO systemRoleEntityDAO;
 
   @Inject
   private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
@@ -116,7 +126,15 @@ public class RoleController {
 	public List<RoleEntity> listRoleEntities() {
 		return roleEntityDAO.listAll();
 	}
+	
+	public List<EnvironmentRoleEntity> listEnvironmentRoleEntities() {
+	  return environmentRoleEntityDAO.listAll();
+	}
 
+	public List<SystemRoleEntity> listSystemRoleEntities() {
+	  return systemRoleEntityDAO.listAll();
+	}
+	
 	/* Workspace Role Entities */
 	
 	public List<WorkspaceRoleEntity> listWorkspaceRoleEntities() {

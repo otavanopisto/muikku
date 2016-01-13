@@ -102,6 +102,8 @@ public class WorkspaceMaterialsBackingBean {
       logger.log(Level.SEVERE, "Error loading materials", e);
       return NavigationRules.INTERNAL_ERROR;
     }
+    
+    materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
       
     return null;
   }
@@ -141,10 +143,14 @@ public class WorkspaceMaterialsBackingBean {
   public Long getMaxFileSize() {
     return systemSettingsController.getUploadFileSizeLimit();
   }
+  
+  public String getMaterialsBaseUrl() {
+    return materialsBaseUrl;
+  }
 
   private WorkspaceRootFolder rootFolder;
   private List<ContentNode> contentNodes;
   private String workspaceName;
   private Long workspaceEntityId;
-
+  private String materialsBaseUrl;
 }

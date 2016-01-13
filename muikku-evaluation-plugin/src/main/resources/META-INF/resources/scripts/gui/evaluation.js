@@ -250,6 +250,7 @@
           for (var i = 0; i<this.options.workspaceAssignments.length; i++) {
             assignments.push(this._loadAssigmentEvaluation(this.options.workspaceAssignments[i], htmlMaterialMap));
           } 
+          
           async.parallel(assignments, $.proxy(function(err, results){
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -279,6 +280,7 @@
               materialId: workspaceAssignment.workspaceMaterial.materialId,
               type: 'html',
               title: workspaceAssignment.workspaceMaterial.title,
+              path: workspaceAssignment.workspaceMaterial.path,
               html: htmlMaterialMap[workspaceAssignment.workspaceMaterial.materialId].html,
               evaluation: evaluation,
               assignmentType: workspaceAssignment.workspaceMaterial.assignmentType
@@ -509,6 +511,7 @@
             'html', 
             this.options.workspaceMaterialTitle, 
             htmlMaterial.html, 
+            this.options.workspaceMaterialPath,
             callback
           );
           this._loader.remove();
@@ -516,7 +519,7 @@
       }, this));
     },
     
-    _loadTemplate: function (workspaceMaterialId, materialId, materialType, materialTitle, materialHtml, callback) {
+    _loadTemplate: function (workspaceMaterialId, materialId, materialType, materialTitle, materialHtml, path, callback) {
       renderDustTemplate('evaluation/evaluation_evaluate_assignment_modal_view.dust', {
         studentDisplayName: this.options.studentDisplayName,
         gradingScales: this.options.gradingScales,
@@ -528,7 +531,8 @@
           materialId: materialId,
           title: materialTitle, 
           html: materialHtml,
-          type: materialType
+          type: materialType,
+          path: path
         }]
       }, callback);
     },
@@ -879,7 +883,6 @@
     
     _onMaterialsLoaded: function (event, data) {
       this._workspaceAssignments = data.workspaceAssignments;
-      
       $(".evaluation-assignments").perfectScrollbar({
         wheelSpeed:3,
         swipePropagation:false,
@@ -898,6 +901,7 @@
                 workspaceMaterialId: evaluableAssignment.workspaceMaterial.id,
                 materialId: evaluableAssignment.workspaceMaterial.materialId,
                 title: evaluableAssignment.workspaceMaterial.title,
+                path: evaluableAssignment.workspaceMaterial.path,
                 workspaceStudentId: workspaceUser.id,
                 studentEntityId: workspaceUser.userId,
                 workspaceAssignment: evaluableAssignment
@@ -917,6 +921,7 @@
       workspaceEntityId: null,
       workspaceMaterialId: null,
       title: null,
+      path: null,
       workspaceStudentId: null,
       studentEntityId: null,
       workspaceAssignment: null
@@ -964,6 +969,7 @@
                   studentStudyProgrammeName: studyProgrammeName,
                   workspaceMaterialId: this.options.workspaceMaterialId,
                   workspaceMaterialTitle: this.options.title,
+                  workspaceMaterialPath: this.options.path,
                   materialId: this.options.materialId,
                   studentEntityId: workspaceStudent.evaluationStudent('studentEntityId'),
                   evaluationId: this.options.evaluation ? this.options.evaluation.id : null,
@@ -1165,10 +1171,11 @@
 
   $(document).ready(function () {
     var workspaceEntityId = $('#evaluation').attr('data-workspace-entity-id');
-    
+    var materialsBaseUrl = $('#evaluation').attr('data-materials-base-url');
     $(document).muikkuMaterialLoader({
       prependTitle : false,
-      readOnlyFields: true
+      readOnlyFields: true,
+      baseUrl: materialsBaseUrl
     });
     
     $('#evaluation').evaluationLoader();

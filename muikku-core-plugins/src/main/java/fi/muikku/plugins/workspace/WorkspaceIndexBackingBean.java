@@ -135,6 +135,8 @@ public class WorkspaceIndexBackingBean {
       schoolDataBridgeSessionController.endSystemSession();
     }
     
+    materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
+    
     return null;
   }
 
@@ -253,6 +255,11 @@ public class WorkspaceIndexBackingBean {
   public List<ContentNode> getContentNodes() {
     return contentNodes;
   }
+
+  public String getMaterialsBaseUrl() {
+    return materialsBaseUrl;
+  }
+
   private Long workspaceId;
   private String workspaceName;
   private Long workspaceEntityId;
@@ -271,4 +278,5 @@ public class WorkspaceIndexBackingBean {
   private Date beginDate;
   private Date endDate;
   private List<ContentNode> contentNodes;
+  private String materialsBaseUrl;
 }

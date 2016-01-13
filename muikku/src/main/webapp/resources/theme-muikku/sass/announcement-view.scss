@@ -2,7 +2,7 @@
 
 body { 
   
-  main {
+  main#content {
     min-height:800px;
     background:#fff;
     margin-top:30px;
@@ -14,41 +14,6 @@ body {
         article {
         
           header {
-  
-            .article-image {
-              overflow:hidden;
-              width:100%;
-              min-height:160px;
-              max-height:200px;
-              background-position:center center;
-              background-size:150%;
-              opacity:1;
-            
-              &.image1 {
-                @include background-image('/gfx/article-default-image1.png');
-              }
-              
-              &.image2 {
-                @include background-image('/gfx/article-default-image2.png');
-              }
-              
-              &.image3 {
-                @include background-image('/gfx/article-default-image3.png');
-              }
-              
-              &.image4 {
-                @include background-image('/gfx/article-default-image4.png');
-              }
-              
-              &.image5 {
-                @include background-image('/gfx/article-default-image5.png');
-              }
-              
-              &.image6 {
-                @include background-image('/gfx/article-default-image6.png');
-              }
-  
-            }
   
           }
   

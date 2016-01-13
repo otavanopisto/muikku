@@ -22,9 +22,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-
 import fi.muikku.controller.TagController;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
@@ -47,7 +44,6 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.muikku.plugins.websocket.WebSocketMessenger;
-import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.session.SessionController;
@@ -56,6 +52,8 @@ import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.AuthorizationException;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Path("/communicator")
 @RequestScoped
@@ -103,7 +101,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @GET
   @Path ("/items")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserCommunicatorItems(
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
@@ -154,7 +152,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @DELETE
   @Path ("/items/{COMMUNICATORMESSAGEID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteReceivedMessages(
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
    ) throws AuthorizationException {
@@ -169,7 +167,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @GET
   @Path ("/sentitems")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserSentCommunicatorItems(
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
@@ -193,7 +191,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @DELETE
   @Path ("/sentitems/{COMMUNICATORMESSAGEID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteSentMessages(
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
    ) throws AuthorizationException {
@@ -208,7 +206,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @GET
   @Path ("/receiveditemscount")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getReceivedItemsCount() {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     List<CommunicatorMessageRecipient> receivedItems = communicatorController.listReceivedItemsByUserAndRead(user, false);
@@ -234,7 +232,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @GET
   @Path ("/messages/{COMMUNICATORMESSAGEID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserCommunicatorMessagesByMessageId( 
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
@@ -260,7 +258,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @GET
   @Path ("/messages/{COMMUNICATORMESSAGEID}/messagecount")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getCommunicatorMessageMessageCount( 
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
@@ -276,7 +274,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @POST
   @Path ("/messages")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response postMessage(
       CommunicatorNewMessageRESTModel newMessage
    ) throws AuthorizationException {
@@ -364,7 +362,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @POST
   @Path ("/messages/{COMMUNICATORMESSAGEID}/markasread")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response markAsRead( 
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
@@ -437,7 +435,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @POST
   @Path ("/messages/{COMMUNICATORMESSAGEID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response postMessageReply(
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId, CommunicatorNewMessageRESTModel newMessage
    ) throws AuthorizationException {
@@ -523,7 +521,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getCommunicatorMessage(
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
    ) throws AuthorizationException {
@@ -546,7 +544,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}/recipients")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listCommunicatorMessageRecipients(
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
    ) throws AuthorizationException {
@@ -571,7 +569,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}/recipients/{RECIPIENTID}/info")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listCommunicatorMessageRecipients(
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
       @PathParam ("RECIPIENTID") Long recipientId
@@ -607,7 +605,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}/sender")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getCommunicatorMessageSenderInfo(
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
    ) throws AuthorizationException {
@@ -640,7 +638,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @GET
   @Path ("/templates")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserMessageTemplates() throws AuthorizationException {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
@@ -659,7 +657,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @POST
   @Path ("/templates")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createUserMessageTemplate(CommunicatorMessageTemplateRESTModel template) throws AuthorizationException {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
@@ -674,7 +672,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @GET
   @Path ("/templates/{TEMPLATEID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getUserMessageTemplate(
       @PathParam ("TEMPLATEID") Long templateId
    ) throws AuthorizationException {
@@ -693,7 +691,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @DELETE
   @Path ("/templates/{TEMPLATEID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteUserMessageTemplate(
       @PathParam ("TEMPLATEID") Long templateId
    ) throws AuthorizationException {
@@ -710,7 +708,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @POST
   @Path ("/templates/{TEMPLATEID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response editUserMessageTemplate(
       @PathParam ("TEMPLATEID") Long templateId,
       CommunicatorMessageTemplateRESTModel template
@@ -736,7 +734,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @GET
   @Path ("/signatures")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserMessageSignatures() throws AuthorizationException {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
@@ -754,7 +752,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @POST
   @Path ("/signatures")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createUserMessageSignature(CommunicatorMessageSignatureRESTModel newSignature) throws AuthorizationException {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
@@ -769,7 +767,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @GET
   @Path ("/signatures/{SIGNATUREID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getUserMessageSignature(
       @PathParam ("SIGNATUREID") Long signatureId
    ) throws AuthorizationException {
@@ -788,7 +786,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @DELETE
   @Path ("/signatures/{SIGNATUREID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteUserMessageSignature(
       @PathParam ("SIGNATUREID") Long signatureId
    ) throws AuthorizationException {
@@ -805,7 +803,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @POST
   @Path ("/signatures/{SIGNATUREID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response editUserMessageSignature(
       @PathParam ("SIGNATUREID") Long signatureId,
       CommunicatorMessageSignatureRESTModel signature

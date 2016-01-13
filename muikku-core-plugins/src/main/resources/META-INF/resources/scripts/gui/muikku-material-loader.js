@@ -4,6 +4,7 @@
   
   $.widget("custom.muikkuMaterialLoader", {
     options : {
+      baseUrl: null,
       workspaceEntityId: -1,
       loadAnswers: false,
       readOnlyFields: false,
@@ -32,17 +33,58 @@
           title: $(pageElement).data('material-title'),
           html: $(pageElement).data('material-content'),
           currentRevision: $(pageElement).data('material-current-revision'),
-          publishedRevision: $(pageElement).data('material-published-revision')
+          publishedRevision: $(pageElement).data('material-published-revision'),
+          path: $(pageElement).attr('data-path')
         };
+        
         $(pageElement).removeAttr('data-material-content');
 
         var parsed = $('<div>');
         if (material.title && this.options.prependTitle) {
           parsed.append('<h2>' + material.title + '</h2>');
         }
+        
         if (material.html) {
           parsed.append(material.html);
         }
+        
+        // Convert relative urls to point to correct url
+        
+        parsed.find('a,div.lazy-pdf,img,embed,iframe,object,source').each($.proxy(function (index, element) {
+          var urlAttribute = '';
+          
+          switch (element.tagName.toLowerCase()) {
+            case 'a':
+              urlAttribute = 'href';
+            break;
+            case 'div':
+              urlAttribute = $(element).hasClass('lazy-pdf') ? 'data-url' : null;
+            break;
+            case 'img':
+              urlAttribute = $(element).hasClass('lazy') ? 'data-original' : 'src';
+            break;
+            case 'embed':
+            case 'iframe':
+            case 'source':
+              urlAttribute = 'src';
+            break;
+            case 'object':
+              urlAttribute = 'data';
+            break;
+          }
+          
+          var src = urlAttribute ? $(element).attr(urlAttribute) : null;
+          if (src) {
+            var absolute = (src.indexOf('/') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+            if (!absolute) {
+              if (src.lastIndexOf('/') == src.length - 1) {
+                $(element).attr(urlAttribute, this.options.baseUrl + '/' + material.path + src);
+              } else {
+                $(element).attr(urlAttribute, this.options.baseUrl + '/' + material.path + '/' + src);
+              }
+            }
+          }
+        }, this));
         
         $(document).trigger('beforeHtmlMaterialRender', {
           pageElement: pageElement,

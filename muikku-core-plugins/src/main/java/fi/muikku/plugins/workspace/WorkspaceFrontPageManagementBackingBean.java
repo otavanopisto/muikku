@@ -73,7 +73,9 @@ public class WorkspaceFrontPageManagementBackingBean {
       logger.log(Level.SEVERE, "Error loading materials", e);
       return NavigationRules.INTERNAL_ERROR;
     }
-
+    
+    materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
+    
     return null;
   }
 
@@ -104,9 +106,14 @@ public class WorkspaceFrontPageManagementBackingBean {
   public List<ContentNode> getContentNodes() {
     return contentNodes;
   }
+  
+  public String getMaterialsBaseUrl() {
+    return materialsBaseUrl;
+  }
 
   private WorkspaceRootFolder rootFolder;
   private String workspaceName;
   private Long workspaceEntityId;
+  private String materialsBaseUrl;
   private List<ContentNode> contentNodes;
 }

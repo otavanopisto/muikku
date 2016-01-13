@@ -36,6 +36,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String MANAGE_SETTINGS = "MANAGE_SETTINGS";
   
   @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR })
+  public static final String MANAGE_PERMISSIONS = "MANAGE_PERMISSIONS";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
   public static final String MANAGE_USERS = "MANAGE_USERS";
 

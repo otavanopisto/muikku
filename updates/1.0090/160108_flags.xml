@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  <sql>
+    create table StudentFlag (
+        id bigint not null auto_increment,
+        type varchar(255) not null,
+        ownerIdentifier_id bigint,
+        studentIdentifier_id bigint,
+        primary key (id)
+    )
+  </sql>
+  <sql>
+    alter table StudentFlag 
+        add constraint UK_rb3qqdydsngq8f0tbw9ftag9c  unique (ownerIdentifier_id, studentIdentifier_id)
+  </sql>
+  <sql>
+    alter table StudentFlag 
+        add constraint FK_x0p0cryc207numy1neincfr9 
+        foreign key (ownerIdentifier_id) 
+        references UserSchoolDataIdentifier (id)
+  </sql>
+  <sql>
+    alter table StudentFlag 
+        add constraint FK_pxm2090ptpna1eav9n0iw7vy5 
+        foreign key (studentIdentifier_id) 
+        references UserSchoolDataIdentifier (id)
+  </sql>
+</update>
