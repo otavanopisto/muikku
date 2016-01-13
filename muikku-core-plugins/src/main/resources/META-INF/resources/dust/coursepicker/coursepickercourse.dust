@@ -4,7 +4,7 @@
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
 
     
-    <div class="cp-course-details" {?courseFee}data-fee="yes"{/courseFee}>
+    <div class="cp-course-details" {?evaluationHasFee}data-fee="yes"{/evaluationHasFee}>
       <div class="cp-course-details-container">       
         <div class="cp-course-additionalInfo">
 <!--           <div class="cp-course-details-teachers"> -->
@@ -49,10 +49,10 @@
           
           
           <div class="cp-course-header-details">            
-            {?courseFee}
+            {?evaluationHasFee}
                <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
                <span class="cp-course-fee" title='{#localize key="plugin.coursepicker.course.assessmenthasfee" /}'>€</span>
-            {/courseFee} 
+            {/evaluationHasFee} 
 <!--            <span class="cp-course-rating">{rating} ({ratingCount})</span> -->
 <!--            <span class="cp-course-len"></span> -->
 <!--            <span class="cp-course-age"></span> -->
