@@ -147,9 +147,19 @@
     },
     
     _load: function (callback) {
-      renderDustTemplate('workspacecopywizard/workspace-copy-wizard.dust', {}, function (text) {
-        callback(text);
-      });
+      mApi().coursepicker.workspaces
+        .read(this.options.workspaceEntityId)
+        .callback($.proxy(function (err, workspace) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            renderDustTemplate('workspacecopywizard/workspace-copy-wizard.dust', {
+              workspace: workspace
+            }, function (text) {
+              callback(text);
+            });
+          }
+        }, this));
     },
     
     _updatePageNumbers: function () {

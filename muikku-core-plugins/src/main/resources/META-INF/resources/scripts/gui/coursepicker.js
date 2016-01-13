@@ -267,6 +267,7 @@
       $('<div>')
         .appendTo(document.body)
         .workspaceCopyWizard({
+          workspaceEntityId: workspaceEntityId,
           steps: {
             'copy-course': function (callback) {
               var name = this._getPage('name').find('input[name="workspace-name"]').val();
@@ -278,7 +279,7 @@
               };
               
               mApi().workspace.workspaces
-                .create(payload, { sourceWorkspaceEntityId: workspaceEntityId })
+                .create(payload, { sourceWorkspaceEntityId: this.options.workspaceEntityId })
                 .callback(function (err, result) {
                   callback(null, result);
                 });

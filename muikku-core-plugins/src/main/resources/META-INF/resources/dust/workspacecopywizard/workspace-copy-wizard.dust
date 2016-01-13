@@ -15,7 +15,7 @@
 
     <div class="flex-row">
       <div class="flex-cell-full">
-        <input name="workspace-name"/>
+        <input name="workspace-name" value="{workspace.name}"/>
       </div>
     </div>
   
@@ -27,7 +27,7 @@
 
     <div class="flex-row">
       <div class="flex-cell-full">
-        <input name="workspace-name-extension"/>
+        <input name="workspace-name-extension" value="{workspace.nameExtension}"/>
       </div>
     </div>
   </section>
