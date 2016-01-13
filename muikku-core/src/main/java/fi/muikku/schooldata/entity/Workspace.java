@@ -47,6 +47,8 @@ public interface Workspace extends SchoolDataEntity {
   public String getLengthUnitIdentifier();
 
   public boolean isArchived();
+  
+  public String getViewLink();
 
   @IndexId
   public String getSearchId();

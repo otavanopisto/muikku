@@ -65,6 +65,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
+import fi.muikku.plugins.workspace.rest.model.WorkspaceExternalUrls;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
@@ -167,6 +168,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Inject
   private LocaleController localeController;
   
+  @Inject
+  private CopiedWorkspaceEntityFinder copiedWorkspaceEntityFinder;
+  
   @POST
   @Path("/workspaces/")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -205,7 +209,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to create copy of workspace %s", sourceWorkspaceId)).build();
     }
     
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
+    WorkspaceEntity workspaceEntity = findCopiedWorkspaceEntity(workspace);
     if (workspaceEntity == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to create local copy of workspace %s", sourceWorkspaceId)).build();
     }
@@ -213,6 +217,30 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response
         .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription()))
         .build();
+  }
+
+  private WorkspaceEntity findCopiedWorkspaceEntity(Workspace workspace) {
+    WorkspaceEntity result = null;
+    
+    long timeoutTime = System.currentTimeMillis() + 60000;    
+    
+    while (result == null) {
+      result = copiedWorkspaceEntityFinder.findCopiedWorkspaceEntity(workspace);
+    
+      if (System.currentTimeMillis() > timeoutTime) {
+        logger.severe("Timeouted when waiting for copied workspace entity");
+        return null;
+      }
+      
+      if (result == null) {
+        try {
+          Thread.sleep(10);
+        } catch (InterruptedException e) {
+        }
+      }
+    }
+    
+    return result;
   }
 
   @GET
@@ -353,6 +381,27 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription())).build();
+  }
+  
+  @GET
+  @Path("/workspaces/{ID}/externalUrls")
+  @RESTPermitUnimplemented
+  public Response getWorkspaceExternalViewUrl(@PathParam("ID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_WORKSPACE_EXTERNAL_URLS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspace == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    return Response.ok(new WorkspaceExternalUrls(workspace.getViewLink())).build();
   }
   
   @PUT
