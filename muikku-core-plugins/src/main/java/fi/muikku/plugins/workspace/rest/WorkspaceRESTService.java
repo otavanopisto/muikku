@@ -1306,7 +1306,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       @QueryParam("copySourceChildren") Boolean copySourceChildren,
       @QueryParam("cloneMaterials") @DefaultValue ("false") Boolean cloneMaterials) {
     
-    // Source folder
+    // Source
 
     WorkspaceNode sourceNode = workspaceMaterialController.findWorkspaceNodeById(sourceNodeId);
     if (sourceNode == null) {
@@ -1318,7 +1318,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
 
-    // Target folder
+    // Target
     
     WorkspaceNode targetNode = workspaceMaterialController.findWorkspaceNodeById(targetNodeId);
     if (targetNode == null) {
@@ -1342,7 +1342,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       node = node.getParent();
     }
     
-    // Copying
+    // Copy
     
     if (copySourceChildren) {
       List<WorkspaceNode> sourceChildren = workspaceMaterialController.listWorkspaceNodesByParent(sourceNode);
@@ -1354,7 +1354,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceMaterialController.cloneWorkspaceNode(sourceNode, targetNode, cloneMaterials);
     }
     
-    // All done
+    // Done
     
     return Response.noContent().build();
   }
