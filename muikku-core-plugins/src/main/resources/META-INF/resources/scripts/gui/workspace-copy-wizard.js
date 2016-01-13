@@ -241,7 +241,10 @@
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
-                console.log(externalUrls.externalViewUrl);
+                this._getPage('summary')
+                  .find('.externalViewUrl')
+                  .attr('href', externalUrls.externalViewUrl)
+                  .text(externalUrls.externalViewUrl);
               }
             }, this));
         }
