@@ -3,7 +3,8 @@
   
   $.widget("custom.workspaceCopyWizard", {
     options: {
-      
+      workspaceEntityId: null,
+      steps: null
     },
     
     _create : function() {
@@ -51,6 +52,7 @@
         this.element.on('click', '.next', $.proxy(this._onNextClick, this));
         this.element.on('click', '.copy', $.proxy(this._onCopyClick, this));
         
+        this._updateButtons();
         this._updatePageNumbers();
       }, this));
     },
@@ -145,9 +147,19 @@
     },
     
     _load: function (callback) {
-      renderDustTemplate('workspacecopywizard/workspace-copy-wizard.dust', {}, function (text) {
-        callback(text);
-      });
+      mApi().coursepicker.workspaces
+        .read(this.options.workspaceEntityId)
+        .callback($.proxy(function (err, workspace) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            renderDustTemplate('workspacecopywizard/workspace-copy-wizard.dust', {
+              workspace: workspace
+            }, function (text) {
+              callback(text);
+            });
+          }
+        }, this));
     },
     
     _updatePageNumbers: function () {
