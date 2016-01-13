@@ -27,7 +27,7 @@
      </div>
     </div>
   </section>
-
+  
   <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="dates">
     <div class="flex-row">
       <div class="flex-cell-full">
@@ -138,7 +138,9 @@
       
     </ul>
 
-    <div class="copy"></div>
+    <div class="copy" style="height: 100px; width: 400px; border: 1px outline #000; background: #666"></div>
+    <a class="workspaceEntityUrl"></a>
+    <a target="_blank" class="externalViewUrl"></a>
   </section>
 
   <ul class="progress-pages" style="display:none;"/>

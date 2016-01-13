@@ -9,6 +9,7 @@
     
     _create : function() {
       this.element.addClass('wizard workspace-copy-wizard flex-grid');
+      this._createdWorkspace = null;
       
       this._load($.proxy(function (html) {
         this.element.html(html);
@@ -200,6 +201,10 @@
       }
     },
     
+    _setCreatedWorkspace: function (createdWorkspace) {
+      this._createdWorkspace = createdWorkspace;
+    },
+    
     _addSummaryStep: function (id, text) {
       return $('<li>')
         .text(text)
@@ -230,7 +235,26 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          // All done
+          mApi().workspace.workspaces.externalUrls
+            .read(this._createdWorkspace.id)
+            .callback($.proxy(function (err, externalUrls) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                var summaryPage = this._getPage('summary');
+                var name = this._createdWorkspace.name + (this._createdWorkspace.nameExtension ? ' (' + this._createdWorkspace.nameExtension + ')' : '');
+                
+                summaryPage
+                  .find('.externalViewUrl')
+                  .attr('href', externalUrls.externalViewUrl)
+                  .text(externalUrls.externalViewUrl);
+                
+                summaryPage
+                  .find('.workspaceEntityUrl')
+                  .attr('href', CONTEXTPATH + '/workspace/' + this._createdWorkspace.urlName)
+                  .text(name);
+              }
+            }, this));
         }
       }, this));
     }

@@ -280,9 +280,14 @@
               
               mApi().workspace.workspaces
                 .create(payload, { sourceWorkspaceEntityId: this.options.workspaceEntityId })
-                .callback(function (err, result) {
-                  callback(null, result);
-                });
+                .callback($.proxy(function (err, result) {
+                  if (err) {
+                    callback(err);
+                  } else {
+                    this._setCreatedWorkspace(result);
+                    callback(null, result);
+                  }
+                }, this));
             }
           }
         });

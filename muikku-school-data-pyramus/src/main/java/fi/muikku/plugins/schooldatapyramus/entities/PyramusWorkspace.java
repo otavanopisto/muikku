@@ -9,12 +9,14 @@ import fi.muikku.schooldata.entity.Workspace;
 
 public class PyramusWorkspace implements Workspace {
 
-  public PyramusWorkspace(String identifier, String name, String nameExtension, String description, String workspaceTypeId,
-      String courseIdentifierIdentifier, Date modified, String subjectIdentifier, String educationTypeIdentifier, 
-      Double length, String lengthUnitIdentifier, DateTime beginDate, DateTime endDate, boolean archived) {
+  public PyramusWorkspace(String identifier, String name, String nameExtension, String viewLink, String description, 
+      String workspaceTypeId, String courseIdentifierIdentifier, Date modified, String subjectIdentifier, 
+      String educationTypeIdentifier,  Double length, String lengthUnitIdentifier, DateTime beginDate, 
+      DateTime endDate, boolean archived) {
     this.identifier = identifier;
     this.name = name;
     this.nameExtension = nameExtension;
+    this.viewLink = viewLink;
     this.description = description;
     this.workspaceTypeId = workspaceTypeId;
     this.courseIdentifierIdentifier = courseIdentifierIdentifier;
@@ -120,6 +122,11 @@ public class PyramusWorkspace implements Workspace {
   public boolean isArchived() {
     return archived;
   }
+  
+  @Override
+  public String getViewLink() {
+    return viewLink;
+  }
 
   private String identifier;
 
@@ -127,6 +134,8 @@ public class PyramusWorkspace implements Workspace {
   
   private String nameExtension;
 
+  private String viewLink;
+  
   private String workspaceTypeId;
 
   private String courseIdentifierIdentifier;
