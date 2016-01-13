@@ -10,6 +10,16 @@
   left:0;
 }
 
+.wizard-page {
+  display: none;
+  
+  &.wizard-page-active {
+    display: block;
+  }
+}
+
+/**
+
 .progress {
   position:absolute;
   bottom:30px;
@@ -21,7 +31,7 @@
   font-weight:300;
   color:#fff;
 }
-
+**/
 .prev, 
 .next, 
 .close {
@@ -80,13 +90,6 @@
   }
   
 }
-.wizard-content {
-  max-width:900px;
-  margin:100px auto;
-  @include flexbox();
-  flex-flow:row nowrap;
-}
-  
 
 
 

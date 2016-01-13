@@ -1,22 +1,49 @@
-<div class="wizard-content">
+<div class="flex-row wizard-content">
+  
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="name">
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
+    </div>
+  
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <label>Työtilan nimi</label>
+      </div>
+    </div>
 
-  <section class="wizard-page wizard-page-visible" data-page-id="name">
-    <label>Työtilan nimi</label>
-    <input name="workspace-name"/>
-    
-    <label>Työtilan nimen tarkenne</label>
-    <input name="workspace-name-extension"/>
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <input name="workspace-name"/>
+      </div>
+    </div>
+  
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <label>Työtilan nimen tarkenne</label>
+      </div>
+    </div>
+
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <input name="workspace-name-extension"/>
+      </div>
+    </div>
   </section>
 
-  <section class="wizard-page wizard-page-visible" data-page-id="dates">
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="dates">
+    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
     Päiväämäät jne,
   </section>
 
-  <section class="wizard-page wizard-page-visible" data-page-id="description">
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="description">
+    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
     Kuvaus
   </section>
 
-  <section class="wizard-page wizard-page-visible" data-page-id="settings">
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="settings">
+    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
     <div>
       <input type="checkbox" name="copy-materials"/>
       <label>Kurssin materiaalit</label>
@@ -28,7 +55,8 @@
     </div>
   </section>
 
-  <section class="wizard-page" data-page-id="materials">
+  <section class="flex-cell-full wizard-page" data-page-id="materials">
+    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
     <label>Kurssin materiaalit</label>
     <div>
       <input type="radio" value="copy" name="material-copy-style"/> 
@@ -40,12 +68,13 @@
     </div>
   </section>
 
-  <section class="wizard-page" data-page-id="discussions">
+  <section class="flex-cell-full wizard-page" data-page-id="discussions">
+    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
     Keskustelualueet
   </section>
 
-  <section class="wizard-page wizard-page-visible" data-page-id="summary">
-    Yhteenveto
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="summary">
+    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.summaryPage.title"/}</div>
     
     <ul class="summary">
       

@@ -169,9 +169,9 @@
       }
       
       if (index > 0) {
-        this.element.find('.prev').hide();
-      } else {
         this.element.find('.prev').show();
+      } else {
+        this.element.find('.prev').hide();
       }
     },
     
