@@ -7,34 +7,50 @@
       </div>
     </div>
   
-    <div class="flex-row">
+    <div class="flex-row wizard-page-content">
       <div class="flex-cell-full">
-        <label>{#localize key="plugin.workspacecopywizard.workspaceName.label"/}</label>
-      </div>
-    </div>
-
-    <div class="flex-row">
-      <div class="flex-cell-full">
-        <input name="workspace-name" value="{workspace.name}"/>
-      </div>
-    </div>
-  
-    <div class="flex-row">
-      <div class="flex-cell-full">
-        <label>{#localize key="plugin.workspacecopywizard.workspaceExtension.label"/}</label>
-      </div>
-    </div>
-
-    <div class="flex-row">
-      <div class="flex-cell-full">
-        <input name="workspace-name-extension" value="{workspace.nameExtension}"/>
-      </div>
+    
+        <div class="flex-row">
+          <div class="flex-cell-full">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceName.label"/}</label>
+            <input type="text" name="workspace-name" value="{workspace.name}"/>
+          </div>
+        </div>
+    
+        <div class="flex-row">
+          <div class="flex-cell-full">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceExtension.label"/}</label>
+            <input type="text" name="workspace-name-extension" value="{workspace.nameExtension}"/>
+          </div>
+        </div>
+    
+     </div>
     </div>
   </section>
 
   <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="dates">
-    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
-    Päiväämäät jne,
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
+    </div>
+    
+    <div class="flex-row wizard-page-content">
+      <div class="flex-cell-full">
+    
+        <div class="flex-row">
+          <div class="flex-cell-8 flex-cell-first">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceStartDate.label"/}</label>
+          </div>
+          <div class="flex-cell-8 flex-cell-last">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceEndDate.label"/}</label>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    
   </section>
 
   <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="description">
