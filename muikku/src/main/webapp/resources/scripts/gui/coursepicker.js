@@ -33,7 +33,7 @@
         	var odDiv = $(this) ;
         	var title = $(par).find($('.cp-course-long'));
         	var desc = $(par).find($('.cp-course-description-text'));
-        	var courseHasFee = $(par).has($('.cp-course-fee')).length ? true : false ;
+        	var courseHasFee = $(par).attr('data-fee') ? true : false ;
         	par.prepend(closeDiv);
         	closeDiv.width(parW);
         	

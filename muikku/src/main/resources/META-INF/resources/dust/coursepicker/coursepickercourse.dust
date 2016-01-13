@@ -1,12 +1,10 @@
 {#.}
- 
- 
   <div id="crsId-{id}" class="cp-course ft-01 {@select key=published}{@eq value="false" type="boolean"}not-published{/eq}{/select}">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
 
     
-    <div class="cp-course-details">
+    <div class="cp-course-details" {?courseFee}data-fee="yes"{/courseFee}>
       <div class="cp-course-details-container">       
         <div class="cp-course-additionalInfo">
 <!--           <div class="cp-course-details-teachers"> -->
@@ -49,12 +47,11 @@
              {/nameExtension}
           </div>
           
-          <div class="cp-course-header-details">
           
-           <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
-           
+          <div class="cp-course-header-details">  
             {?courseFee}
-             <span class="cp-course-fee" title='{#localize key="plugin.coursepicker.course.coursehasfee" /}'>€</span> 
+               <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
+               <span class="cp-course-fee" title='{#localize key="plugin.coursepicker.course.coursehasfee" /}'>€</span>
             {/courseFee} 
 <!--            <span class="cp-course-rating">{rating} ({ratingCount})</span> -->
 <!--            <span class="cp-course-len"></span> -->
