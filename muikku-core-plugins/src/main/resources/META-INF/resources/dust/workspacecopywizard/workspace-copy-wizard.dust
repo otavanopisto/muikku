@@ -9,7 +9,7 @@
   
     <div class="flex-row">
       <div class="flex-cell-full">
-        <label>Työtilan nimi</label>
+        <label>{#localize key="plugin.workspacecopywizard.workspaceName.label"/}</label>
       </div>
     </div>
 
@@ -21,7 +21,7 @@
   
     <div class="flex-row">
       <div class="flex-cell-full">
-        <label>Työtilan nimen tarkenne</label>
+        <label>{#localize key="plugin.workspacecopywizard.workspaceExtension.label"/}</label>
       </div>
     </div>
 
@@ -46,31 +46,31 @@
     <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
     <div>
       <input type="checkbox" name="copy-materials"/>
-      <label>Kurssin materiaalit</label>
+      <label>{#localize key="plugin.workspacecopywizard.workspaceMaterials.label"/}</label>
     </div>
     
     <div>
       <input type="checkbox" name="copy-discussions"/>
-      <label>Keskustelualueet</label>
+      <label>{#localize key="plugin.workspacecopywizard.workspaceDiscussions.label"/}</label>
     </div>
   </section>
 
   <section class="flex-cell-full wizard-page" data-page-id="materials">
     <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
-    <label>Kurssin materiaalit</label>
+    <label>{#localize key="plugin.workspacecopywizard.workspaceMaterials.label"/}</label>
     <div>
       <input type="radio" value="copy" name="material-copy-style"/> 
-      <label>Tee materiaaleista erilliset kopiot</label>
+      <label>{#localize key="plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label"/}</label>
     </div>
     <div>
       <input type="radio" value="link" name="material-copy-style"/> 
-      <label>Linkitä materiaalit alkuperäisiin materiaaleihin</label>
+      <label>{#localize key="plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label"/}</label>
     </div>
   </section>
 
   <section class="flex-cell-full wizard-page" data-page-id="discussions">
     <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
-    Keskustelualueet
+    <label>{#localize key="plugin.workspacecopywizard.workspaceDiscussions.label"/}</label>
   </section>
 
   <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="summary">

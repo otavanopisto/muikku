@@ -1,5 +1,9 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 
+.flex-grid {
+  max-width:100%;
+}
+
 .workspace-copy-wizard {
   position:fixed;
   z-index:99999;
@@ -8,14 +12,27 @@
   right:0;
   bottom:0;
   left:0;
+  min-height:100vh;
 }
 
 .wizard-page {
+  box-sizing:border-box;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
   display: none;
   
   &.wizard-page-active {
     display: block;
   }
+}
+
+.wizard-page-title {
+  font-size:40px;
+  padding:30px 80px;
+  color:#fff;
+  font-weight:300;
+  text-transform:uppercase;
 }
 
 /**

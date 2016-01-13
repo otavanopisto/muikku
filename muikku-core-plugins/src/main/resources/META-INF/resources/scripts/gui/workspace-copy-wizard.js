@@ -7,7 +7,7 @@
     },
     
     _create : function() {
-      this.element.addClass('wizard workspace-copy-wizard');
+      this.element.addClass('wizard workspace-copy-wizard flex-grid');
       
       this._load($.proxy(function (html) {
         this.element.html(html);
