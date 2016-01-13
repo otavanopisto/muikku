@@ -18,6 +18,12 @@
           .first()
           .addClass('wizard-page-active');
 
+        this.element
+          .find('.date-field')
+          .datepicker({
+            "dateFormat": getLocaleText('datePattern')
+          });
+        
         this.element.on('click', 'input[name="copy-materials"]', $.proxy(function (event) {
           if ($(event.target).prop('checked')) {
             this._showPage('materials');
@@ -148,7 +154,7 @@
     },
     
     _load: function (callback) {
-      mApi().coursepicker.workspaces
+      mApi().workspace.workspaces
         .read(this.options.workspaceEntityId)
         .callback($.proxy(function (err, workspace) {
           if (err) {
@@ -194,6 +200,7 @@
           this.element.find('.summary').empty();
           
           this._addSummaryStep("copy-course", "Copy course");
+          
           if (this.element.find('input[name="copy-materials"]').prop('checked')) {
             this._addSummaryStep('copy-materials', "Copy materials");
           }

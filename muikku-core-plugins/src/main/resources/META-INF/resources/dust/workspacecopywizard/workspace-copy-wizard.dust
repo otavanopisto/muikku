@@ -41,15 +41,11 @@
         <div class="flex-row">
           <div class="flex-cell-8 flex-cell-first">
             <label>{#localize key="plugin.workspacecopywizard.workspaceStartDate.label"/}</label>
-            <input class="workspace-day-field" type="text" name="workspace-startDate-day" value=""/>
-            <input class="workspace-month-field" type="text" name="workspace-startDate-month" value=""/>
-            <input class="workspace-year-field" type="text" name="workspace-startDate-year" value=""/>
+            <input class="date-field" type="text" name="startDate"/>
           </div>
           <div class="flex-cell-8 flex-cell-last">
             <label>{#localize key="plugin.workspacecopywizard.workspaceEndDate.label"/}</label>
-            <input class="workspace-day-field" type="text" name="workspace-endDate-day" value=""/>
-            <input class="workspace-month-field" type="text" name="workspace-endDate-month" value=""/>
-            <input class="workspace-year-field" type="text" name="workspace-endDate-year" value=""/>
+            <input class="date-field" type="text" name="endDate"/>
           </div>
         </div>
         
