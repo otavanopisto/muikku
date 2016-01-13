@@ -14,7 +14,8 @@
       $("#cpCategories").find("span").click($.proxy(this._onDropdownChange, this));
       
       this._coursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
-
+      this._coursesContainer.on("click", ".cp-course-copy-button", $.proxy(this._onCopyCourseClick, this));
+      
       var coursePickerSearchCoursesInput = widgetElement.find("input[name='coursePickerSearch']");
       coursePickerSearchCoursesInput.keyup($.proxy(this._onSearchCoursesChange, this));      
 
@@ -256,6 +257,35 @@
       var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();
       
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
+    },
+    
+    _onCopyCourseClick: function (event) {
+      var workspaceEntityId = $(event.target)
+        .closest(".cp-course")
+        .find("input[name='workspaceId']").val();
+      
+      $('<div>')
+        .appendTo(document.body)
+        .workspaceCopyWizard({
+          workspaceEntityId: workspaceEntityId,
+          steps: {
+            'copy-course': function (callback) {
+              var name = this._getPage('name').find('input[name="workspace-name"]').val();
+              var nameExtension = this._getPage('name').find('input[name="workspace-name-extension"]').val();
+              
+              var payload = {
+                name: name,
+                nameExtension: nameExtension
+              };
+              
+              mApi().workspace.workspaces
+                .create(payload, { sourceWorkspaceEntityId: this.options.workspaceEntityId })
+                .callback(function (err, result) {
+                  callback(null, result);
+                });
+            }
+          }
+        });
     },
     _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
       mApi({async: false}).coursepicker.workspaces.signup.create(workspaceId, {

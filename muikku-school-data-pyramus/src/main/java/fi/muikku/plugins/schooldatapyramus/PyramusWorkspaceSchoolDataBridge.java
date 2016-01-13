@@ -44,7 +44,10 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   
   @Inject
   private PyramusStudentActivityMapper pyramusStudentActivityMapper;
-
+  
+  @Inject
+  private WorkspaceDiscoveryWaiter workspaceDiscoveryWaiter;
+  
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
@@ -63,6 +66,41 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     throw new UnexpectedSchoolDataBridgeException("Not implemented");
   }
 
+  @Override
+  public Workspace copyWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension) {
+    if (!getSchoolDataSource().equals(identifier.getDataSource())) {
+      logger.severe(String.format("Invalid workspace identfier for Pyramus bridge", identifier));
+      return null;
+    }
+    
+    Long pyramusCourseId = identifierMapper.getPyramusCourseId(identifier.getIdentifier());
+    if (pyramusCourseId == null) {
+      logger.severe(String.format("Workspace identifier %s is not valid", identifier));
+      return null;
+    }
+    
+    Course course = pyramusClient.get(String.format("/courses/courses/%d", pyramusCourseId), Course.class);
+    if (course == null) {
+      logger.severe(String.format("Could not find Pyramus course by id %d", pyramusCourseId));
+      return null;
+    }
+    
+    course.setId(null);
+    course.setName(name);
+    course.setNameExtension(nameExtension);
+    
+    Course createdCourse = pyramusClient.post("/courses/courses/", course);
+    if (createdCourse == null) {
+      logger.severe(String.format("Failed to create new course based on course %d", pyramusCourseId));
+      return null;
+    }
+    
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifierMapper.getWorkspaceIdentifier(createdCourse.getId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    workspaceDiscoveryWaiter.waitDiscovered(workspaceIdentifier);
+    
+    return createWorkspaceEntity(createdCourse);
+  }
+  
   @Override
   public Workspace findWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     Long pyramusCourseId = identifierMapper.getPyramusCourseId(identifier);
@@ -269,6 +307,4 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       }
     }
   }
-
-  
 }
