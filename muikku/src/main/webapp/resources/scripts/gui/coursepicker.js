@@ -33,6 +33,7 @@
         	var odDiv = $(this) ;
         	var title = $(par).find($('.cp-course-long'));
         	var desc = $(par).find($('.cp-course-description-text'));
+        	var courseHasFee = $(par).has($('.cp-course-fee')).length ? true : false ;
         	par.prepend(closeDiv);
         	closeDiv.width(parW);
         	
@@ -40,7 +41,9 @@
         	$(aBt).m3modal({
         		title : title.html(),
         		description : desc.html(),
-        		content: $('<div><div><label>' + getLocaleText("plugin.coursepicker.singup.messageLabel") + '</label><textarea name="signUpMessage"></textarea></div></div>'),
+        		content: $('<div id="m3modalContent"><div><label>' + getLocaleText("plugin.coursepicker.singup.messageLabel") + '</label><textarea name="signUpMessage"></textarea></div></div>'),
+        		conditionalContent : $('<div id="courseHasFee"><div><label>' + getLocaleText("plugin.coursepicker.singup.fee.label") + '</label><div>' + getLocaleText("plugin.coursepicker.singup.fee.content") + '</div></div></div>'),
+            conditional : courseHasFee,
         		modalgrid : 24,
         		contentgrid : 16,
         		
