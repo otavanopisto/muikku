@@ -23,63 +23,71 @@ public class AnnouncerTestsBase extends AbstractUITest {
 
   @Test
   public void createAnnouncementTest() throws JsonProcessingException, Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     try{
-      MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-      Builder mockBuilder = mocker();
-      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-      login();
-      maximizeWindow();
-      navigate("/announcer", true);
-      waitAndClick(".bt-mainFunction-content");
-      waitForPresent("#endDate");
-      clearElement("#endDate");
-      sendKeys("#endDate", "21.12.2025");
-      sendKeys(".mf-textfield-subject", "Test title");
-      click(".mf-form-header");
-      waitForNotVisible("#ui-datepicker-div");
-      switchToFrame(".cke_wysiwyg_frame");
-      sendKeys(".cke_editable", "Announcer test announcement");
-      switchToDefaultFrame();
-      waitAndClick(".mf-toolbar input[name='send']");
-      waitForPresent(".an-announcement");
-      reloadCurrentPage();
-      waitForPresent(".an-announcement");
-      assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
-      assertTextIgnoreCase(".an-announcement-content>p", "Announcer test announcement"); 
-    }finally{
-      deleteAnnouncements();
-    }
+      try{
+        login();
+        maximizeWindow();
+        navigate("/announcer", true);
+        waitAndClick(".bt-mainFunction-content");
+        waitForPresent("#endDate");
+        clearElement("#endDate");
+        sendKeys("#endDate", "21.12.2025");
+        sendKeys(".mf-textfield-subject", "Test title");
+        click(".mf-form-header");
+        waitForNotVisible("#ui-datepicker-div");
+        switchToFrame(".cke_wysiwyg_frame");
+        sendKeys(".cke_editable", "Announcer test announcement");
+        switchToDefaultFrame();
+        waitAndClick(".mf-toolbar input[name='send']");
+        waitForPresent(".an-announcement");
+        reloadCurrentPage();
+        waitForPresent(".an-announcement");
+        assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
+        assertTextIgnoreCase(".an-announcement-content>p", "Announcer test announcement"); 
+      }finally{
+        deleteAnnouncements();
+      }
+    }finally {
+      mockBuilder.reset();
+    }   
   }
   
   @Test
   public void deleteAnnouncementTest() throws JsonProcessingException, Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     try{
-      MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-      Builder mockBuilder = mocker();
-      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-      login();
-      maximizeWindow();
-      navigate("/announcer", true);
-      waitAndClick(".bt-mainFunction-content");
-      waitForPresent("#endDate");
-      clearElement("#endDate");
-      sendKeys("#endDate", "21.12.2025");
-      sendKeys(".mf-textfield-subject", "Test title");
-      click(".mf-form-header");
-      waitForNotVisible("#ui-datepicker-div");
-      switchToFrame(".cke_wysiwyg_frame");
-      sendKeys(".cke_editable", "Announcer test announcement");
-      switchToDefaultFrame();
-      waitAndClick(".mf-toolbar input[name='send']");
-      waitForPresent(".an-announcement");
-      assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
-      waitAndClick(".an-announcement-select input");
-      waitAndClick(".mf-items-toolbar .icon-delete");
-      waitAndClick(".mf-toolbar input[name='send']");
-      reloadCurrentPage();
-      assertTrue("Element found even though it shouldn't be there", isElementPresent(".an-announcement-topic>span") == false);
-    }finally{
-      deleteAnnouncements();
+      try{
+        login();
+        maximizeWindow();
+        navigate("/announcer", true);
+        waitAndClick(".bt-mainFunction-content");
+        waitForPresent("#endDate");
+        clearElement("#endDate");
+        sendKeys("#endDate", "21.12.2025");
+        sendKeys(".mf-textfield-subject", "Test title");
+        click(".mf-form-header");
+        waitForNotVisible("#ui-datepicker-div");
+        switchToFrame(".cke_wysiwyg_frame");
+        sendKeys(".cke_editable", "Announcer test announcement");
+        switchToDefaultFrame();
+        waitAndClick(".mf-toolbar input[name='send']");
+        waitForPresent(".an-announcement");
+        assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
+        waitAndClick(".an-announcement-select input");
+        waitAndClick(".mf-items-toolbar .icon-delete");
+        waitAndClick(".mf-toolbar input[name='send']");
+        reloadCurrentPage();
+        assertTrue("Element found even though it shouldn't be there", isElementPresent(".an-announcement-topic>span") == false);
+      }finally{
+        deleteAnnouncements();
+      }
+    }finally {
+      mockBuilder.reset();
     }
   }
   
