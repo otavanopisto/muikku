@@ -241,10 +241,18 @@
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
-                this._getPage('summary')
+                var summaryPage = this._getPage('summary');
+                var name = this._createdWorkspace.name + (this._createdWorkspace.nameExtension ? ' (' + this._createdWorkspace.nameExtension + ')' : '');
+                
+                summaryPage
                   .find('.externalViewUrl')
                   .attr('href', externalUrls.externalViewUrl)
                   .text(externalUrls.externalViewUrl);
+                
+                summaryPage
+                  .find('.workspaceEntityUrl')
+                  .attr('href', CONTEXTPATH + '/workspace/' + this._createdWorkspace.urlName)
+                  .text(name);
               }
             }, this));
         }
