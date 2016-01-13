@@ -7,15 +7,16 @@
     },
     
     _create : function() {
+      this.element.addClass('wizard workspace-copy-wizard');
+      
       this._load($.proxy(function (html) {
-        this._dialog = $(html);
-        this._dialog
+        this.element.html(html);
+        this.element
           .find('.wizard-page')
           .first()
           .addClass('wizard-page-active');
 
-        this._dialog.on('click', 'input[name="copy-materials"]', $.proxy(function (event) {
-          var materialPage = this._dialog.find('section[data-page-id="materials"]');
+        this.element.on('click', 'input[name="copy-materials"]', $.proxy(function (event) {
           if ($(event.target).prop('checked')) {
             this._showPage('materials');
           } else {
@@ -25,7 +26,7 @@
         
         this.element.on("pageChange", $.proxy(this._onPageChange, this));
 
-        this._dialog.find('.wizard-page').each($.proxy(function (index, page) {
+        this.element.find('.wizard-page').each($.proxy(function (index, page) {
           var pageId = $(page)
             .attr('data-page-id');
           
@@ -35,7 +36,7 @@
             })
             .text(pageId);
           
-          this._dialog.find('.progress-pages')
+          this.element.find('.progress-pages')
             .append(progressPage);
           
           if ($(page).hasClass('wizard-page-visible')) {
@@ -45,53 +46,38 @@
           }
           
         }, this));
-        
-        this._dialog.dialog({
-          modal: true, 
-          resizable: false,
-          draggable: false,
-          width: 'auto',
-          height: 'auto',
-          dialogClass: "workspace-copy-wizard-dialog",
-          buttons: [{
-            'text': this._dialog.attr('data-button-prev'),
-            'class': 'button-prev',
-            'disabled': true,
-            'click': $.proxy(function(event) {
-              this._prevPage();
-            }, this)
-          }, {
-            'text': this._dialog.attr('data-button-next'),
-            'class': 'button-next',
-            'disabled': false,
-            'click': $.proxy(function(event) {
-              this._nextPage();
-            }, this)
-          }, {
-            'text': this._dialog.attr('data-copy'),
-            'class': 'button-copy',
-            'disabled': true,
-            'click': $.proxy(function(event) {
-              var steps = $.map(this._dialog.find('.summary li'), function (li) {
-                return $(li).attr('data-id');
-              });
-              
-              this._doCopy(steps);
-            }, this)
-          }]
-        });
 
+        this.element.on('click', '.prev', $.proxy(this._onPrevClick, this));
+        this.element.on('click', '.next', $.proxy(this._onNextClick, this));
+        this.element.on('click', '.copy', $.proxy(this._onCopyClick, this));
+        
         this._updatePageNumbers();
       }, this));
     },
     
+    _onPrevClick: function (event) {
+      this._prevPage();
+    },
+    
+    _onNextClick: function (event) {
+      this._nextPage();
+    },
+    
+    _onCopyClick: function (event) {
+      var steps = $.map(this.element.find('.summary li'), function (li) {
+        return $(li).attr('data-id');
+      });
+      
+      this._doCopy(steps);
+    },
+    
     _getPage: function (pageId) {
-      return this._dialog
+      return this.element
         .find('.wizard-page[data-page-id="' + pageId + '"]')
     },
     
     _showPage: function (pageId) {
-      this._dialog
+      this.element
         .find('.progress-pages').find('li[data-page-id="' + pageId + '"]')
         .show();
       
@@ -103,11 +89,11 @@
     },
 
     _hidePage: function (pageId) {
-      this._dialog
+      this.element
         .find('.progress-pages').find('li[data-page-id="' + pageId + '"]')
         .hide();
       
-      this._dialog
+      this.element
         .find('.wizard-page[data-page-id="' + pageId + '"]')
         .removeClass('wizard-page-visible');
       
@@ -116,15 +102,15 @@
     },
     
     _nextPage: function () {
-      var index = this._dialog
+      var index = this.element
         .find('.wizard-page-active')
         .index('.wizard-page-visible');
     
-      this._dialog
+      this.element
         .find('.wizard-page-active')
         .removeClass('wizard-page-active');
       
-      var visiblePages = this._dialog.find('.wizard-page-visible');
+      var visiblePages = this.element.find('.wizard-page-visible');
       
       var visiblePage = $(visiblePages[index + 1])
         .addClass('wizard-page-active');
@@ -138,15 +124,15 @@
     },
     
     _prevPage: function () {
-      var index = this._dialog
+      var index = this.element
         .find('.wizard-page-active')
         .index('.wizard-page-visible');
     
-      this._dialog
+      this.element
         .find('.wizard-page-active')
         .removeClass('wizard-page-active');
       
-      var visiblePages = this._dialog.find('.wizard-page-visible');
+      var visiblePages = this.element.find('.wizard-page-visible');
       var visiblePage = $(visiblePages[index - 1])
         .addClass('wizard-page-active');
       
@@ -165,49 +151,37 @@
     },
     
     _updatePageNumbers: function () {
-      this._dialog.find('.currentPage').text(this._dialog.find('.wizard-page-active').index('.wizard-page-visible') + 1);
-      this._dialog.find('.totalPages').text(this._dialog.find('.wizard-page-visible').length);
+      this.element.find('.currentPage').text(this.element.find('.wizard-page-active').index('.wizard-page-visible') + 1);
+      this.element.find('.totalPages').text(this.element.find('.wizard-page-visible').length);
     },
     
     _updateButtons: function () {
-      var index = this._dialog
+      var index = this.element
         .find('.wizard-page-active')
         .index('.wizard-page-visible');
       
-      var visiblePages = this._dialog.find('.wizard-page-visible');
+      var visiblePages = this.element.find('.wizard-page-visible');
       
       if ((visiblePages.length - 1) <= index) {
-        this._dialog.dialog("widget")
-          .find('.button-next')
-          .button('disable');
+        this.element.find('.next').hide();
       } else {
-        this._dialog.dialog("widget")
-          .find('.button-next')
-          .button('enable');
+        this.element.find('.next').show();
       }
       
       if (index > 0) {
-        this._dialog.dialog("widget")
-          .find('.button-prev')
-          .button('enable');
+        this.element.find('.prev').hide();
       } else {
-        this._dialog.dialog("widget")
-          .find('.button-prev')
-          .button('disable');
+        this.element.find('.prev').show();
       }
     },
     
     _onPageChange: function (event, data) {
-      this._dialog.dialog("widget")
-        .find('.button-copy')
-        .button(data.id == 'summary' ? 'enable' : 'disable');
-      
       switch (data.id) {
         case 'summary':
-          $(this._dialog).find('.summary').empty();
+          this.element.find('.summary').empty();
           
           this._addSummaryStep("copy-course", "Copy course");
-          if (this._dialog.find('input[name="copy-materials"]').prop('checked')) {
+          if (this.element.find('input[name="copy-materials"]').prop('checked')) {
             this._addSummaryStep('copy-materials', "Copy materials");
           }
         break;
@@ -220,18 +194,18 @@
         .attr({
           'data-id': id
         })
-        .appendTo($(this._dialog).find('.summary')); 
+        .appendTo($(this.element).find('.summary')); 
     },
     
     _doCopy: function (stepIds) {
       var steps = $.map(stepIds, $.proxy(function (stepId) {
         return $.proxy(function (callback) {
-          $(this._dialog)
+          $(this.element)
             .find('.summary li[data-id="' + stepId + '"]')
             .addClass('inProgress');
           
           this.options.steps[stepId].call(this, $.proxy(function (err, result) {
-            $(this._dialog)
+            $(this.element)
               .find('.summary li[data-id="' + stepId + '"]')
               .removeClass('inProgress')
               .addClass(err ? 'error' : 'success');

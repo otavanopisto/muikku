@@ -264,25 +264,27 @@
         .closest(".cp-course")
         .find("input[name='workspaceId']").val();
       
-      $('<div>').workspaceCopyWizard({
-        steps: {
-          'copy-course': function (callback) {
-            var name = this._getPage('name').find('input[name="workspace-name"]').val();
-            var nameExtension = this._getPage('name').find('input[name="workspace-name-extension"]').val();
-            
-            var payload = {
-              name: name,
-              nameExtension: nameExtension
-            };
-            
-            mApi().workspace.workspaces
-              .create(payload, { sourceWorkspaceEntityId: workspaceEntityId })
-              .callback(function (err, result) {
-                callback(null, result);
-              });
+      $('<div>')
+        .appendTo(document.body)
+        .workspaceCopyWizard({
+          steps: {
+            'copy-course': function (callback) {
+              var name = this._getPage('name').find('input[name="workspace-name"]').val();
+              var nameExtension = this._getPage('name').find('input[name="workspace-name-extension"]').val();
+              
+              var payload = {
+                name: name,
+                nameExtension: nameExtension
+              };
+              
+              mApi().workspace.workspaces
+                .create(payload, { sourceWorkspaceEntityId: workspaceEntityId })
+                .callback(function (err, result) {
+                  callback(null, result);
+                });
+            }
           }
-        }
-      });
+        });
     },
     _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
       mApi({async: false}).coursepicker.workspaces.signup.create(workspaceId, {

@@ -1,4 +1,4 @@
-<div title="TODO: Localize" class="wizard" data-button-next="Next" data-button-prev="Prev" data-copy="Copy">
+<div class="wizard-content">
 
   <section class="wizard-page wizard-page-visible" data-page-id="name">
     <label>Työtilan nimi</label>
@@ -50,13 +50,20 @@
     <ul class="summary">
       
     </ul>
+
+    <div class="copy"></div>
   </section>
+
+  <ul class="progress-pages" style="display:none;"/>
   
-  <div class="progress">
-    <span class="currentPage"/>
-    <span class="totalPages"/>
-  </div>
-  
-  <ul class="progress-pages"/>
-  
+</div>
+
+<div class="prev"></div>
+
+<div class="next"></div>
+
+<div class="close"></div>
+
+<div class="progress">
+  <span class="currentPage"/> / <span class="totalPages"/>
 </div>
