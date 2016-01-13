@@ -24,10 +24,11 @@
 
 .wizard-page {
   box-sizing:border-box;
-  max-width:900px;
+  max-width:960px;
   margin-left:auto;
   margin-right:auto;
   display:none;
+  padding:0 60px;
   
   &.wizard-page-active {
     display:block;
@@ -49,6 +50,15 @@
   padding:30px 80px;
   margin:110px 0;
   
+  .selection-row {
+    display:flex;
+    white-space:nowrap;
+    
+    .selection-cell {
+      flex:0 1 auto;
+    }
+  }
+  
   label {
     font-weight:300 !important;
     color:#fff;
@@ -56,12 +66,24 @@
     font-size:26px;
     padding:0;
     margin:10px 0 16px 0;
+    
+    &.selection {
+      font-size:20px;
+      display:inline-block;
+      margin:1px 0 1px 10px;
+    }
+  }
+  
+  input[type="checkbox"] {
+    margin:0 5px 0 0;
+    transform:scale(1.5);
   }
   
   input[type="text"] {
     border-radius:5px;
     background:#fff;
-    border:none;padding:12px;
+    border:none;
+    padding:12px;
     font-size:26px;
     color:#464646;
     margin:0 0 20px 0;
@@ -83,6 +105,18 @@
       text-align:center;
     }
     
+  }
+  
+  textarea.workspace-description {
+    width:100%;
+    height:200px;
+    border-radius:5px;
+    background:#fff;
+    border:none;
+    padding:12px;
+    font-size:16px;
+    color:#464646;
+    margin:0 0 20px 0;
   }
 }
 
