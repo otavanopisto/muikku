@@ -70,6 +70,19 @@
       box-shadow:0 0 0px 5px rgba(164,233,236,0.9);
       outline:none;
     }
+    
+    &.workspace-day-field,
+    &.workspace-month-field {
+      margin:0 10px 0 0;
+      width:80px;
+      text-align:center;
+    }
+    
+    &.workspace-year-field {
+      width:120px;
+      text-align:center;
+    }
+    
   }
 }
 
