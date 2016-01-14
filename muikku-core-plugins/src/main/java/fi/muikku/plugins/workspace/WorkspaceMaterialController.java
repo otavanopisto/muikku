@@ -360,21 +360,21 @@ public class WorkspaceMaterialController {
       Material material = getMaterialForWorkspaceMaterial(workspaceMaterial);
       isHtmlMaterial = material instanceof HtmlMaterial;
       Material clonedMaterial = cloneMaterials && !overrideCloneMaterials ? materialController.cloneMaterial(material) : material;
-      newNode = workspaceMaterialDAO.create(
+      newNode = createWorkspaceMaterial(
           parent,
-          clonedMaterial.getId(),
+          clonedMaterial,
+          workspaceMaterial.getTitle(),
           generateUniqueUrlName(parent, workspaceMaterial.getUrlName()),
           index,
           workspaceMaterial.getHidden(),
           workspaceMaterial.getAssignmentType(),
-          workspaceMaterial.getCorrectAnswers(),
-          workspaceMaterial.getTitle());
+          workspaceMaterial.getCorrectAnswers());
     }
     else if (workspaceNode instanceof WorkspaceFolder) {
-      newNode = workspaceFolderDAO.create(
+      newNode = createWorkspaceFolder(
           parent,
           ((WorkspaceFolder) workspaceNode).getTitle(),
-          generateUniqueUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()),
+          generateUniqueUrlName(parent, workspaceNode.getUrlName()),
           index,
           workspaceNode.getHidden(),
           ((WorkspaceFolder) workspaceNode).getFolderType());
@@ -422,7 +422,12 @@ public class WorkspaceMaterialController {
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), urlName, index, false, assignmentType, correctAnswers, material.getTitle());
+    return createWorkspaceMaterial(parent, material, material.getTitle(), urlName, index, false, assignmentType, correctAnswers);
+  }
+  
+  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String title, String urlName, Integer index,
+      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), title, urlName, index, hidden, assignmentType, correctAnswers);
     workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
     return workspaceMaterial;
   }
@@ -645,7 +650,11 @@ public class WorkspaceMaterialController {
   public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
-    WorkspaceFolder workspaceFolder = workspaceFolderDAO.create(parent, title, urlName, index);
+    return createWorkspaceFolder(parent, title, urlName, index, Boolean.FALSE, WorkspaceFolderType.DEFAULT);
+  }
+  
+  public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName, Integer index, Boolean hidden, WorkspaceFolderType folderType) {
+    WorkspaceFolder workspaceFolder = workspaceFolderDAO.create(parent, title, urlName, index, hidden, folderType);
     workspaceFolderCreateEvent.fire(new WorkspaceFolderCreateEvent(workspaceFolder));
     return workspaceFolder;
   }

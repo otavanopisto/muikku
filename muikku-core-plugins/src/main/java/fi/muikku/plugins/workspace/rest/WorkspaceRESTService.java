@@ -1442,11 +1442,11 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @POST
   @Path("/copymaterials")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response copyWorkspaceMaterials(
       @QueryParam("sourceNodeId") Long sourceNodeId,
       @QueryParam("targetNodeId") Long targetNodeId,
-      @QueryParam("copySourceChildren") Boolean copySourceChildren,
+      @QueryParam("copyOnlyChildren") Boolean copyOnlyChildren,
       @QueryParam("cloneMaterials") @DefaultValue ("false") Boolean cloneMaterials) {
     
     // Access
@@ -1481,7 +1481,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Copy
     
-    if (copySourceChildren) {
+    if (copyOnlyChildren) {
       List<WorkspaceNode> sourceChildren = workspaceMaterialController.listWorkspaceNodesByParent(sourceNode);
       for (WorkspaceNode sourceChild : sourceChildren) {
         workspaceMaterialController.cloneWorkspaceNode(sourceChild, targetNode, cloneMaterials);
