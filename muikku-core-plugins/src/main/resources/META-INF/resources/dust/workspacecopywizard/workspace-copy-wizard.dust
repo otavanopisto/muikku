@@ -178,7 +178,7 @@
       </div>
     </div>
     
-    <div class="flex-row center">
+    <div class="flex-row center proceed-buttons" style="display: none">
       <div class="flex-cell-full">
         <a class="close-wizard">{#localize key="plugin.workspacecopywizard.closeWizardButton.label"/}</a>
       </div>

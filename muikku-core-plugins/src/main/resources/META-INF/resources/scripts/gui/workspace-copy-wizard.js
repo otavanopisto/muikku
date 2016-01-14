@@ -434,6 +434,10 @@
                   .find('.workspaceEntityUrl')
                   .attr('href', CONTEXTPATH + '/workspace/' + this._createdWorkspace.urlName)
                   .text(name);
+                
+                summaryPage
+                  .find('.proceed-buttons')
+                  .show();
               }
             }, this));
         }
