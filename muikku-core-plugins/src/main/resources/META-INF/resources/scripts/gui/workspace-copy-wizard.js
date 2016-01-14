@@ -185,7 +185,7 @@
       });
       
       this.element 
-        .find('.copy,.prev,.next').hide();
+        .find('.copy,.prev,.next,.progress').hide();
       
       this._doCopy(steps);
     },
