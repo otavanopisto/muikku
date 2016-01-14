@@ -161,6 +161,7 @@
         this.element.on('click', '.prev', $.proxy(this._onPrevClick, this));
         this.element.on('click', '.next', $.proxy(this._onNextClick, this));
         this.element.on('click', '.copy', $.proxy(this._onCopyClick, this));
+        this.element.on('click', '.close, .close-wizard', $.proxy(this._onCloseClick, this));
         
         this._updateButtons();
         this._updatePageNumbers();
@@ -184,6 +185,10 @@
         .find('.copy,.prev,.next').hide();
       
       this._doCopy(steps);
+    },
+    
+    _onCloseClick: function (event) {
+      this._closeWizard();
     },
     
     _getPage: function (pageId) {
@@ -257,6 +262,10 @@
       this.element.trigger('pageChange', {
         id: visiblePage.attr('data-page-id')
       });
+    },
+    
+    _closeWizard: function () {
+      $(document).find(".workspace-copy-wizard").remove()
     },
     
     _createWorkspaceLoad: function (workspaceEntityId) {

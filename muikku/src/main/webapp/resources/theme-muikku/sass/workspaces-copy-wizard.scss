@@ -192,13 +192,132 @@
 }
 
 .close {
-  right:10px;
-  top:10px;
+  right:15px;
+  top:18px;
   
   &:before {
     content:"\e903";
     font-size:50px;
   }
   
+}
+
+ul.summary {
+  padding:0;
+  margin:0;
+  list-style-type:none;
+  margin:60px 0 70px 0;
+  
+  li {
+    background:#7dbbbe;
+    border-radius:15px;
+    padding:30px 80px;
+    margin:0 0 10px 0;
+    font-size:20px;
+    color:#fff;
+    position:relative;
+    
+    &.inProgress {
+    
+      &:after {
+        @include generic-loader(40px);
+        position:absolute;
+        left:20px;
+        top:50%;
+        margin-top:-20px;
+        color:#439ba0;
+      }
+      
+    }
+    
+    &.error {
+      background:#fff;
+      color:#e20f0f;
+     
+        &:after {
+          content: "\e904";
+          font-size:40px;
+          height:34px;
+          width:34px;
+          font-family: 'muikku' !important;
+          speak:none;
+          font-style:normal;
+          font-weight:normal;
+          font-variant:normal;
+          text-transform:none;
+          line-height:1;
+          -webkit-font-smoothing:antialiased;
+          -moz-osx-font-smoothing:grayscale;
+          position:absolute;
+          left:20px;
+          top:50%;
+          margin-top:-17px;
+          color:#e20f0f;
+       }
+     
+    }
+    
+    &.success {
+      background:#fff;
+      color:#000;
+      
+      &:after {
+        content: "\e639";
+        font-size:40px;
+        height:40px;
+        width:40px;
+        font-family: 'muikku' !important;
+        speak:none;
+        font-style:normal;
+        font-weight:normal;
+        font-variant:normal;
+        text-transform:none;
+        line-height:1;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+        position:absolute;
+        left:20px;
+        top:50%;
+        margin-top:-20px;
+        color:#38ec2d;
+      }
+      
+    }
+  }
+  
+}
+
+.center {
+  text-align:center;
+}
+
+.additional-text {
+  font-size:24px;
+  display:inline-block;
+  margin:5px 0 10px 0;
+}
+
+.copy,
+.close-wizard,
+.workspace-entity-url,
+.external-view-url {
+  cursor:pointer;
+  font-weight:300;
+  background:#7391a7;
+  cursor:pointer;
+  color:#fff;
+  text-transform:uppercase;
+  border:1px solid #d3e1ec;
+  padding:12px 18px;
+  font-size:24px;
+  display:inline-block;
+  margin:0 5px;
+  line-height:1;
+  outline:none;
+}
+
+.copy {
+  border:1px solid #daf3da;
+  background:#27b91c;
 }
 
