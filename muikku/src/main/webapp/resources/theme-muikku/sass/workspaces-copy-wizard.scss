@@ -17,6 +17,20 @@
   min-height:100vh;
   font-weight:300 !important;
   color:#fff;
+  
+  &.loading {
+  
+    &:after {
+      @include generic-loader(50px);
+      position:absolute;
+      left:50%;
+      top:50%;
+      margin:-25px 0 0 -25px;
+      color:#439ba0;
+    }
+    
+  }
+  
 }
 
 .wizard-content {
