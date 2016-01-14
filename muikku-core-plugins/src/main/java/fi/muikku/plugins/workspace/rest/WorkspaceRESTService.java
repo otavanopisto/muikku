@@ -205,7 +205,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Name is required").build();
     }
     
-    Workspace workspace = workspaceController.copyWorkspace(workspaceIdentifier, payload.getName(), payload.getNameExtension());
+    Workspace workspace = workspaceController.copyWorkspace(workspaceIdentifier, payload.getName(), payload.getNameExtension(), payload.getDescription());
     if (workspace == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to create copy of workspace %s", sourceWorkspaceId)).build();
     }

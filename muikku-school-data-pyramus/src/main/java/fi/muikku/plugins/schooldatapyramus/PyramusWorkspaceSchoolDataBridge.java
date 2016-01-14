@@ -67,7 +67,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public Workspace copyWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension) {
+  public Workspace copyWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension, String description) {
     if (!getSchoolDataSource().equals(identifier.getDataSource())) {
       logger.severe(String.format("Invalid workspace identfier for Pyramus bridge", identifier));
       return null;
@@ -88,6 +88,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     course.setId(null);
     course.setName(name);
     course.setNameExtension(nameExtension);
+    course.setDescription(description);
     
     Course createdCourse = pyramusClient.post("/courses/courses/", course);
     if (createdCourse == null) {

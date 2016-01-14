@@ -8,10 +8,12 @@
         'copy-course': function (callback) {
           var name = this._getPage('name').find('input[name="workspace-name"]').val();
           var nameExtension = this._getPage('name').find('input[name="workspace-name-extension"]').val();
+          var description = CKEDITOR.instances['workspace-description'].getData();
           
           var payload = {
             name: name,
-            nameExtension: nameExtension
+            nameExtension: nameExtension,
+            description: description
           };
           
           mApi().workspace.workspaces
