@@ -232,6 +232,7 @@ ul.summary {
     position:relative;
     text-transform:uppercase;
     font-size:24px;
+    transition:background 0.5s ease-in-out,color 0.5s ease-in-out;
     
     &.inProgress {
     
