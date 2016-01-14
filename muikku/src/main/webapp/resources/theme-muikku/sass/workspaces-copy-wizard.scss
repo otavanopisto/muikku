@@ -1,4 +1,6 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "_jquery.datepicker.scss";
+@import "_ckeditor_theme.scss";
 
 .flex-grid {
   max-width:100%;
@@ -50,13 +52,20 @@
   padding:30px 80px;
   margin:110px 0;
   
-  .selection-row {
-    display:flex;
-    white-space:nowrap;
+  .selection-wrapper {
+    vertical-align:top;
+    display:inline-block;
     
-    .selection-cell {
-      flex:0 1 auto;
+    .selection-item {
+      vertical-align:top;
+      display:inline-block;
     }
+    
+    .selection-label {
+      vertical-align:top;
+      display:inline-block;
+    }
+    
   }
   
   label {
@@ -74,9 +83,14 @@
     }
   }
   
-  input[type="checkbox"] {
-    margin:0 5px 0 0;
-    transform:scale(1.5);
+  input[type="checkbox"],
+  input[type="radio"] {
+    margin:0 0 0 2px;
+    transform:scale(1.4);
+  }
+  
+  input.date-field {
+    width:90%;
   }
   
   input[type="text"] {
@@ -193,6 +207,4 @@
   }
   
 }
-
-
 
