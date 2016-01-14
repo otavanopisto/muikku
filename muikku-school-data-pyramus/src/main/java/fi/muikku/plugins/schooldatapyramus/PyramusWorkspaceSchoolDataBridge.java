@@ -44,7 +44,10 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   
   @Inject
   private PyramusStudentActivityMapper pyramusStudentActivityMapper;
-
+  
+  @Inject
+  private WorkspaceDiscoveryWaiter workspaceDiscoveryWaiter;
+  
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
@@ -63,6 +66,42 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     throw new UnexpectedSchoolDataBridgeException("Not implemented");
   }
 
+  @Override
+  public Workspace copyWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension, String description) {
+    if (!getSchoolDataSource().equals(identifier.getDataSource())) {
+      logger.severe(String.format("Invalid workspace identfier for Pyramus bridge", identifier));
+      return null;
+    }
+    
+    Long pyramusCourseId = identifierMapper.getPyramusCourseId(identifier.getIdentifier());
+    if (pyramusCourseId == null) {
+      logger.severe(String.format("Workspace identifier %s is not valid", identifier));
+      return null;
+    }
+    
+    Course course = pyramusClient.get(String.format("/courses/courses/%d", pyramusCourseId), Course.class);
+    if (course == null) {
+      logger.severe(String.format("Could not find Pyramus course by id %d", pyramusCourseId));
+      return null;
+    }
+    
+    course.setId(null);
+    course.setName(name);
+    course.setNameExtension(nameExtension);
+    course.setDescription(description);
+    
+    Course createdCourse = pyramusClient.post("/courses/courses/", course);
+    if (createdCourse == null) {
+      logger.severe(String.format("Failed to create new course based on course %d", pyramusCourseId));
+      return null;
+    }
+    
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifierMapper.getWorkspaceIdentifier(createdCourse.getId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    workspaceDiscoveryWaiter.waitDiscovered(workspaceIdentifier);
+    
+    return createWorkspaceEntity(createdCourse);
+  }
+  
   @Override
   public Workspace findWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     Long pyramusCourseId = identifierMapper.getPyramusCourseId(identifier);
@@ -113,11 +152,35 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Override
   public Workspace updateWorkspace(Workspace workspace) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    if (!StringUtils.isNumeric(workspace.getIdentifier())) {
-      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+    Long pyramusCourseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
+    if (pyramusCourseId == null) {
+      logger.severe(String.format("Workspace identifier %s is not valid", workspace.getIdentifier()));
+      return null;
     }
     
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+    Long typeId = identifierMapper.getPyramusCourseTypeId(workspace.getWorkspaceTypeId());
+    Long lengthUnitId = identifierMapper.getPyramusEducationalTimeUnitId(workspace.getLengthUnitIdentifier());
+    Long subjectId = identifierMapper.getPyramusSubjectId(workspace.getSubjectIdentifier());
+    
+    Course course = pyramusClient.get(String.format("/courses/courses/%d", pyramusCourseId), Course.class);
+    
+    course.setName(workspace.getName());
+    course.setNameExtension(workspace.getNameExtension());
+    course.setDescription(workspace.getDescription());
+    course.setBeginDate(workspace.getBeginDate());
+    course.setEndDate(workspace.getEndDate());
+    course.setLength(workspace.getLength());
+    course.setLengthUnitId(lengthUnitId);
+    course.setTypeId(typeId);
+    course.setSubjectId(subjectId);
+    
+    Course updatedCourse = pyramusClient.put(String.format("/courses/courses/%d", pyramusCourseId), course);
+    if (updatedCourse == null) {
+      logger.severe(String.format("Workspace %s updating failed", workspace.getIdentifier()));
+      return null;
+    }
+    
+    return createWorkspaceEntity(updatedCourse);
   }
 
   @Override
@@ -269,6 +332,4 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       }
     }
   }
-
-  
 }

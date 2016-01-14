@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -72,6 +73,11 @@ public class PyramusSchoolDataEntityFactory {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @PostConstruct
+  public void init() {
+    pyramusHost = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "pyramusHost");
+  }
   
   public WorkspaceRole createCourseStudentRoleEntity() {
     // TODO: Localize
@@ -265,10 +271,14 @@ public class PyramusSchoolDataEntityFactory {
     if (modified == null) {
       modified = course.getCreated();
     }
+    
+    String viewLink = String.format("https://%s/courses/viewcourse.page?course=%d", pyramusHost, course.getId());
+    
     return new PyramusWorkspace(
         identifierMapper.getWorkspaceIdentifier(course.getId()),
         course.getName(),
         course.getNameExtension(),
+        viewLink,
         course.getDescription(),
         identifierMapper.getWorkspaceTypeIdentifier(course.getTypeId()),
         identifierMapper.getWorkspaceCourseIdentifier(course.getSubjectId(), course.getCourseNumber()),
@@ -426,4 +436,5 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
+  private String pyramusHost;
 }
