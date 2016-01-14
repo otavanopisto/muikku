@@ -1,10 +1,10 @@
 @font-face {
     font-family: 'muikku';
-    src:    url('fonts/muikku.eot?mggl1v');
-    src:    url('fonts/muikku.eot?mggl1v#iefix') format('embedded-opentype'),
-        url('fonts/muikku.ttf?mggl1v') format('truetype'),
-        url('fonts/muikku.woff?mggl1v') format('woff'),
-        url('fonts/muikku.svg?mggl1v#muikku') format('svg');
+    src:    url('fonts/muikku.eot?alakp9');
+    src:    url('fonts/muikku.eot?alakp9#iefix') format('embedded-opentype'),
+        url('fonts/muikku.ttf?alakp9') format('truetype'),
+        url('fonts/muikku.woff?alakp9') format('woff'),
+        url('fonts/muikku.svg?alakp9#muikku') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -24,6 +24,9 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-error:before {
+    content: "\e904";
+}
 .icon-close:before {
     content: "\e903";
 }
@@ -264,6 +267,9 @@
 .icon-correct-answers:before {
     content: "\e642";
 }
+.icon-download:before {
+    content: "\f019";
+}
 .icon-bubble:before {
     content: "\e638";
 }
@@ -290,9 +296,6 @@
 }
 .icon-numbered-list:before {
     content: "\e603";
-}
-.icon-close:before {
-    content: "\e604";
 }
 .icon-materials:before {
     content: "\e616";
@@ -504,3 +507,4 @@
 .icon-flag:before {
     content: "\e902";
 }
+

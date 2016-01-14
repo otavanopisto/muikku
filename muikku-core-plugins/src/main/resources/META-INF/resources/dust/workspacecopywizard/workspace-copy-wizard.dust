@@ -149,20 +149,48 @@
   </section>
 
   <section class="flex-cell-full wizard-page" data-page-id="discussions">
-    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
+    </div>
     <label>{#localize key="plugin.workspacecopywizard.workspaceDiscussions.label"/}</label>
   </section>
 
   <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="summary">
-    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.summaryPage.title"/}</div>
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.summaryPage.title"/}</div>
+      </div>
+    </div>
     
-    <ul class="summary">
-      
-    </ul>
-
-    <div class="copy" style="height: 100px; width: 400px; border: 1px outline #000; background: #666"></div>
-    <a class="workspaceEntityUrl"></a>
-    <a target="_blank" class="externalViewUrl"></a>
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <ul class="summary">
+          
+        </ul>
+      </div>
+    </div>
+    
+    <div class="flex-row center">
+      <div class="flex-cell-full">
+        <button class="copy">{#localize key="plugin.workspacecopywizard.doCopyButton.label"/}</button>
+      </div>
+    </div>
+    
+    <div class="flex-row center">
+      <div class="flex-cell-full">
+        <a class="close-wizard">{#localize key="plugin.workspacecopywizard.closeWizardButton.label"/}</a>
+      </div>
+      <div class="flex-cell-full">
+        <span class="additional-text">{#localize key="plugin.workspacecopywizard.or.label"/}</span>
+      </div>
+      <div class="flex-cell-full">
+        <a class="workspace-entity-url">{#localize key="plugin.workspacecopywizard.gotToWorkspaceMuikkuButton.label"/}</a>
+        <a target="_blank" class="external-view-url">{#localize key="plugin.workspacecopywizard.gotToWorkspacePyramusButton.label"/}</a>
+      </div>
+    </div>
+    
   </section>
 
   <ul class="progress-pages" style="display:none;"/>
@@ -170,9 +198,7 @@
 </div>
 
 <div class="prev"></div>
-
 <div class="next"></div>
-
 <div class="close"></div>
 
 <div class="progress flex-row">
