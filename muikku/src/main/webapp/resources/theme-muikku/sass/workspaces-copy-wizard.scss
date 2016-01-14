@@ -52,15 +52,20 @@
   padding:30px 80px;
   margin:110px 0;
   
-  .selection-row {
-    display:flex;
-    white-space:nowrap;
+  .selection-wrapper {
+    vertical-align:top;
+    display:inline-block;
     
-    .selection-cell {
-      flex-grow:0;
-      flex-shrink:1;
-      flex-basis:auto;
+    .selection-item {
+      vertical-align:top;
+      display:inline-block;
     }
+    
+    .selection-label {
+      vertical-align:top;
+      display:inline-block;
+    }
+    
   }
   
   label {
@@ -78,9 +83,10 @@
     }
   }
   
-  input[type="checkbox"] {
-    margin:0;
-    transform:scale(1.5);
+  input[type="checkbox"],
+  input[type="radio"] {
+    margin:0 0 0 2px;
+    transform:scale(1.4);
   }
   
   input.date-field {

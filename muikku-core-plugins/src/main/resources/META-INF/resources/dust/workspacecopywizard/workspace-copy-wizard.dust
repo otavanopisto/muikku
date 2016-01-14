@@ -84,21 +84,21 @@
         <div class="flex-row">
           <div class="flex-cell-8 flex-cell-first">
           
-            <div class="selection-row">
-              <div class="selection-cell">
+            <div class="selection-wrapper">
+              <div class="selection-item">
                 <input type="checkbox" id="copy-materials" name="copy-materials"/>
               </div>
-              <div class="selection-cell">
+              <div class="selection-label">
                 <label for="copy-materials" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.label"/}</label>  
               </div>
             </div>
           </div>
           <div class="flex-cell-8 flex-cell-first">
-            <div class="selection-row">
-              <div class="selection-cell">
+            <div class="selection-wrapper">
+              <div class="selection-item">
                 <input type="checkbox" id="copy-discussions-areas" name="copy-discussions-areas"/>
               </div>
-              <div class="selection-cell">
+              <div class="selection-label">
                 <label for="copy-discussions-areas" class="selection">{#localize key="plugin.workspacecopywizard.workspaceDiscussionsAreas.label"/}</label>  
               </div>
             </div>
@@ -110,16 +110,42 @@
   </section>
 
   <section class="flex-cell-full wizard-page" data-page-id="materials">
-    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
-    <label>{#localize key="plugin.workspacecopywizard.workspaceMaterials.label"/}</label>
-    <div>
-      <input type="radio" value="copy" name="material-copy-style"/> 
-      <label>{#localize key="plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label"/}</label>
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
     </div>
-    <div>
-      <input type="radio" value="link" name="material-copy-style"/> 
-      <label>{#localize key="plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label"/}</label>
+    
+    <div class="flex-row wizard-page-content">
+      <div class="flex-cell-full">
+        <label>{#localize key="plugin.workspacecopywizard.workspaceMaterials.label"/}</label>
+        
+        <div class="flex-row">
+          <div class="flex-cell-8 flex-cell-first">
+            <div class="selection-wrapper">
+              <div class="selection-item">
+                <input id="material-copy-style" type="radio" value="copy" name="material-copy-style"/> 
+              </div>
+              <div class="selection-label">
+                <label for="material-copy-style" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label"/}</label>
+              </div>
+            </div>
+          </div>
+          <div class="flex-cell-8 flex-cell-first">
+            <div class="selection-wrapper">
+              <div class="selection-item">
+                <input id="material-copy-style" type="radio" value="link" name="material-copy-style"/> 
+              </div>
+              <div class="selection-label">
+                <label for="material-copy-style" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label"/}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
     </div>
+    
   </section>
 
   <section class="flex-cell-full wizard-page" data-page-id="discussions">
