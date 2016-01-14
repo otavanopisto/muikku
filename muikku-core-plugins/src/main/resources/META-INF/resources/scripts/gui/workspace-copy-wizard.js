@@ -23,18 +23,6 @@
                 callback(err);
               } else {
                 this._setCreatedWorkspace(result);
-                
-                var nameText = result.nameExtension ? 
-                  getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspaceNameWithExtension', result.name, result.nameExtension) :
-                  getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspaceName', result.name);
-                
-                var details = $('<ul>')
-                  .append($('<li>').text(nameText));
-
-                this._getPage('summary')
-                  .find('.summary li[data-id="copy-workspace"]')
-                  .append(details);
-                
                 callback(null, result);
               }
             }, this));
@@ -87,20 +75,6 @@
                 mApi().workspace.workspaces.details
                   .update(this._createdWorkspace.id, workspaceDetails)
                   .callback($.proxy(function (saveErr) {
-                    var details = $('<ul>');
-
-                    this._getPage('summary')
-                      .find('.summary li[data-id="change-dates"]')
-                      .append(details);
-                    
-                    if (workspaceDetails.beginDate) {
-                      details.append($('<li>').text(getLocaleText('plugin.workspacecopywizard.summarySteps.changeDatesBeginDate', formatDate(new Date(workspaceDetails.beginDate)))));
-                    }
-                   
-                    if (workspaceDetails.endDate) {
-                      details.append($('<li>').text(getLocaleText('plugin.workspacecopywizard.summarySteps.changeDatesEndDate', formatDate(new Date(workspaceDetails.endDate)))));
-                    }
-                    
                     callback(saveErr);
                   }, this));
               }
@@ -354,16 +328,33 @@
         case 'summary':
           this.element.find('.summary').empty();
           
-          this._addSummaryStep("copy-workspace", getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspace'));
+          var copyWorkspaceStep = this._addSummaryStep("copy-workspace", getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspace'));
+          var name = this._getPage('name').find('input[name="workspace-name"]').val();
+          var nameExtension = this._getPage('name').find('input[name="workspace-name-extension"]').val();
           
-          var beginDate = $('input[name="beginDate"]')
+          $('<ul>')
+            .append($('<li>').text(nameExtension ? 
+              getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspaceNameWithExtension', name, nameExtension) :
+              getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspaceName', name)))
+            .appendTo(copyWorkspaceStep);
+          
+          var beginDate = $(this.element).find('input[name="beginDate"]')
             .datepicker('getDate');
           
-          var endDate = $('input[name="endDate"]')
+          var endDate = $(this.element).find('input[name="endDate"]')
             .datepicker('getDate');
           
           if (beginDate || endDate) {
-            this._addSummaryStep('change-dates', getLocaleText('plugin.workspacecopywizard.summarySteps.changeDates'));
+            var changeDatesStep = this._addSummaryStep('change-dates', getLocaleText('plugin.workspacecopywizard.summarySteps.changeDates'));
+            var details = $('<ul>').appendTo(changeDatesStep);
+            
+            if (beginDate) {
+              details.append($('<li>').text(getLocaleText('plugin.workspacecopywizard.summarySteps.changeDatesBeginDate', formatDate(beginDate))));
+            }
+           
+            if (endDate) {
+              details.append($('<li>').text(getLocaleText('plugin.workspacecopywizard.summarySteps.changeDatesEndDate', formatDate(endDate))));
+            }
           }
           
           if (this.element.find('input[name="copy-discussions-areas"]').prop('checked')) {
@@ -371,8 +362,13 @@
           }
           
           if (this.element.find('input[name="copy-materials"]').prop('checked')) {
-            this._addSummaryStep('copy-materials', getLocaleText('plugin.workspacecopywizard.summarySteps.copyMaterials'));
+            var linkMaterials = this._getPage('materials').find('input[name="material-copy-style"]:checked').val() == 'link';
+            
+            this._addSummaryStep('copy-materials', linkMaterials ? 
+              getLocaleText('plugin.workspacecopywizard.summarySteps.copyMaterialsLink') :
+              getLocaleText('plugin.workspacecopywizard.summarySteps.copyMaterials'));
           }
+          
         break;
       }
     },
