@@ -114,8 +114,18 @@ public class PyramusWorkspace implements Workspace {
   }
   
   @Override
+  public void setBeginDate(DateTime beginDate) {
+    this.beginDate = beginDate; 
+  }
+  
+  @Override
   public DateTime getEndDate() {
     return endDate;
+  }
+  
+  @Override
+  public void setEndDate(DateTime beginDate) {
+    this.beginDate = beginDate;
   }
   
   @Override
