@@ -102,8 +102,10 @@
     _create : function() {
       this.element.addClass('wizard workspace-copy-wizard flex-grid');
       this._createdWorkspace = null;
+      this.element.addClass('loading');
       
       this._load($.proxy(function (html) {
+        this.element.removeClass('loading');
         this.element.html(html);
         this.element
           .find('.wizard-page')
