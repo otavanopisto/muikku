@@ -434,14 +434,14 @@
                 var name = this._createdWorkspace.name + (this._createdWorkspace.nameExtension ? ' (' + this._createdWorkspace.nameExtension + ')' : '');
                 
                 summaryPage
-                  .find('.externalViewUrl')
+                  .find('.external-view-url')
                   .attr('href', details.externalViewUrl)
-                  .text(details.externalViewUrl);
+                  .attr('title', details.externalViewUrl);
                 
                 summaryPage
-                  .find('.workspaceEntityUrl')
+                  .find('.workspace-entity-url')
                   .attr('href', CONTEXTPATH + '/workspace/' + this._createdWorkspace.urlName)
-                  .text(name);
+                  .attr('title', name);
                 
                 summaryPage
                   .find('.proceed-buttons')
