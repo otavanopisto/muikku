@@ -124,6 +124,40 @@ public class ForumRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
   
+  @POST
+  @Path ("/copyareas")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response copyForumAreas(@QueryParam("sourceWorkspaceEntityId") Long sourceWorkspaceEntityId, @QueryParam("targetWorkspaceEntityId") Long targetWorkspaceEntityId) {
+
+    // Access
+    // TODO: MuikkuPermissions.COPY_WORKSPACE
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.CREATE_WORKSPACE)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Source
+    
+    WorkspaceEntity sourceWorkspace = workspaceEntityController.findWorkspaceEntityById(sourceWorkspaceEntityId);
+    if (sourceWorkspace == null) {
+      return Response.status(Status.BAD_REQUEST).entity("null source workspace").build();
+    }
+    
+    // Target
+
+    WorkspaceEntity targetWorkspace = workspaceEntityController.findWorkspaceEntityById(targetWorkspaceEntityId);
+    if (targetWorkspace == null) {
+      return Response.status(Status.BAD_REQUEST).entity("null target workspace").build();
+    }
+    
+    // Copy
+    
+    forumController.copyWorkspaceForumAreas(sourceWorkspace, targetWorkspace);
+    
+    // Done
+    
+    return Response.noContent().build();
+  }
+  
   @GET
   @Path ("/areas")
   @RESTPermit(handling = Handling.UNSECURED)

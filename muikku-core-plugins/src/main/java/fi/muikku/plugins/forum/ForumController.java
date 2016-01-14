@@ -188,6 +188,13 @@ public class ForumController {
     createDefaultForumPermissions(forumArea, rights);
     return forumArea;
   }
+  
+  public void copyWorkspaceForumAreas(WorkspaceEntity sourceWorkspace, WorkspaceEntity targetWorkspace) {
+    List<WorkspaceForumArea> forumAreas = listCourseForums(sourceWorkspace);
+    for (WorkspaceForumArea forumArea : forumAreas) {
+      createWorkspaceForumArea(targetWorkspace, forumArea.getName(), forumArea.getGroup() == null ? null : forumArea.getGroup().getId());
+    }
+  }
 
   public ForumArea updateForumAreaName(ForumArea forumArea, String name) {
     return forumAreaDAO.updateForumArea(forumArea, name);
