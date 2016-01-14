@@ -86,7 +86,7 @@
           
             <div class="selection-wrapper">
               <div class="selection-item">
-                <input type="checkbox" id="copy-materials" name="copy-materials"/>
+                <input type="checkbox" id="copy-materials" name="copy-materials" checked="checked"/>
               </div>
               <div class="selection-label">
                 <label for="copy-materials" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.label"/}</label>  
@@ -109,7 +109,7 @@
     </div>
   </section>
 
-  <section class="flex-cell-full wizard-page" data-page-id="materials">
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="materials">
     <div class="flex-row">
       <div class="flex-cell-full">
         <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
@@ -124,7 +124,7 @@
           <div class="flex-cell-8 flex-cell-first">
             <div class="selection-wrapper">
               <div class="selection-item">
-                <input id="material-copy-style-copy" type="radio" value="copy" name="material-copy-style"/> 
+                <input id="material-copy-style-copy" type="radio" value="copy" name="material-copy-style" checked="checked"/> 
               </div>
               <div class="selection-label">
                 <label for="material-copy-style-copy" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label"/}</label>

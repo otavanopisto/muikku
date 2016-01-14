@@ -102,8 +102,10 @@
     _create : function() {
       this.element.addClass('wizard workspace-copy-wizard flex-grid');
       this._createdWorkspace = null;
+      this.element.addClass('loading');
       
       this._load($.proxy(function (html) {
+        this.element.removeClass('loading');
         this.element.html(html);
         this.element
           .find('.wizard-page')
@@ -161,7 +163,8 @@
         this.element.on('click', '.prev', $.proxy(this._onPrevClick, this));
         this.element.on('click', '.next', $.proxy(this._onNextClick, this));
         this.element.on('click', '.copy', $.proxy(this._onCopyClick, this));
-        this.element.on('click', '.close, .close-wizard', $.proxy(this._onCloseClick, this));
+        this.element.on('click', '.close', $.proxy(this._onCloseClick, this));
+        this.element.on('click', '.close-wizard', $.proxy(this._onCloseWizardClick, this));
         
         this._updateButtons();
         this._updatePageNumbers();
@@ -188,6 +191,10 @@
     },
     
     _onCloseClick: function (event) {
+      this._closeWizard();
+    },
+    
+    _onCloseWizardClick: function (event) {
       this._closeWizard();
     },
     
@@ -265,7 +272,8 @@
     },
     
     _closeWizard: function () {
-      $(document).find(".workspace-copy-wizard").remove()
+      $(this.element).remove();
+      window.location.reload(true);
     },
     
     _createWorkspaceLoad: function (workspaceEntityId) {
