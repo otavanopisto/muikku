@@ -124,20 +124,20 @@
           <div class="flex-cell-8 flex-cell-first">
             <div class="selection-wrapper">
               <div class="selection-item">
-                <input id="material-copy-style" type="radio" value="copy" name="material-copy-style"/> 
+                <input id="material-copy-style-copy" type="radio" value="copy" name="material-copy-style"/> 
               </div>
               <div class="selection-label">
-                <label for="material-copy-style" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label"/}</label>
+                <label for="material-copy-style-copy" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label"/}</label>
               </div>
             </div>
           </div>
           <div class="flex-cell-8 flex-cell-first">
             <div class="selection-wrapper">
               <div class="selection-item">
-                <input id="material-copy-style" type="radio" value="link" name="material-copy-style"/> 
+                <input id="material-copy-style-link" type="radio" value="link" name="material-copy-style"/> 
               </div>
               <div class="selection-label">
-                <label for="material-copy-style" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label"/}</label>
+                <label for="material-copy-style-link" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label"/}</label>
               </div>
             </div>
           </div>
@@ -175,6 +175,8 @@
 
 <div class="close"></div>
 
-<div class="progress">
-  <span class="currentPage"/> / <span class="totalPages"/>
+<div class="progress flex-row">
+  <div class="flex-cell-full">
+    <span class="currentPage"/> / <span class="totalPages"/>
+  </div>
 </div>
