@@ -32,6 +32,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 
 import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
@@ -65,7 +66,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
-import fi.muikku.plugins.workspace.rest.model.WorkspaceExternalUrls;
+import fi.muikku.plugins.workspace.rest.model.WorkspaceDetails;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
@@ -384,15 +385,15 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/workspaces/{ID}/externalUrls")
-  @RESTPermitUnimplemented
+  @Path("/workspaces/{ID}/details")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getWorkspaceExternalViewUrl(@PathParam("ID") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_WORKSPACE_EXTERNAL_URLS, workspaceEntity)) {
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_WORKSPACE_DETAILS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -401,7 +402,50 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    return Response.ok(new WorkspaceExternalUrls(workspace.getViewLink())).build();
+    return Response.ok(new WorkspaceDetails(workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
+  }
+  
+  @PUT
+  @Path("/workspaces/{ID}/details")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspaceExternalViewUrl(@PathParam("ID") Long workspaceEntityId, WorkspaceDetails payload) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspace == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_DETAILS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    if ((payload.getExternalViewUrl() != null) && (!StringUtils.equals(workspace.getViewLink(), payload.getExternalViewUrl()))) {
+      return Response.status(Status.BAD_REQUEST).entity("externalViewUrl is read-only property").build();
+    }
+    
+    if (!isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) || !isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate())) {
+      workspace.setBeginDate(payload.getBeginDate());
+      workspace.setEndDate(payload.getEndDate());
+      workspaceController.updateWorkspace(workspace);
+    }
+      
+    return Response.ok(new WorkspaceDetails(workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
+  }
+  
+  private boolean isEqualDateTime(DateTime dateTime1, DateTime dateTime2) {
+    if (dateTime1 == dateTime2) {
+      return true;
+    }
+    
+    if (dateTime1 != null) {
+      return dateTime1.equals(dateTime2);
+    } else {
+      return dateTime2.equals(dateTime1);
+    }
   }
   
   @PUT

@@ -25,8 +25,12 @@ public interface Workspace extends SchoolDataEntity {
   public void setDescription(String description);
 
   public DateTime getBeginDate();
+  
+  public void setBeginDate(DateTime beginDate);
 
   public DateTime getEndDate();
+  
+  public void setEndDate(DateTime endDate);
 
   // TODO: public String getWorkspaceTypeDataSource();
 
