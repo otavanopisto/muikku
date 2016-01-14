@@ -427,7 +427,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("externalViewUrl is read-only property").build();
     }
     
-    if (!isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) || !isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate())) {
+    if (!isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) || !isEqualDateTime(workspace.getEndDate(), payload.getEndDate())) {
       workspace.setBeginDate(payload.getBeginDate());
       workspace.setEndDate(payload.getEndDate());
       workspaceController.updateWorkspace(workspace);
