@@ -124,40 +124,6 @@ public class ForumRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
   
-  @POST
-  @Path ("/copyareas")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response copyForumAreas(@QueryParam("sourceWorkspaceEntityId") Long sourceWorkspaceEntityId, @QueryParam("targetWorkspaceEntityId") Long targetWorkspaceEntityId) {
-
-    // Access
-    // TODO: MuikkuPermissions.COPY_WORKSPACE
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.CREATE_WORKSPACE)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    // Source
-    
-    WorkspaceEntity sourceWorkspace = workspaceEntityController.findWorkspaceEntityById(sourceWorkspaceEntityId);
-    if (sourceWorkspace == null) {
-      return Response.status(Status.BAD_REQUEST).entity("null source workspace").build();
-    }
-    
-    // Target
-
-    WorkspaceEntity targetWorkspace = workspaceEntityController.findWorkspaceEntityById(targetWorkspaceEntityId);
-    if (targetWorkspace == null) {
-      return Response.status(Status.BAD_REQUEST).entity("null target workspace").build();
-    }
-    
-    // Copy
-    
-    forumController.copyWorkspaceForumAreas(sourceWorkspace, targetWorkspace);
-    
-    // Done
-    
-    return Response.noContent().build();
-  }
-  
   @GET
   @Path ("/areas")
   @RESTPermit(handling = Handling.UNSECURED)
@@ -289,25 +255,64 @@ public class ForumRESTService extends PluginRESTService {
   }
   
   @POST
-  @Path ("/workspace/{WORKSPACEID}/areas")
+  @Path ("/workspace/{WORKSPACEENTITYID}/areas")
   @RESTPermit(handling = Handling.INLINE)
-  public Response createWorkspaceForumArea(@PathParam ("WORKSPACEID") Long workspaceId, ForumAreaRESTModel newForum) throws AuthorizationException {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+  public Response createWorkspaceForumArea(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId,
+      @QueryParam ("sourceWorkspaceEntityId") Long sourceWorkspaceEntityId,
+      ForumAreaRESTModel newForum) throws AuthorizationException {
     
-    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_CREATEWORKSPACEFORUM, workspaceEntity)) {
-      WorkspaceForumArea workspaceForumArea = forumController.createWorkspaceForumArea(workspaceEntity, newForum.getName(), newForum.getGroupId());
+    if (sourceWorkspaceEntityId == null) {
       
-      Long numThreads = forumController.getThreadCount(workspaceForumArea);
+      // Create workspace forum area
       
-      WorkspaceForumAreaRESTModel result = new WorkspaceForumAreaRESTModel(
-          workspaceForumArea.getId(), workspaceForumArea.getWorkspace(), workspaceForumArea.getName(), 
-          workspaceForumArea.getGroup() != null ? workspaceForumArea.getGroup().getId() : null, numThreads); 
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
       
-      return Response.ok(
-        result
-      ).build();
-    } else {
-      return Response.status(Status.FORBIDDEN).build();
+      if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_CREATEWORKSPACEFORUM, workspaceEntity)) {
+        WorkspaceForumArea workspaceForumArea = forumController.createWorkspaceForumArea(workspaceEntity, newForum.getName(), newForum.getGroupId());
+        
+        Long numThreads = forumController.getThreadCount(workspaceForumArea);
+        
+        WorkspaceForumAreaRESTModel result = new WorkspaceForumAreaRESTModel(
+            workspaceForumArea.getId(), workspaceForumArea.getWorkspace(), workspaceForumArea.getName(), 
+            workspaceForumArea.getGroup() != null ? workspaceForumArea.getGroup().getId() : null, numThreads); 
+        
+        return Response.ok(result).build();
+      }
+      else {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    else {
+
+      // Copy workspace areas from source
+      
+      // Access
+      // TODO: MuikkuPermissions.COPY_WORKSPACE
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.CREATE_WORKSPACE)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      
+      // Source
+      
+      WorkspaceEntity sourceWorkspace = workspaceEntityController.findWorkspaceEntityById(sourceWorkspaceEntityId);
+      if (sourceWorkspace == null) {
+        return Response.status(Status.BAD_REQUEST).entity("null source workspace").build();
+      }
+      
+      // Target
+
+      WorkspaceEntity targetWorkspace = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      if (targetWorkspace == null) {
+        return Response.status(Status.BAD_REQUEST).entity("null target workspace").build();
+      }
+      
+      // Copy
+      
+      forumController.copyWorkspaceForumAreas(sourceWorkspace, targetWorkspace);
+      
+      // Done
+      
+      return Response.noContent().build();
     }
   }
 
