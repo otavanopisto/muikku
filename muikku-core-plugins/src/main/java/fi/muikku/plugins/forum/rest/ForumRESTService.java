@@ -287,8 +287,7 @@ public class ForumRESTService extends PluginRESTService {
       // Copy workspace areas from source
       
       // Access
-      // TODO: MuikkuPermissions.COPY_WORKSPACE
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.CREATE_WORKSPACE)) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.COPY_WORKSPACE)) {
         return Response.status(Status.FORBIDDEN).build();
       }
       

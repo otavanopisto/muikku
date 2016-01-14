@@ -27,6 +27,13 @@
               }
             }, this));
         },
+        'copy-discussions-areas': function (callback) {
+          var payload = {};
+          
+          mApi().forum.workspace.areas
+            .create(this._createdWorkspace.id, payload, { sourceWorkspaceEntityId: this.options.workspaceEntityId })
+            .callback(callback);
+        },
         'copy-materials': function (callback) {
           var cloneMaterials = this._getPage('materials').find('input[name="material-copy-style"]:checked').val() == 'copy';
           var payload = {};
@@ -328,6 +335,10 @@
           
           if (beginDate || endDate) {
             this._addSummaryStep('change-dates', "Change dates");
+          }
+          
+          if (this.element.find('input[name="copy-discussions-areas"]').prop('checked')) {
+            this._addSummaryStep('copy-discussions-areas', "Copy discussion areas");
           }
           
           if (this.element.find('input[name="copy-materials"]').prop('checked')) {
