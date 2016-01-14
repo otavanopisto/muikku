@@ -2,6 +2,7 @@
 @import "_workspaces-materials-defaults.scss";
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
+@import "_jquery.datepicker.scss";
 
 body.evaluation {
   background:none;
@@ -1215,6 +1216,7 @@ body.evaluation {
     }
   }
   
+  /**
   #ui-datepicker-div {
     font-family:'Open Sans',Verdana, sans-serif;
     font-size:13px;
@@ -1259,7 +1261,7 @@ body.evaluation {
           text-transform: none;
           line-height: 1;
           
-          /* Better Font Rendering =========== */
+          Better Font Rendering ===========
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
@@ -1297,7 +1299,7 @@ body.evaluation {
           text-transform: none;
           line-height: 1;
           
-          /* Better Font Rendering =========== */
+          Better Font Rendering ===========
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
@@ -1346,6 +1348,8 @@ body.evaluation {
     }
     
   }
+  **/
+  
 }
 
 /* MATERIAL DEFAULT STYLES */
