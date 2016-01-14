@@ -19,25 +19,9 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 	
 	private static final long serialVersionUID = -1777382212388116832L;
 
-  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber) {
-    return create(parent, materialId, urlName, orderNumber, false);
-  }
-
-  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, Boolean hidden) {
-    return create(parent, materialId, urlName, orderNumber, hidden, null, null);
-  }
-  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
-    return create(parent, materialId, urlName, orderNumber, false, assignmentType, correctAnswers);
-  }
-
-  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber,
+  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String title, String urlName, Integer orderNumber,
       Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
-    return create(parent, materialId, urlName, orderNumber, hidden, assignmentType, correctAnswers, "Untitled");
-  }
 
-  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber,
-      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
-      String title) {
     WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
     workspaceMaterial.setParent(parent);
     workspaceMaterial.setMaterialId(materialId);

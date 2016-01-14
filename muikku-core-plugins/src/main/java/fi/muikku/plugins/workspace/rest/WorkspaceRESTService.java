@@ -1441,6 +1441,62 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @POST
+  @Path("/copymaterials")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response copyWorkspaceMaterials(
+      @QueryParam("sourceNodeId") Long sourceNodeId,
+      @QueryParam("targetNodeId") Long targetNodeId,
+      @QueryParam("copyOnlyChildren") Boolean copyOnlyChildren,
+      @QueryParam("cloneMaterials") @DefaultValue ("false") Boolean cloneMaterials) {
+    
+    // Access
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.COPY_WORKSPACE)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // Source
+
+    WorkspaceNode sourceNode = workspaceMaterialController.findWorkspaceNodeById(sourceNodeId);
+    if (sourceNode == null) {
+      return Response.status(Status.BAD_REQUEST).entity("null source").build();      
+    }
+
+    // Target
+    
+    WorkspaceNode targetNode = workspaceMaterialController.findWorkspaceNodeById(targetNodeId);
+    if (targetNode == null) {
+      return Response.status(Status.BAD_REQUEST).entity("null target").build();      
+    }
+    
+    // Circular reference check
+    
+    WorkspaceNode node = targetNode;
+    while (node != null) {
+      if (node.getId().equals(sourceNode.getId())) {
+        return Response.status(Status.BAD_REQUEST).entity("Circular copy reference").build();      
+      }
+      node = node.getParent();
+    }
+    
+    // Copy
+    
+    if (copyOnlyChildren) {
+      List<WorkspaceNode> sourceChildren = workspaceMaterialController.listWorkspaceNodesByParent(sourceNode);
+      for (WorkspaceNode sourceChild : sourceChildren) {
+        workspaceMaterialController.cloneWorkspaceNode(sourceChild, targetNode, cloneMaterials);
+      }
+    }
+    else {
+      workspaceMaterialController.cloneWorkspaceNode(sourceNode, targetNode, cloneMaterials);
+    }
+    
+    // Done
+    
+    return Response.noContent().build();
+  }
+  
+  @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/assessments/")
   @RESTPermitUnimplemented
   public Response createWorkspaceAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceAssessment payload) {
