@@ -27,6 +27,25 @@
               }
             }, this));
         },
+        'copy-materials': function (callback) {
+          var cloneMaterials = this._getPage('materials').find('input[name="material-copy-style"]:checked').val() == 'copy';
+          var payload = {};
+          
+          mApi().workspace.workspaces.materials
+            .create(this._createdWorkspace.id, payload, { 
+              sourceWorkspaceEntityId: this.options.workspaceEntityId, 
+              targetWorkspaceEntityId: this._createdWorkspace.id, 
+              copyOnlyChildren: true,
+              cloneMaterials: cloneMaterials
+            })
+            .callback($.proxy(function (err, result) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(null, result);
+              }
+            }, this));
+        },
         "change-dates": function (callback) {
           var beginDate = $('input[name="beginDate"]')
             .datepicker('getDate');
