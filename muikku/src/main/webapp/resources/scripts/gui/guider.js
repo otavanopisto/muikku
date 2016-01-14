@@ -12,21 +12,37 @@
 
   $.widget("custom.guiderFilters", {
     
+    options: {
+      selected: null
+    },
+    
     _create : function() {
       this._filters = [];
       this._loadFilters($.proxy(function () {
+        if (this.options.selected) {
+          $.each(this.options.selected, $.proxy(function (index, selected) {
+            this.element.find('.gu-filter-link[data-id="' + selected.id + '"][data-type="' + selected.type + '"]').addClass('selected');
+          }, this));
+        }
+                
         this.element.on('click', '.gu-filter-link', $.proxy(this._onFilterLink, this));
       }, this));
     },
     
     _onFilterLink: function (event) {
       var element = $(event.target).closest('.gu-filter-link');
+      if (element.hasClass('selected')) {
+        element.removeClass('selected');
+      } else {
+        element.addClass('selected');
+      }
+      
       switch (element.attr('data-type')) {
         case 'workspace':
-          $('.gt-students-view-container').guiderStudents('workspaces', [ element.attr('data-id') ]);
+          $('.gt-students-view-container').guiderStudents('workspaces', element.hasClass('selected') ? [ element.attr('data-id') ] : null);
         break;
         case 'studentFlagType':
-          $('.gt-students-view-container').guiderStudents('studentFlagTypes', [ element.attr('data-id') ]);
+          $('.gt-students-view-container').guiderStudents('studentFlagTypes', element.hasClass('selected') ? [ element.attr('data-id') ] : null);
         break;
       }
     },
@@ -482,7 +498,30 @@
       }
     }
     
-    $('.gu-filters').guiderFilters();
+    var selectedFilters = [];
+    
+    if (studentFlagTypes) {
+      selectedFilters = selectedFilters.concat($.map(studentFlagTypes, function (id) {
+        return {
+          type:"studentFlagType",
+          id: id
+        };
+      }));
+    }
+    
+    if (workspaceIds) {
+      selectedFilters = selectedFilters.concat($.map(workspaceIds, function (id) {
+        return {
+          type:"workspace",
+          id: id
+        };
+      }));
+    }
+    
+    $('.gu-filters').guiderFilters({
+      selected: selectedFilters
+    });
+    
     $('.gt-search').guiderSearch();
     $('.gt-students-view-container').guiderStudents({
       workspaceIds: workspaceIds,
