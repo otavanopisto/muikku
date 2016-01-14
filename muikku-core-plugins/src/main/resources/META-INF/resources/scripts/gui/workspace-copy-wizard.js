@@ -206,6 +206,9 @@
         return $(li).attr('data-id');
       });
       
+      this.element 
+        .find('.copy,.prev,.next').hide();
+      
       this._doCopy(steps);
     },
     
