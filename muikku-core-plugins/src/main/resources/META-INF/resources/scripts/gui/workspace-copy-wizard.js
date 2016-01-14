@@ -4,11 +4,76 @@
   $.widget("custom.workspaceCopyWizard", {
     options: {
       workspaceEntityId: null,
-      steps: null
+      steps: {
+        'copy-course': function (callback) {
+          var name = this._getPage('name').find('input[name="workspace-name"]').val();
+          var nameExtension = this._getPage('name').find('input[name="workspace-name-extension"]').val();
+          
+          var payload = {
+            name: name,
+            nameExtension: nameExtension
+          };
+          
+          mApi().workspace.workspaces
+            .create(payload, { sourceWorkspaceEntityId: this.options.workspaceEntityId })
+            .callback($.proxy(function (err, result) {
+              if (err) {
+                callback(err);
+              } else {
+                this._setCreatedWorkspace(result);
+                callback(null, result);
+              }
+            }, this));
+        },
+        "change-dates": function (callback) {
+          var beginDate = $('input[name="beginDate"]')
+            .datepicker('getDate');
+          
+          var endDate = $('input[name="endDate"]')
+            .datepicker('getDate');
+          
+          mApi().workspace.workspaces.details
+            .read(this._createdWorkspace.id)
+            .callback($.proxy(function (loadErr, workspaceDetails) {
+              if (loadErr) {
+                callback(loadErr);
+              } else {
+                var beginTime = beginDate ? beginDate.getTime() : null;
+                var endTime = endDate ? endDate.getTime() : null;
+                
+                workspaceDetails.beginDate = beginTime;
+                workspaceDetails.endDate = endTime;
+                
+                mApi().workspace.workspaces.details
+                  .update(this._createdWorkspace.id, workspaceDetails)
+                  .callback(function (saveErr) {
+                    callback(saveErr);
+                  });
+              }
+            }, this));
+        }
+      },
+      ckeditor: {
+        height : '200px',
+        entities: false,
+        entities_latin: false,
+        entities_greek: false,
+        toolbar: [
+          { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+          { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+          { name: 'links', items: [ 'Link' ] },
+          { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+          { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+          { name: 'styles', items: [ 'Format' ] },
+          { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+          { name: 'tools', items: [ 'Maximize' ] }
+        ]
+      }
     },
     
     _create : function() {
       this.element.addClass('wizard workspace-copy-wizard flex-grid');
+      this._createdWorkspace = null;
       
       this._load($.proxy(function (html) {
         this.element.html(html);
@@ -16,7 +81,24 @@
           .find('.wizard-page')
           .first()
           .addClass('wizard-page-active');
-
+        
+        this.element.find('.ckeditor-field').each($.proxy(function (index, ckField) {
+          CKEDITOR.replace(ckField, this.options.ckeditor);
+        }, this));
+        
+        this.element.find('.date-field').each(function (index, dateField) {
+          var value = parseInt($(dateField).val());
+          $(dateField).val('');
+          
+          $(dateField).datepicker({
+            "dateFormat": getLocaleText('datePattern')
+          });
+          
+          if (!isNaN(value)) {
+            $(dateField).datepicker('setDate', new Date(value));
+          }
+        });
+        
         this.element.on('click', 'input[name="copy-materials"]', $.proxy(function (event) {
           if ($(event.target).prop('checked')) {
             this._showPage('materials');
@@ -146,20 +228,43 @@
       });
     },
     
+    _createWorkspaceLoad: function (workspaceEntityId) {
+      return function (callback) {
+        mApi().workspace.workspaces
+          .read(workspaceEntityId)
+          .callback(callback);
+      }
+    },
+    
+    _createWorkspaceDetailsLoad: function (workspaceEntityId) {
+      return function (callback) {
+        mApi().workspace.workspaces.details
+          .read(workspaceEntityId)
+          .callback(callback);
+      }
+    },
+    
     _load: function (callback) {
-      mApi().coursepicker.workspaces
-        .read(this.options.workspaceEntityId)
-        .callback($.proxy(function (err, workspace) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            renderDustTemplate('workspacecopywizard/workspace-copy-wizard.dust', {
-              workspace: workspace
-            }, function (text) {
-              callback(text);
-            });
-          }
-        }, this));
+      var loads = [
+        this._createWorkspaceLoad(this.options.workspaceEntityId), 
+        this._createWorkspaceDetailsLoad(this.options.workspaceEntityId)
+      ];
+      
+      async.parallel(loads, function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var workspace = results[0];
+          var workspaceDetails = results[1];
+
+          renderDustTemplate('workspacecopywizard/workspace-copy-wizard.dust', {
+            workspace: workspace,
+            workspaceDetails: workspaceDetails
+          }, function (text) {
+            callback(text);
+          });
+        }
+      });
     },
     
     _updatePageNumbers: function () {
@@ -193,11 +298,26 @@
           this.element.find('.summary').empty();
           
           this._addSummaryStep("copy-course", "Copy course");
+          
+          var beginDate = $('input[name="beginDate"]')
+            .datepicker('getDate');
+          
+          var endDate = $('input[name="endDate"]')
+            .datepicker('getDate');
+          
+          if (beginDate || endDate) {
+            this._addSummaryStep('change-dates', "Change dates");
+          }
+          
           if (this.element.find('input[name="copy-materials"]').prop('checked')) {
             this._addSummaryStep('copy-materials', "Copy materials");
           }
         break;
       }
+    },
+    
+    _setCreatedWorkspace: function (createdWorkspace) {
+      this._createdWorkspace = createdWorkspace;
     },
     
     _addSummaryStep: function (id, text) {
@@ -230,7 +350,26 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          // All done
+          mApi().workspace.workspaces.details
+            .read(this._createdWorkspace.id)
+            .callback($.proxy(function (err, details) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                var summaryPage = this._getPage('summary');
+                var name = this._createdWorkspace.name + (this._createdWorkspace.nameExtension ? ' (' + this._createdWorkspace.nameExtension + ')' : '');
+                
+                summaryPage
+                  .find('.externalViewUrl')
+                  .attr('href', details.externalViewUrl)
+                  .text(details.externalViewUrl);
+                
+                summaryPage
+                  .find('.workspaceEntityUrl')
+                  .attr('href', CONTEXTPATH + '/workspace/' + this._createdWorkspace.urlName)
+                  .text(name);
+              }
+            }, this));
         }
       }, this));
     }

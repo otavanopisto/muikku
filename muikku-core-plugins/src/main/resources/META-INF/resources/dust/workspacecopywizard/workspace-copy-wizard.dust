@@ -7,51 +7,105 @@
       </div>
     </div>
   
-    <div class="flex-row">
+    <div class="flex-row wizard-page-content">
       <div class="flex-cell-full">
-        <label>{#localize key="plugin.workspacecopywizard.workspaceName.label"/}</label>
-      </div>
-    </div>
-
-    <div class="flex-row">
-      <div class="flex-cell-full">
-        <input name="workspace-name" value="{workspace.name}"/>
-      </div>
-    </div>
-  
-    <div class="flex-row">
-      <div class="flex-cell-full">
-        <label>{#localize key="plugin.workspacecopywizard.workspaceExtension.label"/}</label>
-      </div>
-    </div>
-
-    <div class="flex-row">
-      <div class="flex-cell-full">
-        <input name="workspace-name-extension" value="{workspace.nameExtension}"/>
-      </div>
+    
+        <div class="flex-row">
+          <div class="flex-cell-full">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceName.label"/}</label>
+            <input type="text" name="workspace-name" value="{workspace.name}"/>
+          </div>
+        </div>
+    
+        <div class="flex-row">
+          <div class="flex-cell-full">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceExtension.label"/}</label>
+            <input type="text" name="workspace-name-extension" value="{workspace.nameExtension}"/>
+          </div>
+        </div>
+    
+     </div>
     </div>
   </section>
-
+  
   <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="dates">
-    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
-    Päiväämäät jne,
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
+    </div>
+    
+    <div class="flex-row wizard-page-content">
+      <div class="flex-cell-full">
+    
+        <div class="flex-row">
+          <div class="flex-cell-8 flex-cell-first">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceStartDate.label"/}</label>
+            <input class="date-field" type="text" name="beginDate" value="{workspaceDetails.beginDate}"/>
+          </div>
+          <div class="flex-cell-8 flex-cell-last">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceEndDate.label"/}</label>
+            <input class="date-field" type="text" name="endDate" value="{workspaceDetails.endDate}"/>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    
   </section>
 
   <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="description">
-    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
-    Kuvaus
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
+    </div>
+    
+    <div class="flex-row wizard-page-content">
+      <div class="flex-cell-full">
+        <label>{#localize key="plugin.workspacecopywizard.workspaceDescription.label"/}</label>
+        <textarea class="ckeditor-field workspace-description">{workspace.description}</textarea>
+      </div>
+    </div>
   </section>
 
   <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="settings">
-    <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
-    <div>
-      <input type="checkbox" name="copy-materials"/>
-      <label>{#localize key="plugin.workspacecopywizard.workspaceMaterials.label"/}</label>
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
     </div>
     
-    <div>
-      <input type="checkbox" name="copy-discussions"/>
-      <label>{#localize key="plugin.workspacecopywizard.workspaceDiscussions.label"/}</label>
+    <div class="flex-row wizard-page-content">
+      <div class="flex-cell-full">
+        <label>{#localize key="plugin.workspacecopywizard.workspaceOtherSettings.label"/}</label>
+        
+        <div class="flex-row">
+          <div class="flex-cell-8 flex-cell-first">
+          
+            <div class="selection-row">
+              <div class="selection-cell">
+                <input type="checkbox" id="copy-materials" name="copy-materials"/>
+              </div>
+              <div class="selection-cell">
+                <label for="copy-materials" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.label"/}</label>  
+              </div>
+            </div>
+          </div>
+          <div class="flex-cell-8 flex-cell-first">
+            <div class="selection-row">
+              <div class="selection-cell">
+                <input type="checkbox" id="copy-discussions-areas" name="copy-discussions-areas"/>
+              </div>
+              <div class="selection-cell">
+                <label for="copy-discussions-areas" class="selection">{#localize key="plugin.workspacecopywizard.workspaceDiscussionsAreas.label"/}</label>  
+              </div>
+            </div>
+          </div>
+        </div>
+    
+      </div>
     </div>
   </section>
 
@@ -80,7 +134,9 @@
       
     </ul>
 
-    <div class="copy"></div>
+    <div class="copy" style="height: 100px; width: 400px; border: 1px outline #000; background: #666"></div>
+    <a class="workspaceEntityUrl"></a>
+    <a target="_blank" class="externalViewUrl"></a>
   </section>
 
   <ul class="progress-pages" style="display:none;"/>

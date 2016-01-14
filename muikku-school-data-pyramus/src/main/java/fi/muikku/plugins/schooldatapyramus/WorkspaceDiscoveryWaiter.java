@@ -29,6 +29,10 @@ public class WorkspaceDiscoveryWaiter {
   public Long waitDiscovered(SchoolDataIdentifier workspaceIdentifier) {
     long timeoutTime = System.currentTimeMillis() + TIMEOUT;    
     Long result = null;
+    if (waits.containsKey(workspaceIdentifier.toId())) {
+      return waits.remove(workspaceIdentifier.toId());
+    }
+    
     waits.put(workspaceIdentifier.toId(), null);
     
     while (result == null) {

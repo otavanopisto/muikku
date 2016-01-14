@@ -267,24 +267,7 @@
       $('<div>')
         .appendTo(document.body)
         .workspaceCopyWizard({
-          workspaceEntityId: workspaceEntityId,
-          steps: {
-            'copy-course': function (callback) {
-              var name = this._getPage('name').find('input[name="workspace-name"]').val();
-              var nameExtension = this._getPage('name').find('input[name="workspace-name-extension"]').val();
-              
-              var payload = {
-                name: name,
-                nameExtension: nameExtension
-              };
-              
-              mApi().workspace.workspaces
-                .create(payload, { sourceWorkspaceEntityId: this.options.workspaceEntityId })
-                .callback(function (err, result) {
-                  callback(null, result);
-                });
-            }
-          }
+          workspaceEntityId: workspaceEntityId
         });
     },
     _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
