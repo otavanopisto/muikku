@@ -65,7 +65,7 @@
     <div class="flex-row wizard-page-content">
       <div class="flex-cell-full">
         <label>{#localize key="plugin.workspacecopywizard.workspaceDescription.label"/}</label>
-        <textarea class="workspace-description"></textarea>
+        <textarea class="ckeditor-field workspace-description"></textarea>
       </div>
     </div>
   </section>

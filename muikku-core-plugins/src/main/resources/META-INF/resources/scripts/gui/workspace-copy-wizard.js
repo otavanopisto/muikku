@@ -52,6 +52,22 @@
               }
             }, this));
         }
+      },
+      ckeditor: {
+        height : '200px',
+        entities: false,
+        entities_latin: false,
+        entities_greek: false,
+        toolbar: [
+          { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+          { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+          { name: 'links', items: [ 'Link' ] },
+          { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+          { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+          { name: 'styles', items: [ 'Format' ] },
+          { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+          { name: 'tools', items: [ 'Maximize' ] }
+        ]
       }
     },
     
@@ -66,8 +82,10 @@
           .first()
           .addClass('wizard-page-active');
         
+        this.element.find('.ckeditor-field').each($.proxy(function (index, ckField) {
+          CKEDITOR.replace(ckField, this.options.ckeditor);
+        }, this));
         
-
         this.element.find('.date-field').each(function (index, dateField) {
           var value = parseInt($(dateField).val());
           $(dateField).val('');
