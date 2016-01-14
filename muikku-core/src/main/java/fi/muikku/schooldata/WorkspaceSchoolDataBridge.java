@@ -20,7 +20,7 @@ public interface WorkspaceSchoolDataBridge {
 
 	public Workspace createWorkspace(String name, String description, WorkspaceType type, String courseIdentifierIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
-	public Workspace copyWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension);
+	public Workspace copyWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension, String description);
 
 	public Workspace findWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 

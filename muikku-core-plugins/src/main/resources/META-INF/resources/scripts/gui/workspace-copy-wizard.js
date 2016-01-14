@@ -5,13 +5,15 @@
     options: {
       workspaceEntityId: null,
       steps: {
-        'copy-course': function (callback) {
+        'copy-workspace': function (callback) {
           var name = this._getPage('name').find('input[name="workspace-name"]').val();
           var nameExtension = this._getPage('name').find('input[name="workspace-name-extension"]').val();
+          var description = CKEDITOR.instances['workspace-description'].getData();
           
           var payload = {
             name: name,
-            nameExtension: nameExtension
+            nameExtension: nameExtension,
+            description: description
           };
           
           mApi().workspace.workspaces
@@ -21,6 +23,44 @@
                 callback(err);
               } else {
                 this._setCreatedWorkspace(result);
+                
+                var nameText = result.nameExtension ? 
+                  getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspaceNameWithExtension', result.name, result.nameExtension) :
+                  getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspaceName', result.name);
+                
+                var details = $('<ul>')
+                  .append($('<li>').text(nameText));
+
+                this._getPage('summary')
+                  .find('.summary li[data-id="copy-workspace"]')
+                  .append(details);
+                
+                callback(null, result);
+              }
+            }, this));
+        },
+        'copy-discussions-areas': function (callback) {
+          var payload = {};
+          
+          mApi().forum.workspace.areas
+            .create(this._createdWorkspace.id, payload, { sourceWorkspaceEntityId: this.options.workspaceEntityId })
+            .callback(callback);
+        },
+        'copy-materials': function (callback) {
+          var cloneMaterials = this._getPage('materials').find('input[name="material-copy-style"]:checked').val() == 'copy';
+          var payload = {};
+          
+          mApi().workspace.workspaces.materials
+            .create(this._createdWorkspace.id, payload, { 
+              sourceWorkspaceEntityId: this.options.workspaceEntityId, 
+              targetWorkspaceEntityId: this._createdWorkspace.id, 
+              copyOnlyChildren: true,
+              cloneMaterials: cloneMaterials
+            })
+            .callback($.proxy(function (err, result) {
+              if (err) {
+                callback(err);
+              } else {
                 callback(null, result);
               }
             }, this));
@@ -46,9 +86,23 @@
                 
                 mApi().workspace.workspaces.details
                   .update(this._createdWorkspace.id, workspaceDetails)
-                  .callback(function (saveErr) {
+                  .callback($.proxy(function (saveErr) {
+                    var details = $('<ul>');
+
+                    this._getPage('summary')
+                      .find('.summary li[data-id="change-dates"]')
+                      .append(details);
+                    
+                    if (workspaceDetails.beginDate) {
+                      details.append($('<li>').text(getLocaleText('plugin.workspacecopywizard.summarySteps.changeDatesBeginDate', formatDate(new Date(workspaceDetails.beginDate)))));
+                    }
+                   
+                    if (workspaceDetails.endDate) {
+                      details.append($('<li>').text(getLocaleText('plugin.workspacecopywizard.summarySteps.changeDatesEndDate', formatDate(new Date(workspaceDetails.endDate)))));
+                    }
+                    
                     callback(saveErr);
-                  });
+                  }, this));
               }
             }, this));
         }
@@ -152,6 +206,9 @@
       var steps = $.map(this.element.find('.summary li'), function (li) {
         return $(li).attr('data-id');
       });
+      
+      this.element 
+        .find('.copy,.prev,.next').hide();
       
       this._doCopy(steps);
     },
@@ -306,7 +363,7 @@
         case 'summary':
           this.element.find('.summary').empty();
           
-          this._addSummaryStep("copy-course", "Copy course");
+          this._addSummaryStep("copy-workspace", getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspace'));
           
           var beginDate = $('input[name="beginDate"]')
             .datepicker('getDate');
@@ -315,11 +372,15 @@
             .datepicker('getDate');
           
           if (beginDate || endDate) {
-            this._addSummaryStep('change-dates', "Change dates");
+            this._addSummaryStep('change-dates', getLocaleText('plugin.workspacecopywizard.summarySteps.changeDates'));
+          }
+          
+          if (this.element.find('input[name="copy-discussions-areas"]').prop('checked')) {
+            this._addSummaryStep('copy-discussions-areas', getLocaleText('plugin.workspacecopywizard.summarySteps.copyDiscussionAreas'));
           }
           
           if (this.element.find('input[name="copy-materials"]').prop('checked')) {
-            this._addSummaryStep('copy-materials', "Copy materials");
+            this._addSummaryStep('copy-materials', getLocaleText('plugin.workspacecopywizard.summarySteps.copyMaterials'));
           }
         break;
       }
@@ -331,7 +392,7 @@
     
     _addSummaryStep: function (id, text) {
       return $('<li>')
-        .text(text)
+        .append($('<span>').text(text))
         .attr({
           'data-id': id
         })

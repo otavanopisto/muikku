@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 
 import fi.muikku.schooldata.SchoolDataIdentifier;
@@ -56,7 +57,7 @@ public class WorkspaceDiscoveryWaiter {
     return result;
   }
   
-  public void onWaitingWorkspaceDiscoveredEvent(@Observes SchoolDataWorkspaceDiscoveredEvent event) {
+  public void onWaitingWorkspaceDiscoveredEvent(@Observes (during = TransactionPhase.AFTER_SUCCESS) SchoolDataWorkspaceDiscoveredEvent event) {
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
     String id = workspaceIdentifier.toId();
     
