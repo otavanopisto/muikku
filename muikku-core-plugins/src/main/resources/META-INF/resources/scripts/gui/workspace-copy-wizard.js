@@ -17,12 +17,21 @@
           .find('.wizard-page')
           .first()
           .addClass('wizard-page-active');
+        
+        
 
-        this.element
-          .find('.date-field')
-          .datepicker({
+        this.element.find('.date-field').each(function (index, dateField) {
+          var value = parseInt($(dateField).val());
+          $(dateField).val('');
+          
+          $(dateField).datepicker({
             "dateFormat": getLocaleText('datePattern')
           });
+          
+          if (!isNaN(value)) {
+            $(dateField).datepicker('setDate', new Date(value));
+          }
+        });
         
         this.element.on('click', 'input[name="copy-materials"]', $.proxy(function (event) {
           if ($(event.target).prop('checked')) {
@@ -153,20 +162,43 @@
       });
     },
     
+    _createWorkspaceLoad: function (workspaceEntityId) {
+      return function (callback) {
+        mApi().workspace.workspaces
+          .read(workspaceEntityId)
+          .callback(callback);
+      }
+    },
+    
+    _createWorkspaceDetailsLoad: function (workspaceEntityId) {
+      return function (callback) {
+        mApi().workspace.workspaces.details
+          .read(workspaceEntityId)
+          .callback(callback);
+      }
+    },
+    
     _load: function (callback) {
-      mApi().workspace.workspaces
-        .read(this.options.workspaceEntityId)
-        .callback($.proxy(function (err, workspace) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            renderDustTemplate('workspacecopywizard/workspace-copy-wizard.dust', {
-              workspace: workspace
-            }, function (text) {
-              callback(text);
-            });
-          }
-        }, this));
+      var loads = [
+        this._createWorkspaceLoad(this.options.workspaceEntityId), 
+        this._createWorkspaceDetailsLoad(this.options.workspaceEntityId)
+      ];
+      
+      async.parallel(loads, function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var workspace = results[0];
+          var workspaceDetails = results[1];
+
+          renderDustTemplate('workspacecopywizard/workspace-copy-wizard.dust', {
+            workspace: workspace,
+            workspaceDetails: workspaceDetails
+          }, function (text) {
+            callback(text);
+          });
+        }
+      });
     },
     
     _updatePageNumbers: function () {
@@ -200,6 +232,16 @@
           this.element.find('.summary').empty();
           
           this._addSummaryStep("copy-course", "Copy course");
+          
+          var beginDate = $('input[name="beginDate"]')
+            .datepicker('getDate');
+          
+          var endDate = $('input[name="endDate"]')
+            .datepicker('getDate');
+          
+          if (beginDate || endDate) {
+            this._addSummaryStep('change-dates', "Change dates");
+          }
           
           if (this.element.find('input[name="copy-materials"]').prop('checked')) {
             this._addSummaryStep('copy-materials', "Copy materials");
@@ -242,9 +284,9 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          mApi().workspace.workspaces.externalUrls
+          mApi().workspace.workspaces.details
             .read(this._createdWorkspace.id)
-            .callback($.proxy(function (err, externalUrls) {
+            .callback($.proxy(function (err, details) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
@@ -253,8 +295,8 @@
                 
                 summaryPage
                   .find('.externalViewUrl')
-                  .attr('href', externalUrls.externalViewUrl)
-                  .text(externalUrls.externalViewUrl);
+                  .attr('href', details.externalViewUrl)
+                  .text(details.externalViewUrl);
                 
                 summaryPage
                   .find('.workspaceEntityUrl')

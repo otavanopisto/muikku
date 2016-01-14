@@ -41,11 +41,11 @@
         <div class="flex-row">
           <div class="flex-cell-8 flex-cell-first">
             <label>{#localize key="plugin.workspacecopywizard.workspaceStartDate.label"/}</label>
-            <input class="date-field" type="text" name="startDate"/>
+            <input class="date-field" type="text" name="beginDate" value="{workspaceDetails.beginDate}"/>
           </div>
           <div class="flex-cell-8 flex-cell-last">
             <label>{#localize key="plugin.workspacecopywizard.workspaceEndDate.label"/}</label>
-            <input class="date-field" type="text" name="endDate"/>
+            <input class="date-field" type="text" name="endDate" value="{workspaceDetails.endDate}"/>
           </div>
         </div>
         

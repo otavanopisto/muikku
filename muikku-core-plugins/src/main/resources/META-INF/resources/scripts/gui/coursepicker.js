@@ -288,6 +288,33 @@
                     callback(null, result);
                   }
                 }, this));
+            },
+            "change-dates": function (callback) {
+              var beginDate = $('input[name="beginDate"]')
+                .datepicker('getDate');
+              
+              var endDate = $('input[name="endDate"]')
+                .datepicker('getDate');
+              
+              mApi().workspace.workspaces.details
+                .read(this._createdWorkspace.id)
+                .callback($.proxy(function (loadErr, workspaceDetails) {
+                  if (loadErr) {
+                    callback(loadErr);
+                  } else {
+                    var beginTime = beginDate ? beginDate.getTime() : null;
+                    var endTime = endDate ? endDate.getTime() : null;
+                    
+                    workspaceDetails.beginDate = beginTime;
+                    workspaceDetails.endDate = endTime;
+                    
+                    mApi().workspace.workspaces.details
+                      .update(this._createdWorkspace.id, workspaceDetails)
+                      .callback(function (saveErr) {
+                        callback(saveErr);
+                      });
+                  }
+                }, this));
             }
           }
         });
