@@ -80,7 +80,7 @@ public class WorkspaceController {
 
   @Inject
   private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
-  
+
   /* Workspace */
 
   public Workspace createWorkspace(String schoolDataSource, String name, String description, WorkspaceType type,
@@ -93,10 +93,14 @@ public class WorkspaceController {
     return workspaceSchoolDataController.findWorkspace(workspaceEntity);
   }
 
-  public Workspace findWorkspace(String schoolDataSourceName, String identifier) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSourceName);
-    // TODO: Error handling
-    return findWorkspace(schoolDataSource, identifier);
+  public Workspace findWorkspace(SchoolDataIdentifier workspaceIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      logger.severe(String.format("Could not find school data source %s", workspaceIdentifier.getDataSource()));
+      return null;
+    }
+    
+    return findWorkspace(schoolDataSource, workspaceIdentifier.getIdentifier());
   }
 
   public Workspace findWorkspace(SchoolDataSource schoolDataSource, String identifier) {
@@ -113,6 +117,10 @@ public class WorkspaceController {
 
   public List<Workspace> listWorkspaces(String schoolDataSource) {
     return workspaceSchoolDataController.listWorkspaces(schoolDataSource);
+  }
+  
+  public Workspace copyWorkspace(SchoolDataIdentifier workspaceIdentifier, String name, String nameExtension, String description) {
+    return workspaceSchoolDataController.copyWorkspace(workspaceIdentifier, name, nameExtension, description);
   }
 
   public Workspace updateWorkspace(Workspace workspace) {
