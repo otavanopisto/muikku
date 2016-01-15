@@ -387,7 +387,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{ID}/details")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getWorkspaceExternalViewUrl(@PathParam("ID") Long workspaceEntityId) {
+  public Response getWorkspaceDetails(@PathParam("ID") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -408,7 +408,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @PUT
   @Path("/workspaces/{ID}/details")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getWorkspaceExternalViewUrl(@PathParam("ID") Long workspaceEntityId, WorkspaceDetails payload) {
+  public Response updateWorkspaceDetails(@PathParam("ID") Long workspaceEntityId, WorkspaceDetails payload) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
