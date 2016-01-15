@@ -4,7 +4,7 @@
     <ul class="mf-list gu-filters"> 
       {#data}
         <li id="{type}-{id}">
-          <a class="gu-filter-link" href="#filter/{type}/{id}" data-type="{type}" data-id="{id}">
+          <a class="gu-filter-link" data-type="{type}" data-id="{id}">
             <span class="{iconClass}"></span>
             <span>{name}</span>
           </a></li>    
