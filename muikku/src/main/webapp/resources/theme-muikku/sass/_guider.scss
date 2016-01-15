@@ -433,6 +433,44 @@
   }    
 }
 
+/* This is an unneccessary override, needs to be similar with the rest of the mainfunctions - in the future */
+
+.gt-filters-container{
+  ul{
+      list-style-type: none;
+      
+      li{
+        border-bottom: 1px solid $brd1;
+        border-left:0;        
+        a{
+          font-weight:300;
+          text-decoration:none;
+          color:#000;
+          display:inline-block;
+          box-sizing:border-box;
+          width:100%;
+          padding-top:5px;
+          padding-bottom:5px;
+          padding-left:10px;
+          border-left: 5px solid #fff;       
+          &:hover{
+            border-left:5px solid $brd1;     
+            cursor:pointer;   
+          } 
+          &.selected{
+            background-color:$bgr3;
+            border-left:5px solid $brd2;
+
+          }                
+        }
+        &:hover{
+          border-left:0     
+        } 
+      }
+   
+  }  
+}
+
 .gt-filter-link[data-type="studentFlagType"] {
   
   .icon-flag {
