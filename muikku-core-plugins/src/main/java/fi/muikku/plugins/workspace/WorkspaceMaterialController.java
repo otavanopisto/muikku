@@ -360,6 +360,18 @@ public class WorkspaceMaterialController {
       Material material = getMaterialForWorkspaceMaterial(workspaceMaterial);
       isHtmlMaterial = material instanceof HtmlMaterial;
       Material clonedMaterial = cloneMaterials && !overrideCloneMaterials ? materialController.cloneMaterial(material) : material;
+
+      // Implementation of feature #1232 (front and help pages should always be copies)
+      if (isHtmlMaterial && !cloneMaterials) {
+        WorkspaceNode parentNode = workspaceMaterial.getParent();
+        if (parentNode instanceof WorkspaceFolder) {
+          WorkspaceFolder parentFolder = (WorkspaceFolder) parentNode;
+          if (parentFolder.getFolderType() == WorkspaceFolderType.FRONT_PAGE || parentFolder.getFolderType() == WorkspaceFolderType.HELP_PAGE) {
+            clonedMaterial = materialController.cloneMaterial(material);
+          }
+        }
+      }
+      
       newNode = createWorkspaceMaterial(
           parent,
           clonedMaterial,
