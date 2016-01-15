@@ -15,19 +15,29 @@
     _create : function() {
       this._filters = [];
       this._loadFilters($.proxy(function () {
-        this.element.on('click', '.gu-filter-link', $.proxy(this._onFilterLink, this));
+        this.element.on('click', '.gt-filter-link', $.proxy(this._onFilterLink, this));
       }, this));
     },
     
     _onFilterLink: function (event) {
-      var element = $(event.target).closest('.gu-filter-link');
-      switch (element.attr('data-type')) {
-        case 'workspace':
-          $('.gt-students-view-container').guiderStudents('workspaces', [ element.attr('data-id') ]);
-        break;
-        case 'studentFlagType':
-          $('.gt-students-view-container').guiderStudents('studentFlagTypes', [ element.attr('data-id') ]);
-        break;
+      var liElement = $(event.target).closest('li');
+      var allLiElements = $('.gt-filters').find('li');
+      if(liElement.hasClass('selected')){
+        $(allLiElements).removeClass('selected');
+        window.location.hash = "";
+        window.location.reload();
+      }else{
+        $(allLiElements).removeClass('selected');        
+        liElement.addClass('selected');
+        var element = $(event.target).closest('.gt-filter-link');
+        switch (element.attr('data-type')) {
+          case 'workspace':
+            $('.gt-students-view-container').guiderStudents('workspaces', [ element.attr('data-id') ]);
+          break;
+          case 'studentFlagType':
+            $('.gt-students-view-container').guiderStudents('studentFlagTypes', [ element.attr('data-id') ]);
+          break;
+        }
       }
     },
     
@@ -443,6 +453,7 @@
     var studentFlagTypes = null;
     var openStudentProfile = null;
     
+    
     var hash = window.location.hash;
     if (hash && hash.length > 1) {
       var settings = hash.substring(1).split(',');
@@ -482,7 +493,7 @@
       }
     }
     
-    $('.gu-filters').guiderFilters();
+    $('.gt-filters-container').guiderFilters();
     $('.gt-search').guiderSearch();
     $('.gt-students-view-container').guiderStudents({
       workspaceIds: workspaceIds,
