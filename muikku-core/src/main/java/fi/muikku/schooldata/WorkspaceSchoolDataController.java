@@ -113,6 +113,17 @@ class WorkspaceSchoolDataController {
     return result;
   }
 
+  public Workspace copyWorkspace(SchoolDataIdentifier workspaceIdentifier, String name, String nameExtension, String description) {
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceIdentifier.getDataSource());
+    if (workspaceBridge != null) {
+      return workspaceBridge.copyWorkspace(workspaceIdentifier, name, nameExtension, description);
+    } else {
+      logger.log(Level.SEVERE, String.format("School Data Bridge not found: %s", workspaceIdentifier));
+    }
+    
+    return null;
+  }
+
   public Workspace updateWorkspace(Workspace workspace) {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspace.getSchoolDataSource());
     if (workspaceBridge != null) {

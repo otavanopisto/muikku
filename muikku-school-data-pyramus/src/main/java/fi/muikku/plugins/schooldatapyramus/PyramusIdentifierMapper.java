@@ -20,7 +20,7 @@ public class PyramusIdentifierMapper {
   private static final String STUDYPROGRAMMESTUDENT_PREFIX = "STUDYPROGRAMMESTUDENT-";
 
   public String getWorkspaceIdentifier(Long courseId) {
-    return courseId.toString();
+    return courseId != null ? courseId.toString() : null;
   }
   
   public Long getPyramusCourseId(String workspaceIdentifier) {

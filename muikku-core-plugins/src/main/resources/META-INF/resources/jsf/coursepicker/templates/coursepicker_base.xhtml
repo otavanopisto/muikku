@@ -10,10 +10,13 @@
 
 
 
-  <ui:define name="viewCss"></ui:define> 
+  <ui:define name="viewCss">
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-copy-wizard.css" />
+  </ui:define> 
  
   <ui:define name="viewScripts">
-   <h:outputScript name="scripts/gui/coursepicker.js" />
+    <h:outputScript name="scripts/gui/coursepicker.js" />
+    <h:outputScript target="head" name="/scripts/gui/workspace-copy-wizard.js"/>
   </ui:define>
 
   <ui:define name="hiddenFields">

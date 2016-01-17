@@ -67,11 +67,14 @@
               {:else}
                 <div class="mf-item-tool-btn cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.checkout" /}</span></div>
               {/isCourseMember}
-            
               {#isLoggedIn}
                 {#canSignup}
                   <div class="mf-item-tool-btn cp-course-attend-button"><span>{#localize key="plugin.coursepicker.course.signup" /}</span></div>
                 {/canSignup}
+                {#canCopyWorkspace}
+                  <input class="bt-coursepicker cp-course-copy-button" type="button"
+                    value='{#localize key="plugin.coursepicker.course.copy" /}' />
+                {/canCopyWorkspace}
               {/isLoggedIn}
             </div>
           </div>
