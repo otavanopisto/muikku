@@ -26,6 +26,7 @@ import fi.pyramus.rest.model.CourseOptionality;
 import fi.pyramus.rest.model.CourseParticipationType;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStudent;
+import fi.pyramus.rest.model.EducationType;
 import fi.pyramus.rest.model.Subject;
 
 public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
@@ -194,7 +195,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       return null;
     
     String educationTypeIdentifier = null;
-    
+   
     if (course.getSubjectId() != null) {
       Subject subject = pyramusClient.get("/common/subjects/" + course.getSubjectId(), fi.pyramus.rest.model.Subject.class);
       if (subject == null) {
@@ -205,7 +206,11 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       }
     }
     
-    return entityFactory.createEntity(course, educationTypeIdentifier);
+    // TODO do these when Pyramus REST exposes them
+    String educationTypeCode = "";
+    String educationSubtypeCode = "";
+    
+    return entityFactory.createEntity(course, educationTypeIdentifier, educationTypeCode, educationSubtypeCode);
   }
 
   @Override

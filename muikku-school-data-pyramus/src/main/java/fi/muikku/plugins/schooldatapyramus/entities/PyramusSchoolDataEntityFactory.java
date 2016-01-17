@@ -2,6 +2,7 @@ package fi.muikku.plugins.schooldatapyramus.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -256,7 +257,7 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public Workspace createEntity(Course course, String educationTypeIdentifier) {
+  public Workspace createEntity(Course course, String educationTypeIdentifier, String educationTypeCode, String educationSubtypeCode) {
     if (course == null) {
       return null;
     }
@@ -265,6 +266,16 @@ public class PyramusSchoolDataEntityFactory {
     if (modified == null) {
       modified = course.getCreated();
     }
+    
+    boolean courseFeeApplicable = true;
+    
+    if ((Objects.equals(educationTypeCode, "lukio") && Objects.equals(educationSubtypeCode, "pakollinen")) ||    
+        (Objects.equals(educationTypeCode, "lukio") && Objects.equals(educationSubtypeCode, "valtakunnallinensyventava")) ||    
+        (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "pakollinen")) ||    
+        (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "valinnainen"))) {
+      courseFeeApplicable = false;
+    }
+
     return new PyramusWorkspace(
         identifierMapper.getWorkspaceIdentifier(course.getId()),
         course.getName(),
@@ -274,7 +285,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getWorkspaceCourseIdentifier(course.getSubjectId(), course.getCourseNumber()),
         modified.toDate(), identifierMapper.getSubjectIdentifier(course.getSubjectId()), educationTypeIdentifier,
         course.getLength(), identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
-        course.getBeginDate(), course.getEndDate(), course.getArchived());
+        course.getBeginDate(), course.getEndDate(), course.getArchived(), courseFeeApplicable);
   }
 
   public WorkspaceType createEntity(CourseType courseType) {
