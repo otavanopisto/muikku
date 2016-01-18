@@ -46,4 +46,7 @@ public interface User extends SchoolDataEntity {
   DateTime getStudyTimeEnd();
 
   boolean getHidden();
+  
+  boolean hasEvaluationFees();
+  
 }
