@@ -32,7 +32,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   }
   
   .textfield-wrapper {
-    display:inline-block;
+    display:inline;
     position:relative;
   
     span.muikku-text-field-hint {
@@ -586,9 +586,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       background:#e2ffe2;
       font-style:italic;
       margin:1px 3px 1px 3px;
-      @include flexbox();
-      align-items:flex-start;
-      flex-flow:row nowrap;
+      display:inline-block;
       
       span.muikku-field-examples-title {
         font-weight:600;
@@ -596,8 +594,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       }
       
       span.muikku-field-example {
-        display:inline-block;
         margin:0px 5px;
+        padding:0 6px;
       }
       
     }
