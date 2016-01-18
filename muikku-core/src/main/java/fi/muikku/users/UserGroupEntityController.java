@@ -102,6 +102,10 @@ public class UserGroupEntityController {
     userGroupUserEntityDAO.updateArchived(userGroupUserEntity, Boolean.FALSE);
   }
 
+  public void deleteUserGroupUserEntity(UserGroupUserEntity userGroupUserEntity) {
+    userGroupUserEntityDAO.delete(userGroupUserEntity);
+  }
+  
   public List<UserGroupEntity> listUserGroupEntitiesByDataSource(String dataSource, int firstResult, int maxResults) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {
@@ -164,6 +168,10 @@ public class UserGroupEntityController {
 
   public UserGroupEntity unarchiveUserGroupEntity(UserGroupEntity userGroupEntity) {
     return userGroupEntityDAO.updateArchived(userGroupEntity, Boolean.FALSE);
+  }
+  
+  public void deleteUserGroupEntity(UserGroupEntity userGroupEntity){
+    userGroupEntityDAO.delete(userGroupEntity);
   }
 
 }

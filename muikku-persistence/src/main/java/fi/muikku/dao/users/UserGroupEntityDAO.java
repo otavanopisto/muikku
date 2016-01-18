@@ -173,4 +173,8 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
     return entityManager.createQuery(criteria).getSingleResult();
   }
 
+  public void delete(UserGroupEntity userGroupEntity){
+    super.delete(userGroupEntity);
+  }
+  
 }

@@ -65,6 +65,7 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
 import fi.muikku.TestUtilities;
+import fi.muikku.atests.Announcement;
 import fi.muikku.atests.CommunicatorMessageRESTModel;
 import fi.muikku.atests.CommunicatorNewMessageRESTModel;
 import fi.muikku.atests.Workspace;
@@ -365,6 +366,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForElementToBePresent(By.cssSelector(selector));
   }
 
+  protected void waitForNotVisible(String selector) {
+    new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(selector)));
+  }
+  
   protected boolean isElementPresent(String selector) {
     try {
       getWebDriver().findElement(By.cssSelector(selector));
@@ -378,14 +383,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void click(String selector) {
     getWebDriver().findElement(By.cssSelector(selector)).click();
   }
-  
+
   protected void waitForClickable(String selector){
     waitForPresent(selector);
   }
   
   protected void waitAndClick(String selector) {
     waitForPresent(selector);
-    click(selector);
+    if(getWebDriver().findElement(By.cssSelector(selector)).isEnabled()){
+      new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
+      click(selector);
+    }
   }
   
   protected void waitScrollAndClick(String selector) {
@@ -414,13 +422,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertEquals(StringUtils.lowerCase(text), StringUtils.lowerCase(element.getText()));
   }
   
-  
   protected void sendKeys(String selector, String keysToSend) {
     getWebDriver().findElement(By.cssSelector(selector)).sendKeys(keysToSend);
   }
   
   protected void clearElement(String selector) {
-    getWebDriver().findElement(By.cssSelector(selector)).clear();;
+    getWebDriver().findElement(By.cssSelector(selector)).clear();
   }
   
   
@@ -493,6 +500,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
+    navigate("/login?authSourceId=1", true);
+    waitForPresent(".index");
+  }
+  
+  protected void login() {
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
   }
@@ -706,6 +718,35 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertNotNull(result.getId());
   }
   
+  protected void deleteAnnouncements() {
+    asAdmin()
+      .delete("/test/announcements")
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void createAnnouncement(Long publisherUserEntityId, String caption, String content, Date startDate, Date endDate, Boolean archived, Boolean publiclyVisible, List<Long> userGroupIds) throws Exception {
+    Announcement payload = new Announcement(null, publisherUserEntityId, userGroupIds, caption, content, new Date(), startDate, endDate, archived, publiclyVisible);                 
+    asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/announcements");
+  }
+  
+  protected void deleteUserGroup(Long userGroupId) {
+    asAdmin()
+      .delete("/test/userGroups/{USERGROUPID}", userGroupId)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void deleteUserGroupUser(Long userGroupId, Long userId) {
+    asAdmin()
+      .delete("test/userGroups/{USERGROUPID}/{USERID}", userGroupId, userId)
+      .then()
+      .statusCode(204);
+  }
+    
   protected String getAttributeValue(String selector, String attribute){
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     return element.getAttribute(attribute);
