@@ -307,7 +307,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         courseEducationSubtypeList.add(educationSubtypeCode);
       }
 
-      courseEducationTypeMap.put(educationTypeCode, new ArrayList<String>());
+      courseEducationTypeMap.put(educationTypeCode, courseEducationSubtypeList);
     }
     
     return entityFactory.createEntity(course, educationTypeIdentifier, courseEducationTypeMap);

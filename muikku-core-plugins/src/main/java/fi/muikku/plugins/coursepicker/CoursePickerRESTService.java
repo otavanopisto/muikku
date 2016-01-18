@@ -385,7 +385,8 @@ public class CoursePickerRESTService extends PluginRESTService {
         lastVisit, 
         canSignup, 
         canCopyWorkspace,
-        isCourseMember);
+        isCourseMember,
+        workspace.isEvaluationFeeApplicable());
   }
   
 }
