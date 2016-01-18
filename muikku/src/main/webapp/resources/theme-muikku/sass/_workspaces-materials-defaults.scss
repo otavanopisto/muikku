@@ -590,12 +590,19 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       
       span.muikku-field-examples-title {
         font-weight:600;
-        margin:0px 4px;
+        margin:0px 6px;
       }
       
       span.muikku-field-example {
-        margin:0px 5px;
-        padding:0 6px;
+        margin:3px 0px 3px 5px;
+        padding:0 8px;
+        border-left:1px solid #439ba0;
+        display:inline-block;
+        line-height:1.5;
+        
+        &:last-child {
+          
+        }
       }
       
     }
