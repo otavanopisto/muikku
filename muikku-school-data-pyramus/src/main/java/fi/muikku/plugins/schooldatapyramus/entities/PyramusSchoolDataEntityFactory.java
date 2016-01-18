@@ -2,6 +2,7 @@ package fi.muikku.plugins.schooldatapyramus.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -263,7 +264,11 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public Workspace createEntity(Course course, String educationTypeIdentifier, String educationTypeCode, String educationSubtypeCode) {
+  public Workspace createEntity(
+      Course course,
+      String educationTypeIdentifier,
+      Map<String, List<String>> educationTypeCodeMap
+  ) {
     if (course == null) {
       return null;
     }
@@ -275,11 +280,16 @@ public class PyramusSchoolDataEntityFactory {
     
     boolean courseFeeApplicable = true;
     
-    if ((Objects.equals(educationTypeCode, "lukio") && Objects.equals(educationSubtypeCode, "pakollinen")) ||    
-        (Objects.equals(educationTypeCode, "lukio") && Objects.equals(educationSubtypeCode, "valtakunnallinensyventava")) ||    
-        (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "pakollinen")) ||    
-        (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "valinnainen"))) {
-      courseFeeApplicable = false;
+    for (Map.Entry<String, List<String>> typeCodeEntry : educationTypeCodeMap.entrySet()) {
+      String educationTypeCode = typeCodeEntry.getKey();
+      for (String educationSubtypeCode : typeCodeEntry.getValue()) {
+        if ((Objects.equals(educationTypeCode, "lukio") && Objects.equals(educationSubtypeCode, "pakollinen")) ||    
+            (Objects.equals(educationTypeCode, "lukio") && Objects.equals(educationSubtypeCode, "valtakunnallinensyventava")) ||    
+            (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "pakollinen")) ||    
+            (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "valinnainen"))) {
+          courseFeeApplicable = false;
+        }
+      }
     }
 
     String viewLink = String.format("https://%s/courses/viewcourse.page?course=%d", pyramusHost, course.getId());

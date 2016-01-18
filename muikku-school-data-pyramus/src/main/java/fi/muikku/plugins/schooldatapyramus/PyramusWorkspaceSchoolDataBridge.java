@@ -3,7 +3,9 @@ package fi.muikku.plugins.schooldatapyramus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -22,10 +24,13 @@ import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Course;
+import fi.pyramus.rest.model.CourseEducationSubtype;
+import fi.pyramus.rest.model.CourseEducationType;
 import fi.pyramus.rest.model.CourseOptionality;
 import fi.pyramus.rest.model.CourseParticipationType;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStudent;
+import fi.pyramus.rest.model.EducationSubtype;
 import fi.pyramus.rest.model.EducationType;
 import fi.pyramus.rest.model.Subject;
 
@@ -269,11 +274,43 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       }
     }
     
-    // TODO do these when Pyramus REST exposes them
-    String educationTypeCode = "";
-    String educationSubtypeCode = "";
+    Map<String, List<String>> courseEducationTypeMap = new HashMap<String, List<String>>();
+    CourseEducationType[] courseEducationTypes = pyramusClient.get(
+        String.format("/courses/courses/%d/educationTypes", course.getId()),
+        CourseEducationType[].class);
     
-    return entityFactory.createEntity(course, educationTypeIdentifier, educationTypeCode, educationSubtypeCode);
+    for (CourseEducationType courseEducationType: courseEducationTypes) {
+      CourseEducationSubtype[] courseEducationSubtypes = pyramusClient.get(
+          String.format("/courses/courses/%d/educationTypes/%d/educationSubtypes", course.getId(), courseEducationType.getId()),
+          CourseEducationSubtype[].class);
+      
+      if (courseEducationSubtypes == null) {
+        continue;
+      }
+      
+      EducationType educationType = pyramusClient.get(
+          String.format("/common/educationTypes/%d", courseEducationType.getEducationTypeId()),
+          EducationType.class);
+      
+      String educationTypeCode = educationType.getCode();
+      List<String> courseEducationSubtypeList = new ArrayList<String>();
+      
+      for (CourseEducationSubtype courseEducationSubtype : courseEducationSubtypes) {
+        EducationSubtype educationSubtype = pyramusClient.get(
+            String.format(
+                "/common/educationTypes/%d/subtypes/%d",
+                educationType.getId(),
+                courseEducationSubtype.getEducationSubtypeId()),
+            EducationSubtype.class);
+        
+        String educationSubtypeCode = educationSubtype.getCode();
+        courseEducationSubtypeList.add(educationSubtypeCode);
+      }
+
+      courseEducationTypeMap.put(educationTypeCode, new ArrayList<String>());
+    }
+    
+    return entityFactory.createEntity(course, educationTypeIdentifier, courseEducationTypeMap);
   }
 
   @Override
