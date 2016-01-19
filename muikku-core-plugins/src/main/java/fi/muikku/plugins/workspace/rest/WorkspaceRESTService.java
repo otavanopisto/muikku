@@ -621,19 +621,21 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{ID}/feeInfo")
   @RESTPermit(value = MuikkuPermissions.VIEW_WORKSPACE_FEE)
   public Response getFeeInfo(@PathParam("ID") Long workspaceEntityId) {
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-
-    if (userEntity == null) {
+    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+    if (userIdentifier == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    User user = userController.findUserByUserEntityDefaults(userEntity);
+
+    User user = userController.findUserByIdentifier(userIdentifier);
     if (user == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     if (workspace == null) {
       return Response.status(Status.NOT_FOUND).build();
