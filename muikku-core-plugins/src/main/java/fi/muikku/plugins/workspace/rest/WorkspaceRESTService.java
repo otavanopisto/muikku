@@ -619,7 +619,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{ID}/feeInfo")
-  @RESTPermit(value = MuikkuPermissions.VIEW_WORKSPACE_DETAILS)
+  @RESTPermit(value = MuikkuPermissions.VIEW_WORKSPACE_FEE)
   public Response getFeeInfo(@PathParam("ID") Long workspaceEntityId) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
