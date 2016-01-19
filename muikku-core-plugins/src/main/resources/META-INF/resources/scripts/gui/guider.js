@@ -12,22 +12,72 @@
 
   $.widget("custom.guiderFilters", {
     
+    options: {
+      filters: null
+    },
+    
     _create : function() {
-      this._filters = [];
+      this._filters = this.options.filters;
       this._loadFilters($.proxy(function () {
-        this.element.on('click', '.gu-filter-link', $.proxy(this._onFilterLink, this));
+        this.filters(this._filters);
+        this.element.on('click', '.gt-filter-link', $.proxy(this._onFilterLink, this));
       }, this));
     },
     
+    filters: function (filters) {
+      if (filters === undefined) {
+        return this._filters;
+      } else {
+        this._filters = filters;
+        
+        this.element
+          .find('.gt-filter-link.selected')
+          .removeClass('selected');
+        
+        if (filters) {
+          window.location.hash = 'filters/' + btoa(JSON.stringify(filters));
+          
+          $.each(filters, $.proxy(function (index, filter) {
+            this.element.find('.gt-filter-link[data-id="' + filter.id + '"][data-type="' + filter.type + '"]').addClass('selected');
+          }, this));
+          
+          $('.gt-students-view-container').guiderStudents('applyFilters', filters);
+        }
+      }
+    },
+    
+    addFilter: function (type, id) {
+      var filters = this.filters()||[];
+      
+      filters.push({
+        type: type,
+        id: id
+      });
+      
+      this.filters(filters);
+    },
+    
+    removeFilter: function (type, id) {
+      var filters = this.filters();
+      if (filters) {
+        var after = $.map(filters, function (filter) {
+          if (filter.type == type && filter.id == id) {
+            return null;
+          }
+
+          return filter;
+        });
+        
+        this.filters(after);
+      }
+    },
+    
     _onFilterLink: function (event) {
-      var element = $(event.target).closest('.gu-filter-link');
-      switch (element.attr('data-type')) {
-        case 'workspace':
-          $('.gt-students-view-container').guiderStudents('workspaces', [ element.attr('data-id') ]);
-        break;
-        case 'studentFlagType':
-          $('.gt-students-view-container').guiderStudents('studentFlagTypes', [ element.attr('data-id') ]);
-        break;
+      var element = $(event.target).closest('.gt-filter-link');
+      if (element.hasClass('selected')) {
+        this.removeFilter(element.attr('data-type'), element.attr('data-id'));
+      } else {
+        this.addFilter(element.attr('data-type'), element.attr('data-id'));
       }
     },
     
@@ -125,6 +175,38 @@
       this._reloadStudents();
     },
     
+    applyFilters: function (filters) {
+      this._page = 0;
+      this._workspaceIds = null;
+      this._studentFlagTypes = null;
+      
+      if (filters) {
+        $.each(filters, $.proxy(function (index, filter) {
+          switch (filter.type) {
+            case 'workspace':
+              if (!this._workspaceIds) {
+                this._workspaceIds = [filter.id];
+              } else {
+                this._workspaceIds.push(filter.id);
+              }
+            break;
+            case 'studentFlagType':
+              if (!this._studentFlagTypes) {
+                this._studentFlagTypes = [filter.id];
+              } else {
+                this._studentFlagTypes.push(filter.id);
+              }
+            break;
+            default:
+              $('.notification-queue').notificationQueue('notification', 'error', 'Unknown filter type:' + filter.type);
+            break;
+          }
+        }, this));
+      }
+      
+      this._reloadStudents();
+    },
+    
     workspaces: function (workspaceIds) {
       this._page = 0;
       this._workspaceIds = workspaceIds;
@@ -168,11 +250,11 @@
       }
       
       if (this._workspaceIds) {
-        options['workspaceIds'] = this._workspaceIds.join(',');
+        options['workspaceIds'] = this._workspaceIds;
       }
       
       if (this._studentFlagTypes) {
-        options['studentFlagTypes'] = this._studentFlagTypes.join(',');
+        options['studentFlagTypes'] = this._studentFlagTypes;
       }
 
       mApi()
@@ -527,47 +609,79 @@
     var workspaceIds = null;
     var studentFlagTypes = null;
     var openStudentProfile = null;
-    
-    var hash = window.location.hash;
-    if (hash && hash.length > 1) {
-      var settings = hash.substring(1).split(',');
-      for (var i = 0, l = settings.length; i < l; i++) {
-        var setting = settings[i].split('/');
-        if (setting.length > 0) {
-          switch (setting[0]) {
-            case 'filter':
-              if (setting.length === 3) {
-                switch (setting[1]) {
-                  case 'workspace':
-                    workspaceIds = [setting[2]];
-                  break;
-                  case 'studentFlagType':
-                    studentFlagTypes = [setting[2]];
-                  break;
-                  default:
-                    console.warn('Could not understand filter ' + setting[1]);
-                  break;
+    var selectedFilters = null;
+    try {
+      var hash = window.location.hash;
+      if (hash && hash.length > 1) {
+        var settings = hash.substring(1).split(',');
+        for (var i = 0, l = settings.length; i < l; i++) {
+          var setting = settings[i].split('/');
+          if (setting.length > 0) {
+            switch (setting[0]) {
+              case 'filter':
+                if (setting.length === 3) {
+                  switch (setting[1]) {
+                    case 'workspace':
+                      workspaceIds = [setting[2]];
+                    break;
+                    case 'studentFlagType':
+                      studentFlagTypes = [setting[2]];
+                    break;
+                    default:
+                      console.warn('Could not understand filter ' + setting[1]);
+                    break;
+                  }
+                } else {
+                  console.warn('Could not understand filter ' + settings[i]);
                 }
-              } else {
-                console.warn('Could not understand filter ' + settings[i]);
-              }
-            break;
-            case 'userprofile':
-              if (setting.length === 2) {
-                openStudentProfile = setting[1];
-              } else {
-                console.warn('Could not understand filter ' + settings[i]);
-              }
-            break;
-            default:
-              console.warn('Could not understand hash setting ' + setting[0]);
-            break;
+              break;
+              case 'filters':
+                if (setting.length === 2) {
+                  if (setting[1]) {
+                    selectedFilters = $.parseJSON(atob(setting[1]));
+                  }
+                }
+              break;
+              case 'userprofile':
+                if (setting.length === 2) {
+                  openStudentProfile = setting[1];
+                } else {
+                  console.warn('Could not understand filter ' + settings[i]);
+                }
+              break;
+              default:
+                console.warn('Could not understand hash setting ' + setting[0]);
+              break;
+            }
           }
         }
       }
+      
+      if (studentFlagTypes) {
+        selectedFilters = (selectedFilters||[]).concat($.map(studentFlagTypes, function (id) {
+          return {
+            type:"studentFlagType",
+            id: id
+          };
+        }));
+      }
+      
+      if (workspaceIds) {
+        selectedFilters = (selectedFilters||[]).concat($.map(workspaceIds, function (id) {
+          return {
+            type:"workspace",
+            id: id
+          };
+        }));
+      }
+    } catch (e) {
+      
     }
     
-    $('.gu-filters').guiderFilters();
+    $('.gt-filters-container').guiderFilters({
+      filters: selectedFilters
+    });
+    
     $('.gt-search').guiderSearch();
     $('.gt-students-view-container').guiderStudents({
       workspaceIds: workspaceIds,

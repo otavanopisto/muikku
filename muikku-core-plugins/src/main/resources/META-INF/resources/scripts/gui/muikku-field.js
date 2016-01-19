@@ -325,8 +325,7 @@
             if (correctAnswers.length > 0) {
               var exampleDetails = $('<span>')
                 .addClass('muikku-field-examples')
-                .attr('data-for-field', $(field).attr('name'))
-                .fadeIn(500);
+                .attr('data-for-field', $(field).attr('name'));
               exampleDetails.append( 
                 $('<span>')
                   .addClass('muikku-field-examples-title')

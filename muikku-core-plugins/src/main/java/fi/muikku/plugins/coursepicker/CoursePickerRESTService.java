@@ -177,7 +177,7 @@ public class CoursePickerRESTService extends PluginRESTService {
                 Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
 
                 if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(createRestModel(workspace, workspaceEntity, name, description, canSignup, canCopyWorkspace, isCourseMember));
+                  workspaces.add(createRestModel(workspace, workspaceEntity, name, description, canSignup, canCopyWorkspace, isCourseMember, userEntity));
                 }
               }
             }
@@ -233,6 +233,8 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+    
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
 
     Workspace workspace = null;
     
@@ -251,7 +253,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
     Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
 
-    return Response.ok(createRestModel(workspace, workspaceEntity, workspace.getName(), workspace.getDescription(), canSignup, canCopyWorkspace, isCourseMember)).build();
+    return Response.ok(createRestModel(workspace, workspaceEntity, workspace.getName(), workspace.getDescription(), canSignup, canCopyWorkspace, isCourseMember, userEntity)).build();
   }
   
   @POST
@@ -370,7 +372,17 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
   }
   
-  private CoursePickerWorkspace createRestModel(Workspace workspace, WorkspaceEntity workspaceEntity, String name, String description, boolean canSignup, Boolean canCopyWorkspace, boolean isCourseMember) {
+  private CoursePickerWorkspace createRestModel(Workspace workspace, WorkspaceEntity workspaceEntity, String name, String description, boolean canSignup, Boolean canCopyWorkspace, boolean isCourseMember, UserEntity userEntity) {
+    boolean workspaceEvaluationFeeApplicable = workspace.isEvaluationFeeApplicable();
+    boolean userHasEvaluationFees = false;
+
+    if (userEntity != null) {
+      User user = userController.findUserByUserEntityDefaults(userEntity);
+      if (user != null) {
+        userHasEvaluationFees = user.hasEvaluationFees();
+      }
+    }
+
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     return new CoursePickerWorkspace(
@@ -385,7 +397,8 @@ public class CoursePickerRESTService extends PluginRESTService {
         lastVisit, 
         canSignup, 
         canCopyWorkspace,
-        isCourseMember);
+        isCourseMember,
+        workspaceEvaluationFeeApplicable && userHasEvaluationFees);
   }
   
 }

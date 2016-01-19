@@ -52,6 +52,8 @@ public interface Workspace extends SchoolDataEntity {
 
   public boolean isArchived();
   
+  public boolean isEvaluationFeeApplicable();
+
   public String getViewLink();
 
   @IndexId

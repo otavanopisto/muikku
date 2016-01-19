@@ -32,7 +32,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   }
   
   .textfield-wrapper {
-    display:inline-block;
+    display:inline;
     position:relative;
   
     span.muikku-text-field-hint {
@@ -586,18 +586,23 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       background:#e2ffe2;
       font-style:italic;
       margin:1px 3px 1px 3px;
-      @include flexbox();
-      align-items:flex-start;
-      flex-flow:row nowrap;
+      display:inline-block;
       
       span.muikku-field-examples-title {
         font-weight:600;
-        margin:0px 4px;
+        margin:0px 6px;
       }
       
       span.muikku-field-example {
+        margin:3px 0px 3px 5px;
+        padding:0 8px;
+        border-left:1px solid #439ba0;
         display:inline-block;
-        margin:0px 5px;
+        line-height:1.5;
+        
+        &:last-child {
+          
+        }
       }
       
     }

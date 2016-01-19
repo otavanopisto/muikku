@@ -10,7 +10,6 @@ import fi.muikku.TestUtilities;
 import fi.muikku.atests.Workspace;
 import fi.muikku.ui.AbstractUITest;
 import fi.muikku.ui.PyramusMocks;
-import fi.pyramus.webhooks.WebhookStudentCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentUpdatePayload;
 
 public class CourseUsersTestsBase extends AbstractUITest {

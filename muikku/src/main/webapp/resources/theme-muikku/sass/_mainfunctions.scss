@@ -199,7 +199,7 @@
      color:$dimmer;
     }
   }
-  .mf-list{
+  .mf-list-container{
    background-color:#fff;
    .mf-list-label{
     background-color:$bgr1;
@@ -207,13 +207,10 @@
     font-weight:600;
    }
    ul{
- 
       list-style-type: none;
-      
       li{
         border-bottom: 1px solid $brd1;
         border-left: 5px solid #fff;
-
         a{
           font-weight:300;
           text-decoration:none;
@@ -223,7 +220,7 @@
           width:100%;
           padding-top:5px;
           padding-bottom:5px;
-          padding-left:10px; 
+          padding-left:10px;             
         }      
        &:hover{
         border-left:5px solid $brd1;     

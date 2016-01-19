@@ -209,4 +209,9 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
 
     return persist(announcement);
   }
+  
+  public void delete(Announcement announcement) {
+    super.delete(announcement);
+  }
+  
 }

@@ -65,4 +65,9 @@ public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGro
     
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public void delete(AnnouncementUserGroup announcementUserGroup){
+    super.delete(announcementUserGroup);
+  }
+  
 }
