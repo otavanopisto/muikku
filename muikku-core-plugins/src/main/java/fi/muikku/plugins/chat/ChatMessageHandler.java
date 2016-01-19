@@ -2,7 +2,6 @@ package fi.muikku.plugins.chat;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -15,7 +14,6 @@ import fi.muikku.plugins.websocket.WebSocketMessageEvent;
 import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.users.UserEntityController;
 
-@Stateless
 public class ChatMessageHandler {
 
   @Inject
