@@ -308,6 +308,22 @@ public class PyramusMock {
         return this;
       }
       
+      public Builder mockCourseEducationTypes() throws JsonProcessingException, Exception {
+        
+        stubFor(get(urlMatching("/1/courses/\\d+/educationTypes"))
+          .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withStatus(404)));
+
+        
+        stubFor(get(urlMatching("/1/courses/\\d+/educationTypes/\\d+/subtypes"))
+          .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withStatus(404)));
+        
+        return this;
+      }
+      
       public Builder mockCourseTypes() throws JsonProcessingException {
         stubFor(get(urlEqualTo("/1/courses/courseTypes"))
           .willReturn(aResponse()
@@ -662,6 +678,7 @@ public class PyramusMock {
         mockEducationalTimeUnits();
         mockEducationTypes();
         mockSubjects();
+        mockCourseEducationTypes();
         mockCourseTypes();
         mockCourseStaffMembers();
         mockCourseStudents();
