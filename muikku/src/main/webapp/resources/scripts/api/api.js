@@ -72,6 +72,7 @@
       this._client.opts.ajax = {
         dataType: 'json', 
         async: async,
+        traditional: true,
         contentType: 'application/json' // http://stackoverflow.com/a/17660503
       };
     },
