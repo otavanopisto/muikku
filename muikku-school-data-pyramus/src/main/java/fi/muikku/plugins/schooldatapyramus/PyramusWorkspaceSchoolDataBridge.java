@@ -279,37 +279,39 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         String.format("/courses/courses/%d/educationTypes", course.getId()),
         CourseEducationType[].class);
     
-    for (CourseEducationType courseEducationType: courseEducationTypes) {
-      CourseEducationSubtype[] courseEducationSubtypes = pyramusClient.get(
-          String.format("/courses/courses/%d/educationTypes/%d/educationSubtypes", course.getId(), courseEducationType.getId()),
-          CourseEducationSubtype[].class);
-      
-      if (courseEducationSubtypes == null) {
-        continue;
-      }
-      
-      EducationType educationType = pyramusClient.get(
-          String.format("/common/educationTypes/%d", courseEducationType.getEducationTypeId()),
-          EducationType.class);
-      
-      String educationTypeCode = educationType.getCode();
-      List<String> courseEducationSubtypeList = new ArrayList<String>();
-      
-      for (CourseEducationSubtype courseEducationSubtype : courseEducationSubtypes) {
-        EducationSubtype educationSubtype = pyramusClient.get(
-            String.format(
-                "/common/educationTypes/%d/subtypes/%d",
-                educationType.getId(),
-                courseEducationSubtype.getEducationSubtypeId()),
-            EducationSubtype.class);
+    if (courseEducationTypes != null ) {
+      for (CourseEducationType courseEducationType: courseEducationTypes) {
+        CourseEducationSubtype[] courseEducationSubtypes = pyramusClient.get(
+            String.format("/courses/courses/%d/educationTypes/%d/educationSubtypes", course.getId(), courseEducationType.getId()),
+            CourseEducationSubtype[].class);
         
-        String educationSubtypeCode = educationSubtype.getCode();
-        courseEducationSubtypeList.add(educationSubtypeCode);
-      }
+        if (courseEducationSubtypes == null) {
+          continue;
+        }
+        
+        EducationType educationType = pyramusClient.get(
+            String.format("/common/educationTypes/%d", courseEducationType.getEducationTypeId()),
+            EducationType.class);
+        
+        String educationTypeCode = educationType.getCode();
+        List<String> courseEducationSubtypeList = new ArrayList<String>();
+        
+        for (CourseEducationSubtype courseEducationSubtype : courseEducationSubtypes) {
+          EducationSubtype educationSubtype = pyramusClient.get(
+              String.format(
+                  "/common/educationTypes/%d/subtypes/%d",
+                  educationType.getId(),
+                  courseEducationSubtype.getEducationSubtypeId()),
+              EducationSubtype.class);
+          
+          String educationSubtypeCode = educationSubtype.getCode();
+          courseEducationSubtypeList.add(educationSubtypeCode);
+        }
 
-      courseEducationTypeMap.put(educationTypeCode, courseEducationSubtypeList);
+        courseEducationTypeMap.put(educationTypeCode, courseEducationSubtypeList);
+      }
     }
-    
+      
     return entityFactory.createEntity(course, educationTypeIdentifier, courseEducationTypeMap);
   }
 

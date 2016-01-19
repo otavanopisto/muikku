@@ -313,13 +313,15 @@ public class PyramusMock {
         stubFor(get(urlMatching("/1/courses/\\d+/educationTypes"))
           .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
-              .withStatus(404)));
+              .withBody("[]")
+              .withStatus(200)));
 
         
         stubFor(get(urlMatching("/1/courses/\\d+/educationTypes/\\d+/subtypes"))
           .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
-              .withStatus(404)));
+              .withBody("[]")
+              .withStatus(200)));
         
         return this;
       }
