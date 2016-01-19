@@ -239,7 +239,7 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.text') {
-      var taskfieldWrapper = $('<div>')
+      var taskfieldWrapper = $('<span>')
         .addClass('textfield-wrapper');
       var input = $('<input>')
         .addClass('muikku-text-field')
