@@ -285,7 +285,7 @@ body.evaluation {
           white-space:normal;
           position:absolute;
           font-size:0.9em;
-          top:5px;
+          top:0;
           background:#00ccff;
           color:#fff;
           font-size:14px;
@@ -302,7 +302,7 @@ body.evaluation {
           line-height:1.3em;
           white-space:normal;
           font-size:0.9em;
-          top:35px;
+          top:27px;
           background:#3cdd2a;
           color:#fff;
           font-size:14px;
@@ -416,7 +416,7 @@ body.evaluation {
         box-sizing:border-box;
         @include background-image('gfx/default-user-picture.jpg');
         background-size:cover;
-        border-radius:75px;
+        border-radius:100%;
         background-position:center center;
         cursor:pointer;
         
@@ -438,6 +438,11 @@ body.evaluation {
         bottom:0;
         line-height:22px;
         padding:2px;
+        
+        > span {
+          font-size:12px;
+          display:block;
+        }
       }
     
     }
