@@ -1,7 +1,5 @@
 package fi.muikku.plugins.websocket;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.websocket.CloseReason;
@@ -13,7 +11,6 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-
 @ServerEndpoint ("/ws/socket/{TICKET}")
 @Transactional
 public class WebSocket {
@@ -22,7 +19,7 @@ public class WebSocket {
   private WebSocketMessenger webSocketMessenger;
   
   @OnOpen
-  public void onOpen(final Session client, EndpointConfig endpointConfig, @PathParam("TICKET") String ticket) throws IOException {
+  public void onOpen(final Session client, EndpointConfig endpointConfig, @PathParam("TICKET") String ticket) {
     webSocketMessenger.openSession(client, ticket);
   }
   
@@ -32,7 +29,7 @@ public class WebSocket {
   }
 
   @OnMessage
-  public void onMessage(String message, Session session, @PathParam("TICKET") String ticket) throws IOException {
+  public void onMessage(String message, Session session, @PathParam("TICKET") String ticket) {
     webSocketMessenger.handleMessage(message, session, ticket);
   }
   
