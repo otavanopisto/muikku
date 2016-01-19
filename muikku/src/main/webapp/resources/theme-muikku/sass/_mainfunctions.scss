@@ -427,10 +427,19 @@
     background:#068feb;
     cursor:pointer;
     @include rounded(3px);
-    padding:2px 6px;
+    padding:3px 10px;
     display:inline-block;
     color:#fff;
     margin-top:5px;
+    
+    &.wizard {
+      background:#00b8c8;
+    }
+    
+    &.goto {
+      background:#068feb;
+    }
+    
   }   
 
 .mf-item{
