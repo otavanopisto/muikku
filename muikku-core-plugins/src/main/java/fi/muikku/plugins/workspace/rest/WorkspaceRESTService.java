@@ -67,6 +67,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceDetails;
+import fi.muikku.plugins.workspace.rest.model.WorkspaceFeeInfo;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
@@ -614,6 +615,33 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Response
     return Response.ok(result).build();
+  }
+  
+  @GET
+  @Path("/workspaces/{ID}/feeInfo")
+  @RESTPermit(value = MuikkuPermissions.VIEW_WORKSPACE_DETAILS)
+  public Response getFeeInfo(@PathParam("ID") Long workspaceEntityId) {
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    User user = userController.findUserByUserEntityDefaults(userEntity);
+    if (user == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspace == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    boolean evaluationFees = user.hasEvaluationFees() && workspace.isEvaluationFeeApplicable();
+
+    return Response.ok(new WorkspaceFeeInfo(evaluationFees)).build();
   }
 
   @GET

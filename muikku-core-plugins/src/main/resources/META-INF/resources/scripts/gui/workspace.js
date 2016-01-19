@@ -118,55 +118,63 @@
   });
 
   function confirmEvaluationRequest() {
-    renderDustTemplate('workspace/workspace-evaluation-request-confirm.dust', { }, $.proxy(function (text) {
-      var dialog = $(text);
-      $(text).dialog({
-        modal: true, 
-        minHeight: 200,
-        maxHeight: $(window).height() - 50,
-        resizable: false,
-        width: 560,
-        dialogClass: "workspace-evaluation-confirm-dialog",
-        buttons: [{
-          'text': dialog.data('button-request-text'),
-          'class': 'save-evaluation-button',
-          'click': function(event) {
-            
-            var workspaceEntityId = $('.workspaceEntityId').val();
-            var message = $('#evaluationRequestAdditionalMessage').val();
+    var workspaceEntityId = $('.workspaceEntityId').val();
 
-            mApi({async: false}).assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
-              'requestText': message
-            }).callback(function(err, result) {
-              if (err) {
-                $('.notification-queue').notificationQueue('notification', 'error', err);
-              } else {
+    mApi().workspace.workspaces.feeInfo.read().callback($.proxy(function (err, data) {
+      if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+      } else {
+        renderDustTemplate('workspace/workspace-evaluation-request-confirm.dust', data, $.proxy(function (text) {
+          var dialog = $(text);
+          $(text).dialog({
+            modal: true, 
+            minHeight: 200,
+            maxHeight: $(window).height() - 50,
+            resizable: false,
+            width: 560,
+            dialogClass: "workspace-evaluation-confirm-dialog",
+            buttons: [{
+              'text': dialog.data('button-request-text'),
+              'class': 'save-evaluation-button',
+              'click': function(event) {
                 
-                var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+                var workspaceEntityId = $('.workspaceEntityId').val();
+                var message = $('#evaluationRequestAdditionalMessage').val();
 
-                evalButton
-                  .children('.icon-assessment-' + evalButton.attr('data-state'))
-                    .removeClass('icon-assessment-' + evalButton.attr('data-state'))
-                    .addClass('icon-assessment-pending')
-                    .children('span')
-                      .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
-              
-                evalButton.attr('data-state', 'pending');
-                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+                mApi({async: false}).assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
+                  'requestText': message
+                }).callback(function(err, result) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  } else {
+                    
+                    var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+
+                    evalButton
+                      .children('.icon-assessment-' + evalButton.attr('data-state'))
+                        .removeClass('icon-assessment-' + evalButton.attr('data-state'))
+                        .addClass('icon-assessment-pending')
+                        .children('span')
+                          .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
+                  
+                    evalButton.attr('data-state', 'pending');
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+                  }
+                });
+                
+                $(this).dialog("destroy").remove();
+                
               }
-            });
-            
-            $(this).dialog("destroy").remove();
-            
-          }
-        }, {
-          'text': dialog.data('button-cancel-text'),
-          'class': 'cancel-button',
-          'click': function(event) {
-            $(this).dialog("destroy").remove();
-          }
-        }]
-      });
+            }, {
+              'text': dialog.data('button-cancel-text'),
+              'class': 'cancel-button',
+              'click': function(event) {
+                $(this).dialog("destroy").remove();
+              }
+            }]
+          });
+        }, this))
+      }
     }, this));
   }
   
