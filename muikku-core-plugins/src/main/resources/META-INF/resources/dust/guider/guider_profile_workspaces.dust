@@ -62,7 +62,20 @@
           {/gt}
           </span>
         </div>
+        
+        <h4>{#localize key="plugin.guider.discussionTitle"/}</h4>
       
+        <div class="gt-course-activity-row">
+          <label>{#localize key="plugin.guider.discussionMessagesLabel"/}</label>
+          <span>
+          {@gt key=forumStatistics.messageCount value=0}
+            {forumStatistics.messageCount} ({forumStatistics.latestMessage|formatDate})
+          {:else}
+            -
+          {/gt}
+          </span>
+        </div>
+        
         <h4>{#localize key="plugin.guider.evaluableAssignmentsTitle"/}</h4>
         
         <div class="gt-course-activity-row">
