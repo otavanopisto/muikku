@@ -443,7 +443,7 @@ $(document).ready(function(){
   },
   
   _setSelected : function(selected){
-    var container = $(".mf-list");
+    var container = $(".mf-list-container");
     var categories = container.find("li");
     
     categories.removeClass("selected");

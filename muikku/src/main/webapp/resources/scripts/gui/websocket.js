@@ -39,7 +39,15 @@
       };
       
       if (this._socketOpen) {
-        this._webSocket.send(JSON.stringify(message));
+        try {
+          this._webSocket.send(JSON.stringify(message));
+        } catch (e) {
+          this._messagesPending.push({
+            eventType: eventType,
+            data: data
+          });
+          this._reconnect();
+        }
       } else {
         this._messagesPending.push({
           eventType: eventType,
@@ -188,7 +196,7 @@
     _onWebSocketConnected: function () {
       this._socketOpen = true;
       
-      while (this._messagesPending.length) {
+      while (this._socketOpen && this._messagesPending.length) {
         var message = this._messagesPending.shift();
         this.sendMessage(message.eventType, message.data);
       }
