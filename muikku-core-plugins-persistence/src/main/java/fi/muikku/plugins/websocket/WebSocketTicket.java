@@ -2,6 +2,7 @@ package fi.muikku.plugins.websocket;
 
 import java.util.Date;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,9 +12,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
+@Cacheable
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class WebSocketTicket {
 
   public Long getId() {
@@ -58,7 +63,7 @@ public class WebSocketTicket {
   
   @NotNull
   @NotEmpty
-  @Column (nullable = false, length = 1024)
+  @Column (nullable = false, length = 1024, unique = true)
   private String ticket;
   
   @Column (name = "user_id")

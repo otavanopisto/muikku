@@ -120,7 +120,7 @@
   function confirmEvaluationRequest() {
     var workspaceEntityId = $('.workspaceEntityId').val();
 
-    mApi().workspace.workspaces.feeInfo.read().callback($.proxy(function (err, data) {
+    mApi().workspace.workspaces.feeInfo.read(workspaceEntityId).callback($.proxy(function (err, data) {
       if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
       } else {

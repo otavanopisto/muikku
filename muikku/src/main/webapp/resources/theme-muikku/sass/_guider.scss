@@ -63,22 +63,22 @@
  padding:5px;
 }
 
-.gt-filter{
-  margin-top:5px;
-  padding:2px 10px;
-  font-size:0.7em;
-  display:inline-block;
-  border:1px solid $brd;
-  @include rounded(10px);  
-  &.ft-01{background-color:$mainFuncFilter1;}
-  &.ft-02{background-color:$mainFuncFilter2;}
-  &.ft-03{background-color:$mainFuncFilter3;}
-}
+/* .gt-filter{ */
+/*   margin-top:5px; */
+/*   padding:2px 10px; */
+/*   font-size:0.7em; */
+/*   display:inline-block; */
+/*   border:1px solid $brd; */
+/*   @include rounded(10px);   */
+/*   &.ft-01{background-color:$mainFuncFilter1;} */
+/*   &.ft-02{background-color:$mainFuncFilter2;} */
+/*   &.ft-03{background-color:$mainFuncFilter3;} */
+/* } */
 
-.gt-filter-disabled{
-  background-color:#cecece !important;
-  color:#fff !important;
-}
+/* .gt-filter-disabled{ */
+/*   background-color:#cecece !important; */
+/*   color:#fff !important; */
+/* } */
 
 .gt-side-header > span{
   color:#fff;
@@ -433,7 +433,45 @@
   }    
 }
 
-.gu-filter-link[data-type="studentFlagType"] {
+/* This is an unneccessary override, needs to be similar with the rest of the mainfunctions - in the future */
+
+.gt-filters-container{
+  ul{
+      list-style-type: none;
+      
+      li{
+        border-bottom: 1px solid $brd1;
+        border-left:0;        
+        a{
+          font-weight:300;
+          text-decoration:none;
+          color:#000;
+          display:inline-block;
+          box-sizing:border-box;
+          width:100%;
+          padding-top:5px;
+          padding-bottom:5px;
+          padding-left:10px;
+          border-left: 5px solid #fff;       
+          &:hover{
+            border-left:5px solid $brd1;     
+            cursor:pointer;   
+          } 
+          &.selected{
+            background-color:$bgr3;
+            border-left:5px solid $brd2;
+
+          }                
+        }
+        &:hover{
+          border-left:0     
+        } 
+      }
+   
+  }  
+}
+
+.gt-filter-link[data-type="studentFlagType"] {
   
   .icon-flag {
     margin-right: 10px;
