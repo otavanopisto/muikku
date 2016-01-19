@@ -2,9 +2,7 @@ package fi.muikku.plugins.websocket;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-@Singleton
 public class WebSocketPingHandler {
   
   @Inject

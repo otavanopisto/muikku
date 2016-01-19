@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.websocket.CloseReason;
@@ -18,7 +18,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.model.users.UserEntity;
 
-@Singleton
+@ApplicationScoped
 public class WebSocketMessenger {
   
   @Inject
@@ -122,7 +122,8 @@ public class WebSocketMessenger {
         WebSocketMessageEvent event = new WebSocketMessageEvent(ticket.getTicket(), ticket.getUser(), messageData);
         webSocketMessageEvent.select(new MuikkuWebSocketEventLiteral(messageData.getEventType())).fire(event);
       } else {
-        logger.log(Level.SEVERE, "Received a WebSocket message with invalid ticket");
+        logger.log(Level.SEVERE, String.format("Received a WebSocket message with invalid ticket '%s'", ticketId));
+        session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Invalid ticket"));
       }
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to handle WebSocket message", e);
