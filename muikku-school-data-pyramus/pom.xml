@@ -137,13 +137,13 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.30-SNAPSHOT</version>
+      <version>0.7.31-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.30-SNAPSHOT</version>
+      <version>0.7.31-SNAPSHOT</version>
     </dependency>
 
     <!-- Muikku -->

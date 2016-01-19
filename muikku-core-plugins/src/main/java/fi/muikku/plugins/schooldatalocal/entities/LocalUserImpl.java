@@ -120,6 +120,11 @@ public class LocalUserImpl  extends AbstractUser implements User {
   public boolean getHidden() {
     return false;
   }
+  
+  @Override
+  public boolean hasEvaluationFees() {
+    return false;
+  }
 
   private String identifier;
   private String firstName;

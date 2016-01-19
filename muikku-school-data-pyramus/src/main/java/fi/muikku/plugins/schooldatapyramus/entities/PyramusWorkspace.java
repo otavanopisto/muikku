@@ -12,7 +12,7 @@ public class PyramusWorkspace implements Workspace {
   public PyramusWorkspace(String identifier, String name, String nameExtension, String viewLink, String description, 
       String workspaceTypeId, String courseIdentifierIdentifier, Date modified, String subjectIdentifier, 
       String educationTypeIdentifier,  Double length, String lengthUnitIdentifier, DateTime beginDate, 
-      DateTime endDate, boolean archived) {
+      DateTime endDate, boolean archived, boolean evaluationFeeApplicable) {
     this.identifier = identifier;
     this.name = name;
     this.nameExtension = nameExtension;
@@ -28,6 +28,7 @@ public class PyramusWorkspace implements Workspace {
     this.beginDate = beginDate;
     this.endDate = endDate;
     this.archived = archived;
+    this.evaluationFeeApplicable = evaluationFeeApplicable;
   }
 
   @Override
@@ -134,6 +135,11 @@ public class PyramusWorkspace implements Workspace {
   }
   
   @Override
+  public boolean isEvaluationFeeApplicable() {
+    return evaluationFeeApplicable;
+  }
+
+  @Override
   public String getViewLink() {
     return viewLink;
   }
@@ -167,4 +173,6 @@ public class PyramusWorkspace implements Workspace {
   private DateTime endDate;
   
   private boolean archived;
+  
+  private boolean evaluationFeeApplicable;
 }

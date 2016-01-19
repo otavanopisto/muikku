@@ -9,6 +9,8 @@
       height : "200",
       modalgrid : 24,
       contentgrid : "24",
+      conditionalContent : "none",
+      conditional : false,
       title:"Muikku 3 Modal",
       description: "Lorem ipsum dolor sit amet.",
       top: "10px",
@@ -128,7 +130,9 @@
     	var bE = $('<div class="md-box container_24"></div>') ;
     	var dE = $('<div class="md-description grid_24"><h2>' + options.title + '</h2><p>' + options.description + '</p></div>') ;
     	var cE = $('<div class="md-content grid_24 nomargin nolid"></div>') ;
-
+      if(options.conditional == true){
+        options.content.prepend(options.conditionalContent);
+      }    
       options.content.addClass(' md-content-primary grid_' + options.contentgrid );
       cE.append(options.content);
       bE.append(dE,cE);
