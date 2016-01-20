@@ -4,6 +4,9 @@
     initialize: function () {
     },
     setup: function (widgetElement) {
+      this._firstResult = 0;
+      this._maxResults = 25;
+      
       var _this = this;
       widgetElement = $(widgetElement);
       this._widgetElement = widgetElement;
@@ -143,6 +146,8 @@
       });
 
       this._initializeAllCoursesList();
+      
+      $('.cp-page-link-load-more').click($.proxy(this._onLoadMoreClick, this));
     },
     deinitialize: function () {
     },
@@ -161,14 +166,14 @@
       var ownWorkspaces = hash == "my" || hash == "te";
       var includeUnpublished = hash == "te";
       if (((term != undefined) && (term != "")) || (subjects.length > 0)) {
-        this._loadCourses({
+        this._reloadCourses({
           subjects: subjects,
           search: term,
           myWorkspaces: ownWorkspaces,
           includeUnpublished: includeUnpublished
         });
       } else {
-        this._loadCourses({
+        this._reloadCourses({
           myWorkspaces: ownWorkspaces,
           includeUnpublished: includeUnpublished
         });
@@ -176,13 +181,42 @@
     },
     
     _initializeAllCoursesList: function () {
+      this._reloadCourses();
+    },
+    
+    _loadMore: function () {
+      this._firstResult += this._maxResults;
       this._loadCourses();
     },
     
-    _loadCourses: function (params) {
+    _onLoadMoreClick: function (event) {
+      if (!$(event.target).hasClass('disabled')) {
+        this._loadMore();
+      }
+    },
+    
+    _reloadCourses: function (params) {
+      this._firstResult = 0;
       this._coursesContainer.children().remove();
+      this._params = $.extend(params||{}, {
+        orderBy: ['alphabet']
+      });
       
-      mApi({async: false}).coursepicker.workspaces.read(params||{})
+      this._loadCourses();
+    },
+    
+    _loadCourses: function () {
+      var loader = $('<div>') 
+        .addClass('loading')
+        .appendTo($(this._coursesContainer));
+      
+      $('.cp-page-link-load-more').addClass('disabled');
+      
+      mApi().coursepicker.workspaces
+        .read($.extend(this._params||{}, {
+          firstResult: this._firstResult,
+          maxResults: this._maxResults + 1
+        }))
         .on('$', function (workspace, workspaceCallback) {
 
 //        mApi({async: false}).coursepicker.workspaces.users.read(workspace.id, {
@@ -208,9 +242,26 @@
           workspaceCallback();
       })
       .callback($.proxy(function (err, workspaces) {
-        renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
-          this._coursesContainer.append(text);
-        }, this));
+        $(loader).remove();
+        
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var hasMore = workspaces && workspaces.length > this._maxResults;
+          if (workspaces) {
+            workspaces.pop();
+          }
+          
+          renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
+            this._coursesContainer.append(text);
+          }, this));
+          
+          if (hasMore) {
+            $('.cp-page-link-load-more').removeClass('disabled');
+          } else {
+            $('.cp-page-link-load-more').addClass('disabled');
+          }
+        }
       }, this));        
     },
     

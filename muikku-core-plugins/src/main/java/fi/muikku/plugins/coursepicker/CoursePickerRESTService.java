@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -42,6 +43,7 @@ import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.Role;
@@ -49,6 +51,7 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.search.SearchProvider;
+import fi.muikku.search.SearchProvider.Sort;
 import fi.muikku.search.SearchResult;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
@@ -66,6 +69,9 @@ public class CoursePickerRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -7027696842893383409L;
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private SessionController sessionController;
 
@@ -117,6 +123,8 @@ public class CoursePickerRESTService extends PluginRESTService {
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
         @QueryParam("orderBy") List<String> orderBy,
+        @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
+        @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults,
         @Context Request request) {
     List<CoursePickerWorkspace> workspaces = new ArrayList<>();
 
@@ -154,9 +162,16 @@ public class CoursePickerRESTService extends PluginRESTService {
           workspaceIdentifierFilters.add(workspaceEntity.getIdentifier());
         }
       }
+
+      List<Sort> sorts = null;
       
-      // TODO: Pagination support
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, 0, 50);
+      if (orderBy != null && orderBy.contains("alphabet")) {
+        sorts = new ArrayList<>();
+        sorts.add(new Sort("name", Sort.Order.ASC));
+        sorts.add(new Sort("nameExtension", Sort.Order.ASC));
+      }
+      
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
@@ -166,7 +181,10 @@ public class CoursePickerRESTService extends PluginRESTService {
           if (id.length == 2) {
             String dataSource = id[1];
             String identifier = id[0];
-            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
+
+            SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+            
+            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
             if (workspaceEntity != null) {
               Workspace workspace = findWorkspace(workspaceEntity);
               if (workspace != null) {
@@ -178,8 +196,14 @@ public class CoursePickerRESTService extends PluginRESTService {
 
                 if (StringUtils.isNotBlank(name)) {
                   workspaces.add(createRestModel(workspace, workspaceEntity, name, description, canSignup, canCopyWorkspace, isCourseMember, userEntity));
+                } else {
+                  logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
+              } else {
+                logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
               }
+            } else {
+              logger.severe(String.format("Search index contains workspace %s that does not exits in Muikku", workspaceIdentifier));
             }
           }
         }

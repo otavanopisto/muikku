@@ -388,6 +388,39 @@ public class ForumController {
     return forumMessageDAO.listByContributingUser(userEntity);
   }
   
+  public Long countUserEntityWorkspaceMessages(WorkspaceEntity workspaceEntity, UserEntity creator) {
+    if (workspaceEntity == null) {
+      logger.severe("Attempt to call countUserEntityWorkspaceMessages with null workspaceEntity");
+      return 0l;
+    }
+    
+    if (creator == null) {
+      logger.severe("Attempt to call countUserEntityWorkspaceMessages with null creator");
+      return 0l;
+    }
+    
+    return forumMessageDAO.countByWorkspaceEntityAndCreator(workspaceEntity.getId(), creator.getId());
+  }
+  
+  public ForumMessage findUserEntitysLatestWorkspaceMessage(WorkspaceEntity workspaceEntity, UserEntity creator) {
+    if (workspaceEntity == null) {
+      logger.severe("Attempt to call countUserEntityWorkspaceMessages with null workspaceEntity");
+      return null;
+    }
+    
+    if (creator == null) {
+      logger.severe("Attempt to call countUserEntityWorkspaceMessages with null creator");
+      return null;
+    }
+    
+    List<ForumMessage> messages = forumMessageDAO.listByWorkspaceEntityAndCreatorOrderByCreated(workspaceEntity.getId(), creator.getId(), 0, 1);
+    if (messages.size() == 1) {
+      return messages.get(0);
+    }
+    
+    return null;
+  }
+  
   public void permissionDiscoveredListener(@Observes @DiscoveredPermissionScope("FORUM") PermissionDiscoveredEvent event) {
     Permission permission = event.getPermission();
     String permissionName = permission.getName();

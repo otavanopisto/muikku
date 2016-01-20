@@ -1081,7 +1081,7 @@
       
       this.element.addClass('evaluation-student-wrapper');
       this.element.append($('<div>').addClass('evaluation-student-picture'));
-      this.element.append($('<div>').addClass('evaluation-student-name').text(this._displayName));
+      this.element.append($('<div>').addClass('evaluation-student-name').text(this._displayName).append($('<span>').text(this._studyProgrammeName)));
       
       if (this.options.assessment) {
         this.element.removeClass('workspace-evaluation-requested');
