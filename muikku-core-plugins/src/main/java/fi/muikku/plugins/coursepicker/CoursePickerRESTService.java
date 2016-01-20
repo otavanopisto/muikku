@@ -117,6 +117,8 @@ public class CoursePickerRESTService extends PluginRESTService {
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
         @QueryParam("orderBy") List<String> orderBy,
+        @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
+        @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults,
         @Context Request request) {
     List<CoursePickerWorkspace> workspaces = new ArrayList<>();
 
@@ -155,8 +157,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         }
       }
       
-      // TODO: Pagination support
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, 0, 50);
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
