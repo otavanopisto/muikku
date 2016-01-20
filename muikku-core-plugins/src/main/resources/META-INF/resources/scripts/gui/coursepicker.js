@@ -182,7 +182,10 @@
     _loadCourses: function (params) {
       this._coursesContainer.children().remove();
       
-      mApi({async: false}).coursepicker.workspaces.read(params||{})
+      mApi().coursepicker.workspaces
+        .read($.extend(params||{}, {
+          orderBy: ['alphabet']
+        }))
         .on('$', function (workspace, workspaceCallback) {
 
 //        mApi({async: false}).coursepicker.workspaces.users.read(workspace.id, {
