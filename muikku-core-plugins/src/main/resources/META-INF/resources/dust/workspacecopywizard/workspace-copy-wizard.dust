@@ -186,8 +186,8 @@
         <span class="additional-text">{#localize key="plugin.workspacecopywizard.or.label"/}</span>
       </div>
       <div class="flex-cell-full">
-        <a class="workspace-entity-url">{#localize key="plugin.workspacecopywizard.gotToWorkspaceMuikkuButton.label"/}</a>
-        <a target="_blank" class="external-view-url">{#localize key="plugin.workspacecopywizard.gotToWorkspacePyramusButton.label"/}</a>
+        <a class="workspace-entity-url goto">{#localize key="plugin.workspacecopywizard.gotToWorkspaceMuikkuButton.label"/}</a>
+        <a target="_blank" class="external-view-url goto">{#localize key="plugin.workspacecopywizard.gotToWorkspacePyramusButton.label"/}</a>
       </div>
     </div>
     

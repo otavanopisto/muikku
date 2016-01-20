@@ -63,17 +63,16 @@
             <div class="cp-course-description-text">{description|s}</div>          
             <div class="cp-course-details-toolbar">
               {#isCourseMember}
-                <div class="mf-item-tool-btn cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.goto" /}</span></div>
+                <div class="mf-item-tool-btn goto cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.goto" /}</span></div>
               {:else}
-                <div class="mf-item-tool-btn cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.checkout" /}</span></div>
+                <div class="mf-item-tool-btn goto cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.checkout" /}</span></div>
               {/isCourseMember}
               {#isLoggedIn}
                 {#canSignup}
-                  <div class="mf-item-tool-btn cp-course-attend-button"><span>{#localize key="plugin.coursepicker.course.signup" /}</span></div>
+                  <div class="mf-item-tool-btn goto cp-course-attend-button"><span>{#localize key="plugin.coursepicker.course.signup" /}</span></div>
                 {/canSignup}
                 {#canCopyWorkspace}
-                  <input class="bt-coursepicker cp-course-copy-button" type="button"
-                    value='{#localize key="plugin.coursepicker.course.copy" /}' />
+                  <div class="mf-item-tool-btn wizard cp-course-copy-button"><span>{#localize key="plugin.coursepicker.course.copy" /}</span></div>
                 {/canCopyWorkspace}
               {/isLoggedIn}
             </div>
