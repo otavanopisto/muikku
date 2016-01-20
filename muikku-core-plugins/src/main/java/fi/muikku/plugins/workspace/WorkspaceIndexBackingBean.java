@@ -117,6 +117,7 @@ public class WorkspaceIndexBackingBean {
       
       workspaceId = workspaceEntity.getId();
       workspaceName = workspace.getName();
+      workspaceNameExtension = workspace.getNameExtension();
       subject = subjectObject != null ? subjectObject.getName() : null;
       educationType = educationTypeObject != null ? educationTypeObject.getName() : null;
       
@@ -260,8 +261,17 @@ public class WorkspaceIndexBackingBean {
     return materialsBaseUrl;
   }
 
+  public String getWorkspaceNameExtension() {
+    return workspaceNameExtension;
+  }
+
+  public void setWorkspaceNameExtension(String workspaceNameExtension) {
+    this.workspaceNameExtension = workspaceNameExtension;
+  }
+
   private Long workspaceId;
   private String workspaceName;
+  private String workspaceNameExtension;
   private Long workspaceEntityId;
   private String contents;
   private long workspaceMaterialId;
