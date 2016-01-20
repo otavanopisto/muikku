@@ -937,6 +937,19 @@ div[data-name="settings.content-sidebar.left"] {
 
 /* Reset Password */
 
+.reset-password-background {
+  @include background-image('gfx/muikku-login-bg.jpg');
+  background-position:top center;
+  background-size:100%;
+  background-repeat:no-repeat;
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0;
+  z-index:997;
+}
+
 .reset-password-overlay {
   position:absolute;
   top:0;
@@ -975,7 +988,7 @@ div[data-name="settings.content-sidebar.left"] {
     background:#fff;
     padding:20px;
     border-radius:10px;
-    box-shadow:0 0 200px rgba(0, 0, 0, 0.7);
+    box-shadow:0 0 100px rgba(0, 0, 0, 0.7);
     
     h1 {
       font-weight:300;
