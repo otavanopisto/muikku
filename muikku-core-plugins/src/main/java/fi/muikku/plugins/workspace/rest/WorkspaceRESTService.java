@@ -91,6 +91,7 @@ import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.security.LoggedIn;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -619,16 +620,17 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{ID}/feeInfo")
+  @LoggedIn
   @RESTPermit(value = MuikkuPermissions.VIEW_WORKSPACE_FEE)
   public Response getFeeInfo(@PathParam("ID") Long workspaceEntityId) {
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
     if (userIdentifier == null) {
-      return Response.status(Status.NOT_FOUND).build();
+      return Response.status(Status.UNAUTHORIZED).build();
     }
 
     User user = userController.findUserByIdentifier(userIdentifier);
     if (user == null) {
-      return Response.status(Status.NOT_FOUND).build();
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
