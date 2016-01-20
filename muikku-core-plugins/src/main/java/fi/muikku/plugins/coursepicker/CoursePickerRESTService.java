@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -42,6 +43,7 @@ import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.Role;
@@ -67,6 +69,9 @@ public class CoursePickerRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -7027696842893383409L;
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private SessionController sessionController;
 
@@ -176,7 +181,10 @@ public class CoursePickerRESTService extends PluginRESTService {
           if (id.length == 2) {
             String dataSource = id[1];
             String identifier = id[0];
-            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
+
+            SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+            
+            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
             if (workspaceEntity != null) {
               Workspace workspace = findWorkspace(workspaceEntity);
               if (workspace != null) {
@@ -188,8 +196,14 @@ public class CoursePickerRESTService extends PluginRESTService {
 
                 if (StringUtils.isNotBlank(name)) {
                   workspaces.add(createRestModel(workspace, workspaceEntity, name, description, canSignup, canCopyWorkspace, isCourseMember, userEntity));
+                } else {
+                  logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
+              } else {
+                logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
               }
+            } else {
+              logger.severe(String.format("Search index contains workspace %s that does not exits in Muikku", workspaceIdentifier));
             }
           }
         }
