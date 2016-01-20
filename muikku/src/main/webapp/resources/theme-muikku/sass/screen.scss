@@ -54,6 +54,9 @@ body {
   }
 }
 
+
+
+
 [class^="icon-"] span, [class*=" icon-"] span {
   display: inline-block;
   font-family: "Open Sans";
@@ -117,6 +120,19 @@ h5 {
 h6 {
   font-size:13px;
 }
+
+
+/* Subscript & superscript*/
+
+sub{
+  vertical-align: sub;
+  font-size:70%;
+}
+sup{
+  vertical-align: super;
+  font-size:70%;
+}
+
 
 /* TODO: P, a ... */
 
