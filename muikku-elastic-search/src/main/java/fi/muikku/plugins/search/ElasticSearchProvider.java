@@ -196,6 +196,11 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
+    return searchWorkspaces(schoolDataSource, subjects, identifiers, freeText, includeUnpublished, start, maxResults, null);
+  }
+  
+  @Override
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts) {
     if (identifiers != null && identifiers.isEmpty()) {
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>());
     }
@@ -249,6 +254,12 @@ public class ElasticSearchProvider implements SearchProvider {
         .setTypes("Workspace")
         .setFrom(start)
         .setSize(maxResults);
+      
+      if (sorts != null && !sorts.isEmpty()) {
+        for (Sort sort : sorts) {
+          requestBuilder.addSort(sort.getField(), SortOrder.valueOf(sort.getOrder().name()));
+        }
+      }
       
       SearchResponse response = requestBuilder.setQuery(filteredQuery).execute().actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
@@ -406,4 +417,5 @@ public class ElasticSearchProvider implements SearchProvider {
 
   private Client elasticClient;
   private Node node;
+
 }
