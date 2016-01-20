@@ -26,9 +26,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.forum.ForumController;
@@ -36,12 +38,15 @@ import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumAreaGroup;
+import fi.muikku.plugins.forum.model.ForumMessage;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserEntityController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -66,6 +71,9 @@ public class ForumRESTService extends PluginRESTService {
   @Inject
   private WorkspaceEntityController workspaceEntityController;
 
+  @Inject
+  private UserEntityController userEntityController;
+  
   @GET
   @Path ("/areagroups")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS)
@@ -667,6 +675,42 @@ public class ForumRESTService extends PluginRESTService {
     return Response.ok(
       result
     ).build();
+  }
+  
+  @GET
+  @Path ("/workspace/{WORKSPACEENTITYID}/statistics")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getWorkspaceForumStatistics(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("userIdentifier") String userId) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d could not be found", workspaceEntityId)).build();
+    }
+
+    SchoolDataIdentifier userIdentifier = null;
+    
+    if (StringUtils.isNotBlank(userId)) {
+      userIdentifier = SchoolDataIdentifier.fromId(userId);
+    }
+    
+    if (userIdentifier == null) {
+      return Response.status(Status.NOT_IMPLEMENTED).entity("Listing forum statistics for all users is not implemented yet").build();
+    }
+    
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
+    }
+    
+    if (!sessionController.hasCoursePermission(ForumResourcePermissionCollection.FORUM_FINDWORKSPACEUSERSTATISTICS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    Long messageCount = forumController.countUserEntityWorkspaceMessages(workspaceEntity, userEntity);
+    ForumMessage latestMessage = forumController.findUserEntitysLatestWorkspaceMessage(workspaceEntity, userEntity);
+    
+    return Response
+      .ok(new WorkspaceForumUserStatisticsRESTModel(messageCount, latestMessage != null ? latestMessage.getCreated() : null))
+      .build();
   }
   
   private ForumThreadReplyRESTModel createRestModel(ForumThreadReply entity) {

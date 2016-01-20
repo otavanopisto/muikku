@@ -459,32 +459,112 @@
       }
     },
     
+    _createStudentFlagsLoad: function () {
+      return $.proxy(function (callback) {
+        mApi().user.students.flags
+          .read(this.options.userIdentifier, {ownerIdentifier: MUIKKU_LOGGED_USER })
+          .callback($.proxy(function(flagErr, flags) {
+            if (flagErr) {
+              $('.notification-queue').notificationQueue('notification', 'error', flagErr);
+            } else {
+              var studentFlagType = (flags && flags.length ? flags[0].type : 'NONE')||'NONE';
+              var studentFlagName = getLocaleText('plugin.guider.studentFlags.' + studentFlagType);
+              callback(null, {
+                studentFlagType: studentFlagType,
+                studentFlagName: studentFlagName
+              });
+            }
+          }, this));
+      }, this);
+    },
+    
+    _createStudentLoginsLoad: function () {
+      return $.proxy(function (callback) {
+        mApi().user.students.logins
+          .read(this.options.userIdentifier, { maxResults: 1 })
+          .callback($.proxy(function(err, loginDetails) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              callback(null, {
+                lastLogin: loginDetails && loginDetails.length ? loginDetails[0].time : null
+              });
+            }
+          }, this));
+      }, this);
+    },
+    
+    _createStudentLoginsLoad: function () {
+      return $.proxy(function (callback) {
+        mApi().user.students.logins
+          .read(this.options.userIdentifier, { maxResults: 1 })
+          .callback($.proxy(function(err, loginDetails) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              callback(null, {
+                lastLogin: loginDetails && loginDetails.length ? loginDetails[0].time : null
+              });
+            }
+          }, this));
+      }, this);
+    },
+    
+    _createStudentWorkspaceForumStatisticsLoad: function (workspaceEntityId) {
+      return $.proxy(function (callback) {
+        mApi().forum.workspace.statistics
+          .read(workspaceEntityId, { userIdentifier: this.options.userIdentifier })
+          .callback($.proxy(function(err, statistics) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              callback(null, {
+                statistics: statistics||{
+                  messageCount: 0,
+                  latestMessage: null 
+                }
+              });
+            }
+          }, this));
+      }, this);
+    },
+    
+    _createStudentActivityLoad: function (workspaceEntityId) {
+      return $.proxy(function (callback) {
+        mApi().guider.workspaces.studentactivity
+          .read(workspaceEntityId, this.options.userIdentifier )
+          .callback($.proxy(function(err, activity) {  
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              callback(null, {
+                activity: activity
+              });
+            }
+          }, this));
+      }, this);
+    },
+    
     _loadUser: function (studentFlagTypes) {
       this.element.addClass('loading');
       
       mApi().user.students
         .read(this.options.userIdentifier)
         .on('$', $.proxy(function(user, userCallback) {
-          mApi().user.students.logins
-            .read(this.options.userIdentifier, { maxResults: 1 })
-            .callback($.proxy(function(err, loginDetails) {
-              if (err) {
-                $('.notification-queue').notificationQueue('notification', 'error', err);
-              } else {
-                mApi().user.students.flags
-                  .read(this.options.userIdentifier, {ownerIdentifier: MUIKKU_LOGGED_USER })
-                  .callback($.proxy(function(flagErr, flags) {
-                    if (flagErr) {
-                      $('.notification-queue').notificationQueue('notification', 'error', flagErr);
-                    } else {
-                      user.studentFlagType = (flags && flags.length ? flags[0].type : 'NONE')||'NONE';
-                      user.studentFlagName = getLocaleText('plugin.guider.studentFlags.' + user.studentFlagType);
-                      user.lastLogin = loginDetails && loginDetails.length ? loginDetails[0].time : null;
-                      userCallback();
-                    }
-                  }, this));
-              }
-            }, this));
+          
+          async.parallel([this._createStudentFlagsLoad(), this._createStudentLoginsLoad()], $.proxy(function(err, loads){
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              var studentFlags = loads[0];
+              var studentLogins = loads[1];
+              
+              user.lastLogin = studentLogins.lastLogin;
+              user.studentFlagType = studentFlags.studentFlagType;
+              user.studentFlagName = studentFlags.studentFlagName;
+              userCallback();
+            }
+          }, this));
         }, this))
         .callback($.proxy(function(err, user){
           if (err) {
@@ -498,16 +578,21 @@
               mApi().workspace.workspaces
                 .read({ userIdentifier: this.options.userIdentifier })
                 .on('$', $.proxy(function(workspace, workspaceCallback) {
-                  mApi().guider.workspaces.studentactivity
-                    .read(workspace.id, this.options.userIdentifier )
-                    .callback($.proxy(function(err, activity) {  
-                      if (err) {
-                        $('.notification-queue').notificationQueue('notification', 'error', err);
-                      } else {
-                        workspace.activity = activity;
-                        workspaceCallback();
-                      }
-                    }, this));
+                  
+                  async.parallel([this._createStudentWorkspaceForumStatisticsLoad(workspace.id), this._createStudentActivityLoad(workspace.id)], $.proxy(function(err, loads){
+                    if (err) {
+                      $('.notification-queue').notificationQueue('notification', 'error', err);
+                    } else {
+                      var forumStatistics = loads[0];
+                      var studentActivity = loads[1];
+                      
+                      workspace.activity = studentActivity.activity;
+                      workspace.forumStatistics = forumStatistics.statistics;
+                      
+                      workspaceCallback();
+                    }
+                  }, this));
+                  
                 }, this)) 
                 .callback($.proxy(function(err, workspaces) {             
                   renderDustTemplate('guider/guider_profile_workspaces.dust', workspaces, $.proxy(function(text){
