@@ -796,7 +796,7 @@ public class WorkspaceMaterialController {
         List<WorkspaceNode> children = includeHidden
             ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
             : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
-        result.add(new FlattenedWorkspaceNode(true, workspaceFolder.getTitle(), null, level, workspaceFolder.getParent().getId(), workspaceFolder.getHidden()));
+        result.add(new FlattenedWorkspaceNode(true, workspaceFolder.getTitle(), workspaceFolder, level, workspaceFolder.getParent().getId(), workspaceFolder.getHidden()));
         result.addAll(flattenWorkspaceNodes(children, level + 1, includeHidden));
       } else {
         result.add(new FlattenedWorkspaceNode(false, null, workspaceNode, level, workspaceNode.getParent().getId(), workspaceNode.getHidden()));
