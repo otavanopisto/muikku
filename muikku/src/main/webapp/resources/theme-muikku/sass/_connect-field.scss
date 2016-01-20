@@ -10,12 +10,16 @@
 .muikku-connect-field-counterparts,
 .muikku-connect-field-terms {
 	display:block;
-	@include flex(1 0 48%);
+	@include flex-grow(1);
+	@include flex-shrink(0);
+	@include flex-basis(48%);
 	position:relative;
 }
 
 .muikku-connect-field-gap {
-	@include flex(0 1 4%);
+	@include flex-grow(0);
+	@include flex-shrink(1);
+	@include flex-basis(4%);
 }
 
 .muikku-connect-field-number {
@@ -61,6 +65,7 @@
 	margin:0px 4px 8px 4px;
 	@include rounded(3px);
 	transition:background 0.3s ease-in-out;
+	box-sizing:border-box;
 }
 
 .muikku-connect-field-term {
@@ -68,7 +73,7 @@
 }
 
 .muikku-connect-field-counterpart {
-  justify-content: flex-start
+  justify-content:flex-start
 }
 
 .ui-sortable-placeholder {
@@ -85,7 +90,7 @@
   
   .muikku-connect-field-counterpart,
   .muikku-connect-field-term {
-    height:40px;
+    height:56px;
     line-height:20px;
     overflow:hidden;
     font-size:16px;
@@ -97,7 +102,7 @@
   
   .muikku-connect-field-counterpart,
   .muikku-connect-field-term {
-    height:40px;
+    height:56px;
     line-height:20px;
     overflow:hidden;
     font-size:16px;
