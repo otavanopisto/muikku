@@ -132,13 +132,22 @@
             $(termElement).addClass('muikku-connect-field-term-selected');
           }, this));
 
-          termElement.mouseenter($.proxy(function(e){    
-
-          }, this));
-          
-          termElement.mouseleave($.proxy(function(e){
-
-          }, this));
+          if (($(term).attr('title')||"").length > 50) {
+            termElement.mouseenter($.proxy(function(e){  
+              termElement
+                .after($('<div>').addClass('term-placeholder'));
+              termElement
+                .addClass('term-full-text')
+                .html($(term).attr('title'));
+            }, this));
+            
+            termElement.mouseleave($.proxy(function(e){
+              termElement.next('.term-placeholder').remove();
+              termElement
+                .removeClass('term-full-text')
+                .html($(term).html());
+            }, this));
+          }
           
           this._element.find('.muikku-connect-field-terms')
             .append($('<span>').text(index + 1).addClass('muikku-connect-field-number'))
@@ -156,21 +165,31 @@
           
           counterpartElement.click($.proxy(function(e){
             if(typeof(this.options.meta.selectedTerm) !== 'undefined' && this.options.meta.selectedTerm !== null){
+              counterpartElement
+                .removeClass('counterpart-full-text')
+                .html($(counterpart).html())
+                .next('.counterpart-placeholder')
+                .remove();
               this._swapElements(this.options.meta.selectedTerm, $(e.target));
             }
           }, this));
           
-          counterpartElement.mouseenter($.proxy(function(e){  
-            counterpartElement
-              .addClass('counterpart-full-text')
-              .html($(counterpart).attr('title'));
-          }, this));
-          
-          counterpartElement.mouseleave($.proxy(function(e){
-            counterpartElement
-              .removeClass('counterpart-full-text')
-              .html($(counterpart).html());
-          }, this));
+          if (($(counterpart).attr('title')||"").length > 50) {
+            counterpartElement.mouseenter($.proxy(function(e){  
+              counterpartElement
+                .after($('<div>').addClass('counterpart-placeholder'));
+              counterpartElement
+                .addClass('counterpart-full-text')
+                .html($(counterpart).attr('title'));
+            }, this));
+            
+            counterpartElement.mouseleave($.proxy(function(e){
+              counterpartElement.next('.counterpart-placeholder').remove();
+              counterpartElement
+                .removeClass('counterpart-full-text')
+                .html($(counterpart).html());
+            }, this));
+          }
 
           this._element.find('.muikku-connect-field-counterparts').append(counterpartElement);
           

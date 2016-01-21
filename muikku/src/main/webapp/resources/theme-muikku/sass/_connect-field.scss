@@ -61,7 +61,7 @@
   position:relative;
   @include flexbox;
   align-items:center;
-  padding:8px 21px;;
+  padding:8px 15px;
 	background:#e1f7fc;
 	margin:0px 4px 8px 4px;
 	@include rounded(3px);
@@ -70,52 +70,40 @@
 	height:56px;
   line-height:20px;
   font-size:16px;
+  transition:height 0.2s ease-in-out;
   
+  &.term-full-text,
   &.counterpart-full-text {
     height:auto;
     min-height:56px;
+    position:absolute;
+    left:0;
+    right:0;
+    z-index:9;
+    box-shadow:0 3px 3px rgba(0,0,0,0.2);
   }
   
 }
 
-.muikku-connect-field-counterpart-text,
-.muikku-connect-field-term-text {
-  word-wrap:break-word;
+.term-placeholder,
+.counterpart-placeholder {
   height:56px;
-  background:#e1f7fc;
-  padding:8px 21px;
-  box-sizing:border-box;
-  z-index:9;
-  @include flexbox;
-  align-items:center;
-  width:100%;
-  
-  &.term-text-full,
-  &.counterpart-text-full {
-    z-index:10;
-    height:auto;
-    min-height:56px;
-    border-radius:5px;
-    transform:scale(1.03);
-    border:1px solid #fff;
-  }
-
+  padding:0;
+  margin:0px 4px 8px 4px;
 }
 
-.muikku-connect-field-term,
-.muikku-connect-field-term-text {
+.muikku-connect-field-term {
   justify-content:flex-end;  
 }
 
-.muikku-connect-field-counterpart,
-.muikku-connect-field-counterpart-text {
+.muikku-connect-field-counterpart {
   justify-content:flex-start
 }
 
 .ui-sortable-placeholder {
   padding:8px 21px;
   background:#e1f7fc;
-  margin: 4px;
+  margin:4px;
   @include rounded(3px);
   background:#f8f8f8;
   height:1.7em;
