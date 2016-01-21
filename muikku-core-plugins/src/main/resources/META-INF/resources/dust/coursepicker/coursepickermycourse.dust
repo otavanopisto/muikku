@@ -5,7 +5,7 @@
     <input type="hidden" name="workspaceUrl" value="{workspaceEntity.urlName}"/>
 
     
-    <div class="cp-course-details">
+    <div class="cp-course-details" {?evaluationHasFee}data-fee="yes"{/evaluationHasFee}>
 
       <div class="cp-course-details-container">       
         <div class="cp-course-additionalInfo">
@@ -51,6 +51,10 @@
           </div>
           
           <div class="cp-course-header-details">
+            {?evaluationHasFee}
+               <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
+               <span class="cp-course-fee icon-coin-euro" title='{#localize key="plugin.coursepicker.course.evaluationhasfee" /}'></span>
+            {/evaluationHasFee}           
 <!--            <span class="cp-course-rating">{workspaceEntity.rating} ({workspaceEntity.ratingCount})</span> -->
 <!--            <span class="cp-course-len"></span> -->
 <!--            <span class="cp-course-age"></span> -->
