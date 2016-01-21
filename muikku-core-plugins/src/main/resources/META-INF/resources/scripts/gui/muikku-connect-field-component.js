@@ -121,7 +121,7 @@
            
           var termElement = $('<div>')
             .addClass('muikku-connect-field-term')
-            .attr('title', $(term).attr('title'))
+            .attr('data-title', $(term).attr('title'))
             .attr('data-field-name', fieldName)
             .attr('data-field-number', index + 1)
             .html($(term).html());
@@ -159,7 +159,7 @@
           
           var counterpartElement = $('<div>')
             .addClass('muikku-connect-field-counterpart')
-            .attr('title', $(counterpart).attr('title'))
+            .attr('data-title', $(counterpart).attr('title'))
             .attr('data-field-value', $(counterpart).data('muikku-connect-field-option-name'))
             .html($(counterpart).html());
           
