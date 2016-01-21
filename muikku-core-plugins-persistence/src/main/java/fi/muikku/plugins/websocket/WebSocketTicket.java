@@ -63,7 +63,7 @@ public class WebSocketTicket {
   
   @NotNull
   @NotEmpty
-  @Column (nullable = false, length = 1024, unique = true)
+  @Column (nullable = false, length = 255, unique = true)
   private String ticket;
   
   @Column (name = "user_id")
