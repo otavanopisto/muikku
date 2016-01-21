@@ -1329,15 +1329,17 @@ public class WorkspaceRESTService extends PluginRESTService {
           WorkspaceNode parentNode = workspaceMaterial.getParent();
           if (parentNode instanceof WorkspaceMaterial) {
             Long parentMaterialId = ((WorkspaceMaterial) parentNode).getMaterialId();
-            Material parentMaterial = materialController.findMaterialById(parentMaterialId);
-            if (parentMaterial instanceof HtmlMaterial) {
-              List<WorkspaceMaterial> sharedWorkspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByMaterial(parentMaterial);
-              for (WorkspaceMaterial sharedWorkspaceMaterial : sharedWorkspaceMaterials) {
-                WorkspaceMaterial childWorkspaceMaterial = workspaceMaterialController.findWorkspaceMaterialByParentAndUrlName(sharedWorkspaceMaterial, workspaceMaterial.getUrlName());
-                if (childWorkspaceMaterial.getId().equals(workspaceMaterial.getId())) {
-                  continue; // skip the one we delete below
+            if (parentMaterialId != null) {
+              Material parentMaterial = materialController.findMaterialById(parentMaterialId);
+              if (parentMaterial instanceof HtmlMaterial) {
+                List<WorkspaceMaterial> sharedWorkspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByMaterial(parentMaterial);
+                for (WorkspaceMaterial sharedWorkspaceMaterial : sharedWorkspaceMaterials) {
+                  WorkspaceMaterial childWorkspaceMaterial = workspaceMaterialController.findWorkspaceMaterialByParentAndUrlName(sharedWorkspaceMaterial, workspaceMaterial.getUrlName());
+                  if (childWorkspaceMaterial.getId().equals(workspaceMaterial.getId())) {
+                    continue; // skip the one we delete below
+                  }
+                  workspaceMaterialController.deleteWorkspaceMaterial(childWorkspaceMaterial, removeAnswers != null ? removeAnswers : false);
                 }
-                workspaceMaterialController.deleteWorkspaceMaterial(childWorkspaceMaterial, removeAnswers != null ? removeAnswers : false);
               }
             }
           }
