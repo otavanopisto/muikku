@@ -45,6 +45,7 @@ import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.muikku.plugins.material.MaterialController;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.search.WorkspaceIndexer;
 import fi.muikku.plugins.workspace.WorkspaceJournalController;
@@ -91,7 +92,6 @@ import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
-import fi.otavanopisto.security.LoggedIn;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -714,6 +714,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       @QueryParam("targetWorkspaceEntityId") Long targetWorkspaceEntityId,
       @QueryParam("copyOnlyChildren") Boolean copyOnlyChildren,
       @QueryParam("cloneMaterials") @DefaultValue ("false") Boolean cloneMaterials,
+      @QueryParam("updateLinkedMaterials") @DefaultValue ("false") Boolean updateLinkedMaterials,
       fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial entity) {
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -832,7 +833,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (material == null) {
         return Response.status(Status.NOT_FOUND).entity("material not found").build();
       }
-      ;
   
       WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, entity.getAssignmentType(), entity.getCorrectAnswers());
       if (entity.getNextSiblingId() != null) {
@@ -847,6 +847,31 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
   
         workspaceMaterialController.moveAbove(workspaceMaterial, nextSibling);
+      }
+      
+      // #1261: HtmlMaterial attachments should be added to all workspace materials sharing the same HtmlMaterial 
+      if (updateLinkedMaterials && parent instanceof WorkspaceMaterial) {
+        Long parentMaterialId = ((WorkspaceMaterial) parent).getMaterialId();
+        if (parentMaterialId != null) {
+          Material parentMaterial = materialController.findMaterialById(parentMaterialId);
+          if (parentMaterial instanceof HtmlMaterial) {
+            List<WorkspaceMaterial> sharedWorkspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByMaterial(parentMaterial);
+            for (WorkspaceMaterial sharedWorkspaceMaterial : sharedWorkspaceMaterials) {
+              if (sharedWorkspaceMaterial.getId().equals(workspaceMaterial.getId())) {
+                continue; // skip the one we created above
+              }
+              WorkspaceMaterial sharedAttachment = workspaceMaterialController.findWorkspaceMaterialByParentAndUrlName(sharedWorkspaceMaterial, workspaceMaterial.getUrlName());
+              if (sharedAttachment == null) {
+                workspaceMaterialController.createWorkspaceMaterial(
+                    sharedWorkspaceMaterial,
+                    material,
+                    workspaceMaterial.getUrlName(),
+                    workspaceMaterial.getAssignmentType(),
+                    workspaceMaterial.getCorrectAnswers());
+              }
+            }
+          }
+        }
       }
   
       return Response.ok(createRestModel(workspaceMaterial)).build();
@@ -1276,7 +1301,11 @@ public class WorkspaceRESTService extends PluginRESTService {
   @DELETE
   @Path("/workspaces/{WORKSPACEID}/materials/{WORKSPACEMATERIALID}")
   @RESTPermitUnimplemented
-  public Response deleteNode(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("removeAnswers") Boolean removeAnswers) {
+  public Response deleteNode(
+      @PathParam("WORKSPACEID") Long workspaceEntityId,
+      @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId,
+      @QueryParam("removeAnswers") Boolean removeAnswers,
+      @QueryParam("updateLinkedMaterials") @DefaultValue ("false") Boolean updateLinkedMaterials) {
     // TODO Our workspace?
     
     if (!sessionController.isLoggedIn()) {
@@ -1291,13 +1320,36 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
-    } else {
+    }
+    else {
       try {
+        
+        // #1261: HtmlMaterial attachments should be removed from all workspace materials sharing the same HtmlMaterial 
+        if (updateLinkedMaterials) {
+          WorkspaceNode parentNode = workspaceMaterial.getParent();
+          if (parentNode instanceof WorkspaceMaterial) {
+            Long parentMaterialId = ((WorkspaceMaterial) parentNode).getMaterialId();
+            Material parentMaterial = materialController.findMaterialById(parentMaterialId);
+            if (parentMaterial instanceof HtmlMaterial) {
+              List<WorkspaceMaterial> sharedWorkspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByMaterial(parentMaterial);
+              for (WorkspaceMaterial sharedWorkspaceMaterial : sharedWorkspaceMaterials) {
+                WorkspaceMaterial childWorkspaceMaterial = workspaceMaterialController.findWorkspaceMaterialByParentAndUrlName(sharedWorkspaceMaterial, workspaceMaterial.getUrlName());
+                if (childWorkspaceMaterial.getId().equals(workspaceMaterial.getId())) {
+                  continue; // skip the one we delete below
+                }
+                workspaceMaterialController.deleteWorkspaceMaterial(childWorkspaceMaterial, removeAnswers != null ? removeAnswers : false);
+              }
+            }
+          }
+        }
+
         workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, removeAnswers != null ? removeAnswers : false);
         return Response.noContent().build();
-      } catch (WorkspaceMaterialContainsAnswersExeption e) {
+      }
+      catch (WorkspaceMaterialContainsAnswersExeption e) {
         return Response.status(Status.CONFLICT).entity(new WorkspaceMaterialDeleteError(WorkspaceMaterialDeleteError.Reason.CONTAINS_ANSWERS)).build();
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).build();
       }
     }
