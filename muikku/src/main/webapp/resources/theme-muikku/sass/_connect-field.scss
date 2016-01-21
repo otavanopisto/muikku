@@ -35,7 +35,7 @@
   padding:5px;
   position:absolute;
   text-align:center;
-  z-index:9;
+  z-index:11;
   font-weight:400;
 }
 
@@ -52,27 +52,63 @@
   padding:5px;
   position:absolute;
   text-align:center;
-  z-index:9;
+  z-index:11;
   font-weight:400;
 }
 
 .muikku-connect-field-counterpart,
 .muikku-connect-field-term {
+  position:relative;
   @include flexbox;
   align-items:center;
-  padding:8px 21px;
+  padding:8px 21px;;
 	background:#e1f7fc;
 	margin:0px 4px 8px 4px;
 	@include rounded(3px);
 	transition:background 0.3s ease-in-out;
 	box-sizing:border-box;
+	height:56px;
+  line-height:20px;
+  font-size:16px;
+  
+  &.counterpart-full-text {
+    height:auto;
+    min-height:56px;
+  }
+  
 }
 
-.muikku-connect-field-term {
+.muikku-connect-field-counterpart-text,
+.muikku-connect-field-term-text {
+  word-wrap:break-word;
+  height:56px;
+  background:#e1f7fc;
+  padding:8px 21px;
+  box-sizing:border-box;
+  z-index:9;
+  @include flexbox;
+  align-items:center;
+  width:100%;
+  
+  &.term-text-full,
+  &.counterpart-text-full {
+    z-index:10;
+    height:auto;
+    min-height:56px;
+    border-radius:5px;
+    transform:scale(1.03);
+    border:1px solid #fff;
+  }
+
+}
+
+.muikku-connect-field-term,
+.muikku-connect-field-term-text {
   justify-content:flex-end;  
 }
 
-.muikku-connect-field-counterpart {
+.muikku-connect-field-counterpart,
+.muikku-connect-field-counterpart-text {
   justify-content:flex-start
 }
 
@@ -85,31 +121,6 @@
   height:1.7em;
 }
 
-.workspace-materials-reading,
-.workspace-materials-management {
-  
-  .muikku-connect-field-counterpart,
-  .muikku-connect-field-term {
-    height:56px;
-    line-height:20px;
-    overflow:hidden;
-    font-size:16px;
-  }
-
-}
-
-.workspace-materials {
-  
-  .muikku-connect-field-counterpart,
-  .muikku-connect-field-term {
-    height:56px;
-    line-height:20px;
-    overflow:hidden;
-    font-size:16px;
-  }
-
-}
-
 .muikku-connect-field-term {
 	cursor:pointer;
 	
@@ -118,9 +129,9 @@
 	}
 	
 	&.muikku-connect-field-term-selected {
-	  background:#3dc7ff;
-	  color:#fff;
-	  font-weight:400;
+    background:#3dc7ff;
+    color:#fff;
+    font-weight:400;
 	}
 	
 }

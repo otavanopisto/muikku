@@ -131,6 +131,14 @@
             this._element.find($('.muikku-connect-field-term')).removeClass('muikku-connect-field-term-selected');
             $(termElement).addClass('muikku-connect-field-term-selected');
           }, this));
+
+          termElement.mouseenter($.proxy(function(e){    
+
+          }, this));
+          
+          termElement.mouseleave($.proxy(function(e){
+
+          }, this));
           
           this._element.find('.muikku-connect-field-terms')
             .append($('<span>').text(index + 1).addClass('muikku-connect-field-number'))
@@ -139,6 +147,7 @@
         }, this));
         
         this.element.find('.muikku-connect-field-counterpart-cell').each($.proxy(function (index, counterpart) {
+          
           var counterpartElement = $('<div>')
             .addClass('muikku-connect-field-counterpart')
             .attr('title', $(counterpart).attr('title'))
@@ -151,6 +160,18 @@
             }
           }, this));
           
+          counterpartElement.mouseenter($.proxy(function(e){  
+            counterpartElement
+              .addClass('counterpart-full-text')
+              .html($(counterpart).attr('title'));
+          }, this));
+          
+          counterpartElement.mouseleave($.proxy(function(e){
+            counterpartElement
+              .removeClass('counterpart-full-text')
+              .html($(counterpart).html());
+          }, this));
+
           this._element.find('.muikku-connect-field-counterparts').append(counterpartElement);
           
         }, this));
