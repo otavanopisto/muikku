@@ -356,6 +356,10 @@ ul.summary {
   line-height:1;
   outline:none;
   text-decoration:none;
+  
+  &.goto {
+    background:#068feb;
+  }
 }
 
 .copy {

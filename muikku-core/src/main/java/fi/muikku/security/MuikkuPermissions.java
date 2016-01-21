@@ -139,6 +139,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String VIEW_WORKSPACE_DETAILS = "VIEW_WORKSPACE_DETAILS";
 
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR }) 
+  public static final String VIEW_WORKSPACE_FEE = "VIEW_WORKSPACE_FEE";
+
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })

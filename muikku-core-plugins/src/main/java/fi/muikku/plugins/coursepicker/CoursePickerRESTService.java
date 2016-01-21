@@ -54,6 +54,7 @@ import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchProvider.Sort;
 import fi.muikku.search.SearchResult;
 import fi.muikku.security.MuikkuPermissions;
+import fi.muikku.servlet.BaseUrl;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
@@ -113,6 +114,10 @@ public class CoursePickerRESTService extends PluginRESTService {
   @Any
   private Instance<MessagingWidget> messagingWidgets;
 
+  @Inject
+  @BaseUrl
+  private String baseUrl;
+  
   @GET
   @Path("/workspaces/")
   @RESTPermitUnimplemented
@@ -310,7 +315,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
 
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-
+    
     Role role = roleController.findRoleByDataSourceAndRoleEntity(user.getSchoolDataSource(), workspaceRole);
     fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
     UserSchoolDataIdentifier userIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
@@ -320,7 +325,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         workspaceUser.getUserIdentifier().getDataSource(), workspaceUser.getUserIdentifier().getIdentifier(), workspaceUser.getRoleIdentifier().getDataSource(),
         workspaceUser.getRoleIdentifier().getIdentifier());
     schoolDataWorkspaceUserDiscoveredEvent.fire(discoverEvent);
-
+    
     // TODO: should this work based on permission? Permission -> Roles -> Recipients
     // TODO: Messaging should be moved into a CDI event listener
 
@@ -341,13 +346,19 @@ public class CoursePickerRESTService extends PluginRESTService {
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
     caption = MessageFormat.format(caption, workspaceName);
 
+    String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspace.getName());
+    
+    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
+    
+    String studentLink = String.format("<a href=\"%s/guider#userprofile/%s\" >%s</a>", baseUrl, studentIdentifier.toId(), userName);
     String content;
     if (StringUtils.isEmpty(entity.getMessage())) {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
-      content = MessageFormat.format(content, userName, workspaceName);
+      content = MessageFormat.format(content, studentLink, workspaceLink);
     } else {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.contentwmessage");
-      content = MessageFormat.format(content, userName, workspaceName, entity.getMessage());
+      String blockquoteMessage = String.format("<blockquote>%s</blockquote>", entity.getMessage());
+      content = MessageFormat.format(content, studentLink, workspaceLink, blockquoteMessage);
     }
 
     for (MessagingWidget messagingWidget : messagingWidgets) {

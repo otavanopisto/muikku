@@ -248,7 +248,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           var hasMore = workspaces && workspaces.length > this._maxResults;
-          if (workspaces) {
+          if (workspaces && hasMore) {
             workspaces.pop();
           }
           

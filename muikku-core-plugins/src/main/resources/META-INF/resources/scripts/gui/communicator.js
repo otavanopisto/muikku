@@ -93,7 +93,7 @@ $(document).ready(function(){
               message.senderFullName = user.firstName + ' ' + user.lastName;
               message.senderHasPicture = user.hasImage;
               message.caption = $('<div>').html(message.caption).text();
-              message.content = $('<div>').html(message.content).text();
+              message.content = message.content;
               messageCallback();
             }
           });

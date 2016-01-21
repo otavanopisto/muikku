@@ -49,13 +49,14 @@ body[class^='workspace'] {
       bottom:50px;
       background:#31acf6;
       color:#fff;
-      padding:0px 8px;
+      padding:4px 10px;
       min-width:100px;
       z-index:13;
-      font-size:15px;
+      font-size:18px;
+      text-transform:uppercase;
       
       span {
-        font-weight:400;
+        font-weight:300;
         display:inline-block;
         margin:0 2px 0 0;
       }

@@ -1411,6 +1411,7 @@
                 newPage.removeClass('workspace-materials-management-new');
                 newPage.attr({
                   'id': 'page-' + workspaceMaterialResult.id,
+                  'data-path': workspaceMaterialResult.path,
                   'data-material-title': materialResult.title,
                   'data-parent-id': workspaceMaterialResult.parentId,
                   'data-material-id': materialResult.id,
