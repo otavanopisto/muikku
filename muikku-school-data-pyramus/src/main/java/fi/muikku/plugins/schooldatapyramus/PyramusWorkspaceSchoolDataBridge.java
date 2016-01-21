@@ -293,6 +293,11 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
             String.format("/common/educationTypes/%d", courseEducationType.getEducationTypeId()),
             EducationType.class);
         
+        if (educationType == null) {
+          logger.severe(String.format("Could not find educationType %d", courseEducationType.getEducationTypeId()));
+          continue;
+        }
+        
         String educationTypeCode = educationType.getCode();
         List<String> courseEducationSubtypeList = new ArrayList<String>();
         
@@ -304,8 +309,12 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
                   courseEducationSubtype.getEducationSubtypeId()),
               EducationSubtype.class);
           
-          String educationSubtypeCode = educationSubtype.getCode();
-          courseEducationSubtypeList.add(educationSubtypeCode);
+          if (educationSubtype != null) {
+            String educationSubtypeCode = educationSubtype.getCode();
+            courseEducationSubtypeList.add(educationSubtypeCode);
+          } else {
+            logger.severe(String.format("Could not find education subtype %d from type %d", courseEducationSubtype.getEducationSubtypeId(), educationType.getId()));
+          }
         }
 
         courseEducationTypeMap.put(educationTypeCode, courseEducationSubtypeList);
