@@ -701,7 +701,7 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
     }
     
-    if (!sessionController.hasCoursePermission(ForumResourcePermissionCollection.FORUM_FINDWORKSPACEUSERSTATISTICS, workspaceEntity)) {
+    if (!sessionController.hasCoursePermission(ForumResourcePermissionCollection.FORUM_FINDWORKSPACE_USERSTATISTICS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
