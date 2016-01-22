@@ -9,7 +9,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.93</version>
+    <version>1.0.94-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
