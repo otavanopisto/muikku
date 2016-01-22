@@ -51,7 +51,7 @@
           <div class="cp-course-header-details">            
             {?evaluationHasFee}
                <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
-               <span class="cp-course-fee" title='{#localize key="plugin.coursepicker.course.assessmenthasfee" /}'>€</span>
+               <span class="cp-course-fee icon-coin-euro" title='{#localize key="plugin.coursepicker.course.evaluationhasfee" /}'></span>
             {/evaluationHasFee} 
 <!--            <span class="cp-course-rating">{rating} ({ratingCount})</span> -->
 <!--            <span class="cp-course-len"></span> -->
