@@ -524,14 +524,14 @@
             })
             .val(values[connectFieldTermMeta.name]);
           
-          tdTermElement.text(concatText(connectFieldTermMeta.text, 60));
+          tdTermElement.text(concatText(connectFieldTermMeta.text, 50));
           tdTermElement.attr('title', connectFieldTermMeta.text);
           tdTermElement.data('muikku-connect-field-option-name', connectFieldTermMeta.name);
           tdValueElement.append(inputElement);
         }
         
         if (connectFieldCounterpartMeta != null) {
-          tdCounterpartElement.text(concatText(connectFieldCounterpartMeta.text, 60));
+          tdCounterpartElement.text(concatText(connectFieldCounterpartMeta.text, 50));
           tdCounterpartElement.attr('title', connectFieldCounterpartMeta.text);
           tdCounterpartElement.attr('data-muikku-connect-field-option-name', connectFieldCounterpartMeta.name);
         }
