@@ -578,6 +578,8 @@
           mApi({async: false}).workspace.workspaces.materials.create(this.options.workspaceEntityId, {
             materialId: materialResult.id,
             parentId: this.options.parentId
+          }, {
+            updateLinkedMaterials: true
           })
           .callback($.proxy(function (workspaceMaterialErr, workspaceMaterialResult) {
             if (workspaceMaterialErr) {
@@ -612,14 +614,16 @@
       if (workspaceMaterialId) {
         this._confirmRemoval(materialTitle, $.proxy(function () {
           
-          mApi({async: false}).workspace.workspaces.materials.del(this.options.workspaceEntityId, workspaceMaterialId)
-            .callback($.proxy(function (err) {
-              if (err) {
-                $('.notification-queue').notificationQueue('notification', 'error', err);
-              } else {
-                attachmentElement.remove();
-              }
-            }, this));
+          mApi({async: false}).workspace.workspaces.materials.del(this.options.workspaceEntityId, workspaceMaterialId, {}, {
+            updateLinkedMaterials: true 
+          })
+          .callback($.proxy(function (err) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              attachmentElement.remove();
+            }
+          }, this));
           
         }, this));
       }
