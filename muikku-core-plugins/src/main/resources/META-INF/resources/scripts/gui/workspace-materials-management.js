@@ -110,6 +110,20 @@
       var pageSection = $(pageElement).closest(".workspace-materials-view-page");
       var materialPath = $('.materialsBaseUrl').val() + '/' + path;
       
+      mApi().materials.material.workspaceMaterials
+        .read(materialId)
+        .callback(function (err, workspaceMaterials) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            var workspaceMaterialCount = workspaceMaterials ? workspaceMaterials.length : 0;
+            
+            if (workspaceMaterialCount > 1) {
+              $('.notification-queue').notificationQueue('notification', 'warn', getLocaleText("plugin.workspace.materialsManagement.linkedMaterialCountMessage", workspaceMaterialCount));
+            }
+          }
+        });
+      
       pageSection.addClass("page-edit-mode");
       
       var editor = pageElement[editorName];
