@@ -9,7 +9,11 @@
         </div>
         <div class="tr-item-description">
           <div class="tr-item-header-name">
+           {@ne key=nameExtension value=""}
+           <span class="tr-item-long">{name} ({nameExtension})</span>
+           {:else}
            <span class="tr-item-long">{name}</span>
+           {/ne}
           </div>
           
           <div class="tr-item-header-details">

@@ -15,37 +15,56 @@
     
     _loadWorkspaces: function () {
       this._clear();
-      mApi().workspace.workspaces
-      .read({ includeArchivedWorkspaceUsers: true, userIdentifier: this.options.studentIdentifier })
-      .on('$', $.proxy(function (workspaceEntity, callback) {
-        mApi().workspace.workspaces.assessments
-          .read(workspaceEntity.id, { studentIdentifier: this.options.studentIdentifier })
-          .callback($.proxy(function (assessmentsErr, assessments) {
-            if( assessmentsErr ){
-              $('.notification-queue').notificationQueue('notification', 'error', assessmentsErr );
-            } else {
-              var assessment = assessments && assessments.length == 1 ? assessments[0] : null;
-              if (assessment) {
-                var grade = this._grades[[assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier].join('-')];
-                workspaceEntity.evaluated = formatDate(new Date(assessment.evaluated));
-                workspaceEntity.verbalAssessment = assessment.verbalAssessment;
-                workspaceEntity.grade = grade.grade;
-                workspaceEntity.gradingScale = grade.scale;
-              }
-            }
-            
+      
+      mApi().user.students
+        .read({userEntityId: this.options.userEntityId})
+        .on('$', $.proxy(function (student, callback) {
+          this._loadStudentWorkspaces(student.id, function (workspaces) {
+            student.workspaces = workspaces;
             callback();
+          });
+        }, this))
+        .callback($.proxy(function (err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
+          } else {
+            renderDustTemplate('/records/records_studyprogrammes.dust', { students: result }, $.proxy(function(text) {
+              this.element.append(text);
+            }, this));
+          }
+        }, this));
+    },
+    
+    _loadStudentWorkspaces: function (studentIdentifier, callback) {
+      mApi().workspace.workspaces
+        .read({ includeArchivedWorkspaceUsers: true, userIdentifier: studentIdentifier })
+        .on('$', $.proxy(function (workspaceEntity, callback) {
+          mApi().workspace.workspaces.assessments
+            .read(workspaceEntity.id, { studentIdentifier: studentIdentifier })
+            .callback($.proxy(function (assessmentsErr, assessments) {
+              if( assessmentsErr ){
+                $('.notification-queue').notificationQueue('notification', 'error', assessmentsErr );
+              } else {
+                var assessment = assessments && assessments.length == 1 ? assessments[0] : null;
+                if (assessment) {
+                  var grade = this._grades[[assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier].join('-')];
+                  workspaceEntity.evaluated = formatDate(new Date(assessment.evaluated));
+                  workspaceEntity.verbalAssessment = assessment.verbalAssessment;
+                  workspaceEntity.grade = grade.grade;
+                  workspaceEntity.gradingScale = grade.scale;
+                }
+              }
+              
+              callback();
+            }, this));
+          }, this))
+          .callback($.proxy(function (err, workspaces) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              callback(workspaces); 
+            }
           }, this));
-      }, this)) 
-      .callback($.proxy(function (err, workspaces) {
-        if( err ){
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
-        } else {
-          renderDustTemplate('/records/records_items.dust', workspaces, $.proxy(function(text) {
-            this.element.append(text);
-          }, this));
-        }
-      }, this));
     },
     
     _loadWorkspace: function (workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment) {
