@@ -87,6 +87,7 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
+import fi.muikku.search.SearchProvider.Sort;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
@@ -317,8 +318,15 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
+      List<Sort> sorts = null;
+      
+      if (orderBy != null && orderBy.contains("alphabet")) {
+        sorts = new ArrayList<>();
+        sorts.add(new Sort("name", Sort.Order.ASC));
+      }
+      
       // TODO: Pagination support
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, 0, 50);
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, 0, 50, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
