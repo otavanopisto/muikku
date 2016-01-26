@@ -44,6 +44,7 @@ import fi.muikku.model.users.StudentFlag;
 import fi.muikku.model.users.StudentFlagType;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
@@ -60,6 +61,7 @@ import fi.muikku.users.UserController;
 import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserGroupEntityController;
+import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -97,7 +99,10 @@ public class UserRESTService extends AbstractRESTService {
   
   @Inject
   private StudentFlagController studentFlagController;
-  
+
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
   @Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
@@ -113,6 +118,7 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("myUserGroups") Boolean myUserGroups,
       @QueryParam("workspaceIds") List<Long> workspaceIds,
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
+      @QueryParam("userEntityId") Long userEntityId,
       @QueryParam("studentFlagTypes") String flagTypes) {
     
     if (!sessionController.isLoggedIn()) {
@@ -172,7 +178,27 @@ public class UserRESTService extends AbstractRESTService {
       
       userIdentifiers.addAll(studentFlagController.listOwnerFlaggedUserIdentifiersByTypes(sessionController.getLoggedUser(), studentFlagTypes));
     }
-
+    
+    if (userEntityId != null) {
+      List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
+       
+      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+      if (userEntity == null) {
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid userEntityId %d", userEntityId)).build();
+      }
+      
+      List<UserSchoolDataIdentifier> schoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
+      for (UserSchoolDataIdentifier schoolDataIdentifier : schoolDataIdentifiers) {
+        userEntityIdentifiers.add(new SchoolDataIdentifier(schoolDataIdentifier.getIdentifier(), schoolDataIdentifier.getDataSource().getIdentifier()));
+      }
+      
+      if (userIdentifiers == null) {
+        userIdentifiers = userEntityIdentifiers;
+      } else {
+        userIdentifiers.retainAll(userEntityIdentifiers);
+      }
+    }
+    
     if ((myWorkspaces != null) && myWorkspaces) {
       // Workspaces where user is a member
       List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(loggedUser);

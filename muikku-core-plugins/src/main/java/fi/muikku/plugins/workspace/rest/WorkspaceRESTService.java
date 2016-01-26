@@ -1803,7 +1803,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("WorkspaceEntityUser's workpsace does not match specified workspace").build();
     }
     
-    if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
+    if (!sessionController.getLoggedUserEntity().getId().equals(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId())) {
       if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_USER_EVALUATION, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).build();
       }

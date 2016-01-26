@@ -1,0 +1,8 @@
+{#students}
+  <h3>{studyProgrammeName}</h3>
+  <div>
+    {#workspaces}
+      {>"records/records_items.dust"/}
+    {/workspaces}
+  </div>
+{/students}
