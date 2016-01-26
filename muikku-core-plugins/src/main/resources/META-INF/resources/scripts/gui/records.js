@@ -15,10 +15,10 @@
     
     _loadWorkspaces: function () {
       this._clear();
-      mApi({async: false}).workspace.workspaces
-      .read({ userId: this.options.userEntityId })
+      mApi().workspace.workspaces
+      .read({ includeArchivedWorkspaceUsers: true, userIdentifier: this.options.studentIdentifier })
       .on('$', $.proxy(function (workspaceEntity, callback) {
-        mApi({async: false}).workspace.workspaces.assessments
+        mApi().workspace.workspaces.assessments
           .read(workspaceEntity.id, { studentIdentifier: this.options.studentIdentifier })
           .callback($.proxy(function (assessmentsErr, assessments) {
             if( assessmentsErr ){
@@ -50,17 +50,17 @@
     
     _loadWorkspace: function (workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment) {
 
-       this._load();
+      this._load();
 
-      mApi({async: false}).workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
+      mApi().workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
         .on('$', $.proxy(function (workspaceMaterial, callback) {
           // TODO: support for binary materials?
           
-          mApi({async: false}).materials.html.read(workspaceMaterial.materialId).callback($.proxy(function (htmlErr, htmlMaterial) {
+          mApi().materials.html.read(workspaceMaterial.materialId).callback($.proxy(function (htmlErr, htmlMaterial) {
             if (htmlErr) {
               $('.notification-queue').notificationQueue('notification', 'error', htmlErr);
             } else {
-              mApi({async: false}).workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterial.id, {
+              mApi().workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterial.id, {
                 userEntityId: this.options.userEntityId
               })
               .callback($.proxy(function (evaluationsErr, evaluations) {

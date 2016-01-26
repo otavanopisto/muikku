@@ -252,6 +252,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response listWorkspaces(
         @QueryParam("userId") Long userEntityId,
         @QueryParam("userIdentifier") String userId,
+        @QueryParam("includeArchivedWorkspaceUsers") @DefaultValue ("false") Boolean includeArchivedWorkspaceUsers,
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("minVisits") Long minVisits,
@@ -273,6 +274,14 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
     
+    if (includeArchivedWorkspaceUsers && (userIdentifier == null)) {
+      return Response.status(Status.BAD_REQUEST).entity("includeArchivedWorkspaceUsers works only with userIdentifier parameter").build();
+    }
+    
+    if (includeArchivedWorkspaceUsers && doMinVisitFilter) {
+      return Response.status(Status.BAD_REQUEST).entity("includeArchivedWorkspaceUsers and doMinVisitFilter are ").build();
+    }
+    
     if (doMinVisitFilter) {
       if (userEntity != null) {
         workspaceEntities = workspaceVisitController.listWorkspaceEntitiesByMinVisitsOrderByLastVisit(userEntity, minVisits);
@@ -281,7 +290,11 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     } else {
       if (userIdentifier != null) {
-        workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
+        if (includeArchivedWorkspaceUsers) {
+          workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifierIncludeArchived(userIdentifier);
+        } else {
+          workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
+        }
       } else if (userEntity != null) {
         workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
       }
@@ -1760,12 +1773,18 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceUserEntity workspaceUserEntity = null;
     
     if (workspaceStudentIdentifier != null) {
-      workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceStudentIdentifier);
-      studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), 
-        workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+      // Archived workspace users need access to workspace assessments
+      workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceStudentIdentifier);
+      if (workspaceUserEntity != null) {
+        studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), 
+          workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+      }
     } else if (studentIdentifier != null) {
-      workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
-      workspaceStudentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+      // Archived workspace users need access to workspace assessments
+      workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, studentIdentifier);
+      if (workspaceUserEntity != null) {
+        workspaceStudentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+      }
     }
     
     if (workspaceStudentIdentifier == null) {

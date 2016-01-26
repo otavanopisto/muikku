@@ -1,6 +1,7 @@
 package fi.muikku.schooldata;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class SchoolDataIdentifier {
   
@@ -15,6 +16,14 @@ public class SchoolDataIdentifier {
     return o instanceof SchoolDataIdentifier &&
         StringUtils.equals(identifier, ((SchoolDataIdentifier) o).identifier) &&
         StringUtils.equals(dataSource, ((SchoolDataIdentifier) o).dataSource);
+  }
+  
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(41, 78)
+      .append(getDataSource())
+      .append(getIdentifier())
+      .toHashCode();
   }
 
   public String getDataSource() {
