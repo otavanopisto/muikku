@@ -41,7 +41,7 @@
     
     _loadStudentWorkspaces: function (studentIdentifier, callback) {
       mApi().workspace.workspaces
-        .read({ includeArchivedWorkspaceUsers: true, userIdentifier: studentIdentifier, includeUnpublished: true })
+        .read({ includeArchivedWorkspaceUsers: true, userIdentifier: studentIdentifier, includeUnpublished: true, orderBy: ['alphabet'] })
         .on('$', $.proxy(function (workspaceEntity, callback) {
           mApi().workspace.workspaces.assessments
             .read(workspaceEntity.id, { studentIdentifier: studentIdentifier })
