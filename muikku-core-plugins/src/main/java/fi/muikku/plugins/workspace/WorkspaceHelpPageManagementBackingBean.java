@@ -74,6 +74,8 @@ public class WorkspaceHelpPageManagementBackingBean {
       return NavigationRules.INTERNAL_ERROR;
     }
 
+    materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
+
     return null;
   }
 
@@ -105,8 +107,13 @@ public class WorkspaceHelpPageManagementBackingBean {
     return contentNodes;
   }
 
+  public String getMaterialsBaseUrl() {
+    return materialsBaseUrl;
+  }
+
   private WorkspaceRootFolder rootFolder;
   private String workspaceName;
   private Long workspaceEntityId;
+  private String materialsBaseUrl;
   private List<ContentNode> contentNodes;
 }
