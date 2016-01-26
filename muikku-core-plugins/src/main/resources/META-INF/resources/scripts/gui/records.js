@@ -25,6 +25,10 @@
           });
         }, this))
         .callback($.proxy(function (err, result) {
+          result.sort($.proxy(function (student1, student2) {
+            return student1.id == this.options.studentIdentifier ? -1 : student2.id == this.options.studentIdentifier ? 1 : 0;
+          }, this));
+          
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
           } else {
