@@ -114,6 +114,18 @@ public class WorkspaceUserEntityController {
       return Collections.emptyList();
     }
   }
+
+  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUserIdentifierIncludeArchived(SchoolDataIdentifier userIdentifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
+        findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
+    
+    if (userSchoolDataIdentifier != null) {
+      return workspaceUserEntityDAO.listByUserSchoolDataIdentifierIncludeArchived(userSchoolDataIdentifier);
+    } else {
+      logger.severe(String.format("Could not find UserSchoolDataIdentifier by %s", userIdentifier));
+      return Collections.emptyList();
+    }
+  }
   
   public Long countWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {
     if ((roles == null)||(roles.isEmpty())) {
@@ -155,7 +167,7 @@ public class WorkspaceUserEntityController {
     return findWorkspaceUserByWorkspaceEntityAndUserIdentifierAndArchived(workspaceEntity, userIdentifier, Boolean.FALSE);
   }
 
-  public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserIdentifierAndArchived(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier, Boolean archived) {
+  private WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserIdentifierAndArchived(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier, Boolean archived) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
     if (userSchoolDataIdentifier == null) {
       return null;
@@ -186,6 +198,17 @@ public class WorkspaceUserEntityController {
     List<WorkspaceEntity> result = new ArrayList<>();
     
     List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByUserEntity(userEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      result.add(workspaceUserEntity.getWorkspaceEntity());
+    }
+    
+    return result;
+  }
+
+  public List<WorkspaceEntity> listWorkspaceEntitiesByUserIdentifierIncludeArchived(SchoolDataIdentifier userIdentifier) {
+    List<WorkspaceEntity> result = new ArrayList<>();
+    
+    List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByUserIdentifierIncludeArchived(userIdentifier);
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
       result.add(workspaceUserEntity.getWorkspaceEntity());
     }
