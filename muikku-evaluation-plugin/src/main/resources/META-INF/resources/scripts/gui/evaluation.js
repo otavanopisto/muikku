@@ -1047,6 +1047,18 @@
           this.element.addClass('assignment-withdrawn');
         break;
         case 'FAILED':
+          this.element.on("click", $.proxy(this._onClick, this));
+          this.element.addClass('assignment-reviewed-non-passing');
+          if (reply.submitted) {
+            this.element.find('.evaluation-assignment-submitted-date')
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
+          }
+          if (evaluation && evaluation.evaluated) {
+            this.options.evaluation = evaluation;
+            this.element.find('.evaluation-assignment-evaluated-date')
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
+          }          
+        break;
         case 'PASSED':
           this.element.on("click", $.proxy(this._onClick, this));
           this.element.addClass('assignment-evaluated');

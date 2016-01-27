@@ -541,6 +541,20 @@ body.evaluation {
         }
       }
       
+      &.assignment-withdrawn {
+        border-top:3px solid #cb23c5;
+        cursor:pointer;
+        
+        .evaluation-assignment-evaluated-date {
+          color:#1aa00b;
+        }
+        
+        &:hover {
+          box-shadow:0 0 0 5px #e69be3;
+        }
+      }
+      
+      
       &.assignment-reviewed-non-passing {
         opacity:1;
         border-top:3px solid #ea7401;
