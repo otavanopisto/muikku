@@ -42,10 +42,18 @@ public class PyramusIdentifierMapper {
   }
   
   public SchoolDataIdentifier getGradeIdentifier(Long gradeId) {
+    if (gradeId == null) {
+      return null;
+    }
+    
     return new SchoolDataIdentifier(gradeId.toString(), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
   
   public SchoolDataIdentifier getGradingScaleIdentifier(Long gradingScaleId) {
+    if (gradingScaleId == null) {
+      return null;
+    }
+    
     return new SchoolDataIdentifier(gradingScaleId.toString(), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
   
@@ -252,6 +260,10 @@ public class PyramusIdentifierMapper {
   }
   
   public Long getPyramusTransferCredit(SchoolDataIdentifier transferCreditIdentifier) {
+    if (transferCreditIdentifier == null) {
+      return null;
+    }
+    
     if (transferCreditIdentifier.getDataSource().equals(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE)) {
       if (StringUtils.startsWith(transferCreditIdentifier.getIdentifier(), TRANSFERCREDIT_PREFIX)) {
         return NumberUtils.createLong(StringUtils.substring(transferCreditIdentifier.getIdentifier(), TRANSFERCREDIT_PREFIX.length()));
@@ -264,10 +276,18 @@ public class PyramusIdentifierMapper {
   }
   
   public SchoolDataIdentifier getTransferCreditIdentifier(Long transferCreditId) {
+    if (transferCreditId == null) {
+      return null;
+    }
+    
     return new SchoolDataIdentifier(String.format("%s%d", TRANSFERCREDIT_PREFIX, transferCreditId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
   
   public Long getPyramusSchool(SchoolDataIdentifier schoolIdentifier) {
+    if (schoolIdentifier == null) {
+      return null;
+    }
+    
     if (schoolIdentifier.getDataSource().equals(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE)) {
       if (StringUtils.startsWith(schoolIdentifier.getIdentifier(), SCHOOL_PREFIX)) {
         return NumberUtils.createLong(StringUtils.substring(schoolIdentifier.getIdentifier(), SCHOOL_PREFIX.length()));
@@ -280,6 +300,10 @@ public class PyramusIdentifierMapper {
   }
   
   public SchoolDataIdentifier getSchoolIdentifier(Long schoolId) {
+    if (schoolId == null) {
+      return null;
+    }
+    
     return new SchoolDataIdentifier(String.format("%s%d", SCHOOL_PREFIX, schoolId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
   

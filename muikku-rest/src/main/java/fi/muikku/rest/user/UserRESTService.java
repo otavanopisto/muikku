@@ -475,10 +475,10 @@ public class UserRESTService extends AbstractRESTService {
   
   @GET
   @Path("/students/{ID}/transferCredits")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listStudentTransferCredits(@PathParam("ID") String id) {
     if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
+      return Response.status(Status.UNAUTHORIZED).build();
     }
     
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
@@ -768,8 +768,10 @@ public class UserRESTService extends AbstractRESTService {
   private List<fi.muikku.rest.model.TransferCredit> createRestModel(TransferCredit[] transferCredits) {
     List<fi.muikku.rest.model.TransferCredit> result = new ArrayList<>();
     
-    for (TransferCredit transferCredit : transferCredits) {
-      result.add(createRestModel(transferCredit));
+    if (transferCredits != null) {
+      for (TransferCredit transferCredit : transferCredits) {
+        result.add(createRestModel(transferCredit));
+      }
     }
     
     return result;

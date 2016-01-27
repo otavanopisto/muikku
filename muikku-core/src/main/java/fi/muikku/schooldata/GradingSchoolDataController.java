@@ -154,7 +154,7 @@ class GradingSchoolDataController {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
     }
   
-    return null;
+    return Collections.emptyList();
   }
 	
 	/* GradingScales */

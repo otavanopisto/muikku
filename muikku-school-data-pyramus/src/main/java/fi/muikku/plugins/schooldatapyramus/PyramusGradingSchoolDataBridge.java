@@ -236,7 +236,11 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
   @Override
   public List<TransferCredit> listStudentTransferCredits(SchoolDataIdentifier studentIdentifier) {
-    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (studentId == null) {
+      logger.severe(String.format("Failed to convert %s into Pyramus student id", studentIdentifier));
+      return Collections.emptyList();
+    }
     
     fi.pyramus.rest.model.TransferCredit[] transferCredits = pyramusClient.get(String.format("/students/students/%d/transferCredits", studentId), fi.pyramus.rest.model.TransferCredit[].class);
     if (transferCredits == null) {
