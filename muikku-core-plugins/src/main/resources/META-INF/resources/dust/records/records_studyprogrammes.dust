@@ -4,5 +4,12 @@
     {#workspaces}
       {>"records/records_items.dust"/}
     {/workspaces}
+    
+    {?transferCredits}
+      <h4>Hyväksiluvut (Localize)</h4>
+      {#transferCredits}
+        {>"records/records_transfercredits.dust"/}
+      {/transferCredits}
+    {/transferCredits}
   </div>
 {/students}

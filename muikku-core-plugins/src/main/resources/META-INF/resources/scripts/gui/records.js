@@ -19,10 +19,14 @@
       mApi().user.students
         .read({userEntityId: this.options.userEntityId})
         .on('$', $.proxy(function (student, callback) {
-          this._loadStudentWorkspaces(student.id, function (workspaces) {
-            student.workspaces = workspaces;
-            callback();
-          });
+          // TODO: sync load
+          this._loadStudentWorkspaces(student.id, $.proxy(function (workspaces) {
+            this._loadStudentTransferCredits(student.id, function (transferCredits) {
+              student.workspaces = workspaces;
+              student.transferCredits = transferCredits;
+              callback();
+            });
+          }, this));
         }, this))
         .callback($.proxy(function (err, result) {
           result.sort($.proxy(function (student1, student2) {
@@ -51,7 +55,7 @@
               } else {
                 var assessment = assessments && assessments.length == 1 ? assessments[0] : null;
                 if (assessment) {
-                  var grade = this._grades[[assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier].join('-')];
+                  var grade = this._getGrade(assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier);
                   workspaceEntity.evaluated = formatDate(new Date(assessment.evaluated));
                   workspaceEntity.verbalAssessment = assessment.verbalAssessment;
                   workspaceEntity.grade = grade.grade;
@@ -69,6 +73,58 @@
               callback(workspaces); 
             }
           }, this));
+    },
+    
+    _loadStudentTransferCredits: function (studentIdentifier, callback) {
+      mApi().user.students.transferCredits
+        .read(studentIdentifier)
+        .callback($.proxy(function (err, transferCredits) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            var data = $.map(transferCredits, $.proxy(function (transferCredit) {
+              var scaleSchoolDataSource;
+              var scaleIdentifier;
+              var gradeSchoolDataSource;
+              var gradeIdentifier;
+              
+              if (transferCredit.gradeIdentifier && transferCredit.gradingScaleIdentifier) {
+                var gradeSplit = transferCredit.gradeIdentifier.split('-');  
+                var scaleSplit = transferCredit.gradingScaleIdentifier.split('-');  
+                
+                if (gradeSplit.length == 2) {
+                  gradeSchoolDataSource = gradeSplit[0];
+                  gradeIdentifier = gradeSplit[1];
+                }
+
+                if (scaleSplit.length == 2) {
+                  scaleSchoolDataSource = scaleSplit[0];
+                  scaleIdentifier = scaleSplit[1];
+                }
+              }
+              
+              if (scaleSchoolDataSource && scaleIdentifier && gradeSchoolDataSource && gradeIdentifier) {
+                var grade = this._getGrade(scaleSchoolDataSource, scaleIdentifier, gradeSchoolDataSource, gradeIdentifier);
+                return $.extend(transferCredit, {
+                  evaluated: formatDate(new Date(transferCredit.date)),
+                  grade: grade.grade,
+                  gradingScale: grade.scale
+                });
+              }
+            }, this));
+            
+            callback(data);
+          }
+        }, this));
+    },
+    
+    _getGrade: function (gradingScaleSchoolDataSource, gradingScaleIdentifier, gradeSchoolDataSource, gradeIdentifier) {
+      if (gradingScaleSchoolDataSource && gradingScaleIdentifier && gradeSchoolDataSource && gradeIdentifier) {
+        var gradeId = [gradingScaleSchoolDataSource, gradingScaleIdentifier, gradeSchoolDataSource, gradeIdentifier].join('-');
+        return this._grades[gradeId];
+      }
+        
+      return null;
     },
     
     _loadWorkspace: function (workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment) {
