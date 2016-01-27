@@ -1044,7 +1044,7 @@
           }
         break;
         case 'WITHDRAWN':
-          this.element.addClass('assignment-withdrawn');
+//          this.element.addClass('assignment-withdrawn'); This seems to be unwanted feature for now
         break;
         case 'FAILED':
           this.element.on("click", $.proxy(this._onClick, this));
