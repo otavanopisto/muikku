@@ -1,11 +1,19 @@
 package fi.muikku.plugins.schooldatapyramus;
 
+import java.util.logging.Logger;
+
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.pyramus.rest.model.UserRole;
 
 public class PyramusIdentifierMapper {
+  
+  @Inject
+  private Logger logger;
   
   private static final String STUDENT_PREFIX = "STUDENT-";
   private static final String STAFF_PREFIX = "STAFF-";
@@ -18,6 +26,8 @@ public class PyramusIdentifierMapper {
   private static final String STUDENTGROUPSTAFFMEMBER_PREFIX = "USERGROUPSTAFFMEMBER-";
   private static final String STUDYPROGRAMME_PREFIX = "STUDYPROGRAMME-";
   private static final String STUDYPROGRAMMESTUDENT_PREFIX = "STUDYPROGRAMMESTUDENT-";
+  private static final String TRANSFERCREDIT_PREFIX = "STC-";
+  private static final String SCHOOL_PREFIX = "SC-";
 
   public String getWorkspaceIdentifier(Long courseId) {
     return courseId != null ? courseId.toString() : null;
@@ -29,6 +39,14 @@ public class PyramusIdentifierMapper {
   
   public String getWorkspaceStudentIdentifier(Long id) {
     return WORKSPACE_STUDENT_PREFIX + id.toString();
+  }
+  
+  public SchoolDataIdentifier getGradeIdentifier(Long gradeId) {
+    return new SchoolDataIdentifier(gradeId.toString(), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+  }
+  
+  public SchoolDataIdentifier getGradingScaleIdentifier(Long gradingScaleId) {
+    return new SchoolDataIdentifier(gradingScaleId.toString(), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
   
   public Long getPyramusCourseStudentId(String workspaceStudentIdentifier) {
@@ -233,5 +251,36 @@ public class PyramusIdentifierMapper {
     return null;
   }
   
+  public Long getPyramusTransferCredit(SchoolDataIdentifier transferCreditIdentifier) {
+    if (transferCreditIdentifier.getDataSource().equals(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE)) {
+      if (StringUtils.startsWith(transferCreditIdentifier.getIdentifier(), TRANSFERCREDIT_PREFIX)) {
+        return NumberUtils.createLong(StringUtils.substring(transferCreditIdentifier.getIdentifier(), TRANSFERCREDIT_PREFIX.length()));
+      }
+    }
+    
+    logger.severe(String.format("Could not translate %s to pyramus transfer credit id", transferCreditIdentifier));
+    
+    return null;
+  }
+  
+  public SchoolDataIdentifier getTransferCreditIdentifier(Long transferCreditId) {
+    return new SchoolDataIdentifier(String.format("%s%d", TRANSFERCREDIT_PREFIX, transferCreditId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+  }
+  
+  public Long getPyramusSchool(SchoolDataIdentifier schoolIdentifier) {
+    if (schoolIdentifier.getDataSource().equals(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE)) {
+      if (StringUtils.startsWith(schoolIdentifier.getIdentifier(), SCHOOL_PREFIX)) {
+        return NumberUtils.createLong(StringUtils.substring(schoolIdentifier.getIdentifier(), SCHOOL_PREFIX.length()));
+      }
+    }
+    
+    logger.severe(String.format("Could not translate %s to pyramus transfer school id", schoolIdentifier));
+    
+    return null;
+  }
+  
+  public SchoolDataIdentifier getSchoolIdentifier(Long schoolId) {
+    return new SchoolDataIdentifier(String.format("%s%d", SCHOOL_PREFIX, schoolId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+  }
   
 }

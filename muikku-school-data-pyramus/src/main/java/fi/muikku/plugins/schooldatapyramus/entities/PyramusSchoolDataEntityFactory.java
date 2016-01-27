@@ -21,6 +21,7 @@ import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.entity.GroupUser;
+import fi.muikku.schooldata.entity.TransferCredit;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserAddress;
 import fi.muikku.schooldata.entity.UserGroup;
@@ -313,10 +314,13 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public WorkspaceAssessment createEntity(CourseAssessment courseAssessment) {
+    SchoolDataIdentifier gradeIdentifier = identifierMapper.getGradeIdentifier(courseAssessment.getGradeId());
+    SchoolDataIdentifier gradingScaleIdentifier = identifierMapper.getGradingScaleIdentifier(courseAssessment.getGradingScaleId());
+    
     return new PyramusWorkspaceAssessment(courseAssessment.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
         identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
-        courseAssessment.getGradeId().toString(), courseAssessment.getGradingScaleId().toString(),
+        gradeIdentifier.getIdentifier(), gradingScaleIdentifier.getIdentifier(),
         courseAssessment.getVerbalAssessment(), courseAssessment.getDate().toDate());
   }
 
@@ -454,6 +458,33 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     return result;
+  }
+  
+  public TransferCredit createEntity(fi.pyramus.rest.model.TransferCredit transferCredit) {
+    // TODO: Null checks
+    
+    SchoolDataIdentifier identifier = identifierMapper.getTransferCreditIdentifier(transferCredit.getId());
+    SchoolDataIdentifier studentIdentifier = transferCredit.getStudentId() != null ? toIdentifier(identifierMapper.getStudentIdentifier(transferCredit.getStudentId())) : null;
+    SchoolDataIdentifier gradeIdentifier = identifierMapper.getGradeIdentifier(transferCredit.getGradeId());
+    SchoolDataIdentifier gradingScaleIdentifier = identifierMapper.getGradingScaleIdentifier(transferCredit.getGradingScaleId());
+    SchoolDataIdentifier assessorIdentifier = toIdentifier(identifierMapper.getStaffIdentifier(transferCredit.getAssessorId()));
+    SchoolDataIdentifier lengthUnitIdentifier = toIdentifier(identifierMapper.getCourseLengthUnitIdentifier(transferCredit.getLengthUnitId()));
+    SchoolDataIdentifier subjectIdentifier = toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSubjectId()));
+    SchoolDataIdentifier schoolIdentifier = toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSchoolId()));
+    
+    return new PyramusTransferCredit(identifier, 
+        studentIdentifier, 
+        transferCredit.getDate(), 
+        gradeIdentifier, 
+        gradingScaleIdentifier,
+        transferCredit.getVerbalAssessment(), 
+        assessorIdentifier, 
+        transferCredit.getCourseName(), 
+        transferCredit.getCourseNumber(), 
+        transferCredit.getLength(), 
+        lengthUnitIdentifier, 
+        schoolIdentifier, 
+        subjectIdentifier);
   }
 
   private String pyramusHost;

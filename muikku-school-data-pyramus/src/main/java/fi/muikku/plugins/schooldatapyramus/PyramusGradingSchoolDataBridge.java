@@ -1,6 +1,7 @@
 package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,9 +18,11 @@ import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFacto
 import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.muikku.schooldata.GradingSchoolDataBridge;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
+import fi.muikku.schooldata.entity.TransferCredit;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.pyramus.rest.model.CourseAssessment;
@@ -229,6 +232,24 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
 
     pyramusClient.delete(String.format("/students/students/%d/courses/%d/assessmentRequests/%s", studentId, courseId, identifier));
+  }
+
+  @Override
+  public List<TransferCredit> listStudentTransferCredits(SchoolDataIdentifier studentIdentifier) {
+    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    
+    fi.pyramus.rest.model.TransferCredit[] transferCredits = pyramusClient.get(String.format("/students/students/%d/transferCredits", studentId), fi.pyramus.rest.model.TransferCredit[].class);
+    if (transferCredits == null) {
+      return Collections.emptyList();
+    }
+    
+    List<TransferCredit> result = new ArrayList<>();
+    
+    for (fi.pyramus.rest.model.TransferCredit transferCredit : transferCredits) {
+      result.add(entityFactory.createEntity(transferCredit));
+    }
+    
+    return Collections.unmodifiableList(result);
   }
 
 }

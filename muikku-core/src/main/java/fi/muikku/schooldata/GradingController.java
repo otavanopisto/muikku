@@ -17,6 +17,7 @@ import fi.muikku.model.grading.GradingScaleEntity;
 import fi.muikku.model.grading.GradingScaleItemEntity;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
+import fi.muikku.schooldata.entity.TransferCredit;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
@@ -173,6 +174,10 @@ public class GradingController {
 
   public void deleteWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceIdentifier, String studentIdentifier) {
     gradingSchoolDataController.deleteWorkspaceAssessmentRequest(schoolDataSource, identifier, workspaceIdentifier, studentIdentifier);
+  }
+
+  public List<TransferCredit> listStudentTransferCredits(SchoolDataIdentifier studentIdentifier) {
+    return gradingSchoolDataController.listStudentTransferCredits(studentIdentifier);
   }
   
 }
