@@ -55,7 +55,22 @@
           
           switch (element.tagName.toLowerCase()) {
             case 'a':
-              urlAttribute = 'href';
+              var isAnchorSource = $(element).attr('href') && $(element).attr('href').indexOf('#') == 0;
+              var isAnchorTarget = !$(element).attr('href') && $(element).attr('name');
+              if (isAnchorSource) {
+                $(element).attr('href', '#' + workspaceMaterialId + '-' + $(element).attr('href').substring(1));
+              }
+              else if (isAnchorTarget) {
+                var name = $(element).attr('name'); 
+                var hasId = $(element).attr('id') == name;  
+                $(element).attr('name', workspaceMaterialId + '-' + name);
+                if (hasId) {
+                  $(element).attr('id', workspaceMaterialId + '-' + name);
+                }
+              }
+              else {
+                urlAttribute = 'href';
+              }
             break;
             case 'div':
               urlAttribute = $(element).hasClass('lazy-pdf') ? 'data-url' : null;
