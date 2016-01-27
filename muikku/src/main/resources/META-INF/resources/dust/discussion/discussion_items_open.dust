@@ -1,10 +1,7 @@
-
-
 <div class="mf-items-toolbar"> 
-   <div class="mf-items-tool icon-goback"></div>
+   <div class="mf-items-tool icon-goback" data-area="{threads.forumAreaId}"></div>
    <div class="clear"></div>
 </div>
-
 {#.}
     {>"discussion/discussion_item_open.dust"/}  
 {/.}

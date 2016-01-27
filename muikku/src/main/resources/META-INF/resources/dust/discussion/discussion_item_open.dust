@@ -11,10 +11,7 @@
       <div class="mf-item-description di-message-info">
         <div class="di-message-details-sender">
           <input type="hidden" name="mf-person-id" value="{sender}"/>
-
             <div class="di-user-picture default "></div>
-
-
            <span class="mf-item-header-content-primary di-message-header-content-primary" title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}
           </span>        
           <span class="mf-item-header-content-secondary di-message-header-content-secondary" title="{#localize key="plugin.discussion.titleText.date"/}">{prettyDate}</span>    
