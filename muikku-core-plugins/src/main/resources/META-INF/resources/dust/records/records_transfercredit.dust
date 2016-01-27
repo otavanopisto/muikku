@@ -1,5 +1,4 @@
-<div class="mf-item tr-item ft-01" data-workspace-entity-grade="{grade}" data-workspace-entity-name="{name|s}" data-workspace-entity-id="{id}" data-workspace-entity-url-name="{urlName}" data-workspace-verbal-assessment="{verbalAssessment}" data-workspace-grade="{grade}" data-workspace-grading-scale="{gradingScale}" data-workspace-evaluated="{evaluated}">
-  <div class="tr-item-hidden-data" id="description" style="display:none;">{description|s}</div>
+<div class="mf-item tr-item ft-01 tr-item-transfer-credit">
   <div class="tr-item-details">
     <div class="tr-item-details-container">       
       <div class="tr-item-additionalInfo"/>
@@ -9,7 +8,7 @@
         </div>
         <div class="tr-item-header-details">
           {#grade}
-            <div class="tr-item-header-detail date"><span>{#localize key="plugin.records.workspace.evaluated" arg0=evaluated /}</div>
+            <div class="tr-item-header-detail date"><span>{#localize key="plugin.records.transferCreditsDate" arg0=evaluated /}</div>
             <div class="tr-item-header-detail grade" title="{gradingScale}"><span>{grade}</span></div>
           {/grade}
         </div>

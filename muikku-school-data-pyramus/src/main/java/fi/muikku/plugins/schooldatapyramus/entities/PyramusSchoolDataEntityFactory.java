@@ -461,16 +461,14 @@ public class PyramusSchoolDataEntityFactory {
   }
   
   public TransferCredit createEntity(fi.pyramus.rest.model.TransferCredit transferCredit) {
-    // TODO: Null checks
-    
     SchoolDataIdentifier identifier = identifierMapper.getTransferCreditIdentifier(transferCredit.getId());
     SchoolDataIdentifier studentIdentifier = transferCredit.getStudentId() != null ? toIdentifier(identifierMapper.getStudentIdentifier(transferCredit.getStudentId())) : null;
-    SchoolDataIdentifier gradeIdentifier = identifierMapper.getGradeIdentifier(transferCredit.getGradeId());
-    SchoolDataIdentifier gradingScaleIdentifier = identifierMapper.getGradingScaleIdentifier(transferCredit.getGradingScaleId());
-    SchoolDataIdentifier assessorIdentifier = toIdentifier(identifierMapper.getStaffIdentifier(transferCredit.getAssessorId()));
-    SchoolDataIdentifier lengthUnitIdentifier = toIdentifier(identifierMapper.getCourseLengthUnitIdentifier(transferCredit.getLengthUnitId()));
-    SchoolDataIdentifier subjectIdentifier = toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSubjectId()));
-    SchoolDataIdentifier schoolIdentifier = toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSchoolId()));
+    SchoolDataIdentifier gradeIdentifier = transferCredit.getGradeId() != null ? identifierMapper.getGradeIdentifier(transferCredit.getGradeId()) : null;
+    SchoolDataIdentifier gradingScaleIdentifier = transferCredit.getGradingScaleId() != null ? identifierMapper.getGradingScaleIdentifier(transferCredit.getGradingScaleId()) : null;
+    SchoolDataIdentifier assessorIdentifier = transferCredit.getAssessorId() != null ? toIdentifier(identifierMapper.getStaffIdentifier(transferCredit.getAssessorId())) : null;
+    SchoolDataIdentifier lengthUnitIdentifier = transferCredit.getLengthUnitId() != null ? toIdentifier(identifierMapper.getCourseLengthUnitIdentifier(transferCredit.getLengthUnitId())) : null;
+    SchoolDataIdentifier subjectIdentifier = transferCredit.getSubjectId() != null ? toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSubjectId())) : null;
+    SchoolDataIdentifier schoolIdentifier = transferCredit.getSchoolId() != null ? toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSchoolId())) : null;
     
     return new PyramusTransferCredit(identifier, 
         studentIdentifier, 

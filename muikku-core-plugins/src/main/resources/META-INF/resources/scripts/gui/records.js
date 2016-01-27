@@ -8,24 +8,26 @@
     _create : function() {
       this._grades = $.parseJSON(this.element.attr('data-grades'));
       this.element.on('click', '.tr-task-evaluated', $.proxy(this._onEvaluationClick, this));
-      this.element.on('click', '.tr-item:not(.open)', $.proxy(this._onItemClick, this));
+      this.element.on('click', '.tr-item-workspace-assessment:not(.open)', $.proxy(this._onWorkspaceAssessmentItemClick, this));
       this.element.on('click', '.tr-view-toolbar .icon-goback', $.proxy(this._loadWorkspaces, this));      
       this._loadWorkspaces();
     },
     
     _loadWorkspaces: function () {
+      this.element.addClass('loading');
       this._clear();
       
       mApi().user.students
         .read({userEntityId: this.options.userEntityId})
         .on('$', $.proxy(function (student, callback) {
-          // TODO: sync load
-          this._loadStudentWorkspaces(student.id, $.proxy(function (workspaces) {
-            this._loadStudentTransferCredits(student.id, function (transferCredits) {
-              student.workspaces = workspaces;
-              student.transferCredits = transferCredits;
+          async.parallel([this._createStudentWorkspacesLoad(student.id), this._createStudentTransferCreditsLoad(student.id)], $.proxy(function (err, results) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              student.workspaces = results[0];
+              student.transferCredits = results[1];
               callback();
-            });
+            }
           }, this));
         }, this))
         .callback($.proxy(function (err, result) {
@@ -38,9 +40,26 @@
           } else {
             renderDustTemplate('/records/records_studyprogrammes.dust', { students: result }, $.proxy(function(text) {
               this.element.append(text);
+              this.element.removeClass('loading');
             }, this));
           }
         }, this));
+    },
+    
+    _createStudentWorkspacesLoad: function (studentIdentifier) {
+      return $.proxy(function (callback) {
+        this._loadStudentWorkspaces(studentIdentifier, $.proxy(function (err, workspaces) {
+          callback(err, workspaces);
+        }, this));
+      }, this);
+    },
+    
+    _createStudentTransferCreditsLoad: function (studentIdentifier) {
+      return $.proxy(function (callback) {
+        this._loadStudentTransferCredits(studentIdentifier, $.proxy(function (err, transferCredits) {
+          callback(err, transferCredits);
+        }, this));
+      }, this);
     },
     
     _loadStudentWorkspaces: function (studentIdentifier, callback) {
@@ -67,11 +86,7 @@
             }, this));
           }, this))
           .callback($.proxy(function (err, workspaces) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              callback(workspaces); 
-            }
+            callback(err, workspaces); 
           }, this));
     },
     
@@ -79,42 +94,38 @@
       mApi().user.students.transferCredits
         .read(studentIdentifier)
         .callback($.proxy(function (err, transferCredits) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            var data = $.map(transferCredits, $.proxy(function (transferCredit) {
-              var scaleSchoolDataSource;
-              var scaleIdentifier;
-              var gradeSchoolDataSource;
-              var gradeIdentifier;
-              
-              if (transferCredit.gradeIdentifier && transferCredit.gradingScaleIdentifier) {
-                var gradeSplit = transferCredit.gradeIdentifier.split('-');  
-                var scaleSplit = transferCredit.gradingScaleIdentifier.split('-');  
-                
-                if (gradeSplit.length == 2) {
-                  gradeSchoolDataSource = gradeSplit[0];
-                  gradeIdentifier = gradeSplit[1];
-                }
-
-                if (scaleSplit.length == 2) {
-                  scaleSchoolDataSource = scaleSplit[0];
-                  scaleIdentifier = scaleSplit[1];
-                }
-              }
-              
-              if (scaleSchoolDataSource && scaleIdentifier && gradeSchoolDataSource && gradeIdentifier) {
-                var grade = this._getGrade(scaleSchoolDataSource, scaleIdentifier, gradeSchoolDataSource, gradeIdentifier);
-                return $.extend(transferCredit, {
-                  evaluated: formatDate(new Date(transferCredit.date)),
-                  grade: grade.grade,
-                  gradingScale: grade.scale
-                });
-              }
-            }, this));
+          var data = $.map(transferCredits, $.proxy(function (transferCredit) {
+            var scaleSchoolDataSource;
+            var scaleIdentifier;
+            var gradeSchoolDataSource;
+            var gradeIdentifier;
             
-            callback(data);
-          }
+            if (transferCredit.gradeIdentifier && transferCredit.gradingScaleIdentifier) {
+              var gradeSplit = transferCredit.gradeIdentifier.split('-');  
+              var scaleSplit = transferCredit.gradingScaleIdentifier.split('-');  
+              
+              if (gradeSplit.length == 2) {
+                gradeSchoolDataSource = gradeSplit[0];
+                gradeIdentifier = gradeSplit[1];
+              }
+
+              if (scaleSplit.length == 2) {
+                scaleSchoolDataSource = scaleSplit[0];
+                scaleIdentifier = scaleSplit[1];
+              }
+            }
+            
+            if (scaleSchoolDataSource && scaleIdentifier && gradeSchoolDataSource && gradeIdentifier) {
+              var grade = this._getGrade(scaleSchoolDataSource, scaleIdentifier, gradeSchoolDataSource, gradeIdentifier);
+              return $.extend(transferCredit, {
+                evaluated: formatDate(new Date(transferCredit.date)),
+                grade: grade.grade,
+                gradingScale: grade.scale
+              });
+            }
+          }, this));
+          
+          callback(err, data);
         }, this));
     },
     
@@ -181,7 +192,7 @@
           }
         }, this));
     },
-    _onItemClick: function (event) {
+    _onWorkspaceAssessmentItemClick: function (event) {
       var item = $(event.target).hasClass('tr-item') ? $(event.target) : $(event.target).closest('.tr-item');
       
       var workspaceEntityId = $(item).attr('data-workspace-entity-id');
@@ -193,7 +204,9 @@
       var gradingScale = $(item).attr('data-workspace-grading-scale');
       var evaluated = $(item).attr('data-workspace-evaluated');
      
-      this._loadWorkspace(workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment);
+      if (workspaceEntityId) {
+        this._loadWorkspace(workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment);
+      }
     },
     _onEvaluationClick: function(event){
       var container = $(event.target).parents('.tr-task-evaluated').find('.content-container'); 

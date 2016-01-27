@@ -6,7 +6,7 @@
     {/workspaces}
     
     {?transferCredits}
-      <h4>Hyväksiluvut (Localize)</h4>
+      <label>{#localize key="plugin.records.transferCredits"/}</label>
       {#transferCredits}
         {>"records/records_transfercredits.dust"/}
       {/transferCredits}
