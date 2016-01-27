@@ -6,5 +6,10 @@
       <div class="workspace-users-delete">{#localize key="plugin.workspace.users.student.deleteLink.label"/}</div>
       -->
     </div>
+  {:else}
+    <div class="workspace-users-empty">
+      {#localize key="plugin.workspaces.users.teachers.empty"/}
+    </div>
   {/teachers}
+  
 </div>
