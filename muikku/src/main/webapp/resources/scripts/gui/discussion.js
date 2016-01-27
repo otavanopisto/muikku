@@ -186,7 +186,7 @@ $(document).ready(function() {
 
     _onBackClick : function(event){
       var element = $(event.target);
-      var areaId  = element.attr('data-area');
+      var areaId  = element.attr('data-area-id');
       
       if(areaId == undefined){
         window.location.hash =  '';
