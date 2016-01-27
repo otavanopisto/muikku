@@ -184,7 +184,14 @@ $(document).ready(function() {
     },
 
     _onBackClick : function(event){
-      window.location.hash =  '';
+      var element = $(event.target);
+      var areaId  = element.attr('data-area-id');
+      
+      if(areaId == undefined){
+        window.location.hash =  '';
+      }else{
+        window.location.hash = "#area/" + areaId;
+      } 
     },   
     
     _onMoreClick : function(event){
