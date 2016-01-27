@@ -178,17 +178,21 @@ $(document).ready(function() {
 
     _onMessageClick : function(event){
       var element = $(event.target);
+      var hash = window.location.hash.substring(1);         
       element = element.parents(".di-message");
       var tId = $(element).attr("id");
       var aId = $(element).find("input[name='areaId']").attr('value');      
-      window.location.hash =  "#thread/" + aId + "/" + tId;
+      var fId = hash.substring(5);
+      
+      
+        window.location.hash =  "#thread/" + aId + "/" + tId "/" + fId;
+      }
     },
 
     _onBackClick : function(event){
       var element = $(event.target);
       var areaId  = element.attr('data-area-id');
-      
-      if(areaId == undefined){
+      if(areaId === undefined){
         window.location.hash =  '';
       }else{
         window.location.hash = "#area/" + areaId;
@@ -474,6 +478,7 @@ $(document).ready(function() {
         }
       }, this));
     }, 
+    
     
     _clearMessages : function() {
       $(DiscImpl.msgContainer).empty();
