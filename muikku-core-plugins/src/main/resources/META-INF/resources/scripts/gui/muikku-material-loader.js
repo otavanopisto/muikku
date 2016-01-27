@@ -890,19 +890,37 @@
     $(data.pageElement)
       .append($('<div>').addClass('clear'));
     
-      $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
-        var meta = $.parseJSON($(field).attr('data-meta'));
-        $(field).muikkuConnectField({
-          fieldName: $(field).data('field-name'),
-          embedId: $(field).data('embed-id'),
-          materialId: $(field).data('material-id'),
-          meta: meta,
-          readonly: data.readOnlyFields||false
-        });
+    $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
+      var meta = $.parseJSON($(field).attr('data-meta'));
+      $(field).muikkuConnectField({
+        fieldName: $(field).data('field-name'),
+        embedId: $(field).data('embed-id'),
+        materialId: $(field).data('material-id'),
+        meta: meta,
+        readonly: data.readOnlyFields||false
       });
+    });
     
-    // Lazy loading
-    $(data.pageElement).find('img.lazy').lazyload();
+    if (jQuery().magnificPopup) {
+      // Lazy loading with magnific popup
+      $(data.pageElement).find('img.lazy').each(function (index, img) {
+        var src = $(img).attr('data-original');
+        var a = $('<a>')
+          .attr('href', src)
+          .magnificPopup({
+            type: 'image'
+          })
+          .insertBefore(img);
+        
+        $(img)
+          .appendTo(a)
+          .lazyload();
+      });        
+    } else {
+      // Lazy loading
+     $(data.pageElement).find('img.lazy').lazyload();
+    }
+        
     $(data.pageElement).find('.js-lazyyt').lazyYT();
     
     var maxFileSize = null;
