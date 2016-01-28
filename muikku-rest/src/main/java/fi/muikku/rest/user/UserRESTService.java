@@ -50,11 +50,14 @@ import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.rest.model.Student;
 import fi.muikku.rest.model.UserBasicInfo;
+import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.SchoolDataIdentifier;
+import fi.muikku.schooldata.entity.TransferCredit;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
+import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.StudentFlagController;
 import fi.muikku.users.UserController;
@@ -103,6 +106,9 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
+  @Inject
+  private GradingController gradingController;
+  
   @Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
@@ -466,6 +472,35 @@ public class UserRESTService extends AbstractRESTService {
     
     return Response.noContent().build();
   }
+  
+  @GET
+  @Path("/students/{ID}/transferCredits")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudentTransferCredits(@PathParam("ID") String id) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
+    }
+    
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (studentEntity == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
+    }
+    
+    if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_TRANSFER_CREDITS)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    List<TransferCredit> transferCredits = gradingController.listStudentTransferCredits(studentIdentifier);
+    
+    return Response.ok(createRestModel(transferCredits.toArray(new TransferCredit[0]))).build();
+  }
 
   @GET
   @Path("/studentFlagTypes")
@@ -728,6 +763,43 @@ public class UserRESTService extends AbstractRESTService {
     }
     
     return result;
+  }
+  
+  private List<fi.muikku.rest.model.TransferCredit> createRestModel(TransferCredit[] transferCredits) {
+    List<fi.muikku.rest.model.TransferCredit> result = new ArrayList<>();
+    
+    if (transferCredits != null) {
+      for (TransferCredit transferCredit : transferCredits) {
+        result.add(createRestModel(transferCredit));
+      }
+    }
+    
+    return result;
+  }
+  
+  private fi.muikku.rest.model.TransferCredit createRestModel(TransferCredit transferCredit) {
+    return new fi.muikku.rest.model.TransferCredit(
+        toId(transferCredit.getIdentifier()), 
+        toId(transferCredit.getStudentIdentifier()), 
+        transferCredit.getDate(), 
+        toId(transferCredit.getGradeIdentifier()), 
+        toId(transferCredit.getGradingScaleIdentifier()), 
+        transferCredit.getVerbalAssessment(), 
+        toId(transferCredit.getAssessorIdentifier()), 
+        transferCredit.getCourseName(), 
+        transferCredit.getCourseNumber(), 
+        transferCredit.getLength(), 
+        toId(transferCredit.getLengthUnitIdentifier()), 
+        toId(transferCredit.getSchoolIdentifier()), 
+        toId(transferCredit.getSubjectIdentifier()));
+  }
+  
+  private String toId(SchoolDataIdentifier identifier) {
+    if (identifier == null) {
+      return null;
+    }
+    
+    return identifier.toId();
   }
   
 	//

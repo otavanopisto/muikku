@@ -16,6 +16,7 @@ import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
+import fi.muikku.schooldata.entity.TransferCredit;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 
@@ -131,6 +132,29 @@ class GradingSchoolDataController {
     }
   
     return null;
+  }
+  
+  /* TransferCredits */
+
+  public List<TransferCredit> listStudentTransferCredits(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (dataSource == null) {
+      logger.severe(String.format("Could not find school data source %s", studentIdentifier.getDataSource()));
+      return Collections.emptyList();
+    }
+    
+    return listStudentTransferCredits(dataSource, studentIdentifier);
+  }
+  
+  private List<TransferCredit> listStudentTransferCredits(SchoolDataSource schoolDataSource, SchoolDataIdentifier studentIdentifier) {
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      return schoolDataBridge.listStudentTransferCredits(studentIdentifier);
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+    }
+  
+    return Collections.emptyList();
   }
 	
 	/* GradingScales */
