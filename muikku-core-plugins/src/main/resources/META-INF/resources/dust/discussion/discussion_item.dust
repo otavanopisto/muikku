@@ -2,7 +2,7 @@
 <div class="mf-item di-message mf-category-{forumAreaId} closed" id="{id}">
   <div class="mf-item-header-name di-message-meta">
    <div class="di-user-picture default" title="{creatorFullName}"></div>
-   <div class="di-message-meta-topic"><span>{creatorFullName} - </span><span title="{#localize key="plugin.discussion.titleText.title"/}">{title}</span></div>
+   <div class="di-message-meta-topic"><span><span title="{#localize key="plugin.discussion.titleText.creator"/}>{creatorFullName}</span><span title="{#localize key="plugin.discussion.titleText.title"/}">{title}</span></span></div>
    <div class="di-message-meta-content"><span title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</span></div>
   </div>
   <div class="mf-item-header-details di-message-details">
