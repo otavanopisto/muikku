@@ -190,7 +190,6 @@ body.evaluation {
     
     &.loading {
 
-
       &:before {
         @include generic-loader(50px);
         position:absolute;
@@ -264,6 +263,16 @@ body.evaluation {
       text-align:center;
       transition:opacity 1s ease-in-out, transform 1s ease-in-out;
       position:relative;
+      
+      .evaluation-student-clickarea {
+        position:absolute;
+        top:0;
+        right:0;
+        left:0;
+        bottom:0;
+        z-index:9;
+        cursor:pointer;
+      }
       
       &.evaluation-student-loaded {
         opacity: 1;
@@ -418,11 +427,6 @@ body.evaluation {
         background-size:cover;
         border-radius:100%;
         background-position:center center;
-        cursor:pointer;
-        
-        &:hover {
-          box-shadow:0 0 0 5px #8cd1fa;
-        }
       }
       
       .evaluation-student-name {
@@ -611,8 +615,7 @@ body.evaluation {
         .evaluation-modal-assignment-info {
           
           /* WORKSPACE EVALUATION */
-          .evaluation-modal-workspace-assignment-wrapper,
-          .evaluation-modal-workspace-exercise-wrapper {
+          .evaluation-modal-workspace-assignment-wrapper {
             margin:20px 0 0 0;
             font-size:14px;
             
@@ -673,8 +676,11 @@ body.evaluation {
                 
                 }
                 
-                .evaluation-assignment-content,
-                .evaluation-exercise-content {
+                .evaluation-assignment-content {
+                
+                  h1,h2,h3,h4,h5,h6 {
+                    margin-top:1em;
+                  }
                   
                   .evaluation-assignment-literal-assessment {
                     background:#d5ffd2;
@@ -1419,60 +1425,4 @@ ol {
     list-style-type:circle;
   }
 
-}
-
-/* MATERIAL STYLESETS */
-
-.material-styles-block {
-  border-radius:5px;
-  padding:8px 14px;
-  margin:20px 0;
-}
-
-.material-thinkingbox {
-  background:#7fcaf7;
-  color:#fff;
-}
-
-.material-objectivebox {
-  background:#67d9bf;
-  color:#fff;
-}
-
-.material-infobox {
-  background:#ec97c6;
-  color:#fff;
-}
-
-.material-recapbox {
-  background:#6eb5cf;
-  color:#fff;
-}
-
-.material-chatbubble {
-  background:#7082b0;
-  color:#fff;
-}
-
-.material-basicbox {
-  background:#ffc369;
-  color:#fff;
-}
-
-.material-citation-highlight {
-  color:#913333;
-  font-size:18px;
-  font-weight:400;
-  border-left:3px solid #b24d4d;
-  border-radius:0px;
-  line-height:1.7em;
-}
-
-.material-citation-basic {
-  color:#7a8d94;
-  font-size:18px;
-  font-weight:400;
-  border-left:3px solid #7a8d94;
-  border-radius:0px;
-  line-height:1.7em;
 }

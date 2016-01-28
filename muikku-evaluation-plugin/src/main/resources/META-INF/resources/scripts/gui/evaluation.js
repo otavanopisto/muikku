@@ -1082,6 +1082,7 @@
       this.element.addClass('evaluation-student-wrapper');
       this.element.append($('<div>').addClass('evaluation-student-picture'));
       this.element.append($('<div>').addClass('evaluation-student-name').text(this._displayName).append($('<span>').text(this._studyProgrammeName)));
+      this.element.append($('<div>').addClass('evaluation-student-clickarea'));
       
       if (this.options.assessment) {
         this.element.removeClass('workspace-evaluation-requested');
@@ -1100,7 +1101,7 @@
       }
 
       this.element.addClass('evaluation-student-loaded');
-      this.element.on("click", $.proxy(this._onClick, this));
+      this.element.find(".evaluation-student-clickarea").on("click", $.proxy(this._onClick, this));
     },
     
     displayName: function () {
