@@ -4,5 +4,9 @@
       <div class="workspace-users-name">{lastName}, {firstName}</div>
       <div class="workspace-users-archive">{#localize key="plugin.workspace.users.student.archiveLink.label"/}</div>
     </div>
+  {:else}
+    <div class="workspace-users-empty">
+      {#localize key="plugin.workspaces.users.activeStudents.empty"/}
+    </div>
   {/students}
 </div>

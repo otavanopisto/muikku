@@ -5,6 +5,7 @@ import java.util.List;
 
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
+import fi.muikku.schooldata.entity.TransferCredit;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 
@@ -126,4 +127,7 @@ public interface GradingSchoolDataBridge {
       String workspaceIdentifier, String studentIdentifier, String requestText, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
   public void deleteWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  
+  public List<TransferCredit> listStudentTransferCredits(SchoolDataIdentifier studentIdentifier);
+  
 }

@@ -4,5 +4,12 @@
     {#workspaces}
       {>"records/records_items.dust"/}
     {/workspaces}
+    
+    {?transferCredits}
+      <label>{#localize key="plugin.records.transferCredits"/}</label>
+      {#transferCredits}
+        {>"records/records_transfercredits.dust"/}
+      {/transferCredits}
+    {/transferCredits}
   </div>
 {/students}
