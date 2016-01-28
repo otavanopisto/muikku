@@ -50,6 +50,13 @@ body[class^='workspace'] {
   	  padding:2px 6px;
   	  font-size:14px;
     }
+    
+    .workspace-users-empty {
+      padding:4px 5px;
+      text-align:center;
+      font-size:18px;
+      font-style:italic;
+    }
   
     .workspace-users {
       padding:4px 5px;
