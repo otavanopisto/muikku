@@ -181,7 +181,6 @@ $(document).ready(function() {
       element = element.parents(".di-message");
       var tId = $(element).attr("id");
       var aId = $(element).find("input[name='areaId']").attr('value');    
-      var test = hash.indexOf("area/");
       var fId = hash.indexOf("area/") === 0 ? hash.substring(5) : "all";
       window.location.hash =  "#thread/" + aId + "/" + tId + "/" + fId;
     },
