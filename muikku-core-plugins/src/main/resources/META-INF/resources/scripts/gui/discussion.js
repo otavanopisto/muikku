@@ -183,12 +183,8 @@ $(document).ready(function() {
       var tId = $(element).attr("id");
       var aId = $(element).find("input[name='areaId']").attr('value');    
       var test = hash.indexOf("area/");
-      if(hash.indexOf("area/") === 0){
-        var fId = hash.substring(5);        
-      }else{
-        var fId = "all";
-      }
-        window.location.hash =  "#thread/" + aId + "/" + tId + "/" + fId;
+      var fId = hash.indexOf("area/") === 0 ? hash.substring(5) : "all";
+      window.location.hash =  "#thread/" + aId + "/" + tId + "/" + fId;
     },
 
     _onBackClick : function(event){
