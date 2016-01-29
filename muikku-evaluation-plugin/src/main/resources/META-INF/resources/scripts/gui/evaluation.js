@@ -263,39 +263,50 @@
       }, this));
     },
     _loadAssigmentEvaluation: function(workspaceAssignment, htmlMaterialMap){
-      return $.proxy(function(cb){
+      var replyLoad = $.proxy(function(replyCallback){
+        mApi().workspace.workspaces.materials.compositeMaterialReplies
+        .read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {
+          userEntityId: this.options.studentEntityId
+        }).callback($.proxy(function(replyErr, reply){
+          if(replyErr){
+            replyCallback(replyErr);
+          }else{
+            replyCallback(null, reply);
+          }
+        },this))
+      },this);
+      
+      var evaluationLoad = $.proxy(function(evaluationCallback){
         mApi().workspace.workspaces.materials.evaluations
         .read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {userEntityId: this.options.studentEntityId})
         .callback($.proxy(function(err, evaluations) {
-          
-          mApi().workspace.workspaces.materials.compositeMaterialReplies
-          .read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {
-            userEntityId: this.options.studentEntityId
-          }).callback($.proxy(function(replyErr, reply){
-            if(replyErr){
-              cb(replyErr);
-            } else if(err){
-              cb(err);
-            }else{
-              var evaluation = null;
-              if (evaluations != null && evaluations.length > 0) {
-                evaluation = evaluations[0];
-              }
-              cb(null, {
-                workspaceMaterialId: workspaceAssignment.workspaceMaterial.id,
-                materialId: workspaceAssignment.workspaceMaterial.materialId,
-                type: 'html',
-                title: workspaceAssignment.workspaceMaterial.title,
-                path: workspaceAssignment.workspaceMaterial.path,
-                html: htmlMaterialMap[workspaceAssignment.workspaceMaterial.materialId].html,
-                evaluation: evaluation,
-                assignmentType: workspaceAssignment.workspaceMaterial.assignmentType,
-                reply: reply
-              }); 
+          if(err){
+            evaluationCallback(err);
+          }else{
+            var evaluation = null;
+            if (evaluations != null && evaluations.length > 0) {
+              evaluation = evaluations[0];
             }
-          },this));
-        }, this));
+            evaluationCallback(null, evaluation);
+          }
+        },this));
       },this);
+
+      return $.proxy(function(cb){
+        async.parallel([evaluationLoad, replyLoad], function(err, results){
+          cb(err, {
+            workspaceMaterialId: workspaceAssignment.workspaceMaterial.id,
+            materialId: workspaceAssignment.workspaceMaterial.materialId,
+            type: 'html',
+            title: workspaceAssignment.workspaceMaterial.title,
+            path: workspaceAssignment.workspaceMaterial.path,
+            html: htmlMaterialMap[workspaceAssignment.workspaceMaterial.materialId].html,
+            assignmentType: workspaceAssignment.workspaceMaterial.assignmentType,
+            evaluation: results[0],
+            reply: results[1]
+          }); 
+        });
+      },this)
     },
     _loadTemplate: function (assignments, callback) {
       renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
