@@ -668,11 +668,12 @@ body.evaluation {
                   .evaluation-assignment-assessmentvalue,
                   .evaluation-assignment-exercisedone {
                     position:absolute;
-                    max-width:100px;
+                    max-width:150px;
                     right:0;
                     top:0;
                     text-align:right;
                     padding:8px 10px;
+                    white-space:nowrap;
                   }
                 
                 }
