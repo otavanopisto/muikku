@@ -162,14 +162,18 @@
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
-                    
-                      if(studentElement.hasClass('workspace-evaluation-requested')){
+                      if(studentElement.find('.workspace-evaluation-requested-date').length > 0){
                         studentElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
                       }else{
                         evaluatedDate.prependTo(studentElement);
                       }
-                      studentElement.removeClass('workspace-evaluation-requested');
                       studentElement.addClass('workspace-evaluated');
+                    }
+                    studentElement.removeClass('workspace-evaluation-requested');
+                    if(result.passed){
+                      studentElement.removeClass('workspace-reviewed-non-passing');
+                    }else{
+                      studentElement.addClass('workspace-reviewed-non-passing');
                     }
                     this._loader.remove();
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
@@ -193,24 +197,28 @@
                   } else {
                     this.options.triggeringElement.options.assessment = result;
                     var studentElement = $(this.options.triggeringElement.element);
-                    if (studentElement.hasClass('workspace-evaluated')) {
+                    if(studentElement.hasClass('workspace-evaluated')){
                       studentElement.find('.workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
                     } else {
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
-                    
-                      if (studentElement.hasClass('workspace-evaluation-requested')) {
+                      if(studentElement.find('.workspace-evaluation-requested-date').length > 0){
                         studentElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
-                      } else {
+                      }else{
                         evaluatedDate.prependTo(studentElement);
                       }
-                      studentElement.removeClass('workspace-evaluation-requested');
                       studentElement.addClass('workspace-evaluated');
                     }
+                    studentElement.removeClass('workspace-evaluation-requested');
+                    if(result.passed){
+                      studentElement.removeClass('workspace-reviewed-non-passing');
+                    }else{
+                      studentElement.addClass('workspace-reviewed-non-passing');
+                    }
                     this._loader.remove();
-                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.successful"));
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
                     this.element.remove();
                   }
                 }, this));
@@ -1044,9 +1052,21 @@
           }
         break;
         case 'WITHDRAWN':
-          this.element.addClass('assignment-withdrawn');
+//          this.element.addClass('assignment-withdrawn'); This seems to be unwanted feature for now
         break;
         case 'FAILED':
+          this.element.on("click", $.proxy(this._onClick, this));
+          this.element.addClass('assignment-reviewed-non-passing');
+          if (reply.submitted) {
+            this.element.find('.evaluation-assignment-submitted-date')
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
+          }
+          if (evaluation && evaluation.evaluated) {
+            this.options.evaluation = evaluation;
+            this.element.find('.evaluation-assignment-evaluated-date')
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
+          }          
+        break;
         case 'PASSED':
           this.element.on("click", $.proxy(this._onClick, this));
           this.element.addClass('assignment-evaluated');
@@ -1095,8 +1115,11 @@
         } else {
           evaluatedDate.prependTo(this.element);
         }
-        
         this.element.addClass('workspace-evaluated');
+        
+        if(!this.options.assessment.passed){
+          this.element.addClass('workspace-reviewed-non-passing');
+        }
       }
 
       this.element.addClass('evaluation-student-loaded');
