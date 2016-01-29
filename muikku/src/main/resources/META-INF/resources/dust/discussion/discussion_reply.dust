@@ -10,7 +10,7 @@
           <div class="di-user-picture default "></div>
           <span class="mf-item-header-content-primary di-message-header-content-primary">
            <span title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span>
-           <span class="mf-category-{forumAreaId}-font" title="{#localize key="plugin.discussion.titleText.area"/}">{areaName}</span>
+<!--            <span class="mf-category-{forumAreaId}-font" title="{#localize key="plugin.discussion.titleText.area"/}">{areaName}</span> -->
            <span title="{#localize key="plugin.discussion.titleText.date"/}">{prettyDate}</span>
           </span>
           <span class="mf-item-header-content-secondary di-message-header-content-secondary" title="{#localize key="plugin.discussion.titleText.date"/}">{title}</span> 
@@ -19,7 +19,7 @@
         <div class="mf-subitem-content di-message-content ">     
           <div class="mf-subitem-content-text di-message-content-text" title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</div>          
           <div class="mf-subitem-content-tools di-message-content-tools">
-            {?canEdit}
+             {?canEdit}
               <div class="di-message-tool di-reply-edit-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
              {/canEdit}
             <div class="clear"></div>
