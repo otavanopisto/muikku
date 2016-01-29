@@ -665,7 +665,8 @@ body.evaluation {
                     cursor:pointer;
                   }
                   
-                  .evaluation-assignment-assessmentvalue {
+                  .evaluation-assignment-assessmentvalue,
+                  .evaluation-assignment-exercisedone {
                     position:absolute;
                     max-width:100px;
                     right:0;
