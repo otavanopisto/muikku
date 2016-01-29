@@ -85,7 +85,13 @@ public class WorkspaceHelpPageBackingBean {
       schoolDataBridgeSessionController.endSystemSession();
     }
 
+    materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
+
     return null;
+  }
+
+  public String getMaterialsBaseUrl() {
+    return materialsBaseUrl;
   }
 
   public Long getWorkspaceId() {
@@ -137,5 +143,6 @@ public class WorkspaceHelpPageBackingBean {
   private long workspaceEntityId;
 
   private List<ContentNode> contentNodes;
+  private String materialsBaseUrl;
 
 }

@@ -13,11 +13,16 @@
   <ui:define name="workspace.content">
     <ui:repeat value="#{workspaceHelpPageBackingBean.contentNodes}" var="contentNode">
       <article id="page-#{contentNode.workspaceMaterialId}"
-        data-workspace-material-id="#{contentNode.workspaceMaterialId}" data-material-id="#{contentNode.materialId}"
-        data-material-type="#{contentNode.type}" data-material-title="#{contentNode.title}"
-        data-material-content="#{contentNode.html}" class="workspace-materials-view-page material-view" />
+        data-workspace-material-id="#{contentNode.workspaceMaterialId}"
+        data-material-id="#{contentNode.materialId}"
+        data-material-type="#{contentNode.type}"
+        data-material-title="#{contentNode.title}"
+        data-material-content="#{contentNode.html}"
+        data-path="#{contentNode.path}"
+        class="workspace-materials-view-page material-view" />
     </ui:repeat>
     <input class="workspaceEntityId" type="hidden" value="#{workspaceHelpPageBackingBean.workspaceEntityId}" />
+    <input class="materialsBaseUrl" type="hidden" value="#{workspaceHelpPageBackingBean.materialsBaseUrl}"/>
   </ui:define>
 
 </ui:composition>
