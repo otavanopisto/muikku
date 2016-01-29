@@ -33,9 +33,10 @@
     <div class="evaluation-assignment-title-container">
       <h2>{title}</h2>
       <div class="evaluation-assignment-exercisedone">
-        {#evaluationDoneMUUAHAHAHA}
-          {#localize key="plugin.evaluation.workspaceEvaluationDialog.exerciseDone"/}
-        {/evaluationDoneMUUAHAHAHA}
+        {@eq key=reply.state value="SUBMITTED"}
+          <span>{#localize key="plugin.evaluation.workspaceEvaluationDialog.exerciseDone"/} </span>
+          <span>({reply.submitted|formatDate})</span>
+        {/eq}
       </div>
     </div>
     <div class="evaluation-assignment-content" data-open-state="closed">

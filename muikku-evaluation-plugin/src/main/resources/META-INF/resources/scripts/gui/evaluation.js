@@ -266,27 +266,35 @@
       return $.proxy(function(cb){
         mApi().workspace.workspaces.materials.evaluations
         .read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {userEntityId: this.options.studentEntityId})
-        .callback(function(err, evaluations) {
-          if(err){
-            cb(err);
-          }else{
-            var evaluation = null;
-            if (evaluations != null && evaluations.length > 0) {
-              evaluation = evaluations[0];
+        .callback($.proxy(function(err, evaluations) {
+          
+          mApi().workspace.workspaces.materials.compositeMaterialReplies
+          .read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {
+            userEntityId: this.options.studentEntityId
+          }).callback($.proxy(function(replyErr, reply){
+            if(replyErr){
+              cb(replyErr);
+            } else if(err){
+              cb(err);
+            }else{
+              var evaluation = null;
+              if (evaluations != null && evaluations.length > 0) {
+                evaluation = evaluations[0];
+              }
+              cb(null, {
+                workspaceMaterialId: workspaceAssignment.workspaceMaterial.id,
+                materialId: workspaceAssignment.workspaceMaterial.materialId,
+                type: 'html',
+                title: workspaceAssignment.workspaceMaterial.title,
+                path: workspaceAssignment.workspaceMaterial.path,
+                html: htmlMaterialMap[workspaceAssignment.workspaceMaterial.materialId].html,
+                evaluation: evaluation,
+                assignmentType: workspaceAssignment.workspaceMaterial.assignmentType,
+                reply: reply
+              }); 
             }
-            
-            cb(null, {
-              workspaceMaterialId: workspaceAssignment.workspaceMaterial.id,
-              materialId: workspaceAssignment.workspaceMaterial.materialId,
-              type: 'html',
-              title: workspaceAssignment.workspaceMaterial.title,
-              path: workspaceAssignment.workspaceMaterial.path,
-              html: htmlMaterialMap[workspaceAssignment.workspaceMaterial.materialId].html,
-              evaluation: evaluation,
-              assignmentType: workspaceAssignment.workspaceMaterial.assignmentType
-            }); 
-          }
-        });
+          },this));
+        }, this));
       },this);
     },
     _loadTemplate: function (assignments, callback) {
