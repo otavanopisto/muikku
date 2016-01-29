@@ -2,6 +2,7 @@ package fi.muikku.auth;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.enterprise.event.Event;
 import javax.faces.context.FacesContext;
@@ -28,6 +29,9 @@ import fi.muikku.session.local.LocalSessionController;
 
 public abstract class AbstractAuthenticationStrategy implements AuthenticationProvider {
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   @LocalSession
   private LocalSessionController sessionController;
@@ -77,7 +81,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     return null;
   }
 
-  protected AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters, String externalId, List<String> emails, String firstName, String lastName) throws AuthenticationHandleException {
+  protected AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters, String externalId, List<String> emails, String firstName, String lastName) {
     if ((emails == null) || (emails.isEmpty())) {
       return new AuthenticationResult(Status.NO_EMAIL);
     }
@@ -146,7 +150,8 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     }
     
     if (activeUser == null) {
-      throw new AuthenticationHandleException("Active user could not be found");
+      logger.severe(String.format("Active user could not be found"));
+      return new AuthenticationResult(AuthenticationResult.Status.ERROR);
     }
 
     List<String> existingAddresses = userEmailEntityController.listAddressesByUserEntity(userIdentification.getUser());
