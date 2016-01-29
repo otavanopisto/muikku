@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -15,8 +13,6 @@ import fi.muikku.dao.security.AuthSourceSettingDAO;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.security.AuthSourceSetting;
 
-@Dependent
-@Stateless
 public class AuthSourceController {
   
   @Inject

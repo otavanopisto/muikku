@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -30,8 +28,6 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.calendar.dao.UserCalendarDAO;
 import fi.muikku.plugins.calendar.model.UserCalendar;
 
-@Dependent
-@Stateless
 public class CalendarController {
 
   @Inject
