@@ -33,7 +33,7 @@ $(document).ready(function() {
 
       this._refreshAreas();
 
-      $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this._onMessageClick, this));
+      $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic > span', $.proxy(this._onMessageClick, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this._onBackClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-replies:not(.disabled)', $.proxy(this._onMoreRepliesClick, this));
@@ -177,17 +177,18 @@ $(document).ready(function() {
 
     _onMessageClick : function(event){
       var element = $(event.target);
+      var hash = window.location.hash.substring(1);         
       element = element.parents(".di-message");
       var tId = $(element).attr("id");
-      var aId = $(element).find("input[name='areaId']").attr('value');
-      window.location.hash =  "#thread/" + aId + "/" + tId; 
+      var aId = $(element).find("input[name='areaId']").attr('value');    
+      var fId = hash.indexOf("area/") === 0 ? hash.substring(5) : "all";
+      window.location.hash =  "#thread/" + aId + "/" + tId + "/" + fId;
     },
 
     _onBackClick : function(event){
       var element = $(event.target);
-      var areaId  = element.attr('data-area-id');
-      
-      if(areaId == undefined){
+      var areaId  = element.attr('data-from-view');
+      if(areaId === undefined){
         window.location.hash =  '';
       }else{
         window.location.hash = "#area/" + areaId;
@@ -293,11 +294,12 @@ $(document).ready(function() {
         }
       }, this));      
     },       
-    _loadThread : function(aId, tId) {
+    _loadThread : function(aId, tId, from) {
      mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {
 
         mApi({async: false}).forum.areas.read(thread.forumAreaId).callback($.proxy(function(err, area) {
           thread.areaName = area.name;
+          thread.fromView = from;
           mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
             thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
@@ -490,10 +492,12 @@ $(document).ready(function() {
        
         if (hash.indexOf("thread/") === 0) {
           var areaId = hash.substring(7,hash.indexOf("/",7));
-          var threadId = hash.substring(hash.indexOf("/",7) + 1);
+          var hashEnd = hash.substring(hash.indexOf("/",7) + 1);
+          var threadId = hashEnd.substring(0, hashEnd.indexOf("/",0));
+          var from = hashEnd.substring(hashEnd.indexOf("/",0) + 1);
           var hI = hash.indexOf('/');
           var cHash = hash.substring(0, hI);
-          this._loadThread(areaId,threadId);
+          this._loadThread(areaId,threadId,from);
  
         }else if(hash.indexOf("area/") === 0){
           if (hash.indexOf("all") == -1){

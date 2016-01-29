@@ -49,10 +49,10 @@
       <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/fni-flexgrid/1.0.0/flexgrid.css "/>
 
       <!-- Moment -->
-      <h:outputScript name="scripts/moment/moment-with-locales.min.js" />    
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/moment/2.10.6/moment-with-locales.min.js"/>
         
       <!-- jQuery -->
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"/>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery/2.1.3/jquery.min.js"/>
       <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.klass/0.1a/jquery.klass-0.1a.js"></script>
       
       <ui:fragment rendered="#{sessionBackingBean.testsRunning}"> 
@@ -63,16 +63,16 @@
       <h:outputScript rendered="#{sessionBackingBean.testsRunning}" name="scripts/debug.js" />
       
       <!-- Perfect Scrollbar -->
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.5/js/min/perfect-scrollbar.jquery.min.js"/>
-      <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.5/css/perfect-scrollbar.min.css"/>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/js/min/perfect-scrollbar.jquery.min.js"/>
+      <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/css/perfect-scrollbar.min.css"/>
   
       <!-- jQuery UI -->
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"/>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/jquery-ui.min.js"/>
       <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/jquery-ui.css" />
   
       <!--  jQuery Waypoints  -->
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.5/waypoints.min.js"/>
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.5/shortcuts/sticky-elements/waypoints-sticky.min.js"/>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/waypoints/2.0.5/waypoints.min.js"/>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/waypoints/2.0.5/shortcuts/sticky-elements/waypoints-sticky.min.js"/>
   
       <!--  jQuery scroll  -->
       <h:outputScript name="scripts/scroll/jquery.scroll.js" />
@@ -81,22 +81,25 @@
       <h:outputScript name="scripts/jquery.m3modal/jquery.m3modal.js" />
   
       <!--  jQuery Touch Punch  -->
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"/>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"/>
   
       <!-- Functions that have no home yet. Find a home for them? -->
       <h:outputScript name="scripts/passingthrough.js" target="head"/>   
       
       <!-- Dust -->
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
       <h:outputScript name="scripts/gui/dustloader.js" />
       
       <!-- Async -->
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/async/0.9.0/async.js"/>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/async/0.9.0/async.js"/>
       
       <!-- ObjectPath, jQuery REST -->
-      <script type="text/javascript" src="//cdn.muikkuverkko.fi/lib-bundle?libs=objectpathjs/0.0.1/interpreter.js|objectpathjs/0.0.1/parse.js|objectpathjs/0.0.1/tokens.js|jquery.rest/1.0.2/jquery.rest.min.js"></script>
- 
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/interpreter.js"></script>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/parse.js"></script>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/tokens.js"></script>
+      <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.rest/1.0.2/jquery.rest.min.js"></script>
+      
       <!-- Api -->
       <h:outputScript name="scripts/api/api.js"/>
   

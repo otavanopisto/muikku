@@ -12,8 +12,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -29,15 +27,12 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
-import fi.muikku.auth.AuthenticationHandleException;
 import fi.muikku.auth.AuthenticationProvider;
 import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.auth.OAuthAuthenticationStrategy;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.session.SessionController;
 
-@Dependent
-@Stateless
 public class FacebookAuthenticationStrategy extends OAuthAuthenticationStrategy implements AuthenticationProvider {
   
   @Inject
@@ -81,7 +76,7 @@ public class FacebookAuthenticationStrategy extends OAuthAuthenticationStrategy 
   }
   
   @Override
-  protected AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) throws AuthenticationHandleException {
+  protected AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
     ObjectMapper objectMapper = new ObjectMapper();
     String verifier = getFirstRequestParameter(requestParameters, "code");
     
@@ -96,7 +91,7 @@ public class FacebookAuthenticationStrategy extends OAuthAuthenticationStrategy 
       meObject = objectMapper.readValue(response.getBody(), FacebookUser.class);
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Logging in failed because of a JSON parsing exception", e);
-      throw new AuthenticationHandleException(e);
+      return new AuthenticationResult(AuthenticationResult.Status.ERROR);
     }
     
     Integer expiresIn = extractExpires(accessToken);

@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -23,7 +21,6 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
-import fi.muikku.auth.AuthenticationHandleException;
 import fi.muikku.auth.AuthenticationProvider;
 import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.auth.OAuthAuthenticationStrategy;
@@ -33,8 +30,6 @@ import fi.muikku.plugins.oauth.scribe.PyramusApi20;
 import fi.muikku.session.SessionController;
 import fi.pyramus.rest.model.WhoAmI;
 
-@Dependent
-@Stateless
 public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy implements AuthenticationProvider {
 
   @Inject
@@ -89,8 +84,7 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
   }
 
   @Override
-  protected AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes)
-      throws AuthenticationHandleException {
+  protected AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
     ObjectMapper objectMapper = new ObjectMapper();
 
     String verifier = getFirstRequestParameter(requestParameters, "code");
@@ -108,7 +102,7 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
       sessionController.addOAuthAccessToken("pyramus", expires, accessToken.getToken(), pyramusAccessToken.getRefreshToken());
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Token extraction failed a JSON parsing error", e);
-      throw new AuthenticationHandleException(e);
+      return new AuthenticationResult(AuthenticationResult.Status.ERROR);
     }
     
     WhoAmI whoAmI = null;
@@ -120,7 +114,7 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
       whoAmI = objectMapper.readValue(response.getBody(), WhoAmI.class);
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Logging in failed because of a JSON parsing exception", e);
-      throw new AuthenticationHandleException(e);
+      return new AuthenticationResult(AuthenticationResult.Status.ERROR);
     }
     
     return processLogin(authSource, requestParameters, whoAmI.getId().toString(), whoAmI.getEmails(), whoAmI.getFirstName(), whoAmI.getLastName());
