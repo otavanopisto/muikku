@@ -2,8 +2,6 @@ package fi.muikku.controller;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.plugins.PluginSettingDAO;
@@ -17,8 +15,6 @@ import fi.muikku.model.plugins.PluginUserSetting;
 import fi.muikku.model.plugins.PluginUserSettingKey;
 import fi.muikku.model.users.UserEntity;
 
-@Dependent
-@Stateless
 public class PluginSettingsController {
 
 	@Inject

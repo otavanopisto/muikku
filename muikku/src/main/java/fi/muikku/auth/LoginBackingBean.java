@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -23,6 +24,7 @@ import fi.muikku.model.security.AuthSource;
 
 @RequestScoped
 @Named
+@Stateful
 @Join (path = "/login", to = "/login.jsf")
 public class LoginBackingBean {
 
@@ -106,15 +108,19 @@ public class LoginBackingBean {
                       // Could not login, several users found by email addresses
                     break;
                   }         
-                  
-                  // TODO: Proper error handling
-                  throw new AuthenticationHandleException(result.getConflictReason().toString());
+
+                  logger.log(Level.SEVERE, String.format("Authentication failed on with following message: %s", result.getConflictReason().toString()));
+                  return NavigationRules.INTERNAL_ERROR;
                 case INVALID_CREDENTIALS:
-                  throw new AuthenticationHandleException("Erroneous authentication provider status: INVALID_CREDENTIALS in external login page");
+                  logger.log(Level.SEVERE, "Erroneous authentication provider status: INVALID_CREDENTIALS in external login page");
+                  return NavigationRules.INTERNAL_ERROR;
                 case NO_EMAIL:
                   return NavigationRules.AUTH_NOEMAIL;
                 case PROCESSING:
-                  throw new AuthenticationHandleException("Erroneous authentication provider status: PROCESSING without redirectUrl");
+                  logger.log(Level.SEVERE, "Erroneous authentication provider status: PROCESSING without redirectUrl");
+                  return NavigationRules.INTERNAL_ERROR;
+                case ERROR:
+                  return NavigationRules.INTERNAL_ERROR;
               }
               
               if (StringUtils.isBlank(postLoginRedirectUrl)) {
@@ -124,13 +130,15 @@ public class LoginBackingBean {
               externalContext.redirect(postLoginRedirectUrl);
             }
           } else {
-            throw new AuthenticationHandleException("Invalid authenticationProvider");
+            logger.log(Level.SEVERE, "Invalid authenticationProvider");
+            return NavigationRules.INTERNAL_ERROR;
           }
         } else {
-          throw new AuthenticationHandleException("Invalid authSourceId");
+          logger.log(Level.SEVERE, "Invalid authSourceId");
+          return NavigationRules.INTERNAL_ERROR;
         }
       }
-    } catch (AuthenticationHandleException | IOException e) {
+    } catch (IOException e) {
       logger.log(Level.SEVERE, "Login failed because of an internal error", e);
       return NavigationRules.INTERNAL_ERROR;
     }

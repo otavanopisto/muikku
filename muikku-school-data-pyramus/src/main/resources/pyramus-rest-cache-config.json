@@ -112,6 +112,30 @@
       "expireTime": 300000,
       "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": []
+    },
+    "/common/gradingScales/?filterArchived=true": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 86400000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/common/gradingScales/{gradingScaleId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 86400000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/common/gradingScales/{gradingScaleId}/grades": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 86400000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/common/gradingScales/{gradingScaleId}/grades/{gradingScaleItemId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 86400000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
     }
   }
 }

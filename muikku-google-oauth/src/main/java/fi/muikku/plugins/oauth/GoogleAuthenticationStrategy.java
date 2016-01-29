@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -26,7 +24,6 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
-import fi.muikku.auth.AuthenticationHandleException;
 import fi.muikku.auth.AuthenticationProvider;
 import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.auth.OAuthAuthenticationStrategy;
@@ -34,8 +31,6 @@ import fi.muikku.model.security.AuthSource;
 import fi.muikku.plugins.oauth.scribe.GoogleApi20;
 import fi.muikku.session.SessionController;
 
-@Dependent
-@Stateless
 public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy implements AuthenticationProvider {
   
   @Inject
@@ -79,7 +74,7 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
   }
   
   @Override
-  protected AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) throws AuthenticationHandleException {
+  protected AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
     ObjectMapper objectMapper = new ObjectMapper();
 
     String verifier = getFirstRequestParameter(requestParameters, "code");
@@ -97,7 +92,7 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
       sessionController.addOAuthAccessToken("google", expires, accessToken.getToken(), null);
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Token extraction failed a JSON parsing error", e);
-      throw new AuthenticationHandleException(e);
+      return new AuthenticationResult(AuthenticationResult.Status.ERROR);
     }
     
     List<String> scopesList = Arrays.asList(requestedScopes);
@@ -114,7 +109,7 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
         userInfo = objectMapper.readValue(response.getBody(), GoogleUserInfo.class);
       } catch (IOException e) {
         logger.log(Level.SEVERE, "Logging in failed because of a JSON parsing exception", e);
-        throw new AuthenticationHandleException(e);
+        return new AuthenticationResult(AuthenticationResult.Status.ERROR);
       }
     }
 

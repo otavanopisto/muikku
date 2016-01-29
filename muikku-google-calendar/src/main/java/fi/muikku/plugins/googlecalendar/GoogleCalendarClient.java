@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -49,8 +47,6 @@ import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEventUser;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
 
-@Dependent
-@Stateless
 public class GoogleCalendarClient {
 
   private static final HttpTransport TRANSPORT = new NetHttpTransport();

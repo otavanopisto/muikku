@@ -195,6 +195,7 @@ body.evaluation {
         position:absolute;
         top:50%;
         left:50%;
+        margin:-25px 0 0 -25px;
       }
       
     }
@@ -378,9 +379,10 @@ body.evaluation {
       }
       
       /* Workspace has been reviewed and needs more input from student */
-      &.workspace-reviewed-but-not-evaluated {
+      &.workspace-reviewed-non-passing {
       
         .evaluation-assessment-request-date {
+          position:absolute;
           width:100%;
           box-sizing:border-box;
           padding:3px 4px;
@@ -392,16 +394,34 @@ body.evaluation {
           position:absolute;
           font-size:0.9em;
           top:5px;
+          background:#00ccff;
+          color:#fff;
+          font-size:14px;
+        }
+        
+        .workspace-evaluated-date {
+          position:absolute;
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+          font-size:0.9em;
+          top:27px;
           background:#ea7401;
           color:#fff;
-        }
+          font-size:14px;
+        }        
       
         .evaluation-student-picture {
           box-shadow:0 0 0 5px #ea7401;
         }
     
       }
-      
+            
       .evaluation-assessment-request-date {
         width:100%;
         box-sizing:border-box;
@@ -522,6 +542,34 @@ body.evaluation {
         
         &:hover {
           box-shadow:0 0 0 5px #b7fbc1;
+        }
+      }
+      
+      &.assignment-withdrawn {
+        border-top:3px solid #cb23c5;
+        cursor:pointer;
+        
+        .evaluation-assignment-evaluated-date {
+          color:#1aa00b;
+        }
+        
+        &:hover {
+          box-shadow:0 0 0 5px #e69be3;
+        }
+      }
+      
+      
+      &.assignment-reviewed-non-passing {
+        opacity:1;
+        border-top:3px solid #ea7401;
+        cursor:pointer;
+        
+        .evaluation-assignment-evaluated-date {
+          color:#ea7401;
+        }
+        
+        &:hover {
+          box-shadow:0 0 0 5px #ffc58d;
         }
       }
       
@@ -668,11 +716,12 @@ body.evaluation {
                   .evaluation-assignment-assessmentvalue,
                   .evaluation-assignment-exercisedone {
                     position:absolute;
-                    max-width:100px;
+                    max-width:150px;
                     right:0;
                     top:0;
                     text-align:right;
                     padding:8px 10px;
+                    white-space:nowrap;
                   }
                 
                 }
