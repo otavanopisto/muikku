@@ -9,7 +9,7 @@ public class WorkspaceAssessment {
   
   public WorkspaceAssessment(String identifier, Date evaluated, Long assessorEntityId, String workspaceStudentId,
       String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String gradeIdentifier, 
-      String gradeSchoolDataSource, String verbalAssessment) {
+      String gradeSchoolDataSource, String verbalAssessment, Boolean passed) {
     super();
     this.identifier = identifier;
     this.evaluated = evaluated;
@@ -20,6 +20,7 @@ public class WorkspaceAssessment {
     this.gradeIdentifier = gradeIdentifier;
     this.gradeSchoolDataSource = gradeSchoolDataSource;
     this.verbalAssessment = verbalAssessment;
+    this.passed = passed;
   }
 
   public String getIdentifier() {
@@ -94,6 +95,14 @@ public class WorkspaceAssessment {
     this.workspaceStudentId = workspaceStudentId;
   }
   
+  public Boolean getPassed() {
+    return passed;
+  }
+
+  public void setPassed(Boolean passed) {
+    this.passed = passed;
+  }
+
   private String identifier;
   private Date evaluated;
   private String workspaceStudentId;
@@ -103,4 +112,5 @@ public class WorkspaceAssessment {
   private String gradeIdentifier;
   private String gradeSchoolDataSource;
   private String verbalAssessment;
+  private Boolean passed;
 }

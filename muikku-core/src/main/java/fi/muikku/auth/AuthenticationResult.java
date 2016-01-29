@@ -55,7 +55,8 @@ public class AuthenticationResult {
     NEW_ACCOUNT,
     CONFLICT, 
     INVALID_CREDENTIALS, 
-    NO_EMAIL
+    NO_EMAIL,
+    ERROR
   }
   
   public static enum ConflictReason {

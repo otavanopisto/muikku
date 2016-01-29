@@ -195,14 +195,17 @@
     },
     
     _handleEvents: function (processEvents, callback) {
-      var processEvent = processEvents.pop();
-      var _this = this;
-      processEvent.event.getCallback()(processEvent.node, function () {
-        if (processEvents.length > 0) {
-          _this._handleEvents(processEvents, callback);
-        } else {
-          callback();
-        }
+      var eventCalls = $.map(processEvents, function (processEvent) {
+        return function (callCallback) {
+          var eventCallback = processEvent.event.getCallback();
+          eventCallback(processEvent.node, function () {
+            callCallback();
+          });
+        };
+      });
+      
+      async.parallel(eventCalls, function (err, results) {
+        callback();
       });
     }
   });

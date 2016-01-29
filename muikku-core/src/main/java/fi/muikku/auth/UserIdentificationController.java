@@ -1,7 +1,5 @@
 package fi.muikku.auth;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.security.UserIdentificationDAO;
@@ -9,8 +7,6 @@ import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.security.UserIdentification;
 import fi.muikku.model.users.UserEntity;
 
-@Dependent
-@Stateless
 public class UserIdentificationController {
 
   @Inject

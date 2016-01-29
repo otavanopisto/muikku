@@ -1267,7 +1267,8 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   private fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment createRestModel(WorkspaceEntity workspaceEntity, fi.muikku.schooldata.entity.WorkspaceAssessment entry) {
     UserEntity assessor = userEntityController.findUserEntityByDataSourceAndIdentifier(entry.getAssessingUserSchoolDataSource(), entry.getAssessingUserIdentifier());
-    
+    GradingScale gradingScale = gradingController.findGradingScale(entry.getGradingScaleSchoolDataSource(), entry.getGradingScaleIdentifier());
+    GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, entry.getGradeSchoolDataSource(), entry.getGradeIdentifier());
     SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(entry.getWorkspaceUserIdentifier(), entry.getWorkspaceUserSchoolDataSource());
     
     return new fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment(
@@ -1279,7 +1280,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       entry.getGradingScaleSchoolDataSource(),
       entry.getGradeIdentifier(),
       entry.getGradeSchoolDataSource(),
-      entry.getVerbalAssessment()
+      entry.getVerbalAssessment(),
+      grade.isPassingGrade()
     ); 
   }
   
