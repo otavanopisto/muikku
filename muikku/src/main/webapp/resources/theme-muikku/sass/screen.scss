@@ -59,7 +59,7 @@ body {
 
 [class^="icon-"] span, [class*=" icon-"] span {
   display: inline-block;
-  font-family: "Open Sans";
+  font-family: "Open Sans" !important;
   padding-left: 4px;
 }
 
