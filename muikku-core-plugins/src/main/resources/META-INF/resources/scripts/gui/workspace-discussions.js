@@ -111,10 +111,22 @@ $(document).ready(function() {
     _refreshThread : function(aId, tId) {
      this._clearMessages();
      this._addLoading(DiscImpl.msgContainer);
+     var fromView = '';
+     if (window.location.hash && window.location.hash.length > 1) {
+       var parts = window.location.hash.substring(1).split('/');
+       if (parts.length > 3) {
+         fromView = parts[3];
+       }
+     }
+     
+     if (!fromView) {
+       fromView = 'all';
+     }
      
       mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {
         mApi({async: false}).forum.areas.read(thread.forumAreaId).callback($.proxy(function(err, area) {
           thread.areaName = area.name;
+          thread.fromView = fromView;
           mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
             var d = new Date(thread.created);
@@ -188,9 +200,9 @@ $(document).ready(function() {
     _onBackClick : function(event){
       var element = $(event.target);
       var areaId  = element.attr('data-from-view');
-      if(areaId === undefined){
+      if (!areaId) {
         window.location.hash =  '';
-      }else{
+      } else {
         window.location.hash = "#area/" + areaId;
       } 
     },   
