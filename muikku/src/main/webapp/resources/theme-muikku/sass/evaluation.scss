@@ -787,7 +787,7 @@ body.evaluation {
                     
                     textarea,
                     input[type="text"] {
-                      font-family:'Open Sans',Verdana, sans-serif;
+                      font-family:'Open Sans', Arial, sans-serif;
                       border-radius:3px;
                       background:#ebf7ff;
                       padding:5px 10px;
@@ -895,7 +895,7 @@ body.evaluation {
                 
                 textarea,
                 input[type="text"] {
-                  font-family:'Open Sans',Verdana, sans-serif;
+                  font-family:'Open Sans', Arial, sans-serif;
                   border-radius:3px;
                   background:#ebf7ff;
                   padding:5px 10px;
@@ -1030,7 +1030,7 @@ body.evaluation {
           color:#000;
           outline:none;
           transition:border 0.15s ease-in-out;
-          font-family:'Open Sans',Verdana, sans-serif;
+          font-family:'Open Sans', Arial, sans-serif;
           font-weight:300;
           
           &:hover,
@@ -1084,7 +1084,7 @@ body.evaluation {
           text-transform:uppercase;
           margin:5px;
           outline:none;
-          font-family:'Open Sans',Verdana, sans-serif;
+          font-family:'Open Sans', Arial, sans-serif;
           min-width:90px;
           font-size:18px;
         }
@@ -1104,7 +1104,7 @@ body.evaluation {
 
   .evaluation-evaluate-modal {
     background:#fff;
-    font-family: 'Open Sans',Verdana, sans-serif;
+    font-family:'Open Sans', Arial, sans-serif;
     font-size:16px;
     padding:0;
     border:none;
@@ -1254,7 +1254,7 @@ body.evaluation {
           text-transform:uppercase;
           margin:5px;
           outline:none;
-          font-family:'Open Sans',Verdana, sans-serif;
+          font-family:'Open Sans', Arial, sans-serif;
           min-width:90px;
           font-size:18px;
           float:none;
@@ -1279,7 +1279,7 @@ body.evaluation {
   
   /**
   #ui-datepicker-div {
-    font-family:'Open Sans',Verdana, sans-serif;
+    font-family:'Open Sans', Arial, sans-serif;
     font-size:13px;
     box-shadow:0 0 30px 5px rgba(0,0,0,0.3);
     border:0;
