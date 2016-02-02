@@ -306,5 +306,29 @@ public class PyramusIdentifierMapper {
     
     return new SchoolDataIdentifier(String.format("%s%d", SCHOOL_PREFIX, schoolId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
+
+  public Long getPyramusGradeId(String gradeIdentifier) {
+    if (StringUtils.isBlank(gradeIdentifier)) {
+      return null;
+    }
+    
+    if (!StringUtils.isNumeric(gradeIdentifier)) {
+      return null;
+    }
+    
+    return Long.parseLong(gradeIdentifier);
+  }
+
+  public Long getPyramusGradingScaleId(String gradingScaleIdentifier) {
+    if (StringUtils.isBlank(gradingScaleIdentifier)) {
+      return null;
+    }
+    
+    if (!StringUtils.isNumeric(gradingScaleIdentifier)) {
+      return null;
+    }
+    
+    return Long.parseLong(gradingScaleIdentifier);
+  }
   
 }
