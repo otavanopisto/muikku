@@ -136,4 +136,9 @@ public class TaskM2Image extends AbstractHtmlMaterialCleanerTask {
     }
   }
 
+  @Override
+  public Integer getPriority() {
+    return PRIORITY_HIGH;
+  }
+
 }

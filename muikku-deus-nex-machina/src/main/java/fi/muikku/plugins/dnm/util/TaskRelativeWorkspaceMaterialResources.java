@@ -79,4 +79,9 @@ public class TaskRelativeWorkspaceMaterialResources extends AbstractHtmlMaterial
     }
   }
 
+  @Override
+  public Integer getPriority() {
+    return PRIORITY_NORMAL;
+  }
+
 }

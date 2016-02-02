@@ -1,9 +1,13 @@
 package fi.muikku.plugins.dnm.util;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,10 +61,19 @@ public class HtmlMaterialCleaner {
       Document document = parser.getDocument();
       // Tasks
       Iterator<HtmlMaterialCleanerTask> taskIterator = analyzerTasks.iterator();
-      String newHtml = null;
+      List<HtmlMaterialCleanerTask> cleanerTasks = new ArrayList<HtmlMaterialCleanerTask>();
       while (taskIterator.hasNext()) {
-        HtmlMaterialCleanerTask task = taskIterator.next();
-        if (task.process(document, ownerMaterial)) {
+        cleanerTasks.add(taskIterator.next());
+      }
+      Collections.sort(cleanerTasks, new Comparator<HtmlMaterialCleanerTask>() {
+        @Override
+        public int compare(HtmlMaterialCleanerTask o1, HtmlMaterialCleanerTask o2) {
+          return o1.getPriority().compareTo(o2.getPriority());
+        }
+      });
+      String newHtml = null;
+      for (HtmlMaterialCleanerTask cleanerTask : cleanerTasks) {
+        if (cleanerTask.process(document, ownerMaterial)) {
           newHtml = DeusNexXmlUtils.serializeElement(document.getDocumentElement(), true, false, "html");
           patch(htmlMaterial, newHtml);
         }
