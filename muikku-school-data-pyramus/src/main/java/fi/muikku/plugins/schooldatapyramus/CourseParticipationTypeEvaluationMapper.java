@@ -41,6 +41,7 @@ public class CourseParticipationTypeEvaluationMapper {
   public Long getParticipationTypeId(Grade grade) {
     if (config == null) {
       logger.log(Level.SEVERE, "Cannot resolve grade participantion type because config is null");
+      return null;
     }
     
     Map<Long, Long> grades = config.getGrades();
