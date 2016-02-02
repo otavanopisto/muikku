@@ -75,4 +75,9 @@ public class TaskMathMl extends AbstractHtmlMaterialCleanerTask {
     }
   }
 
+  @Override
+  public Integer getPriority() {
+    return PRIORITY_HIGH;
+  }
+
 }
