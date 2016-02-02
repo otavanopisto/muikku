@@ -274,6 +274,16 @@ class WorkspaceSchoolDataController {
     return null;
   }
   
+  public WorkspaceUser findWorkspaceUserByWorkspaceAndUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier) {
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceIdentifier.getDataSource());
+    if (workspaceBridge != null) {
+      return workspaceBridge.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge not found: " + workspaceIdentifier.getDataSource());
+    }
+    return null;
+  }
+  
   public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier) {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceIdentifier.getDataSource());
     if (workspaceBridge != null) {

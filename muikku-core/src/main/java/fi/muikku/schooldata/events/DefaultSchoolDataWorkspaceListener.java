@@ -112,7 +112,11 @@ public class DefaultSchoolDataWorkspaceListener {
             workspaceUserEntity = workspaceUserEntityController.createWorkspaceUserEntity(userSchoolDataIdentifier, workspaceEntity, event.getIdentifier(), workspaceUserRole);
             discoveredWorkspaceUsers.put(discoverId, workspaceUserEntity.getId());
             event.setDiscoveredWorkspaceUserEntityId(workspaceUserEntity.getId());
-          } else {
+          }
+          else {
+            if (!workspaceUserEntity.getIdentifier().equals(event.getIdentifier())) {
+              workspaceUserEntityController.updateIdentifier(workspaceUserEntity, event.getIdentifier());
+            }
             workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
           }
         } else {

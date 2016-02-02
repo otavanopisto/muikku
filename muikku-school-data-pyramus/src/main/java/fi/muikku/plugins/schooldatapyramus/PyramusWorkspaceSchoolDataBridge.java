@@ -237,6 +237,19 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     
     return Arrays.asList(entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class))).get(0);
   }
+
+  @Override
+  public WorkspaceUser findWorkspaceUserByWorkspaceAndUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier.getIdentifier());
+    Long userId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
+    if (courseId != null && userId != null) {
+      List<WorkspaceUser> users = entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/students?studentId=%d", courseId, userId), CourseStudent[].class));
+      if (users != null) {
+        return users.isEmpty() ? null : users.get(0);
+      }
+    }
+    return null;
+  }
   
   @Override
   public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
@@ -371,18 +384,18 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       Long currentParticipationType = courseStudent.getParticipationTypeId();
       if (pyramusStudentActivityMapper.isActive(currentParticipationType) != active) {
         Long newParticipationType = active ? pyramusStudentActivityMapper.toActive(currentParticipationType) : pyramusStudentActivityMapper.toInactive(currentParticipationType);
-        if (newParticipationType != null) {
-          CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
-          if (participationType != null) {
-            courseStudent.setParticipationTypeId(participationType.getId());
-            pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
-          } else {
-            logger.warning(String.format("Could not find participation type %d", newParticipationType));
-          }
+        if (newParticipationType == null) {
+          newParticipationType = currentParticipationType;
+        }
+        CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
+        if (participationType != null) {
+          courseStudent.setParticipationTypeId(participationType.getId());
+          pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
         } else {
-          logger.warning(String.format("Could not resolve active / inactive counterpart for participation type %d", currentParticipationType));
+          logger.warning(String.format("Could not find participation type %d", newParticipationType));
         }
       }
     }
   }
+
 }
