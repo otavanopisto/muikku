@@ -60,6 +60,7 @@ public class CourseParticipationTypeEvaluationMapper {
     Map<String, Long> defaults = config.getDefaults();
     if (defaults == null) {
       logger.log(Level.SEVERE, "Cannot resolve grade participantion type because specific grade mapping could not be found and defaults are not defined");
+      return null;
     }
     
     if (grade.getPassingGrade()) {
