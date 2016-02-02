@@ -330,7 +330,7 @@ div[class*="wi-dock-static-navi"] {
     right:-5px;
     top:20px;
     color:#000;
-    font-family:"Open Sans";
+    font-family:'Open Sans', Arial, sans-serif;
     min-width:125px;
     
     .wi-generic-widget-action-menu-arrow {
@@ -360,7 +360,7 @@ div[class*="wi-dock-static-navi"] {
         .wi-generic-widget-action-item-label {
           padding:0 0 0 10px;
           display:inline-block;
-          font-family:"Open Sans";
+          font-family:'Open Sans', Arial, sans-serif;
           font-size:13px;
           position:relative;
           top:-2px; /* Adjusting text in relation to icon as they are different sizes */
@@ -903,7 +903,7 @@ div[class*="wi-dock-static-navi"] {
 div[class*="sk-autocomplete-item"]{
  padding-left:5px;
 	 *{
-	  font-family: 'Open Sans',Verdana, sans-serif;
+	  font-family:'Open Sans', Arial, sans-serif;
 	 }
 }
 
