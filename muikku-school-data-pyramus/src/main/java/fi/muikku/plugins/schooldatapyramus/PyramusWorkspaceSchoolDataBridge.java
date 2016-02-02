@@ -245,8 +245,14 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     if (courseId != null && userId != null) {
       List<WorkspaceUser> users = entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/students?studentId=%d", courseId, userId), CourseStudent[].class));
       if (users != null) {
+        if (users.size() > 1) {
+          logger.warning(String.format("Student %d appears %d times in course %d", userId, users.size(), courseId));
+        }
         return users.isEmpty() ? null : users.get(0);
       }
+    }
+    else {
+      logger.severe(String.format("null courseId %d or userId &d", courseId, userId));
     }
     return null;
   }
