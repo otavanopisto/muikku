@@ -27,6 +27,7 @@ import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.pyramus.rest.model.CourseAssessment;
 import fi.pyramus.rest.model.CourseAssessmentRequest;
+import fi.pyramus.rest.model.CourseStudent;
 import fi.pyramus.rest.model.Grade;
 
 public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
@@ -42,6 +43,9 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
+  
+  @Inject
+  private CourseParticipationTypeEvaluationMapper courseParticipationTypeEvaluationMapper;
   
   @Override
   public String getSchoolDataSource() {
@@ -130,9 +134,30 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
     long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    Long gradeId = identifierMapper.getPyramusGradeId(gradeIdentifier);
+    Long gradingScaleId = identifierMapper.getPyramusGradingScaleId(gradingScaleIdentifier);
     
-    CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, Long.parseLong(gradeIdentifier), Long.parseLong(gradingScaleIdentifier), assessingUserId, new DateTime(date), verbalAssessment);
-    return entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessments/", studentId, courseId ), courseAssessment));
+    if (gradeId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus grade", gradeIdentifier));
+      return null; 
+    }
+    
+    if (gradingScaleId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus grading scale", gradingScaleIdentifier));
+      return null; 
+    }
+ 
+    Grade grade = pyramusClient.get(String.format("/common/gradingScales/%d/grades/%d", gradingScaleId, gradeId), fi.pyramus.rest.model.Grade.class);
+    if (grade == null) {
+      logger.severe(String.format("Could not create workspace assessment because grade %d could not be found from Pyramus", gradeId));
+      return null; 
+    }
+    
+    CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, gradeId, gradingScaleId, assessingUserId, new DateTime(date), verbalAssessment);
+    WorkspaceAssessment workspaceAssessment = entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessments/", studentId, courseId ), courseAssessment));
+    updateParticipationTypeByGrade(courseStudentId, courseId, grade);
+    
+    return workspaceAssessment;
   }
 
   @Override
@@ -153,8 +178,28 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     long id = Long.parseLong(identifier);
+    Long gradeId = identifierMapper.getPyramusGradeId(gradeIdentifier);
+    Long gradingScaleId = identifierMapper.getPyramusGradingScaleId(gradingScaleIdentifier);
     
-    CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, Long.parseLong(gradeIdentifier), Long.parseLong(gradingScaleIdentifier), assessingUserId, new DateTime(date), verbalAssessment);
+    if (gradeId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus grade", gradeIdentifier));
+      return null; 
+    }
+    
+    if (gradingScaleId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus grading scale", gradingScaleIdentifier));
+      return null; 
+    }
+ 
+    Grade grade = pyramusClient.get(String.format("/common/gradingScales/%d/grades/%d", gradingScaleId, gradeId), fi.pyramus.rest.model.Grade.class);
+    if (grade == null) {
+      logger.severe(String.format("Could not update workspace assessment because grade %d could not be found from Pyramus", gradeId));
+      return null; 
+    }
+    
+    CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, gradeId, gradingScaleId, assessingUserId, new DateTime(date), verbalAssessment);
+    updateParticipationTypeByGrade(courseStudentId, courseId, grade);
+    
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessments/%d", studentId, courseId, id), courseAssessment));
   }
 
@@ -254,6 +299,21 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     }
     
     return Collections.unmodifiableList(result);
+  }
+
+  private void updateParticipationTypeByGrade(Long courseStudentId, Long courseId, Grade grade) {
+    Long participationTypeId = courseParticipationTypeEvaluationMapper.getParticipationTypeId(grade);
+    if (participationTypeId != null) {
+      CourseStudent courseStudent = pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class);
+      if (courseStudent != null) {
+        if (!participationTypeId.equals(courseStudent.getParticipationTypeId())) {
+          courseStudent.setParticipationTypeId(participationTypeId);
+          pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
+        }
+      } else {
+        logger.severe(String.format("Could not change course participation type because course student %d could not be found", courseStudentId));
+      }
+    }
   }
 
 }
