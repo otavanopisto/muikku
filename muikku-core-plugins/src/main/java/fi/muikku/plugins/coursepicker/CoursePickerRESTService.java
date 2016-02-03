@@ -167,8 +167,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       
       if (orderBy != null && orderBy.contains("alphabet")) {
         sorts = new ArrayList<>();
-        sorts.add(new Sort("name", Sort.Order.ASC));
-        sorts.add(new Sort("nameExtension", Sort.Order.ASC));
+        sorts.add(new Sort("name.untouched", Sort.Order.ASC));
       }
       
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults, sorts);
