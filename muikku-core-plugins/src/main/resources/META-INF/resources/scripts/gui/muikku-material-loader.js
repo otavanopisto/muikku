@@ -932,11 +932,8 @@
     renderDustTemplate('workspace/materials-assignment-attachement-remove-confirm.dust', { }, $.proxy(function (text) {
       // File field support
       $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
-        var readonly = data.readOnlyFields || false;
         var readonlyData = $(field).attr('data-readonly');
-        if (typeof readonlyData !== "undefined" && readonlyData !== null) {
-          readonly = !!readonlyData;
-        }
+        var readonly = data.readOnlyFields || ('true' === readonlyData);
         $(field)
           .muikkuFileField({
             maxFileSize: maxFileSize,
