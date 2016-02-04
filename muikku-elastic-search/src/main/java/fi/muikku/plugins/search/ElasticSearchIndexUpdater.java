@@ -36,9 +36,17 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     Builder settings = nodeBuilder().settings();
     settings.put("cluster.routing.allocation.disk.watermark.high", "99%");
 
-    node = nodeBuilder().settings(settings).local(true).node();
+    node = nodeBuilder()
+      .settings(settings)
+      .local(true)
+      .node();
+    
     elasticClient = node.client();
-
+    
+    if (!indexExists()) {
+      createIndex();      
+    }
+    
     for (Indexable indexable : IndexableEntityVault.getEntities()) {
       String propertyName = indexable.name();
       Map<String, ElasticMappingProperty> properties = new HashMap<>();
@@ -70,6 +78,25 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     }
   }
   
+  private void createIndex() {
+    elasticClient
+      .admin()
+      .indices()
+      .prepareCreate("muikku")
+      .execute()
+      .actionGet();
+  }
+
+  private boolean indexExists() {
+    return elasticClient
+      .admin()
+      .indices()
+      .prepareExists("muikku")
+      .execute()
+      .actionGet()
+      .isExists();
+  }
+
   private void updateMapping(String propertyName, ElasticMappingProperties properties) {
     try {
       Map<String, ElasticMappingProperties> mappings = new HashMap<>();
