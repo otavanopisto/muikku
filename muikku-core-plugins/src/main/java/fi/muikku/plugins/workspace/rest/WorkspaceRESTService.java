@@ -322,7 +322,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       if (orderBy != null && orderBy.contains("alphabet")) {
         sorts = new ArrayList<>();
-        sorts.add(new Sort("name", Sort.Order.ASC));
+        sorts.add(new Sort("name.untouched", Sort.Order.ASC));
       }
       
       // TODO: Pagination support

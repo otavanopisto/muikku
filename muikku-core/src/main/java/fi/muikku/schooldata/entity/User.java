@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 import fi.muikku.search.annotations.IndexId;
 import fi.muikku.search.annotations.Indexable;
 
-@Indexable
+@Indexable (name = "User")
 public interface User extends SchoolDataEntity {
 
   public String getIdentifier();
