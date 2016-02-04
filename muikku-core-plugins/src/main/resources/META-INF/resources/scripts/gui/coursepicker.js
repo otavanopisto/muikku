@@ -222,6 +222,8 @@
       var loader = $('<div>') 
         .addClass('loading')
         .appendTo($(this._coursesContainer));
+
+      this._searchInput.prop('disabled', true);
       
       $('.cp-page-link-load-more').addClass('disabled');
       
@@ -254,6 +256,7 @@
       }, this))
       .callback($.proxy(function (err, workspaces) {
         $(loader).remove();
+        this._searchInput.prop('disabled', false);
         
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
