@@ -136,6 +136,12 @@ public class PyramusUser extends AbstractUser implements User {
   public void setHidden(boolean hidden) {
     this.hidden = hidden;
   }
+  
+  @Override
+  public boolean hasEvaluationFees() {
+    String myStudyProgrammeName = getStudyProgrammeName();
+    return myStudyProgrammeName != null && studyProgrammeName.startsWith("Internetix/");
+  }
 
   private String identifier;
   private String firstName;

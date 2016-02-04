@@ -3,7 +3,6 @@ package fi.muikku.plugins.googlecalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -15,7 +14,6 @@ import fi.muikku.plugins.calendar.model.UserCalendar;
 import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
 
-@Stateless
 public class GoogleCalendarLoginListener {
   
   // TODO: Localize

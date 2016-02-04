@@ -163,10 +163,13 @@ public class AnnouncerRESTService extends PluginRESTService {
   @RESTPermit(AnnouncerPermissions.FIND_ANNOUNCEMENT)
   public Response findAnnouncementById(@PathParam("ID") Long announcementId) {
     Announcement announcement = announcementController.findById(announcementId);
-    AnnouncementRESTModel restModel = createRESTModel(
-        announcement,
-        announcementController.listUserGroups(announcement));
-    return Response.ok(restModel).build();
+    if (announcement == null) {
+      return Response.status(Status.NOT_FOUND).entity("Announcement not found").build();
+    }
+    
+    List<AnnouncementUserGroup> announcementUserGroups = announcementController.listUserGroups(announcement);
+    
+    return Response.ok(createRESTModel(announcement, announcementUserGroups)).build();
   }
 
   private AnnouncementRESTModel createRESTModel(
@@ -186,8 +189,9 @@ public class AnnouncerRESTService extends PluginRESTService {
 
     List<Long> userGroupEntityIds = new ArrayList<>();
     for (AnnouncementUserGroup announcementUserGroup : userGroups) {
-      userGroupEntityIds.add(announcementUserGroup.getId());
+      userGroupEntityIds.add(announcementUserGroup.getUserGroupEntityId());
     }
+    
     restModel.setUserGroupEntityIds(userGroupEntityIds);
 
     Date date = currentDate();

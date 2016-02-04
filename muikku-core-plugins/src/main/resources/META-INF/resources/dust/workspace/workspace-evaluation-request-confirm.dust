@@ -1,5 +1,14 @@
 <div class="workspace-evaluation-request-confirm-dialog" title="{#localize key="plugin.workspace.evaluation.requestEvaluation.title"/}" data-button-request-text="{#localize key="plugin.workspace.evaluation.requestEvaluation.requestButton"/}" data-button-cancel-text="{#localize key="plugin.workspace.evaluation.requestEvaluation.cancelButton"/}">
   {#localize key="plugin.workspace.evaluation.requestEvaluation.description"/}
+   
+  {?evaluationHasFee}
+  <div class="evaluation-request-additional-message-wrapper notify-user">
+    <label>{#localize key="plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label"/}</label>
+    <div class="evaluation-assessment-has-fee-description">
+      {#localize key="plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"/}
+    </div>
+  </div>
+  {/evaluationHasFee}
   
   <div class="evaluation-request-additional-message-wrapper">
     <label>{#localize key="plugin.workspace.evaluation.requestEvaluation.userInput.label"/}</label>

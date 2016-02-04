@@ -63,6 +63,11 @@ public class WorkspaceEntityController {
     return workspaceEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
   }
 
+  public WorkspaceEntity findWorkspaceByIdentifier(SchoolDataIdentifier workspaceIdentier) {
+    return findWorkspaceByDataSourceAndIdentifier(workspaceIdentier.getDataSource(), 
+        workspaceIdentier.getIdentifier());
+  }
+
   public WorkspaceEntity findWorkspaceByUrlName(String urlName) {
     return workspaceEntityDAO.findByUrlName(urlName);
   }

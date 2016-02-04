@@ -1,0 +1,208 @@
+<div class="flex-row wizard-content">
+  
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="name">
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
+    </div>
+  
+    <div class="flex-row wizard-page-content">
+      <div class="flex-cell-full">
+    
+        <div class="flex-row">
+          <div class="flex-cell-full">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceName.label"/}</label>
+            <input type="text" name="workspace-name" value="{workspace.name}"/>
+          </div>
+        </div>
+    
+        <div class="flex-row">
+          <div class="flex-cell-full">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceExtension.label"/}</label>
+            <input type="text" name="workspace-name-extension" value="{workspace.nameExtension}"/>
+          </div>
+        </div>
+    
+     </div>
+    </div>
+  </section>
+  
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="dates">
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
+    </div>
+    
+    <div class="flex-row wizard-page-content">
+      <div class="flex-cell-full">
+    
+        <div class="flex-row">
+          <div class="flex-cell-8 flex-cell-first">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceStartDate.label"/}</label>
+            <input class="date-field" type="text" name="beginDate" value="{workspaceDetails.beginDate}"/>
+          </div>
+          <div class="flex-cell-8 flex-cell-last">
+            <label>{#localize key="plugin.workspacecopywizard.workspaceEndDate.label"/}</label>
+            <input class="date-field" type="text" name="endDate" value="{workspaceDetails.endDate}"/>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    
+  </section>
+
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="description">
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
+    </div>
+    
+    <div class="flex-row wizard-page-content">
+      <div class="flex-cell-full">
+        <label>{#localize key="plugin.workspacecopywizard.workspaceDescription.label"/}</label>
+        <textarea class="ckeditor-field" name="workspace-description">{workspace.description}</textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="settings">
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
+    </div>
+    
+    <div class="flex-row wizard-page-content">
+      <div class="flex-cell-full">
+        <label>{#localize key="plugin.workspacecopywizard.workspaceOtherSettings.label"/}</label>
+        
+        <div class="flex-row">
+          <div class="flex-cell-8 flex-cell-first">
+          
+            <div class="selection-wrapper">
+              <div class="selection-item">
+                <input type="checkbox" id="copy-materials" name="copy-materials" checked="checked"/>
+              </div>
+              <div class="selection-label">
+                <label for="copy-materials" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.label"/}</label>  
+              </div>
+            </div>
+          </div>
+          <div class="flex-cell-8 flex-cell-first">
+            <div class="selection-wrapper">
+              <div class="selection-item">
+                <input type="checkbox" id="copy-discussions-areas" name="copy-discussions-areas"/>
+              </div>
+              <div class="selection-label">
+                <label for="copy-discussions-areas" class="selection">{#localize key="plugin.workspacecopywizard.workspaceDiscussionsAreas.label"/}</label>  
+              </div>
+            </div>
+          </div>
+        </div>
+    
+      </div>
+    </div>
+  </section>
+
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="materials">
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
+    </div>
+    
+    <div class="flex-row wizard-page-content">
+      <div class="flex-cell-full">
+        <label>{#localize key="plugin.workspacecopywizard.workspaceMaterials.label"/}</label>
+        
+        <div class="flex-row">
+          <div class="flex-cell-8 flex-cell-first">
+            <div class="selection-wrapper">
+              <div class="selection-item">
+                <input id="material-copy-style-copy" type="radio" value="copy" name="material-copy-style" checked="checked"/> 
+              </div>
+              <div class="selection-label">
+                <label for="material-copy-style-copy" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label"/}</label>
+              </div>
+            </div>
+          </div>
+          <div class="flex-cell-8 flex-cell-first">
+            <div class="selection-wrapper">
+              <div class="selection-item">
+                <input id="material-copy-style-link" type="radio" value="link" name="material-copy-style"/> 
+              </div>
+              <div class="selection-label">
+                <label for="material-copy-style-link" class="selection">{#localize key="plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label"/}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+  </section>
+
+  <section class="flex-cell-full wizard-page" data-page-id="discussions">
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.title"/}</div>
+      </div>
+    </div>
+    <label>{#localize key="plugin.workspacecopywizard.workspaceDiscussions.label"/}</label>
+  </section>
+
+  <section class="flex-cell-full wizard-page wizard-page-visible" data-page-id="summary">
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <div class="wizard-page-title">{#localize key="plugin.workspacecopywizard.summaryPage.title"/}</div>
+      </div>
+    </div>
+    
+    <div class="flex-row">
+      <div class="flex-cell-full">
+        <ul class="summary">
+          
+        </ul>
+      </div>
+    </div>
+    
+    <div class="flex-row center">
+      <div class="flex-cell-full">
+        <button class="copy">{#localize key="plugin.workspacecopywizard.doCopyButton.label"/}</button>
+      </div>
+    </div>
+    
+    <div class="flex-row center proceed-buttons" style="display: none">
+      <div class="flex-cell-full">
+        <a class="close-wizard">{#localize key="plugin.workspacecopywizard.closeWizardButton.label"/}</a>
+      </div>
+      <div class="flex-cell-full">
+        <span class="additional-text">{#localize key="plugin.workspacecopywizard.or.label"/}</span>
+      </div>
+      <div class="flex-cell-full">
+        <a class="workspace-entity-url goto">{#localize key="plugin.workspacecopywizard.gotToWorkspaceMuikkuButton.label"/}</a>
+        <a target="_blank" class="external-view-url goto">{#localize key="plugin.workspacecopywizard.gotToWorkspacePyramusButton.label"/}</a>
+      </div>
+    </div>
+    
+  </section>
+
+  <ul class="progress-pages" style="display:none;"/>
+  
+</div>
+
+<div class="prev"></div>
+<div class="next"></div>
+<div class="close"></div>
+
+<div class="progress flex-row">
+  <div class="flex-cell-full">
+    <span class="currentPage"/> / <span class="totalPages"/>
+  </div>
+</div>

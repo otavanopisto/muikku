@@ -291,7 +291,7 @@ body[class^='workspace'] {
     
     span[class*='workspace-navi-tt-container-'] {
       opacity:0;
-      font-family:"Open Sans";
+      font-family:'Open Sans', Arial, sans-serif;
       font-size:16px;
       height:16px;
       font-weight:300;
@@ -339,7 +339,7 @@ body[class^='workspace'] {
   
     span[class*='workspace-navi-tt-container-'] {
       opacity:0;
-      font-family:"Open Sans";
+      font-family:'Open Sans', Arial, sans-serif;
       font-size:16px;
       height:16px;
       font-weight:300;
@@ -391,7 +391,7 @@ body[class^='workspace'] {
       right:-5px;
       top:20px;
       color:#fff;
-      font-family:"Open Sans";
+      font-family:'Open Sans', Arial, sans-serif;
       
       .wi-workspace-widget-action-menu-arrow {
         @include background-image('gfx/workspace-contextual-menu-arrow.png');
@@ -427,7 +427,7 @@ body[class^='workspace'] {
           .wi-workspace-widget-action-item-label {
             padding:0 0 0 10px;
             display:inline-block;
-            font-family:"Open Sans";
+            font-family:'Open Sans', Arial, sans-serif;
             font-size:13px;
             position:relative;
             top:-2px; /* Adjusting text in relation to icon as they are different sizes */
@@ -458,6 +458,21 @@ body[class^='workspace'] {
     
     }
   
+  }
+  
+  /* EVALUATION REQUEST DIALOG SPECIFIC */
+  .evaluation-request-additional-message-wrapper {
+  
+    &.notify-user {
+      background:#d1f9ff;
+      margin:15px -16px 5px -16px;
+      padding:0 15px 10px 15px;
+    }
+  
+  }
+  
+  .evaluation-assessment-has-fee-description {
+    text-transform:none;
   }
 
   /* TEXT CONTENT RULES */

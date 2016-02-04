@@ -32,6 +32,12 @@
   <div class="evaluation-assignmentlist-wrapper">
     <div class="evaluation-assignment-title-container">
       <h2>{title}</h2>
+      <div class="evaluation-assignment-exercisedone">
+        {@eq key=reply.state value="SUBMITTED"}
+          <span>{#localize key="plugin.evaluation.workspaceEvaluationDialog.exerciseDone"/} </span>
+          <span>({reply.submitted|formatDate})</span>
+        {/eq}
+      </div>
     </div>
     <div class="evaluation-assignment-content" data-open-state="closed">
       <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" data-path="{path}" class="evaluation-assignment"></article>

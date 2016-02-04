@@ -1,10 +1,21 @@
 package fi.muikku;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.joda.time.DateTime;
+
+import fi.muikku.mock.model.MockCourse;
+import fi.muikku.mock.model.MockCourseStudent;
+import fi.muikku.mock.model.MockStudent;
+import fi.pyramus.rest.model.Course;
+import fi.pyramus.rest.model.CourseStudent;
+import fi.pyramus.rest.model.Student;
 
 public class TestUtilities {
   
@@ -29,6 +40,32 @@ public class TestUtilities {
     } finally {
       client.close();
     }
+  }
+
+  public static Student studentFromMockStudent(MockStudent mockStudent) {
+    Map<String, String> variables = null;
+    List<String> tags = null;
+    Student student = new Student(mockStudent.getId(), mockStudent.getPersonId(), mockStudent.getFirstName(), mockStudent.getLastName(), 
+      null, null, null, null, null, null, null, null,
+      null, null, null, mockStudent.getStudyProgrammeId(), null, null,
+      false, null, null, null, null, variables, tags, false);
+    return student;
+  }
+  
+  public static Course courseFromMockCourse(MockCourse mockCourse) {
+    Course course = new Course(mockCourse.getId(), mockCourse.getName(), mockCourse.getCreated(), mockCourse.getCreated(), mockCourse.getDescription(), false, 1, 
+      (long) 25, mockCourse.getBegin(), mockCourse.getEnd(), "test extension", (double) 15, (double) 45, (double) 45,
+      (double) 15, (double) 45, (double) 45, mockCourse.getEnd(), (long) 1,
+      (long) 1, (long) 1, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
+      null, null);
+    
+    return course;
+  }
+
+  public static CourseStudent courseStudentFromMockCourseStudent(MockCourseStudent mockCourseStudent) {
+    CourseStudent courseStudent = new CourseStudent(mockCourseStudent.getId(), mockCourseStudent.getCourseId(), mockCourseStudent.getStudentId(),
+      new DateTime(2010, 2, 2, 0, 0, 0, 0), false, null, null, null, null, null);
+    return courseStudent;
   }
 
 }

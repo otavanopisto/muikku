@@ -16,6 +16,7 @@
           data-material-id="#{node.materialId}"
           data-parent-id="#{node.parentId}"
           data-material-type="#{node.type}"
+          data-path="#{node.path}"
           data-material-title="#{node.title}"
           class="workspace-materials-view-page material-management-view folder #{node.hidden ? 'item-hidden' : ''}"></section>
 
@@ -26,6 +27,7 @@
               data-material-id="#{articleNode.materialId}"
               data-parent-id="#{articleNode.parentId}"
               data-material-type="#{articleNode.type}"
+              data-path="#{articleNode.path}"
               data-material-title="#{articleNode.title}"
               data-assignment-type="#{articleNode.assignmentType}"
               class="workspace-materials-view-page material-management-view folder #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"></h2>
@@ -37,6 +39,7 @@
               data-material-id="#{articleNode.materialId}"
               data-parent-id="#{articleNode.parentId}"
               data-material-type="#{articleNode.type}"
+              data-path="#{articleNode.path}"
               data-material-title="#{articleNode.title}"
               data-material-content="#{articleNode.html}"
               data-material-current-revision="#{articleNode.currentRevision}"
@@ -56,6 +59,7 @@
           data-material-type="#{node.type}"
           data-material-title="#{node.title}"
           data-material-content="#{node.html}"
+          data-path="#{node.path}"
           data-material-current-revision="#{node.currentRevision}"
           data-material-published-revision="#{node.publishedRevision}"
           data-assignment-type="#{node.assignmentType}"
@@ -64,6 +68,7 @@
     </ui:repeat>
 
     <input class="workspaceEntityId" type="hidden" value="#{workspaceHelpPageManagementBackingBean.workspaceEntityId}" />
+    <input class="materialsBaseUrl" type="hidden" value="#{workspaceHelpPageManagementBackingBean.materialsBaseUrl}" />
   </ui:define>
 
 </ui:composition>

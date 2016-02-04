@@ -10,12 +10,16 @@
 .muikku-connect-field-counterparts,
 .muikku-connect-field-terms {
 	display:block;
-	@include flex(1 0 48%);
+	@include flex-grow(1);
+	@include flex-shrink(0);
+	@include flex-basis(48%);
 	position:relative;
 }
 
 .muikku-connect-field-gap {
-	@include flex(0 1 4%);
+	@include flex-grow(0);
+	@include flex-shrink(1);
+	@include flex-basis(4%);
 }
 
 .muikku-connect-field-number {
@@ -31,7 +35,7 @@
   padding:5px;
   position:absolute;
   text-align:center;
-  z-index:9;
+  z-index:11;
   font-weight:400;
 }
 
@@ -48,19 +52,44 @@
   padding:5px;
   position:absolute;
   text-align:center;
-  z-index:9;
+  z-index:11;
   font-weight:400;
 }
 
 .muikku-connect-field-counterpart,
 .muikku-connect-field-term {
+  position:relative;
   @include flexbox;
   align-items:center;
-  padding:8px 21px;
+  padding:8px 15px;
 	background:#e1f7fc;
 	margin:0px 4px 8px 4px;
 	@include rounded(3px);
 	transition:background 0.3s ease-in-out;
+	box-sizing:border-box;
+	height:56px;
+  line-height:20px;
+  font-size:16px;
+  transition:height 0.2s ease-in-out;
+  
+  &.term-full-text,
+  &.counterpart-full-text {
+    height:auto;
+    min-height:56px;
+    position:absolute;
+    left:0;
+    right:0;
+    z-index:9;
+    box-shadow:0 3px 3px rgba(0,0,0,0.2);
+  }
+  
+}
+
+.term-placeholder,
+.counterpart-placeholder {
+  height:56px;
+  padding:0;
+  margin:0px 4px 8px 4px;
 }
 
 .muikku-connect-field-term {
@@ -68,41 +97,16 @@
 }
 
 .muikku-connect-field-counterpart {
-  justify-content: flex-start
+  justify-content:flex-start
 }
 
 .ui-sortable-placeholder {
   padding:8px 21px;
   background:#e1f7fc;
-  margin: 4px;
+  margin:4px;
   @include rounded(3px);
   background:#f8f8f8;
   height:1.7em;
-}
-
-.workspace-materials-reading,
-.workspace-materials-management {
-  
-  .muikku-connect-field-counterpart,
-  .muikku-connect-field-term {
-    height:40px;
-    line-height:20px;
-    overflow:hidden;
-    font-size:16px;
-  }
-
-}
-
-.workspace-materials {
-  
-  .muikku-connect-field-counterpart,
-  .muikku-connect-field-term {
-    height:40px;
-    line-height:20px;
-    overflow:hidden;
-    font-size:16px;
-  }
-
 }
 
 .muikku-connect-field-term {
@@ -113,9 +117,9 @@
 	}
 	
 	&.muikku-connect-field-term-selected {
-	  background:#3dc7ff;
-	  color:#fff;
-	  font-weight:400;
+    background:#3dc7ff;
+    color:#fff;
+    font-weight:400;
 	}
 	
 }

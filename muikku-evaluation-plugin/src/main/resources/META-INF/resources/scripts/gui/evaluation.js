@@ -162,14 +162,18 @@
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
-                    
-                      if(studentElement.hasClass('workspace-evaluation-requested')){
+                      if(studentElement.find('.workspace-evaluation-requested-date').length > 0){
                         studentElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
                       }else{
                         evaluatedDate.prependTo(studentElement);
                       }
-                      studentElement.removeClass('workspace-evaluation-requested');
                       studentElement.addClass('workspace-evaluated');
+                    }
+                    studentElement.removeClass('workspace-evaluation-requested');
+                    if(result.passed){
+                      studentElement.removeClass('workspace-reviewed-non-passing');
+                    }else{
+                      studentElement.addClass('workspace-reviewed-non-passing');
                     }
                     this._loader.remove();
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
@@ -193,24 +197,28 @@
                   } else {
                     this.options.triggeringElement.options.assessment = result;
                     var studentElement = $(this.options.triggeringElement.element);
-                    if (studentElement.hasClass('workspace-evaluated')) {
+                    if(studentElement.hasClass('workspace-evaluated')){
                       studentElement.find('.workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
                     } else {
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
                         .text(formatDate(new Date(result.evaluated)));
-                    
-                      if (studentElement.hasClass('workspace-evaluation-requested')) {
+                      if(studentElement.find('.workspace-evaluation-requested-date').length > 0){
                         studentElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
-                      } else {
+                      }else{
                         evaluatedDate.prependTo(studentElement);
                       }
-                      studentElement.removeClass('workspace-evaluation-requested');
                       studentElement.addClass('workspace-evaluated');
                     }
+                    studentElement.removeClass('workspace-evaluation-requested');
+                    if(result.passed){
+                      studentElement.removeClass('workspace-reviewed-non-passing');
+                    }else{
+                      studentElement.addClass('workspace-reviewed-non-passing');
+                    }
                     this._loader.remove();
-                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.successful"));
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
                     this.element.remove();
                   }
                 }, this));
@@ -263,31 +271,50 @@
       }, this));
     },
     _loadAssigmentEvaluation: function(workspaceAssignment, htmlMaterialMap){
-      return $.proxy(function(cb){
+      var replyLoad = $.proxy(function(replyCallback){
+        mApi().workspace.workspaces.materials.compositeMaterialReplies
+        .read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {
+          userEntityId: this.options.studentEntityId
+        }).callback($.proxy(function(replyErr, reply){
+          if(replyErr){
+            replyCallback(replyErr);
+          }else{
+            replyCallback(null, reply);
+          }
+        },this))
+      },this);
+      
+      var evaluationLoad = $.proxy(function(evaluationCallback){
         mApi().workspace.workspaces.materials.evaluations
         .read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {userEntityId: this.options.studentEntityId})
-        .callback(function(err, evaluations) {
+        .callback($.proxy(function(err, evaluations) {
           if(err){
-            cb(err);
+            evaluationCallback(err);
           }else{
             var evaluation = null;
             if (evaluations != null && evaluations.length > 0) {
               evaluation = evaluations[0];
             }
-            
-            cb(null, {
-              workspaceMaterialId: workspaceAssignment.workspaceMaterial.id,
-              materialId: workspaceAssignment.workspaceMaterial.materialId,
-              type: 'html',
-              title: workspaceAssignment.workspaceMaterial.title,
-              path: workspaceAssignment.workspaceMaterial.path,
-              html: htmlMaterialMap[workspaceAssignment.workspaceMaterial.materialId].html,
-              evaluation: evaluation,
-              assignmentType: workspaceAssignment.workspaceMaterial.assignmentType
-            }); 
+            evaluationCallback(null, evaluation);
           }
-        });
+        },this));
       },this);
+
+      return $.proxy(function(cb){
+        async.parallel([evaluationLoad, replyLoad], function(err, results){
+          cb(err, {
+            workspaceMaterialId: workspaceAssignment.workspaceMaterial.id,
+            materialId: workspaceAssignment.workspaceMaterial.materialId,
+            type: 'html',
+            title: workspaceAssignment.workspaceMaterial.title,
+            path: workspaceAssignment.workspaceMaterial.path,
+            html: htmlMaterialMap[workspaceAssignment.workspaceMaterial.materialId].html,
+            assignmentType: workspaceAssignment.workspaceMaterial.assignmentType,
+            evaluation: results[0],
+            reply: results[1]
+          }); 
+        });
+      },this)
     },
     _loadTemplate: function (assignments, callback) {
       renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
@@ -1044,9 +1071,21 @@
           }
         break;
         case 'WITHDRAWN':
-          this.element.addClass('assignment-withdrawn');
+//          this.element.addClass('assignment-withdrawn'); This seems to be unwanted feature for now
         break;
         case 'FAILED':
+          this.element.on("click", $.proxy(this._onClick, this));
+          this.element.addClass('assignment-reviewed-non-passing');
+          if (reply.submitted) {
+            this.element.find('.evaluation-assignment-submitted-date')
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
+          }
+          if (evaluation && evaluation.evaluated) {
+            this.options.evaluation = evaluation;
+            this.element.find('.evaluation-assignment-evaluated-date')
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
+          }          
+        break;
         case 'PASSED':
           this.element.on("click", $.proxy(this._onClick, this));
           this.element.addClass('assignment-evaluated');
@@ -1081,7 +1120,8 @@
       
       this.element.addClass('evaluation-student-wrapper');
       this.element.append($('<div>').addClass('evaluation-student-picture'));
-      this.element.append($('<div>').addClass('evaluation-student-name').text(this._displayName));
+      this.element.append($('<div>').addClass('evaluation-student-name').text(this._displayName).append($('<span>').text(this._studyProgrammeName)));
+      this.element.append($('<div>').addClass('evaluation-student-clickarea'));
       
       if (this.options.assessment) {
         this.element.removeClass('workspace-evaluation-requested');
@@ -1095,12 +1135,15 @@
         } else {
           evaluatedDate.prependTo(this.element);
         }
-        
         this.element.addClass('workspace-evaluated');
+        
+        if(!this.options.assessment.passed){
+          this.element.addClass('workspace-reviewed-non-passing');
+        }
       }
 
       this.element.addClass('evaluation-student-loaded');
-      this.element.on("click", $.proxy(this._onClick, this));
+      this.element.find(".evaluation-student-clickarea").on("click", $.proxy(this._onClick, this));
     },
     
     displayName: function () {

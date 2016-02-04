@@ -82,6 +82,16 @@ public class AnnouncementController {
   public void archive(Announcement announcement) {
     announcementDAO.archive(announcement);
   }
+
+  public void delete(Announcement announcement) {
+    announcementDAO.delete(announcement);
+  }
+  
+  public void deleteAnnouncementTargetGroups(Announcement announcement) {
+    for (AnnouncementUserGroup announcementUserGroup : announcementUserGroupDAO.listByAnnouncementAndArchived(announcement, false)) {
+      announcementUserGroupDAO.delete(announcementUserGroup);
+    }
+  }
   
   public void addAnnouncementTargetGroup(
       Announcement announcement,

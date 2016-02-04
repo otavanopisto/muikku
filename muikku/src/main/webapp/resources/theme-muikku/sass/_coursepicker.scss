@@ -195,6 +195,12 @@
   padding-right:5px;
 }
 
+.cp-course-fee {
+  background-color: #3f639a;
+  color: #fff;
+  padding:3px;
+}
+
 .cp-course-description {
   display:inline-block;
   width:100%;
@@ -250,4 +256,16 @@
 
 .cp-course-details-teacher-picture-container {
 
+}
+
+.cp-content-main .loading {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  
+  &:after {
+    @include generic-loader(30px);
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
 }

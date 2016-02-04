@@ -46,7 +46,11 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER })
   public static final String MANAGE_MATERIAL_META = "MANAGE_MATERIAL_META";
-  
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR })
+  public static final String COPY_WORKSPACE = "COPY_WORKSPACE";
+
   /* WORKSPACE */
   
   @Scope (PermissionScope.WORKSPACE)
@@ -83,6 +87,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String EVALUATE_MATERIAL = "EVALUATE_MATERIAL";
   
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER })
+  public static final String LIST_STUDENT_TRANSFER_CREDITS = "LIST_STUDENT_TRANSFER_CREDITS";
+
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT, WorkspaceRoleArchetype.TEACHER })
@@ -129,6 +137,24 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String LIST_ALL_JOURNAL_ENTRIES = "LIST_ALL_JOURNAL_ENTRIES";
+
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
+  public static final String VIEW_WORKSPACE_DETAILS = "VIEW_WORKSPACE_DETAILS";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR }) 
+  public static final String VIEW_WORKSPACE_FEE = "VIEW_WORKSPACE_FEE";
+
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
+  public static final String MANAGE_WORKSPACE_DETAILS = "MANAGE_WORKSPACE_DETAILS";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR }) 
+  public static final String LIST_MATERIAL_WORKSPACE_MATERIALS = "LIST_MATERIAL_WORKSPACE_MATERIALS";
   
   /* RESOURCE */
   

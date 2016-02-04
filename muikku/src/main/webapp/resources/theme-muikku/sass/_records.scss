@@ -6,6 +6,24 @@
   padding:5px;
 }
 
+.tr-records-view-container h3 {
+  margin-top: 20px;
+}
+
+.tr-records-view-container label {
+  margin-bottom: 5px;
+}
+
+.tr-records-view-container {
+  &.loading {
+    &:before {
+      @include generic-loader(50px);
+      position:absolute;
+      top:50%;
+      left:50%;
+    }
+  }
+}
 
 .tr-side-button-dropdown{
   display:none;
@@ -205,6 +223,9 @@
   display:inline-block;
   width:100%;
   background-color:#fff;  
+}
+
+.tr-item-workspace-assessment .tr-item-description {
   cursor:pointer;  
 }
 

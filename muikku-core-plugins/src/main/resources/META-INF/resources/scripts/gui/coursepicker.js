@@ -4,6 +4,9 @@
     initialize: function () {
     },
     setup: function (widgetElement) {
+      this._firstResult = 0;
+      this._maxResults = 25;
+      
       var _this = this;
       widgetElement = $(widgetElement);
       this._widgetElement = widgetElement;
@@ -14,7 +17,8 @@
       $("#cpCategories").find("span").click($.proxy(this._onDropdownChange, this));
       
       this._coursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
-
+      this._coursesContainer.on("click", ".cp-course-copy-button", $.proxy(this._onCopyCourseClick, this));
+      
       var coursePickerSearchCoursesInput = widgetElement.find("input[name='coursePickerSearch']");
       coursePickerSearchCoursesInput.keyup($.proxy(this._onSearchCoursesChange, this));      
 
@@ -29,10 +33,11 @@
         var workspaceId = $(this).parents('.cp-course').find("input[name='workspaceId']").val();
         var workspaceUrl = $(this).parents('.cp-course').find("input[name='workspaceUrl']").val();
      
-        dDiv.show( function(){        	
+        dDiv.show(10, function(){        	
         	var odDiv = $(this) ;
         	var title = $(par).find($('.cp-course-long'));
         	var desc = $(par).find($('.cp-course-description-text'));
+        	var courseHasFee = $(par).attr('data-fee') ? true : false ;
         	par.prepend(closeDiv);
         	closeDiv.width(parW);
         	
@@ -40,7 +45,9 @@
         	$(aBt).m3modal({
         		title : title.html(),
         		description : desc.html(),
-        		content: $('<div><div><label>' + getLocaleText("plugin.coursepicker.singup.messageLabel") + '</label><textarea name="signUpMessage"></textarea></div></div>'),
+        		content: $('<div id="m3modalContent"><div><label>' + getLocaleText("plugin.coursepicker.singup.messageLabel") + '</label><textarea name="signUpMessage"></textarea></div></div>'),
+        		conditionalContent : $('<div id="courseHasFee"><div><label>' + getLocaleText("plugin.coursepicker.singup.fee.label") + '</label><div>' + getLocaleText("plugin.coursepicker.singup.fee.content") + '</div></div></div>'),
+            conditional : courseHasFee,
         		modalgrid : 24,
         		contentgrid : 16,
         		
@@ -139,6 +146,8 @@
       });
 
       this._initializeAllCoursesList();
+      
+      $('.cp-page-link-load-more').click($.proxy(this._onLoadMoreClick, this));
     },
     deinitialize: function () {
     },
@@ -157,14 +166,14 @@
       var ownWorkspaces = hash == "my" || hash == "te";
       var includeUnpublished = hash == "te";
       if (((term != undefined) && (term != "")) || (subjects.length > 0)) {
-        this._loadCourses({
+        this._reloadCourses({
           subjects: subjects,
           search: term,
           myWorkspaces: ownWorkspaces,
           includeUnpublished: includeUnpublished
         });
       } else {
-        this._loadCourses({
+        this._reloadCourses({
           myWorkspaces: ownWorkspaces,
           includeUnpublished: includeUnpublished
         });
@@ -172,13 +181,42 @@
     },
     
     _initializeAllCoursesList: function () {
+      this._reloadCourses();
+    },
+    
+    _loadMore: function () {
+      this._firstResult += this._maxResults;
       this._loadCourses();
     },
     
-    _loadCourses: function (params) {
+    _onLoadMoreClick: function (event) {
+      if (!$(event.target).hasClass('disabled')) {
+        this._loadMore();
+      }
+    },
+    
+    _reloadCourses: function (params) {
+      this._firstResult = 0;
       this._coursesContainer.children().remove();
+      this._params = $.extend(params||{}, {
+        orderBy: ['alphabet']
+      });
       
-      mApi({async: false}).coursepicker.workspaces.read(params||{})
+      this._loadCourses();
+    },
+    
+    _loadCourses: function () {
+      var loader = $('<div>') 
+        .addClass('loading')
+        .appendTo($(this._coursesContainer));
+      
+      $('.cp-page-link-load-more').addClass('disabled');
+      
+      mApi().coursepicker.workspaces
+        .read($.extend(this._params||{}, {
+          firstResult: this._firstResult,
+          maxResults: this._maxResults + 1
+        }))
         .on('$', function (workspace, workspaceCallback) {
 
 //        mApi({async: false}).coursepicker.workspaces.users.read(workspace.id, {
@@ -204,9 +242,26 @@
           workspaceCallback();
       })
       .callback($.proxy(function (err, workspaces) {
-        renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
-          this._coursesContainer.append(text);
-        }, this));
+        $(loader).remove();
+        
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var hasMore = workspaces && workspaces.length > this._maxResults;
+          if (workspaces && hasMore) {
+            workspaces.pop();
+          }
+          
+          renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
+            this._coursesContainer.append(text);
+          }, this));
+          
+          if (hasMore) {
+            $('.cp-page-link-load-more').removeClass('disabled');
+          } else {
+            $('.cp-page-link-load-more').addClass('disabled');
+          }
+        }
       }, this));        
     },
     
@@ -256,6 +311,18 @@
       var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();
       
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
+    },
+    
+    _onCopyCourseClick: function (event) {
+      var workspaceEntityId = $(event.target)
+        .closest(".cp-course")
+        .find("input[name='workspaceId']").val();
+      
+      $('<div>')
+        .appendTo(document.body)
+        .workspaceCopyWizard({
+          workspaceEntityId: workspaceEntityId
+        });
     },
     _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
       mApi({async: false}).coursepicker.workspaces.signup.create(workspaceId, {

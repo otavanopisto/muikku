@@ -8,59 +8,149 @@
     _create : function() {
       this._grades = $.parseJSON(this.element.attr('data-grades'));
       this.element.on('click', '.tr-task-evaluated', $.proxy(this._onEvaluationClick, this));
-      this.element.on('click', '.tr-item:not(.open)', $.proxy(this._onItemClick, this));
+      this.element.on('click', '.tr-item-workspace-assessment:not(.open)', $.proxy(this._onWorkspaceAssessmentItemClick, this));
       this.element.on('click', '.tr-view-toolbar .icon-goback', $.proxy(this._loadWorkspaces, this));      
       this._loadWorkspaces();
     },
     
     _loadWorkspaces: function () {
+      this.element.addClass('loading');
       this._clear();
-      mApi({async: false}).workspace.workspaces
-      .read({ userId: this.options.userEntityId })
-      .on('$', $.proxy(function (workspaceEntity, callback) {
-        mApi({async: false}).workspace.workspaces.assessments
-          .read(workspaceEntity.id, { studentIdentifier: this.options.studentIdentifier })
-          .callback($.proxy(function (assessmentsErr, assessments) {
-            if( assessmentsErr ){
-              $('.notification-queue').notificationQueue('notification', 'error', assessmentsErr );
+      
+      mApi().user.students
+        .read({userEntityId: this.options.userEntityId})
+        .on('$', $.proxy(function (student, callback) {
+          async.parallel([this._createStudentWorkspacesLoad(student.id), this._createStudentTransferCreditsLoad(student.id)], $.proxy(function (err, results) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
-              var assessment = assessments && assessments.length == 1 ? assessments[0] : null;
-              if (assessment) {
-                var grade = this._grades[[assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier].join('-')];
-                workspaceEntity.evaluated = formatDate(new Date(assessment.evaluated));
-                workspaceEntity.verbalAssessment = assessment.verbalAssessment;
-                workspaceEntity.grade = grade.grade;
-                workspaceEntity.gradingScale = grade.scale;
+              student.workspaces = results[0];
+              student.transferCredits = results[1];
+              callback();
+            }
+          }, this));
+        }, this))
+        .callback($.proxy(function (err, result) {
+          result.sort($.proxy(function (student1, student2) {
+            return student1.id == this.options.studentIdentifier ? -1 : student2.id == this.options.studentIdentifier ? 1 : 0;
+          }, this));
+          
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
+          } else {
+            renderDustTemplate('/records/records_studyprogrammes.dust', { students: result }, $.proxy(function(text) {
+              this.element.append(text);
+              this.element.removeClass('loading');
+            }, this));
+          }
+        }, this));
+    },
+    
+    _createStudentWorkspacesLoad: function (studentIdentifier) {
+      return $.proxy(function (callback) {
+        this._loadStudentWorkspaces(studentIdentifier, $.proxy(function (err, workspaces) {
+          callback(err, workspaces);
+        }, this));
+      }, this);
+    },
+    
+    _createStudentTransferCreditsLoad: function (studentIdentifier) {
+      return $.proxy(function (callback) {
+        this._loadStudentTransferCredits(studentIdentifier, $.proxy(function (err, transferCredits) {
+          callback(err, transferCredits);
+        }, this));
+      }, this);
+    },
+    
+    _loadStudentWorkspaces: function (studentIdentifier, callback) {
+      mApi().workspace.workspaces
+        .read({ includeArchivedWorkspaceUsers: true, userIdentifier: studentIdentifier, includeUnpublished: true, orderBy: ['alphabet'] })
+        .on('$', $.proxy(function (workspaceEntity, callback) {
+          mApi().workspace.workspaces.assessments
+            .read(workspaceEntity.id, { studentIdentifier: studentIdentifier })
+            .callback($.proxy(function (assessmentsErr, assessments) {
+              if( assessmentsErr ){
+                $('.notification-queue').notificationQueue('notification', 'error', assessmentsErr );
+              } else {
+                var assessment = assessments && assessments.length == 1 ? assessments[0] : null;
+                if (assessment) {
+                  var grade = this._getGrade(assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier);
+                  workspaceEntity.evaluated = formatDate(new Date(assessment.evaluated));
+                  workspaceEntity.verbalAssessment = assessment.verbalAssessment;
+                  workspaceEntity.grade = grade.grade;
+                  workspaceEntity.gradingScale = grade.scale;
+                }
+              }
+              
+              callback();
+            }, this));
+          }, this))
+          .callback($.proxy(function (err, workspaces) {
+            callback(err, workspaces); 
+          }, this));
+    },
+    
+    _loadStudentTransferCredits: function (studentIdentifier, callback) {
+      mApi().user.students.transferCredits
+        .read(studentIdentifier)
+        .callback($.proxy(function (err, transferCredits) {
+          var data = $.map(transferCredits, $.proxy(function (transferCredit) {
+            var scaleSchoolDataSource;
+            var scaleIdentifier;
+            var gradeSchoolDataSource;
+            var gradeIdentifier;
+            
+            if (transferCredit.gradeIdentifier && transferCredit.gradingScaleIdentifier) {
+              var gradeSplit = transferCredit.gradeIdentifier.split('-');  
+              var scaleSplit = transferCredit.gradingScaleIdentifier.split('-');  
+              
+              if (gradeSplit.length == 2) {
+                gradeSchoolDataSource = gradeSplit[0];
+                gradeIdentifier = gradeSplit[1];
+              }
+
+              if (scaleSplit.length == 2) {
+                scaleSchoolDataSource = scaleSplit[0];
+                scaleIdentifier = scaleSplit[1];
               }
             }
             
-            callback();
+            if (scaleSchoolDataSource && scaleIdentifier && gradeSchoolDataSource && gradeIdentifier) {
+              var grade = this._getGrade(scaleSchoolDataSource, scaleIdentifier, gradeSchoolDataSource, gradeIdentifier);
+              return $.extend(transferCredit, {
+                evaluated: formatDate(new Date(transferCredit.date)),
+                grade: grade.grade,
+                gradingScale: grade.scale
+              });
+            }
           }, this));
-      }, this)) 
-      .callback($.proxy(function (err, workspaces) {
-        if( err ){
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
-        } else {
-          renderDustTemplate('/records/records_items.dust', workspaces, $.proxy(function(text) {
-            this.element.append(text);
-          }, this));
-        }
-      }, this));
+          
+          callback(err, data);
+        }, this));
+    },
+    
+    _getGrade: function (gradingScaleSchoolDataSource, gradingScaleIdentifier, gradeSchoolDataSource, gradeIdentifier) {
+      if (gradingScaleSchoolDataSource && gradingScaleIdentifier && gradeSchoolDataSource && gradeIdentifier) {
+        var gradeId = [gradingScaleSchoolDataSource, gradingScaleIdentifier, gradeSchoolDataSource, gradeIdentifier].join('-');
+        return this._grades[gradeId];
+      }
+        
+      return null;
     },
     
     _loadWorkspace: function (workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment) {
 
-       this._load();
+      this._load();
 
-      mApi({async: false}).workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
+      mApi().workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
         .on('$', $.proxy(function (workspaceMaterial, callback) {
           // TODO: support for binary materials?
           
-          mApi({async: false}).materials.html.read(workspaceMaterial.materialId).callback($.proxy(function (htmlErr, htmlMaterial) {
+          mApi().materials.html.read(workspaceMaterial.materialId).callback($.proxy(function (htmlErr, htmlMaterial) {
             if (htmlErr) {
               $('.notification-queue').notificationQueue('notification', 'error', htmlErr);
             } else {
-              mApi({async: false}).workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterial.id, {
+              mApi().workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterial.id, {
                 userEntityId: this.options.userEntityId
               })
               .callback($.proxy(function (evaluationsErr, evaluations) {
@@ -102,7 +192,7 @@
           }
         }, this));
     },
-    _onItemClick: function (event) {
+    _onWorkspaceAssessmentItemClick: function (event) {
       var item = $(event.target).hasClass('tr-item') ? $(event.target) : $(event.target).closest('.tr-item');
       
       var workspaceEntityId = $(item).attr('data-workspace-entity-id');
@@ -114,7 +204,9 @@
       var gradingScale = $(item).attr('data-workspace-grading-scale');
       var evaluated = $(item).attr('data-workspace-evaluated');
      
-      this._loadWorkspace(workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment);
+      if (workspaceEntityId) {
+        this._loadWorkspace(workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment);
+      }
     },
     _onEvaluationClick: function(event){
       var container = $(event.target).parents('.tr-task-evaluated').find('.content-container'); 

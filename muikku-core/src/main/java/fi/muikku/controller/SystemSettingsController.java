@@ -2,8 +2,6 @@ package fi.muikku.controller;
 
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -11,8 +9,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fi.muikku.dao.base.SystemSettingDAO;
 import fi.muikku.model.base.SystemSetting;
 
-@Dependent
-@Stateless
 public class SystemSettingsController {
 
   private static final long DEFAULT_UPLOAD_FILE_SIZE_LIMIT = 10_485_760; // 10 mb

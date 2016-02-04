@@ -93,7 +93,7 @@ $(document).ready(function(){
               message.senderFullName = user.firstName + ' ' + user.lastName;
               message.senderHasPicture = user.hasImage;
               message.caption = $('<div>').html(message.caption).text();
-              message.content = $('<div>').html(message.content).text();
+              message.content = message.content;
               messageCallback();
             }
           });
@@ -443,7 +443,7 @@ $(document).ready(function(){
   },
   
   _setSelected : function(selected){
-    var container = $(".mf-list");
+    var container = $(".mf-list-container");
     var categories = container.find("li");
     
     categories.removeClass("selected");

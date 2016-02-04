@@ -232,7 +232,7 @@
     },
     
     _createWorkspaceMaterialReply: function (state, callback) {
-      mApi({async: false}).workspace.workspaces.materials.replies
+      mApi().workspace.workspaces.materials.replies
         .create(this.workspaceEntityId(), this.workspaceMaterialId(), {
           state: state
         }) 
@@ -248,7 +248,7 @@
     },
     
     _updateWorkspaceMaterialReply: function (id, state, callback) {
-      mApi({async: false}).workspace.workspaces.materials.replies
+      mApi().workspace.workspaces.materials.replies
         .update(this.workspaceEntityId(), this.workspaceMaterialId(), id, {
           state: state
         }) 
@@ -264,7 +264,7 @@
     },
     
     _findWorkspaceMaterialReply: function (callback) {
-      mApi({async: false}).workspace.workspaces.materials.replies
+      mApi().workspace.workspaces.materials.replies
         .read(this.workspaceEntityId(), this.workspaceMaterialId(), {
           userEntityId: MUIKKU_LOGGED_USER_ID
         }) 
@@ -326,8 +326,7 @@
             if (correctAnswers.length > 0) {
               var exampleDetails = $('<span>')
                 .addClass('muikku-field-examples')
-                .attr('data-for-field', $(field).attr('name'))
-                .fadeIn(500);
+                .attr('data-for-field', $(field).attr('name'));
               exampleDetails.append( 
                 $('<span>')
                   .addClass('muikku-field-examples-title')

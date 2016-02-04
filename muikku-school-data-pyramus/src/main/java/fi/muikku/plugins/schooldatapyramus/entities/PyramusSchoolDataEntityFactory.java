@@ -2,8 +2,11 @@ package fi.muikku.plugins.schooldatapyramus.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +21,7 @@ import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.entity.GroupUser;
+import fi.muikku.schooldata.entity.TransferCredit;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserAddress;
 import fi.muikku.schooldata.entity.UserGroup;
@@ -72,6 +76,11 @@ public class PyramusSchoolDataEntityFactory {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @PostConstruct
+  public void init() {
+    pyramusHost = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "pyramusHost");
+  }
   
   public WorkspaceRole createCourseStudentRoleEntity() {
     // TODO: Localize
@@ -256,7 +265,11 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public Workspace createEntity(Course course, String educationTypeIdentifier) {
+  public Workspace createEntity(
+      Course course,
+      String educationTypeIdentifier,
+      Map<String, List<String>> educationTypeCodeMap
+  ) {
     if (course == null) {
       return null;
     }
@@ -265,16 +278,34 @@ public class PyramusSchoolDataEntityFactory {
     if (modified == null) {
       modified = course.getCreated();
     }
+    
+    boolean courseFeeApplicable = true;
+    
+    for (Map.Entry<String, List<String>> typeCodeEntry : educationTypeCodeMap.entrySet()) {
+      String educationTypeCode = typeCodeEntry.getKey();
+      for (String educationSubtypeCode : typeCodeEntry.getValue()) {
+        if ((Objects.equals(educationTypeCode, "lukio") && Objects.equals(educationSubtypeCode, "pakollinen")) ||    
+            (Objects.equals(educationTypeCode, "lukio") && Objects.equals(educationSubtypeCode, "valtakunnallinensyventava")) ||    
+            (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "pakollinen")) ||    
+            (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "valinnainen"))) {
+          courseFeeApplicable = false;
+        }
+      }
+    }
+
+    String viewLink = String.format("https://%s/courses/viewcourse.page?course=%d", pyramusHost, course.getId());
+    
     return new PyramusWorkspace(
         identifierMapper.getWorkspaceIdentifier(course.getId()),
         course.getName(),
         course.getNameExtension(),
+        viewLink,
         course.getDescription(),
         identifierMapper.getWorkspaceTypeIdentifier(course.getTypeId()),
         identifierMapper.getWorkspaceCourseIdentifier(course.getSubjectId(), course.getCourseNumber()),
         modified.toDate(), identifierMapper.getSubjectIdentifier(course.getSubjectId()), educationTypeIdentifier,
         course.getLength(), identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
-        course.getBeginDate(), course.getEndDate(), course.getArchived());
+        course.getBeginDate(), course.getEndDate(), course.getArchived(), courseFeeApplicable);
   }
 
   public WorkspaceType createEntity(CourseType courseType) {
@@ -283,10 +314,13 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public WorkspaceAssessment createEntity(CourseAssessment courseAssessment) {
+    SchoolDataIdentifier gradeIdentifier = identifierMapper.getGradeIdentifier(courseAssessment.getGradeId());
+    SchoolDataIdentifier gradingScaleIdentifier = identifierMapper.getGradingScaleIdentifier(courseAssessment.getGradingScaleId());
+    
     return new PyramusWorkspaceAssessment(courseAssessment.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
         identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
-        courseAssessment.getGradeId().toString(), courseAssessment.getGradingScaleId().toString(),
+        gradeIdentifier.getIdentifier(), gradingScaleIdentifier.getIdentifier(),
         courseAssessment.getVerbalAssessment(), courseAssessment.getDate().toDate());
   }
 
@@ -425,5 +459,31 @@ public class PyramusSchoolDataEntityFactory {
     
     return result;
   }
+  
+  public TransferCredit createEntity(fi.pyramus.rest.model.TransferCredit transferCredit) {
+    SchoolDataIdentifier identifier = identifierMapper.getTransferCreditIdentifier(transferCredit.getId());
+    SchoolDataIdentifier studentIdentifier = transferCredit.getStudentId() != null ? toIdentifier(identifierMapper.getStudentIdentifier(transferCredit.getStudentId())) : null;
+    SchoolDataIdentifier gradeIdentifier = transferCredit.getGradeId() != null ? identifierMapper.getGradeIdentifier(transferCredit.getGradeId()) : null;
+    SchoolDataIdentifier gradingScaleIdentifier = transferCredit.getGradingScaleId() != null ? identifierMapper.getGradingScaleIdentifier(transferCredit.getGradingScaleId()) : null;
+    SchoolDataIdentifier assessorIdentifier = transferCredit.getAssessorId() != null ? toIdentifier(identifierMapper.getStaffIdentifier(transferCredit.getAssessorId())) : null;
+    SchoolDataIdentifier lengthUnitIdentifier = transferCredit.getLengthUnitId() != null ? toIdentifier(identifierMapper.getCourseLengthUnitIdentifier(transferCredit.getLengthUnitId())) : null;
+    SchoolDataIdentifier subjectIdentifier = transferCredit.getSubjectId() != null ? toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSubjectId())) : null;
+    SchoolDataIdentifier schoolIdentifier = transferCredit.getSchoolId() != null ? identifierMapper.getSchoolIdentifier(transferCredit.getSchoolId()) : null;
+    
+    return new PyramusTransferCredit(identifier, 
+        studentIdentifier, 
+        transferCredit.getDate(), 
+        gradeIdentifier, 
+        gradingScaleIdentifier,
+        transferCredit.getVerbalAssessment(), 
+        assessorIdentifier, 
+        transferCredit.getCourseName(), 
+        transferCredit.getCourseNumber(), 
+        transferCredit.getLength(), 
+        lengthUnitIdentifier, 
+        schoolIdentifier, 
+        subjectIdentifier);
+  }
 
+  private String pyramusHost;
 }

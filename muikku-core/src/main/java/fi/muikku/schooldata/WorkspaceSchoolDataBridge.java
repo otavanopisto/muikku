@@ -19,7 +19,9 @@ public interface WorkspaceSchoolDataBridge {
 	/* Workspaces */
 
 	public Workspace createWorkspace(String name, String description, WorkspaceType type, String courseIdentifierIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
-	
+
+	public Workspace copyWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension, String description);
+
 	public Workspace findWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
 	public List<Workspace> listWorkspaces() throws UnexpectedSchoolDataBridgeException;
@@ -42,6 +44,8 @@ public interface WorkspaceSchoolDataBridge {
 	
 	public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier) throws UnexpectedSchoolDataBridgeException;
 	
+	public WorkspaceUser findWorkspaceUserByWorkspaceAndUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier);
+	
 	@Deprecated
 	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
@@ -49,6 +53,7 @@ public interface WorkspaceSchoolDataBridge {
   public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier);
 	public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier, boolean active);
 	public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean active);
+
 
 
 }

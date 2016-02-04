@@ -110,6 +110,20 @@
       var pageSection = $(pageElement).closest(".workspace-materials-view-page");
       var materialPath = $('.materialsBaseUrl').val() + '/' + path;
       
+      mApi().materials.material.workspaceMaterials
+        .read(materialId)
+        .callback(function (err, workspaceMaterials) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            var workspaceMaterialCount = workspaceMaterials ? workspaceMaterials.length : 0;
+            
+            if (workspaceMaterialCount > 1) {
+              $('.notification-queue').notificationQueue('notification', 'warn', getLocaleText("plugin.workspace.materialsManagement.linkedMaterialCountMessage", workspaceMaterialCount));
+            }
+          }
+        });
+      
       pageSection.addClass("page-edit-mode");
       
       var editor = pageElement[editorName];
@@ -578,6 +592,8 @@
           mApi({async: false}).workspace.workspaces.materials.create(this.options.workspaceEntityId, {
             materialId: materialResult.id,
             parentId: this.options.parentId
+          }, {
+            updateLinkedMaterials: true
           })
           .callback($.proxy(function (workspaceMaterialErr, workspaceMaterialResult) {
             if (workspaceMaterialErr) {
@@ -612,14 +628,16 @@
       if (workspaceMaterialId) {
         this._confirmRemoval(materialTitle, $.proxy(function () {
           
-          mApi({async: false}).workspace.workspaces.materials.del(this.options.workspaceEntityId, workspaceMaterialId)
-            .callback($.proxy(function (err) {
-              if (err) {
-                $('.notification-queue').notificationQueue('notification', 'error', err);
-              } else {
-                attachmentElement.remove();
-              }
-            }, this));
+          mApi({async: false}).workspace.workspaces.materials.del(this.options.workspaceEntityId, workspaceMaterialId, {}, {
+            updateLinkedMaterials: true 
+          })
+          .callback($.proxy(function (err) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              attachmentElement.remove();
+            }
+          }, this));
           
         }, this));
       }
@@ -1411,6 +1429,7 @@
                 newPage.removeClass('workspace-materials-management-new');
                 newPage.attr({
                   'id': 'page-' + workspaceMaterialResult.id,
+                  'data-path': workspaceMaterialResult.path,
                   'data-material-title': materialResult.title,
                   'data-parent-id': workspaceMaterialResult.parentId,
                   'data-material-id': materialResult.id,

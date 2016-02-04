@@ -41,7 +41,7 @@ html {
 body {
   margin: 0;
   padding:0 0 30px 0;
-  font-family:'Open Sans',Verdana, sans-serif;
+  font-family:'Open Sans', Arial, sans-serif;
   font-size:14px;
   line-height:1.5em;
   @include main-background('gfx/main-background.png','gfx/main-background-slice.png');
@@ -54,9 +54,12 @@ body {
   }
 }
 
+
+
+
 [class^="icon-"] span, [class*=" icon-"] span {
   display: inline-block;
-  font-family: "Open Sans";
+  font-family:'Open Sans', Arial, sans-serif !important;
   padding-left: 4px;
 }
 
@@ -117,6 +120,19 @@ h5 {
 h6 {
   font-size:13px;
 }
+
+
+/* Subscript & superscript*/
+
+sub{
+  vertical-align: sub;
+  font-size:70%;
+}
+sup{
+  vertical-align: super;
+  font-size:70%;
+}
+
 
 /* TODO: P, a ... */
 
@@ -921,6 +937,19 @@ div[data-name="settings.content-sidebar.left"] {
 
 /* Reset Password */
 
+.reset-password-background {
+  @include background-image('gfx/muikku-login-bg.jpg');
+  background-position:top center;
+  background-size:100%;
+  background-repeat:no-repeat;
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  left:0;
+  z-index:997;
+}
+
 .reset-password-overlay {
   position:absolute;
   top:0;
@@ -959,7 +988,7 @@ div[data-name="settings.content-sidebar.left"] {
     background:#fff;
     padding:20px;
     border-radius:10px;
-    box-shadow:0 0 200px rgba(0, 0, 0, 0.7);
+    box-shadow:0 0 100px rgba(0, 0, 0, 0.7);
     
     h1 {
       font-weight:300;

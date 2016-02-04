@@ -55,7 +55,22 @@
           
           switch (element.tagName.toLowerCase()) {
             case 'a':
-              urlAttribute = 'href';
+              var isAnchorSource = $(element).attr('href') && $(element).attr('href').indexOf('#') == 0;
+              var isAnchorTarget = !$(element).attr('href') && $(element).attr('name');
+              if (isAnchorSource) {
+                $(element).attr('href', '#' + workspaceMaterialId + '-' + $(element).attr('href').substring(1));
+              }
+              else if (isAnchorTarget) {
+                var name = $(element).attr('name'); 
+                var hasId = $(element).attr('id') == name;  
+                $(element).attr('name', workspaceMaterialId + '-' + name);
+                if (hasId) {
+                  $(element).attr('id', workspaceMaterialId + '-' + name);
+                }
+              }
+              else {
+                urlAttribute = 'href';
+              }
             break;
             case 'div':
               urlAttribute = $(element).hasClass('lazy-pdf') ? 'data-url' : null;
@@ -75,7 +90,7 @@
           
           var src = urlAttribute ? $(element).attr(urlAttribute) : null;
           if (src) {
-            var absolute = (src.indexOf('/') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+            var absolute = (src.indexOf('/') == 0) || (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
             if (!absolute) {
               if (src.lastIndexOf('/') == src.length - 1) {
                 $(element).attr(urlAttribute, this.options.baseUrl + '/' + material.path + src);
@@ -239,7 +254,7 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.text') {
-      var taskfieldWrapper = $('<div>')
+      var taskfieldWrapper = $('<span>')
         .addClass('textfield-wrapper');
       var input = $('<input>')
         .addClass('muikku-text-field')
@@ -524,14 +539,14 @@
             })
             .val(values[connectFieldTermMeta.name]);
           
-          tdTermElement.text(concatText(connectFieldTermMeta.text, 60));
+          tdTermElement.text(concatText(connectFieldTermMeta.text, 50));
           tdTermElement.attr('title', connectFieldTermMeta.text);
           tdTermElement.data('muikku-connect-field-option-name', connectFieldTermMeta.name);
           tdValueElement.append(inputElement);
         }
         
         if (connectFieldCounterpartMeta != null) {
-          tdCounterpartElement.text(concatText(connectFieldCounterpartMeta.text, 60));
+          tdCounterpartElement.text(concatText(connectFieldCounterpartMeta.text, 50));
           tdCounterpartElement.attr('title', connectFieldCounterpartMeta.text);
           tdCounterpartElement.attr('data-muikku-connect-field-option-name', connectFieldCounterpartMeta.name);
         }
@@ -876,19 +891,37 @@
     $(data.pageElement)
       .append($('<div>').addClass('clear'));
     
-      $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
-        var meta = $.parseJSON($(field).attr('data-meta'));
-        $(field).muikkuConnectField({
-          fieldName: $(field).data('field-name'),
-          embedId: $(field).data('embed-id'),
-          materialId: $(field).data('material-id'),
-          meta: meta,
-          readonly: data.readOnlyFields||false
-        });
+    $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
+      var meta = $.parseJSON($(field).attr('data-meta'));
+      $(field).muikkuConnectField({
+        fieldName: $(field).data('field-name'),
+        embedId: $(field).data('embed-id'),
+        materialId: $(field).data('material-id'),
+        meta: meta,
+        readonly: data.readOnlyFields||false
       });
+    });
     
-    // Lazy loading
-    $(data.pageElement).find('img.lazy').lazyload();
+    if (jQuery().magnificPopup) {
+      // Lazy loading with magnific popup
+      $(data.pageElement).find('img.lazy').each(function (index, img) {
+        var src = $(img).attr('data-original');
+        var a = $('<a>')
+          .attr('href', src)
+          .magnificPopup({
+            type: 'image'
+          })
+          .insertBefore(img);
+        
+        $(img)
+          .appendTo(a)
+          .lazyload();
+      });        
+    } else {
+      // Lazy loading
+     $(data.pageElement).find('img.lazy').lazyload();
+    }
+        
     $(data.pageElement).find('.js-lazyyt').lazyYT();
     
     var maxFileSize = null;

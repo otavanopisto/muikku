@@ -199,7 +199,7 @@
      color:$dimmer;
     }
   }
-  .mf-list{
+  .mf-list-container{
    background-color:#fff;
    .mf-list-label{
     background-color:$bgr1;
@@ -207,13 +207,10 @@
     font-weight:600;
    }
    ul{
- 
       list-style-type: none;
-      
       li{
         border-bottom: 1px solid $brd1;
         border-left: 5px solid #fff;
-
         a{
           font-weight:300;
           text-decoration:none;
@@ -223,7 +220,7 @@
           width:100%;
           padding-top:5px;
           padding-bottom:5px;
-          padding-left:10px; 
+          padding-left:10px;             
         }      
        &:hover{
         border-left:5px solid $brd1;     
@@ -427,10 +424,19 @@
     background:#068feb;
     cursor:pointer;
     @include rounded(3px);
-    padding:2px 6px;
+    padding:3px 10px;
     display:inline-block;
     color:#fff;
     margin-top:5px;
+    
+    &.wizard {
+      background:#00b8c8;
+    }
+    
+    &.goto {
+      background:#068feb;
+    }
+    
   }   
 
 .mf-item{
@@ -861,7 +867,7 @@
     text-transform:uppercase;
     margin:5px;
     outline:none;
-    font-family:"Open Sans";
+    font-family:'Open Sans', Arial, sans-serif;
     min-width:90px;
     padding:10px;
     font-size:16px;
@@ -879,7 +885,7 @@
   
 /* jQuert Ui overrides for mainfunctions */
 
-.mf-autocomplete {
+.ui-autocomplete {
 
   font-size:12px;
   font-weight:300;

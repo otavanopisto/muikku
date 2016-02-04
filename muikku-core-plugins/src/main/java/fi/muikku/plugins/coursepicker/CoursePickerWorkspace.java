@@ -7,7 +7,20 @@ public class CoursePickerWorkspace {
   public CoursePickerWorkspace() {
   }
 
-  public CoursePickerWorkspace(Long id, String urlName, Boolean archived, Boolean published, String name, String nameExtension, String description, Long numVisits, Date lastVisit, boolean canSignup, boolean isCourseMember) {
+  public CoursePickerWorkspace(
+      Long id,
+      String urlName,
+      Boolean archived,
+      Boolean published,
+      String name,
+      String nameExtension,
+      String description,
+      Long numVisits,
+      Date lastVisit,
+      boolean canSignup,
+      Boolean canCopyWorkspace,
+      boolean isCourseMember,
+      boolean evaluationHasFee) {
     super();
     this.id = id;
     this.urlName = urlName;
@@ -19,7 +32,9 @@ public class CoursePickerWorkspace {
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
     this.canSignup = canSignup;
+    this.canCopyWorkspace = canCopyWorkspace;
     this.isCourseMember = isCourseMember;
+    this.setEvaluationHasFee(evaluationHasFee);
   }
 
   public Long getId() {
@@ -101,6 +116,14 @@ public class CoursePickerWorkspace {
   public void setCanSignup(Boolean canSignup) {
     this.canSignup = canSignup;
   }
+  
+  public Boolean getCanCopyWorkspace() {
+    return canCopyWorkspace;
+  }
+  
+  public void setCanCopyWorkspace(Boolean canCopyWorkspace) {
+    this.canCopyWorkspace = canCopyWorkspace;
+  }
 
   public Boolean getIsCourseMember() {
     return isCourseMember;
@@ -109,6 +132,16 @@ public class CoursePickerWorkspace {
   public void setIsCourseMember(Boolean isCourseMember) {
     this.isCourseMember = isCourseMember;
   }
+
+  public Boolean getEvaluationHasFee() {
+    return evaluationHasFee;
+  }
+
+  public void setEvaluationHasFee(Boolean evaluationHasFee) {
+    this.evaluationHasFee = evaluationHasFee;
+  }
+
+
 
   private Long id;
   private String urlName;
@@ -120,5 +153,7 @@ public class CoursePickerWorkspace {
   private Date lastVisit;
   private Boolean published;
   private Boolean canSignup;
+  private Boolean canCopyWorkspace;
   private Boolean isCourseMember;
+  private Boolean evaluationHasFee;
 }

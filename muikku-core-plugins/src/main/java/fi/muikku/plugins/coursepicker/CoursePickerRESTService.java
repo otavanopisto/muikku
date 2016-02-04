@@ -8,10 +8,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -42,15 +42,17 @@ import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
-import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.search.SearchProvider;
+import fi.muikku.search.SearchProvider.Sort;
 import fi.muikku.search.SearchResult;
 import fi.muikku.security.MuikkuPermissions;
+import fi.muikku.servlet.BaseUrl;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
@@ -66,6 +68,9 @@ public class CoursePickerRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -7027696842893383409L;
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private SessionController sessionController;
 
@@ -97,9 +102,6 @@ public class CoursePickerRESTService extends PluginRESTService {
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
-  private Event<SchoolDataWorkspaceUserDiscoveredEvent> schoolDataWorkspaceUserDiscoveredEvent;
-  
-  @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
 
@@ -107,6 +109,10 @@ public class CoursePickerRESTService extends PluginRESTService {
   @Any
   private Instance<MessagingWidget> messagingWidgets;
 
+  @Inject
+  @BaseUrl
+  private String baseUrl;
+  
   @GET
   @Path("/workspaces/")
   @RESTPermitUnimplemented
@@ -117,6 +123,8 @@ public class CoursePickerRESTService extends PluginRESTService {
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
         @QueryParam("orderBy") List<String> orderBy,
+        @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
+        @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults,
         @Context Request request) {
     List<CoursePickerWorkspace> workspaces = new ArrayList<>();
 
@@ -154,9 +162,16 @@ public class CoursePickerRESTService extends PluginRESTService {
           workspaceIdentifierFilters.add(workspaceEntity.getIdentifier());
         }
       }
+
+      List<Sort> sorts = null;
       
-      // TODO: Pagination support
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, 0, 50);
+      if (orderBy != null && orderBy.contains("alphabet")) {
+        sorts = new ArrayList<>();
+        sorts.add(new Sort("name", Sort.Order.ASC));
+        sorts.add(new Sort("nameExtension", Sort.Order.ASC));
+      }
+      
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
@@ -166,7 +181,10 @@ public class CoursePickerRESTService extends PluginRESTService {
           if (id.length == 2) {
             String dataSource = id[1];
             String identifier = id[0];
-            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
+
+            SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+            
+            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
             if (workspaceEntity != null) {
               Workspace workspace = findWorkspace(workspaceEntity);
               if (workspace != null) {
@@ -174,11 +192,18 @@ public class CoursePickerRESTService extends PluginRESTService {
                 String description = (String) result.get("description");
                 boolean canSignup = getCanSignup(workspaceEntity);
                 boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
-              
+                Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
+
                 if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(createRestModel(workspace, workspaceEntity, name, description, canSignup, isCourseMember));
+                  workspaces.add(createRestModel(workspace, workspaceEntity, name, description, canSignup, canCopyWorkspace, isCourseMember, userEntity));
+                } else {
+                  logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
+              } else {
+                logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
               }
+            } else {
+              logger.severe(String.format("Search index contains workspace %s that does not exits in Muikku", workspaceIdentifier));
             }
           }
         }
@@ -232,6 +257,8 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+    
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
 
     Workspace workspace = null;
     
@@ -248,8 +275,9 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     boolean canSignup = getCanSignup(workspaceEntity);
     boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
+    Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
 
-    return Response.ok(createRestModel(workspace, workspaceEntity, workspace.getName(), workspace.getDescription(), canSignup, isCourseMember)).build();
+    return Response.ok(createRestModel(workspace, workspaceEntity, workspace.getName(), workspace.getDescription(), canSignup, canCopyWorkspace, isCourseMember, userEntity)).build();
   }
   
   @POST
@@ -282,17 +310,19 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
 
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-
+    
     Role role = roleController.findRoleByDataSourceAndRoleEntity(user.getSchoolDataSource(), workspaceRole);
-    fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
-    UserSchoolDataIdentifier userIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
-        user.getSchoolDataSource(), user.getIdentifier());
-    SchoolDataWorkspaceUserDiscoveredEvent discoverEvent = new SchoolDataWorkspaceUserDiscoveredEvent(workspaceUser.getSchoolDataSource(),
-        workspaceUser.getIdentifier().getIdentifier(), workspaceUser.getWorkspaceIdentifier().getDataSource(), workspaceUser.getWorkspaceIdentifier().getIdentifier(),
-        workspaceUser.getUserIdentifier().getDataSource(), workspaceUser.getUserIdentifier().getIdentifier(), workspaceUser.getRoleIdentifier().getDataSource(),
-        workspaceUser.getRoleIdentifier().getIdentifier());
-    schoolDataWorkspaceUserDiscoveredEvent.fire(discoverEvent);
-
+    
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
+    fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
+    if (workspaceUser == null) {
+      workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
+    }
+    else {
+      workspaceController.updateWorkspaceStudentActivity(workspaceUser, true);
+    }
+    
     // TODO: should this work based on permission? Permission -> Roles -> Recipients
     // TODO: Messaging should be moved into a CDI event listener
 
@@ -304,27 +334,35 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     String userName = user.getFirstName() + " " + user.getLastName();
 
-    for (WorkspaceUserEntity cu : workspaceTeachers) {
-      teachers.add(cu.getUserSchoolDataIdentifier().getUserEntity());
+    for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
+      teachers.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
     }
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
     
-    workspaceController.createWorkspaceUserSignup(workspaceEntity, userIdentifier.getUserEntity(), new Date(), entity.getMessage());
+    workspaceController.createWorkspaceUserSignup(workspaceEntity, userSchoolDataIdentifier.getUserEntity(), new Date(), entity.getMessage());
 
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
     caption = MessageFormat.format(caption, workspaceName);
 
+    String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspace.getName());
+    
+    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
+    
+    String studentLink = String.format("<a href=\"%s/guider#userprofile/%s\" >%s</a>", baseUrl, studentIdentifier.toId(), userName);
     String content;
     if (StringUtils.isEmpty(entity.getMessage())) {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
-      content = MessageFormat.format(content, userName, workspaceName);
+      content = MessageFormat.format(content, studentLink, workspaceLink);
     } else {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.contentwmessage");
-      content = MessageFormat.format(content, userName, workspaceName, entity.getMessage());
+      String blockquoteMessage = String.format("<blockquote>%s</blockquote>", entity.getMessage());
+      content = MessageFormat.format(content, studentLink, workspaceLink, blockquoteMessage);
     }
 
     for (MessagingWidget messagingWidget : messagingWidgets) {
       // TODO: Category?
-      messagingWidget.postMessage(userIdentifier.getUserEntity(), "message", caption, content, teachers);
+      messagingWidget.postMessage(userSchoolDataIdentifier.getUserEntity(), "message", caption, content, teachers);
     }
 
     return Response.noContent().build();
@@ -350,6 +388,14 @@ public class CoursePickerRESTService extends PluginRESTService {
       return false;
   }
   
+  private boolean getCopyWorkspace(WorkspaceEntity workspaceEntity) {
+    if (sessionController.isLoggedIn()) {
+      return sessionController.hasEnvironmentPermission(MuikkuPermissions.COPY_WORKSPACE);
+    } 
+    
+    return false;
+  }
+  
   private Long getWorkspaceStudentRoleId() {
     List<WorkspaceRoleEntity> workspaceStudentRoles = roleController.listWorkspaceRoleEntitiesByArchetype(WorkspaceRoleArchetype.STUDENT);
     if (workspaceStudentRoles.size() == 1) {
@@ -360,7 +406,17 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
   }
   
-  private CoursePickerWorkspace createRestModel(Workspace workspace, WorkspaceEntity workspaceEntity, String name, String description, boolean canSignup, boolean isCourseMember) {
+  private CoursePickerWorkspace createRestModel(Workspace workspace, WorkspaceEntity workspaceEntity, String name, String description, boolean canSignup, Boolean canCopyWorkspace, boolean isCourseMember, UserEntity userEntity) {
+    boolean workspaceEvaluationFeeApplicable = workspace.isEvaluationFeeApplicable();
+    boolean userHasEvaluationFees = false;
+
+    if (userEntity != null) {
+      User user = userController.findUserByUserEntityDefaults(userEntity);
+      if (user != null) {
+        userHasEvaluationFees = user.hasEvaluationFees();
+      }
+    }
+
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     return new CoursePickerWorkspace(
@@ -374,7 +430,9 @@ public class CoursePickerRESTService extends PluginRESTService {
         numVisits, 
         lastVisit, 
         canSignup, 
-        isCourseMember);
+        canCopyWorkspace,
+        isCourseMember,
+        workspaceEvaluationFeeApplicable && userHasEvaluationFees);
   }
   
 }

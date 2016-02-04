@@ -3,7 +3,9 @@ package fi.muikku.plugins.schooldatapyramus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -22,10 +24,14 @@ import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Course;
+import fi.pyramus.rest.model.CourseEducationSubtype;
+import fi.pyramus.rest.model.CourseEducationType;
 import fi.pyramus.rest.model.CourseOptionality;
 import fi.pyramus.rest.model.CourseParticipationType;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStudent;
+import fi.pyramus.rest.model.EducationSubtype;
+import fi.pyramus.rest.model.EducationType;
 import fi.pyramus.rest.model.Subject;
 
 public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
@@ -44,7 +50,10 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   
   @Inject
   private PyramusStudentActivityMapper pyramusStudentActivityMapper;
-
+  
+  @Inject
+  private WorkspaceDiscoveryWaiter workspaceDiscoveryWaiter;
+  
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
@@ -63,6 +72,42 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     throw new UnexpectedSchoolDataBridgeException("Not implemented");
   }
 
+  @Override
+  public Workspace copyWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension, String description) {
+    if (!getSchoolDataSource().equals(identifier.getDataSource())) {
+      logger.severe(String.format("Invalid workspace identfier for Pyramus bridge", identifier));
+      return null;
+    }
+    
+    Long pyramusCourseId = identifierMapper.getPyramusCourseId(identifier.getIdentifier());
+    if (pyramusCourseId == null) {
+      logger.severe(String.format("Workspace identifier %s is not valid", identifier));
+      return null;
+    }
+    
+    Course course = pyramusClient.get(String.format("/courses/courses/%d", pyramusCourseId), Course.class);
+    if (course == null) {
+      logger.severe(String.format("Could not find Pyramus course by id %d", pyramusCourseId));
+      return null;
+    }
+    
+    course.setId(null);
+    course.setName(name);
+    course.setNameExtension(nameExtension);
+    course.setDescription(description);
+    
+    Course createdCourse = pyramusClient.post("/courses/courses/", course);
+    if (createdCourse == null) {
+      logger.severe(String.format("Failed to create new course based on course %d", pyramusCourseId));
+      return null;
+    }
+    
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifierMapper.getWorkspaceIdentifier(createdCourse.getId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    workspaceDiscoveryWaiter.waitDiscovered(workspaceIdentifier);
+    
+    return createWorkspaceEntity(createdCourse);
+  }
+  
   @Override
   public Workspace findWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     Long pyramusCourseId = identifierMapper.getPyramusCourseId(identifier);
@@ -113,11 +158,35 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Override
   public Workspace updateWorkspace(Workspace workspace) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    if (!StringUtils.isNumeric(workspace.getIdentifier())) {
-      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+    Long pyramusCourseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
+    if (pyramusCourseId == null) {
+      logger.severe(String.format("Workspace identifier %s is not valid", workspace.getIdentifier()));
+      return null;
     }
     
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+    Long typeId = identifierMapper.getPyramusCourseTypeId(workspace.getWorkspaceTypeId());
+    Long lengthUnitId = identifierMapper.getPyramusEducationalTimeUnitId(workspace.getLengthUnitIdentifier());
+    Long subjectId = identifierMapper.getPyramusSubjectId(workspace.getSubjectIdentifier());
+    
+    Course course = pyramusClient.get(String.format("/courses/courses/%d", pyramusCourseId), Course.class);
+    
+    course.setName(workspace.getName());
+    course.setNameExtension(workspace.getNameExtension());
+    course.setDescription(workspace.getDescription());
+    course.setBeginDate(workspace.getBeginDate());
+    course.setEndDate(workspace.getEndDate());
+    course.setLength(workspace.getLength());
+    course.setLengthUnitId(lengthUnitId);
+    course.setTypeId(typeId);
+    course.setSubjectId(subjectId);
+    
+    Course updatedCourse = pyramusClient.put(String.format("/courses/courses/%d", pyramusCourseId), course);
+    if (updatedCourse == null) {
+      logger.severe(String.format("Workspace %s updating failed", workspace.getIdentifier()));
+      return null;
+    }
+    
+    return createWorkspaceEntity(updatedCourse);
   }
 
   @Override
@@ -168,6 +237,25 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     
     return Arrays.asList(entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), CourseStudent.class))).get(0);
   }
+
+  @Override
+  public WorkspaceUser findWorkspaceUserByWorkspaceAndUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier.getIdentifier());
+    Long userId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
+    if (courseId != null && userId != null) {
+      List<WorkspaceUser> users = entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/students?studentId=%d", courseId, userId), CourseStudent[].class));
+      if (users != null) {
+        if (users.size() > 1) {
+          logger.warning(String.format("Student %d appears %d times in course %d", userId, users.size(), courseId));
+        }
+        return users.isEmpty() ? null : users.get(0);
+      }
+    }
+    else {
+      logger.severe(String.format("null courseId %d or userId &d", courseId, userId));
+    }
+    return null;
+  }
   
   @Override
   public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
@@ -194,7 +282,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       return null;
     
     String educationTypeIdentifier = null;
-    
+   
     if (course.getSubjectId() != null) {
       Subject subject = pyramusClient.get("/common/subjects/" + course.getSubjectId(), fi.pyramus.rest.model.Subject.class);
       if (subject == null) {
@@ -205,7 +293,54 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       }
     }
     
-    return entityFactory.createEntity(course, educationTypeIdentifier);
+    Map<String, List<String>> courseEducationTypeMap = new HashMap<String, List<String>>();
+    CourseEducationType[] courseEducationTypes = pyramusClient.get(
+        String.format("/courses/courses/%d/educationTypes", course.getId()),
+        CourseEducationType[].class);
+    
+    if (courseEducationTypes != null ) {
+      for (CourseEducationType courseEducationType: courseEducationTypes) {
+        CourseEducationSubtype[] courseEducationSubtypes = pyramusClient.get(
+            String.format("/courses/courses/%d/educationTypes/%d/educationSubtypes", course.getId(), courseEducationType.getId()),
+            CourseEducationSubtype[].class);
+        
+        if (courseEducationSubtypes == null) {
+          continue;
+        }
+        
+        EducationType educationType = pyramusClient.get(
+            String.format("/common/educationTypes/%d", courseEducationType.getEducationTypeId()),
+            EducationType.class);
+        
+        if (educationType == null) {
+          logger.severe(String.format("Could not find educationType %d", courseEducationType.getEducationTypeId()));
+          continue;
+        }
+        
+        String educationTypeCode = educationType.getCode();
+        List<String> courseEducationSubtypeList = new ArrayList<String>();
+        
+        for (CourseEducationSubtype courseEducationSubtype : courseEducationSubtypes) {
+          EducationSubtype educationSubtype = pyramusClient.get(
+              String.format(
+                  "/common/educationTypes/%d/subtypes/%d",
+                  educationType.getId(),
+                  courseEducationSubtype.getEducationSubtypeId()),
+              EducationSubtype.class);
+          
+          if (educationSubtype != null) {
+            String educationSubtypeCode = educationSubtype.getCode();
+            courseEducationSubtypeList.add(educationSubtypeCode);
+          } else {
+            logger.severe(String.format("Could not find education subtype %d from type %d", courseEducationSubtype.getEducationSubtypeId(), educationType.getId()));
+          }
+        }
+
+        courseEducationTypeMap.put(educationTypeCode, courseEducationSubtypeList);
+      }
+    }
+      
+    return entityFactory.createEntity(course, educationTypeIdentifier, courseEducationTypeMap);
   }
 
   @Override
@@ -255,20 +390,18 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       Long currentParticipationType = courseStudent.getParticipationTypeId();
       if (pyramusStudentActivityMapper.isActive(currentParticipationType) != active) {
         Long newParticipationType = active ? pyramusStudentActivityMapper.toActive(currentParticipationType) : pyramusStudentActivityMapper.toInactive(currentParticipationType);
-        if (newParticipationType != null) {
-          CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
-          if (participationType != null) {
-            courseStudent.setParticipationTypeId(participationType.getId());
-            pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
-          } else {
-            logger.warning(String.format("Could not find participation type %d", newParticipationType));
-          }
+        if (newParticipationType == null) {
+          newParticipationType = currentParticipationType;
+        }
+        CourseParticipationType participationType = pyramusClient.get(String.format("/courses/participationTypes/%d", newParticipationType), CourseParticipationType.class);
+        if (participationType != null) {
+          courseStudent.setParticipationTypeId(participationType.getId());
+          pyramusClient.put(String.format("/courses/courses/%d/students/%d", courseId, courseStudentId), courseStudent);
         } else {
-          logger.warning(String.format("Could not resolve active / inactive counterpart for participation type %d", currentParticipationType));
+          logger.warning(String.format("Could not find participation type %d", newParticipationType));
         }
       }
     }
   }
 
-  
 }
