@@ -6,8 +6,22 @@ import org.joda.time.DateTime;
 
 import fi.muikku.search.annotations.IndexId;
 import fi.muikku.search.annotations.Indexable;
+import fi.muikku.search.annotations.IndexableFieldOption;
+import fi.muikku.search.annotations.IndexableFieldMultiField;
 
-@Indexable
+@Indexable (
+  name = "Workspace",
+  options = {
+    @IndexableFieldOption (
+      name = "name",
+      type = "multi_field",
+      multiFields = {
+        @IndexableFieldMultiField(name = "name", type="string", index = "analyzed"),
+        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+      }
+    )
+  }
+)
 public interface Workspace extends SchoolDataEntity {
 
   public String getIdentifier();

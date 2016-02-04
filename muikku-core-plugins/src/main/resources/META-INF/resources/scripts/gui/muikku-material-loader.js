@@ -904,17 +904,22 @@
     if (jQuery().magnificPopup) {
       // Lazy loading with magnific popup
       $(data.pageElement).find('img.lazy').each(function (index, img) {
-        var src = $(img).attr('data-original');
-        var a = $('<a>')
-          .attr('href', src)
-          .magnificPopup({
-            type: 'image'
-          })
-          .insertBefore(img);
-        
-        $(img)
-          .appendTo(a)
-          .lazyload();
+        if ($(img).closest('a').length == 0) {
+          var src = $(img).attr('data-original');
+          var a = $('<a>')
+            .attr('href', src)
+            .magnificPopup({
+              type: 'image'
+            })
+            .insertBefore(img);
+          
+          $(img)
+            .appendTo(a)
+            .lazyload();
+        }
+        else {
+          $(img).lazyload();
+        }
       });        
     } else {
       // Lazy loading
