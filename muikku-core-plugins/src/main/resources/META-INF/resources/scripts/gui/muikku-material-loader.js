@@ -90,7 +90,7 @@
           
           var src = urlAttribute ? $(element).attr(urlAttribute) : null;
           if (src) {
-            var absolute = (src.indexOf('/') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+            var absolute = (src.indexOf('/') == 0) || (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
             if (!absolute) {
               if (src.lastIndexOf('/') == src.length - 1) {
                 $(element).attr(urlAttribute, this.options.baseUrl + '/' + material.path + src);

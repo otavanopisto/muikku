@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -49,7 +48,6 @@ import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
-import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchProvider.Sort;
 import fi.muikku.search.SearchResult;
@@ -103,9 +101,6 @@ public class CoursePickerRESTService extends PluginRESTService {
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
-  @Inject
-  private Event<SchoolDataWorkspaceUserDiscoveredEvent> schoolDataWorkspaceUserDiscoveredEvent;
-  
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
@@ -317,14 +312,16 @@ public class CoursePickerRESTService extends PluginRESTService {
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     
     Role role = roleController.findRoleByDataSourceAndRoleEntity(user.getSchoolDataSource(), workspaceRole);
-    fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
-    UserSchoolDataIdentifier userIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
-        user.getSchoolDataSource(), user.getIdentifier());
-    SchoolDataWorkspaceUserDiscoveredEvent discoverEvent = new SchoolDataWorkspaceUserDiscoveredEvent(workspaceUser.getSchoolDataSource(),
-        workspaceUser.getIdentifier().getIdentifier(), workspaceUser.getWorkspaceIdentifier().getDataSource(), workspaceUser.getWorkspaceIdentifier().getIdentifier(),
-        workspaceUser.getUserIdentifier().getDataSource(), workspaceUser.getUserIdentifier().getIdentifier(), workspaceUser.getRoleIdentifier().getDataSource(),
-        workspaceUser.getRoleIdentifier().getIdentifier());
-    schoolDataWorkspaceUserDiscoveredEvent.fire(discoverEvent);
+    
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
+    fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
+    if (workspaceUser == null) {
+      workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
+    }
+    else {
+      workspaceController.updateWorkspaceStudentActivity(workspaceUser, true);
+    }
     
     // TODO: should this work based on permission? Permission -> Roles -> Recipients
     // TODO: Messaging should be moved into a CDI event listener
@@ -337,11 +334,13 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     String userName = user.getFirstName() + " " + user.getLastName();
 
-    for (WorkspaceUserEntity cu : workspaceTeachers) {
-      teachers.add(cu.getUserSchoolDataIdentifier().getUserEntity());
+    for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
+      teachers.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
     }
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
     
-    workspaceController.createWorkspaceUserSignup(workspaceEntity, userIdentifier.getUserEntity(), new Date(), entity.getMessage());
+    workspaceController.createWorkspaceUserSignup(workspaceEntity, userSchoolDataIdentifier.getUserEntity(), new Date(), entity.getMessage());
 
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
     caption = MessageFormat.format(caption, workspaceName);
@@ -363,7 +362,7 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     for (MessagingWidget messagingWidget : messagingWidgets) {
       // TODO: Category?
-      messagingWidget.postMessage(userIdentifier.getUserEntity(), "message", caption, content, teachers);
+      messagingWidget.postMessage(userSchoolDataIdentifier.getUserEntity(), "message", caption, content, teachers);
     }
 
     return Response.noContent().build();

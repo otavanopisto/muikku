@@ -16,4 +16,9 @@ public class TaskIxNamespaces extends AbstractHtmlMaterialCleanerTask {
     }
   }
 
+  @Override
+  public Integer getPriority() {
+    return PRIORITY_LOW;
+  }
+
 }
