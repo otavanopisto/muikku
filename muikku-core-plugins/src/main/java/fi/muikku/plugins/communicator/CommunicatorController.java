@@ -4,10 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -33,9 +30,6 @@ import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.otavanopisto.security.Permit;
 import fi.otavanopisto.security.PermitContext;
 
-@Dependent
-@Stateful
-@Named("Communicator")
 public class CommunicatorController {
    
   @Inject

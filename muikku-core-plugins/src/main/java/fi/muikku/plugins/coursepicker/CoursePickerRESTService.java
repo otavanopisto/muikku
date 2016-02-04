@@ -31,6 +31,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
+import fi.muikku.mail.MailType;
+import fi.muikku.mail.Mailer;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -55,6 +57,7 @@ import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.servlet.BaseUrl;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
+import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -101,6 +104,12 @@ public class CoursePickerRESTService extends PluginRESTService {
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
+  @Inject
+  private Mailer mailer;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
+  
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
@@ -350,6 +359,15 @@ public class CoursePickerRESTService extends PluginRESTService {
       messagingWidget.postMessage(userSchoolDataIdentifier.getUserEntity(), "message", caption, content, teachers);
     }
 
+    List<String> teacherEmails = new ArrayList<>(teachers.size());
+    for(UserEntity teacher: teachers){
+     String teacherEmail = userEmailEntityController.getUserEmailAddress(teacher, false);
+     if(StringUtils.isNotBlank(teacherEmail)){
+       teacherEmails.add(userEmailEntityController.getUserEmailAddress(teacher, false));
+     }
+    }
+    mailer.sendMail(MailType.HTML, teacherEmails, caption, content);
+    
     return Response.noContent().build();
   }
 
