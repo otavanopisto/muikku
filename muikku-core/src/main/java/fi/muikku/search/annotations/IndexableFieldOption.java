@@ -2,8 +2,8 @@ package fi.muikku.search.annotations;
 
 public @interface IndexableFieldOption {
   
-  String name() default "";
+  String name();
   IndexableFieldMultiField[] multiFields() default {};
-  String type() default "";
+  String type();
   
 }
