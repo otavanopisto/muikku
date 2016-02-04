@@ -220,7 +220,12 @@
       
       this.workspaceMaterialState(state);
       this.element.find('.muikku-field').muikkuField('readonly', stateOptions['fields-read-only']);
-      this.element.find('.muikku-file-field').attr('data-readonly', stateOptions['fields-read-only']);
+      
+      var fileField = this.element.find('.muikku-file-field');
+      if (assignmentType !== 'EXERCISE') {
+        // Ugly but works -- file fields on exercises break when set read-only 
+        fileField.attr('data-readonly', stateOptions['fields-read-only']);
+      }
       
       if (stateOptions['check-answers']) {
         this._checkExercises();

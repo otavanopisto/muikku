@@ -932,6 +932,11 @@
     renderDustTemplate('workspace/materials-assignment-attachement-remove-confirm.dust', { }, $.proxy(function (text) {
       // File field support
       $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
+        var readonly = data.readOnlyFields || false;
+        var readonlyData = $(field).attr('data-readonly');
+        if (typeof readonlyData !== "undefined" && readonlyData !== null) {
+          readonly = !!readonlyData;
+        }
         $(field)
           .muikkuFileField({
             maxFileSize: maxFileSize,
@@ -944,7 +949,7 @@
             fieldName: $(field).data('field-name'),
             embedId: $(field).data('embed-id'),
             materialId: $(field).data('material-id'),
-            readonly: $(field).attr('data-readonly') || data.readOnlyFields || false,
+            readonly: readonly,
             answer: function (val) {
               // TODO: Support setter for files
               return JSON.stringify($(this.element).muikkuFileField('files'));
