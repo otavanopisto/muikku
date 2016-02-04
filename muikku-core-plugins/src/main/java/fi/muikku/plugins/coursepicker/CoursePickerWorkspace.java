@@ -19,8 +19,7 @@ public class CoursePickerWorkspace {
       Date lastVisit,
       boolean canSignup,
       Boolean canCopyWorkspace,
-      boolean isCourseMember,
-      boolean evaluationHasFee) {
+      boolean isCourseMember) {
     super();
     this.id = id;
     this.urlName = urlName;
@@ -34,7 +33,6 @@ public class CoursePickerWorkspace {
     this.canSignup = canSignup;
     this.canCopyWorkspace = canCopyWorkspace;
     this.isCourseMember = isCourseMember;
-    this.setEvaluationHasFee(evaluationHasFee);
   }
 
   public Long getId() {
@@ -133,16 +131,6 @@ public class CoursePickerWorkspace {
     this.isCourseMember = isCourseMember;
   }
 
-  public Boolean getEvaluationHasFee() {
-    return evaluationHasFee;
-  }
-
-  public void setEvaluationHasFee(Boolean evaluationHasFee) {
-    this.evaluationHasFee = evaluationHasFee;
-  }
-
-
-
   private Long id;
   private String urlName;
   private Boolean archived;
@@ -155,5 +143,4 @@ public class CoursePickerWorkspace {
   private Boolean canSignup;
   private Boolean canCopyWorkspace;
   private Boolean isCourseMember;
-  private Boolean evaluationHasFee;
 }

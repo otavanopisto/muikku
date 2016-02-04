@@ -593,7 +593,8 @@ public class CommunicatorRESTService extends PluginRESTService {
           user.getFirstName(), 
           user.getLastName(), 
           user.getStudyProgrammeName(),
-          hasPicture);
+          hasPicture,
+          user.hasEvaluationFees());
       
       return Response.ok(
         result
@@ -626,7 +627,8 @@ public class CommunicatorRESTService extends PluginRESTService {
           user.getFirstName(), 
           user.getLastName(), 
           user.getStudyProgrammeName(),
-          hasPicture);
+          hasPicture,
+          user.hasEvaluationFees());
     
       return Response.ok(
         result
