@@ -23,7 +23,7 @@
     <h:outputScript name="scripts/gui/muikku-field.js"/> 
     <h:outputScript name="scripts/gui/muikku-material-loader.js"/> 
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
-    <h:outputScript name="scripts/lazyyt/lazyyt.js" />
+    <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.js"></script>
     <h:outputScript name="scripts/gui/lazypdf.js" />
     <h:outputScript name="scripts/gui/lazyswf.js" />
 
@@ -36,8 +36,8 @@
   
   <ui:define name="viewCss">  
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/evaluation.css" />  
-    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/muikku-file-field-component.css" />  
-    <h:outputStylesheet name="scripts/lazyyt/lazyyt.css" />  
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/muikku-file-field-component.css" /> 
+    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.css"/> 
   </ui:define>
   
   <ui:define name="sitebody">
