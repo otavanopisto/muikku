@@ -291,7 +291,7 @@
         if ((textStatus === "abort") || (jqXHR.status === 0)) {
           return;
         }
-        
+
         this.handleResponse(data, function (node) {
           callback(null, data);
         });
@@ -302,7 +302,7 @@
           return;
         }
         
-        callback(textStatus, jqXHR);
+        callback(textStatus ? jqXHR.responseText || jqXHR.statusText || textStatus : null, jqXHR);
       });
       
       return this;
