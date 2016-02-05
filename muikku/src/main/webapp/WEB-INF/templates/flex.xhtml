@@ -28,24 +28,12 @@
         <script async="async" defer="defer" src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js" data-apikey="#{sessionBackingBean.bugsnagApiKey}"></script>
       </ui:fragment>
       
-<!--       <script type="text/javascript" src="#{request.contextPath}/rest/meta/resources?format=js"></script> -->
-      
-<!--       <script type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script> -->
-<!--       <h:outputScript name="scripts/gui/locales.js" target="head" /> -->
-  
-      <!-- CSS to remove all default styles -->
-<!--       <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/cssreset-min.css" /> -->
-      
-      <!--  Icon Font -->
-<!--       <link rel="stylesheet" type="text/css" href="#{request.contextPath}/icons/icomoon/icons.css"/> -->
-      
-      <!-- Flex Grid -->
-      <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/fni-flexgrid/1.0.0/flexgrid.css "/>
-
       <!-- jQuery -->
       <script async="async" defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery/2.1.3/jquery.min.js"/>
+      
       <!-- jQuery UI -->
       <script async="async" defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/jquery-ui.min.js"/>
+      
       <!--  jQuery Touch Punch or jQuery Mobile? -->
       <script async="async" defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"/>
       
@@ -56,16 +44,18 @@
       </ui:fragment>
       
       <script async="async" defer="defer" jsf:name="scripts/debug.js" jsf:rendered="#{sessionBackingBean.testsRunning}"/>
+      
       <!-- Notification Queue -->
       <script async="async" defer="defer" jsf:name="scripts/notificationqueue/notificationqueue.js"/>
 
-      
-      <!-- WebSocket -->
-      <h:outputScript name="scripts/gui/websocket.js" />
+      <!-- Websocket -->
+      <script async="async" defer="defer" jsf:name="scripts/gui/websocket.js"/>
 
-      <!--  Heartbeat -->
-      <h:outputScript name="scripts/gui/heartbeat.js" target="head" />      
+      <!-- Heartbeat -->
+      <script async="async" defer="defer" jsf:name="scripts/gui/heartbeat.js"/>
 
+      <!-- Flex Grid -->
+      <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/fni-flexgrid/1.0.0/flexgrid.css "/>
     </head>
   
     <body>
