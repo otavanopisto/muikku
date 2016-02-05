@@ -265,30 +265,31 @@ public class ForumRESTService extends PluginRESTService {
   @POST
   @Path ("/workspace/{WORKSPACEENTITYID}/areas")
   @RESTPermit(handling = Handling.INLINE)
-  public Response createWorkspaceForumArea(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId,
-      @QueryParam ("sourceWorkspaceEntityId") Long sourceWorkspaceEntityId,
-      ForumAreaRESTModel newForum) throws AuthorizationException {
-    
+  public Response createWorkspaceForumArea(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("sourceWorkspaceEntityId") Long sourceWorkspaceEntityId, ForumAreaRESTModel newForum) {
     if (sourceWorkspaceEntityId == null) {
-      
       // Create workspace forum area
-      
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-      
-      if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_CREATEWORKSPACEFORUM, workspaceEntity)) {
-        WorkspaceForumArea workspaceForumArea = forumController.createWorkspaceForumArea(workspaceEntity, newForum.getName(), newForum.getGroupId());
-        
-        Long numThreads = forumController.getThreadCount(workspaceForumArea);
-        
-        WorkspaceForumAreaRESTModel result = new WorkspaceForumAreaRESTModel(
-            workspaceForumArea.getId(), workspaceForumArea.getWorkspace(), workspaceForumArea.getName(), 
-            workspaceForumArea.getGroup() != null ? workspaceForumArea.getGroup().getId() : null, numThreads); 
-        
-        return Response.ok(result).build();
+      if (workspaceEntity == null) {
+        return Response.status(Status.NOT_FOUND).build();
       }
-      else {
+      
+      if (!sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_CREATEWORKSPACEFORUM, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).build();
       }
+      
+      if (StringUtils.isBlank(newForum.getName())) {
+        return Response.status(Status.BAD_REQUEST).entity("Name is required").build();
+      }
+      
+      WorkspaceForumArea workspaceForumArea = forumController.createWorkspaceForumArea(workspaceEntity, newForum.getName(), newForum.getGroupId());
+      
+      Long numThreads = forumController.getThreadCount(workspaceForumArea);
+      
+      WorkspaceForumAreaRESTModel result = new WorkspaceForumAreaRESTModel(
+          workspaceForumArea.getId(), workspaceForumArea.getWorkspace(), workspaceForumArea.getName(), 
+          workspaceForumArea.getGroup() != null ? workspaceForumArea.getGroup().getId() : null, numThreads); 
+      
+      return Response.ok(result).build();
     }
     else {
 
