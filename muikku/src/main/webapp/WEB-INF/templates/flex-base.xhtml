@@ -8,9 +8,11 @@
   <f:view locale="#{muikkuSession.locale}">
   
     <head>
+      <ui:insert name="title"></ui:insert>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <meta http-equiv="x-ua-compatible" content="ie=edge" />
       <meta content="width=device-width, initial-scale=1.0, minimun-scale=1" name="viewport" />
+      <ui:insert name="meta"></ui:insert>
       <script type="text/javascript">
           var CONTEXTPATH = "#{request.contextPath}";
           var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
@@ -54,14 +56,15 @@
       <!-- Heartbeat -->
       <script async="async" defer="defer" jsf:name="scripts/gui/heartbeat.js"/>
 
+      <ui:insert name="scripts"></ui:insert>
+
       <!-- Flex Grid -->
       <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/fni-flexgrid/1.0.0/flexgrid.css "/>
+      <ui:insert name="styles"></ui:insert>
     </head>
   
     <body>
-    
-      <ui:include src="/facelets/generic/notification-queue.xhtml"/>
-  
+      <ui:insert name="body"></ui:insert>
     </body>
   
   </f:view>

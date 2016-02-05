@@ -1,0 +1,52 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="flex-base.xhtml">
+  
+  <ui:define name="body">
+    <ui:insert name="notification-queue">
+      <div class="notification-queue">
+        <div class="notification-queue-items">
+          <ui:insert name="messages">
+            <ui:repeat var="message" value="#{facesContext.messageList}">
+              <ui:fragment rendered="#{message.severity.ordinal eq 0}">
+                <div data-severity="info" class="notification-queue-item notification-queue-item-info"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+              </ui:fragment>
+              <ui:fragment rendered="#{message.severity.ordinal eq 1}">
+                <div data-severity="warn" class="notification-queue-item notification-queue-item-warn"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+              </ui:fragment>
+              <ui:fragment rendered="#{message.severity.ordinal eq 2}">
+                <div data-severity="error" class="notification-queue-item notification-queue-item-error"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+              </ui:fragment>
+              <ui:fragment rendered="#{message.severity.ordinal eq 3}">
+                <div data-severity="fatal" class="notification-queue-item notification-queue-item-fatal"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+              </ui:fragment>
+            </ui:repeat>
+            <h:messages globalOnly="false" style="display: none" />
+          </ui:insert>
+        </div>
+      </div>
+    </ui:insert>
+    
+    <ui:insert name="header">
+      <header><ui:insert name="header-content"></ui:insert></header>
+    </ui:insert>
+    
+    <ui:insert name="main">
+      <main>
+        <ui:insert name="main-content">
+          <div class="flex-grid">
+            <ui:insert name="grid-content"></ui:insert>
+          </div>
+        </ui:insert>
+      </main>
+    </ui:insert>
+    
+    <ui:insert name="footer">
+      <footer><ui:insert name="footer-content"></ui:insert></footer>
+    </ui:insert>
+    
+  </ui:define>
+  
+</ui:composition>
