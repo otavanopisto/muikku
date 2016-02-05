@@ -8,6 +8,7 @@ import javax.persistence.criteria.Root;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.CorePluginsDAO;
 
+@Deprecated
 public class UserPendingPasswordChangeDAO extends CorePluginsDAO<UserPendingPasswordChange> {
 
   private static final long serialVersionUID = 5503016597955204959L;
