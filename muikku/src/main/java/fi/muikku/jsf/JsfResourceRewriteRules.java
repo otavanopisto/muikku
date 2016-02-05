@@ -26,6 +26,11 @@ public class JsfResourceRewriteRules extends HttpConfigurationProvider {
       .when(Path.matches("/icons/{file}"))
       .perform(Substitute.with("/javax.faces.resource/icons/{file}.jsf?ln=theme-muikku"))
       .where("file").matches("[a-zA-Z0-9/_.\\-]*");
+
+    configuration.addRule()
+      .when(Path.matches("/gfx/{file}"))
+      .perform(Substitute.with("/javax.faces.resource/gfx/{file}.jsf?ln=theme-muikku"))
+      .where("file").matches("[a-zA-Z0-9/_.\\-]*");
     
     return configuration;
   }
