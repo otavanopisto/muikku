@@ -835,7 +835,8 @@
           'type': "file",
           'placeholder': data.meta.help,
           'title': data.meta.hint,
-          'name': data.name
+          'name': data.name,
+          'data-readonly': $(object).attr('data-readonly')
         })
         .data({
           'field-name': data.name,
@@ -936,6 +937,8 @@
     renderDustTemplate('workspace/materials-assignment-attachement-remove-confirm.dust', { }, $.proxy(function (text) {
       // File field support
       $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
+        var readonlyData = $(field).attr('data-readonly');
+        var readonly = data.readOnlyFields || ('true' === readonlyData);
         $(field)
           .muikkuFileField({
             maxFileSize: maxFileSize,
@@ -948,7 +951,7 @@
             fieldName: $(field).data('field-name'),
             embedId: $(field).data('embed-id'),
             materialId: $(field).data('material-id'),
-            readonly: data.readOnlyFields||false,
+            readonly: readonly,
             answer: function (val) {
               // TODO: Support setter for files
               return JSON.stringify($(this.element).muikkuFileField('files'));

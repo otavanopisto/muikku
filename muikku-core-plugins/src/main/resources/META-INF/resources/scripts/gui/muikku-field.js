@@ -221,6 +221,9 @@
       this.workspaceMaterialState(state);
       this.element.find('.muikku-field').muikkuField('readonly', stateOptions['fields-read-only']);
       
+      var fileField = this.element.find('.muikku-file-field');
+      fileField.attr('data-readonly', "" + stateOptions['fields-read-only']);
+      
       if (stateOptions['check-answers']) {
         this._checkExercises();
       }

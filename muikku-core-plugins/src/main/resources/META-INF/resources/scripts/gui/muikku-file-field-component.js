@@ -303,9 +303,11 @@
     _destroy : function() {
 
     },
+
     isReadonly: function () {
       return this._readonly;
     },
+
     setReadonly: function (readonly) {
       this._readonly = readonly;
       if (readonly) {
