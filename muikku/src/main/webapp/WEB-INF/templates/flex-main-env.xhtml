@@ -1,0 +1,148 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="flex-main.xhtml">
+  
+  <ui:define name="header">
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+      <header id="headerSmall">
+        <div id="headerContainerSmall" class="container_24">
+          <div id="headerLogoTextContainerSmall"></div>
+          <div id="headerFishContainerSmall"></div>
+          
+          <div class="language-widget">
+            <div class="formElementRow">
+              <h:form>
+                <ui:repeat value="#{i18n.languages}" var="locale">
+                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
+                </ui:repeat>
+              </h:form>
+            </div>
+          </div>
+          
+          <div class="lu-widget" id="loggedUserWidget">
+            <div class="lu-badgeContainer">
+              <div class="lu-user-picture" id="loggedUserPicture">
+                <a jsf:outcome="/jsf/profile/profile.jsf"><img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/></a> 
+              </div>
+              <div class="lu-infoContainer">
+                <div class="lu-user-name">
+                  <div class="lu-user-name-button">
+                    <div class="lu-user-name-button-value">
+                      <a jsf:outcome="/jsf/profile/profile.jsf">#{sessionBackingBean.loggedUserName}</a>
+                    </div>
+                  </div>     
+                </div>
+                <div class="lu-actions">
+                  <h:form>
+                    <a jsf:action="#{logoutWidgetBackingBean.logout}" class="lu-action-signout icon-signout"></a>
+                  </h:form>
+                </div>
+              </div>
+            </div>
+        
+            <ui:fragment rendered="#{loggedUserWidgetBackingBean.representing}">
+              <div class="formElementRow">
+                <h:form>
+                  <a jsf:action="#{loggedUserWidgetBackingBean.endRepresentation()}">Lopeta edustus</a>
+                </h:form>
+              </div>
+            </ui:fragment>
+          </div>
+          
+        </div>
+      </header>
+    </ui:fragment>
+    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+      <header id="headerBig">
+        <div id="headerContainerBig" class="container_24">
+          <div id="headerLogoTextContainerBig"></div>
+          <div id="headerFishContainerBig"></div>
+          
+          <div class="language-widget">
+            <div class="formElementRow">
+              <h:form>
+                <ui:repeat value="#{i18n.languages}" var="locale">
+                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
+                </ui:repeat>
+              </h:form>
+            </div>
+          </div>
+          
+          <div class="loginWidget">
+            <div class="loginWidgetButton">
+              <div class="bt-generic icon-signout bt-login">
+                <a jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+                  <span>#{i18n.text['plugin.login.buttonLabel']}</span>
+                </a>
+              </div>
+              <div class="bt-generic icon-forgotpassword bt-forgotpassword">
+                <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+              </div>
+            </div>            
+          </div>
+          
+        </div>
+      </header>
+    </ui:fragment>
+  </ui:define>
+  
+  <ui:define name="navigation-content">
+    <div class="wi-dock-static-navi-button-home #{activeTrail eq 'index' ? 'active-trail' : ''}" title="#{i18n.text['plugin.home.home']}">
+      <a href="#{request.contextPath}/" class="icon-home"/>
+    </div>
+    <div class="wi-dock-static-navi-button-coursepicker #{activeTrail eq 'courcepicker' ? 'active-trail' : ''}" title="#{i18n.text['plugin.coursepicker.coursepicker']}">
+      <a jsf:outcome="/jsf/coursepicker/index.jsf" class="icon-books tooltip">
+        <span style="display:none" class="wi-dock-notification"></span>
+      </a>
+    </div>
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+      <div class="wi-dock-static-navi-button-communicator #{activeTrail eq 'communicator' ? 'active-trail' : ''}" title="#{i18n.text['plugin.communicator.communicator']}">
+        <a jsf:outcome="/jsf/communicator/index.jsf" class="icon-envelope">
+          <span style="display:none" class="wi-dock-notification"></span>
+        </a>
+      </div>
+    </ui:fragment>
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+      <div class="wi-dock-static-navi-button-discussion #{activeTrail eq 'discussion' ? 'active-trail' : ''}" title="#{i18n.text['plugin.forum.forum']}">
+        <a jsf:outcome="/jsf/discussion/index.jsf" class="icon-bubble">
+          <span style="display:none" class="wi-dock-notification"></span>
+        </a>
+      </div>
+    </ui:fragment>
+    <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+      <div class="wi-dock-static-navi-button-guider #{activeTrail eq 'guider' ? 'active-trail' : ''}" title="#{i18n.text['plugin.guider.guider']}">
+        <a jsf:outcome="/jsf/guider/index.jsf" class="icon-members">
+          <span style="display:none" class="wi-dock-notification"></span>
+        </a>
+      </div>
+    </ui:fragment>
+    <ui:fragment rendered="#{sessionBackingBean.studentLoggedIn}">
+      <div class="wi-dock-static-navi-button-records #{activeTrail eq 'records' ? 'active-trail' : ''}" title="#{i18n.text['plugin.records.records']}">
+        <a jsf:outcome="/jsf/records/index.jsf" class="icon-profile">
+          <span style="display:none" class="wi-dock-notification"></span>
+        </a>
+      </div>
+    </ui:fragment>
+    <ui:fragment rendered="#{evaluationWidgetBackingBean.visible}">
+      <div class="wi-dock-static-navi-button-evaluation" title="#{i18n.text['plugin.evaluation.evaluation']}">
+        <a jsf:outcome="/jsf/evaluation/index.jsf" class="icon-evaluate" target="top">
+          <span style="display:none" class="wi-dock-notification"></span>
+        </a>
+      </div>
+    </ui:fragment>
+    <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+      <div class="wi-dock-static-navi-button-announcer #{activeTrail eq 'announcer' ? 'active-trail' : ''}" title="#{i18n.text['plugin.announcer.announcer']}">
+        <a jsf:outcome="/jsf/announcer/index.jsf" class="icon-announcer">
+          <span style="display:none" class="wi-dock-notification"></span>
+        </a>
+      </div>
+    </ui:fragment>
+  </ui:define>
+  
+  <ui:define name="footer">
+  
+  </ui:define>
+
+</ui:composition>

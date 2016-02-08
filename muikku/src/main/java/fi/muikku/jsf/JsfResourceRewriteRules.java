@@ -18,9 +18,17 @@ public class JsfResourceRewriteRules extends HttpConfigurationProvider {
     // TODO: Parameterize theme
     
     ConfigurationBuilder configuration = ConfigurationBuilder.begin();
-    configuration.addRule(Join.path("/scripts/{file}").to("/faces/javax.faces.resource/scripts/{file}"))
-                    .where("file").matches("[a-zA-Z0-9/_.\\-]*");
-    configuration.addRule(Join.path("/css/{file}").to("/javax.faces.resource/css/{file}.jsf?ln=theme-muikku"));
+    configuration.addRule(
+      Join.path("/scripts/{file}")
+        .to("/faces/javax.faces.resource/scripts/{file}"))
+        .where("file")
+        .matches("[a-zA-Z0-9/_.\\-]*");
+    
+    configuration.addRule(
+      Join.path("/css/{file}")
+        .to("/javax.faces.resource/css/{file}.jsf?ln=theme-muikku"))
+        .where("file")
+        .matches("[a-zA-Z0-9/_.\\-]*");
     
     configuration.addRule()
       .when(Path.matches("/icons/{file}"))

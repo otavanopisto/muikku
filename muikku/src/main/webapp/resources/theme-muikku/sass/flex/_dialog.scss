@@ -1,0 +1,138 @@
+body {
+
+/* JQuery UI Dialog Overrides */
+  .ui-widget-overlay {
+    background:#000;
+    opacity:0.5;
+  }
+  
+  .ui-dialog {
+    box-shadow:0 0 80px rgba(0,0,0,0.4);
+    background:#fff;
+    font-family:'Open Sans', Arial, sans-serif;
+    font-size:16px;
+    font-weight:300;
+    padding:0;
+    text-transform:uppercase;
+    border:none;
+    z-index:9999;
+    
+    &.ui-corner-all {
+      border-radius:0px;
+    }
+    
+    .ui-dialog-titlebar {
+      border:0px;
+      background:#7391a7;
+      color:#fff;
+      border-radius:0px;
+      padding:8px 36px 8px 12px;
+      font-weight:400;
+      line-height:1.5em;
+      
+      .ui-dialog-title {
+        margin:0;
+        font-size:18px;
+        width:100%;
+        font-weight:300;
+      }
+      
+      .ui-dialog-titlebar-close {
+        background:#7391a7;
+        border-radius:0px;
+        border:0px;
+        width:24px;
+        margin:-13px 0 0 0;
+        font-size:22px;
+        height:22px; Same height as font-size
+        
+        span {
+          display:none;
+        }
+        
+        &:before {
+          content: "\e63b";
+          color:#fff;
+          font-size:22px;
+          font-weight:normal;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+      }
+      
+    }
+    
+    .ui-dialog-content {
+      margin:10px 0 0 0;
+      line-height:1.5em;
+      
+      label {
+        font-weight:400;
+        font-size:14px;
+        margin:5px 0 0 0;
+      }
+      
+      textarea {
+        padding:4px 8px;
+        box-sizing:border-box;
+      }
+    }
+    
+    .ui-dialog-buttonpane {
+      border:0;
+      background:transparent;
+      padding:0px 10px 10px 10px;
+      margin:10px 0 0 0;
+      
+      .ui-dialog-buttonset {
+        float:none;
+        position:relative;
+        text-align:right;
+      
+        button {
+          border-radius:0px;
+          border:0;
+          color:#fff;
+          font-weight:400;
+          text-transform:uppercase;
+          margin:5px;
+          outline:none;
+          font-family:'Open Sans', Arial, sans-serif;
+          min-width:90px;
+        }
+        
+        button.delete-button,
+        button.confirm-button {
+          background:#de3211; /* RED */
+        }
+        
+        button.publish-button,
+        button.send-button,
+        button.save-evaluation-button,
+        button.unarchive-button {
+          background:#27b91c; /* GREEN */
+        }
+        
+        button.revert-button,
+        button.archive-button,
+        button.cancel-evaluation-button {
+          background:#f6a930; /* ORANGE */
+        }
+        
+        button.cancel-button {
+          background:#7391a7; /* GRAYISH BLUE */
+        }
+      
+      }
+    }
+  }
+  
+}
