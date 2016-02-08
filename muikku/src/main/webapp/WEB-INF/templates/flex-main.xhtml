@@ -34,7 +34,12 @@
     </ui:insert>
     
     <ui:insert name="navigation">
-      <nav><ui:insert name="navigation-content"></ui:insert></nav>
+      <nav id="staticNavigationWrapper">
+        <div id="staticNavigationBG"></div>
+        <div id="staticNavigation">
+          <ui:insert name="navigation-content"></ui:insert>
+        </div>
+      </nav>
     </ui:insert>
     
     <ui:insert name="main">

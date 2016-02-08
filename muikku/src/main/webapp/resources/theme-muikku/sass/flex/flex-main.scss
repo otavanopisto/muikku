@@ -21,3 +21,117 @@ body {
   background-position: top center, top left;
   color:#2c2c2c;
 }
+
+/* Navigation Icons tooltip */
+[class^="icon-"] span, [class*=" icon-"] span {
+  display: inline-block;
+  font-family:'Open Sans', Arial, sans-serif !important;
+  padding-left: 4px;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  text-decoration:none;  
+}
+
+/* Headers */
+h1 {
+  font-size:29px;
+}
+  
+h2 {
+  font-size:26px;
+}
+
+h3 {
+  font-size:19px;
+}
+
+h4 {
+  font-size:17px;
+}
+
+h5 {
+  font-size:15px;
+}
+
+h6 {
+  font-size:13px;
+}
+
+/* Subscript & Superscript*/
+sub {
+  vertical-align:sub;
+  font-size:70%;
+}
+
+sup {
+  vertical-align:super;
+  font-size:70%;
+}
+
+/* Header When User Not Logged In */
+#headerBig {
+  height:150px;
+  color: #fff;
+  position:relative;  
+  
+  #headerContainerBig {
+    position:relative; 
+  
+    #headerLogoTextContainerBig {
+      position:absolute;
+      left:-20px;
+      top:10px;
+      background-image:url('/gfx/muikku-header-text.png');
+      background-repeat:no-repeat; 
+      height:115px;
+      width:380px;
+    }
+    
+    #headerFishContainerBig {
+      position:absolute;
+      left:330px;
+      top:10px;
+      background-image:url('gfx/muikku-header-fish.png');
+      background-repeat:no-repeat; 
+      height:135px;
+      width:200px;
+    }
+  
+  }
+  
+}
+
+/* Header When User Logged In */
+#headerSmall {
+  height:90px;
+  color: #fff;
+  position:relative;
+  
+  #headerContainerSmall {
+    position:relative; 
+    
+    #headerLogoTextContainerSmall {
+      position:absolute;
+      left:0;
+      top:0;
+      background-image:url('/gfx/muikku-header-text-small.png');
+      background-repeat:no-repeat; 
+      height:90px;
+      width:245px;
+    }
+  
+    #headerFishContainerSmall {
+      position:absolute;
+      left:430px;
+      top:10px;
+      background-image:url('/gfx/muikku-header-fishes.png');
+      background-repeat:no-repeat; 
+      height:135px;
+      width:200px;
+    }
+    
+  }
+  
+}
+
