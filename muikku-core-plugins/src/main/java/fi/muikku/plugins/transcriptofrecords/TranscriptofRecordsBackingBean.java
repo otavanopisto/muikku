@@ -50,8 +50,9 @@ public class TranscriptofRecordsBackingBean {
             scaleItem.getIdentifier() }, '-');
         String grade = scaleItem.getName();
         String scale = gradingScale.getName();
+        Boolean passing = scaleItem.isPassingGrade();
         
-        grades.put(id, new Grade(grade, scale));
+        grades.put(id, new Grade(grade, scale, passing));
       }
     }
     
@@ -73,9 +74,10 @@ public class TranscriptofRecordsBackingBean {
 	
   public static class Grade {
     
-    public Grade(String grade, String scale) {
+    public Grade(String grade, String scale, Boolean passing) {
       this.scale = scale;
       this.grade = grade;
+      this.passing = passing;
     }
     
     public String getScale() {
@@ -86,7 +88,12 @@ public class TranscriptofRecordsBackingBean {
       return grade;
     }
     
+    public Boolean getPassing() {
+      return passing;
+    }
+    
     private String scale;
     private String grade;
+    private Boolean passing;
   }
 }

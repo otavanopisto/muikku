@@ -165,6 +165,7 @@
                     workspaceMaterial.verbalAssessment = evaluation.verbalAssessment;
                     workspaceMaterial.grade = grade.grade;
                     workspaceMaterial.gradingScale = grade.scale;
+                    workspaceMaterial.passing = grade.passing;
                   }
                   
                   callback(); 
