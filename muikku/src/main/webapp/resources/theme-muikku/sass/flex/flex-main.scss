@@ -17,12 +17,49 @@ body {
   padding:0 0 30px 0;
   font-family:'Open Sans', Arial, sans-serif;
   font-size:14px;
+  font-weight:300;
   line-height:1.5em;
   background-image: url('/gfx/main-background.png'), url('/gfx/main-background-slice.png');
   background-repeat:no-repeat,repeat-x;
   background-position: top center, top left;
   color:#2c2c2c;
 }
+
+main.content {
+  margin:20px 0 0 0;
+}
+
+h1,h2,h3,h4,h5 {
+  color:$header;
+  text-transform:uppercase;
+  margin:0 0 1em 0;
+  font-weight:300;
+}
+
+h1 {
+  font-size:29px;
+}
+  
+h2 {
+  font-size:26px;
+}
+
+h3 {
+  font-size:19px;
+}
+
+h4 {
+  font-size:17px;
+}
+
+h5 {
+  font-size:15px;
+}
+
+h6 {
+  font-size:13px;
+}
+
 
 /* Navigation Icons tooltip */
 [class^="icon-"] span, [class*=" icon-"] span {
@@ -320,13 +357,19 @@ div[class*='dock-dynamic-navi-button'] > a {
   
 }
 
+.box {
+  box-shadow:0 0 15px rgba(216, 230, 235, 0.2);
+  background:#fff;
+  padding:15px;
+}
+
 @media screen and (max-width: 767px) {
 
   body {
-    font-size:14px;
+    font-size:15px;
     line-height:1.5em;
     color:#2c2c2c;
-    padding:60px 5px 5px 5px;
+    padding:45px 5px 5px 5px;
     background-image:url('/gfx/light-diagonal-strips.png');
     background-repeat:repeat;
     background-color:#f0f3f5;
@@ -366,7 +409,6 @@ div[class*='dock-dynamic-navi-button'] > a {
     display:inline-block;
     margin:0;
     width:100%;
-    margin-top:10px;
   }
   
   .bt-generic.bt-login,
