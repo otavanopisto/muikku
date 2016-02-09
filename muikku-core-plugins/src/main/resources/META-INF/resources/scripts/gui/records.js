@@ -79,6 +79,7 @@
                   workspaceEntity.verbalAssessment = assessment.verbalAssessment;
                   workspaceEntity.grade = grade.grade;
                   workspaceEntity.gradingScale = grade.scale;
+                  workspaceEntity.passed = assessment.passed;
                 }
               }
               
@@ -138,7 +139,7 @@
       return null;
     },
     
-    _loadWorkspace: function (workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment) {
+    _loadWorkspace: function (workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, passed, evaluated, verbalAssessment) {
 
       this._load();
 
@@ -164,6 +165,7 @@
                     workspaceMaterial.verbalAssessment = evaluation.verbalAssessment;
                     workspaceMaterial.grade = grade.grade;
                     workspaceMaterial.gradingScale = grade.scale;
+                    workspaceMaterial.passing = grade.passing;
                   }
                   
                   callback(); 
@@ -183,6 +185,7 @@
               workspaceDescription : workspaceEntityDescription,
               workspaceGrade: grade, 
               workspaceGradingScale: gradingScale, 
+              passed: passed,
               workspaceEvaluated: evaluated, 
               workspaceVerbalAssessment: verbalAssessment
             }, $.proxy(function(text) {
@@ -202,10 +205,11 @@
       var verbalAssessment = $(item).attr('data-workspace-verbal-assessment');
       var grade = $(item).attr('data-workspace-grade');
       var gradingScale = $(item).attr('data-workspace-grading-scale');
+      var passed = $(item).attr('data-workspace-grade-passed') == 'true';
       var evaluated = $(item).attr('data-workspace-evaluated');
      
       if (workspaceEntityId) {
-        this._loadWorkspace(workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment);
+        this._loadWorkspace(workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, passed, evaluated, verbalAssessment);
       }
     },
     _onEvaluationClick: function(event){
