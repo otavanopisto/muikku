@@ -1,11 +1,52 @@
 (function() {
   
+  var createClass = function () {
+    var superClass = null;
+    var definition = null;
+    
+    if (arguments.length == 1) {
+      definition = arguments[0];
+    } else if (arguments.length == 2) {
+      var superClass = arguments[0];
+      var definition = arguments[1];
+    } else {
+      throw new Error("Invalid number of arguments " + arguments.length);
+    }
+    
+    if ((typeof definition.init) != 'function') {
+      throw new Error("Class missing constructor");
+    }
+    
+    var init = null;
+    var properties = {};
+    
+    properties.constructor = {
+      value: definition.init,
+      enumerable: false
+    };
+    
+    for (var funcName in definition) {
+      if (funcName === 'init') {
+        init = definition[funcName];
+      } else {
+        properties[funcName] = {
+          value: definition[funcName]
+        };
+      }
+    }
+    
+    var result = init;
+    result.prototype = Object.create(superClass ? superClass.prototype : null, properties);
+    
+    return result;
+  };
+  
   var ResourceImpl = null;
   var ServiceImpl = null;
   var EventImpl = null;
   var RequestImpl = null;
 
-  EventImpl = $.klass({
+  EventImpl = createClass({
     init: function (path, callback) {
       this._path = path; 
       this._callback = callback;
@@ -18,7 +59,7 @@
     }
   });
   
-  ResourceImpl = $.klass({
+  ResourceImpl = createClass({
     init: function (service, client) {
       this._service = service;
       this._client = client;
@@ -62,7 +103,7 @@
     }
   });
   
-  ServiceImpl = $.klass({
+  ServiceImpl = createClass({
     init: function (async, service) {
       this._client = new $.RestClient(CONTEXTPATH + '/rest/' + service + '/', {
         cache: 30,
@@ -92,7 +133,7 @@
     }
   });
   
-  AbstractRequest = $.klass({
+  AbstractRequest = createClass({
     init: function () {
       this._events = new Array();
     },
@@ -210,10 +251,9 @@
     }
   });
   
-  BatchRequestImpl = $.klass(AbstractRequest, {
+  BatchRequestImpl = createClass(AbstractRequest, {
     init: function (operations) {
-      this._super(arguments);
-      
+      AbstractRequest.call(this);
       this._operations = operations;
       this._callback = null;
     },
@@ -248,7 +288,7 @@
     }
   });
   
-  ApiImpl = $.klass({
+  ApiImpl = createClass({
     init: function () {
       
     },
@@ -260,9 +300,9 @@
     }
   });
   
-  RequestImpl = $.klass(AbstractRequest, {
+  RequestImpl = createClass(AbstractRequest, {
     init: function (client) {
-      this._super(arguments);
+      AbstractRequest.call(this);
       this._client = client;
     },
     
