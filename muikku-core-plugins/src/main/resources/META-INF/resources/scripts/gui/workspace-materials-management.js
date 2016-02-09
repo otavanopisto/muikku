@@ -1001,8 +1001,6 @@
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
       enableFileUploader(element);
     });
-
-    $('.muikku-connect-field').muikkuConnectField('refresh');
     
     $(window).data('initializing', false);
   });
