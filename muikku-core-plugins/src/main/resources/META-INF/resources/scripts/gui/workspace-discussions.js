@@ -397,10 +397,19 @@ $(document).ready(function() {
       var aId = $(element).find("input[name='areaId']").attr('value');
 
       var sendReply = function(values) {
-        mApi({async: false}).forum.areas.threads.replies.create(aId, tId, values).callback($.proxy(function(err, result) {
-          window.discussion._refreshThread(aId, tId);
-          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newreply'));
-        },this));
+        
+        if (values.message.trim() === '') {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nomessage'));
+          return false;
+        } else {
+        
+          mApi({async: false}).forum.areas.threads.replies.create(aId, tId, values).callback($.proxy(function(err, result) {
+            window.discussion._refreshThread(aId, tId);
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newreply'));
+          },this));
+        
+        }
+        
       }
 
       mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {

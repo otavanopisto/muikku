@@ -64,7 +64,7 @@ public class WorkspaceBackingBean {
     guidesVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "guides");
     materialsVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "materials");
     discussionsVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "discussions");
-    usersVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "users");
+    usersVisible = sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "users");
     journalVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "journal");
   }
 
