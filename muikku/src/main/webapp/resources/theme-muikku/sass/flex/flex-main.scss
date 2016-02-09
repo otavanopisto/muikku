@@ -3,6 +3,8 @@
 @import "_styles.scss";
 @import "_animations.scss";
 @import "_dialog.scss";
+@import "_buttons.scss";
+@import "_notif-queue.scss";
 @import "_connectionlost.scss";
 
 html {
@@ -70,68 +72,327 @@ sup {
 }
 
 /* Header When User Not Logged In */
-#headerBig {
-  height:150px;
+#header {
+  max-width:$siteWidth;
+  margin:0 auto;
+  height:120px;
   color: #fff;
   position:relative;  
-  
-  #headerContainerBig {
-    position:relative; 
-  
-    #headerLogoTextContainerBig {
-      position:absolute;
-      left:-20px;
-      top:10px;
-      background-image:url('/gfx/muikku-header-text.png');
-      background-repeat:no-repeat; 
-      height:115px;
-      width:380px;
-    }
-    
-    #headerFishContainerBig {
-      position:absolute;
-      left:330px;
-      top:10px;
-      background-image:url('gfx/muikku-header-fish.png');
-      background-repeat:no-repeat; 
-      height:135px;
-      width:200px;
-    }
-  
-  }
-  
 }
 
-/* Header When User Logged In */
-#headerSmall {
-  height:90px;
-  color: #fff;
+#headerLogoTextContainer {
+  background-image:url('/gfx/muikku-header-text.png');
+  background-repeat:no-repeat;
+  background-position:left center;
   position:relative;
+  left:-25px;
+  top:0;
+  height:110px;
+}
+
+/* Login */
+.login {
+  position:relative;
+  @include buttonShadow;
+  float:right;
+  margin:0 10px 0 0;
+}
+
+/* Language */
+.language { 
+  float:right;
+  position:relative;
+  margin:0 10px 0 0;
+  background:#2e72a0;
+  height:48px;
+  width:48px;
+  box-sizing:border-box;
+  display:inline-block;
+  border-radius:100%;
+  z-index:15;
+  text-align:center;
+  padding:0;
+  overflow:hidden;
+  box-shadow:0 0 15px rgba(255,255,255,0.5);
+  transition:border-radius 0.1s ease-in-out;
   
-  #headerContainerSmall {
-    position:relative; 
+  &:hover,
+  &:focus,
+  &:active {
+    border-radius:5px;
+    box-shadow:none;
+    background:#fff;
+    overflow:visible;
     
-    #headerLogoTextContainerSmall {
+    .language-container {
       position:absolute;
-      left:0;
-      top:0;
-      background-image:url('/gfx/muikku-header-text-small.png');
-      background-repeat:no-repeat; 
-      height:90px;
-      width:245px;
+      background:#fff; 
+      border-radius:5px;
+      
+      a {
+        color:#569bca;
+        
+        &:first-child {
+          border-top-left-radius:5px;
+          border-top-right-radius:5px;
+        }
+        
+        &:last-child {
+          border-bottom-left-radius:5px;
+          border-bottom-right-radius:5px;
+        }
+        
+        &:hover {
+          color:#fff;
+          background:#2e72a0;
+          
+        }
+        
+      }
+      
     }
-  
-    #headerFishContainerSmall {
-      position:absolute;
-      left:430px;
-      top:10px;
-      background-image:url('/gfx/muikku-header-fishes.png');
-      background-repeat:no-repeat; 
-      height:135px;
-      width:200px;
+    
+    
+    
+  }
+
+  a {  
+    text-decoration:none; 
+    padding:12px 10px;  
+    color:#fff;   
+    font-size:22px;
+    font-weight:300;
+    display:block;
+    min-width:28px;
+    min-height:24px
+  }
+    
+}
+
+.logged-user {
+  position:relative;
+  float:right;
+  margin-right:10px;
+
+  .lu-user-picture {
+    border:2px solid #fff;
+    height:48px;
+    width:48px; 
+    position:relative;
+    top:0;     
+    box-sizing:border-box; 
+    display:inline-block;
+    border-radius:24px;
+    margin:0 4px 0 0;
+    z-index:15;
+    background-size:100% auto;
+    border:2px solid #fff;
+    background-image:url('/gfx/default-user-picture.jpg');
+    overflow:hidden;
+    
+    img {
+      width:100%;
+      border:0;
     }
     
   }
   
+  .lu-info-container {
+    border:2px solid #fff;
+    background:#fff;
+    height:48px;
+    display:inline-block;
+    box-sizing:border-box;
+    border-top-left-radius:24px;
+    border-bottom-left-radius:24px;
+  
+    .lu-user-name {
+      @include no-select;
+      color:#3c77a0;
+      text-transform:uppercase;
+      min-width:100px;
+      padding:13px 6px 14px 20px;
+      float:left;
+      height:1.5em;
+      
+      a {
+        color:#3c77a0;
+        text-decoration:none;
+      }
+      
+    }
+    
+    .lu-user-name-button-value {
+      box-sizing:border-box;
+      cursor:pointer;
+      display:inline-block;
+    }
+          
+    .lu-actions {
+      float:left;
+      height:1.5em;
+      padding:13px 6px 10px 6px;
+      
+      a {
+        margin:0 6px;
+      }
+      
+    }
+
+    a[class*="lu-action"] {
+      color:#3C77A0;
+      font-size:21px;
+    }
+
+  }
+
 }
 
+/* Navigation */
+#staticNavigationWrapper {
+  height:76px;
+  z-index:12;
+  position:relative;
+  background: -moz-linear-gradient(top, rgba(36,108,162,0.15) 0%, rgba(255,255,255,0) 66%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(36,108,162,0.15)), color-stop(66%,rgba(255,255,255,0)));
+  background: -webkit-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: -o-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: -ms-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: linear-gradient(to bottom, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#26246ca2', endColorstr='#00ffffff',GradientType=0);
+}
+
+.static-navigation-bg {
+  background:$naviBgColor;
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  right:0;
+  opacity:0.8;
+  z-index:13;
+  border-top:1px solid $naviBorderTop;
+  border-bottom:1px solid $naviBorderBottom;
+}
+
+#staticNavigation {
+  max-width:$siteWidth;
+  margin:0 auto;
+  height:56px;
+  z-index:14;
+  padding:10px;
+  position:relative;
+}
+
+/* Navigation Icons */
+div[class*="wi-dock-static-navi"] {
+  position:relative;
+  float:left;
+  margin-right:15px;
+  
+  &.active-trail {
+    border-bottom:3px solid #aae3f2;
+    
+    &:hover {
+      border-bottom:3px solid #aae3f2;
+    }
+    
+  }
+  
+  &:hover {
+    border-bottom:3px solid #66aace;
+  }
+}
+
+div[class*='dock-static-navi-button'] > a, 
+div[class*='dock-dynamic-navi-button'] > a {
+  font-size:40px;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  padding:5px 10px;
+  height:40px;
+  display:inline-block;
+  
+  &:hover {
+    @include iconShadow(rgba(255,255,190,0.8));
+  }
+  
+}
+
+@media screen and (max-width: 767px) {
+
+  body {
+    font-size:14px;
+    line-height:1.5em;
+    color:#2c2c2c;
+    padding:60px 5px 5px 5px;
+    background-image:url('/gfx/light-diagonal-strips.png');
+    background-repeat:repeat;
+    background-color:#f0f3f5;
+  }
+  
+  #staticNavigationWrapper {
+    height:60px;
+    position:fixed;
+    left:0;
+    top:0;
+    right:0;
+  }
+  
+  #staticNavigation {
+    height:50px;
+    padding:5px 10px 5px 10px;
+    box-shadow:0 2px 2px rgba(0,0,0,0.2);
+  }
+  
+  .static-navigation-bg {
+    background:#32acf6 url("/gfx/mobile-navigation-background.png");
+    background-position:30% top;
+    opacity:1;
+    border:0;
+  }
+  
+  div[class*='dock-static-navi-button'] > a, 
+  div[class*='dock-dynamic-navi-button'] > a {
+    font-size:35px;
+    padding:5px 5px 2px 5px;
+    height:35px;
+  }
+  
+  .login,
+  .forgot-password {
+    float:none;
+    display:inline-block;
+    margin:0;
+    width:100%;
+    margin-top:10px;
+  }
+  
+  .bt-generic.bt-login,
+  .bt-generic.bt-forgotpassword {
+    font-size:1em;
+    padding:0;
+    float:none;
+    width:100%;
+    text-align:center;
+    border-radius:2px;
+  }
+  
+  
+  .bt-generic.bt-login a,
+  .bt-generic.bt-forgotpassword span {
+    padding:10px;
+    text-decoration:none;
+    display:inline-block;
+  }
+  
+}
+
+@media screen and (min-width: 768px) and (max-width: 959px) {
+  
+  #headerLogoTextContainer {
+    background-size:100%;
+  }
+  
+}
