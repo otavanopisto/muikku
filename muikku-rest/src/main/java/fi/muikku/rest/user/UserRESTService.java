@@ -126,6 +126,7 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("workspaceIds") List<Long> workspaceIds,
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userEntityId") Long userEntityId,
+      @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
       @QueryParam("studentFlagTypes") String flagTypes) {
     
     if (!sessionController.isLoggedIn()) {
@@ -186,6 +187,18 @@ public class UserRESTService extends AbstractRESTService {
       userIdentifiers.addAll(studentFlagController.listOwnerFlaggedUserIdentifiersByTypes(sessionController.getLoggedUser(), studentFlagTypes));
     }
     
+    if (Boolean.TRUE.equals(includeInactiveStudents)) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_INACTIVE_STUDENTS)) {
+        if (userEntityId == null) {
+          return Response.status(Status.FORBIDDEN).build();
+        } else {
+          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
+            return Response.status(Status.FORBIDDEN).build();
+          }
+        }
+      }
+    } 
+    
     if (userEntityId != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
        
@@ -223,7 +236,7 @@ public class UserRESTService extends AbstractRESTService {
     if (elasticSearchProvider != null) {
       String[] fields = new String[] { "firstName", "lastName" };
 
-      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, EnvironmentRoleArchetype.STUDENT, userGroupFilters, workspaceFilters, userIdentifiers, firstResult, maxResults);
+      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, EnvironmentRoleArchetype.STUDENT, userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
       boolean hasImage = false;
