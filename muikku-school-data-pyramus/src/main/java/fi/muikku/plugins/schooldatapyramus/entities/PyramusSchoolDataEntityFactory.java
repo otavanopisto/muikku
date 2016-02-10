@@ -92,20 +92,25 @@ public class PyramusSchoolDataEntityFactory {
   public User createEntity(fi.pyramus.rest.model.StaffMember staffMember) {
     String displayName = staffMember.getFirstName() + " " + staffMember.getLastName();
     switch (staffMember.getRole()) {
-    case ADMINISTRATOR:
-      displayName += " (Administrator)";
+      case ADMINISTRATOR:
+        displayName += " (Administrator)";
       break;
-    case GUEST:
-      displayName += " (Guest)";
+      case GUEST:
+        displayName += " (Guest)";
       break;
-    case MANAGER:
-      displayName += " (Manager)";
+      case MANAGER:
+        displayName += " (Manager)";
       break;
-    case USER:
-      displayName += " (User)";
+      case USER:
+        displayName += " (User)";
       break;
     }
 
+    boolean hidden = false;
+    boolean startedStudies = false;
+    boolean finishedStudies = false;
+    boolean active = true;
+    
     return new PyramusUser(
         identifierMapper.getStaffIdentifier(staffMember.getId()),
         staffMember.getFirstName(),
@@ -118,7 +123,11 @@ public class PyramusSchoolDataEntityFactory {
         null,
         null,
         null,
-        false);
+        null,
+        hidden,
+        startedStudies,
+        finishedStudies,
+        active);
   }
 
   public List<User> createEntity(fi.pyramus.rest.model.StaffMember... staffMembers) {
@@ -132,7 +141,7 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public User createEntity(fi.pyramus.rest.model.Student student, fi.pyramus.rest.model.StudyProgramme studyProgramme,
-      String nationality, String language, String municipality, String school, DateTime studyStartDate,
+      String nationality, String language, String municipality, String school, DateTime studyStartDate, DateTime studyEndDate,
       DateTime studyTimeEnd, boolean hidden) {
     StringBuilder displayName = new StringBuilder();
 
@@ -143,7 +152,11 @@ public class PyramusSchoolDataEntityFactory {
     if (studyProgrammeName != null) {
       displayName.append(String.format(" (%s)", studyProgrammeName));
     }
-
+    
+    boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(System.currentTimeMillis());
+    boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(System.currentTimeMillis());
+    boolean active = startedStudies && !finishedStudies;
+    
     return new PyramusUser(
         identifierMapper.getStudentIdentifier(student.getId()),
         student.getFirstName(),
@@ -155,8 +168,12 @@ public class PyramusSchoolDataEntityFactory {
         municipality,
         school,
         studyStartDate,
+        studyEndDate,
         studyTimeEnd,
-        hidden);
+        hidden,
+        startedStudies,
+        finishedStudies,
+        active);
   }
 
   public EnvironmentRole createEntity(fi.pyramus.rest.model.UserRole role) {
