@@ -302,12 +302,12 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     return staffMember;
   }
   
-  public static Student mockStudent(Long personId, Long studentId, String firstName, String lastName, String email, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
+  public static Student mockStudent(Long personId, Long studentId, String firstName, String lastName, String email, List<String> tags, Map<String, String> variables, List<String> payloads, DateTime studyStartDate, DateTime studyEndDate) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     Student student = new Student(studentId, personId, firstName, lastName, null, null, null, null, null, null, null, null,
       null, null, null, (long) 1, null, null,
-      false, null, null, null, null, variables, tags, false);
+      false, studyStartDate, studyEndDate, null, null, variables, tags, false);
     
     String studentJson = objectMapper.writeValueAsString(student);
     
@@ -372,9 +372,9 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
 
     Map<String, String> variables = null;
     List<String> tags = null;
-
-    Student student1 = mockStudent(1l, 1l, "Test", "User", "testuser@made.up", tags, variables, payloads);
-    Student student2 = mockStudent(6l, 6l, "Hidden", "Dragon", "crouchingtiger@made.up", tags, variables, payloads);
+    
+    Student student1 = mockStudent(1l, 1l, "Test", "User", "testuser@made.up", tags, variables, payloads, toDate(2010, 1, 1), getNextYear());
+    Student student2 = mockStudent(6l, 6l, "Hidden", "Dragon", "crouchingtiger@made.up", tags, variables, payloads, toDate(2010, 1, 1), toDate(2011, 1, 1));
 
     StaffMember staffMember1 = mockStaffMember(2l, 2l, "Test", "Staff1member", "teacher@made.up", UserRole.USER, tags, variables, payloads);
     StaffMember staffMember2 = mockStaffMember(3l, 3l, "Test", "Staff2member", "mana@made.up", UserRole.MANAGER, tags, variables, payloads);
@@ -417,6 +417,15 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         .withHeader("Content-Type", "application/json")
         .withBody(contactTypesJson)
         .withStatus(200)));
+  }
+  
+  private static DateTime getNextYear() {
+    DateTime result = new DateTime();
+    return result.plusYears(1);
+  }
+  
+  private static DateTime toDate(int year, int month, int day) {
+    return new DateTime(year, month, day, 0, 0, 0, 0);
   }
 
   public static void mockWorkspaces(List<String> payloads) throws JsonProcessingException {
