@@ -155,7 +155,7 @@ public class PyramusSchoolDataEntityFactory {
     
     boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(System.currentTimeMillis());
     boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(System.currentTimeMillis());
-    boolean active = startedStudies && !finishedStudies;
+    boolean active = studyStartDate == null && studyEndDate == null ? true : startedStudies && !finishedStudies;
     
     return new PyramusUser(
         identifierMapper.getStudentIdentifier(student.getId()),
