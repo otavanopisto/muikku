@@ -24,16 +24,16 @@
     },
 
     _loadHtmlMaterial: function(pageElement, fieldAnswers) {
-      var workspaceMaterialId = $(pageElement).data('workspace-material-id');
-      var materialId = $(pageElement).data('material-id');
+      var workspaceMaterialId = $(pageElement).attr('data-workspace-material-id');
+      var materialId = $(pageElement).attr('data-material-id');
       var parentIds = []; // TODO needed anymore?
 
       try {
         var material = {
-          title: $(pageElement).data('material-title'),
-          html: $(pageElement).data('material-content'),
-          currentRevision: $(pageElement).data('material-current-revision'),
-          publishedRevision: $(pageElement).data('material-published-revision'),
+          title: $(pageElement).attr('data-material-title'),
+          html: $(pageElement).attr('data-material-content'),
+          currentRevision: $(pageElement).attr('data-material-current-revision'),
+          publishedRevision: $(pageElement).attr('data-material-published-revision'),
           path: $(pageElement).attr('data-path')
         };
         
@@ -144,16 +144,16 @@
     },
     
     loadMaterial: function(page, fieldAnswers) {
-      var workspaceMaterialId = $(page).data('workspace-material-id');
-      var materialId = $(page).data('material-id');
-      var materialType = $(page).data('material-type');
-      var materialTitle = $(page).data('material-title');
+      var workspaceMaterialId = $(page).attr('data-workspace-material-id');
+      var materialId = $(page).attr('data-material-id');
+      var materialType = $(page).attr('data-material-type');
+      var materialTitle = $(page).attr('data-material-title');
       switch (materialType) {
         case 'html':
           this._loadHtmlMaterial($(page), fieldAnswers);
         break;
         case 'folder':
-          renderDustTemplate(this.options.dustTemplate, { id: workspaceMaterialId, workspaceMaterialId: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
+          renderDustTemplate(this.options.dustTemplate, { id: workspaceMaterialId, workspaceMaterialId: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), data: { title: $(page).attr('data-material-title') } }, $.proxy(function (text) {
             $(this).html(text);
             $.waypoints('refresh');
           }, page));
@@ -541,7 +541,7 @@
           
           tdTermElement.text(concatText(connectFieldTermMeta.text, 50));
           tdTermElement.attr('title', connectFieldTermMeta.text);
-          tdTermElement.data('muikku-connect-field-option-name', connectFieldTermMeta.name);
+          tdTermElement.attr('data-muikku-connect-field-option-name', connectFieldTermMeta.name);
           tdValueElement.append(inputElement);
         }
         
