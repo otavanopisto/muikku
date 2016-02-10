@@ -16,14 +16,15 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
 
 	private static final long serialVersionUID = 3790128454976388680L;
 
-	public UserEntity create(Boolean archived, SchoolDataSource defaultSchoolDataSource, String defaultIdentifier) {
-		UserEntity user = new UserEntity();
+	public UserEntity create(Boolean archived, SchoolDataSource defaultSchoolDataSource, String defaultIdentifier, String locale) {
+		UserEntity userEntity = new UserEntity();
 
-		user.setArchived(archived);
-		user.setDefaultIdentifier(defaultIdentifier);
-		user.setDefaultSchoolDataSource(defaultSchoolDataSource);
-
-		return persist(user);
+		userEntity.setArchived(archived);
+		userEntity.setDefaultIdentifier(defaultIdentifier);
+		userEntity.setDefaultSchoolDataSource(defaultSchoolDataSource);
+		userEntity.setLocale(locale);
+		
+		return persist(userEntity);
 	}
 
 	public List<UserEntity> listByUserNotIn(List<UserEntity> users) {
@@ -51,6 +52,11 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
 
   public UserEntity updateDefaultIdentifier(UserEntity userEntity, String defaultIdentifier) {
     userEntity.setDefaultIdentifier(defaultIdentifier);
+    return persist(userEntity);
+  }
+
+  public UserEntity updateLocale(UserEntity userEntity, String locale) {
+    userEntity.setLocale(locale);
     return persist(userEntity);
   }
 

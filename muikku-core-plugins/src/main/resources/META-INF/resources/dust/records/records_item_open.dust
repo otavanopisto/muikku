@@ -15,8 +15,14 @@
       <div class="tr-item-details-container">       
         <div class="tr-item-description">
           <div class="tr-item-open-header-name">
-           <span>{workspaceGrade}</span>
-           <span class="tr-item-long">{workspaceName}</span>
+            {?workspaceGrade}
+              {?passed}
+                <span class="grade passing">{workspaceGrade}</span>
+              {:else}
+                <span class="grade non-passing">{workspaceGrade}</span>
+              {/passed}
+            {/workspaceGrade}
+            <span class="tr-item-long">{workspaceName}</span>
           </div>
 
           <div id="detailsCrs-{id}" class="tr-item-content-details" >     

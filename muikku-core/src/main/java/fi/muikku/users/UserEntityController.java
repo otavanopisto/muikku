@@ -3,6 +3,7 @@ package fi.muikku.users;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -37,8 +38,8 @@ public class UserEntityController implements Serializable {
   @Inject
   private UserEmailEntityDAO userEmailEntityDAO;
   
-  public UserEntity createUserEntity(SchoolDataSource defaultSchoolDataSource, String defaultIdentifier) {
-    return userEntityDAO.create(Boolean.FALSE, defaultSchoolDataSource, defaultIdentifier);
+  public UserEntity createUserEntity(SchoolDataSource defaultSchoolDataSource, String defaultIdentifier, Locale locale) {
+    return userEntityDAO.create(Boolean.FALSE, defaultSchoolDataSource, defaultIdentifier, locale != null ? locale.toString() : null);
   }
   
   public UserEntity createUserEntity(String dataSource, String identifier) {
@@ -48,7 +49,7 @@ public class UserEntityController implements Serializable {
       return null;
     }
     
-    return createUserEntity(schoolDataSource, identifier);
+    return createUserEntity(schoolDataSource, identifier, null);
   }
   
   public UserEntity findUserEntityById(Long id) {
@@ -154,6 +155,10 @@ public class UserEntityController implements Serializable {
   
   public UserEntity updateDefaultIdentifier(UserEntity userEntity, String defaultIdentifier) {
     return userEntityDAO.updateDefaultIdentifier(userEntity, defaultIdentifier);
+  }
+
+  public UserEntity updateLocale(UserEntity userEntity, Locale locale) {
+    return userEntityDAO.updateLocale(userEntity, locale != null ? locale.toString() : null);
   }
 
   public UserEntity archiveUserEntity(UserEntity userEntity) {
