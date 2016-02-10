@@ -1,29 +1,31 @@
 <h3>{#localize key="plugin.frontPage.visits.title"/}</h3>
-{?workspaces}
 
- {?lastDay}<span>{#localize key="plugin.frontPage.visits.lastDay"/}</span>
-   <ul class="wi-courses today">
+{?workspaces}
+  {?lastDay}
+    <div class="subtitle">{#localize key="plugin.frontPage.visits.lastDay"/}</div>
+    <ul>
     {#lastDay}
-        {>"frontpage/widget_visit.dust"/}  
+      {>"frontpage/widget_visit.dust"/}  
     {/lastDay} 
-     </ul>
- {/lastDay}
- {?lastWeek}<span>{#localize key="plugin.frontPage.visits.lastWeek"/}</span>
-   <ul class="wi-courses yesterday">
+    </ul>
+  {/lastDay}
+  {?lastWeek}
+    <div class="subtitle">{#localize key="plugin.frontPage.visits.lastWeek"/}</div>
+    <ul>
     {#lastWeek}
-          {>"frontpage/widget_visit.dust"/}  
+      {>"frontpage/widget_visit.dust"/}  
     {/lastWeek}
-   </ul>
-{/lastWeek}   
-  {?older}<span>{#localize key="plugin.frontPage.visits.older"/}</span>
-   <ul class="wi-courses older">
+    </ul>
+  {/lastWeek}   
+  {?older}
+    <div class="subtitle">{#localize key="plugin.frontPage.visits.older"/}</div>
+    <ul>
     {#older}
       {>"frontpage/widget_visit.dust"/}
     {/older}    
-   </ul>
+    </ul>
   {/older}
  
 {:else}
-
-   <div class="wi-empty"><span>{#localize key="plugin.frontPage.visits.noVisits" /}</a></span></div>
+  <div class="empty">{#localize key="plugin.frontPage.visits.noVisits" /}</div>
 {/workspaces}

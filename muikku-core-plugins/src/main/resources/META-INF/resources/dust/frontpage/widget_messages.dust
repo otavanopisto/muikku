@@ -1,9 +1,11 @@
 <h3>{#localize key="plugin.frontPage.messages.title"/}</h3>
 
-<div class="wi-messages">
-  {#messages}
-    {>"frontpage/widget_message.dust"/}  
-  {:else}
-    <span>{#localize key="plugin.frontPage.messages.noMessages"/}</span>
-  {/messages}
-</div>
+{?messages}
+  <ul>
+    {#messages}
+      {>"frontpage/widget_message.dust"/}  
+    {/messages}
+  </ul>
+{:else}
+  <div class="empty">{#localize key="plugin.frontPage.messages.noMessages"/}</div>
+{/messages}

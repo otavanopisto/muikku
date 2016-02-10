@@ -6,8 +6,26 @@
   
   <ui:param name="activeTrail" value="index"/>
   
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" jsf:name="scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" jsf:name="scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/js/min/perfect-scrollbar.jquery.min.js"/>
+    
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+      <script defer="defer" jsf:name="scripts/gui/widget-visits.js"/>
+      <script defer="defer" jsf:name="scripts/gui/widget-courselist.js"/>
+      <script defer="defer" jsf:name="scripts/gui/widget-messages.js"/>
+      <script defer="defer" jsf:name="scripts/gui/widget-announcements.js"/>
+    </ui:fragment>
+    
+  </ui:define>
+  
   <ui:define name="styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/flex-main.css"/>
+    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/css/perfect-scrollbar.min.css"/>
   </ui:define>  
   
   <ui:define name="grid-content">
@@ -34,60 +52,71 @@
     </ui:fragment>
     
     <div class="flex-row">
-    
-      <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-        <div class="box">
-          <h3>Infoa</h3>
-          <p>Muikku3 on Otavan Opiston kehittämä oppimisympäristö.
-            Ympäristö tarjoaa kaikki tarvitsemasi työkalut opettamiseen ja
-            oppimiseen:</p>
-          <ul>
-            <li><b>Muokattavan etusivun</b> avulla voit personoida ympäristön
-              mieleiseksesi.</li>
-            <li>Opiskelu onnistuu myös <b>älypuhelimen</b> tai <b>tablet-laitteen</b>
-              kautta - ilman erillistä sovellusta.</li>
-            <li><b>Koko näytön lukutila</b> rauhoittaa opiskeluympäristön
-              opiskelua varten.</li>
-            <li><b>Yhdessä kirjoittamisen</b> väline mahdollistaa ryhmätyöt ilman
-              erillisiä ohjelmia.</li>
-            <li>Oppimisympäristön <b>kalenteri</b> kulkee mukanasi vaikka
-              älypuhelimessa.</li>
-            <li><b>Kehittyneen haun</b> avulla voit myös ohjata oppimisympäristön
-              toimintaa.</li>
-          </ul>
+      <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+        <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first">
+          <div class="box">
+            <div id="siteInfo">
+              <h3>Infoa</h3>
+              <p>Muikku3 on Otavan Opiston kehittämä oppimisympäristö.
+                Ympäristö tarjoaa kaikki tarvitsemasi työkalut opettamiseen ja
+                oppimiseen:</p>
+              <ul>
+                <li><b>Muokattavan etusivun</b> avulla voit personoida ympäristön
+                  mieleiseksesi.</li>
+                <li>Opiskelu onnistuu myös <b>älypuhelimen</b> tai <b>tablet-laitteen</b>
+                  kautta - ilman erillistä sovellusta.</li>
+                <li><b>Koko näytön lukutila</b> rauhoittaa opiskeluympäristön
+                  opiskelua varten.</li>
+                <li><b>Yhdessä kirjoittamisen</b> väline mahdollistaa ryhmätyöt ilman
+                  erillisiä ohjelmia.</li>
+                <li>Oppimisympäristön <b>kalenteri</b> kulkee mukanasi vaikka
+                  älypuhelimessa.</li>
+                <li><b>Kehittyneen haun</b> avulla voit myös ohjata oppimisympäristön
+                  toimintaa.</li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
-      
-      <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-        <div class="box">
-          <h3>Ohjeet</h3>
-          <p>
-            Kirjaudu sisään oikeasta ylänurkasta. <a
-              href="http://www.nettilukio.fi/">Nettilukioon</a> ja <a
-              href="http://www.nettiperuskoulu.fi">Nettiperuskouluun</a> voit
-            rekisteröityä linkkien kautta.
-          </p>
-          <p>
-            Jos haluat oppimisympäristön oman oppilaitoksesi käyttöön, ole
-            yhteydessä <a href="mailto:tommi.issakainen@otavanopisto.fi">tommi.issakainen@otavanopisto.fi</a>.
-          </p>
+        
+        <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last">
+          <div class="box">
+            <div id="siteGuide">
+              <h3>Ohjeet</h3>
+              <p>
+                Kirjaudu sisään oikeasta ylänurkasta. <a
+                  href="http://www.nettilukio.fi/">Nettilukioon</a> ja <a
+                  href="http://www.nettiperuskoulu.fi">Nettiperuskouluun</a> voit
+                rekisteröityä linkkien kautta.
+              </p>
+              <p>
+                Jos haluat oppimisympäristön oman oppilaitoksesi käyttöön, ole
+                yhteydessä <a href="mailto:tommi.issakainen@otavanopisto.fi">tommi.issakainen@otavanopisto.fi</a>.
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      </ui:fragment>
       
+      <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+        <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-order-2 sm-flex-order-2">
+          <div class="box">
+            <div id="visits"></div> 
+            <div id="workspaces"></div>
+          </div>
+        </div>
+        <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full  md-flex-order-3 sm-flex-order-3">
+          <div class="box">
+            <div id="messages"></div>
+          </div>
+        </div>
+        <div class="lg-flex-cell12-4 md-flex-cell-16 sm-flex-cell-full lg-flex-cell-last md-flex-order-1 sm-flex-order-1">
+          <div class="box">
+            <div id="announcements"></div>
+          </div>
+        </div>
+      </ui:fragment>
     </div>
-    <div class="flex-row">
-    
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-        <div class="box">
-          <h3>Infokanava</h3>
-          <a class="twitter-timeline" height="370" href="https://twitter.com/OtavanOpisto" data-widget-id="563647319191855104">Tweets by @OtavanOpisto</a>
-          <script>
-          !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-          </script>     
-        </div> 
-      </div>
-    
-    </div>
+
   </ui:define>
   
   

@@ -1,9 +1,6 @@
- 
 $(document).ready(function(){
-  var cont = $('.wi-announcements');
+  var cont = $('#announcements');
 
-  
-  
   mApi()
   .announcer
   .announcements
@@ -15,10 +12,7 @@ $(document).ready(function(){
             'error',
             err);
       } else {
-        renderDustTemplate(
-            'announcer/announcer_widget_items.dust',
-            result,
-            $.proxy(function (text) {
+        renderDustTemplate('announcer/announcer_widget_items.dust', result, $.proxy(function (text) {
               var element = $(text);
               cont.append(element);
               cont.perfectScrollbar({"suppressScrollY" : true});
@@ -26,8 +20,6 @@ $(document).ready(function(){
 
       }
 
-  
   }, this));
    
 });
- 	

@@ -9,17 +9,13 @@ $(document).ready(function(){
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
     	}else{
         renderDustTemplate('frontpage/widget_workspaces.dust', {
-        	
-        	workspaces :  workspaces
-        	
-        
+        	workspaces:workspaces
         }, function (text) {
-            $('#widgetCourselist').append($.parseHTML(text));
-            $('#widgetCourselist').perfectScrollbar({"suppressScrollX" : true});
+            $('#workspaces').append($.parseHTML(text));
+            $('#workspaces').perfectScrollbar({"suppressScrollX" : true});
           });
         
     	}
     });
-    
-	});
+});
 

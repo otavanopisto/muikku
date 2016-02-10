@@ -25,42 +25,6 @@ body {
   color:#2c2c2c;
 }
 
-main.content {
-  margin:20px 0 0 0;
-}
-
-h1,h2,h3,h4,h5 {
-  color:$header;
-  text-transform:uppercase;
-  margin:0 0 1em 0;
-  font-weight:300;
-}
-
-h1 {
-  font-size:29px;
-}
-  
-h2 {
-  font-size:26px;
-}
-
-h3 {
-  font-size:19px;
-}
-
-h4 {
-  font-size:17px;
-}
-
-h5 {
-  font-size:15px;
-}
-
-h6 {
-  font-size:13px;
-}
-
-
 /* Navigation Icons tooltip */
 [class^="icon-"] span, [class*=" icon-"] span {
   display: inline-block;
@@ -72,43 +36,7 @@ h6 {
   text-decoration:none;  
 }
 
-/* Headers */
-h1 {
-  font-size:29px;
-}
-  
-h2 {
-  font-size:26px;
-}
-
-h3 {
-  font-size:19px;
-}
-
-h4 {
-  font-size:17px;
-}
-
-h5 {
-  font-size:15px;
-}
-
-h6 {
-  font-size:13px;
-}
-
-/* Subscript & Superscript*/
-sub {
-  vertical-align:sub;
-  font-size:70%;
-}
-
-sup {
-  vertical-align:super;
-  font-size:70%;
-}
-
-/* Header When User Not Logged In */
+/* Header */
 #header {
   max-width:$siteWidth;
   margin:0 auto;
@@ -132,7 +60,6 @@ sup {
   position:relative;
   @include buttonShadow;
   float:right;
-  margin:0 10px 0 0;
 }
 
 /* Language */
@@ -164,12 +91,13 @@ sup {
     .language-container {
       position:absolute;
       background:#fff; 
+      border-radius:none;
       border-radius:5px;
       
       a {
         color:#569bca;
         
-        &:first-child {
+        &:first-of-type {
           border-top-left-radius:5px;
           border-top-right-radius:5px;
         }
@@ -182,15 +110,13 @@ sup {
         &:hover {
           color:#fff;
           background:#2e72a0;
-          
+          text-decoration:none;
         }
         
       }
       
     }
-    
-    
-    
+
   }
 
   a {  
@@ -209,7 +135,6 @@ sup {
 .logged-user {
   position:relative;
   float:right;
-  margin-right:10px;
 
   .lu-user-picture {
     border:2px solid #fff;
@@ -219,19 +144,13 @@ sup {
     top:0;     
     box-sizing:border-box; 
     display:inline-block;
-    border-radius:24px;
+    border-radius:100%;
     margin:0 4px 0 0;
     z-index:15;
     background-size:100% auto;
     border:2px solid #fff;
     background-image:url('/gfx/default-user-picture.jpg');
     overflow:hidden;
-    
-    img {
-      width:100%;
-      border:0;
-    }
-    
   }
   
   .lu-info-container {
@@ -279,6 +198,7 @@ sup {
     a[class*="lu-action"] {
       color:#3C77A0;
       font-size:21px;
+      text-decoration:none;
     }
 
   }
@@ -322,7 +242,7 @@ sup {
 }
 
 /* Navigation Icons */
-div[class*="wi-dock-static-navi"] {
+div[class*="dock-static-navi"] {
   position:relative;
   float:left;
   margin-right:15px;
@@ -341,7 +261,8 @@ div[class*="wi-dock-static-navi"] {
   }
 }
 
-div[class*='dock-static-navi-button'] > a, 
+div[class*='dock-static-navi-button'] > a,
+div[class*='dock-static-navi-button'] > div, 
 div[class*='dock-dynamic-navi-button'] > a {
   font-size:40px;
   color:#fff;
@@ -357,10 +278,138 @@ div[class*='dock-dynamic-navi-button'] > a {
   
 }
 
+/* Navigation Icons Notifier */
+.dock-notification {
+  background-color: #ff0000;
+  border-radius: 10px;
+  border:1px solid #fff;
+  top: 11px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+  height: 16px;
+  min-width: 10px;
+  padding: 0 3px 0 0;
+  position: absolute;
+  text-align: center;
+  right: 4px;
+}
+
+/* Content where everything goes */
+main.content {
+  margin:20px 0 0 0;
+}
+
 .box {
-  box-shadow:0 0 15px rgba(216, 230, 235, 0.2);
+  box-shadow:0 0 15px rgba(216, 230, 235, 0.5);
   background:#fff;
   padding:15px;
+  height:100%;
+  box-sizing:border-box;
+}
+
+.box ul {
+  margin:0;
+  padding:0;
+  list-style-type:none;
+}
+
+.box ul li {
+  padding:5px 0;
+}
+
+.empty {
+  font-style:italic;
+}
+
+/* Frontpage Boxes When User Not Logged In */
+#siteInfo {
+  
+}
+
+#siteGuide {
+  
+}
+
+/* Frontpage Boxes When User Logged In  */
+#visits {
+  
+}
+
+#workspaces {
+  margin:1.5em 0 0 0;
+}
+
+#messages {
+  
+  li.unread a {
+    font-weight:400;
+  }
+
+}
+
+#announcements {
+  
+}
+
+/* Headers */
+h1,h2,h3,h4,h5,h6 {
+  color:$header;
+  text-transform:uppercase;
+  margin:0 0 0.5em 0;
+  font-weight:300;
+}
+
+h1 {
+  font-size:29px;
+}
+  
+h2 {
+  font-size:26px;
+}
+
+h3 {
+  font-size:19px;
+}
+
+h4 {
+  font-size:17px;
+}
+
+h5 {
+  font-size:15px;
+  font-weight:400;
+}
+
+h6 {
+  font-size:13px;
+  font-weight:400;
+}
+
+.subtitle {
+  color:$subTitle;
+  font-weight:400;
+}
+
+a {
+  color:$link;
+  text-decoration:none;
+  
+  &:hover {
+    text-decoration:underline;
+  }
+  
+}
+
+/* Subscript & Superscript*/
+sub {
+  vertical-align:sub;
+  font-size:70%;
+}
+
+sup {
+  vertical-align:super;
+  font-size:70%;
 }
 
 @media screen and (max-width: 767px) {
@@ -396,11 +445,100 @@ div[class*='dock-dynamic-navi-button'] > a {
     border:0;
   }
   
+  .navmore-container {
+    display:none;
+  }
+  
+  div[class*="dock-static-navi"] {
+  
+    &:hover {
+      border:0;
+    }
+  
+  }
+  
   div[class*='dock-static-navi-button'] > a, 
   div[class*='dock-dynamic-navi-button'] > a {
     font-size:35px;
-    padding:5px 5px 2px 5px;
+    padding:7px 5px 2px 5px;
     height:35px;
+  }
+  
+  div.dock-static-navi-button-navimore {
+   float:right;
+   
+   &:hover {
+     border:0;
+   }
+   
+  }
+  
+  /* Navigation More Icon Wrapper */
+  div[class*='dock-static-navi-button'] > div {
+    font-size:35px;
+    padding:7px 5px 20px 5px;
+    height:35px;
+    cursor:pointer;
+
+    &:hover {
+      text-shadow:none;
+      
+      /* Navigation More Container */
+      .navmore-container {
+        display:block;
+        padding:0;
+        background:#fff;
+        box-shadow:-5px 5px 5px rgba(0, 0, 0, 0.1);
+        min-height:100vh;
+        position:fixed;
+        right:0;
+        top:61px;
+        cursor:default;
+        
+        div[class*="dock-static-navi"] {
+          margin:5px 0;
+          display:block;
+          float:none;
+          
+          > a {
+            padding:5px;
+            font-size:18px;
+            height:1em;
+            color:#416c7c;
+            text-shadow:none;
+            display:block;
+            padding:10px 20px 10px 10px;
+            
+            &:hover,
+            &:focus,
+            &:active {
+              background:#c5eaf8;
+            }
+            
+            &.icon-user {
+              font-size:16px;
+            }
+            
+            > span {
+              text-transform:uppercase;
+              font-size:16px;
+              color:#5c5c5c;
+              display:inline-block;
+              vertical-align:top;
+              padding:0 0 0 10px;
+              font-weight:300;
+            }
+          
+           &:hover {
+             text-shadow:none;
+           }
+          
+          }
+        }
+      }
+      
+    }
+    
   }
   
   .login,
@@ -427,6 +565,7 @@ div[class*='dock-dynamic-navi-button'] > a {
     padding:10px;
     text-decoration:none;
     display:inline-block;
+    
   }
   
 }
