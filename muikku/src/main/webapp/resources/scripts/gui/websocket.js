@@ -102,8 +102,6 @@
     _openWebSocket: function () {
       var host = window.location.host;
       var secure = location.protocol == 'https:';
-      console.log((secure ? 'wss://' : 'ws://') + host + '/ws/socket/' + this._ticket);
-      
       this._webSocket = this._createWebSocket((secure ? 'wss://' : 'ws://') + host + '/ws/socket/' + this._ticket);
       
       if (this._webSocket) {
