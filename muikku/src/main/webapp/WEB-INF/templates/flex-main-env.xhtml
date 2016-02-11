@@ -6,69 +6,60 @@
   
   <ui:define name="header">
     <header class="flex-row flex-align-items-center sm-flex-hide " id="header">
-      
-        <div class="lg-flex-cell-6 lg-flex-cell-first md-flex-cell-6 sm-flex-cell-full" id="headerLogoTextContainer"></div>
-        
-        <div class="lg-flex-cell-10 lg-flex-cell-last md-flex-cell-10 sm-flex-cell-full">
-        
-          <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-            <div class="logged-user" id="loggedUser">
-              <div class="lu-badge-container">
-                <div class="lu-user-picture" id="loggedUserPicture">
-                  <a jsf:outcome="/jsf/profile/profile.jsf"></a> 
-                </div>
-                <div class="lu-info-container">
-                  <div class="lu-user-name">
-                    <div class="lu-user-name-button-value">
-                      <a jsf:outcome="/jsf/profile/profile.jsf">#{sessionBackingBean.loggedUserName}</a>
-                    </div>
-                  </div>
-                  <div class="lu-actions">
-                    <h:form>
-                      <a jsf:action="#{logoutWidgetBackingBean.logout}" class="lu-action-signout icon-signout"></a>
-                    </h:form>
-                  </div>
-                </div>
+      <div class="lg-flex-cell-6 lg-flex-cell-first md-flex-cell-6 sm-flex-cell-full" id="headerLogoTextContainer"></div>
+      <div class="lg-flex-cell-10 lg-flex-cell-last md-flex-cell-10 sm-flex-cell-full">
+        <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+          <div class="logged-user" id="loggedUser">
+            <div class="lu-badge-container">
+              <div class="lu-user-picture" id="loggedUserPicture">
+                <a jsf:outcome="/jsf/profile/profile.jsf"></a> 
               </div>
-          
-              <ui:fragment rendered="#{loggedUserWidgetBackingBean.representing}">
-                <div class="formElementRow">
+              <div class="lu-info-container">
+                <div class="lu-user-name">
+                  <div class="lu-user-name-button-value">
+                    <a jsf:outcome="/jsf/profile/profile.jsf">#{sessionBackingBean.loggedUserName}</a>
+                  </div>
+                </div>
+                <div class="lu-actions">
                   <h:form>
-                    <a jsf:action="#{loggedUserWidgetBackingBean.endRepresentation()}">Lopeta edustus</a>
+                    <a jsf:action="#{logoutWidgetBackingBean.logout}" class="lu-action-signout icon-signout"></a>
                   </h:form>
                 </div>
-              </ui:fragment>
-            </div>
-            
-          </ui:fragment>
-          
-          <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-            <div class="login">
-              <div class="bt-generic icon-signout bt-login">
-                <a jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
-                  <span>#{i18n.text['plugin.login.buttonLabel']}</span>
-                </a>
               </div>
-              <div class="bt-generic icon-forgotpassword bt-forgotpassword">
-                <div>
-                  <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
-                </div>
-              </div> 
             </div>
-          </ui:fragment>
-          
-          <div class="language">
-            <h:form>
-              <div class="language-container">
-                <ui:repeat value="#{i18n.languages}" var="locale">
-                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
-                </ui:repeat>
+            <ui:fragment rendered="#{loggedUserWidgetBackingBean.representing}">
+              <div class="formElementRow">
+                <h:form>
+                  <a jsf:action="#{loggedUserWidgetBackingBean.endRepresentation()}">Lopeta edustus</a>
+                </h:form>
               </div>
-            </h:form>
+            </ui:fragment>
           </div>
-          
+        </ui:fragment>
+        <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+          <div class="login">
+            <div class="bt-generic icon-signout bt-login">
+              <a jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
+              </a>
+            </div>
+            <div class="bt-generic icon-forgotpassword bt-forgotpassword">
+              <div>
+                <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+              </div>
+            </div> 
+          </div>
+        </ui:fragment>
+        <div class="language">
+          <h:form>
+            <div class="language-container">
+              <ui:repeat value="#{i18n.languages}" var="locale">
+                <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
+              </ui:repeat>
+            </div>
+          </h:form>
         </div>
-
+      </div>
     </header>
   </ui:define>
   
@@ -169,13 +160,17 @@
             </div>
           </div>
         </ui:fragment>
-        
       </div>
     </nav>
   </ui:define>
   
   <ui:define name="footer">
-  
+    <footer id="footer">
+      <div id="helpdesk"><span>#{i18n.text['plugin.footer.helpdesk']}</span></div>
+      <div id="guides" jsf:rendered="#{environmentBackingBean.hasWorkspaceUrlName}">
+        <a jsf:outcome="/jsf/workspace/materials.jsf?faces-redirect=true&amp;workspaceUrlName=#{environmentBackingBean.helpWorkspaceUrlName}" target="top">#{i18n.text['plugin.footer.instructions']}</a>
+      </div>
+    </footer>
   </ui:define>
 
 </ui:composition>

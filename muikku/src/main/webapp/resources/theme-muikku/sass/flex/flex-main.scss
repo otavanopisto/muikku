@@ -14,7 +14,7 @@ html {
 
 body {
   margin: 0;
-  padding:0 0 30px 0;
+  padding:0 0 50px 0;
   font-family:'Open Sans', Arial, sans-serif;
   font-size:14px;
   font-weight:300;
@@ -43,6 +43,32 @@ body {
   height:120px;
   color: #fff;
   position:relative;  
+}
+
+#footer {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:30px;
+  opacity:0.9;
+  background-color:$btBarBgr;
+}
+
+#helpdesk {
+  font-weight:400;
+  font-size:14px;
+  float:right;
+  margin:0 10px 0 0;
+  padding:4px 0;
+}
+
+#guides {
+  font-weight:400;
+  font-size:14px;
+  float:right;
+  margin:0 10px 0 0;
+  padding:4px 0;
 }
 
 #headerLogoTextContainer {
@@ -135,6 +161,7 @@ body {
 .logged-user {
   position:relative;
   float:right;
+  font-weight:400;
 
   .lu-user-picture {
     border:2px solid #fff;
@@ -418,10 +445,16 @@ sup {
     font-size:15px;
     line-height:1.5em;
     color:#2c2c2c;
-    padding:45px 5px 5px 5px;
+    padding:45px 5px 35px 5px;
     background-image:url('/gfx/light-diagonal-strips.png');
     background-repeat:repeat;
     background-color:#f0f3f5;
+  }
+  
+  #helpdesk {
+    font-size:13px;
+    text-align:center;
+    float:none;
   }
   
   #staticNavigationWrapper {
@@ -481,7 +514,6 @@ sup {
     cursor:pointer;
 
     &:hover {
-      text-shadow:none;
       
       /* Navigation More Container */
       .navmore-container {
