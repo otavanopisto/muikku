@@ -18,7 +18,7 @@
       this._clear();
       
       mApi().user.students
-        .read({userEntityId: this.options.userEntityId})
+        .read({userEntityId: this.options.userEntityId, includeInactiveStudents : true })
         .on('$', $.proxy(function (student, callback) {
           async.parallel([this._createStudentWorkspacesLoad(student.id), this._createStudentTransferCreditsLoad(student.id)], $.proxy(function (err, results) {
             if (err) {

@@ -5,13 +5,14 @@ public class WorkspaceFolder {
   public WorkspaceFolder() {
   }
 
-  public WorkspaceFolder(Long id, Long parentId, Long nextSiblingId, Boolean hidden, String title) {
+  public WorkspaceFolder(Long id, Long parentId, Long nextSiblingId, Boolean hidden, String title, String path) {
     super();
     this.id = id;
     this.parentId = parentId;
     this.nextSiblingId = nextSiblingId;
     this.hidden = hidden;
     this.title = title;
+    this.setPath(path);
   }
   
   public Long getId() {
@@ -54,9 +55,18 @@ public class WorkspaceFolder {
     this.title = title;
   }
 
+  public String getPath() {
+    return path;
+  }
+
+  public void setPath(String path) {
+    this.path = path;
+  }
+
   private Long id;
   private Long parentId;
   private Long nextSiblingId;
   private Boolean hidden;
   private String title;
+  private String path;
 }

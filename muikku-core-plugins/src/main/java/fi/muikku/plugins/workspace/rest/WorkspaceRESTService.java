@@ -1318,7 +1318,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceFolder.getParent() == null ? null : workspaceFolder.getParent().getId(),
         nextSibling == null ? null : nextSibling.getId(),
         workspaceFolder.getHidden(),
-        workspaceFolder.getTitle());
+        workspaceFolder.getTitle(),
+        workspaceFolder.getPath());
   }
 
   @DELETE
@@ -1476,8 +1477,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     Boolean hidden = restFolder.getHidden();
     String title = restFolder.getTitle();
     
-    workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden);
-    return Response.noContent().build();
+    workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden);
+    return Response.ok(createRestModel(workspaceFolder)).build();
   }
 
   @POST
@@ -1556,9 +1557,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode nextSibling = workspaceMaterial.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getNextSiblingId());
     String title = workspaceMaterial.getTitle();
     Boolean hidden = workspaceMaterial.getHidden();
-    workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden,
+    workspaceNode = workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden,
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), title);
-    return Response.noContent().build();
+    workspaceMaterial.setPath(workspaceNode.getPath());
+    return Response.ok(workspaceMaterial).build();
   }
   
   @PUT
