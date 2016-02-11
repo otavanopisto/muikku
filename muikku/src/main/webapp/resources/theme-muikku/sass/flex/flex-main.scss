@@ -1,6 +1,7 @@
 @import "_fonts.scss";
 @import "_vars.scss";
 @import "_styles.scss";
+@import "_forms.scss";
 @import "_animations.scss";
 @import "_dialog.scss";
 @import "_buttons.scss";
@@ -23,6 +24,16 @@ body {
   background-repeat:no-repeat,repeat-x;
   background-position: top center, top left;
   color:#2c2c2c;
+}
+
+.ui-widget-overlay {
+  background:#000;
+  opacity:0.5;
+  height:100%;
+  left:0;
+  position:fixed;
+  top:0;
+  width:100%;
 }
 
 /* Navigation Icons tooltip */
@@ -50,25 +61,41 @@ body {
   bottom:0;
   left:0;
   right:0;
-  height:30px;
   opacity:0.9;
-  background-color:$btBarBgr;
+  box-shadow:-5px 0 5px rgba(0, 0, 0, 0.2);
+  
+  .footer-predefined-bg {
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    background:$btBarBgr;
+    opacity:0.95;
+    z-index:1;
+  }
+  
+  .footer-predefined-content {
+    position:relative;
+    z-index:2;
+  }
 }
 
 #helpdesk {
   font-weight:400;
   font-size:14px;
-  float:right;
-  margin:0 10px 0 0;
-  padding:4px 0;
+  color:#fff;
 }
 
 #guides {
   font-weight:400;
   font-size:14px;
-  float:right;
-  margin:0 10px 0 0;
-  padding:4px 0;
+  color:#fff;
+  
+  a {
+    color:#b3e9ff;
+  }
+  
 }
 
 #headerLogoTextContainer {
@@ -442,19 +469,19 @@ sup {
 @media screen and (max-width: 767px) {
 
   body {
-    font-size:15px;
-    line-height:1.5em;
-    color:#2c2c2c;
-    padding:45px 5px 35px 5px;
+    padding:45px 5px 60px 5px;
     background-image:url('/gfx/light-diagonal-strips.png');
     background-repeat:repeat;
     background-color:#f0f3f5;
   }
   
   #helpdesk {
+    margin:-4px 0 0 0;
     font-size:13px;
-    text-align:center;
-    float:none;
+  }
+  
+  #guides {
+    margin:0 0 -4px 0;
   }
   
   #staticNavigationWrapper {
@@ -478,10 +505,6 @@ sup {
     border:0;
   }
   
-  .navmore-container {
-    display:none;
-  }
-  
   div[class*="dock-static-navi"] {
   
     &:hover {
@@ -495,6 +518,10 @@ sup {
     font-size:35px;
     padding:7px 5px 2px 5px;
     height:35px;
+  }
+  
+  .navmore-container {
+    display:none;
   }
   
   div.dock-static-navi-button-navimore {

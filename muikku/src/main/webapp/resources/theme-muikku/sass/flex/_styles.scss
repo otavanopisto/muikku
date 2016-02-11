@@ -24,6 +24,18 @@
   background: linear-gradient(to bottom, $bgColorStart 0%,$bgColorEnd 100%);
 }
 
+/* Form element - FOCUS */
+@mixin elementHover($rgba) {
+  box-shadow: 0 0 0 3px $rgba; 
+  border-color:#fff;
+}
+
+/* Form element - FOCUS */
+@mixin elementFocus($rgba) {
+  box-shadow: 0 0 0 3px $rgba; 
+  border-color:#fff;
+}
+
 @mixin no-select {
 -webkit-touch-callout: none;
 -webkit-user-select: none;

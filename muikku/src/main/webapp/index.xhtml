@@ -14,6 +14,10 @@
     <script defer="defer" jsf:name="scripts/gui/dustloader.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/js/min/perfect-scrollbar.jquery.min.js"/>
     
+    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+      <script defer="defer" jsf:name="scripts/gui/login.js"/>
+    </ui:fragment>
+    
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
       <script defer="defer" jsf:name="scripts/gui/widget-visits.js"/>
       <script defer="defer" jsf:name="scripts/gui/widget-courselist.js"/>

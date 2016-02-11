@@ -48,7 +48,31 @@
     </ui:insert>
     
     <ui:insert name="footer">
-    
+      <footer id="footer">
+        <ui:insert name="footer-custom-content">
+          <div class="footer-custom-bg"></div>
+          <div class="flex-grid footer-custom-content">
+          
+          </div>
+        </ui:insert>
+        <ui:insert name="footer-predefined-content">
+          <div class="footer-predefined-bg"></div>
+          <div class="flex-grid footer-predefined-content">
+            <div class="flex-row">
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full sm-flex-order-1 flex-center">
+                <ui:fragment rendered="#{environmentBackingBean.hasWorkspaceUrlName}">
+                  <div id="guides">
+                    <a jsf:outcome="/jsf/workspace/materials.jsf?faces-redirect=true&amp;workspaceUrlName=#{environmentBackingBean.helpWorkspaceUrlName}" target="top">#{i18n.text['plugin.footer.instructions']}</a>
+                  </div>
+                </ui:fragment>
+              </div>
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full sm-flex-order-2 flex-center">
+                <div id="helpdesk"><span>#{i18n.text['plugin.footer.helpdesk']}</span></div>
+              </div>
+            </div>
+          </div>
+        </ui:insert>
+      </footer>
     </ui:insert>
     
   </ui:define>

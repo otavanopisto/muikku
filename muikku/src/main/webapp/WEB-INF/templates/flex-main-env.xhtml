@@ -16,9 +16,7 @@
               </div>
               <div class="lu-info-container">
                 <div class="lu-user-name">
-                  <div class="lu-user-name-button-value">
-                    <a jsf:outcome="/jsf/profile/profile.jsf">#{sessionBackingBean.loggedUserName}</a>
-                  </div>
+                  <a jsf:outcome="/jsf/profile/profile.jsf">#{sessionBackingBean.loggedUserName}</a>
                 </div>
                 <div class="lu-actions">
                   <h:form>
@@ -164,13 +162,4 @@
     </nav>
   </ui:define>
   
-  <ui:define name="footer">
-    <footer id="footer">
-      <div id="helpdesk"><span>#{i18n.text['plugin.footer.helpdesk']}</span></div>
-      <div id="guides" jsf:rendered="#{environmentBackingBean.hasWorkspaceUrlName}">
-        <a jsf:outcome="/jsf/workspace/materials.jsf?faces-redirect=true&amp;workspaceUrlName=#{environmentBackingBean.helpWorkspaceUrlName}" target="top">#{i18n.text['plugin.footer.instructions']}</a>
-      </div>
-    </footer>
-  </ui:define>
-
 </ui:composition>

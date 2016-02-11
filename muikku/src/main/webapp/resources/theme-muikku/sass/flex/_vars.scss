@@ -12,6 +12,13 @@ $formTitle: #5b5b5b;
 $contextualLink:#0099ff;
 $contextualLinkHover:#006ab1; 
 
+/* Forms */
+$formBorderColor:#dadada;
+$formBorderColorFocus:#858585;
+$formBackgroundColor:#fff;
+$formFontColor:#606060;
+$formFontColorFocus:#000;
+
 /* Assignments - Colors */
 $exerciseAssignment:#ff9900;
 $evaluatedAssignment:#ce01bd;
@@ -21,16 +28,13 @@ $exerciseCorrectAnswersAlways:#62eba9;
 $exerciseCorrectAnswersNever:#da4a51;
 $exerciseCorrectAnswersOnRequest:#62c3eb;
 
-/* Dynamic Navigation background */
-$dNavBgr:#b7d8eb;
-
 /* Static Navigation */
 $naviBgColor:#4594bf;
 $naviBorderTop:#71c3e1;
 $naviBorderBottom:#b2e0ff;
 
 /* Bottom bar */
-$btBarBgr:#c4e3f8;
+$btBarBgr:#485c64;
 
 /* MainFunctions */
 $mainFuncSideHeader : #aed4e3;

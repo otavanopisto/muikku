@@ -16,6 +16,9 @@ body {
     text-transform:uppercase;
     border:none;
     z-index:9999;
+    max-width:460px !important;
+    min-width:320px !important;
+    width:auto !important;
     
     &.ui-corner-all {
       border-radius:0px;
@@ -30,6 +33,10 @@ body {
       font-weight:400;
       line-height:1.5em;
       
+      &.ui-draggable-handle {
+        cursor:move;
+      }
+      
       .ui-dialog-title {
         margin:0;
         font-size:18px;
@@ -42,9 +49,13 @@ body {
         border-radius:0px;
         border:0px;
         width:24px;
-        margin:-13px 0 0 0;
+        margin:0;
         font-size:22px;
-        height:22px; Same height as font-size
+        height:22px;
+        position:absolute;
+        right:12px;
+        top:7px;
+        cursor:pointer;
         
         span {
           display:none;
@@ -73,11 +84,17 @@ body {
     .ui-dialog-content {
       margin:10px 0 0 0;
       line-height:1.5em;
+      padding:0.5em 1em;
+      overflow:auto;
+      position:relative;
+      color:#362b36;
       
       label {
         font-weight:400;
-        font-size:14px;
+        font-size:16px;
         margin:5px 0 0 0;
+        display:block;
+        padding:5px 5px 5px 0;
       }
       
       textarea {
@@ -107,6 +124,22 @@ body {
           outline:none;
           font-family:'Open Sans', Arial, sans-serif;
           min-width:90px;
+          cursor:pointer;
+          display: inline-block;
+          line-height: normal;
+          margin-right: 0.1em;
+          overflow: visible;
+          padding: 0;
+          position: relative;
+          text-align: center;
+          vertical-align: middle;
+          
+          span {
+            padding:0.4em 1em;
+            display:block;
+            line-height:normal;
+            font-size:16px;
+          }
         }
         
         button.delete-button,
@@ -132,7 +165,9 @@ body {
         }
       
       }
+      
     }
+    
   }
   
 }
