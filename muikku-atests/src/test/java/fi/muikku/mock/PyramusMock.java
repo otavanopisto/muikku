@@ -6,6 +6,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,6 +127,18 @@ public class PyramusMock {
         pmock.courseStaffMembers = courseStaffMembers;
         return this;
       }
+      
+      public Builder addCourseStaffMember(Long courseId, CourseStaffMember courseStaffMember){
+        if(pmock.courseStaffMembers.containsKey(courseId)){
+          pmock.courseStaffMembers.get(courseId).add(courseStaffMember);
+        }else{
+          List<CourseStaffMember> courseStaffList = new ArrayList<>();
+          courseStaffList.add(courseStaffMember);
+          pmock.courseStaffMembers.put(courseId, courseStaffList);
+        }
+        return this;
+      }
+      
 //    TODO: CourseAssessments
       public Builder addStaffMembers(List<MockStaffMember> staffMembers) {
         DateTime birthday = new DateTime(1990, 2, 2, 0, 0, 0, 0);
@@ -260,7 +273,7 @@ public class PyramusMock {
       public Builder mockCourseStudents() throws JsonProcessingException, Exception {
         for (Long courseId : pmock.courseStudents.keySet()) {
           for (CourseStudent cs : pmock.courseStudents.get(courseId)) {
-            stubFor(get(urlMatching(String.format("/1/courses/courses/%d/students/%d", cs.getCourseId(), cs.getId())))
+            stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students/%d", cs.getCourseId(), cs.getId())))
               .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(pmock.objectMapper.writeValueAsString(cs))
@@ -269,13 +282,14 @@ public class PyramusMock {
               cs.getCourseId(), cs.getStudentId())));
           }
         
-          stubFor(get(urlMatching(String.format("/1/courses/courses/%d/students?filterArchived=.*", courseId)))
+//          stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students", courseId))).withQueryParam("activeStudents", containing("true"))
+          stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students?activeStudents=true", courseId)))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(pmock.courseStudents.get(courseId)))
               .withStatus(200)));
           
-          stubFor(get(urlMatching(String.format("/1/courses/courses/%d/students", courseId)))
+          stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students", courseId)))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(pmock.courseStudents.get(courseId)))
