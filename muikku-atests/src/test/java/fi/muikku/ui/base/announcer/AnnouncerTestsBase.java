@@ -52,7 +52,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }   
   }
   
@@ -88,7 +88,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }
   }
   
@@ -111,7 +111,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }
   }
 
@@ -143,7 +143,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }
   }
 
@@ -169,7 +169,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteUserGroup(2l);
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }
   }
   
@@ -194,7 +194,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }
   }
   
