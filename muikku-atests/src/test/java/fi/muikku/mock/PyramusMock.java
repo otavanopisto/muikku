@@ -413,18 +413,6 @@ public class PyramusMock {
                 .withBody(pmock.objectMapper.writeValueAsString(gradingScale))
                 .withStatus(200)));
             
-            stubFor(get(urlEqualTo("/1/common/gradingScales"))
-              .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(pmock.objectMapper.writeValueAsString(gradingScale))
-                .withStatus(200)));
-
-            stubFor(get(urlEqualTo(String.format("/1/common/gradingScales/?filterArchived=true")))
-              .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(pmock.objectMapper.writeValueAsString(gradingScale))
-                .withStatus(200)));
-            
             List<Grade> grades = (List<Grade>) gsPair.getValue();
             for (Grade grade : grades) {
               stubFor(get(urlEqualTo(String.format("/1/common/gradingScales/%d/grades/%d", gradingScale.getId(), grade.getId())))
@@ -440,6 +428,19 @@ public class PyramusMock {
                 .withStatus(200)));
 
         }
+        
+        stubFor(get(urlEqualTo("/1/common/gradingScales"))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(pmock.gradingScales.keySet()))
+            .withStatus(200)));
+
+        stubFor(get(urlEqualTo(String.format("/1/common/gradingScales/?filterArchived=true")))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(pmock.gradingScales.keySet()))
+            .withStatus(200)));
+        
         return this;
       }
     

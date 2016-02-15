@@ -280,6 +280,23 @@ public abstract class AbstractIntegrationTest extends TestWatcher {
     return roleType.name() + "-" + role;
   }
   
+  protected Long getUserEntityIdForIdentifier(String identifier) throws SQLException, ClassNotFoundException {
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute(String.format("select userEntity_id from UserSchoolDataIdentifier where identifier = '%s'", identifier));
+      ResultSet results = statement.getResultSet();
+      if (results.next()) {              
+        Long id = results.getLong(1);
+        return id;
+      }
+    } finally {
+      connection.close();
+    }
+    
+    return null;
+  }
+  
   protected void dumpWorkspaceUsers() throws SQLException, ClassNotFoundException {
     System.out.println("Dumping all workspace users");
     
