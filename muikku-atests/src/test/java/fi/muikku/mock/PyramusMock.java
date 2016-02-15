@@ -6,13 +6,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.joda.time.DateTime;
 
@@ -21,6 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.stubbing.ListStubMappingsResult;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 import fi.muikku.TestUtilities;
 import fi.muikku.mock.model.MockCourseStudent;
@@ -57,6 +60,8 @@ import fi.pyramus.webhooks.WebhookStudentGroupStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentGroupStudentCreatePayload;
 
 public class PyramusMock {
+  
+  private static Logger logger = Logger.getLogger(PyramusMock.class.getName());
    
   private PyramusMock() {
       // Prevent direct use
@@ -255,7 +260,11 @@ public class PyramusMock {
       
       public Builder mockCourseStudents() throws JsonProcessingException {
         for (Long courseId : pmock.courseStudents.keySet()) {
+          logger.log(Level.FINE, String.format("Mocking students for course %d", courseId));
+          
           for (CourseStudent cs : pmock.courseStudents.get(courseId)) {
+            logger.log(Level.FINE, String.format("Mocking course student %d for course %d", cs.getId(), courseId));
+            
             stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students/%d", cs.getCourseId(), cs.getId())))
               .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -683,9 +692,11 @@ public class PyramusMock {
         mockCourseStudents();
         mockCourseStaffMemberRoles();
         mockStudentGroups();
-        for(String payload : pmock.payloads) {
+        
+        for (String payload : pmock.payloads) {
           TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
         }
+
         return this;
       }
       
@@ -694,11 +705,22 @@ public class PyramusMock {
         return this;
       }
       
+      public Builder dumpMocks() {
+        System.out.print("dumpMocks");
+        
+        ListStubMappingsResult listAllStubMappings = WireMock.listAllStubMappings();
+        List<StubMapping> mappings = listAllStubMappings.getMappings();
+        for (StubMapping mapping : mappings) {
+          System.out.print(mapping.toString());
+        }
+          
+        return this;
+      }
+      
       public Builder resetBuilder() {
         pmock.students = new ArrayList<>();
         pmock.staffMembers = new ArrayList<>();
         pmock.persons = new ArrayList<>();
-//        pmock.objectMapper;
         pmock.gradingScales = new HashMap<>();
         pmock.educationalTimeUnits = new ArrayList<>();
         pmock.educationTypes = new ArrayList<>();
