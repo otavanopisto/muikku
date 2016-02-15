@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 import fi.muikku.search.annotations.IndexId;
 import fi.muikku.search.annotations.Indexable;
 
-@Indexable
+@Indexable (name = "User")
 public interface User extends SchoolDataEntity {
 
   public String getIdentifier();
@@ -41,12 +41,20 @@ public interface User extends SchoolDataEntity {
   @IndexId
   public String getSearchId();
 
-  DateTime getStudyStartDate();
+  public DateTime getStudyStartDate();
 
-  DateTime getStudyTimeEnd();
-
-  boolean getHidden();
+  public DateTime getStudyEndDate();
   
-  boolean hasEvaluationFees();
+  public DateTime getStudyTimeEnd();
+
+  public boolean getHidden();
+  
+  public boolean getStartedStudies();
+  
+  public boolean getFinishedStudies();
+  
+  public boolean getActive();
+  
+  public boolean hasEvaluationFees();
   
 }

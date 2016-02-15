@@ -22,7 +22,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
     try {
       navigate(String.format("/workspace/%s/users", workspace.getUrlName()), true);
       waitForPresent(".workspace-students-listing-wrapper .workspace-users-name");
-      assertText(".workspace-students-listing-wrapper .workspace-users-name", "User, Test");
+      assertText(".workspace-students-listing-wrapper .workspace-users-name", "User, Test (Test Study Programme)");
       waitForPresent(".workspace-teachers-listing-wrapper .workspace-users-name");
       assertText(".workspace-teachers-listing-wrapper .workspace-users-name", "Administrator, Test");
     } finally {

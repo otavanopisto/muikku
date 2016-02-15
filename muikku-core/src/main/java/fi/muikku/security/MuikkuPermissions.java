@@ -51,6 +51,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR })
   public static final String COPY_WORKSPACE = "COPY_WORKSPACE";
 
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.TEACHER })
+  public static final String LIST_INACTIVE_STUDENTS = "LIST_INACTIVE_STUDENTS";
+
   /* WORKSPACE */
   
   @Scope (PermissionScope.WORKSPACE)

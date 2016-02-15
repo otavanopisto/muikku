@@ -47,6 +47,12 @@
       "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": ["COURSE_CREATE", "COURSE_UPDATE", "COURSE_ARCHIVE"] 
     },
+    "/courses/courses/{courseId}/educationTypes": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 1800000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": ["COURSE_CREATE", "COURSE_UPDATE", "COURSE_ARCHIVE"] 
+    },
     "/courses/courses/{courseId}/staffMembers": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 1800000,
@@ -110,6 +116,42 @@
     "/common/subjects/{subjectId}": {
       "cacheStrategy": "EXPIRES",
       "expireTime": 300000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/common/gradingScales/?filterArchived=true": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 86400000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/common/gradingScales/{gradingScaleId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 86400000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/common/gradingScales/{gradingScaleId}/grades": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 86400000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/common/gradingScales/{gradingScaleId}/grades/{gradingScaleItemId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 86400000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/common/educationTypes/{educationTypeId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 86400000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
+    },
+    "/common/educationTypes/{educationTypeId}/subtypes/{educationSubtypeId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 86400000,
       "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": []
     }

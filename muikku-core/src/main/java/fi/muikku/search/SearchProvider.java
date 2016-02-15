@@ -24,6 +24,10 @@ public interface SearchProvider {
   
   public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, int start, int maxResults);
   
+  public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, Collection<Long> groups,
+      Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, int start,
+      int maxResults);
+
   public class Sort {
     
     public Sort(String field, Order order) {
@@ -47,5 +51,6 @@ public interface SearchProvider {
       DESC 
     }
   }
+
   
 }

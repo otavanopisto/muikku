@@ -9,13 +9,15 @@ public class UserBasicInfo {
               String firstName,
               String lastName, 
               String studyProgrammeName,
-              boolean hasImage) {
+              boolean hasImage, 
+              boolean hasEvaluationFees) {
     super();
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.studyProgrammeName = studyProgrammeName;
     this.hasImage = hasImage;
+    this.hasEvaluationFees = hasEvaluationFees;
   }
 
   public Long getId() {
@@ -58,9 +60,18 @@ public class UserBasicInfo {
     this.hasImage = hasImage;
   }
 
+  public boolean getHasEvaluationFees() {
+    return this.hasEvaluationFees;
+  }
+
+  public void setHasEvaluationFees(boolean hasEvaluationFees) {
+    this.hasEvaluationFees = hasEvaluationFees;
+  }
+
   private Long id;
   private String firstName;
   private String lastName;
   private String studyProgrammeName;
   private boolean hasImage;
+  private boolean hasEvaluationFees;
 }

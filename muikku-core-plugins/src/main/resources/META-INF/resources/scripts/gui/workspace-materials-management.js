@@ -65,8 +65,8 @@
   }
   
   function editPage(node) {
-    var materialType = $(node).data('material-type');
-    var workspaceMaterialId = $(node).data('workspace-material-id');
+    var materialType = $(node).attr('data-material-type');
+    var workspaceMaterialId = $(node).attr('data-workspace-material-id');
     if (materialType == 'folder') {
       // folder
       $(node).addClass("page-edit-mode");
@@ -88,7 +88,7 @@
       $(node).addClass("page-edit-mode");
       var pageContent = $(node).find('.page-content');
       var editor = $('<div>').addClass('workspace-material-binary-editor-title-wrapper');
-      var textfield = $("<input>").attr('type', 'text').addClass('workspace-material-binary-editor-title').val($(node).data('material-title'));
+      var textfield = $("<input>").attr('type', 'text').addClass('workspace-material-binary-editor-title').val($(node).attr('data-material-title'));
       editor.append(textfield);
       $(pageContent).replaceWith(editor);
       textfield.focus();
@@ -101,10 +101,10 @@
     }
     else if (materialType == 'html') {
       // html
-      var materialId = $(node).data('material-id');
-      var materialTitle = $(node).data('material-title');
+      var materialId = $(node).attr('data-material-id');
+      var materialTitle = $(node).attr('data-material-title');
       var path = $(node).attr('data-path');
-      var workspaceMaterialId = $(node).data('workspace-material-id');
+      var workspaceMaterialId = $(node).attr('data-workspace-material-id');
       var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
       var pageElement = $('#page-' + workspaceMaterialId);
       var pageSection = $(pageElement).closest(".workspace-materials-view-page");
@@ -147,23 +147,23 @@
   }
   
   function closeEditor(node, loadContent) {
-    var materialType = $(node).data('material-type');
+    var materialType = $(node).attr('data-material-type');
     if (materialType == 'folder') {
       // folder
       var title = node.find('.workspace-material-folder-editor-title').val();
       var nextSibling = node.nextAll('.folder').first();
-      var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
+      var nextSiblingId = nextSibling.length > 0 ? nextSibling.attr('data-workspace-material-id') : null;
       var workspaceId = $('.workspaceEntityId').val();
       var hidden = node.hasClass('item-hidden');
       node.removeClass("page-edit-mode");
 
-      mApi({async: false}).workspace.workspaces.folders.read(workspaceId, node.data('workspace-material-id')).callback(function (err, folder) {
+      mApi({async: false}).workspace.workspaces.folders.read(workspaceId, node.attr('data-workspace-material-id')).callback(function (err, folder) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           folder.title = title;
-          mApi({async: false}).workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), folder).callback(function (err, html) {
+          mApi({async: false}).workspace.workspaces.folders.update(workspaceId, node.attr('data-workspace-material-id'), folder).callback(function (err, updatedFolder) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
@@ -173,9 +173,18 @@
               textfield.off();
               var editor = node.find('.workspace-material-folder-editor-title-wrapper');
               editor.replaceWith(pageElement);
-              node.data('material-title', title);
+              // #1272 folder path
+              $(node).attr('data-path', updatedFolder.path);
+              $(node).attr('data-material-title', updatedFolder.title);
+              // #1272 folder children paths
+              var childMaterials = $(node).nextAll('section[data-parent-id=' + $(node).attr('data-workspace-material-id') + ']');
+              for (var i = 0; i < childMaterials.length; i++) {
+                var newPath = $(childMaterials[i]).attr('data-path'); 
+                newPath = updatedFolder.path + '/' + newPath.split('/')[1];
+                $(childMaterials[i]).attr('data-path', newPath);
+              }
               // TOC
-              var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
+              var tocElement = $("a[href*='#page-" + $(node).attr('data-workspace-material-id') + "']");
               if (tocElement) {
                 $(tocElement).text(title);
               }
@@ -188,29 +197,29 @@
       // binary
       var title = node.find('.workspace-material-binary-editor-title').val();
       var nextSibling = node.nextAll('.folder').first();
-      var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
+      var nextSiblingId = nextSibling.length > 0 ? nextSibling.attr('data-workspace-material-id') : null;
       var workspaceId = $('.workspaceEntityId').val();
       var hidden = node.hasClass('item-hidden');
       node.removeClass("page-edit-mode");
 
-      mApi({async: false}).workspace.workspaces.materials.read(workspaceId, node.data('workspace-material-id')).callback(function (err, binary) {
+      mApi({async: false}).workspace.workspaces.materials.read(workspaceId, node.attr('data-workspace-material-id')).callback(function (err, binary) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           binary.title = title;
-          mApi({async: false}).workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), binary).callback(function (err, html) {
+          mApi({async: false}).workspace.workspaces.materials.update(workspaceId, node.attr('data-workspace-material-id'), binary).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
               var textfield = node.find('.workspace-material-binary-editor-title');
               textfield.off();
-              node.data('material-title', title);
+              node.attr('data-material-title', title);
               node.empty();
               $(document).muikkuMaterialLoader('loadMaterial', node);
               // TOC
-              var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
+              var tocElement = $("a[href*='#page-" + $(node).attr('data-workspace-material-id') + "']");
               if (tocElement) {
                 $(tocElement).text(title);
               }
@@ -231,15 +240,15 @@
         var worker = new Worker("/scripts/gui/workspace-material-loader.js");
         worker.onmessage = $.proxy(function(response) {
           var material = $.parseJSON(response.data.html);
-          $(node).data('material-content', material.html);
-          $(node).data('material-current-revision', material.currentRevision);
-          $(node).data('material-published-revision', material.publishedRevision);
+          $(node).attr('data-material-content', material.html);
+          $(node).attr('data-material-current-revision', material.currentRevision);
+          $(node).attr('data-material-published-revision', material.publishedRevision);
           node.empty();
           $(document).muikkuMaterialLoader('loadMaterial', node);
         }, this);
         worker.postMessage({
-          materialId: $(node).data('material-id'),
-          workspaceMaterialId: $(node).data('workspace-material-id') 
+          materialId: $(node).attr('data-material-id'),
+          workspaceMaterialId: $(node).attr('data-workspace-material-id') 
         });
       }
     }
@@ -395,7 +404,7 @@
   }
   
   $(document).on('click', '.delete-page', function (event, data) {
-    var workspaceMaterialId = $(this).data('workspace-material-id');
+    var workspaceMaterialId = $(this).attr('data-workspace-material-id');
     var workspaceId = $('.workspaceEntityId').val();
     if ($(this).attr('data-material-type') === 'folder') {
       if($('section[data-parent-id="'+workspaceMaterialId+'"]').length > 0){
@@ -749,17 +758,17 @@
     var _hidden = hidden;
     var workspaceId = $('.workspaceEntityId').val();
     var nextSibling = node.nextAll('.workspace-materials-view-page').first();
-    var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
-    var workspaceMaterialId = node.data('workspace-material-id');
-    var materialType = node.data('material-type');
+    var nextSiblingId = nextSibling.length > 0 ? nextSibling.attr('data-workspace-material-id') : null;
+    var workspaceMaterialId = node.attr('data-workspace-material-id');
+    var materialType = node.attr('data-material-type');
     if (materialType == 'folder') {
-      mApi({async: false}).workspace.workspaces.folders.read(workspaceId, node.data('workspace-material-id')).callback(function (err, folder) {
+      mApi({async: false}).workspace.workspaces.folders.read(workspaceId, node.attr('data-workspace-material-id')).callback(function (err, folder) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           folder.hidden = hidden;
-          mApi({async: false}).workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), folder).callback(function (err, html) {
+          mApi({async: false}).workspace.workspaces.folders.update(workspaceId, node.attr('data-workspace-material-id'), folder).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
@@ -771,13 +780,13 @@
       });
     }
     else {
-      mApi({async: false}).workspace.workspaces.materials.read(workspaceId, node.data('workspace-material-id')).callback(function (err, material) {
+      mApi({async: false}).workspace.workspaces.materials.read(workspaceId, node.attr('data-workspace-material-id')).callback(function (err, material) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
           material.hidden = hidden;
-          mApi({async: false}).workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), material).callback(function (err, html) {
+          mApi({async: false}).workspace.workspaces.materials.update(workspaceId, node.attr('data-workspace-material-id'), material).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
@@ -791,8 +800,8 @@
   }
   
   function toggleNodeVisibilityUi(node, hidden) {
-    var materialType = node.data('material-type');
-    var workspaceMaterialId = node.data('workspace-material-id');
+    var materialType = node.attr('data-material-type');
+    var workspaceMaterialId = node.attr('data-workspace-material-id');
     if (hidden) {
       // Node itself
       node.addClass('item-hidden');
@@ -1001,8 +1010,6 @@
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
       enableFileUploader(element);
     });
-
-    $('.muikku-connect-field').muikkuConnectField('refresh');
     
     $(window).data('initializing', false);
   });
@@ -1377,29 +1384,29 @@
           if (!$(previousMaterial).length) {
             parentId = $('.workspaceRootFolderId').val();  
           }
-          else if ($(previousMaterial).data('material-type') == 'folder') {
-            parentId = $(previousMaterial).data('workspace-material-id');
+          else if ($(previousMaterial).attr('data-material-type') == 'folder') {
+            parentId = $(previousMaterial).attr('data-workspace-material-id');
           }
           else {
-            parentId = $(previousMaterial).data('parent-id');
+            parentId = $(previousMaterial).attr('data-parent-id');
           }
         }
         else {
-          if ($(nextMaterial).data('material-type') == 'folder') {
-            if ($(previousMaterial).data('material-type') == 'folder') {
-              parentId = $(previousMaterial).data('workspace-material-id');
+          if ($(nextMaterial).attr('data-material-type') == 'folder') {
+            if ($(previousMaterial).attr('data-material-type') == 'folder') {
+              parentId = $(previousMaterial).attr('data-workspace-material-id');
             }
             else {
-              parentId = $(previousMaterial).data('parent-id');
+              parentId = $(previousMaterial).attr('data-parent-id');
             }
           }
           else {
-            parentId = $(nextMaterial).data('parent-id');
-            nextSiblingId = $(nextMaterial).data('workspace-material-id');
+            parentId = $(nextMaterial).attr('data-parent-id');
+            nextSiblingId = $(nextMaterial).attr('data-workspace-material-id');
           }
         }
         
-        var materialType = $(this).data('material-type');
+        var materialType = $(this).attr('data-material-type');
         var typeEndpoint = mApi({async: false}).materials[materialType];
         if (typeEndpoint != null) {
           typeEndpoint.create({
@@ -1470,8 +1477,8 @@
         var workspaceEntityId = $('.workspaceEntityId').val();
 
         parentId = $('.workspaceRootFolderId').val();
-        if ($(nextMaterial).data('material-type') == 'folder') {
-          nextSiblingId = $(nextMaterial).data('workspace-material-id');
+        if ($(nextMaterial).attr('data-material-type') == 'folder') {
+          nextSiblingId = $(nextMaterial).attr('data-workspace-material-id');
         }
         
         mApi({async: false}).workspace.workspaces.folders.create(workspaceEntityId, {
@@ -1519,7 +1526,7 @@
   
   $(document).on('htmlMaterialRevisionChanged', function (event, data) {
     $('.workspace-materials-view-page[data-material-id="' + data.materialId + '"]').each(function (index, page) {
-      var workspaceMaterialId = $(page).data('workspace-material-id');
+      var workspaceMaterialId = $(page).attr('data-workspace-material-id');
       setPageCurrentRevision(workspaceMaterialId, data.revisionNumber);
     });
   });
@@ -1620,14 +1627,15 @@
         var workspaceId = $('.workspaceEntityId').val();
         mApi({async: false}).workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback($.proxy(function(err, workspaceMaterial) {
           workspaceMaterial.title = title;
-          mApi({async: false}).workspace.workspaces.materials.update(workspaceId, workspaceMaterialId, workspaceMaterial).callback($.proxy(function (err, html) {
+          mApi({async: false}).workspace.workspaces.materials.update(workspaceId, workspaceMaterialId, workspaceMaterial).callback($.proxy(function (err, updatedMaterial) {
             if (err) {
               errorCallback(err, jqXHR);
             }
             else {
               var page = $('#page-' + workspaceMaterialId);
-              $(page).data('material-title', title);
-              var tocElement = $("a[href*='#page-" + $(page).data('workspace-material-id') + "']");
+              $(page).attr('data-material-title', updatedMaterial.title);
+              $(page).attr('data-path', updatedMaterial.path);
+              var tocElement = $("a[href*='#page-" + $(page).attr('data-workspace-material-id') + "']");
               if (tocElement) {
                 $(tocElement).text(title);
               }
@@ -1642,8 +1650,8 @@
   
   $(document).on('click', '.publish-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-view-page');
-    var workspaceMaterialId = $(page).data('workspace-material-id');
-    var materialId = $(page).data('material-id');
+    var workspaceMaterialId = $(page).attr('data-workspace-material-id');
+    var materialId = $(page).attr('data-material-id');
     var title = $(page).find('.workspace-material-html-editor-title').val();
     var currentRevision = getPageCurrentRevision(workspaceMaterialId);
     var publishedRevision = getPagePublishedRevision(workspaceMaterialId);
@@ -1698,8 +1706,8 @@
   
   $(document).on('click', '.revert-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-view-page');
-    var workspaceMaterialId = $(page).data('workspace-material-id');
-    var materialId = $(page).data('material-id');
+    var workspaceMaterialId = $(page).attr('data-workspace-material-id');
+    var materialId = $(page).attr('data-material-id');
     var currentRevision = getPageCurrentRevision(workspaceMaterialId);
     var publishedRevision = getPagePublishedRevision(workspaceMaterialId);
     
@@ -1734,7 +1742,7 @@
   });
   
   $(document).on('click', '.close-page-editor', function (event, data) {
-    var workspaceMaterialId = $(this).data('workspace-material-id');
+    var workspaceMaterialId = $(this).attr('data-workspace-material-id');
     closeEditor($('#page-' + workspaceMaterialId), true);
   });
 

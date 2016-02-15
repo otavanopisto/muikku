@@ -316,6 +316,10 @@ public class WorkspaceController {
     return null;
   }
   
+  public WorkspaceUser findWorkspaceUserByWorkspaceAndUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier) {
+    return workspaceSchoolDataController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
+  }
+  
   public WorkspaceUser findWorkspaceUser(WorkspaceUserEntity workspaceUserEntity) {
     return workspaceSchoolDataController.findWorkspaceUser(workspaceUserEntity);
   }

@@ -19,4 +19,9 @@ public class TaskSrcQueryParams extends AbstractHtmlMaterialCleanerTask {
     }
   }
 
+  @Override
+  public Integer getPriority() {
+    return PRIORITY_NORMAL;
+  }
+
 }

@@ -322,7 +322,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       if (orderBy != null && orderBy.contains("alphabet")) {
         sorts = new ArrayList<>();
-        sorts.add(new Sort("name", Sort.Order.ASC));
+        sorts.add(new Sort("name.untouched", Sort.Order.ASC));
       }
       
       // TODO: Pagination support
@@ -1267,7 +1267,8 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   private fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment createRestModel(WorkspaceEntity workspaceEntity, fi.muikku.schooldata.entity.WorkspaceAssessment entry) {
     UserEntity assessor = userEntityController.findUserEntityByDataSourceAndIdentifier(entry.getAssessingUserSchoolDataSource(), entry.getAssessingUserIdentifier());
-    
+    GradingScale gradingScale = gradingController.findGradingScale(entry.getGradingScaleSchoolDataSource(), entry.getGradingScaleIdentifier());
+    GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, entry.getGradeSchoolDataSource(), entry.getGradeIdentifier());
     SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(entry.getWorkspaceUserIdentifier(), entry.getWorkspaceUserSchoolDataSource());
     
     return new fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment(
@@ -1279,7 +1280,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       entry.getGradingScaleSchoolDataSource(),
       entry.getGradeIdentifier(),
       entry.getGradeSchoolDataSource(),
-      entry.getVerbalAssessment()
+      entry.getVerbalAssessment(),
+      grade.isPassingGrade()
     ); 
   }
   
@@ -1316,7 +1318,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceFolder.getParent() == null ? null : workspaceFolder.getParent().getId(),
         nextSibling == null ? null : nextSibling.getId(),
         workspaceFolder.getHidden(),
-        workspaceFolder.getTitle());
+        workspaceFolder.getTitle(),
+        workspaceFolder.getPath());
   }
 
   @DELETE
@@ -1474,8 +1477,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     Boolean hidden = restFolder.getHidden();
     String title = restFolder.getTitle();
     
-    workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden);
-    return Response.noContent().build();
+    workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden);
+    return Response.ok(createRestModel(workspaceFolder)).build();
   }
 
   @POST
@@ -1554,9 +1557,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode nextSibling = workspaceMaterial.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getNextSiblingId());
     String title = workspaceMaterial.getTitle();
     Boolean hidden = workspaceMaterial.getHidden();
-    workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden,
+    workspaceNode = workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden,
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), title);
-    return Response.noContent().build();
+    workspaceMaterial.setPath(workspaceNode.getPath());
+    return Response.ok(workspaceMaterial).build();
   }
   
   @PUT

@@ -90,6 +90,13 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, int start, int maxResults) {
+    return searchUsers(text, textFields, archetype, groups, workspaces, userIdentifiers, false, start, maxResults);
+  }
+  
+  @Override
+  public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, 
+      Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
+      Boolean includeInactiveStudents, int start, int maxResults) {
     try {
       text = sanitizeSearchString(text);
 
@@ -139,17 +146,43 @@ public class ElasticSearchProvider implements SearchProvider {
         filters.add(idsFilter);
       }
 
-      // Mandatory filter, you can always see either non students or students that are in the same workspace as you are
-      List<Long> publishedWorkspaceEntityIds = workspaceEntityController.listPublishedWorkspaceEntityIds();
-      
-      filters.add(
+      if (includeInactiveStudents == false) {
+        /**
+         * List only active users. 
+         * 
+         * Active user is:
+         * 
+         * StaffMember (TEACHER, MANAGER, ADMINISTRATOR) or
+         * Student that has
+         *   active flag true or
+         *     has not started nor finished studies (ie. in study programme that never expires) and
+         *     is student in active workspace
+         *   
+         * Active workspace is:
+         *   published and
+         *   non-stop (no start and end dates) or
+         *   current date is between start and end date
+         */
+        
+        List<Long> publishedWorkspaceEntityIds = workspaceEntityController.listPublishedWorkspaceEntityIds();
+        // TODO: Only published workspaces that are currently active
+        
+        filters.add(
           FilterBuilders.orFilter(
-              FilterBuilders.inFilter("archetype", EnvironmentRoleArchetype.TEACHER.name().toLowerCase(), EnvironmentRoleArchetype.MANAGER.name().toLowerCase(), EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()),
-              FilterBuilders.andFilter(
-                  FilterBuilders.termsFilter("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()),
-                  FilterBuilders.inFilter("workspaces", ArrayUtils.toPrimitive(publishedWorkspaceEntityIds.toArray(new Long[0]))))
-              )
-          );
+            FilterBuilders.inFilter("archetype", EnvironmentRoleArchetype.TEACHER.name().toLowerCase(), EnvironmentRoleArchetype.MANAGER.name().toLowerCase(), EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()),
+            FilterBuilders.andFilter(
+              FilterBuilders.termsFilter("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()),
+              FilterBuilders.notFilter(FilterBuilders.termFilter("active", false))
+            ),
+            FilterBuilders.andFilter(
+              FilterBuilders.termsFilter("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()),
+              FilterBuilders.termFilter("startedStudies", false),
+              FilterBuilders.termFilter("finishedStudies", false),
+              FilterBuilders.inFilter("workspaces", ArrayUtils.toPrimitive(publishedWorkspaceEntityIds.toArray(new Long[0])))
+            )
+          )
+        );
+      }
       
       FilterBuilder filter;
       

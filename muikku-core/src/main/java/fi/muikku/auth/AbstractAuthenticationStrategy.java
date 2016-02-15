@@ -1,13 +1,18 @@
 package fi.muikku.auth;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.event.Event;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.LocaleUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.auth.AuthenticationResult.ConflictReason;
 import fi.muikku.auth.AuthenticationResult.Status;
@@ -108,7 +113,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
         userIdentification = userIdentificationController.createUserIdentification(emailUser, authSource, externalId);
       } else {
         // New user account        
-        UserEntity userEntity = userEntityController.createUserEntity((SchoolDataSource) null, null);
+        UserEntity userEntity = userEntityController.createUserEntity((SchoolDataSource) null, null, sessionController.getLocale());
 
         List<User> users = null;
         
@@ -169,7 +174,19 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     
     if ((loggedUser == null) || loggedUser.getId().equals(userEntity.getId())) {
-      
+      Locale locale = null;
+      if (StringUtils.isNotBlank(userEntity.getLocale())) {
+        try {
+          locale = LocaleUtils.toLocale(userEntity.getLocale());
+        } catch (Exception e) {
+          logger.log(Level.SEVERE, String.format("Failed to parse locale %s for user entity %d", loggedUser.getLocale(), loggedUser.getId()));
+        }
+      }
+
+      if (locale != null) {
+        sessionController.setLocale(locale);
+      }
+
       SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(user.getSchoolDataSource());
       userEntityController.updateDefaultSchoolDataSource(userEntity, schoolDataSource);
       userEntityController.updateDefaultIdentifier(userEntity, user.getIdentifier());

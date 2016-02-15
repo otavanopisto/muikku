@@ -44,6 +44,14 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
     this.lastLogin = lastLogin;
   }
   
+  public String getLocale() {
+    return locale;
+  }
+  
+  public void setLocale(String locale) {
+    this.locale = locale;
+  }
+  
   public String getDefaultIdentifier() {
     return defaultIdentifier;
   }
@@ -59,7 +67,7 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
   public void setDefaultSchoolDataSource(SchoolDataSource defaultSchoolDataSource) {
     this.defaultSchoolDataSource = defaultSchoolDataSource;
   }
-
+  
   public Long getVersion() {
     return version;
   }
@@ -78,6 +86,9 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
   
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date lastLogin;
+  
+  @Column (length = 8)
+  private String locale;
   
   private String defaultIdentifier;
   

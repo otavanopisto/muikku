@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -32,6 +31,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
+import fi.muikku.mail.MailType;
+import fi.muikku.mail.Mailer;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -49,7 +50,6 @@ import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
-import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchProvider.Sort;
 import fi.muikku.search.SearchResult;
@@ -57,6 +57,7 @@ import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.servlet.BaseUrl;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
+import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -104,7 +105,10 @@ public class CoursePickerRESTService extends PluginRESTService {
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
-  private Event<SchoolDataWorkspaceUserDiscoveredEvent> schoolDataWorkspaceUserDiscoveredEvent;
+  private Mailer mailer;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
   
   @Inject
   @Any
@@ -131,6 +135,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
         @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults,
         @Context Request request) {
+    
     List<CoursePickerWorkspace> workspaces = new ArrayList<>();
 
     boolean doMinVisitFilter = minVisits != null;
@@ -172,8 +177,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       
       if (orderBy != null && orderBy.contains("alphabet")) {
         sorts = new ArrayList<>();
-        sorts.add(new Sort("name", Sort.Order.ASC));
-        sorts.add(new Sort("nameExtension", Sort.Order.ASC));
+        sorts.add(new Sort("name.untouched", Sort.Order.ASC));
       }
       
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults, sorts);
@@ -191,24 +195,20 @@ public class CoursePickerRESTService extends PluginRESTService {
             
             WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
             if (workspaceEntity != null) {
-              Workspace workspace = findWorkspace(workspaceEntity);
-              if (workspace != null) {
-                String name = (String) result.get("name");
-                String description = (String) result.get("description");
-                boolean canSignup = getCanSignup(workspaceEntity);
-                boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
-                Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
+              String name = (String) result.get("name");
+              String nameExtension = (String) result.get("nameExtension");
+              String description = (String) result.get("description");
+              boolean canSignup = getCanSignup(workspaceEntity);
+              boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
+              Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
 
-                if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(createRestModel(workspace, workspaceEntity, name, description, canSignup, canCopyWorkspace, isCourseMember, userEntity));
-                } else {
-                  logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
-                }
+              if (StringUtils.isNotBlank(name)) {
+                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, canSignup, canCopyWorkspace, isCourseMember));
               } else {
-                logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
+                logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
               }
             } else {
-              logger.severe(String.format("Search index contains workspace %s that does not exits in Muikku", workspaceIdentifier));
+              logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
             }
           }
         }
@@ -245,15 +245,6 @@ public class CoursePickerRESTService extends PluginRESTService {
     return Response.ok(workspaces).build();
   }
   
-  private Workspace findWorkspace(WorkspaceEntity workspaceEntity) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      return workspaceController.findWorkspace(workspaceEntity);
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-  }
-
   @GET
   @Path("/workspaces/{ID}")
   @RESTPermitUnimplemented
@@ -263,8 +254,6 @@ public class CoursePickerRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-
     Workspace workspace = null;
     
     schoolDataBridgeSessionController.startSystemSession();
@@ -282,7 +271,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
     Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
 
-    return Response.ok(createRestModel(workspace, workspaceEntity, workspace.getName(), workspace.getDescription(), canSignup, canCopyWorkspace, isCourseMember, userEntity)).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), canSignup, canCopyWorkspace, isCourseMember)).build();
   }
   
   @POST
@@ -317,14 +306,16 @@ public class CoursePickerRESTService extends PluginRESTService {
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     
     Role role = roleController.findRoleByDataSourceAndRoleEntity(user.getSchoolDataSource(), workspaceRole);
-    fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
-    UserSchoolDataIdentifier userIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
-        user.getSchoolDataSource(), user.getIdentifier());
-    SchoolDataWorkspaceUserDiscoveredEvent discoverEvent = new SchoolDataWorkspaceUserDiscoveredEvent(workspaceUser.getSchoolDataSource(),
-        workspaceUser.getIdentifier().getIdentifier(), workspaceUser.getWorkspaceIdentifier().getDataSource(), workspaceUser.getWorkspaceIdentifier().getIdentifier(),
-        workspaceUser.getUserIdentifier().getDataSource(), workspaceUser.getUserIdentifier().getIdentifier(), workspaceUser.getRoleIdentifier().getDataSource(),
-        workspaceUser.getRoleIdentifier().getIdentifier());
-    schoolDataWorkspaceUserDiscoveredEvent.fire(discoverEvent);
+    
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
+    fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
+    if (workspaceUser == null) {
+      workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
+    }
+    else {
+      workspaceController.updateWorkspaceStudentActivity(workspaceUser, true);
+    }
     
     // TODO: should this work based on permission? Permission -> Roles -> Recipients
     // TODO: Messaging should be moved into a CDI event listener
@@ -337,11 +328,13 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     String userName = user.getFirstName() + " " + user.getLastName();
 
-    for (WorkspaceUserEntity cu : workspaceTeachers) {
-      teachers.add(cu.getUserSchoolDataIdentifier().getUserEntity());
+    for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
+      teachers.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
     }
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
     
-    workspaceController.createWorkspaceUserSignup(workspaceEntity, userIdentifier.getUserEntity(), new Date(), entity.getMessage());
+    workspaceController.createWorkspaceUserSignup(workspaceEntity, userSchoolDataIdentifier.getUserEntity(), new Date(), entity.getMessage());
 
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
     caption = MessageFormat.format(caption, workspaceName);
@@ -363,9 +356,18 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     for (MessagingWidget messagingWidget : messagingWidgets) {
       // TODO: Category?
-      messagingWidget.postMessage(userIdentifier.getUserEntity(), "message", caption, content, teachers);
+      messagingWidget.postMessage(userSchoolDataIdentifier.getUserEntity(), "message", caption, content, teachers);
     }
 
+    List<String> teacherEmails = new ArrayList<>(teachers.size());
+    for(UserEntity teacher: teachers){
+     String teacherEmail = userEmailEntityController.getUserEmailAddress(teacher, false);
+     if(StringUtils.isNotBlank(teacherEmail)){
+       teacherEmails.add(userEmailEntityController.getUserEmailAddress(teacher, false));
+     }
+    }
+    mailer.sendMail(MailType.HTML, teacherEmails, caption, content);
+    
     return Response.noContent().build();
   }
 
@@ -407,17 +409,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
   }
   
-  private CoursePickerWorkspace createRestModel(Workspace workspace, WorkspaceEntity workspaceEntity, String name, String description, boolean canSignup, Boolean canCopyWorkspace, boolean isCourseMember, UserEntity userEntity) {
-    boolean workspaceEvaluationFeeApplicable = workspace.isEvaluationFeeApplicable();
-    boolean userHasEvaluationFees = false;
-
-    if (userEntity != null) {
-      User user = userController.findUserByUserEntityDefaults(userEntity);
-      if (user != null) {
-        userHasEvaluationFees = user.hasEvaluationFees();
-      }
-    }
-
+  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, boolean canSignup, Boolean canCopyWorkspace, boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     return new CoursePickerWorkspace(
@@ -426,14 +418,13 @@ public class CoursePickerRESTService extends PluginRESTService {
         workspaceEntity.getArchived(), 
         workspaceEntity.getPublished(), 
         name, 
-        workspace.getNameExtension(), 
+        nameExtension, 
         description, 
         numVisits, 
         lastVisit, 
         canSignup, 
         canCopyWorkspace,
-        isCourseMember,
-        workspaceEvaluationFeeApplicable && userHasEvaluationFees);
+        isCourseMember);
   }
   
 }

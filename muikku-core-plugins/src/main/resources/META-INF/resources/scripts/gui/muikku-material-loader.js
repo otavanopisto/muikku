@@ -24,16 +24,16 @@
     },
 
     _loadHtmlMaterial: function(pageElement, fieldAnswers) {
-      var workspaceMaterialId = $(pageElement).data('workspace-material-id');
-      var materialId = $(pageElement).data('material-id');
+      var workspaceMaterialId = $(pageElement).attr('data-workspace-material-id');
+      var materialId = $(pageElement).attr('data-material-id');
       var parentIds = []; // TODO needed anymore?
 
       try {
         var material = {
-          title: $(pageElement).data('material-title'),
-          html: $(pageElement).data('material-content'),
-          currentRevision: $(pageElement).data('material-current-revision'),
-          publishedRevision: $(pageElement).data('material-published-revision'),
+          title: $(pageElement).attr('data-material-title'),
+          html: $(pageElement).attr('data-material-content'),
+          currentRevision: $(pageElement).attr('data-material-current-revision'),
+          publishedRevision: $(pageElement).attr('data-material-published-revision'),
           path: $(pageElement).attr('data-path')
         };
         
@@ -90,7 +90,7 @@
           
           var src = urlAttribute ? $(element).attr(urlAttribute) : null;
           if (src) {
-            var absolute = (src.indexOf('/') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+            var absolute = (src.indexOf('/') == 0) || (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
             if (!absolute) {
               if (src.lastIndexOf('/') == src.length - 1) {
                 $(element).attr(urlAttribute, this.options.baseUrl + '/' + material.path + src);
@@ -144,16 +144,16 @@
     },
     
     loadMaterial: function(page, fieldAnswers) {
-      var workspaceMaterialId = $(page).data('workspace-material-id');
-      var materialId = $(page).data('material-id');
-      var materialType = $(page).data('material-type');
-      var materialTitle = $(page).data('material-title');
+      var workspaceMaterialId = $(page).attr('data-workspace-material-id');
+      var materialId = $(page).attr('data-material-id');
+      var materialType = $(page).attr('data-material-type');
+      var materialTitle = $(page).attr('data-material-title');
       switch (materialType) {
         case 'html':
           this._loadHtmlMaterial($(page), fieldAnswers);
         break;
         case 'folder':
-          renderDustTemplate(this.options.dustTemplate, { id: workspaceMaterialId, workspaceMaterialId: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
+          renderDustTemplate(this.options.dustTemplate, { id: workspaceMaterialId, workspaceMaterialId: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), data: { title: $(page).attr('data-material-title') } }, $.proxy(function (text) {
             $(this).html(text);
             $.waypoints('refresh');
           }, page));
@@ -541,7 +541,7 @@
           
           tdTermElement.text(concatText(connectFieldTermMeta.text, 50));
           tdTermElement.attr('title', connectFieldTermMeta.text);
-          tdTermElement.data('muikku-connect-field-option-name', connectFieldTermMeta.name);
+          tdTermElement.attr('data-muikku-connect-field-option-name', connectFieldTermMeta.name);
           tdValueElement.append(inputElement);
         }
         
@@ -835,7 +835,8 @@
           'type': "file",
           'placeholder': data.meta.help,
           'title': data.meta.hint,
-          'name': data.name
+          'name': data.name,
+          'data-readonly': $(object).attr('data-readonly')
         })
         .data({
           'field-name': data.name,
@@ -904,17 +905,22 @@
     if (jQuery().magnificPopup) {
       // Lazy loading with magnific popup
       $(data.pageElement).find('img.lazy').each(function (index, img) {
-        var src = $(img).attr('data-original');
-        var a = $('<a>')
-          .attr('href', src)
-          .magnificPopup({
-            type: 'image'
-          })
-          .insertBefore(img);
-        
-        $(img)
-          .appendTo(a)
-          .lazyload();
+        if ($(img).closest('a').length == 0) {
+          var src = $(img).attr('data-original');
+          var a = $('<a>')
+            .attr('href', src)
+            .magnificPopup({
+              type: 'image'
+            })
+            .insertBefore(img);
+          
+          $(img)
+            .appendTo(a)
+            .lazyload();
+        }
+        else {
+          $(img).lazyload();
+        }
       });        
     } else {
       // Lazy loading
@@ -931,6 +937,8 @@
     renderDustTemplate('workspace/materials-assignment-attachement-remove-confirm.dust', { }, $.proxy(function (text) {
       // File field support
       $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
+        var readonlyData = $(field).attr('data-readonly');
+        var readonly = data.readOnlyFields || ('true' === readonlyData);
         $(field)
           .muikkuFileField({
             maxFileSize: maxFileSize,
@@ -943,7 +951,7 @@
             fieldName: $(field).data('field-name'),
             embedId: $(field).data('embed-id'),
             materialId: $(field).data('material-id'),
-            readonly: data.readOnlyFields||false,
+            readonly: readonly,
             answer: function (val) {
               // TODO: Support setter for files
               return JSON.stringify($(this.element).muikkuFileField('files'));

@@ -6,6 +6,7 @@
     setup: function (widgetElement) {
       this._firstResult = 0;
       this._maxResults = 25;
+      this._hasEvaluationFees = true;
       
       var _this = this;
       widgetElement = $(widgetElement);
@@ -144,8 +145,20 @@
         
         _this._refreshListTimer();
       });
-
-      this._initializeAllCoursesList();
+      
+      if (!MUIKKU_LOGGED_USER) {
+        this._hasEvaluationFees = false;
+        this._initializeAllCoursesList();
+      } else {
+        mApi().user.users.basicinfo
+          .read(MUIKKU_LOGGED_USER)
+          .callback($.proxy(function (err, basicInfo) {
+            if (!err) {
+              this._hasEvaluationFees = basicInfo && basicInfo.hasEvaluationFees;
+              this._initializeAllCoursesList();
+            }
+          }, this));
+      }
       
       $('.cp-page-link-load-more').click($.proxy(this._onLoadMoreClick, this));
     },
@@ -209,6 +222,8 @@
       var loader = $('<div>') 
         .addClass('loading')
         .appendTo($(this._coursesContainer));
+
+      this._searchInput.prop('disabled', true);
       
       $('.cp-page-link-load-more').addClass('disabled');
       
@@ -217,32 +232,31 @@
           firstResult: this._firstResult,
           maxResults: this._maxResults + 1
         }))
-        .on('$', function (workspace, workspaceCallback) {
-
-//        mApi({async: false}).coursepicker.workspaces.users.read(workspace.id, {
-//          roleArchetype: 'TEACHER'
-//        })  
-//        .on('$', function (workspaceUser, workspaceUserCallback) {
-//          mApi({async: false}).user.users.read(workspaceUser.userId).callback(function (userErr, user) {
-//            workspaceUser.hasPicture = user.hasImage;
-//            workspaceUser.fullName = (user.firstName ? user.firstName + ' ' : '') + user.lastName;
-//            workspaceUserCallback();
-//          });
-//        })
-//        .callback(function (workspaceUsersErr, workspaceUsers) {
-//          workspace.teachers = workspaceUsers;
-//        });
-          
+        .on('$', $.proxy(function (workspaceEntity, workspaceCallback) {
           // TODO: Implement these
-          workspace.hasCourseFee = false;
-          workspace.hasAssessmentFee = false;
-          workspace.rating = 5;
-          workspace.ratingCount = 3;
-          workspace.teachers = [];
-          workspaceCallback();
-      })
+          workspaceEntity.hasCourseFee = false;
+          workspaceEntity.rating = 5;
+          workspaceEntity.ratingCount = 3;
+          workspaceEntity.teachers = [];
+
+          if (!this._hasEvaluationFees) {
+            workspaceCallback();
+          } else {
+            mApi().
+              workspace.workspaces.feeInfo.read(workspaceEntity.id)
+              .callback(function (err, feeInfo) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                } else {
+                  workspaceEntity.evaluationHasFee = feeInfo && feeInfo.evaluationHasFee;
+                  workspaceCallback();
+                }
+              });
+          }
+      }, this))
       .callback($.proxy(function (err, workspaces) {
         $(loader).remove();
+        this._searchInput.prop('disabled', false);
         
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);

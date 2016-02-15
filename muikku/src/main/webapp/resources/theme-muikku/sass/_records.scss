@@ -171,17 +171,24 @@
 .tr-item-open-header-name{
   display : inline-block;  
   span{
-   font-size:19px;
-   display:inline-block;
-  
-    &:first-child{
-     background-color:#0acf00;
-     padding:5px 10px;
-     color:#fff;
-  
+    font-size:19px;
+    display:inline-block;
+    
+    &.grade {
+      padding:5px 10px;
+      color:#fff;
+      
+      &.passing {
+        background-color:#0acf00;
+      }
+      
+      &.non-passing {
+        background-color:#ea7401;
+      }
     }
+    
     &:not(:first-child){
-     margin-left:10px;
+      margin-left:10px;
     }
   }
 }
@@ -203,14 +210,21 @@
        
       }
      }
+     
     &.grade{
-      background-color:#0acf00;
       padding:5px 10px;
       span{
        color:#fff;
        
       }
     
+      &.passing {
+        background-color:#0acf00;
+      }
+      
+      &.non-passing {
+        background-color:#ea7401;
+      }
     }
   }
 
@@ -311,12 +325,20 @@
   }
 }
 .tr-task-evaluated-grade{
-      background-color:#0acf00;
-      padding:5px 10px;
-      color:#fff;
+  background-color:$bgr1;
+  color:#dadada; 
+  padding:5px 10px;
 
-      &.nograde{
-       background-color:$bgr1;
-       color:#dadada; 
-      }
+  &.grade {
+    color:#fff;
+    
+    &.passing {
+      background-color:#0acf00;
+    }
+    
+    &.non-passing {
+      background-color:#ea7401;
+    }
+  }
+  
 }

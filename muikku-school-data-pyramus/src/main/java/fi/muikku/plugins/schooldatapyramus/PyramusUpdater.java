@@ -18,6 +18,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.joda.time.DateTime;
+
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.muikku.model.users.UserEntity;
@@ -178,7 +180,7 @@ public class PyramusUpdater {
   public int updateStudyProgrammes() {
     StudyProgramme[] studyProgrammes = pyramusClient.get().get("/students/studyProgrammes", StudyProgramme[].class);
     
-    if (studyProgrammes.length == 0)
+    if (studyProgrammes == null || studyProgrammes.length == 0)
       return -1;
     
     for (StudyProgramme studyProgramme : studyProgrammes) {
@@ -207,7 +209,7 @@ public class PyramusUpdater {
   
   public int updateStudyProgrammeMembers(int offset, int maxStudents) {
     Student[] students = pyramusClient.get().get("/students/students?filterArchived=false&firstResult=" + offset + "&maxResults=" + maxStudents, Student[].class);
-    if (students.length == 0) {
+    if (students == null || students.length == 0) {
       return -1;
     }
 
@@ -243,7 +245,7 @@ public class PyramusUpdater {
   public int updateStudentGroups(int offset, int batchSize) {
     StudentGroup[] userGroups = pyramusClient.get().get("/students/studentGroups?firstResult=" + offset + "&maxResults=" + batchSize, StudentGroup[].class);
     
-    if (userGroups.length == 0)
+    if (userGroups == null || userGroups.length == 0)
       return -1;
     
     for (StudentGroup userGroup : userGroups) {
@@ -541,15 +543,17 @@ public class PyramusUpdater {
     }
     
     CourseStaffMemberRole[] staffMemberRoles = pyramusClient.get().get("/courses/staffMemberRoles", CourseStaffMemberRole[].class);
-    for (CourseStaffMemberRole staffMemberRole : staffMemberRoles) {
-      String identifier = identifierMapper.getWorkspaceStaffRoleIdentifier(staffMemberRole.getId());
-      removedIdentifiers.remove(identifier);
-
-      WorkspaceRoleEntity workspaceRoleEntity = workspaceRoleEntityController.findWorkspaceRoleEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
-      if (workspaceRoleEntity == null) {
-        WorkspaceRole workspaceRole = entityFactory.createEntity(staffMemberRole);
-        schoolDataWorkspaceRoleDiscoveredEvent.fire(new SchoolDataWorkspaceRoleDiscoveredEvent(workspaceRole.getSchoolDataSource(), workspaceRole.getIdentifier(), workspaceRole.getArchetype(), workspaceRole.getName()));
-        count++;
+    if (staffMemberRoles != null) {
+      for (CourseStaffMemberRole staffMemberRole : staffMemberRoles) {
+        String identifier = identifierMapper.getWorkspaceStaffRoleIdentifier(staffMemberRole.getId());
+        removedIdentifiers.remove(identifier);
+  
+        WorkspaceRoleEntity workspaceRoleEntity = workspaceRoleEntityController.findWorkspaceRoleEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+        if (workspaceRoleEntity == null) {
+          WorkspaceRole workspaceRole = entityFactory.createEntity(staffMemberRole);
+          schoolDataWorkspaceRoleDiscoveredEvent.fire(new SchoolDataWorkspaceRoleDiscoveredEvent(workspaceRole.getSchoolDataSource(), workspaceRole.getIdentifier(), workspaceRole.getArchetype(), workspaceRole.getName()));
+          count++;
+        }
       }
     }
     
@@ -598,12 +602,18 @@ public class PyramusUpdater {
       SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
       CourseStudent courseStudent = pyramusClient.get().get("/courses/courses/" + courseId + "/students/" + courseStudentId, CourseStudent.class);
-      if (courseStudent != null) {
-        if (workspaceUserEntity == null) {
+      if (courseStudent != null && !courseStudent.getArchived()) {
+        boolean studentActive = isStudentActive(courseStudent.getStudentId());
+        
+        if (workspaceUserEntity == null && studentActive) {
           fireCourseStudentDiscovered(courseStudent);
           return true;
         } else {
-          fireCourseStudentUpdated(courseStudent);
+          if (studentActive) {
+            fireCourseStudentUpdated(courseStudent);
+          } else {
+            fireCourseStudentRemoved(courseStudentId, studentId, courseId);
+          }
         }
       } else {
         if (workspaceUserEntity != null) {
@@ -613,6 +623,27 @@ public class PyramusUpdater {
     }
     
     return false;
+  }
+
+  private boolean isStudentActive(Long studentId) {
+    Student student = pyramusClient.get().get(String.format("/students/students/%d", studentId), Student.class);
+    if (student == null || student.getArchived()) {
+      logger.severe(String.format("Tried to resolve activity for non existings student (%d)", studentId));
+      return false;  
+    }
+    
+    DateTime studyStartDate = student.getStudyStartDate();
+    DateTime studyEndDate = student.getStudyEndDate();
+    
+    if (studyStartDate == null && studyEndDate == null) {
+      // It's a never ending study programme
+      return true;
+    }
+    
+    boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(System.currentTimeMillis());
+    boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(System.currentTimeMillis());
+    
+    return startedStudies && !finishedStudies;
   }
 
   /**
@@ -625,7 +656,7 @@ public class PyramusUpdater {
     int count = 0;
     Long courseId = identifierMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
 
-    CourseStudent[] courseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false", CourseStudent[].class);
+    CourseStudent[] courseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false&activeStudents=true", CourseStudent[].class);
     if (courseStudents != null) {
       for (CourseStudent courseStudent : courseStudents) {
         SchoolDataIdentifier workspaceUserIdentifier = toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId()));
@@ -640,6 +671,18 @@ public class PyramusUpdater {
             fireCourseStudentDiscovered(courseStudent);
             count++;
           }
+        }
+      }
+    }
+    
+    CourseStudent[] nonActiveCourseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false&activeStudents=false", CourseStudent[].class);
+    if (nonActiveCourseStudents != null) {
+      for (CourseStudent nonActiveCourseStudent : nonActiveCourseStudents) {
+        SchoolDataIdentifier workspaceUserIdentifier = toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(nonActiveCourseStudent.getId()));
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
+        if (workspaceUserEntity != null) {
+          fireCourseStudentRemoved(nonActiveCourseStudent.getId(), nonActiveCourseStudent.getStudentId(), nonActiveCourseStudent.getCourseId());
+          count++;
         }
       }
     }

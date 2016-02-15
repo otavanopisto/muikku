@@ -152,6 +152,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           municipality,
           school,
           student.getStudyStartDate(),
+          student.getStudyEndDate(),
           student.getStudyTimeEnd(),
           hidden));
     }

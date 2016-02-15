@@ -38,6 +38,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.StudentFlag;
@@ -125,6 +126,7 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("workspaceIds") List<Long> workspaceIds,
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userEntityId") Long userEntityId,
+      @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
       @QueryParam("studentFlagTypes") String flagTypes) {
     
     if (!sessionController.isLoggedIn()) {
@@ -185,6 +187,18 @@ public class UserRESTService extends AbstractRESTService {
       userIdentifiers.addAll(studentFlagController.listOwnerFlaggedUserIdentifiersByTypes(sessionController.getLoggedUser(), studentFlagTypes));
     }
     
+    if (Boolean.TRUE.equals(includeInactiveStudents)) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_INACTIVE_STUDENTS)) {
+        if (userEntityId == null) {
+          return Response.status(Status.FORBIDDEN).build();
+        } else {
+          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
+            return Response.status(Status.FORBIDDEN).build();
+          }
+        }
+      }
+    } 
+    
     if (userEntityId != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
        
@@ -222,7 +236,7 @@ public class UserRESTService extends AbstractRESTService {
     if (elasticSearchProvider != null) {
       String[] fields = new String[] { "firstName", "lastName" };
 
-      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, EnvironmentRoleArchetype.STUDENT, userGroupFilters, workspaceFilters, userIdentifiers, firstResult, maxResults);
+      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, EnvironmentRoleArchetype.STUDENT, userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
       boolean hasImage = false;
@@ -691,16 +705,29 @@ public class UserRESTService extends AbstractRESTService {
   @GET
   @Path("/users/{ID}/basicinfo")
   @RESTPermitUnimplemented
-  public Response findUserBasicInfo(@Context Request request, @PathParam("ID") Long id) {
+  public Response findUserBasicInfo(@Context Request request, @PathParam("ID") String id) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
     }
+    
+    UserEntity userEntity = null;
+    
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(id);
+    if (userIdentifier == null) {
+      if (!StringUtils.isNumeric(id)) {
+        return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid user id %s", id)).build();
+      }
+      
+      userEntity = userEntityController.findUserEntityById(NumberUtils.createLong(id));
+      userIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+    } else {
+      userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+    }
 
-    UserEntity userEntity = userEntityController.findUserEntityById(id);
     if (userEntity == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
-
+    
     EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(userEntity.getVersion())));
 
     ResponseBuilder builder = request.evaluatePreconditions(tag);
@@ -713,9 +740,7 @@ public class UserRESTService extends AbstractRESTService {
 
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      User user = userController.findUserByDataSourceAndIdentifier(
-          userEntity.getDefaultSchoolDataSource(),
-          userEntity.getDefaultIdentifier());
+      User user = userController.findUserByIdentifier(userIdentifier);
       if (user == null) {
         return Response.status(Response.Status.NOT_FOUND).build();
       }
@@ -723,7 +748,7 @@ public class UserRESTService extends AbstractRESTService {
       // TODO: User image
       boolean hasImage = false;
       return Response
-          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getStudyProgrammeName(), hasImage))
+          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees()))
           .cacheControl(cacheControl)
           .tag(tag)
           .build();

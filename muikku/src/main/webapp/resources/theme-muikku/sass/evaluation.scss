@@ -190,12 +190,12 @@ body.evaluation {
     
     &.loading {
 
-
       &:before {
         @include generic-loader(50px);
         position:absolute;
         top:50%;
         left:50%;
+        margin:-25px 0 0 -25px;
       }
       
     }
@@ -264,6 +264,16 @@ body.evaluation {
       text-align:center;
       transition:opacity 1s ease-in-out, transform 1s ease-in-out;
       position:relative;
+      
+      .evaluation-student-clickarea {
+        position:absolute;
+        top:0;
+        right:0;
+        left:0;
+        bottom:0;
+        z-index:9;
+        cursor:pointer;
+      }
       
       &.evaluation-student-loaded {
         opacity: 1;
@@ -369,9 +379,10 @@ body.evaluation {
       }
       
       /* Workspace has been reviewed and needs more input from student */
-      &.workspace-reviewed-but-not-evaluated {
+      &.workspace-reviewed-non-passing {
       
         .evaluation-assessment-request-date {
+          position:absolute;
           width:100%;
           box-sizing:border-box;
           padding:3px 4px;
@@ -383,16 +394,34 @@ body.evaluation {
           position:absolute;
           font-size:0.9em;
           top:5px;
+          background:#00ccff;
+          color:#fff;
+          font-size:14px;
+        }
+        
+        .workspace-evaluated-date {
+          position:absolute;
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+          font-size:0.9em;
+          top:27px;
           background:#ea7401;
           color:#fff;
-        }
+          font-size:14px;
+        }        
       
         .evaluation-student-picture {
           box-shadow:0 0 0 5px #ea7401;
         }
     
       }
-      
+            
       .evaluation-assessment-request-date {
         width:100%;
         box-sizing:border-box;
@@ -418,11 +447,6 @@ body.evaluation {
         background-size:cover;
         border-radius:100%;
         background-position:center center;
-        cursor:pointer;
-        
-        &:hover {
-          box-shadow:0 0 0 5px #8cd1fa;
-        }
       }
       
       .evaluation-student-name {
@@ -521,6 +545,34 @@ body.evaluation {
         }
       }
       
+      &.assignment-withdrawn {
+        border-top:3px solid #cb23c5;
+        cursor:pointer;
+        
+        .evaluation-assignment-evaluated-date {
+          color:#1aa00b;
+        }
+        
+        &:hover {
+          box-shadow:0 0 0 5px #e69be3;
+        }
+      }
+      
+      
+      &.assignment-reviewed-non-passing {
+        opacity:1;
+        border-top:3px solid #ea7401;
+        cursor:pointer;
+        
+        .evaluation-assignment-evaluated-date {
+          color:#ea7401;
+        }
+        
+        &:hover {
+          box-shadow:0 0 0 5px #ffc58d;
+        }
+      }
+      
       .evaluation-assignment-submitted-date,
       .evaluation-assignment-evaluated-date {
         width:100%;
@@ -611,8 +663,7 @@ body.evaluation {
         .evaluation-modal-assignment-info {
           
           /* WORKSPACE EVALUATION */
-          .evaluation-modal-workspace-assignment-wrapper,
-          .evaluation-modal-workspace-exercise-wrapper {
+          .evaluation-modal-workspace-assignment-wrapper {
             margin:20px 0 0 0;
             font-size:14px;
             
@@ -662,19 +713,24 @@ body.evaluation {
                     cursor:pointer;
                   }
                   
-                  .evaluation-assignment-assessmentvalue {
+                  .evaluation-assignment-assessmentvalue,
+                  .evaluation-assignment-exercisedone {
                     position:absolute;
-                    max-width:100px;
+                    max-width:150px;
                     right:0;
                     top:0;
                     text-align:right;
                     padding:8px 10px;
+                    white-space:nowrap;
                   }
                 
                 }
                 
-                .evaluation-assignment-content,
-                .evaluation-exercise-content {
+                .evaluation-assignment-content {
+                
+                  h1,h2,h3,h4,h5,h6 {
+                    margin-top:1em;
+                  }
                   
                   .evaluation-assignment-literal-assessment {
                     background:#d5ffd2;
@@ -731,7 +787,7 @@ body.evaluation {
                     
                     textarea,
                     input[type="text"] {
-                      font-family:'Open Sans',Verdana, sans-serif;
+                      font-family:'Open Sans', Arial, sans-serif;
                       border-radius:3px;
                       background:#ebf7ff;
                       padding:5px 10px;
@@ -839,7 +895,7 @@ body.evaluation {
                 
                 textarea,
                 input[type="text"] {
-                  font-family:'Open Sans',Verdana, sans-serif;
+                  font-family:'Open Sans', Arial, sans-serif;
                   border-radius:3px;
                   background:#ebf7ff;
                   padding:5px 10px;
@@ -974,7 +1030,7 @@ body.evaluation {
           color:#000;
           outline:none;
           transition:border 0.15s ease-in-out;
-          font-family:'Open Sans',Verdana, sans-serif;
+          font-family:'Open Sans', Arial, sans-serif;
           font-weight:300;
           
           &:hover,
@@ -1028,7 +1084,7 @@ body.evaluation {
           text-transform:uppercase;
           margin:5px;
           outline:none;
-          font-family:'Open Sans',Verdana, sans-serif;
+          font-family:'Open Sans', Arial, sans-serif;
           min-width:90px;
           font-size:18px;
         }
@@ -1048,7 +1104,7 @@ body.evaluation {
 
   .evaluation-evaluate-modal {
     background:#fff;
-    font-family: 'Open Sans',Verdana, sans-serif;
+    font-family:'Open Sans', Arial, sans-serif;
     font-size:16px;
     padding:0;
     border:none;
@@ -1198,7 +1254,7 @@ body.evaluation {
           text-transform:uppercase;
           margin:5px;
           outline:none;
-          font-family:'Open Sans',Verdana, sans-serif;
+          font-family:'Open Sans', Arial, sans-serif;
           min-width:90px;
           font-size:18px;
           float:none;
@@ -1223,7 +1279,7 @@ body.evaluation {
   
   /**
   #ui-datepicker-div {
-    font-family:'Open Sans',Verdana, sans-serif;
+    font-family:'Open Sans', Arial, sans-serif;
     font-size:13px;
     box-shadow:0 0 30px 5px rgba(0,0,0,0.3);
     border:0;
@@ -1419,60 +1475,4 @@ ol {
     list-style-type:circle;
   }
 
-}
-
-/* MATERIAL STYLESETS */
-
-.material-styles-block {
-  border-radius:5px;
-  padding:8px 14px;
-  margin:20px 0;
-}
-
-.material-thinkingbox {
-  background:#7fcaf7;
-  color:#fff;
-}
-
-.material-objectivebox {
-  background:#67d9bf;
-  color:#fff;
-}
-
-.material-infobox {
-  background:#ec97c6;
-  color:#fff;
-}
-
-.material-recapbox {
-  background:#6eb5cf;
-  color:#fff;
-}
-
-.material-chatbubble {
-  background:#7082b0;
-  color:#fff;
-}
-
-.material-basicbox {
-  background:#ffc369;
-  color:#fff;
-}
-
-.material-citation-highlight {
-  color:#913333;
-  font-size:18px;
-  font-weight:400;
-  border-left:3px solid #b24d4d;
-  border-radius:0px;
-  line-height:1.7em;
-}
-
-.material-citation-basic {
-  color:#7a8d94;
-  font-size:18px;
-  font-weight:400;
-  border-left:3px solid #7a8d94;
-  border-radius:0px;
-  line-height:1.7em;
 }
