@@ -56,6 +56,16 @@ body {
   position:relative;  
 }
 
+#headerLogoTextContainer {
+  background-image:url('/gfx/muikku-header-text.png');
+  background-repeat:no-repeat;
+  background-position:left center;
+  position:relative;
+  left:-25px;
+  top:0;
+  height:110px;
+}
+
 #footer {
   position:fixed;
   bottom:0;
@@ -79,6 +89,7 @@ body {
     position:relative;
     z-index:2;
   }
+  
 }
 
 #helpdesk {
@@ -96,16 +107,6 @@ body {
     color:#b3e9ff;
   }
   
-}
-
-#headerLogoTextContainer {
-  background-image:url('/gfx/muikku-header-text.png');
-  background-repeat:no-repeat;
-  background-position:left center;
-  position:relative;
-  left:-25px;
-  top:0;
-  height:110px;
 }
 
 /* Login */
@@ -354,12 +355,18 @@ main.content {
   margin:20px 0 0 0;
 }
 
+/* After Personalization Box will be redesigned and moved to proper .scss*/
 .box {
   box-shadow:0 0 15px rgba(216, 230, 235, 0.5);
   background:#fff;
   padding:15px;
   height:100%;
   box-sizing:border-box;
+  
+  .empty {
+    font-style:italic;
+  }
+  
 }
 
 .box ul {
@@ -370,10 +377,6 @@ main.content {
 
 .box ul li {
   padding:5px 0;
-}
-
-.empty {
-  font-style:italic;
 }
 
 /* Frontpage Boxes When User Not Logged In */

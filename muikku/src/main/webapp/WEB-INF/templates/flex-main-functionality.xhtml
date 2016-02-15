@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:c="http://java.sun.com/jsp/jstl/core"
+xmlns:h="http://java.sun.com/jsf/html"
+template="flex-main-env.xhtml">
+
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main-functionality.css"/>
+
+    <ui:insert name="main-functionality-styles"></ui:insert>    
+
+  </ui:define>  
+
+  <ui:define name="grid-content"> 
+    <div class="mf-content-master">
+      <ui:insert name="mf-content-functions">
+        <div class="mf-content-functions flex-row">
+          <div class="lg-flex-cell-4 md-flex-cell-6 sm-flex-cell-full sm-flex-order-1">
+            <ui:insert name="mf-button-container">
+            
+            </ui:insert>
+          </div>
+          <div class="lg-flex-cell-12 md-flex-cell-10 sm-flex-cell-full sm-flex-hide">
+            <ui:insert name="mf-controls-container">
+            
+            </ui:insert>
+          </div>
+        </div>
+      </ui:insert>
+      <ui:insert name="mf-content-area">
+        <div class="mf-content-area flex-row">
+          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+          <ui:insert name="mf-content-area-instance">
+          
+          </ui:insert>
+          </div>
+        </div>
+      </ui:insert>
+    </div>
+  </ui:define>
+    
+</ui:composition>

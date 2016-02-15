@@ -1,5 +1,4 @@
 /* Fake buttons */
-
 .bt-generic {
   text-transform:uppercase;
   border-radius:3px;
@@ -106,7 +105,7 @@
 
 }
 
-.bt-mainFunction {
+.bt-main-functionality {
   text-transform:uppercase;
   border-radius:3px;
   display:inline-block;
@@ -114,7 +113,7 @@
   color:#ffffff;
   cursor:pointer;
   @include buttonFontShadow;
-  @include buttonShadow;	
+  @include buttonShadow;  
   background-color:#ed8e00;
   border:1px solid #d9e4e8;
   font-size:1em;
@@ -128,13 +127,13 @@
       padding:12px;
       white-space:nowrap;
       
-      &.bt-mainFunction-dropdown-label{
+      &.bt-main-functionality-dropdown-label {
         width:109px;      
       }  
       
     }
     
-    &.bt-mainFunction-dropdown-chevron {
+    &.bt-main-functionality-dropdown-chevron {
       border-left:1px solid #f6c06d;
       display:inline-block;
       float:right;
@@ -144,40 +143,32 @@
 
   }
 
-  &.bt-mainFunction-active {
+  &.bt-main-functionality-active {
     @include gradient-top-bottom(rgba(237,142,0,1),rgba(253,167,38,1),#ed8e00);
   }
+  
 }
 
-
-/* TODO: Remove from the coursepicker */
-
-.bt-mainFunction-decoration{
-    border-left:1px solid #f6c06d;
-    display:inline-block;
-    float:right;
-    padding:4px 4px 3px 4px;
-    font-size:2.45em;
-  }
-
-/* Button text content styles and icons */
-
-
-
+.bt-main-functionality-decoration{
+  border-left:1px solid #f6c06d;
+  display:inline-block;
+  float:right;
+  padding:4px 4px 3px 4px;
+  font-size:2.45em;
+}
 
 /* Real buttons */
-
 input[type="button"],
 input[type="submit"],
 input[type="reset"] {
-	  text-transform:uppercase;
-    border-radius:3px;
-    display:inline-block;
-    padding:8px 12px;
-    line-height:0.5em;
-    font-size:0.7em;
-    color:#000;
-    cursor:pointer;
+  text-transform:uppercase;
+  border-radius:3px;
+  display:inline-block;
+  padding:8px 12px;
+  line-height:0.5em;
+  font-size:0.7em;
+  color:#000;
+  cursor:pointer;
     
   &:disabled{
    color:#dadada;
@@ -191,7 +182,7 @@ input[type="reset"] {
   &.bt-coursepicker{
    margin-left:10px;
   }
-	
+  
   &.bt-generic {
     text-transform:uppercase;
     border-radius:3px;
@@ -222,4 +213,3 @@ input[type="reset"] {
   }
 
 }
-

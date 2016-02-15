@@ -84,11 +84,11 @@
       
       // Dropdown
       
-      $(".bt-mainFunction").click( function() {
+      $(".bt-main-functionality").click( function() {
         var mfb = $(this) ;
-        var mfd = mfb.find(".bt-mainFunction-decoration");
+        var mfd = mfb.find(".bt-main-functionality-decoration");
         
-         mfb.addClass("bt-mainFunction-active");
+         mfb.addClass("bt-main-functionality-active");
          mfd.removeClass("icon-arrow-down");
          mfd.addClass("icon-arrow-up");
          $(".cp-side-button-dropdown").show(10, function(){
@@ -97,7 +97,7 @@
              dd.hide(10, function(){
                mfd.removeClass("icon-arrow-up");               
                mfd.addClass("icon-arrow-down");
-               mfb.removeClass("bt-mainFunction-active");
+               mfb.removeClass("bt-main-functionality-active");
                 $(document).unbind('click');
               });
            });
