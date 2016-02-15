@@ -105,10 +105,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }));
   }
   
-  @After
-  public void resetWireMock() {
-    WireMock.reset();
-  }
+//  @After
+//  public void resetWireMock() {
+//    WireMock.reset();
+//  }
   
   @Override
   protected void failed(Throwable e, Description description) {

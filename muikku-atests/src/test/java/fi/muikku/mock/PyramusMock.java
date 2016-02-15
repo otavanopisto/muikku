@@ -57,24 +57,7 @@ import fi.pyramus.webhooks.WebhookStudentGroupStaffMemberCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentGroupStudentCreatePayload;
 
 public class PyramusMock {
-  
-  private List<MockStudent> students = new ArrayList<>();
-  private List<MockStaffMember> staffMembers = new ArrayList<>();
-  private List<Person> persons = new ArrayList<>();
-  private ObjectMapper objectMapper;
-  private HashMap<GradingScale, List<Grade>> gradingScales = new HashMap<>();
-  private List<EducationalTimeUnit> educationalTimeUnits = new ArrayList<>();
-  private List<EducationType> educationTypes = new ArrayList<>();
-  private List<Subject> subjects = new ArrayList<>();
-  private List<StudyProgrammeCategory> studyProgrammeCategories = new ArrayList<>();
-  private List<StudyProgramme> studyProgrammes = new ArrayList<>();
-  private List<CourseType> courseTypes = new ArrayList<>();
-  private HashMap<Long, List<CourseStudent>> courseStudents = new HashMap<>();
-  private HashMap<Long, List<CourseStaffMember>> courseStaffMembers = new HashMap<>();
-  private HashMap<Long, List<Object>> studentGroupUsers = new HashMap<>();
-  private List<StudentGroup> studentGroups = new ArrayList<>();
-  private List<String> payloads = new ArrayList<>();
-  
+   
   private PyramusMock() {
       // Prevent direct use
   }
@@ -270,7 +253,7 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockCourseStudents() throws JsonProcessingException, Exception {
+      public Builder mockCourseStudents() throws JsonProcessingException {
         for (Long courseId : pmock.courseStudents.keySet()) {
           for (CourseStudent cs : pmock.courseStudents.get(courseId)) {
             stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students/%d", cs.getCourseId(), cs.getId())))
@@ -299,7 +282,7 @@ public class PyramusMock {
         return this;
       }
           
-      public Builder mockCourseStaffMembers() throws JsonProcessingException, Exception {
+      public Builder mockCourseStaffMembers() throws JsonProcessingException {
 
         for (Long courseId : pmock.courseStaffMembers.keySet()) {
           for (CourseStaffMember cs : pmock.courseStaffMembers.get(courseId)) {
@@ -322,7 +305,7 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockCourseEducationTypes() throws JsonProcessingException, Exception {
+      public Builder mockCourseEducationTypes() throws JsonProcessingException {
         
         stubFor(get(urlMatching("/1/courses/\\d+/educationTypes"))
           .willReturn(aResponse()
@@ -451,7 +434,7 @@ public class PyramusMock {
         return this;
       }
     
-      public Builder mockStudents() throws Exception{
+      public Builder mockStudents() throws JsonProcessingException{
 
         List<Student> studentsList = new ArrayList<>();
         for (MockStudent mockStudent : pmock.students) {
@@ -505,7 +488,7 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockPersons() throws Exception {
+      public Builder mockPersons() throws JsonProcessingException {
         for (Person person : pmock.persons) {
           stubFor(get(urlEqualTo("/1/persons/persons/" + person.getId()))
             .willReturn(aResponse()
@@ -579,7 +562,7 @@ public class PyramusMock {
         return this;
       }      
       
-      public Builder mockStaffMembers() throws Exception {
+      public Builder mockStaffMembers() throws JsonProcessingException {
         Map<String, String> variables = null;
         List<String> tags = null;
         List<StaffMember> staffs = new ArrayList<>();
@@ -682,7 +665,7 @@ public class PyramusMock {
         return this;
       }
       
-      public PyramusMock build() throws Exception {
+      public Builder build() throws Exception {
         
         mockPersons();
         mockStudents();
@@ -703,12 +686,31 @@ public class PyramusMock {
         for(String payload : pmock.payloads) {
           TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
         }
-        
-        return pmock;
+        return this;
       }
       
-      public Builder reset() {
+      public Builder wiremockReset() {
         WireMock.reset();
+        return this;
+      }
+      
+      public Builder resetBuilder() {
+        pmock.students = new ArrayList<>();
+        pmock.staffMembers = new ArrayList<>();
+        pmock.persons = new ArrayList<>();
+//        pmock.objectMapper;
+        pmock.gradingScales = new HashMap<>();
+        pmock.educationalTimeUnits = new ArrayList<>();
+        pmock.educationTypes = new ArrayList<>();
+        pmock.subjects = new ArrayList<>();
+        pmock.studyProgrammeCategories = new ArrayList<>();
+        pmock.studyProgrammes = new ArrayList<>();
+        pmock.courseTypes = new ArrayList<>();
+        pmock.courseStudents = new HashMap<>();
+        pmock.courseStaffMembers = new HashMap<>();
+        pmock.studentGroupUsers = new HashMap<>();
+        pmock.studentGroups = new ArrayList<>();
+        pmock.payloads = new ArrayList<>();
         return this;
       }
       
@@ -773,5 +775,22 @@ public class PyramusMock {
   public void setStudentGroups(HashMap<Long, List<Object>> studentGroups) {
     this.studentGroupUsers = studentGroups;
   }
+
+  private List<MockStudent> students = new ArrayList<>();
+  private List<MockStaffMember> staffMembers = new ArrayList<>();
+  private List<Person> persons = new ArrayList<>();
+  private ObjectMapper objectMapper;
+  private HashMap<GradingScale, List<Grade>> gradingScales = new HashMap<>();
+  private List<EducationalTimeUnit> educationalTimeUnits = new ArrayList<>();
+  private List<EducationType> educationTypes = new ArrayList<>();
+  private List<Subject> subjects = new ArrayList<>();
+  private List<StudyProgrammeCategory> studyProgrammeCategories = new ArrayList<>();
+  private List<StudyProgramme> studyProgrammes = new ArrayList<>();
+  private List<CourseType> courseTypes = new ArrayList<>();
+  private HashMap<Long, List<CourseStudent>> courseStudents = new HashMap<>();
+  private HashMap<Long, List<CourseStaffMember>> courseStaffMembers = new HashMap<>();
+  private HashMap<Long, List<Object>> studentGroupUsers = new HashMap<>();
+  private List<StudentGroup> studentGroups = new ArrayList<>();
+  private List<String> payloads = new ArrayList<>();
 
 }

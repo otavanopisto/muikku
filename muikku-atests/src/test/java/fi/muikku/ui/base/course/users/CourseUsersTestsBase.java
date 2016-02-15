@@ -34,7 +34,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       MockCourseStudent courseStudent = new MockCourseStudent(2l, workspace.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, workspace.getId(), admin.getId(), 4l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, workspace.getId(), admin.getId(), 7l);
       mockBuilder.addStudent(student).addCourseStaffMember(workspace.getId(), courseStaffMember).addCourseStudent(workspace.getId(), courseStudent).build();
       try {
         navigate(String.format("/workspace/%s/users", workspace.getUrlName()), true);
@@ -46,7 +46,8 @@ public class CourseUsersTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
+      mockBuilder.resetBuilder();
     }
   }
   
@@ -60,7 +61,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       MockCourseStudent courseStudent = new MockCourseStudent(2l, workspace.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, workspace.getId(), admin.getId(), 4l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, workspace.getId(), admin.getId(), 7l);
       mockBuilder.addStudent(student).addCourseStaffMember(workspace.getId(), courseStaffMember).addCourseStudent(workspace.getId(), courseStudent).build();
       try {
         navigate(String.format("/workspace/%s/users", workspace.getUrlName()), true);
@@ -78,7 +79,8 @@ public class CourseUsersTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
+      mockBuilder.resetBuilder();
     }
   }
   
@@ -92,7 +94,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       MockCourseStudent courseStudent = new MockCourseStudent(2l, workspace.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, workspace.getId(), admin.getId(), 4l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, workspace.getId(), admin.getId(), 7l);
       mockBuilder.addStudent(student).addCourseStaffMember(workspace.getId(), courseStaffMember).addCourseStudent(workspace.getId(), courseStudent).build();
       try {
         navigate(String.format("/workspace/%s/users", workspace.getUrlName()), true);
@@ -116,7 +118,8 @@ public class CourseUsersTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
+      mockBuilder.resetBuilder();
     }
   }
   
