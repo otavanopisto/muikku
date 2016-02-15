@@ -2,6 +2,7 @@ package fi.muikku.ui.base.course.users;
 
 import static fi.muikku.mock.PyramusMock.mocker;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
@@ -16,7 +17,6 @@ import fi.muikku.mock.model.MockCourseStudent;
 import fi.muikku.mock.model.MockStaffMember;
 import fi.muikku.mock.model.MockStudent;
 import fi.muikku.ui.AbstractUITest;
-import fi.muikku.ui.PyramusMocks;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.Sex;
 import fi.pyramus.rest.model.UserRole;
@@ -30,12 +30,24 @@ public class CourseUsersTestsBase extends AbstractUITest {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      mockBuilder
+        .addStaffMember(admin)
+        .mockLogin(admin)
+        .build();
+      
       login();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, workspace.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, workspace.getId(), admin.getId(), 7l);
-      mockBuilder.addStudent(student).addCourseStaffMember(workspace.getId(), courseStaffMember).addCourseStudent(workspace.getId(), courseStudent).build();
+      
+      Long courseId = 1l;
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      
+      mockBuilder
+        .addStudent(student)
+        .addCourseStaffMember(courseId, courseStaffMember)
+        .addCourseStudent(courseId, courseStudent)
+        .build();
+      
       try {
         navigate(String.format("/workspace/%s/users", workspace.getUrlName()), true);
         waitForPresent(".workspace-students-listing-wrapper .workspace-users-name");
@@ -50,19 +62,28 @@ public class CourseUsersTestsBase extends AbstractUITest {
       mockBuilder.resetBuilder();
     }
   }
-  
+
   @Test
   public void courseArchiveStudentTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    try{
+    try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+
       login();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, workspace.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, workspace.getId(), admin.getId(), 7l);
-      mockBuilder.addStudent(student).addCourseStaffMember(workspace.getId(), courseStaffMember).addCourseStudent(workspace.getId(), courseStudent).build();
+     
+      Long courseId = 1l;
+
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      mockBuilder
+        .addStudent(student)
+        .addCourseStaffMember(NumberUtils.createLong(workspace.getIdentifier()), courseStaffMember)
+        .addCourseStudent(NumberUtils.createLong(workspace.getIdentifier()), courseStudent)
+        .build();
+      
       try {
         navigate(String.format("/workspace/%s/users", workspace.getUrlName()), true);
         waitForPresent(".workspace-students-listing-wrapper .workspace-users-name");
@@ -78,7 +99,8 @@ public class CourseUsersTestsBase extends AbstractUITest {
       } finally {
         deleteWorkspace(workspace.getId());
       }
-    }finally {
+      
+    } finally {
       mockBuilder.wiremockReset();
       mockBuilder.resetBuilder();
     }
@@ -92,10 +114,17 @@ public class CourseUsersTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
       login();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, workspace.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, workspace.getId(), admin.getId(), 7l);
-      mockBuilder.addStudent(student).addCourseStaffMember(workspace.getId(), courseStaffMember).addCourseStudent(workspace.getId(), courseStudent).build();
+      
+      Long courseId = 1l;
+      
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      mockBuilder
+        .addStudent(student)
+        .addCourseStaffMember(courseId, courseStaffMember)
+        .addCourseStudent(courseId, courseStudent)
+        .build();
       try {
         navigate(String.format("/workspace/%s/users", workspace.getUrlName()), true);
         waitForPresent(".workspace-students-listing-wrapper .workspace-users-name");
