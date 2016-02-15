@@ -121,7 +121,7 @@
           }
           
         } else {
-          if (typeof(obj[value.name] === undefined)){
+          if (!$.isArray(obj[value.name])) {
             obj[value.name] = [];
           }
           obj[value.name].push(value.value);
