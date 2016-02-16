@@ -64,7 +64,7 @@
       try {
         if (this._ticket) {
           // We have a ticket, so we need to validate it before using it
-          mApi({async: false}).websocket.ticket.check.read(this._ticket).callback($.proxy(function (err, response) {
+          mApi().websocket.cacheClear().ticket.check.read(this._ticket).callback($.proxy(function (err, response) {
             if (err) {
               // Ticket did not pass validation, so we need to create a new one
               this._createTicket($.proxy(function (ticket) {
@@ -89,13 +89,14 @@
     },
     
     _createTicket: function (callback) {
-      mApi({async: false}).websocket.ticket.read().callback($.proxy(function (err, ticket) {
-        if (!err) {
-          callback(ticket.ticket);
-        } else {
-          $('.notification-queue').notificationQueue('notification', 'error', "Could not create WebSocket ticket");
-        }
-      }, this));
+      mApi().websocket.ticket.create()
+        .callback($.proxy(function (err, ticket) {
+          if (!err) {
+            callback(ticket.ticket);
+          } else {
+            $('.notification-queue').notificationQueue('notification', 'error', "Could not create WebSocket ticket");
+          }
+        }, this));
     },
     
     _openWebSocket: function () {
