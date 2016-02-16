@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -46,15 +45,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import wiremock.org.apache.commons.lang.StringUtils;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.ObjectMapperConfig;
@@ -76,6 +72,7 @@ import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
+import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -104,10 +101,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         }
       }));
   }
-  
+
   @After
-  public void resetWireMock() {
-    WireMock.reset();
+  public void flushCaches() {
+    asAdmin()
+      .baseUri(getAppUrl(true))
+      .get("/system/cache/flush");
   }
   
   @Override
@@ -188,7 +187,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected RemoteWebDriver createChromeDriver() {
     ChromeOptions options = new ChromeOptions();
     options.addArguments("--lang=en_US");
-    options.addArguments("start-maximized");
+    options.addArguments("--start-maximized");
     ChromeDriver chromeDriver = new ChromeDriver(options);
     return chromeDriver;
   }

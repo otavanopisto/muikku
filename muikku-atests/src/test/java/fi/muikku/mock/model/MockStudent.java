@@ -6,7 +6,8 @@ import fi.pyramus.rest.model.Sex;
 
 public class MockStudent extends MockLoggable{
 
-  public MockStudent(Long id, long personId, String firstName, String lastName, String email, long studyProgrammeId, DateTime birthday, String socialSecurityNumber, Sex sex) {
+  public MockStudent(Long id, long personId, String firstName, String lastName, String email, long studyProgrammeId, DateTime birthday, String socialSecurityNumber, Sex sex,
+    DateTime studyStartDate, DateTime studyEndTime) {
     super();
     this.id = id;
     this.personId = personId;
@@ -17,6 +18,8 @@ public class MockStudent extends MockLoggable{
     this.birthday = birthday;
     this.socialSecurityNumber = socialSecurityNumber;
     this.sex = sex;
+    this.studyStartDate = studyStartDate;
+    this.studyEndTime = studyEndTime;
 //    this.setCourses(courses);
   }
 
@@ -74,7 +77,22 @@ public class MockStudent extends MockLoggable{
   public void setSex(fi.pyramus.rest.model.Sex sex) {
     this.sex = sex;
   }
-//  public List<Long> getCourses() {
+  public DateTime getStudyStartDate() {
+    return studyStartDate;
+  }
+
+  public void setStudyStartDate(DateTime studyStartDate) {
+    this.studyStartDate = studyStartDate;
+  }
+
+  public DateTime getStudyEndTime() {
+    return studyEndTime;
+  }
+
+  public void setStudyEndTime(DateTime studyEndTime) {
+    this.studyEndTime = studyEndTime;
+  }
+  //  public List<Long> getCourses() {
 //    return courses;
 //  }
 //  public void setCourses(List<Long> courses) {
@@ -90,6 +108,8 @@ public class MockStudent extends MockLoggable{
   private DateTime birthday;
   private String socialSecurityNumber;
   private fi.pyramus.rest.model.Sex sex;
+  private DateTime studyStartDate;
+  private DateTime studyEndTime;
 //  private List<Long> courses;
   
 }
