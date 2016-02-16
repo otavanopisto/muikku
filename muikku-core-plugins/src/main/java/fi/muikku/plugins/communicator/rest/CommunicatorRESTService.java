@@ -301,7 +301,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         
         for (UserGroupUserEntity groupUser : groupUsers) {
           UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
-          UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier());
+          UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
           
           recipients.add(userEntity);
         }
