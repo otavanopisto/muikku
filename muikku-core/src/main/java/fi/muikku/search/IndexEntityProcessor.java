@@ -43,15 +43,20 @@ public class IndexEntityProcessor {
       
       for (Method indexableGetter : getIndexableGetters(entity)) {
         String fieldName = StringUtils.uncapitalize(indexableGetter.getName().substring(3));
-        Object fieldValue = indexableGetter.invoke(entity);
+        IndexField indexField = findIndexField(indexableGetter);
         
-        if (indexableGetter.isAnnotationPresent(IndexField.class)) {
-          String name = indexableGetter.getAnnotation(IndexField.class).Name();
+        if (indexField != null) {
+          if (indexField.skip()) {
+            continue;
+          }
+          
+          String name = indexField.name();
           if (StringUtils.isNotBlank(name)) {
             fieldName = name;
           }
         }
         
+        Object fieldValue = indexableGetter.invoke(entity);
         indexObject.put(fieldName, fieldValue);
       }
 
@@ -61,6 +66,42 @@ public class IndexEntityProcessor {
     return null;
   }
   
+  private IndexField findIndexField(Method method) {
+    IndexField indexField = method.getAnnotation(IndexField.class);
+    if (indexField != null) {
+      return indexField;
+    }
+    
+    Class<?> declaringClass = method.getDeclaringClass();
+    if (declaringClass != null) {
+      if ((declaringClass.getSuperclass() != null) && (!declaringClass.getSuperclass().equals(Object.class))) {
+        Class<?> superclass = declaringClass.getSuperclass();
+        
+        try {
+          Method superclassMethod = superclass.getMethod(method.getName());
+          indexField = superclassMethod.getAnnotation(IndexField.class);
+          if (indexField != null) {
+            return indexField;
+          }
+        } catch (NoSuchMethodException | SecurityException e) {
+        }
+      }
+      
+      for (Class<?> declaringClassInterface : declaringClass.getInterfaces()) {
+        try {
+          Method declaringClassInterfaceMethod = declaringClassInterface.getMethod(method.getName());
+          indexField = declaringClassInterfaceMethod.getAnnotation(IndexField.class);
+          if (indexField != null) {
+            return indexField;
+          }
+        } catch (NoSuchMethodException | SecurityException e) {
+        }
+      }
+    }
+    
+    return null;
+  }
+
   private boolean isIndexable(Object entity) {
     if (entity != null) {
       if (entity.getClass().isAnnotationPresent(Indexable.class))  {
