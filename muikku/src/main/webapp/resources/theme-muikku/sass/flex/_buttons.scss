@@ -119,6 +119,9 @@
   font-size:1em;
   background: rgb(237,142,0);
   @include gradient-top-bottom(rgba(253,167,38,1),rgba(237,142,0,1),#ed8e00);
+  width:100%;
+  box-sizing:border-box;
+  font-weight:400;
   
   span {
   
