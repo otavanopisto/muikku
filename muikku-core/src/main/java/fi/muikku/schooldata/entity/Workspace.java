@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.joda.time.DateTime;
 
+import fi.muikku.search.annotations.IndexField;
 import fi.muikku.search.annotations.IndexId;
 import fi.muikku.search.annotations.Indexable;
 import fi.muikku.search.annotations.IndexableFieldOption;
@@ -38,10 +39,12 @@ public interface Workspace extends SchoolDataEntity {
 
   public void setDescription(String description);
 
+  @IndexField (skip = true)
   public DateTime getBeginDate();
   
   public void setBeginDate(DateTime beginDate);
 
+  @IndexField (skip = true)
   public DateTime getEndDate();
   
   public void setEndDate(DateTime endDate);
