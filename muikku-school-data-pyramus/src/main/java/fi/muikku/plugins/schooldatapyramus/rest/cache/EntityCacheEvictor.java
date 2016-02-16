@@ -55,6 +55,15 @@ public class EntityCacheEvictor {
     }
   }
 
+  public void flushAll() {
+    try {
+      for (AbstractEntityCache cache : caches) {
+        cache.clear();
+      }
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, String.format("Failed to flush all caches"));
+    }
+  }
   
   public void onWebhookNotificationEvent(@Observes WebhookNotificationEvent event) {
     try {
