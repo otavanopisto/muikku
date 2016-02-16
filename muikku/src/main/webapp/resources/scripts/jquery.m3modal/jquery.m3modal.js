@@ -65,7 +65,7 @@
        // Box 		
       
        box.css({
-        'position' : 'absolute',
+        'position' : 'fixed',
         'top' :options.top,
         'padding' : '15px',
         'left' : mLeft,
@@ -102,7 +102,7 @@
 
       
       bgr.css({
-          'position' : 'absolute',
+          'position' : 'fixed',
           'left' : '0',
           'top' : '0',
           'height' : pH,
