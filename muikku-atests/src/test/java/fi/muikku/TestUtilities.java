@@ -47,8 +47,8 @@ public class TestUtilities {
     List<String> tags = null;
     Student student = new Student(mockStudent.getId(), mockStudent.getPersonId(), mockStudent.getFirstName(), mockStudent.getLastName(), 
       null, null, null, null, null, null, null, null,
-      null, null, null, mockStudent.getStudyProgrammeId(), null, null,
-      false, null, null, null, null, variables, tags, false);
+      null, null, mockStudent.getStudyEndTime(), mockStudent.getStudyProgrammeId(), null, null,
+      false, mockStudent.getStudyStartDate(), null, null, null, variables, tags, false);
     return student;
   }
   
@@ -68,4 +68,13 @@ public class TestUtilities {
     return courseStudent;
   }
 
+  public static DateTime toDate(int year, int month, int day) {
+    return new DateTime(year, month, day, 0, 0, 0, 0);
+  }
+  
+  public static DateTime getNextYear() {
+    DateTime result = new DateTime();
+    return result.plusYears(1);
+  }
+  
 }
