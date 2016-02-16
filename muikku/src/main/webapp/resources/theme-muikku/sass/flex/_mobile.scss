@@ -157,5 +157,27 @@
     display:inline-block;
     
   }
+ 
+  /* Main Functionality Left Top Button */
+  .bt-main-functionality  {
+  
+    span:first-child {
+      font-size:13px;
+      padding:8px 6px;
+    }
+    
+    .bt-main-functionality-decoration {
+      padding:3px 1px;
+      font-size:2em;
+    }
+  
+  } 
+  
+  input[type="text"],
+  input[type="password"],
+  textarea {   
+    padding:8px;
+    font-size:14px;     
+  }
   
 }
