@@ -17,7 +17,7 @@
             <div class="mf-item-header-name cm-message-header-name">
               <input type="hidden" name="mf-person-id" value="{sender}"/>
               <div class="mf-item-header-content-primary cm-message-header-content-primary">
-                 <span>({recipients.length})</span>
+                 <span>({recipientCount})</span>
                  {#recipients}
                    <span class="cm-message-recipient-name" title="{fullName}">{firstName}</span>
                  {/recipients}
