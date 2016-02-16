@@ -1,5 +1,5 @@
 {#.}
-  <div id="crsId-{id}" class="mf-item cp-course ft-01 {@select key=published}{@eq value="false" type="boolean"}not-published{/eq}{/select}">
+  <div id="crsId-{id}" class="mf-item foldable cp-course ft-01 {@select key=published}{@eq value="false" type="boolean"}not-published{/eq}{/select}">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
 

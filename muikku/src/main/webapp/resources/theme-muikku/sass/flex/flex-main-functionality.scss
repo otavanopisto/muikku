@@ -375,6 +375,19 @@
     overflow:hidden;   
     height:35px;
   }
+  
+  /* If item is foldable */
+    
+  &.foldable{
+   .mf-item-description {
+    width:100%;
+    background-color:#fff;  
+    cursor:pointer;
+    overflow:auto;   
+    height:auto;
+  }
+  
+  }
 
   .mf-item-description-text {
     background-color:#fff;  
