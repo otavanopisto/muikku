@@ -152,7 +152,7 @@ public abstract class AbstractIntegrationTest extends TestWatcher {
     }
   }
   
-  private Connection getConnection() throws SQLException, ClassNotFoundException {
+  protected Connection getConnection() throws SQLException, ClassNotFoundException {
     Class.forName(getJdbcDriver());
     return DriverManager.getConnection(getJdbcUrl(), getJdbcUsername(), getJdbcPassword());
   }
@@ -278,6 +278,46 @@ public abstract class AbstractIntegrationTest extends TestWatcher {
 
   private static String getFullRoleName(RoleType roleType, String role) {
     return roleType.name() + "-" + role;
+  }
+  
+  protected Long getUserEntityIdForIdentifier(String identifier) throws SQLException, ClassNotFoundException {
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute(String.format("select userEntity_id from UserSchoolDataIdentifier where identifier = '%s'", identifier));
+      ResultSet results = statement.getResultSet();
+      if (results.next()) {              
+        Long id = results.getLong(1);
+        return id;
+      }
+    } finally {
+      connection.close();
+    }
+    
+    return null;
+  }
+  
+  protected void dumpWorkspaceUsers() throws SQLException, ClassNotFoundException {
+    System.out.println("Dumping all workspace users");
+    
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute(String.format("SELECT id, identifier, workspaceEntity_id, userSchoolDataIdentifier_id, workspaceUserRole_id, archived FROM workspaceuserentity"));
+      ResultSet results = statement.getResultSet();
+      while (results.next()) {              
+        Long id = results.getLong(1);
+        String identifier = results.getString(2);
+        Long workspaceEntityId = results.getLong(3);
+        Long userSchoolDataIdentifierId = results.getLong(4);
+        Long workspaceUserRoleId = results.getLong(5);
+        Boolean archived = results.getBoolean(6);
+        
+        System.out.println(String.format("#%d (%s), ws: %d, u: %d, r: %d, a: (%b)", id, identifier, workspaceEntityId, userSchoolDataIdentifierId, workspaceUserRoleId, archived));
+      }
+    } finally {
+      connection.close();
+    }
   }
   
   enum RoleType {
