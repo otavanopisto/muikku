@@ -1,6 +1,6 @@
 <div class="mf-item-user cm-message-recipient">
   <input type="hidden" data-array="true" name="recipientGroupIds" value="{id}" />
-  <div class="cm-message-recipient-name icon-members usergroup">{name}</div>
+  <div class="cm-message-recipient-name icon-members usergroup"><span>{name}</span>s</div>
   <div class="clear"></div>
 </div>
 
