@@ -362,7 +362,7 @@ $(document).ready(function(){
     
           workspaces.push({
             category : getLocaleText("plugin.communicator.workspaces"),
-            label : result[i].name,
+            label : result[i].name + (result[i].nameExtension ? ' (' + result[i].nameExtension + ')' : ''),
             id : result[i].id,
             type : "WORKSPACE"
           });
