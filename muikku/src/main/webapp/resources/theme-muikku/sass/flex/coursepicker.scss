@@ -3,42 +3,46 @@
 
 /* Coursepicker (.cp-*) */
 
-.cp-content-main{
+.cp-content-main {
   min-height:450px;
-  padding:0 10px;
 }
-
-
 
 .cp-course { 
- margin-bottom: 10px;
- &.ft-01{border-left: 3px solid $mainFuncFilter1;} 
- &.ft-02{border-left: 3px solid $mainFuncFilter2;}
- &.ft-03{border-left: 3px solid $mainFuncFilter3;}
- 
- &.not-published {
-   font-style:italic;
-   opacity:0.8;
-
-   .cp-course-details {
+  
+  &.ft-01 {
+    border-left: 3px solid $mainFuncFilter1;
+  }
    
-     .cp-course-header-name {
-       color:#d89828;
-     }
-   }
- }
+  &.ft-02 {
+    border-left: 3px solid $mainFuncFilter2;
+  }
+  
+  &.ft-03 {
+    border-left: 3px solid $mainFuncFilter3;
+  }
+ 
+  &.not-published {
+    font-style:italic;
+    opacity:0.8;
+
+    .cp-course-details {
+   
+      .cp-course-header-name {
+        color:#d89828;
+      }
+      
+    }
+    
+  }
 
 }
 
-
-
-
 .cp-course-details-close {
- position:absolute;
- margin-top:0;
- margin-left:0;
- background-color:none;
- height:30px;
- width:200px;
- cursor: pointer;
+  position:absolute;
+  margin-top:0;
+  margin-left:0;
+  background-color:none;
+  height:30px;
+  width:200px;
+  cursor: pointer;
 }

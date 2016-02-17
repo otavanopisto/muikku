@@ -4,41 +4,41 @@
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
 
     
-    <div class="mf-item-details cp-course-details" {?evaluationHasFee}data-fee="yes"{/evaluationHasFee}>
-      <div class="mf-item-details-container  cp-course-details-container">       
-        <div class="mf-item-additionalInfo cp-course-additionalInfo">
-        </div>
-        <div class="mf-item-description cp-course-description">
-          <div class="mf-item-header-name cp-course-header-name">
+    <div class="mf-item-details cp-course-details flex-row" {?evaluationHasFee}data-fee="yes"{/evaluationHasFee}>
+      <div class="mf-item-details-container cp-course-details-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">       
+        <div class="mf-item-description cp-course-description flex-row">
+          <div class="mf-item-header-name cp-course-header-name lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">
            <span class="cp-course-long">{name}</span>
              {?nameExtension}
-               <span class="cp-course-extension">( {nameExtension} )</span>
+               <span class="cp-course-extension">({nameExtension})</span>
              {/nameExtension}
           </div>
-          <div class="mf-item-header-details cp-course-header-details">            
+          <div class="mf-item-header-details cp-course-header-details lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4">            
             {?evaluationHasFee}
                <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
                <span class="cp-course-fee icon-coin-euro" title='{#localize key="plugin.coursepicker.course.evaluationhasfee" /}'></span>
             {/evaluationHasFee} 
           </div>
-          <div id="detailsCrs-{id}" class="cp-course-content-details" style="display:none;">     
-            <div class="cp-course-description-picture"></div>
-            <div class="cp-course-description-text">{description|s}</div>          
-            <div class="cp-course-details-toolbar">
-              {#isCourseMember}
-                <div class="mf-item-tool-btn goto cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.goto" /}</span></div>
-              {:else}
-                <div class="mf-item-tool-btn goto cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.checkout" /}</span></div>
-              {/isCourseMember}
-              {#isLoggedIn}
-                {#canSignup}
-                  <div class="mf-item-tool-btn goto cp-course-attend-button"><span>{#localize key="plugin.coursepicker.course.signup" /}</span></div>
-                {/canSignup}
-                {#canCopyWorkspace}
-                  <div class="mf-item-tool-btn wizard cp-course-copy-button"><span>{#localize key="plugin.coursepicker.course.copy" /}</span></div>
-                {/canCopyWorkspace}
-              {/isLoggedIn}
+          <div id="detailsCrs-{id}" class="cp-course-content-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" style="display:none;"> 
+            <div class="flex-row">
+              <div class="cp-course-description-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">{description|s}</div>          
+              <div class="cp-course-details-toolbar lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                {#isCourseMember}
+                  <div class="mf-item-tool-btn goto cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.goto" /}</span></div>
+                {:else}
+                  <div class="mf-item-tool-btn goto cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.checkout" /}</span></div>
+                {/isCourseMember}
+                {#isLoggedIn}
+                  {#canSignup}
+                    <div class="mf-item-tool-btn goto cp-course-attend-button"><span>{#localize key="plugin.coursepicker.course.signup" /}</span></div>
+                  {/canSignup}
+                  {#canCopyWorkspace}
+                    <div class="mf-item-tool-btn wizard cp-course-copy-button"><span>{#localize key="plugin.coursepicker.course.copy" /}</span></div>
+                  {/canCopyWorkspace}
+                {/isLoggedIn}
+              </div>
             </div>
+            
           </div>
         </div>       
         <div class="clear"></div>

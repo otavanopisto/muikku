@@ -1,9 +1,12 @@
 @import "_vars.scss";
 @import "_styles.scss";
 
+.mf-content-master {
+  margin:0 5px;
+}
+
 .mf-button-container {
   background-color:$mainFuncSb; 
-  height:70px;
 
   > div:first-child {
     width:170px;
@@ -11,7 +14,6 @@
     margin-top:16px;
   }
 }
-
   
 .mf-side-button-dropdown {
   display:none;
@@ -121,7 +123,6 @@
 
 .mf-content-functions {
   background-color:$mainFuncCf; 
-  height:70px;  
 }
 
 .mf-view-toolbar {
@@ -272,7 +273,7 @@
 .mf-item {
   box-shadow:$w-sc;
   background-color:#fff;
-  margin-bottom:5px;
+  margin:0 5px 5px 5px;
 
   .topic {
     padding:10px 0 0 10px;
@@ -314,7 +315,7 @@
   }
 
   .mf-item-details-container {
-    min-height:35px;
+
   }
     
   .mf-item-details-close {
@@ -334,14 +335,11 @@
   .mf-item-header-name {
     display:inline-block;
     vertical-align:center;
-    white-space:nowrap;
-    width:80%;
-    line-height:2.5em;
     
     span {
       line-height:normal;  
       display:inline-block;
-      margin-left:10px;
+      margin:0 0 0 5px;
     }
     
     
@@ -357,9 +355,6 @@
 
   .mf-item-header-details{
     display:inline-block;
-    min-height:35px;
-    float:right;
-    width:20%;
     position:relative;
     @include fadeRight()
   }
@@ -377,7 +372,6 @@
   }
   
   /* If item is foldable */
-    
   &.foldable{
    .mf-item-description {
     width:100%;
