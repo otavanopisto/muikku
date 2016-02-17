@@ -1,4 +1,4 @@
-package fi.muikku.plugins.mail.dummy;
+package fi.muikku.plugins.mail.jndi;
 
 import java.util.Date;
 import java.util.List;
