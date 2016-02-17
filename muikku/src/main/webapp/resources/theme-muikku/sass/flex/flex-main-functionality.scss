@@ -356,7 +356,6 @@
   .mf-item-header-details{
     display:inline-block;
     position:relative;
-    @include fadeRight()
   }
 
   .mf-item-rating {
@@ -366,20 +365,19 @@
   .mf-item-description {
     width:80%;
     background-color:#fff;  
-    cursor:pointer;
     overflow:hidden;   
     height:35px;
   }
   
   /* If item is foldable */
-  &.foldable{
-   .mf-item-description {
-    width:100%;
-    background-color:#fff;  
-    cursor:pointer;
-    overflow:auto;   
-    height:auto;
-  }
+  &.foldable {
+  
+    .mf-item-description {
+      width:100%;
+      background-color:#fff;  
+      overflow:auto;   
+      height:auto;
+   }
   
   }
 

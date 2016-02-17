@@ -37,12 +37,15 @@
 
 }
 
+.cp-course-header-container {
+  cursor:pointer;
+}
+
 .cp-course-details-close {
   position:absolute;
   margin-top:0;
   margin-left:0;
   background-color:none;
-  height:30px;
-  width:200px;
+  height:40px;
   cursor: pointer;
 }

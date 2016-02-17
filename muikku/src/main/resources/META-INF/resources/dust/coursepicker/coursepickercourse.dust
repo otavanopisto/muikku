@@ -7,17 +7,22 @@
     <div class="mf-item-details cp-course-details flex-row" {?evaluationHasFee}data-fee="yes"{/evaluationHasFee}>
       <div class="mf-item-details-container cp-course-details-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">       
         <div class="mf-item-description cp-course-description flex-row">
-          <div class="mf-item-header-name cp-course-header-name lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">
-           <span class="cp-course-long">{name}</span>
-             {?nameExtension}
-               <span class="cp-course-extension">({nameExtension})</span>
-             {/nameExtension}
-          </div>
-          <div class="mf-item-header-details cp-course-header-details lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4">            
-            {?evaluationHasFee}
-               <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
-               <span class="cp-course-fee icon-coin-euro" title='{#localize key="plugin.coursepicker.course.evaluationhasfee" /}'></span>
-            {/evaluationHasFee} 
+          <div class="mf-item-header-container cp-course-header-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom no-margin-left no-margin-right">
+            <div class="flex-row">
+              <div class="mf-item-header-name cp-course-header-name lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">
+                <span class="cp-course-long">{name}</span>
+                {?nameExtension}
+                  <span class="cp-course-extension">({nameExtension})</span>
+                {/nameExtension}
+              </div>
+            
+              <div class="mf-item-header-details cp-course-header-details lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4">            
+                {?evaluationHasFee}
+                   <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
+                   <span class="cp-course-fee icon-coin-euro" title='{#localize key="plugin.coursepicker.course.evaluationhasfee" /}'></span>
+                {/evaluationHasFee} 
+              </div>
+            </div>
           </div>
           <div id="detailsCrs-{id}" class="cp-course-content-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" style="display:none;"> 
             <div class="flex-row">
