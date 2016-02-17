@@ -366,7 +366,9 @@ public class CoursePickerRESTService extends PluginRESTService {
        teacherEmails.add(userEmailEntityController.getUserEmailAddress(teacher, false));
      }
     }
-    mailer.sendMail(MailType.HTML, teacherEmails, caption, content);
+    if (!teacherEmails.isEmpty()) {
+      mailer.sendMail(MailType.HTML, teacherEmails, caption, content);
+    }
     
     return Response.noContent().build();
   }
