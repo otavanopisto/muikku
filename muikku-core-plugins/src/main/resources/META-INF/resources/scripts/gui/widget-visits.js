@@ -83,8 +83,8 @@ $(document).ready(function() {
         older : older
 
       }, function(text) {
-        $('#widgetVisits').append($.parseHTML(text));
-        $('#widgetVisits').perfectScrollbar({
+        $('#visits').append($.parseHTML(text));
+        $('#visits').perfectScrollbar({
           "suppressScrollX" : true
         });
       });
