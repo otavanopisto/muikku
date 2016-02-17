@@ -1,4 +1,4 @@
-  function openInSN(template, result, formSendFunction, formContentFunction, cke) {
+function openInSN(template, result, formSendFunction, formContentFunction, cke) {
   var functionContainer = $('.sn-container');
   var formContainer = $('#mainfunctionFormTabs');
   var ck = cke;
@@ -106,8 +106,7 @@
       }
 
       elements.find(':input').each(function(index, element) {
-        element0r = $(element);
-        varIsArray[element.name] = element0r.data('array') || false;
+        varIsArray[element.name] = $(element).data('array') || false;
       });
 
       $.each(vals, function(index, value) {
@@ -121,7 +120,7 @@
           }
           
         } else {
-          if (typeof(obj[value.name] === undefined)){
+          if (!$.isArray(obj[value.name])) {
             obj[value.name] = [];
           }
           obj[value.name].push(value.value);
