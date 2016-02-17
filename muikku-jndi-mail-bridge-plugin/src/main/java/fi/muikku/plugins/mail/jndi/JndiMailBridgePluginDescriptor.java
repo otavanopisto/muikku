@@ -1,8 +1,5 @@
 package fi.muikku.plugins.mail.jndi;
 
-import java.util.Arrays;
-import java.util.List;
-
 import fi.muikku.plugin.PluginDescriptor;
 
 public class JndiMailBridgePluginDescriptor implements PluginDescriptor {
