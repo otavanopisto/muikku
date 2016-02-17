@@ -164,10 +164,10 @@ public class CommunicatorAssessmentRequestController {
       String messageBody = assessmentRequestBody(workspace, student, assessmentRequest.getRequestText());
       
       List<String> teacherEmails = new ArrayList<>(teachers.size());
-      for(UserEntity teacher: teachers){
+      for (UserEntity teacher : teachers){
        String teacherEmail = userEmailEntityController.getUserEmailAddress(teacher, false);
-       if(StringUtils.isNotBlank(teacherEmail)){
-         teacherEmails.add(userEmailEntityController.getUserEmailAddress(teacher, false));
+       if (StringUtils.isNotBlank(teacherEmail)) {
+         teacherEmails.add(teacherEmail);
        }
       }
       if (!teacherEmails.isEmpty()) {
@@ -245,10 +245,10 @@ public class CommunicatorAssessmentRequestController {
       String messageBody = assessmentCancelledBody(workspace, student);
 
       List<String> teacherEmails = new ArrayList<>(teachers.size());
-      for(UserEntity teacher: teachers){
+      for (UserEntity teacher : teachers){
        String teacherEmail = userEmailEntityController.getUserEmailAddress(teacher, false);
-       if(StringUtils.isNotBlank(teacherEmail)){
-         teacherEmails.add(userEmailEntityController.getUserEmailAddress(teacher, false));
+       if (StringUtils.isNotBlank(teacherEmail)) {
+         teacherEmails.add(teacherEmail);
        }
       }
       if (!teacherEmails.isEmpty()) {

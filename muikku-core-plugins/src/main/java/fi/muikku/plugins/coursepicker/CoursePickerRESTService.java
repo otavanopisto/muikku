@@ -360,10 +360,10 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
 
     List<String> teacherEmails = new ArrayList<>(teachers.size());
-    for(UserEntity teacher: teachers){
+    for (UserEntity teacher : teachers){
      String teacherEmail = userEmailEntityController.getUserEmailAddress(teacher, false);
-     if(StringUtils.isNotBlank(teacherEmail)){
-       teacherEmails.add(userEmailEntityController.getUserEmailAddress(teacher, false));
+     if (StringUtils.isNotBlank(teacherEmail)) {
+       teacherEmails.add(teacherEmail);
      }
     }
     if (!teacherEmails.isEmpty()) {
