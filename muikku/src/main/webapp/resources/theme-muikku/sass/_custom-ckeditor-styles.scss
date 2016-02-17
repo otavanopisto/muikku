@@ -129,7 +129,7 @@
   display:inline-block;
   quotes: "\201C""\201D""\2018""\2019";
   
-  > br {display:none;}
+/*   > br {display:none;} */
   
   &:before {
     color: #ccc;
@@ -174,7 +174,7 @@
   display:inline-block;
   quotes: "\201C""\201D""\2018""\2019";
   
-  > br {display:none;}
+/*   > br {display:none;} */
   
     &:before {
     color: #ccc;
