@@ -79,21 +79,30 @@ public class JndiMailService {
         message.setSubject(subject);
       }
       
-      if (content != null) {
-        message.setContent(content, mimeType.toString());
-      }
-      
       message.setSentDate(new Date());
       
       // Attachments
       
       if (!attachments.isEmpty()) {
         Multipart multipart = new MimeMultipart();
+
+        if (content != null) {
+          MimeBodyPart contentBodyPart = new MimeBodyPart();
+          contentBodyPart.setContent(content, mimeType.toString());
+          multipart.addBodyPart(contentBodyPart);
+        }
+        
         for (MailAttachment attachment : attachments) {
-          MimeBodyPart bodyPart = new MimeBodyPart();
-          bodyPart.setContent(attachment.getContent(), attachment.getMimeType());
-          bodyPart.setFileName(attachment.getFileName());
-          multipart.addBodyPart(bodyPart);
+          MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+          attachmentBodyPart.setContent(attachment.getContent(), attachment.getMimeType());
+          attachmentBodyPart.setFileName(attachment.getFileName());
+          multipart.addBodyPart(attachmentBodyPart);
+        }
+        
+        message.setContent(multipart);
+      } else {
+        if (content != null) {
+          message.setContent(content, mimeType.toString());
         }
       }
       
