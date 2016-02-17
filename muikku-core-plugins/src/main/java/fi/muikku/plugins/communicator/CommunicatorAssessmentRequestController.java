@@ -1,5 +1,6 @@
 package fi.muikku.plugins.communicator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -9,6 +10,8 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.i18n.LocaleController;
+import fi.muikku.mail.MailType;
+import fi.muikku.mail.Mailer;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -26,12 +29,19 @@ import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.users.UserController;
+import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
 
 public class CommunicatorAssessmentRequestController {
   
   @Inject
   private Logger logger;
+
+  @Inject
+  private Mailer mailer;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
   
   @Inject
   private WorkspaceController workspaceController;
@@ -153,6 +163,17 @@ public class CommunicatorAssessmentRequestController {
       String messageTitle = assessmentRequestTitle(workspace, student);
       String messageBody = assessmentRequestBody(workspace, student, assessmentRequest.getRequestText());
       
+      List<String> teacherEmails = new ArrayList<>(teachers.size());
+      for (UserEntity teacher : teachers){
+       String teacherEmail = userEmailEntityController.getUserEmailAddress(teacher, false);
+       if (StringUtils.isNotBlank(teacherEmail)) {
+         teacherEmails.add(teacherEmail);
+       }
+      }
+      if (!teacherEmails.isEmpty()) {
+        mailer.sendMail(MailType.HTML, teacherEmails, messageTitle, messageBody);
+      }
+
       if (communicatorMessageId != null) {
         return communicatorController.replyToMessage(studentEntity,
             messageCategory,
@@ -222,6 +243,17 @@ public class CommunicatorAssessmentRequestController {
       String messageCategory = getText("plugin.communicator.assessmentrequest.category");
       String messageTitle = assessmentCancelledTitle(workspace, student);
       String messageBody = assessmentCancelledBody(workspace, student);
+
+      List<String> teacherEmails = new ArrayList<>(teachers.size());
+      for (UserEntity teacher : teachers){
+       String teacherEmail = userEmailEntityController.getUserEmailAddress(teacher, false);
+       if (StringUtils.isNotBlank(teacherEmail)) {
+         teacherEmails.add(teacherEmail);
+       }
+      }
+      if (!teacherEmails.isEmpty()) {
+        mailer.sendMail(MailType.HTML, teacherEmails, messageTitle, messageBody);
+      }
       
       communicatorController.replyToMessage(studentEntity,
           messageCategory,
