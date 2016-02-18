@@ -1,29 +1,18 @@
 package fi.muikku.ui.base.indexpage;
 
 import static fi.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
-import org.openqa.selenium.By;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.github.tomakehurst.wiremock.client.WireMock;
-
+import fi.muikku.TestUtilities;
 import fi.muikku.mock.PyramusMock.Builder;
 import fi.muikku.mock.model.MockStaffMember;
 import fi.muikku.mock.model.MockStudent;
 import fi.muikku.ui.AbstractUITest;
-import fi.muikku.ui.PyramusMocks;
-import fi.muikku.TestUtilities;
 import fi.pyramus.rest.model.Sex;
 import fi.pyramus.rest.model.UserRole;
-import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
-import fi.pyramus.webhooks.WebhookStudentCreatePayload;
 
 public class IndexPageTestsBase extends AbstractUITest {
 
@@ -35,7 +24,7 @@ public class IndexPageTestsBase extends AbstractUITest {
   
   @Test
   public void studentLoginTest() throws Exception {
-    MockStudent student = new MockStudent(2l, 2l, "Second", "User", "teststudent@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    MockStudent student = new MockStudent(2l, 2l, "Second", "User", "teststudent@example.com", 1l, TestUtilities.toDate(1990, 1, 1), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     mockBuilder.addStudent(student).mockLogin(student).build();
     login();

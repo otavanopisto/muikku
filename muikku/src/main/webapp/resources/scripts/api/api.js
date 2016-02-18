@@ -130,6 +130,7 @@
     },
     cacheClear: function () {
       this._client.cache.clear();
+      return this;
     }
   });
   

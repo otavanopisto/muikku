@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import fi.muikku.TestUtilities;
 import fi.muikku.mock.PyramusMock.Builder;
 import fi.muikku.mock.model.MockStaffMember;
 import fi.muikku.mock.model.MockStudent;
@@ -66,7 +67,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
   @Test
   public void communicatorPagingTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
@@ -86,14 +87,14 @@ public class CommunicatorTestsBase extends AbstractUITest {
         deleteCommunicatorMessages(); 
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }
   }
     
   @Test
   public void communicatorReadMessageTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
@@ -113,14 +114,14 @@ public class CommunicatorTestsBase extends AbstractUITest {
         deleteCommunicatorMessages(); 
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }  
   }
   
   @Test
   public void communicatorDeleteInboxMessageTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
@@ -142,7 +143,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         deleteCommunicatorMessages(); 
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }  
   }
 

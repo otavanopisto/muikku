@@ -333,6 +333,11 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public WorkspaceAssessment createEntity(CourseAssessment courseAssessment) {
+    if (courseAssessment == null) {
+      logger.severe("Attempted to translate null course assessment into school data entity");
+      return null;
+    }
+    
     SchoolDataIdentifier gradeIdentifier = identifierMapper.getGradeIdentifier(courseAssessment.getGradeId());
     SchoolDataIdentifier gradingScaleIdentifier = identifierMapper.getGradingScaleIdentifier(courseAssessment.getGradingScaleId());
     
@@ -421,6 +426,10 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public CourseLengthUnit getCourseLengthUnit(EducationalTimeUnit educationalTimeUnit) {
+    if (educationalTimeUnit == null) {
+      return null;
+    }
+    
     return new PyramusCourseLengthUnit(identifierMapper.getCourseLengthUnitIdentifier(educationalTimeUnit.getId()),
         educationalTimeUnit.getSymbol(), educationalTimeUnit.getName());
   }

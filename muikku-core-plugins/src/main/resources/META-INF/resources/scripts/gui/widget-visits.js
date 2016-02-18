@@ -39,8 +39,6 @@ $(document).ready(function(){
  		  workspace.trueDat = vdt.toDateString();
  		  workspaceCallback();
     	
- 		  
- 		 
     })
     .callback( function (err, workspaces) {
     	
@@ -63,8 +61,6 @@ $(document).ready(function(){
 	     	  
 	    // sorting the given workspaces into said categories     
 	     	  
-	
-	     	  
 	     	   if( ld == true ){
 	     		var ldl = lastDay.length; 
 	     		lastDay[ldl] = workspaces[i];
@@ -76,7 +72,6 @@ $(document).ready(function(){
 	        	 older[ol] = workspaces[i];     			 
 	        	 }
 	     	   
-	          
 	     	}    		
      	
 		}
@@ -96,5 +91,4 @@ $(document).ready(function(){
     	}
     });
     
-	});
-
+});

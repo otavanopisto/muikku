@@ -56,15 +56,15 @@ public class WebSocketMessenger {
       WebSocketMessage message = new WebSocketMessage(eventType, data);
       ObjectMapper mapper = new ObjectMapper();
       String strMessage = mapper.writeValueAsString(message);
+      
+      for (Session session : new ArrayList<>(sessions.values())) {
+        if (session.isOpen()) {
+          Long userId = (Long) session.getUserProperties().get("UserId");
   
-        for (Session session : sessions.values()) {
-          if (session.isOpen()) {
-            Long userId = (Long) session.getUserProperties().get("UserId");
-    
-            if ((userId != null) && (recipients.contains(userId))) {
-              session.getBasicRemote().sendText(strMessage);
-            }
+          if ((userId != null) && (recipients.contains(userId))) {
+            session.getBasicRemote().sendText(strMessage);
           }
+        }
       }    
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to send WebSocket message", e);

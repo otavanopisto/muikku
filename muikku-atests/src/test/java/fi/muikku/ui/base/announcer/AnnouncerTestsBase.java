@@ -10,6 +10,7 @@ import org.openqa.selenium.By;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import fi.muikku.TestUtilities;
 import fi.muikku.mock.model.MockStaffMember;
 import fi.muikku.mock.model.MockStudent;
 import fi.muikku.ui.AbstractUITest;
@@ -51,7 +52,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }   
   }
   
@@ -87,14 +88,14 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }
   }
   
   @Test
   public void announcementVisibleInFrontpageWidgetTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
@@ -110,7 +111,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }
   }
 
@@ -118,7 +119,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
   @Test
   public void announcementListTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
@@ -142,14 +143,14 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }
   }
 
   @Test
   public void userGroupAnnouncementVisibleTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, "Test group", "Test group for users", 1l, false).addStudentToStudentGroup(2l, student).addStaffMemberToStudentGroup(2l, admin).mockLogin(admin).build();
@@ -168,14 +169,14 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteUserGroup(2l);
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }
   }
   
   @Test
   public void userGroupAnnouncementNotVisibleTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, "Test group", "Test group for users", 1l, false).addStaffMemberToStudentGroup(2l, admin).mockLogin(admin).build();
@@ -193,7 +194,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
-      mockBuilder.reset();
+      mockBuilder.wiremockReset();
     }
   }
   
