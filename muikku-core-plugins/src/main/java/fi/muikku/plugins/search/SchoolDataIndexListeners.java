@@ -85,11 +85,7 @@ public class SchoolDataIndexListeners {
     updatedIdentifiers.addAll(event.getUpdatedIdentifiers());
     
     for (SchoolDataIdentifier identifier : updatedIdentifiers) {
-      if (!identifier.equals(event.getDefaultIdentifier())) {
-        removeIdentifiers.add(identifier);
-      } else {
-        userIndexer.indexUser(identifier.getDataSource(), identifier.getIdentifier());
-      }
+      userIndexer.indexUser(identifier.getDataSource(), identifier.getIdentifier());
     }
     
     for (SchoolDataIdentifier identifier : removeIdentifiers) {
