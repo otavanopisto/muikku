@@ -280,9 +280,13 @@ public class PyramusUpdater {
   
   public int updateStudentGroupUsers(Long studentGroupId) {
     String userGroupIdentifier = identifierMapper.getStudentGroupIdentifier(studentGroupId);
-    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier);    
-
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier, true);    
     if (userGroupEntity != null) {
+      if (userGroupEntity.getArchived()) {
+        // Just skip archived user groups
+        return 0;
+      }
+        
       List<UserGroupUserEntity> existingUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroupEntity);
       List<String> existingGroupUserIds = new ArrayList<String>();
       for (UserGroupUserEntity existingUser : existingUsers) {
