@@ -609,7 +609,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getCommunicatorMessageSenderInfo(
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
-   ) throws AuthorizationException {
+   ) {
     CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
 
     if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, communicatorMessage)) {
