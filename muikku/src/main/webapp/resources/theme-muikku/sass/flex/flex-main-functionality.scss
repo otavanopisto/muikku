@@ -17,11 +17,15 @@
   
 .mf-side-button-dropdown {
   display:none;
+  
+  /* This does not work with flex grid, since the width is different from the button width */
   width:170px;
   margin-left:31px;
   background-color:#fff;
   border:1px solid $brd;
   z-index:100;
+  /* This needs to be absolute, but then the width again cannot be inherited from parent */
+  
   position:relative;
   top:0;
   
