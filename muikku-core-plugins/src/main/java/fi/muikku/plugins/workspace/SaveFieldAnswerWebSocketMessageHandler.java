@@ -77,6 +77,24 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       
       Date now = new Date();
       
+      if (message.getMaterialId() == null) {
+        logger.log(Level.SEVERE, "Missing material id");
+        handleError("Missing material id", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+        return;
+      }
+      
+      if (message.getWorkspaceMaterialId() == null) {
+        logger.log(Level.SEVERE, "Missing workspace material id");
+        handleError("Missing workspace material id", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+        return;
+      }
+      
+      if (event.getUserEntityId() == null) {
+        logger.log(Level.SEVERE, "Missing user entity id");
+        handleError("Missing user entity id", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+        return;
+      }
+      
       Material material = materialController.findMaterialById(message.getMaterialId());
       if (material == null) {
         logger.log(Level.SEVERE, "Could not find material");

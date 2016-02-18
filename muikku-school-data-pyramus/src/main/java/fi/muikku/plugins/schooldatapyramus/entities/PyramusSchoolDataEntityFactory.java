@@ -426,6 +426,10 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public CourseLengthUnit getCourseLengthUnit(EducationalTimeUnit educationalTimeUnit) {
+    if (educationalTimeUnit == null) {
+      return null;
+    }
+    
     return new PyramusCourseLengthUnit(identifierMapper.getCourseLengthUnitIdentifier(educationalTimeUnit.getId()),
         educationalTimeUnit.getSymbol(), educationalTimeUnit.getName());
   }
