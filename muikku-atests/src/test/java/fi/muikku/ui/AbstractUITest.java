@@ -237,14 +237,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertEquals(true, elementExists);
   }
 
-  protected void testLogin(String username, String password) throws InterruptedException {
-
-  }
-
-  protected void login(String username, String password) {
-
-  }
-
   protected void waitForElementToBeClickable(String selector){
     waitForElementToBeClickable(By.cssSelector(selector));
   }
@@ -501,12 +493,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     navigate("/login?authSourceId=1", true);
-    waitForPresent(".index");
+    waitForPresent("main.content");
   }
   
   protected void login() {
     navigate("/login?authSourceId=1", true);
-    waitForPresent(".index");
+    waitForPresent(".logged-user");
   }
   
   protected void loginStudent1() throws JsonProcessingException, Exception {
@@ -536,7 +528,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void logout() {
     navigate("/", true);
     waitAndClick("a.lu-action-signout");
-    waitForPresent(".index");    
+    waitForPresent("main.content");    
   }
   
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {

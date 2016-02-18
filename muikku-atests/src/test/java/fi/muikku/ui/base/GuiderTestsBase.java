@@ -30,7 +30,8 @@ public class GuiderTestsBase extends AbstractUITest {
     try {
       navigate("/guider", true);
       sendKeys(".gt-search .search", "Second User");
-      assertText(".gt-user .gt-user-meta-topic>span", "Second User");
+      waitForPresent(".gt-user .gt-user-meta-topic");
+      assertText(".gt-user .gt-user-meta-topic>span", "Second User (Test Study Programme)");
     } finally {
       deleteWorkspace(workspace.getId());
       deleteWorkspace(workspace2.getId());
@@ -39,14 +40,19 @@ public class GuiderTestsBase extends AbstractUITest {
   
   @Test
   public void filterByWorkspaceTest() throws Exception {
-    loginAdmin();
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Test", "User", "teststudent@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+    login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     Workspace workspace2 = createWorkspace("diffentcourse", "Second test course", "2", Boolean.TRUE);
-    PyramusMocks.personsPyramusMocks();
+    MockCourseStudent mcs = new MockCourseStudent(1l, workspace.getId(), student.getId());
+    mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
     try {
       navigate("/guider", true);
       waitAndClick(String.format("#workspace-%d>a", workspace.getId()));
-      assertText(".gt-user .gt-user-meta-topic>span", "Test User");
+      assertText(".gt-user .gt-user-meta-topic>span", "Test User (Test Study Programme)");
     } finally {
       deleteWorkspace(workspace2.getId());
       deleteWorkspace(workspace.getId());
