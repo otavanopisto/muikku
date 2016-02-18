@@ -29,7 +29,6 @@
         var dDiv = $(this).find($(".cp-course-content-details"));
         var aBt = $(this).find($(".cp-course-attend-button"));
         var par = $(this);
-        var parW = par.width();
         var closeDiv = $('<div class="cp-course-details-close"></div>');
         var workspaceId = $(this).parents('.cp-course').find("input[name='workspaceId']").val();
         var workspaceUrl = $(this).parents('.cp-course').find("input[name='workspaceUrl']").val();
@@ -40,7 +39,6 @@
         	var desc = $(par).find($('.cp-course-description-text'));
         	var courseHasFee = $(par).attr('data-fee') ? true : false ;
         	par.prepend(closeDiv);
-        	closeDiv.width(parW);
         	
         	
         	$(aBt).m3modal({

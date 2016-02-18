@@ -24,18 +24,20 @@
   &.not-published {
     font-style:italic;
     opacity:0.8;
-
-    .cp-course-details {
    
-      .cp-course-header-name {
-        color:#d89828;
-      }
-      
+    .cp-course-header-name {
+      color:#d89828;
     }
     
   }
+  
+  .cp-course-details {
+    position:relative;
+  }
 
 }
+
+
 
 .cp-course-header-container {
   cursor:pointer;
@@ -43,8 +45,9 @@
 
 .cp-course-details-close {
   position:absolute;
-  margin-top:0;
-  margin-left:0;
+  left:0;
+  right:0;
+  top:0;
   background-color:none;
   height:40px;
   cursor: pointer;
