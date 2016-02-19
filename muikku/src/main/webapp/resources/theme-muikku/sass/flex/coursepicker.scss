@@ -37,7 +37,13 @@
 
 }
 
-
+.cp-course-details-open {
+  
+  .cp-course-header-container {
+    font-weight:400;
+  } 
+  
+}
 
 .cp-course-header-container {
   cursor:pointer;
@@ -54,13 +60,12 @@
 }
 
 .cp-course-details-toolbar {
- padding:0 15px;
+ padding:0 10px;
 }
 
 
 .cp-course-description-text {
-  font-size:12px; 
-  padding-left:15px;
+  font-size:14px; 
+  padding:0 10px;
   min-height:30px;
-
 }

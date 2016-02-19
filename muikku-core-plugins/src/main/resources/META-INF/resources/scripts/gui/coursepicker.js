@@ -32,6 +32,8 @@
         var closeDiv = $('<div class="cp-course-details-close"></div>');
         var workspaceId = $(this).parents('.cp-course').find("input[name='workspaceId']").val();
         var workspaceUrl = $(this).parents('.cp-course').find("input[name='workspaceUrl']").val();
+        
+        $(this).addClass('cp-course-details-open');
      
         dDiv.show(10, function(){        	
         	var odDiv = $(this) ;
@@ -74,6 +76,7 @@
         		]
         	});
         	closeDiv.on('click', function(){
+        	  $(this).closest('.cp-course-details-open').removeClass('cp-course-details-open');
         		odDiv.hide();
         		$(this).remove();
         	});

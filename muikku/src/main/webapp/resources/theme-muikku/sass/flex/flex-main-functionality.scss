@@ -7,12 +7,6 @@
 
 .mf-button-container {
   background-color:$mainFuncSb; 
-
-  > div:first-child {
-    width:170px;
-    margin-left:31px;
-    margin-top:16px;
-  }
 }
   
 .mf-side-button-dropdown {
@@ -127,6 +121,15 @@
 
 .mf-content-functions {
   background-color:$mainFuncCf; 
+  position:relative;
+}
+
+.mf-button-container {
+  position:relative;
+}
+
+.mf-controls-container {
+  position:relative;
 }
 
 .mf-view-toolbar {
@@ -254,11 +257,13 @@
 .mf-item-tool-btn {
   background:#068feb;
   cursor:pointer;
-  border-radius:3px;
-  padding:3px 10px;
+  border-radius:2px;
+  padding:5px 10px;
   display:inline-block;
   color:#fff;
-  margin-top:5px;
+  text-transform:uppercase;
+  font-weight:400;
+  font-size:12px;
   
   &:not(:first-child) {
    margin-left:10px;
@@ -778,15 +783,17 @@
 
 div[class*="-side-button-dropdown"] {
   display:none;
-  width:170px;
+  width:100%;
   background-color:#fff;
   border:1px solid $brd;
   z-index:100;
-  position:relative;
-  top:0;
+  position:absolute;
+  box-sizing:border-box;
   
   ul {
     list-style-type:none;
+    margin:0;
+    padding:0;
   }  
   
   li {
