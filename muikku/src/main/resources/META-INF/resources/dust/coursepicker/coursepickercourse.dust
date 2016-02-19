@@ -26,6 +26,11 @@
           </div>
           <div id="detailsCrs-{id}" class="cp-course-content-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" style="display:none;"> 
             <div class="flex-row">
+              {?educationTypes}
+              <div class="cp-course-education-type-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                <div class="cp-course-education-type {educationType}">{educationType}</div>
+              </div>  
+              {/educationTypes}
               <div class="cp-course-description-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">{description|s}</div>          
               <div class="cp-course-details-toolbar lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
                 {#isCourseMember}
