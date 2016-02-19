@@ -17,6 +17,7 @@ public class CoursePickerWorkspace {
       String description,
       Long numVisits,
       Date lastVisit,
+      String educationTypeName,
       boolean canSignup,
       Boolean canCopyWorkspace,
       boolean isCourseMember) {
@@ -33,6 +34,7 @@ public class CoursePickerWorkspace {
     this.canSignup = canSignup;
     this.canCopyWorkspace = canCopyWorkspace;
     this.isCourseMember = isCourseMember;
+    this.educationTypeName = educationTypeName;
   }
 
   public Long getId() {
@@ -131,6 +133,14 @@ public class CoursePickerWorkspace {
     this.isCourseMember = isCourseMember;
   }
 
+  public String getEducationTypeName() {
+    return educationTypeName;
+  }
+  
+  public void setEducationTypeName(String educationTypeName) {
+    this.educationTypeName = educationTypeName;
+  }
+  
   private Long id;
   private String urlName;
   private Boolean archived;
@@ -143,4 +153,5 @@ public class CoursePickerWorkspace {
   private Boolean canSignup;
   private Boolean canCopyWorkspace;
   private Boolean isCourseMember;
+  private String educationTypeName;
 }
