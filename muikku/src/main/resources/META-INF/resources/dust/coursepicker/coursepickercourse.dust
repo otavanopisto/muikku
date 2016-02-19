@@ -10,10 +10,11 @@
           <div class="mf-item-header-container cp-course-header-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom no-margin-left no-margin-right">
             <div class="flex-row">
               <div class="mf-item-header-name cp-course-header-name lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">
-                <span class="cp-course-long">{name}</span>
-                {?nameExtension}
-                  <span class="cp-course-extension">({nameExtension})</span>
-                {/nameExtension}
+                <span class="cp-course-long">
+                  {name} 
+                  {?nameExtension}<i class="cp-course-extension">({nameExtension})</i>{/nameExtension}
+                  {?educationTypeName}<i class="cp-course-education-type {educationTypeName}">{educationTypeName}</i>{/educationTypeName}
+                </span>
               </div>
             
               <div class="mf-item-header-details cp-course-header-details lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4">            
@@ -26,12 +27,7 @@
           </div>
           <div id="detailsCrs-{id}" class="cp-course-content-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" style="display:none;"> 
             <div class="flex-row">
-              {?educationTypes}
-              <div class="cp-course-education-type-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-                <div class="cp-course-education-type {educationType}">{educationType}</div>
-              </div>  
-              {/educationTypes}
-              <div class="cp-course-description-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">{description|s}</div>          
+              <div class="cp-course-description-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">{description|s}</div>          
               <div class="cp-course-details-toolbar lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
                 {#isCourseMember}
                   <div class="mf-item-tool-btn goto cp-course-tour-button"><span>{#localize key="plugin.coursepicker.course.goto" /}</span></div>
