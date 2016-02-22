@@ -1,6 +1,9 @@
 package fi.muikku.atests;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,20 +24,30 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.muikku.controller.TagController;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
+import fi.muikku.model.base.Tag;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.users.UserGroupUserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.notifier.NotifierController;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.announcer.AnnouncementController;
 import fi.muikku.plugins.announcer.model.Announcement;
 import fi.muikku.plugins.communicator.CommunicatorController;
+import fi.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
+import fi.muikku.plugins.communicator.CommunicatorPermissionCollection;
+import fi.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
+import fi.muikku.plugins.communicator.rest.CommunicatorMessageRESTModel;
 import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumAreaGroup;
@@ -46,6 +59,7 @@ import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.plugins.search.UserIndexer;
 import fi.muikku.plugins.search.WorkspaceIndexer;
+import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -59,6 +73,7 @@ import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
+import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserGroupController;
 import fi.muikku.users.UserGroupEntityController;
@@ -126,6 +141,18 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private TagController tagController;
+  
+  @Inject
+  private NotifierController notifierController;
+  
+  @Inject
+  private WebSocketMessenger webSocketMessenger;
+  
+  @Inject
+  private CommunicatorNewInboxMessageNotification communicatorNewInboxMessageNotification;
   
   @GET
   @Path("/login")
@@ -215,7 +242,76 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     
     return Response.noContent().build();
   }
-
+  
+  @POST
+  @Path("/communicator/messages")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createCommunicatorMessage(fi.muikku.atests.CommunicatorMessage payload) {
+    UserEntity user = userEntityController.findUserEntityById(payload.getSenderId());
+//      sessionController.getLoggedUserEntity();
+    
+    CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
+    
+    Set<Tag> tagList = parseTags(payload.getTags());
+    List<UserEntity> recipients = new ArrayList<UserEntity>();
+    
+    for (Long recipientId : payload.getRecipientIds()) {
+      UserEntity recipient = userEntityController.findUserEntityById(recipientId);
+  
+      if (recipient != null)
+        recipients.add(recipient);
+    }
+    
+    // TODO: Duplicates
+    
+    for (Long groupId : payload.getRecipientGroupIds()) {
+      UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
+      List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
+      
+      for (UserGroupUserEntity groupUser : groupUsers) {
+        UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
+        UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
+        
+        recipients.add(userEntity);
+      }
+    }
+  
+    // Workspace members
+  
+    for (Long workspaceId : payload.getRecipientStudentsWorkspaceIds()) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
+          workspaceEntity, WorkspaceRoleArchetype.STUDENT);
+      
+      for (WorkspaceUserEntity wosu : workspaceUsers) {
+        recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());
+      }
+    }      
+  
+    for (Long workspaceId : payload.getRecipientTeachersWorkspaceIds()) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
+            workspaceEntity, WorkspaceRoleArchetype.TEACHER);
+        
+        for (WorkspaceUserEntity wosu : workspaceUsers) {
+          recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());
+        }
+    }      
+    
+    // TODO Category not existing at this point would technically indicate an invalid state
+    CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(payload.getCategoryName());
+    
+    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
+      payload.getCaption(), payload.getContent(), tagList);
+      
+    notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
+    webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
+    
+    return Response.ok(
+      message
+    ).build();
+  }
+  
   @POST
   @Path("/workspaces")
   @RESTPermit (handling = Handling.UNSECURED)
@@ -610,4 +706,36 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 //        entity.isPubliclyVisible());
 //  }
   
+  private Set<Tag> parseTags(Set<String> tags) {
+    Set<Tag> result = new HashSet<Tag>();
+    
+    for (String t : tags) {
+      Tag tag = tagController.findTag(t);
+      
+      if (tag == null)
+        tag = tagController.createTag(t);
+      
+      result.add(tag);
+    }
+    
+    return result;
+  }
+  private Set<String> tagIdsToStr(Set<Long> tagIds) {
+    Set<String> tagsStr = new HashSet<String>();
+    for (Long tagId : tagIds) {
+      Tag tag = tagController.findTagById(tagId);
+      if (tag != null)
+        tagsStr.add(tag.getText());
+    }
+    return tagsStr;
+  }
+  private List<Long> getMessageRecipientIdList(CommunicatorMessage msg) {
+    List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(msg);
+    List<Long> recipients = new ArrayList<Long>();
+    for (CommunicatorMessageRecipient messageRecipient : messageRecipients) {
+      recipients.add(messageRecipient.getId());
+    }
+
+    return recipients;
+  }
 }

@@ -19,49 +19,64 @@ public class CommunicatorTestsBase extends AbstractUITest {
   
   @Test
   public void communicatorSendMessageTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
     try{
-      loginAdmin();
-      navigate("/communicator", true);
-      waitAndClick(".bt-mainFunction-content span");
-      waitForPresent("#recipientContent");
-      sendKeys("#recipientContent", "Test");
-      waitAndClick(".ui-autocomplete li.ui-menu-item");
-      waitForPresent(".mf-textfield-subject");
-      sendKeys(".mf-textfield-subject", "Test");    
-      waitAndClick("#cke_1_contents");
-      getWebDriver().switchTo().activeElement().sendKeys("Communicator test");
-      click("*[name='send']");
-      navigate("/communicator", true);
-      waitForPresent("div.cm-message-header-content-secondary");
-      assertText("div.cm-message-header-content-secondary", "Test");  
-    }finally{
-      deleteCommunicatorMessages(); 
-    }
+      try{
+        login();
+        navigate("/communicator", true);
+        waitAndClick(".bt-mainFunction-content span");
+        waitForPresent("#recipientContent");
+        sendKeys("#recipientContent", "Test");
+        waitAndClick(".ui-autocomplete li.ui-menu-item");
+        waitForPresent(".mf-textfield-subject");
+        sendKeys(".mf-textfield-subject", "Test");    
+        waitAndClick("#cke_1_contents");
+        getWebDriver().switchTo().activeElement().sendKeys("Communicator test");
+        click("*[name='send']");
+        navigate("/communicator#sent", true);
+        waitForPresent(".cm-message-header-content-secondary");
+        assertText(".cm-message-header-content-secondary", "Test");  
+      }finally{
+        deleteCommunicatorMessages(); 
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    } 
   }
   
   @Test
   public void communicatorSentMessagesTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     try{
-      loginAdmin();
-      navigate("/communicator", true);
-      waitAndClick(".bt-mainFunction-content span");
-      waitForPresent("#recipientContent");
-      sendKeys("#recipientContent", "Test");
-      waitAndClick(".ui-autocomplete li.ui-menu-item");
-      waitForPresent(".mf-textfield-subject");
-      sendKeys(".mf-textfield-subject", "Test");    
-      waitAndClick("#cke_1_contents");
-      getWebDriver().switchTo().activeElement().sendKeys("Communicator test");
-      click("*[name='send']");
-      // Window.reload screws this up.
-      // waitForPresentVisible(".notification-queue-item-success span");
-//      waitForPresent(".cm-messages-container");
-      navigate("/communicator#sent", true);
-      waitForPresent("div.cm-message-header-content-secondary");
-      assertText("div.cm-message-header-content-secondary", "Test");
-    }finally{
-      deleteCommunicatorMessages(); 
-    }
+      try{
+        login();
+        navigate("/communicator", true);
+        waitAndClick(".bt-mainFunction-content span");
+        waitForPresent("#recipientContent");
+        sendKeys("#recipientContent", "Test");
+        waitAndClick(".ui-autocomplete li.ui-menu-item");
+        waitForPresent(".mf-textfield-subject");
+        sendKeys(".mf-textfield-subject", "Test");    
+        waitAndClick("#cke_1_contents");
+        getWebDriver().switchTo().activeElement().sendKeys("Communicator test");
+        click("*[name='send']");
+        // Window.reload screws this up.
+        // waitForPresentVisible(".notification-queue-item-success span");
+  //      waitForPresent(".cm-messages-container");
+        navigate("/communicator#sent", true);
+        waitForPresent("div.cm-message-header-content-secondary");
+        assertText("div.cm-message-header-content-secondary", "Test");
+      }finally{
+        deleteCommunicatorMessages(); 
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    } 
   }
   
   @Test
@@ -127,15 +142,15 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long sender = getUserIdByEmail("admin@made.up");
-        long recipient = getUserIdByEmail("testuser@made.up");
+        long sender = getUserIdByEmail("admin@example.com");
+        long recipient = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         logout();
         mockBuilder.mockLogin(student).build();
         login();
         navigate("/communicator", true);
-        waitAndClick("div.mf-item-select input[type=\"checkbox\"]");
-        waitAndClick("div.icon-delete");
+        waitAndClick(".unread .mf-item-select input");
+        waitAndClick(".icon-delete");
         // waitForPresentVisible(".notification-queue-item-success");
         waitForPresent(".cm-messages-container");
         assertTrue("Element found even though it shouldn't be there", isElementPresent("div.mf-item-select input[type=\"checkbox\"]") == false);
@@ -149,21 +164,29 @@ public class CommunicatorTestsBase extends AbstractUITest {
 
   @Test
   public void communicatorDeleteSentMessageTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
     try{
-      loginAdmin();
-      long sender = getUserIdByEmail("admin@made.up");
-      long recipient = getUserIdByEmail("testuser@made.up");
-      createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
-      navigate("/communicator#sent", true);
-      waitAndClick("div.mf-item-select input[type=\"checkbox\"]");
-      waitAndClick("div.icon-delete");
-      // waitForPresentVisible(".notification-queue-item-success");
-      waitForPresent(".cm-messages-container");
-      String currentUrl = getWebDriver().getCurrentUrl();
-      assertTrue("Communicator does not stay in sent messages box.", currentUrl.equals("https://dev.muikku.fi:8443/communicator#sent"));
-      assertTrue("Element found even though it shouldn't be there", isElementPresent("div.mf-item-select input[type=\"checkbox\"]") == false);
-    }finally{
-      deleteCommunicatorMessages(); 
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      login();
+      try{
+        long sender = getUserIdByEmail("admin@example.com");
+        long recipient = getUserIdByEmail("student@example.com");
+        createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
+        navigate("/communicator#sent", true);
+        waitAndClick("div.mf-item-select input[type=\"checkbox\"]");
+        waitAndClick("div.icon-delete");
+        // waitForPresentVisible(".notification-queue-item-success");
+        waitForPresent(".cm-messages-container");
+        String currentUrl = getWebDriver().getCurrentUrl();
+        assertTrue("Communicator does not stay in sent messages box.", currentUrl.equals("https://dev.muikku.fi:8443/communicator#sent"));
+        assertTrue("Element found even though it shouldn't be there", isElementPresent("div.mf-item-select input[type=\"checkbox\"]") == false);
+      }finally{
+        deleteCommunicatorMessages(); 
+      }
+    }finally {
+      mockBuilder.wiremockReset();
     }
   }
   

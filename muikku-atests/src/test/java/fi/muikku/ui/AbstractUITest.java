@@ -62,6 +62,7 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import fi.muikku.AbstractIntegrationTest;
 import fi.muikku.TestUtilities;
 import fi.muikku.atests.Announcement;
+import fi.muikku.atests.CommunicatorMessage;
 import fi.muikku.atests.CommunicatorMessageRESTModel;
 import fi.muikku.atests.CommunicatorNewMessageRESTModel;
 import fi.muikku.atests.Workspace;
@@ -694,19 +695,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     Set<String> tags = new HashSet<>();
     List<Long> recipientIds = new ArrayList<>();
     recipientIds.add(recipient);
-    CommunicatorNewMessageRESTModel payload = new CommunicatorNewMessageRESTModel(null, null, sender, "test", caption, content, created, tags, recipientIds, new ArrayList<Long>(), new ArrayList<Long>(), new ArrayList<Long>());
+    CommunicatorMessage payload = new CommunicatorMessage(null, null, sender, "test", caption, content, created, tags, recipientIds, new ArrayList<Long>(), new ArrayList<Long>(), new ArrayList<Long>());
 
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
-      .post("/communicator/messages");
+      .post("test/communicator/messages");
     
     response.then()
       .statusCode(200);
       
-    CommunicatorMessageRESTModel result = objectMapper.readValue(response.asString(), CommunicatorMessageRESTModel.class);
-    assertNotNull(result);
-    assertNotNull(result.getId());
+//    CommunicatorMessage result = objectMapper.readValue(response.asString(), CommunicatorMessage.class);
+//    assertNotNull(result);
+//    assertNotNull(result.getId());
   }
   
   protected void deleteAnnouncements() {

@@ -38,6 +38,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         sendKeys("#endDate", "21.12.2025");
         sendKeys(".mf-textfield-subject", "Test title");
         click(".mf-form-header");
+        waitForPresent("#ui-datepicker-div");
         waitForNotVisible("#ui-datepicker-div");
         switchToFrame(".cke_wysiwyg_frame");
         sendKeys(".cke_editable", "Announcer test announcement");
@@ -73,6 +74,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         sendKeys(".mf-textfield-subject", "Test title");
         click(".mf-form-header");
         waitForNotVisible("#ui-datepicker-div");
+        waitForPresent("#ui-datepicker-div");
         switchToFrame(".cke_wysiwyg_frame");
         sendKeys(".cke_editable", "Announcer test announcement");
         switchToDefaultFrame();
