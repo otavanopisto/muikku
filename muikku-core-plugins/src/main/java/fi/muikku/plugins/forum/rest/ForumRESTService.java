@@ -240,12 +240,29 @@ public class ForumRESTService extends PluginRESTService {
   
   @DELETE
   @Path ("/areas/{AREAID}")
-  @RESTPermit(ForumResourcePermissionCollection.FORUM_DELETEENVIRONMENTFORUM)
-  public Response deleteArea(@PathParam ("AREAID") Long areaId) throws AuthorizationException {
+  @RESTPermit(handling = Handling.INLINE)
+  public Response deleteEnvironmentForumArea(@PathParam ("AREAID") Long areaId) throws AuthorizationException {
     ForumArea forumArea = forumController.getForumArea(areaId);
+    if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumArea) || sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEENVIRONMENTFORUM, forumArea)) {
+      forumController.deleteArea(forumArea);
+    }
+    else {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    return Response.noContent().build();
+  }
 
-    forumController.deleteArea(forumArea);
-    
+  @DELETE
+  @Path ("/workspace/{WORKSPACEENTITYID}/areas/{AREAID}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response deleteWorkspaceForumArea(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId) throws AuthorizationException {
+    ForumArea forumArea = forumController.getForumArea(areaId);
+    if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumArea) || sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEWORKSPACEFORUM, forumArea)) {
+      forumController.deleteArea(forumArea);
+    }
+    else {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     return Response.noContent().build();
   }
   
