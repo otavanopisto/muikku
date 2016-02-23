@@ -705,9 +705,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     response.then()
       .statusCode(200);
       
-//    CommunicatorMessage result = objectMapper.readValue(response.asString(), CommunicatorMessage.class);
-//    assertNotNull(result);
-//    assertNotNull(result.getId());
+    CommunicatorMessage result = objectMapper.readValue(response.asString(), CommunicatorMessage.class);
+    assertNotNull(result);
+    assertNotNull(result.getId());
   }
   
   protected void deleteAnnouncements() {

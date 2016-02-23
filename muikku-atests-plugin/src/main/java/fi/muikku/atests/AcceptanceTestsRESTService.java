@@ -248,7 +248,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response createCommunicatorMessage(fi.muikku.atests.CommunicatorMessage payload) {
     UserEntity user = userEntityController.findUserEntityById(payload.getSenderId());
-//      sessionController.getLoggedUserEntity();
     
     CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
     
@@ -262,8 +261,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
-    // TODO: Duplicates
-    
     for (Long groupId : payload.getRecipientGroupIds()) {
       UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
       List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
@@ -275,8 +272,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         recipients.add(userEntity);
       }
     }
-  
-    // Workspace members
   
     for (Long workspaceId : payload.getRecipientStudentsWorkspaceIds()) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
@@ -297,18 +292,18 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
           recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());
         }
     }      
-    
-    // TODO Category not existing at this point would technically indicate an invalid state
+
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(payload.getCategoryName());
     
-    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
+    fi.muikku.plugins.communicator.model.CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
       payload.getCaption(), payload.getContent(), tagList);
-      
+    Long communicatorMessageId2 = message.getCommunicatorMessageId().getId();
+    fi.muikku.atests.CommunicatorMessage result = new fi.muikku.atests.CommunicatorMessage(message.getId(), communicatorMessageId2, message.getSender(), payload.getCategoryName(), message.getCaption(), message.getContent(), message.getCreated(), payload.getTags(), payload.getRecipientIds(), payload.getRecipientGroupIds(), payload.getRecipientStudentsWorkspaceIds(), payload.getRecipientTeachersWorkspaceIds());
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
     webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
     
     return Response.ok(
-      message
+      result
     ).build();
   }
   
