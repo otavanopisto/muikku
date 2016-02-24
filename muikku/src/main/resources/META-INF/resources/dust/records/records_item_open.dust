@@ -1,0 +1,62 @@
+<div class="tr-view-toolbar mf-view-toolbar"> 
+   <div class="tr-view-tool mf-view-tool icon-goback"></div>
+   <div class="clear"></div>
+</div>
+
+
+
+{#.} 
+  <div class="mf-item tr-item ft-01 open">
+    <input type="hidden" name="workspaceId" value="{id}"/>
+    <input type="hidden" name="workspaceUrl" value="{urlName}"/>
+
+    
+    <div class="tr-item-details">
+      <div class="tr-item-details-container">       
+        <div class="tr-item-description">
+          <div class="tr-item-open-header-name">
+            {?workspaceGrade}
+              {?passed}
+                <span class="grade passing">{workspaceGrade}</span>
+              {:else}
+                <span class="grade non-passing">{workspaceGrade}</span>
+              {/passed}
+            {/workspaceGrade}
+            <span class="tr-item-long">{workspaceName}</span>
+          </div>
+
+          <div id="detailsCrs-{id}" class="tr-item-content-details" >     
+            <div class="tr-item-description-picture"></div>
+            <div class="tr-item-description-text">{workspaceDescription|s}</div>          
+          </div>
+
+        </div>       
+
+        <div class="clear"></div>
+      </div>
+    </div>
+
+  </div>
+  
+  <div class="mf-item tr-evaluation-verbal">
+    <div class="topic"><h3>{#localize key="plugin.records.workspace.evaluated.verbal.topic" /}</h3></div>
+    <div class="content">{workspaceVerbalAssessment|s}</div>
+  </div>
+  
+  <div class="mf-item tr-tasklist">
+    <div class="topic"><h3>{#localize key="plugin.records.tasks.evaluated.topic" /}</h3></div>
+    <div class="content">
+      {#assignments}
+        {>"records/records_item_assignment.dust"/}
+      {:else}    
+        {>"records/records_item_noassignments.dust"/}
+      {/assignments}
+    </div>
+  </div>  
+
+{:else}
+  <div class="mf-content-empty cm-no-messages">
+    <h3>{#localize key="plugin.records.empty.topic.all"/}</h3>
+  </div>
+
+{/.}
