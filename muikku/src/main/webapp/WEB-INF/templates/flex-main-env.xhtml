@@ -25,13 +25,6 @@
                 </div>
               </div>
             </div>
-            <ui:fragment rendered="#{loggedUserWidgetBackingBean.representing}">
-              <div class="formElementRow">
-                <h:form>
-                  <a jsf:action="#{loggedUserWidgetBackingBean.endRepresentation()}">Lopeta edustus</a>
-                </h:form>
-              </div>
-            </ui:fragment>
           </div>
         </ui:fragment>
         <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
@@ -68,7 +61,7 @@
         <!-- DESKTOP/TABLET NAVIGATION -->
         <!-- HOME -->
         <div class="dock-static-navi-button-home #{activeTrail eq 'index' ? 'active-trail' : ''}" title="#{i18n.text['plugin.home.home']}">
-          <a href="#{request.contextPath}/" class="icon-home"/>
+          <a jsf:outcome="/index.jsf" class="icon-home"/>
         </div>
         <!-- COURCEPICKER -->
         <div class="dock-static-navi-button-coursepicker #{activeTrail eq 'courcepicker' ? 'active-trail' : ''}" title="#{i18n.text['plugin.coursepicker.coursepicker']}">

@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-    mApi({async: false}).workspace.workspaces
+    mApi().workspace.workspaces
     .read({ minVisits: 1, orderBy: "lastVisit" }).on('$', function(workspace, workspaceCallback){
 
     	 var td = new Date();
