@@ -1,8 +1,5 @@
 package fi.muikku.plugins.schooldatapyramus.rest;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -12,13 +9,6 @@ import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-
-import fi.muikku.controller.PluginSettingsController;
-import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
-import fi.muikku.plugins.schooldatapyramus.SystemOauthController;
-import fi.muikku.plugins.schooldatapyramus.model.SystemAccessToken;
 import fi.muikku.plugins.schooldatapyramus.rest.cache.CachedEntity;
 import fi.muikku.plugins.schooldatapyramus.rest.cache.SystemEntityCache;
 import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusSystem;
@@ -28,14 +18,6 @@ import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusSystem;
 @Singleton
 @Lock (LockType.WRITE)
 class SystemPyramusClient implements PyramusClient {
-
-  private static final int EXPIRE_SLACK = 3;
-  
-  @Inject
-  private PluginSettingsController pluginSettingsController;
-
-  @Inject
-  private Logger logger;
   
   @Inject
   private ClientPool clientPool;
@@ -47,16 +29,11 @@ class SystemPyramusClient implements PyramusClient {
   private SystemEntityCache entityCache;
   
   @Inject
-  private SystemOauthController systemOauthController;
-  
+  private SystemAccessTokenProvider systemAccessTokenProvider;
+
   @PostConstruct
   public void init() {
-    accessToken = null;
-    accessTokenExpires = null;
-    authCode = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "system.authCode");
-    if(StringUtils.isEmpty(authCode)){
-      logger.log(Level.SEVERE, "SystemAuthCode is missing!");
-    }
+    
   }
 
   @Override
@@ -110,7 +87,9 @@ class SystemPyramusClient implements PyramusClient {
       }
       
       T result = restClient.get(client, getAccessToken(), path, type);
-      entityCache.put(path, result);
+      if (result != null) {
+        entityCache.put(path, result);
+      }
       
       return result;
     } finally {
@@ -131,25 +110,7 @@ class SystemPyramusClient implements PyramusClient {
   private String getAccessToken() {
     Client client = obtainClient();
     try {
-      SystemAccessToken systemAccessToken = systemOauthController.getSystemAccessToken();
-      if (systemAccessToken == null) {
-        AccessToken createdAccessToken = restClient.createAccessToken(client, authCode);
-        accessToken = createdAccessToken.getAccessToken();
-        accessTokenExpires = new DateTime().plusSeconds(createdAccessToken.getExpiresIn());
-        systemOauthController.createSystemAccessToken(accessToken, accessTokenExpires.getMillis(), createdAccessToken.getRefreshToken());
-      } else {
-        if (System.currentTimeMillis() > systemAccessToken.getExpires()) {
-          AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, systemAccessToken.getRefreshToken());
-          accessToken = refreshedAccessToken.getAccessToken();
-          accessTokenExpires = new DateTime().plusSeconds(refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK);
-          systemOauthController.refreshSystemAccessToken(systemAccessToken, accessToken, accessTokenExpires.getMillis());
-        } else {
-          accessToken = systemAccessToken.getAccessToken();
-          accessTokenExpires = new DateTime(systemAccessToken.getExpires());
-        }
-      }
-  
-      return accessToken;
+      return systemAccessTokenProvider.getAccessToken(restClient, client);
     } finally {
       releaseClient(client);
     }
@@ -162,8 +123,4 @@ class SystemPyramusClient implements PyramusClient {
   private void releaseClient(Client client) {
     clientPool.releaseClient(client);
   }
-
-  private String accessToken;
-  private DateTime accessTokenExpires;
-  private String authCode;
 }

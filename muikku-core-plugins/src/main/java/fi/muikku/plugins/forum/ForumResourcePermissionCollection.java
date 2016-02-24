@@ -77,6 +77,10 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER } )
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
   public static final String FORUM_FINDWORKSPACE_USERSTATISTICS = "FORUM_FINDWORKSPACE_USERSTATISTICS";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
+  public static final String FORUM_DELETEWORKSPACEFORUM = "FORUM_DELETEWORKSPACEFORUM";
   
   /**
    * Forum Message related rights
