@@ -125,43 +125,25 @@ public class InboxCommunicatorMessageDAO extends CorePluginsDAO<InboxCommunicato
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  /**
-   * Lists all messages where user has contributed as sender or recipient.
-   * 
-   * @param user
-   * @param communicatorMessageId
-   * @return
-   */
-  public List<InboxCommunicatorMessage> listByMessageId(UserEntity user, CommunicatorMessageId communicatorMessageId) {
+  public List<InboxCommunicatorMessage> listByRecipientAndMessageId(UserEntity user, CommunicatorMessageId communicatorMessageId) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<InboxCommunicatorMessage> criteria = criteriaBuilder.createQuery(InboxCommunicatorMessage.class);
 
-    Root<InboxCommunicatorMessage> root2 = criteria.from(InboxCommunicatorMessage.class);
-    Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
-    Join<CommunicatorMessageRecipient, CommunicatorMessage> msgJoin = root.join(CommunicatorMessageRecipient_.communicatorMessage);
-
-    criteria.distinct(true);
-    criteria.select(root2);
+    CriteriaQuery<InboxCommunicatorMessage> criteria;
+    Root<InboxCommunicatorMessage> inboxCommunicatorMessage;
+    criteria = criteriaBuilder.createQuery(InboxCommunicatorMessage.class);
+    inboxCommunicatorMessage = criteria.from(InboxCommunicatorMessage.class);
+    Root<CommunicatorMessageRecipient> recipient = criteria.from(CommunicatorMessageRecipient.class);
+    Join<CommunicatorMessageRecipient, InboxCommunicatorMessage> recipientMessage = 
+        criteriaBuilder.treat(recipient.join(CommunicatorMessageRecipient_.communicatorMessage), InboxCommunicatorMessage.class);
+    criteria.select(inboxCommunicatorMessage);
     criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.or(
-                criteriaBuilder.and(
-                    criteriaBuilder.equal(root2.get(InboxCommunicatorMessage_.communicatorMessageId), communicatorMessageId),
-                    criteriaBuilder.equal(root2.get(InboxCommunicatorMessage_.sender), user.getId()),
-                    criteriaBuilder.equal(root2.get(InboxCommunicatorMessage_.archivedBySender), Boolean.FALSE)
-                ),
-                criteriaBuilder.and(
-                    root2.in(msgJoin),
-                    criteriaBuilder.equal(msgJoin.get(InboxCommunicatorMessage_.communicatorMessageId), communicatorMessageId),
-                    criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), user.getId()),
-                    criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
-                )
-            )
-        )
-    );
-    
+            criteriaBuilder.and(
+                criteriaBuilder.equal(inboxCommunicatorMessage.get(InboxCommunicatorMessage_.id), recipientMessage.get(InboxCommunicatorMessage_.id)),
+                criteriaBuilder.equal(recipientMessage.get(InboxCommunicatorMessage_.communicatorMessageId), communicatorMessageId),
+                criteriaBuilder.equal(recipient.get(CommunicatorMessageRecipient_.recipient), user.getId()),
+                criteriaBuilder.equal(recipient.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)));
     return entityManager.createQuery(criteria).getResultList();
   }
   
