@@ -1,21 +1,29 @@
 package fi.muikku.ui.base.course.materials;
 
+import static fi.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 
+import fi.muikku.TestUtilities;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
+import fi.muikku.mock.PyramusMock.Builder;
+import fi.muikku.mock.model.MockStaffMember;
+import fi.muikku.mock.model.MockStudent;
 import fi.muikku.ui.AbstractUITest;
+import fi.pyramus.rest.model.Sex;
+import fi.pyramus.rest.model.UserRole;
 
 public class CourseMaterialsPageTestsBase extends AbstractUITest {
 
@@ -242,35 +250,43 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   
   @Test
   public void answerTextFieldTestStudent() throws Exception {
-    loginStudent1();
-    
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try {
-      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-          "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
-          "EXERCISE");
-      
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+    login();
+    try{
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         
-        assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-        assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+            "Test", "text/html;editor=CKEditor", 
+            "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+            "EXERCISE");
+        logout();
+        try {
+          mockBuilder.mockLogin(student).build();
+          login();
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+          
+          assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
+          assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
+          assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+          sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+          waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
+          assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        }
       } finally {
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
     }
   }
   
@@ -310,35 +326,43 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   
   @Test
   public void answerDropdownTestStudent() throws Exception {
-    loginStudent1();
-    maximizeWindow();    
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try {
-      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-          "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-22p0Ll4KipuGHcP9n6W1qXBU&quot;,&quot;listType&quot;:&quot;dropdown&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;un&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;dos&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;tres&quot;,&quot;correct&quot;:false}]}\" /><select name=\"muikku-field-22p0Ll4KipuGHcP9n6W1qXBU\"></select></object></p>", 1l, 
-          "EXERCISE");
-      
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(student).build();
+    login();
+    try{
+      maximizeWindow();    
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         
-        assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "");
-        assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
-        selectOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "2");
-        waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        assertSelectedOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "dos");        
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+            "Test", "text/html;editor=CKEditor", 
+            "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-22p0Ll4KipuGHcP9n6W1qXBU&quot;,&quot;listType&quot;:&quot;dropdown&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;un&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;dos&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;tres&quot;,&quot;correct&quot;:false}]}\" /><select name=\"muikku-field-22p0Ll4KipuGHcP9n6W1qXBU\"></select></object></p>", 1l, 
+            "EXERCISE");
+        
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+          
+          assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
+          assertValue(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "");
+          assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+          selectOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "2");
+          waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
+          assertSelectedOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "dos");        
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        }
+        
       } finally {
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
     }
   }
   
@@ -378,35 +402,39 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   
   @Test
   public void answerRadioButtonsTestStudent() throws Exception {
-    loginStudent1();
-    maximizeWindow();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try {
-      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-          "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB&quot;,&quot;listType&quot;:&quot;radio-vertical&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Koi&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Koppis&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Muurahainen&quot;,&quot;correct&quot;:true}]}\" /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"1\" /><label>Koi</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"2\" /><label>Koppis</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"3\" /><label>Muurahainen</label><br /></object></p><p>&nbsp;</p>", 1l, 
-          "EXERCISE");
-      
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(student).build();
+    login();
+    try{
+      maximizeWindow();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-        
-        assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
-        waitAndClick(".muikku-select-field input[value=\"1\"]");
-        waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), true);
-        
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+            "Test", "text/html;editor=CKEditor", 
+            "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB&quot;,&quot;listType&quot;:&quot;radio-vertical&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Koi&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Koppis&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Muurahainen&quot;,&quot;correct&quot;:true}]}\" /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"1\" /><label>Koi</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"2\" /><label>Koppis</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"3\" /><label>Muurahainen</label><br /></object></p><p>&nbsp;</p>", 1l, 
+            "EXERCISE");
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+          
+          assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
+          assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+          waitAndClick(".muikku-select-field input[value=\"1\"]");
+          waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
+          assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), true); 
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        }
       } finally {
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
     }
   }
   
@@ -446,35 +474,43 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   
   @Test
   public void answerCheckboxTestStudent() throws Exception {
-    loginStudent1();
-    maximizeWindow();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try {
-      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-        "Test", "text/html;editor=CKEditor", 
-        "<p><object type=\"application/vnd.muikku.field.multiselect\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nKTdumfsakZc5wFgru1LJoPs&quot;,&quot;listType&quot;:&quot;checkbox-horizontal&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;test1&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;test2&quot;,&quot;correct&quot;:false}]}\" /><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"1\" /><label>test1</label><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"2\" /><label>test2</label></object></p>", 1l, 
-        "EXERCISE");
-      
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(student).build();
+    login();
+    try{
+      maximizeWindow();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         
-        assertVisible(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
-        assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
-        waitAndClick(".muikku-checkbox-field input[value=\"1\"]");
-        waitClassPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
-        assertChecked(String.format("#page-%d .muikku-checkbox-field input[value=\"1\"]", htmlMaterial.getId()), true);
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.multiselect\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nKTdumfsakZc5wFgru1LJoPs&quot;,&quot;listType&quot;:&quot;checkbox-horizontal&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;test1&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;test2&quot;,&quot;correct&quot;:false}]}\" /><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"1\" /><label>test1</label><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"2\" /><label>test2</label></object></p>", 1l, 
+          "EXERCISE");
+        
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+          
+          assertVisible(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
+          assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
+          waitAndClick(".muikku-checkbox-field input[value=\"1\"]");
+          waitClassPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
+          assertChecked(String.format("#page-%d .muikku-checkbox-field input[value=\"1\"]", htmlMaterial.getId()), true);
+          
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        }
         
       } finally {
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
     }
   }
   
@@ -574,38 +610,44 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   
   @Test
   public void answerFileFieldTestStudent() throws Exception {
-    loginStudent1();
-    
-    File testFile = getTestFile();
-    
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try {
-      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-          "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 1l, 
-          "EXERCISE");
-      
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(student).build();
+    login();
+      try{
+      File testFile = getTestFile();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         
-        assertPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
-        assertClassNotPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
-        assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 0);
-        sendKeys(String.format("#page-%d .muikku-file-input-field-file-uploader-container input[type='file']", htmlMaterial.getId()), testFile.getAbsolutePath());
-        waitClassPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
-        assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 1);
-        assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-file .muikku-file-input-field-file-label a", htmlMaterial.getId()), testFile.getName());
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+            "Test", "text/html;editor=CKEditor", 
+            "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 1l, 
+            "EXERCISE");
+        
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+          
+          assertPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
+          assertClassNotPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
+          assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 0);
+          sendKeys(String.format("#page-%d .muikku-file-input-field-file-uploader-container input[type='file']", htmlMaterial.getId()), testFile.getAbsolutePath());
+          waitClassPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
+          assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 1);
+          assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-file .muikku-file-input-field-file-label a", htmlMaterial.getId()), testFile.getName());
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        }
+        
       } finally {
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
+     mockBuilder.wiremockReset(); 
     }
   }  
   
@@ -689,42 +731,48 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 
   @Test
   public void removeFileFieldTestStudent() throws Exception {
-    loginStudent1();
-    
-    File testFile = getTestFile();
-    
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try {
-      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-          "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 1l, 
-          "EXERCISE");
-      
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(student).build();
+    login();
+    try{
+      File testFile = getTestFile();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         
-        assertPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
-        assertClassNotPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
-        assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 0);
-        sendKeys(String.format("#page-%d .muikku-file-input-field-file-uploader-container input[type='file']", htmlMaterial.getId()), testFile.getAbsolutePath());
-        waitClassPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-        waitForPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
-        assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 1);
-        assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-file .muikku-file-input-field-file-label a", htmlMaterial.getId()), testFile.getName());
-        waitAndClick(".muikku-file-input-field-file-remove");
-        waitAndClick(".delete-button span");
-        assertPresent(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()));
-        assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()), "Add a file by clicking here or by dragging it into this box");
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+            "Test", "text/html;editor=CKEditor", 
+            "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 1l, 
+            "EXERCISE");
+        
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+          
+          assertPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
+          assertClassNotPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
+          assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 0);
+          sendKeys(String.format("#page-%d .muikku-file-input-field-file-uploader-container input[type='file']", htmlMaterial.getId()), testFile.getAbsolutePath());
+          waitClassPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          waitForPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
+          assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 1);
+          assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-file .muikku-file-input-field-file-label a", htmlMaterial.getId()), testFile.getName());
+          waitAndClick(".muikku-file-input-field-file-remove");
+          waitAndClick(".delete-button span");
+          assertPresent(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()));
+          assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()), "Add a file by clicking here or by dragging it into this box");
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        }
+        
       } finally {
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
     }
   }
   
