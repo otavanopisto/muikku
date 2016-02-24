@@ -1,0 +1,93 @@
+@import "_vars.scss";
+@import "_styles.scss";
+
+/* Coursepicker (.cp-*) */
+
+.cp-content-main {
+  min-height:450px;
+}
+
+.cp-course { 
+  
+  &.ft-01 {
+    border-left: 3px solid $mainFuncFilter1;
+  }
+   
+  &.ft-02 {
+    border-left: 3px solid $mainFuncFilter2;
+  }
+  
+  &.ft-03 {
+    border-left: 3px solid $mainFuncFilter3;
+  }
+ 
+  &.not-published {
+    font-style:italic;
+    opacity:0.8;
+   
+    .cp-course-header-name {
+      color:#d89828;
+    }
+    
+  }
+  
+  .cp-course-details {
+    position:relative;
+  }
+
+}
+
+.cp-course-details-open {
+  
+  .cp-course-header-container {
+    font-weight:400;
+  } 
+  
+}
+
+.cp-course-header-container {
+  cursor:pointer;
+}
+
+.cp-course-long {
+  
+}
+
+.cp-course-extension {
+  font-style:normal;
+  margin:0 5px 0 0;
+}
+
+.cp-course-education-type {
+  background:#daf5ff;
+  border-radius:2px;
+  color:#000;
+  display:inline-block;
+  font-size:12px;
+  line-height:1;
+  margin:0 5px 0 0;
+  padding:4px;
+  text-transform:uppercase;
+  font-style:normal;
+  font-weight:300;
+}
+
+.cp-course-details-close {
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  background-color:none;
+  height:40px;
+  cursor: pointer;
+}
+
+.cp-course-details-toolbar {
+  padding:0 10px;
+}
+
+.cp-course-description-text {
+  font-size:14px; 
+  padding:0 10px;
+  min-height:30px;
+}

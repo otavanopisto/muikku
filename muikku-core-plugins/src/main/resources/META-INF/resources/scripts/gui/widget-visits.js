@@ -1,8 +1,6 @@
 $(document).ready(function() {
 
-  mApi({
-    async : false
-  }).workspace.workspaces.read({
+  mApi().workspace.workspaces.read({
     minVisits : 1,
     orderBy : "lastVisit"
   }).on('$', function(workspace, workspaceCallback) {
@@ -83,8 +81,8 @@ $(document).ready(function() {
         older : older
 
       }, function(text) {
-        $('#widgetVisits').append($.parseHTML(text));
-        $('#widgetVisits').perfectScrollbar({
+        $('#visits').append($.parseHTML(text));
+        $('#visits').perfectScrollbar({
           "suppressScrollX" : true
         });
       });

@@ -1,0 +1,55 @@
+/* Navigation Icon Shadow */
+@mixin iconShadow($col:rgba(47,100,129,0.7)) {
+ text-shadow: 0 0 15px $col; 
+}
+
+/* Generic Text Shadow for Buttons */
+@mixin buttonFontShadow() {
+  text-shadow: 0 0 1px rgba(0,0,0,0.5);
+}
+
+/* Generic Box shadow for Buttons */
+@mixin buttonShadow() {
+  box-shadow: 0 0 5px rgba(0,0,0,0.2); 
+}
+
+/* Generic Gradient Used in Buttons */
+@mixin gradient-top-bottom($bgColorStart:$gradient-start, $bgColorEnd:$gradient-end,$bgr:$gradient-start) {
+  background: $bgr; 
+  background: -moz-linear-gradient(top, $bgColorStart 0%,  $bgColorEnd 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$bgColorStart), color-stop(100%,$bgColorEnd));
+  background: -webkit-linear-gradient(top, $bgColorStart 0%,$bgColorEnd 100%);
+  background: -o-linear-gradient(top, $bgColorStart 0%,$bgColorEnd 100%);
+  background: -ms-linear-gradient(top, $bgColorStart 0%,$bgColorEnd 100%);
+  background: linear-gradient(to bottom, $bgColorStart 0%,$bgColorEnd 100%);
+}
+
+/* Form element - HOVER */
+@mixin elementHover($rgba) {
+  box-shadow: 0 0 0 3px $rgba; 
+  border-color:#fff;
+}
+
+/* Form element - FOCUS */
+@mixin elementFocus($rgba) {
+  box-shadow: 0 0 0 3px $rgba; 
+  border-color:#fff;
+}
+
+@mixin fadeRight(){
+  background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 99%, rgba(255,255,255,1) 100%);
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(99%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,1))); 
+  background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%); 
+  background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%); 
+  background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%); 
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%);
+}
+
+@mixin no-select {
+-webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}

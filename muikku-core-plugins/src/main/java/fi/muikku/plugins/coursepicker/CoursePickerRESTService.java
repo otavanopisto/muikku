@@ -42,11 +42,13 @@ import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.rest.RESTPermitUnimplemented;
+import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
+import fi.muikku.schooldata.entity.EducationType;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
@@ -109,6 +111,9 @@ public class CoursePickerRESTService extends PluginRESTService {
 
   @Inject
   private UserEmailEntityController userEmailEntityController;
+
+  @Inject
+  private CourseMetaController courseMetaController;
   
   @Inject
   @Any
@@ -182,36 +187,50 @@ public class CoursePickerRESTService extends PluginRESTService {
       
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults, sorts);
       
-      List<Map<String, Object>> results = searchResult.getResults();
-      for (Map<String, Object> result : results) {
-        String searchId = (String) result.get("id");
-        if (StringUtils.isNotBlank(searchId)) {
-          String[] id = searchId.split("/", 2);
-          if (id.length == 2) {
-            String dataSource = id[1];
-            String identifier = id[0];
-
-            SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
-            
-            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
-            if (workspaceEntity != null) {
-              String name = (String) result.get("name");
-              String nameExtension = (String) result.get("nameExtension");
-              String description = (String) result.get("description");
-              boolean canSignup = getCanSignup(workspaceEntity);
-              boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
-              Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
-
-              if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, canSignup, canCopyWorkspace, isCourseMember));
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        List<Map<String, Object>> results = searchResult.getResults();
+        for (Map<String, Object> result : results) {
+          String searchId = (String) result.get("id");
+          if (StringUtils.isNotBlank(searchId)) {
+            String[] id = searchId.split("/", 2);
+            if (id.length == 2) {
+              String dataSource = id[1];
+              String identifier = id[0];
+  
+              SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+              
+              WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
+              if (workspaceEntity != null) {
+                String name = (String) result.get("name");
+                String nameExtension = (String) result.get("nameExtension");
+                String description = (String) result.get("description");
+                boolean canSignup = getCanSignup(workspaceEntity);
+                boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
+                Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
+                String educationTypeIdentifier = (String) result.get("educationTypeIdentifier");
+                String educationTypeName = null;
+                
+                if (StringUtils.isNotBlank(educationTypeIdentifier)) {
+                  EducationType educationType = courseMetaController.findEducationType(dataSource, educationTypeIdentifier);
+                  if (educationType != null) {
+                    educationTypeName = educationType.getName();
+                  }
+                }
+  
+                if (StringUtils.isNotBlank(name)) {
+                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, canSignup, canCopyWorkspace, isCourseMember));
+                } else {
+                  logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
+                }
               } else {
-                logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
+                logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
               }
-            } else {
-              logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
             }
           }
         }
+      } finally {
+        schoolDataBridgeSessionController.endSystemSession();
       }
     } else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -270,8 +289,16 @@ public class CoursePickerRESTService extends PluginRESTService {
     boolean canSignup = getCanSignup(workspaceEntity);
     boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
     Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
-
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), canSignup, canCopyWorkspace, isCourseMember)).build();
+    String educationTypeName = null;
+    
+    if (StringUtils.isNotBlank(workspace.getWorkspaceTypeId())) {
+      EducationType educationType = courseMetaController.findEducationType(workspace.getSchoolDataSource(), workspace.getWorkspaceTypeId());
+      if (educationType != null) {
+        educationTypeName = educationType.getName();
+      }
+    }
+    
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, canSignup, canCopyWorkspace, isCourseMember)).build();
   }
   
   @POST
@@ -418,7 +445,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
   }
   
-  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, boolean canSignup, Boolean canCopyWorkspace, boolean isCourseMember) {
+  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, boolean canSignup, Boolean canCopyWorkspace, boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     return new CoursePickerWorkspace(
@@ -431,6 +458,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         description, 
         numVisits, 
         lastVisit, 
+        educationTypeName,
         canSignup, 
         canCopyWorkspace,
         isCourseMember);

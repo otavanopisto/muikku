@@ -49,9 +49,8 @@ public class GuiderTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     Workspace workspace2 = createWorkspace("diffentcourse", "Second test course", "2", Boolean.TRUE);
-    CourseStaffMember courseStaffMember = new CourseStaffMember(2l, workspace.getId(), admin.getId(), 8l);
     MockCourseStudent mcs = new MockCourseStudent(1l, workspace.getId(), student.getId());
-    mockBuilder.addCourseStudent(workspace.getId(), mcs).addCourseStaffMember(workspace.getId(), courseStaffMember).build();
+    mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
     try {
       navigate("/guider", true);
       waitAndClick(String.format("#workspace-%d>a", workspace.getId()));

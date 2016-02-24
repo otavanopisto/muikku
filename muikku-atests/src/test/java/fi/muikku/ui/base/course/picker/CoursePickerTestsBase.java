@@ -27,7 +27,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
     PyramusMocks.personsPyramusMocks();
     try {
       getWebDriver().get(getAppUrl(true) + "/coursepicker");
-      waitForElementToBePresent(By.className("bt-mainFunction-content"));
+      waitForElementToBePresent(By.id("coursesList"));
       boolean elementExists = getWebDriver().findElements(By.id("coursesList")).size() > 0;
       WireMock.reset();
       assertTrue(elementExists);

@@ -165,8 +165,11 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
       UnexpectedSchoolDataBridgeException {
     Long educationTypeId = pyramusIdentifierMapper.getPyramusEducationTypeId(identifier);
     fi.pyramus.rest.model.EducationType restEducationType = pyramusClient.get("/common/educationTypes/" + educationTypeId, fi.pyramus.rest.model.EducationType.class);
+    if (restEducationType != null) {
+      return new PyramusEducationType(identifier, restEducationType.getName());
+    }
     
-    return new PyramusEducationType(identifier, restEducationType.getName());
+    return null;
   }
   
   @Override
