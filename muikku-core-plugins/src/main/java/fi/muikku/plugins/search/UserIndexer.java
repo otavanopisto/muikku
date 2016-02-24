@@ -115,22 +115,10 @@ public class UserIndexer {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
-      SchoolDataIdentifier defaultIdentifier = null;
-      
-      if (StringUtils.isNotBlank(userEntity.getDefaultIdentifier()) && (userEntity.getDefaultSchoolDataSource() != null)) {
-        defaultIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
-      }
-      
       for (UserSchoolDataIdentifier schoolDataIdentifier : identifiers) {
         SchoolDataIdentifier identifier = new SchoolDataIdentifier(schoolDataIdentifier.getIdentifier(), schoolDataIdentifier.getDataSource().getIdentifier());
-        
-        if (identifier.equals(defaultIdentifier)) {
-          indexUser(identifier);
-        } else {
-          removeUser(identifier);
-        }
+        indexUser(identifier);
       }
-      
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }

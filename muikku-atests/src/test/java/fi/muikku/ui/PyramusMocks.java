@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.muikku.AbstractPyramusMocks;
 import fi.muikku.TestUtilities;
+import fi.muikku.mock.model.MockCourseStudent;
 import fi.pyramus.rest.model.CourseAssessment;
 import fi.pyramus.rest.model.Grade;
 import fi.pyramus.rest.model.GradingScale;
@@ -888,14 +889,16 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
   }
   
-  public static void mockAssessedStudent1Workspace1() throws JsonProcessingException {
+  public static void mockAssessedStudent1Workspace1(MockCourseStudent courseStudent, Long assessorId) throws JsonProcessingException {
+    // TODO: Move to new mocker.
+    
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    CourseStudent courseStudent = new CourseStudent(3l, 1l, 1l, new DateTime(2010, 2, 2, 0, 0, 0, 0), false, null, null, null, null, null);
+//    CourseStudent courseStudent = new CourseStudent(3l, 1l, 1l, new DateTime(2010, 2, 2, 0, 0, 0, 0), false, null, null, null, null, null);
     DateTime assessmentCreated = new DateTime(2015, 2, 2, 0, 0, 0, 0);
-    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "Test evaluation.");
+    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, assessorId, assessmentCreated, "Test evaluation.");
     List<CourseAssessment> courseAssessments = new ArrayList<CourseAssessment>();
     courseAssessments.add(courseAssessment);
-    stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", 1, 1)))
+    stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(objectMapper.writeValueAsString(courseAssessments))

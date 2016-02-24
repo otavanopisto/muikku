@@ -8,6 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -36,21 +37,17 @@ public class WebSocketRESTService extends PluginRESTService {
   @Context
   private HttpServletRequest request;
   
-  @GET
+  @POST
   @Path ("/ticket")
   @RESTPermitUnimplemented
-  public Response ticket() {
-    UserEntity user = sessionController.getLoggedUserEntity(); 
-
-    // TODO: synchronization - same client may end up with same ticket
-    
-    Long userId = user != null ? user.getId() : null;
+  public Response createTicket() {
+    UserEntity userEntity = sessionController.getLoggedUserEntity(); 
+    Long userEntityId = userEntity != null ? userEntity.getId() : null;
     Date timestamp = new Date();
-    // TODO: Proxy?
     String ip = request.getRemoteAddr();
     String ticket = UUID.randomUUID().toString();
     
-    webSocketTicketController.createTicket(ticket, userId, ip, timestamp);
+    webSocketTicketController.createTicket(ticket, userEntityId, ip, timestamp);
     
     return Response.ok(new WebSocketTicketRESTModel(ticket)).build();
   }

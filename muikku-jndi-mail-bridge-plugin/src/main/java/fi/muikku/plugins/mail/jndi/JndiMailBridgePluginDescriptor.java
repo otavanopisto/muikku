@@ -1,7 +1,4 @@
-package fi.muikku.plugins.mail.dummy;
-
-import java.util.Arrays;
-import java.util.List;
+package fi.muikku.plugins.mail.jndi;
 
 import fi.muikku.plugin.PluginDescriptor;
 

@@ -11,7 +11,9 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.announcer.model.Announcement;
+import fi.muikku.session.SessionController;
 
 @Named
 @Stateful
@@ -25,13 +27,22 @@ public class AnnouncementsViewBackingBean {
   @Inject
   private AnnouncementController announcementController;
   
+  @Inject
+  private SessionController sessionController;
+  
   @RequestAction
   public String init() {
+    UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     
     if (announcementId != null) {
       currentAnnouncement = announcementController.findById(announcementId);
     }
-    activeAnnouncements = announcementController.listActive();
+    
+    if (loggedUserEntity == null) {
+      activeAnnouncements = announcementController.listActive();
+    } else {
+      activeAnnouncements = announcementController.listActiveByTargetedUserEntity(loggedUserEntity);
+    }
     
     return null;
   }

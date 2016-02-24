@@ -307,8 +307,15 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     Role role = roleController.findRoleByDataSourceAndRoleEntity(user.getSchoolDataSource(), workspaceRole);
     
+    
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
     SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
+
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, userIdentifier);
+    if (workspaceUserEntity != null && Boolean.TRUE.equals(workspaceUserEntity.getArchived())) {
+      workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
+    }
+    
     fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
     if (workspaceUser == null) {
       workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
@@ -360,13 +367,15 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
 
     List<String> teacherEmails = new ArrayList<>(teachers.size());
-    for(UserEntity teacher: teachers){
+    for (UserEntity teacher : teachers){
      String teacherEmail = userEmailEntityController.getUserEmailAddress(teacher, false);
-     if(StringUtils.isNotBlank(teacherEmail)){
-       teacherEmails.add(userEmailEntityController.getUserEmailAddress(teacher, false));
+     if (StringUtils.isNotBlank(teacherEmail)) {
+       teacherEmails.add(teacherEmail);
      }
     }
-    mailer.sendMail(MailType.HTML, teacherEmails, caption, content);
+    if (!teacherEmails.isEmpty()) {
+      mailer.sendMail(MailType.HTML, teacherEmails, caption, content);
+    }
     
     return Response.noContent().build();
   }
