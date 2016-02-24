@@ -120,26 +120,28 @@
   background: rgb(237,142,0);
   @include gradient-top-bottom(rgba(253,167,38,1),rgba(237,142,0,1),#ed8e00);
   
-  span{
-    &:first-child{
+  span {
+  
+    &:first-child {
       display:inline-block;
       padding:12px;
       white-space:nowrap;
+      
       &.bt-mainFunction-dropdown-label{
         width:109px;      
       }  
+      
     }
-    &.bt-mainFunction-dropdown-chevron{
+    
+    &.bt-mainFunction-dropdown-chevron {
       border-left:1px solid #f6c06d;
       display:inline-block;
       float:right;
       padding:4px 4px 3px 4px;
       font-size:2.45em;      
-    
     }
 
   }
-
 
   &.bt-mainFunction-active {
     @include gradient-top-bottom(rgba(237,142,0,1),rgba(253,167,38,1),#ed8e00);

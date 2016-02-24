@@ -29,10 +29,11 @@
         var dDiv = $(this).find($(".cp-course-content-details"));
         var aBt = $(this).find($(".cp-course-attend-button"));
         var par = $(this);
-        var parW = par.width();
         var closeDiv = $('<div class="cp-course-details-close"></div>');
         var workspaceId = $(this).parents('.cp-course').find("input[name='workspaceId']").val();
         var workspaceUrl = $(this).parents('.cp-course').find("input[name='workspaceUrl']").val();
+        
+        $(this).addClass('cp-course-details-open');
      
         dDiv.show(10, function(){        	
         	var odDiv = $(this) ;
@@ -40,7 +41,6 @@
         	var desc = $(par).find($('.cp-course-description-text'));
         	var courseHasFee = $(par).attr('data-fee') ? true : false ;
         	par.prepend(closeDiv);
-        	closeDiv.width(parW);
         	
         	
         	$(aBt).m3modal({
@@ -76,6 +76,7 @@
         		]
         	});
         	closeDiv.on('click', function(){
+        	  $(this).closest('.cp-course-details-open').removeClass('cp-course-details-open');
         		odDiv.hide();
         		$(this).remove();
         	});
@@ -84,11 +85,11 @@
       
       // Dropdown
       
-      $(".bt-mainFunction").click( function() {
+      $(".bt-main-functionality").click( function() {
         var mfb = $(this) ;
-        var mfd = mfb.find(".bt-mainFunction-decoration");
+        var mfd = mfb.find(".bt-main-functionality-decoration");
         
-         mfb.addClass("bt-mainFunction-active");
+         mfb.addClass("bt-main-functionality-active");
          mfd.removeClass("icon-arrow-down");
          mfd.addClass("icon-arrow-up");
          $(".cp-side-button-dropdown").show(10, function(){
@@ -97,7 +98,7 @@
              dd.hide(10, function(){
                mfd.removeClass("icon-arrow-up");               
                mfd.addClass("icon-arrow-down");
-               mfb.removeClass("bt-mainFunction-active");
+               mfb.removeClass("bt-main-functionality-active");
                 $(document).unbind('click');
               });
            });

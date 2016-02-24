@@ -1,9 +1,12 @@
 <h3>{#localize key="plugin.frontPage.workspaces.title"/}</h3>
 
-{#workspaces}
-   <ul class="wi-courses">
+{?workspaces}
+  <ul>
+    {#workspaces}
       {>"frontpage/widget_workspace.dust"/}  
-   </ul>
+    {/workspaces}
+  </ul>
 {:else}
-   <div class="wi-empty"><span>{#localize key="plugin.frontPage.workspaces.noWorkspaces" arg0="/coursepicker"/}</a></span></div>
+  <div class="empty">{#localize key="plugin.frontPage.workspaces.noWorkspaces" arg0="/coursepicker"/}</a></div>
 {/workspaces}
+  

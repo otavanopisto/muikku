@@ -79,27 +79,30 @@ public class DefaultSchoolDataUserGroupListener {
       return;
     }
     
-    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier(), true);
-    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getUserGroupDataSource(), event.getUserGroupIdentifier());
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getUserGroupDataSource(), event.getUserGroupIdentifier(), true);
 
     if (userGroupEntity != null) {
-      if ((userGroupUserEntity == null) || (userGroupUserEntity.getArchived())) {
-        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
-        if (userSchoolDataIdentifier != null) {
-          if (userGroupUserEntity == null) {
-            userGroupUserEntity = userGroupEntityController.createUserGroupUserEntity(userGroupEntity, event.getDataSource(), event.getIdentifier(), userSchoolDataIdentifier);
+      if (!userGroupEntity.getArchived()) {
+        UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier(), true);
+        
+        if ((userGroupUserEntity == null) || (userGroupUserEntity.getArchived())) {
+          UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
+          if (userSchoolDataIdentifier != null) {
+            if (userGroupUserEntity == null) {
+              userGroupUserEntity = userGroupEntityController.createUserGroupUserEntity(userGroupEntity, event.getDataSource(), event.getIdentifier(), userSchoolDataIdentifier);
+            }
+            else {
+              userGroupEntityController.unarchiveUserGroupUserEntity(userGroupUserEntity);
+              userGroupEntityController.updateUserSchoolDataIdentifier(userGroupUserEntity, userSchoolDataIdentifier);
+            }
+            discoveredUserGroupUsers.put(discoverId, userGroupUserEntity.getId());
+            event.setDiscoveredUserGroupUserEntityId(userGroupUserEntity.getId());
+          } else {
+            logger.warning("could not add group user because UserSchoolDataIdentifier for " + event.getUserIdentifier() + "/" + event.getUserDataSource() + " wasn't found");
           }
-          else {
-            userGroupEntityController.unarchiveUserGroupUserEntity(userGroupUserEntity);
-            userGroupEntityController.updateUserSchoolDataIdentifier(userGroupUserEntity, userSchoolDataIdentifier);
-          }
-          discoveredUserGroupUsers.put(discoverId, userGroupUserEntity.getId());
-          event.setDiscoveredUserGroupUserEntityId(userGroupUserEntity.getId());
         } else {
-          logger.warning("could not add group user because UserSchoolDataIdentifier for " + event.getUserIdentifier() + "/" + event.getUserDataSource() + " wasn't found");
+          logger.warning("UserGroupUserEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
         }
-      } else {
-        logger.warning("UserGroupUserEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
       }
     } else {
       logger.warning("could not init user group user because usergroup #" + event.getUserGroupIdentifier() + '/' + event.getUserGroupDataSource() +  " could not be found");

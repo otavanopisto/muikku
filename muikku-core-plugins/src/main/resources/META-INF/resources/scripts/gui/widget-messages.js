@@ -36,8 +36,8 @@ $(document).ready(function(){
              messages : messages
           }, function (text) {
 
-            $('#widgetMessages').empty();
-            $('#widgetMessages').append($.parseHTML(text));
+            $('#messages').empty();
+            $('#messages').append($.parseHTML(text));
             
           });
         }

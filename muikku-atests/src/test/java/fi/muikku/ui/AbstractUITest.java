@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -46,15 +45,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import wiremock.org.apache.commons.lang.StringUtils;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.ObjectMapperConfig;
@@ -66,6 +62,7 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import fi.muikku.AbstractIntegrationTest;
 import fi.muikku.TestUtilities;
 import fi.muikku.atests.Announcement;
+import fi.muikku.atests.CommunicatorMessage;
 import fi.muikku.atests.CommunicatorMessageRESTModel;
 import fi.muikku.atests.CommunicatorNewMessageRESTModel;
 import fi.muikku.atests.Workspace;
@@ -76,6 +73,7 @@ import fi.muikku.atests.WorkspaceFolder;
 import fi.muikku.atests.WorkspaceHtmlMaterial;
 import fi.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.pyramus.webhooks.WebhookStudentCreatePayload;
+import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -104,10 +102,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         }
       }));
   }
-  
+
   @After
-  public void resetWireMock() {
-    WireMock.reset();
+  public void flushCaches() {
+    asAdmin()
+      .baseUri(getAppUrl(true))
+      .get("/system/cache/flush");
   }
   
   @Override
@@ -188,7 +188,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected RemoteWebDriver createChromeDriver() {
     ChromeOptions options = new ChromeOptions();
     options.addArguments("--lang=en_US");
-    options.addArguments("start-maximized");
+    options.addArguments("--start-maximized");
     ChromeDriver chromeDriver = new ChromeDriver(options);
     return chromeDriver;
   }
@@ -235,14 +235,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void testPageElementsByName(String elementName) {
     Boolean elementExists = getWebDriver().findElements(By.name(elementName)).size() > 0;
     assertEquals(true, elementExists);
-  }
-
-  protected void testLogin(String username, String password) throws InterruptedException {
-
-  }
-
-  protected void login(String username, String password) {
-
   }
 
   protected void waitForElementToBeClickable(String selector){
@@ -501,12 +493,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     navigate("/login?authSourceId=1", true);
-    waitForPresent(".index");
+    waitForPresent("main.content");
   }
   
   protected void login() {
     navigate("/login?authSourceId=1", true);
-    waitForPresent(".index");
+    waitForPresent(".logged-user");
   }
   
   protected void loginStudent1() throws JsonProcessingException, Exception {
@@ -536,7 +528,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void logout() {
     navigate("/", true);
     waitAndClick("a.lu-action-signout");
-    waitForPresent(".index");    
+    waitForPresent("main.content");    
   }
   
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
@@ -703,17 +695,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     Set<String> tags = new HashSet<>();
     List<Long> recipientIds = new ArrayList<>();
     recipientIds.add(recipient);
-    CommunicatorNewMessageRESTModel payload = new CommunicatorNewMessageRESTModel(null, null, sender, "test", caption, content, created, tags, recipientIds, new ArrayList<Long>(), new ArrayList<Long>(), new ArrayList<Long>());
+    CommunicatorMessage payload = new CommunicatorMessage(null, null, sender, "test", caption, content, created, tags, recipientIds, new ArrayList<Long>(), new ArrayList<Long>(), new ArrayList<Long>());
 
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
-      .post("/communicator/messages");
+      .post("test/communicator/messages");
     
     response.then()
       .statusCode(200);
       
-    CommunicatorMessageRESTModel result = objectMapper.readValue(response.asString(), CommunicatorMessageRESTModel.class);
+    CommunicatorMessage result = objectMapper.readValue(response.asString(), CommunicatorMessage.class);
     assertNotNull(result);
     assertNotNull(result.getId());
   }

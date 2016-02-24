@@ -1,0 +1,54 @@
+/* Generic */
+
+form * {
+  outline:none; /* Lets remove form field highlights made by Chrome */
+}
+
+input[type="text"],
+input[type="password"],
+textarea {   
+  font-weight:300;
+  border-radius:2px;
+  padding:10px;
+  font-size:18px;     
+  border:1px solid $formBorderColor;
+  color:$formFontColor;
+  background-color:$formBackgroundColor; 
+  width:100%;
+  box-sizing:border-box;
+  
+  &:hover {
+    color:$formFontColorFocus;
+    border:1px solid $formBorderColorFocus;
+    @include elementFocus(rgba(0, 153, 255,0.3));
+  }
+  
+  &:focus { 
+    color:$formFontColorFocus;
+    border:1px solid $formBorderColorFocus;
+    @include elementFocus(rgba(0, 153, 255,0.3));
+  }
+
+}
+
+input[type="checkbox"], 
+input[type="radio"] {
+  margin:0 2px 0 2px;
+  
+  &:hover {
+    @include elementFocus(rgba(0, 153, 255,0.6));
+  }
+  
+}
+
+select {
+ 
+}
+
+label {
+  font-weight:400;
+  font-size:16px;
+  margin:5px 0 0 0;
+  display:block;
+  padding:5px 5px 5px 0;
+}

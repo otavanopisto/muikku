@@ -1,0 +1,473 @@
+@import "_fonts.scss";
+@import "_vars.scss";
+@import "_styles.scss";
+@import "_forms.scss";
+@import "_animations.scss";
+@import "_dialog.scss";
+@import "_buttons.scss";
+@import "_notif-queue.scss";
+@import "_connectionlost.scss";
+
+html {
+  height: 100%;
+  background:none;
+}
+
+body {
+  margin: 0;
+  padding:0 0 50px 0;
+  font-family:'Open Sans', Arial, sans-serif;
+  font-size:14px;
+  font-weight:300;
+  line-height:1.5em;
+  background-image: url('/gfx/main-background.png'), url('/gfx/main-background-slice.png');
+  background-repeat:no-repeat,repeat-x;
+  background-position: top center, top left;
+  color:#2c2c2c;
+}
+
+.ui-widget-overlay {
+  background:#000;
+  opacity:0.5;
+  height:100%;
+  left:0;
+  position:fixed;
+  top:0;
+  width:100%;
+}
+
+/* Navigation Icons tooltip */
+[class^="icon-"] span, [class*=" icon-"] span {
+  display: inline-block;
+  font-family:'Open Sans', Arial, sans-serif !important;
+  padding-left: 4px;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  text-decoration:none;  
+}
+
+/* Header */
+#header {
+  max-width:$siteWidth;
+  margin:0 auto;
+  height:120px;
+  color: #fff;
+  position:relative;  
+}
+
+#headerLogoTextContainer {
+  background-image:url('/gfx/muikku-header-text.png');
+  background-repeat:no-repeat;
+  background-position:left center;
+  position:relative;
+  left:-25px;
+  top:0;
+  height:110px;
+}
+
+#footer {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  opacity:0.9;
+  box-shadow:-5px 0 5px rgba(0, 0, 0, 0.2);
+  
+  .footer-predefined-bg {
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    background:$btBarBgr;
+    opacity:0.95;
+    z-index:1;
+  }
+  
+  .footer-predefined-content {
+    position:relative;
+    z-index:2;
+  }
+  
+}
+
+#helpdesk {
+  font-weight:400;
+  font-size:14px;
+  color:#fff;
+}
+
+#guides {
+  font-weight:400;
+  font-size:14px;
+  color:#fff;
+  
+  a {
+    color:#b3e9ff;
+  }
+  
+}
+
+/* Login */
+.login {
+  position:relative;
+  @include buttonShadow;
+  float:right;
+}
+
+/* Language */
+.language { 
+  float:right;
+  position:relative;
+  margin:0 10px 0 0;
+  background:#2e72a0;
+  height:48px;
+  width:48px;
+  box-sizing:border-box;
+  display:inline-block;
+  border-radius:100%;
+  z-index:15;
+  text-align:center;
+  padding:0;
+  overflow:hidden;
+  box-shadow:0 0 15px rgba(255,255,255,0.5);
+  transition:border-radius 0.1s ease-in-out;
+  
+  &:hover,
+  &:focus,
+  &:active {
+    border-radius:5px;
+    box-shadow:none;
+    background:#fff;
+    overflow:visible;
+    
+    .language-container {
+      position:absolute;
+      background:#fff; 
+      border-radius:none;
+      border-radius:5px;
+      
+      a {
+        color:#569bca;
+        
+        &:first-of-type {
+          border-top-left-radius:5px;
+          border-top-right-radius:5px;
+        }
+        
+        &:last-child {
+          border-bottom-left-radius:5px;
+          border-bottom-right-radius:5px;
+        }
+        
+        &:hover {
+          color:#fff;
+          background:#2e72a0;
+          text-decoration:none;
+        }
+        
+      }
+      
+    }
+
+  }
+
+  a {  
+    text-decoration:none; 
+    padding:12px 10px;  
+    color:#fff;   
+    font-size:22px;
+    font-weight:300;
+    display:block;
+    min-width:28px;
+    min-height:24px
+  }
+    
+}
+
+.logged-user {
+  position:relative;
+  float:right;
+  font-weight:400;
+
+  .lu-user-picture {
+    border:2px solid #fff;
+    height:48px;
+    width:48px; 
+    position:relative;
+    top:0;     
+    box-sizing:border-box; 
+    display:inline-block;
+    border-radius:100%;
+    margin:0 4px 0 0;
+    z-index:15;
+    background-size:100% auto;
+    border:2px solid #fff;
+    background-image:url('/gfx/default-user-picture.jpg');
+    overflow:hidden;
+  }
+  
+  .lu-info-container {
+    border:2px solid #fff;
+    background:#fff;
+    height:48px;
+    display:inline-block;
+    box-sizing:border-box;
+    border-top-left-radius:24px;
+    border-bottom-left-radius:24px;
+  
+    .lu-user-name {
+      @include no-select;
+      color:#3c77a0;
+      text-transform:uppercase;
+      min-width:100px;
+      padding:13px 6px 14px 20px;
+      float:left;
+      height:1.5em;
+      
+      a {
+        color:#3c77a0;
+        text-decoration:none;
+      }
+      
+    }
+    
+    .lu-user-name-button-value {
+      box-sizing:border-box;
+      cursor:pointer;
+      display:inline-block;
+    }
+          
+    .lu-actions {
+      float:left;
+      height:1.5em;
+      padding:13px 6px 10px 6px;
+      
+      a {
+        margin:0 6px;
+      }
+      
+    }
+
+    a[class*="lu-action"] {
+      color:#3C77A0;
+      font-size:21px;
+      text-decoration:none;
+    }
+
+  }
+
+}
+
+/* Navigation */
+#staticNavigationWrapper {
+  height:76px;
+  z-index:12;
+  position:relative;
+  background: -moz-linear-gradient(top, rgba(36,108,162,0.15) 0%, rgba(255,255,255,0) 66%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(36,108,162,0.15)), color-stop(66%,rgba(255,255,255,0)));
+  background: -webkit-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: -o-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: -ms-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: linear-gradient(to bottom, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#26246ca2', endColorstr='#00ffffff',GradientType=0);
+}
+
+.static-navigation-bg {
+  background:$naviBgColor;
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  right:0;
+  opacity:0.8;
+  z-index:13;
+  border-top:1px solid $naviBorderTop;
+  border-bottom:1px solid $naviBorderBottom;
+}
+
+#staticNavigation {
+  max-width:$siteWidth;
+  margin:0 auto;
+  height:56px;
+  z-index:14;
+  padding:10px;
+  position:relative;
+}
+
+/* Navigation Icons */
+div[class*="dock-static-navi"] {
+  position:relative;
+  float:left;
+  margin-right:15px;
+  
+  &.active-trail {
+    border-bottom:3px solid #aae3f2;
+    
+    &:hover {
+      border-bottom:3px solid #aae3f2;
+    }
+    
+  }
+  
+  &:hover {
+    border-bottom:3px solid #66aace;
+  }
+}
+
+div[class*='dock-static-navi-button'] > a,
+div[class*='dock-static-navi-button'] > div, 
+div[class*='dock-dynamic-navi-button'] > a {
+  font-size:40px;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  padding:5px 10px;
+  height:40px;
+  display:inline-block;
+  
+  &:hover {
+    @include iconShadow(rgba(255,255,190,0.8));
+  }
+  
+}
+
+/* Navigation Icons Notifier */
+.dock-notification {
+  background-color: #ff0000;
+  border-radius: 10px;
+  border:1px solid #fff;
+  top: 11px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+  height: 16px;
+  min-width: 10px;
+  padding: 0 3px 0 0;
+  position: absolute;
+  text-align: center;
+  right: 4px;
+}
+
+/* Content where everything goes */
+main.content {
+  margin:20px 0 0 0;
+}
+
+/* After Personalization Box will be redesigned and moved to proper .scss*/
+.box {
+  box-shadow:0 0 15px rgba(216, 230, 235, 0.5);
+  background:#fff;
+  padding:15px;
+  height:100%;
+  box-sizing:border-box;
+  
+  .empty {
+    font-style:italic;
+  }
+  
+}
+
+.box ul {
+  margin:0;
+  padding:0;
+  list-style-type:none;
+}
+
+.box ul li {
+  padding:5px 0;
+}
+
+/* Frontpage Boxes When User Not Logged In */
+#siteInfo {
+  
+}
+
+#siteGuide {
+  
+}
+
+/* Frontpage Boxes When User Logged In  */
+#visits {
+  
+}
+
+#workspaces {
+  margin:1.5em 0 0 0;
+}
+
+#messages {
+  
+  li.unread a {
+    font-weight:400;
+  }
+
+}
+
+#announcements {
+  
+}
+
+/* Headers */
+h1,h2,h3,h4,h5,h6 {
+  color:$header;
+  text-transform:uppercase;
+  margin:0 0 0.5em 0;
+  font-weight:300;
+}
+
+h1 {
+  font-size:29px;
+}
+  
+h2 {
+  font-size:26px;
+}
+
+h3 {
+  font-size:19px;
+}
+
+h4 {
+  font-size:17px;
+}
+
+h5 {
+  font-size:15px;
+  font-weight:400;
+}
+
+h6 {
+  font-size:13px;
+  font-weight:400;
+}
+
+.subtitle {
+  color:$subTitle;
+  font-weight:400;
+}
+
+a {
+  color:$link;
+  text-decoration:none;
+  
+  &:hover {
+    text-decoration:underline;
+  }
+  
+}
+
+/* Subscript & Superscript*/
+sub {
+  vertical-align:sub;
+  font-size:70%;
+}
+
+sup {
+  vertical-align:super;
+  font-size:70%;
+}
+
+@import "_mobile.scss";
+@import "_tablet.scss";
