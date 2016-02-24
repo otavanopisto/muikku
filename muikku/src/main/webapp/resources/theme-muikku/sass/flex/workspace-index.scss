@@ -1,0 +1,249 @@
+@import "_vars.scss";
+@import "_styles.scss";
+@import "_custom-ckeditor-styles.scss";
+
+/* WORKSPACE FRONTPAGE HEADER */
+.workspace-header-wrapper {
+  background:#fff;
+  box-sizing:border-box;
+  max-width:960px;
+  min-height:245px;
+  position:relative;
+  padding:5px 5px 0 5px;
+  
+  .workspace-header-container {
+    max-width:950px;
+    max-height:240px;
+    position:relative;
+    background-image:url("/gfx/workspace-default-header.jpg");
+    background-repeat:no-repeat;
+    background-color:#d1e069;
+    background-size:100%;
+    z-index:10;
+    
+    h1.workspace-title {
+      margin:0;
+      color:#38393a;
+      font-weight:300;
+      text-transform:uppercase;
+      line-height:1.3em;
+      position:absolute;
+      top:60px;
+      left:0;
+      background:#fff;
+      padding:20px;
+      z-index:11;
+      max-width:80%;
+    }
+    
+    .workspace-additional-info-wrapper {
+      position:absolute;
+      left:20px;
+      bottom:20px;
+      background:#31acf6;
+      color:#fff;
+      padding:4px 10px;
+      min-width:50px;
+      z-index:13;
+      font-size:18px;
+      text-transform:uppercase;
+      
+      span {
+        font-weight:300;
+        display:inline-block;
+        margin:0 2px 0 0;
+      }
+      
+    }
+    
+    .workspace-study-level-indicator {
+      position:absolute;
+      top:15px;
+      right:-15px;
+      z-index:12;
+      height:26px;
+      padding:4px 12px 4px 14px;
+      box-shadow:0 0 40px rgba(0,0,0,0.15);
+      transform: skew(-10deg, 0deg) ;
+      -webkit-transform: skew(-10deg, 0deg) ;
+      -moz-transform: skew(-10deg, 0deg) ;
+      -o-transform: skew(-10deg, 0deg) ;
+      -ms-transform: skew(-10deg, 0deg) ;
+      
+      &.indicator1 {
+        border-left:2px solid #fff;
+        color:#fff;
+        background:#4ee23a;
+        min-width:50px;
+      }
+      
+      .workspace-study-level-text {
+        position:relative;
+        transform: skew(0deg, 0deg) ;
+        -webkit-transform: skew(10deg, 0deg) ;
+        -moz-transform: skew(10deg, 0deg) ;
+        -o-transform: skew(10deg, 0deg) ;
+        -ms-transform: skew(10deg, 0deg) ;
+        font-weight:400;
+        text-transform:uppercase;
+        height:26px;
+      }
+      
+    }
+  
+  }
+
+}
+
+.workspace-meta-wrapper {
+  font-size:15px;
+  text-transform:uppercase;
+  position:relative;
+  bottom:0;
+  left:0;
+  z-index:13;
+  padding:5px 25px;
+  background:#fff;
+
+  .workspace-meta-title {
+    color:#727272;
+    display:inline-block;
+    margin:0 2px 0 0;
+  }
+  
+  .workspace-meta-desc {
+    color:#000;
+    display:inline-block;
+    margin:0 10px 0 0;
+  }
+  
+ .workspace-publication-container {
+    position:absolute;
+    top:0px;
+    right:5px;
+    width:200px;
+    font-size:15px;
+    text-transform:uppercase;
+    text-align:right;
+    padding:4px 0px;
+    
+    a {
+      text-decoration:none;
+      font-size:14px;
+      color:#fff !important;
+      border-radius:2px;
+      font-weight:400;
+      padding:2px 6px;
+      
+      &.workspace-publish-button {
+        background:#27b91c;
+      }
+      
+      &.workspace-unpublish-button {
+        background:#ff9703;
+      }
+    
+    }
+
+  }
+  
+}
+
+/* WORKSPACE FOOTER */
+footer#contentFooter {
+  min-height:200px;
+  background:#fff;
+  box-sizing:border-box;
+  max-width:960px;
+  position:relative;
+  padding:20px;
+  border-top:10px solid #eee;
+  font-size:14px;
+  
+  .workspace-footer-teacher-wrapper {
+    clear:both;
+    margin:0 0 20px 0;
+  
+    .workspace-footer-teacher-image {
+      float:left;
+      width:80px;
+      height:95px;
+      overflow:hidden;
+      margin:0 20px 0 0;
+      @include background-image('gfx/workspace-default-teacher.jpg');
+      background-repeat:no-repeat;
+    }
+    
+    .workspace-footer-teacher-name {
+      float:left;
+      
+      span.workspace-footer-teacher-name-label {
+        text-transform:uppercase;
+        color:#727272;
+        display:inline-block;
+        margin:0 5px 0 0;
+      }
+      
+      span.workspace-footer-teacher-name-data {
+        text-transform:uppercase;
+        color:#000;
+        display:inline-block;
+      }
+    }
+  
+  }
+  
+  .workspace-footer-licence-wrapper {
+    min-height:40px;
+    background:#98c807;
+    margin:0 -20px 20px -20px;
+    clear:both;
+    padding:20px;
+    
+    .workspace-footer-licence-icon-wrapper {
+      float:left;
+    }
+    
+    .workspace-footer-licence-text-wrapper {
+      float:left;
+      color:#e6ffe9;
+      font-size:16px;
+      line-height:1.5em;
+      min-height:20px;
+      font-weight:400;
+      
+      a.workspace-footer-licence-link#workspaceFooterLicenceLink {
+        font-weight:600;
+        color:#fff;
+        text-decoration:none;
+        
+        &:hover {
+          text-decoration:underline;
+        }
+        
+      }
+    }
+  }
+  
+  .workspace-footer-producers-wrapper {
+    margin:20px 0 0 0;
+  
+    .workspace-footer-producers-name {
+      
+      span.workspace-footer-producers-name-label {
+        text-transform:uppercase;
+        color:#727272;
+        display:inline-block;
+        margin:0 5px 0 0;
+      }
+      
+      span.workspace-footer-producers-name-data {
+        text-transform:uppercase;
+        color:#000;
+        display:inline-block;
+      }
+    }
+  
+  }
+
+}

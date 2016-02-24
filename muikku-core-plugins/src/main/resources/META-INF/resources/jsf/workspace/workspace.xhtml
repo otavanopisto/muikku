@@ -1,31 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" 
-  xmlns:c="http://java.sun.com/jsp/jstl/core" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core" 
-  xmlns:h="http://java.sun.com/jsf/html" 
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
-  template="/jsf/workspace/templates/workspace-view.xhtml">
+  template="/WEB-INF/templates/flex-main-workspace.xhtml">
   
-  <f:metadata>
-      <f:viewAction action="#{workspaceIndexBackingBean.visit}" />
-  </f:metadata>
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/workspace.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/muikku-material-loader.js"/> 
+    <script defer="defer" jsf:name="/scripts/gui/workspace-frontpage.js"/>
+    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.js"></script>
+  </ui:define>
+  
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main-workspace.css"/> 
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-index.css"/>  
+    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.css"/> 
+  </ui:define>
 
-	<!-- Workspace title -->
-	<ui:define name="workspace.content.top.static">
-    <header class="workspace-header-wrapper">
-      <div class="workspace-image"></div>
-  		<h1 class="workspace-title">#{workspaceIndexBackingBean.workspaceName}</h1>
-      <div class="workspace-study-level-indicator indicator1">
-        <div class="workspace-study-level-text">#{workspaceIndexBackingBean.educationType}</div>
+  <ui:define name="grid-content">
+    <header class="flex-row workspace-header-wrapper">
+      <div class="workspace-header-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+        <h1 class="workspace-title">#{workspaceIndexBackingBean.workspaceName}</h1>
+        <div class="workspace-study-level-indicator indicator1">
+          <div class="workspace-study-level-text">#{workspaceIndexBackingBean.educationType}</div>
+        </div>
+        <ui:fragment rendered="#{workspaceIndexBackingBean.workspaceNameExtension ne null}">
+          <div class="workspace-additional-info-wrapper"><span>#{workspaceIndexBackingBean.workspaceNameExtension}</span></div>
+        </ui:fragment>
       </div>
-      <ui:fragment rendered="#{workspaceIndexBackingBean.workspaceNameExtension ne null}">
-        <div class="workspace-additional-info-wrapper"><span>#{workspaceIndexBackingBean.workspaceNameExtension}</span></div>
-      </ui:fragment>
-  		<div class="workspace-meta-wrapper">
+    </header>
+    
+    <section class="flex-row">
+      <div class="workspace-meta-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
         <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseLengthLabel']}</span>
         <span class="workspace-meta-desc">
           <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseLength']}">
@@ -33,7 +46,7 @@
             <f:param value="#{workspaceIndexBackingBean.courseLengthSymbol}"/>
           </h:outputFormat>
         </span> 
-  			<span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseSubjectLabel']}</span>
+        <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseSubjectLabel']}</span>
         <span class="workspace-meta-desc">#{workspaceIndexBackingBean.subject}</span> 
   
         <ui:fragment rendered="#{workspaceIndexBackingBean.workspaceType ne null}">
@@ -50,28 +63,14 @@
             </h:outputFormat>
           </span> 
         </ui:fragment>
-  		</div>
-      
-      <div class="workspace-publication-container" jsf:rendered="#{workspaceIndexBackingBean.canPublish}" data-published="#{workspaceIndexBackingBean.published}">
-        <a class="workspace-publish-button" style="display:none;" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.publish']}</a>
-        <a class="workspace-unpublish-button" style="display:none;" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.unpublish']}</a>
+        <div class="workspace-publication-container" jsf:rendered="#{workspaceIndexBackingBean.canPublish}" data-published="#{workspaceIndexBackingBean.published}">
+          <a class="workspace-publish-button" style="display:none;" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.publish']}</a>
+          <a class="workspace-unpublish-button" style="display:none;" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.unpublish']}</a>
+        </div>
       </div>
-      
-    </header>
-	</ui:define>
+    </section>
 
-  <ui:define name="workspace.content">
-    <!-- TODO: After when MVP is ready, we use basic document as front page 
-    <m:widgetSpaceSet parentStyleClass="workspace-content-widgetspaceset">
-      <m:widgetSpace name="workspaces.content.widgetspace" keepEmpty="false" sizing="SUM" styleClass="nomargin noLid">
-        <m:widget name="workspace-welcome-to" size="24"/>
-        <m:widget name="workspace-essential-contents" size="24"/>
-        <m:widget name="workspace-essential-goals" size="24"/>
-      </m:widgetSpace>
-      <div class="clear"></div>
-    </m:widgetSpaceSet>
-    -->
-    
+    <section class="flex-row">
       <ui:repeat value="#{workspaceIndexBackingBean.contentNodes}" var="contentNode">
         <article id="page-#{contentNode.workspaceMaterialId}"
           data-workspace-material-id="#{contentNode.workspaceMaterialId}"
@@ -79,37 +78,11 @@
           data-material-type="#{contentNode.type}"
           data-path="#{contentNode.path}"
           data-material-content="#{contentNode.html}"
-          class="workspace-materials-view-page material-view" />
+          class="workspace-materials-view-page material-view lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"/>
       </ui:repeat>
-
-    <input class="workspaceEntityId" type="hidden" value="#{workspaceIndexBackingBean.workspaceEntityId}" />
-    <input class="materialsBaseUrl" type="hidden" value="#{workspaceIndexBackingBean.materialsBaseUrl}" />
-  </ui:define>
-  
-  <ui:define name="workspace.content.bottom.static">
-    <!-- TODO: After when MVP is ready, we don't use footer at all
-    <footer class="workspace-footer-wrapper">
-      <div class="workspace-footer-teacher-wrapper">
-        <div class="workspace-footer-teacher-image"></div>
-        <div class="workspace-footer-teacher-name">
-          <span class="workspace-footer-teacher-name-label">#{i18n.text['plugin.workspace.index.teacherNameLabel']}</span>
-          <span class="workspace-footer-teacher-name-data">Esimerkki Opettaja</span>
-        </div>
-        <div class="clear"></div>
-      </div>
-      <div class="workspace-footer-licence-wrapper">
-        <div class="workspace-footer-licence-icon-wrapper"></div>
-        <div class="workspace-footer-licence-text-wrapper">Tämä oppimateriaali on lisensoitu <a href="#" class="workspace-footer-licence-link" id="workspaceFooterLicenceLink">Creative Commons Nimeä - Tarttuva 4.0 Kansainvälinen</a> -lisenssillä. Mahdollisesti lisenssin ulkopuolelle jäävät oppimateriaalin osat on merkitty erikseen.</div>
-        <div class="clear"></div>
-      </div>
-      <div class="workspace-footer-producers-wrapper">
-        <div class="workspace-footer-producers-name">
-          <span class="workspace-footer-producers-name-label">#{i18n.text['plugin.workspace.index.producersNameLabel']}</span>
-          <span class="workspace-footer-producers-name-data">Esimerkki tuottaja, Todellinen tuottaja, Kokeellinen tuottaja, Proatiivinen tuottaja, Pragmaattinen mies</span>
-        </div>
-      </div>
-    </footer>
-    -->
+      <input class="workspaceEntityId" type="hidden" value="#{workspaceIndexBackingBean.workspaceEntityId}" />
+      <input class="materialsBaseUrl" type="hidden" value="#{workspaceIndexBackingBean.materialsBaseUrl}" />
+    </section>
   </ui:define>
 
 </ui:composition>

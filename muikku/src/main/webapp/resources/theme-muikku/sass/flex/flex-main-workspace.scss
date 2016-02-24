@@ -1,0 +1,565 @@
+@import "_fonts.scss";
+@import "_vars.scss";
+@import "_styles.scss";
+@import "_forms.scss";
+@import "_animations.scss";
+@import "_dialog.scss";
+@import "_buttons.scss";
+@import "_notif-queue.scss";
+@import "_connectionlost.scss";
+
+html {
+  height: 100%;
+  background:none;
+}
+
+body {
+  background-image:url("/gfx/light-diagonal-strips.png");
+  background-repeat:repeat;
+  background-color:#f0f3f5;
+  height:100vh;
+  font-size:16px;
+  font-weight:300;
+  padding:0 0 30px 0;
+  margin: 0;
+  font-family:'Open Sans', Arial, sans-serif;
+  line-height:1.5em;
+  color:#2c2c2c;
+}
+
+.ui-widget-overlay {
+  background:#000;
+  opacity:0.5;
+  height:100%;
+  left:0;
+  position:fixed;
+  top:0;
+  width:100%;
+}
+
+/* Navigation Icons tooltip */
+[class^="icon-"] span, [class*=" icon-"] span {
+  display: inline-block;
+  font-family:'Open Sans', Arial, sans-serif !important;
+  padding-left: 4px;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  text-decoration:none;  
+}
+
+.lu-picture {
+  @incude border(2px,#fff,solid);
+  box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
+  height:48px;
+  width:48px;      
+  box-sizing:border-box; 
+  display:inline-block;
+  border-radius:100%;
+  margin:0 10px 0 0;
+  z-index:15;
+  background-size:100% auto;
+  border:2px solid #fff;
+  overflow:hidden;
+  float:right;
+  
+  &:hover {
+    box-shadow:0 0 15px rgba(255, 255, 255, 0.9);
+  }
+  
+  a {
+    height:44px;
+    width:44px;      
+    box-sizing:border-box;
+    display:block;
+    
+    img {
+      width:44px;
+      height:44px;
+      border:0;
+    }
+    
+  }
+
+}
+  
+#footer {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  opacity:0.9;
+  box-shadow:-5px 0 5px rgba(0, 0, 0, 0.2);
+  
+  .footer-predefined-bg {
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    background:$btBarBgr;
+    opacity:0.95;
+    z-index:1;
+  }
+  
+  .footer-predefined-content {
+    position:relative;
+    z-index:2;
+  }
+  
+}
+
+#helpdesk {
+  font-weight:400;
+  font-size:14px;
+  color:#fff;
+}
+
+#guides {
+  font-weight:400;
+  font-size:14px;
+  color:#fff;
+  
+  a {
+    color:#b3e9ff;
+  }
+  
+}
+
+/* Navigation */
+#staticNavigationWrapper {
+  height:70px;
+  position:fixed;
+  left:0;
+  top:0;
+  right:0;
+  box-shadow:0 3px 10px rgba(0, 0, 0, 0.1);
+  z-index:99;
+}
+
+#staticNavigation {
+  max-width:$siteWidth;
+  margin:0 auto;
+  height:50px;
+  z-index:14;
+  padding:10px;
+  position:relative;
+}
+
+.static-navigation-bg {
+  background:#32acf6 url("/gfx/workspace-navigation-background.png");
+  background-position:30% top;
+  opacity:1;
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  right:0;
+  z-index:13;
+  border-bottom:1px solid $naviWorkspaceBorderBottom;
+}
+
+/* Navigation Icons */
+div[class*="dock-static-navi"] {
+  position:relative;
+  float:left;
+  margin-right:15px;
+  
+  &.active-trail {
+    border-bottom:3px solid #aae3f2;
+    
+    &:hover {
+      border-bottom:3px solid #aae3f2;
+    }
+    
+  }
+  
+  &:hover {
+    border-bottom:3px solid #66aace;
+  }
+}
+
+div[class*='dock-static-navi-button'] > a,
+div[class*='dock-static-navi-button'] > div, 
+div[class*='dock-dynamic-navi-button'] > a {
+  font-size:40px;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  padding:5px 10px;
+  height:40px;
+  display:inline-block;
+  
+  &:hover {
+    @include iconShadow(rgba(255,255,190,0.8));
+  }
+  
+}
+
+/* Navigation Icons Notifier */
+.dock-notification {
+  background-color: #ff0000;
+  border-radius: 10px;
+  border:1px solid #fff;
+  top: 11px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+  height: 16px;
+  min-width: 10px;
+  padding: 0 3px 0 0;
+  position: absolute;
+  text-align: center;
+  right: 4px;
+}
+
+/* Content where everything goes */
+main.content {
+  margin:90px 0 0 0;
+}
+
+/* Headers */
+h1,h2,h3,h4,h5,h6 {
+  color:$header;
+  text-transform:uppercase;
+  margin:0 0 0.5em 0;
+  font-weight:300;
+}
+
+h1 {
+  font-size:29px;
+}
+  
+h2 {
+  font-size:26px;
+}
+
+h3 {
+  font-size:19px;
+}
+
+h4 {
+  font-size:17px;
+}
+
+h5 {
+  font-size:15px;
+  font-weight:400;
+}
+
+h6 {
+  font-size:13px;
+  font-weight:400;
+}
+
+.subtitle {
+  color:$subTitle;
+  font-weight:400;
+}
+
+a {
+  color:$link;
+  text-decoration:none;
+  
+  &:hover {
+    text-decoration:underline;
+  }
+  
+}
+
+/* Subscript & Superscript*/
+sub {
+  vertical-align:sub;
+  font-size:70%;
+}
+
+sup {
+  vertical-align:super;
+  font-size:70%;
+}
+
+/* WORKSPACE NAVIGATION CONTAINERS */
+#workspaceNavigationWrapper { 
+  position:fixed;
+  top:90px;
+  z-index:21;
+} 
+ 
+#workspaceDockWrapper,
+#workspaceMaterialsDockWrapper,
+#workspaceEditDockWrapper {
+  border-radius:3px;
+  width:60px;
+  margin-bottom:10px; 
+}
+
+#workspaceDockWrapper {
+  background:#67d9bf;
+}
+  
+#workspaceMaterialsDockWrapper {
+  background:#288fcd;
+}
+  
+#workspaceEditDockWrapper {
+/*   background:#288fcd; */
+  background:#000;
+}
+  
+#workspaceDock,
+#workspaceMaterialsDock,
+#workspaceEditDock,
+#workspaceEvaluationDockWrapper {
+  text-align:center;
+}
+
+
+/* WORKSPACE EVALUATION REQUEST BUTTONS */  
+.workspace-dock-navi-button-evaluation { /* Button's master rules */
+  width:60px;
+  margin-bottom:10px;
+  border-radius:3px;
+  
+  a {
+    text-shadow:none;
+    transition: background 0.2s ease-in-out;
+  }
+  
+  &[data-state='unassessed'] { /* Default state */
+    background:#55bbff;
+
+    a:hover {
+      background:#28a1f2;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        background:#28a1f2;
+      }
+      
+    }
+    
+  }
+  
+  &[data-state='pending'] { /* Evaluation Request Pending */
+    background:#0099ff; 
+    transition: background 0.2s ease-in-out;
+
+    a:hover {
+      background:#0075c3;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        background:#0075c3;
+      }
+      
+    }
+    
+    &:hover {
+      background:#f6a930;
+      
+      a {
+        background:#e5961b;
+        
+        &:before {
+          content: "\e9f3"; /* Override Pending icon with Cancellation icon */
+        }
+        
+        &:hover {
+          background:#e5961b;
+        
+          span[class*='workspace-navi-tt-container-'] {
+            background:#e5961b;
+          }
+        
+        }
+
+      }
+
+    }
+    
+  }
+  
+  &[data-state='cancel'] { /* Evaluation Request Cancelled */
+    background:#f6a930; /* Same as Default at this point */
+    
+    a:hover {
+      background:#e5961b;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        background:#e5961b;
+      }
+      
+    }
+    
+  }
+  
+  &[data-state='canceled'] { /* Evaluation Request Cancelled */
+    background:#55bbff; /* Same as Default at this point */
+    
+    a:hover {
+      background:#509ccf;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        background:#509ccf;
+      }
+      
+    }
+    
+  }
+  
+  &[data-state='pass'] { /* Evaluation of Workspace - Pass */
+    background:#1ec30c;
+    
+    a:hover {
+      background:#16a506;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        background:#16a506;
+      }
+      
+    }
+    
+  }
+  
+  &[data-state='fail'] { /* Evaluation of Workspace - Fail */
+    background:#ea7401;
+    
+    a:hover {
+      background:#d66b03;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        background:#d66b03;
+      }
+      
+    }
+  }
+  
+}
+
+/* WORKSPACE NAVIGATION BUTTONS */
+div[class*='workspace-dock-navi-button'] > a,
+div[class*='workspace-dock-navi-button'] > span {
+  cursor:pointer;
+  font-size:32px;
+  color:#fff;
+  text-decoration:none;
+  background:transparent;
+  padding:6px;
+  margin:4px;
+  display:inline-block;
+  position:relative;
+  width:34px;
+  border-radius:3px;
+  
+  span[class*='workspace-navi-tt-container-'] {
+    opacity:0;
+    font-family:'Open Sans', Arial, sans-serif;
+    font-size:16px;
+    height:16px;
+    font-weight:300;
+    position:absolute;
+    top:0px;
+    left:-4500px;
+    width:0px;
+    color:#fff;
+    text-transform:uppercase;
+    padding:13px 15px 15px 14px;
+    border-top-right-radius:3px;
+    border-bottom-right-radius:3px;
+    @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+    z-index:99;
+    white-space:nowrap;
+  }
+  
+  &:hover {
+    background:#25c29e;
+    
+    span[class*='workspace-navi-tt-container-'] {
+      display:block;
+      background:#25c29e;
+      opacity:1;
+      width:auto;
+      left:45px;
+    }
+    
+  }
+  
+}
+
+/* WORKSPACE EDITING BUTTONS */
+div.workspace-dock-navi-button-workspace-management {
+  
+  .navmore-container {
+    display:none;
+    position:absolute;
+    background:#4c6669;
+    z-index:99;
+    left:-7px;
+    top:-4px;
+    padding:10px;
+    text-align:left;
+    border-radius:3px;
+  }
+  
+}
+
+div.workspace-dock-navi-button-workspace-management > div.icon-cogs {
+  cursor:pointer;
+  font-size:32px;
+  color:#fff;
+  text-decoration:none;
+  background:transparent;
+  padding:6px;
+  margin:4px;
+  display:inline-block;
+  position:relative;
+  width:34px;
+  border-radius:3px;
+  
+  &:hover {
+    background:#4c6669;
+
+    .navmore-container {
+      display:block;
+      
+      .workspace-management-item {
+        font-size:16px;
+      }
+      
+      a {
+        color:#fff;
+        font-size:16px;
+        text-transform:uppercase;
+        white-space:nowrap;
+        font-weight:300;
+        display:block;
+        padding:10px;
+        border-radius:3px;
+        text-decoration:none;
+        
+        &:hover {
+          background:#547d82;
+        }
+        
+      }
+      
+    }
+    
+  }
+  
+}
+
+div[class*='workspace-dock-navi-button-edit-'] > a {
+  cursor:pointer;
+  font-size:18px;
+  color:#fff;
+  text-decoration:none;
+  background:transparent;
+  padding:6px;
+  margin:4px;
+  display:inline-block;
+  position:relative;
+  width:34px;
+  border-radius:3px;
+}
+
+@import "_mobile.scss";
+@import "_tablet.scss";

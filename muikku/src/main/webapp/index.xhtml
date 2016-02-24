@@ -8,10 +8,10 @@
   
   <ui:define name="scripts">
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
-    <script defer="defer" jsf:name="scripts/gui/locales.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
-    <script defer="defer" jsf:name="scripts/gui/dustloader.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/js/min/perfect-scrollbar.jquery.min.js"/>
     
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
@@ -19,10 +19,10 @@
     </ui:fragment>
     
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <script defer="defer" jsf:name="scripts/gui/widget-visits.js"/>
-      <script defer="defer" jsf:name="scripts/gui/widget-courselist.js"/>
-      <script defer="defer" jsf:name="scripts/gui/widget-messages.js"/>
-      <script defer="defer" jsf:name="scripts/gui/widget-announcements.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/widget-visits.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/widget-courselist.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/widget-messages.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/widget-announcements.js"/>
     </ui:fragment>
     
   </ui:define>

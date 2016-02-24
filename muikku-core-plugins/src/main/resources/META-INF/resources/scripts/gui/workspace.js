@@ -1,7 +1,7 @@
 (function() {
   'use strict';
   
-  $(document).on('click', '.wi-dock-static-navi-button-evaluation > a.icon-evaluate', function(event){
+  $(document).on('click', '.dock-static-navi-button-evaluation > a.icon-evaluate', function(event){
     event.preventDefault();
     var workspaceEntityId = $('.workspaceEntityId').length > 0 ? $('.workspaceEntityId').val() : $('input[name="workspaceEntityId"]').val();
     var evaluationUrl = $(this).attr('href')+'?workspaceEntityId='+workspaceEntityId;
@@ -73,10 +73,7 @@
   };
 
   $(document).ready(function() {
-    $('#staticNavigationWrapperWorkspace').waypoint('sticky', {
-      stuckClass : 'stuckStNav'
-    });
-  
+
     // Workspace navigation
     if ($('#workspaceNavigationWrapper').length > 0) {
       refreshNavigationWrapperPosition();
@@ -85,13 +82,13 @@
       });
     }
     
-    if ($('.wi-workspace-dock-navi-button-cancel-evaluation'.length > 0)) {
-      $('.wi-workspace-dock-navi-button-cancel-evaluation').hide();
+    if ($('.workspace-dock-navi-button-cancel-evaluation'.length > 0)) {
+      $('.workspace-dock-navi-button-cancel-evaluation').hide();
     }
    
   });
 
-  $(document).on('click', '.wi-workspace-dock-navi-button-evaluation', function (event) {
+  $(document).on('click', '.workspace-dock-navi-button-evaluation', function (event) {
     
     if ($(this).attr('data-state') == 'unassessed') {
       confirmEvaluationRequest(); 
@@ -148,7 +145,7 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     
-                    var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+                    var evalButton = $('.workspace-dock-navi-button-evaluation');
 
                     evalButton
                       .children('.icon-assessment-' + evalButton.attr('data-state'))
@@ -206,7 +203,7 @@
                       $('.notification-queue').notificationQueue('notification', 'error', err);
                     } else {
                       
-                      var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+                      var evalButton = $('.workspace-dock-navi-button-evaluation');
 
                       evalButton
                         .children('.icon-assessment-' + evalButton.attr('data-state'))
@@ -233,7 +230,7 @@
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {         
-            var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+            var evalButton = $('.workspace-dock-navi-button-evaluation');
 
             evalButton.attr('data-state', 'pending');
             evalButton.children('.icon-assessment-cancel').removeClass('icon-assessment-cancel').addClass('icon-assessment-pending');
