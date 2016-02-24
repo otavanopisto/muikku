@@ -45,10 +45,10 @@
         <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery-simulate-ext/1.3.0/jquery.simulate.drag-n-drop.js"></script>
       </ui:fragment>
       
-      <script defer="defer" jsf:name="scripts/debug.js" jsf:rendered="#{sessionBackingBean.testsRunning}"/>
+      <script defer="defer" jsf:name="/scripts/debug.js" jsf:rendered="#{sessionBackingBean.testsRunning}"/>
       
       <!-- Notification Queue -->
-      <script defer="defer" jsf:name="scripts/notificationqueue/notificationqueue.js"/>
+      <script defer="defer" jsf:name="/scripts/notificationqueue/notificationqueue.js"/>
       
       <!-- Api resources -->
       <script defer="defer" type="text/javascript" src="#{request.contextPath}/rest/meta/resources?format=js"></script>
@@ -63,13 +63,13 @@
       <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.rest/1.0.2/jquery.rest.min.js"></script>
       
       <!-- Api -->
-      <script defer="defer" jsf:name="scripts/api/api.js"/>
+      <script defer="defer" jsf:name="/scripts/api/api.js"/>
 
       <!-- Websocket -->
-      <script defer="defer" jsf:name="scripts/gui/websocket.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/websocket.js"/>
 
       <!-- Heartbeat -->
-      <script defer="defer" jsf:name="scripts/gui/heartbeat.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/heartbeat.js"/>
 
       <ui:insert name="scripts"></ui:insert>
 
