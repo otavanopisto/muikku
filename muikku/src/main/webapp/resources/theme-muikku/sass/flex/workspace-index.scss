@@ -9,7 +9,6 @@
   max-width:960px;
   min-height:245px;
   position:relative;
-  padding:5px 5px 0 5px;
   
   .workspace-header-container {
     max-width:950px;
@@ -18,7 +17,8 @@
     background-image:url("/gfx/workspace-default-header.jpg");
     background-repeat:no-repeat;
     background-color:#d1e069;
-    background-size:100%;
+    background-size:auto 100%;
+    background-position:center center;
     z-index:10;
     
     h1.workspace-title {
@@ -59,7 +59,7 @@
     .workspace-study-level-indicator {
       position:absolute;
       top:15px;
-      right:-15px;
+      right:-10px;
       z-index:12;
       height:26px;
       padding:4px 12px 4px 14px;

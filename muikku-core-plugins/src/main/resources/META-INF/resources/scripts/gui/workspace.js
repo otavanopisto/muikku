@@ -54,7 +54,7 @@
     var contentContainer = ($('#contentWorkspaceMaterials').length > 0 ? contentContainer = $('#contentWorkspaceMaterials') : contentContainer = $('#content'));
     var naviWrapper = $('#workspaceNavigationWrapper');
     $(naviWrapper).css({
-      left:(Math.max(contentContainer.offset().left - naviWrapper.width() - 30, 10)) + 'px'
+      left:(Math.max(contentContainer.offset().left - naviWrapper.width() - 10, 5)) + 'px'
     });
   }
 

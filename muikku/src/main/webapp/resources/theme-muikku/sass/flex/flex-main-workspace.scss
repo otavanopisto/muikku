@@ -278,6 +278,11 @@ sup {
   font-size:70%;
 }
 
+/* WORKSPACE NAVIGATION BUBLE CONTAINER */
+#workspaceNavigationWrapperBuble {
+  display:none;
+}
+
 /* WORKSPACE NAVIGATION CONTAINERS */
 #workspaceNavigationWrapper { 
   position:fixed;
@@ -563,3 +568,4 @@ div[class*='workspace-dock-navi-button-edit-'] > a {
 
 @import "_mobile.scss";
 @import "_tablet.scss";
+@import "_desktop.scss"; 

@@ -1,0 +1,113 @@
+@media screen and  (max-width: 1100px) {
+  
+  #workspaceNavigationWrapper {
+    display:none;
+  }
+  
+  #workspaceNavigationWrapperBuble {
+    display:block;
+    background:#36b497;
+    border:2px solid #fff;
+    border-radius:100%;
+    box-shadow:0 0 10px rgba(0,0,0,0.3);
+    position:fixed;
+    z-index:99;
+    top:90px;
+    left:5px;
+    cursor:pointer;
+    text-align:center;
+    
+    .icon-navicon {
+      padding:6px;
+      color:#fff;
+      margin:4px;
+      font-size:32px;
+      position:relative;
+      background:transparent;
+      
+      .navmore-container {
+        display:none;
+        position:absolute;
+        left:-4px;
+        top:-4px;
+        background:transparent;
+        border-radius:3px;
+        text-align:left;
+        
+        .navmore-management-links {
+          padding:10px;
+          background:#4c6669;
+          border-radius:3px;
+          box-shadow:0 -1px 5px rgba(0,0,0,0.3);
+          
+          .workspace-management-item {
+            font-size:16px;
+            
+            a {
+              color:#fff;
+              font-size:16px;
+              text-transform:uppercase;
+              white-space:nowrap;
+              font-weight:300;
+              display:block;
+              padding:10px;
+              border-radius:3px;
+              text-decoration:none;
+              
+              &:hover {
+                background:#547d82;
+              }
+              
+            }
+            
+          }
+          
+        }
+        
+        .navmore-student-links {
+          margin-top:3px;
+          padding:10px;
+          background:#36b497;
+          border-radius:3px;
+          box-shadow:0 1px 5px rgba(0,0,0,0.3);
+          
+          .workspace-student-item {
+            font-size:16px;
+            
+            a {
+              color:#fff;
+              font-size:16px;
+              text-transform:uppercase;
+              white-space:nowrap;
+              font-weight:300;
+              display:block;
+              padding:10px;
+              border-radius:3px;
+              text-decoration:none;
+              
+              &:hover {
+                background:#56ccb1;
+              }
+              
+            }
+            
+          }
+          
+        }
+        
+      }
+      
+    }
+    
+    &:hover {
+      box-shadow:none;
+    
+      .navmore-container {
+        display:block;
+      }
+      
+    }
+    
+  }
+  
+}
