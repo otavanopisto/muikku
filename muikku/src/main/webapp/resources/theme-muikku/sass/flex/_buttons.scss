@@ -8,6 +8,7 @@
   color:#ffffff;
   cursor:pointer;
   @include buttonFontShadow;
+  font-weight:400;
   
   &.bt-login {
     border-radius:0;

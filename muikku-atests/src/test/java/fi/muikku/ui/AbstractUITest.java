@@ -62,6 +62,7 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import fi.muikku.AbstractIntegrationTest;
 import fi.muikku.TestUtilities;
 import fi.muikku.atests.Announcement;
+import fi.muikku.atests.CommunicatorMessage;
 import fi.muikku.atests.CommunicatorMessageRESTModel;
 import fi.muikku.atests.CommunicatorNewMessageRESTModel;
 import fi.muikku.atests.Workspace;
@@ -234,14 +235,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void testPageElementsByName(String elementName) {
     Boolean elementExists = getWebDriver().findElements(By.name(elementName)).size() > 0;
     assertEquals(true, elementExists);
-  }
-
-  protected void testLogin(String username, String password) throws InterruptedException {
-
-  }
-
-  protected void login(String username, String password) {
-
   }
 
   protected void waitForElementToBeClickable(String selector){
@@ -500,12 +493,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     navigate("/login?authSourceId=1", true);
-    waitForPresent(".index");
+    waitForPresent("main.content");
   }
   
   protected void login() {
     navigate("/login?authSourceId=1", true);
-    waitForPresent(".index");
+    waitForPresent(".logged-user");
   }
   
   protected void loginStudent1() throws JsonProcessingException, Exception {
@@ -535,7 +528,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void logout() {
     navigate("/", true);
     waitAndClick("a.lu-action-signout");
-    waitForPresent(".index");    
+    waitForPresent("main.content");    
   }
   
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
@@ -702,17 +695,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     Set<String> tags = new HashSet<>();
     List<Long> recipientIds = new ArrayList<>();
     recipientIds.add(recipient);
-    CommunicatorNewMessageRESTModel payload = new CommunicatorNewMessageRESTModel(null, null, sender, "test", caption, content, created, tags, recipientIds, new ArrayList<Long>(), new ArrayList<Long>(), new ArrayList<Long>());
+    CommunicatorMessage payload = new CommunicatorMessage(null, null, sender, "test", caption, content, created, tags, recipientIds, new ArrayList<Long>(), new ArrayList<Long>(), new ArrayList<Long>());
 
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
-      .post("/communicator/messages");
+      .post("test/communicator/messages");
     
     response.then()
       .statusCode(200);
       
-    CommunicatorMessageRESTModel result = objectMapper.readValue(response.asString(), CommunicatorMessageRESTModel.class);
+    CommunicatorMessage result = objectMapper.readValue(response.asString(), CommunicatorMessage.class);
     assertNotNull(result);
     assertNotNull(result.getId());
   }

@@ -1,196 +1,127 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" 
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd" 
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:c="http://java.sun.com/jsp/jstl/core" 
-  template="/WEB-INF/templates/main-view.xhtml">
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-env.xhtml">
   
-
-	<ui:define name="header">
-		<c:choose>
-			<c:when test="#{sessionBackingBean.loggedIn}">
-				<header id="headerSmall">
-					<div id="headerContainerSmall" class="container_24">
-            <div id="headerLogoTextContainerSmall"></div>
-						<div id="headerFishContainerSmall"></div>
-						<m:widgetSpaceSet styleClass="noLid">
-							<ui:insert name="header.left">
-								<ui:include src="/facelets/generic/header-left.xhtml">
-									<ui:param name="sizing" value="MINIMIZE" />
-									<ui:param name="class" value="" />
-									<ui:param name="keepEmpty" value="false" />
-									<ui:param name="name" value="generic.header.left" />
-								</ui:include>
-							</ui:insert>
-							<ui:insert name="header.center">
-								<ui:include src="/facelets/generic/header-center.xhtml">
-									<ui:param name="sizing" value="MAXIMIZE" />
-									<ui:param name="class" value="" />
-									<ui:param name="keepEmpty" value="true" />
-									<ui:param name="name" value="generic.header.center" />
-								</ui:include>
-							</ui:insert>
-							<ui:insert name="header.right">
-								<ui:include src="/facelets/generic/header-right.xhtml">
-									<ui:param name="sizing" value="MINIMIZE" />
-									<ui:param name="class" value="" />
-									<ui:param name="keepEmpty" value="true" />
-									<ui:param name="name" value="generic.header.right" />
-								</ui:include>
-							</ui:insert>
-						</m:widgetSpaceSet>
-					</div>
-				</header>
-			</c:when>
-			<c:otherwise>
-				<header id="headerBig">
-					<div id="headerContainerBig" class="container_24">
-						<div id="headerLogoTextContainerBig"></div>
-						<div id="headerFishContainerBig"></div>
-						<m:widgetSpaceSet styleClass="noLid">
-							<ui:insert name="header.left">
-								<ui:include src="/facelets/generic/header-left.xhtml">
-									<ui:param name="sizing" value="MINIMIZE" />
-									<ui:param name="class" value="" />
-									<ui:param name="keepEmpty" value="false" />
-									<ui:param name="name" value="generic.header.left" />
-								</ui:include>
-							</ui:insert>
-							<ui:insert name="header.center">
-								<ui:include src="/facelets/generic/header-center.xhtml">
-									<ui:param name="sizing" value="MAXIMIZE" />
-									<ui:param name="class" value="" />
-									<ui:param name="keepEmpty" value="true" />
-									<ui:param name="name" value="generic.header.center" />
-								</ui:include>
-							</ui:insert>
-							<ui:insert name="header.right">
-								<ui:include src="/facelets/generic/header-right.xhtml">
-									<ui:param name="sizing" value="MINIMIZE" />
-									<ui:param name="class" value="" />
-									<ui:param name="keepEmpty" value="true" />
-									<ui:param name="name" value="generic.header.right" />
-								</ui:include>
-							</ui:insert>
-						</m:widgetSpaceSet>
-					</div>
-				</header>
-			</c:otherwise>
-		</c:choose>
-	</ui:define>
-
-	<ui:define name="content.center.widget">
+  <ui:param name="activeTrail" value="index"/>
   
- 
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" jsf:name="scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" jsf:name="scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/js/min/perfect-scrollbar.jquery.min.js"/>
+    
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-      <m:widgetSpaceSet>
-
-        <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="SUM" styleClass="alpha">
-          
-          <!-- Cant do this if not logged in = "403 forbidden" 
-          <m:widget name="home-announcements" size="12"/>
-           -->
-          
-           <!-- This is a lie! It's A LIE! -->
-           <m:widget name="home-info" size="12"/>  
-
-        </m:widgetSpace>
-        <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="SUM" styleClass="omega">
-          <m:widget name="home-guide" size="12"/>         
-        </m:widgetSpace>
- 
-      </m:widgetSpaceSet>
-  
-      <div class="clear"></div>
-  
-      <m:widgetSpaceSet>
-        <m:widgetSpace name="index.content.secondary.left" keepEmpty="false" sizing="MAXIMIZE" styleClass="nomargin">
-          <m:widget name="home-news" />
-        </m:widgetSpace>
-        <m:widgetSpace name="index.content.secondary.center" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-        <m:widgetSpace name="index.content.secondary.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-      </m:widgetSpaceSet>
-  
-      <div class="clear"></div>
+      <script defer="defer" jsf:name="scripts/gui/login.js"/>
     </ui:fragment>
-
-
-
-
+    
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-   
-      <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">
-        <m:widgetSpaceSet>
-          <m:widgetSpace name="index.content.headlines" keepEmpty="false" sizing="MAXIMIZE" styleClass="nomargin">
-            <m:widget name="home-personaltopics" rendered="#{sessionBackingBean.loggedIn}"/>
-          </m:widgetSpace>
-        </m:widgetSpaceSet>
-  
-  
-        <m:widgetSpaceSet>
-          <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="alpha">
-            <m:widget name="home-workspaces" size="8"/>
-          </m:widgetSpace>
-          <m:widgetSpace name="index.content.primary.center" keepEmpty="false" sizing="MINIMIZE" >
-            <m:widget name="home-communicator" size="8" />
-          </m:widgetSpace>
-          <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="MINIMIZE" >
-            <m:widget name="home-announcements"  rendered="#{sessionBackingBean.loggedIn}" size="8"/>
-          </m:widgetSpace>
-        </m:widgetSpaceSet>
-    
-        <div class="clear"></div>
-      
-        <m:widgetSpaceSet>
-          <m:widgetSpace name="index.content.secondary.left" keepEmpty="false" sizing="MAXIMIZE">
-          </m:widgetSpace>
-          <m:widgetSpace name="index.content.secondary.center" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-          <m:widgetSpace name="index.content.secondary.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-        </m:widgetSpaceSet>
-   
-        <div class="clear"></div>
-      </ui:fragment>
-
-      <ui:fragment rendered="#{sessionBackingBean.studentLoggedIn}">
-        <m:widgetSpaceSet>
-          <m:widgetSpace name="index.content.headlines" keepEmpty="false" sizing="MAXIMIZE" styleClass="nomargin">
-            <m:widget name="home-personaltopics" rendered="#{sessionBackingBean.loggedIn}"/>
-          </m:widgetSpace>
-        </m:widgetSpaceSet>
-  
-  
-        <m:widgetSpaceSet>
-          <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="alpha">
-            <m:widget name="home-workspaces" size="8"/>
-          </m:widgetSpace>
-          <m:widgetSpace name="index.content.primary.center" keepEmpty="false" sizing="MINIMIZE" >
-            <m:widget name="home-communicator" size="8" />
-          </m:widgetSpace>
-          <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="MINIMIZE" >
-            <m:widget name="home-announcements"  rendered="#{sessionBackingBean.loggedIn}" size="8"/>
-          </m:widgetSpace>
-        </m:widgetSpaceSet>
-    
-        <m:widgetSpaceSet>
-            <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="omega">
-            </m:widgetSpace>
-         </m:widgetSpaceSet>
-        <div class="clear"></div>
-      
-        <m:widgetSpaceSet>
-          <m:widgetSpace name="index.content.secondary.left" keepEmpty="false" sizing="MAXIMIZE">
-          </m:widgetSpace>
-          <m:widgetSpace name="index.content.secondary.center" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-          <m:widgetSpace name="index.content.secondary.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-        </m:widgetSpaceSet>
-   
-        <div class="clear studentLoggedIn"></div>
-
-      </ui:fragment>
-            
+      <script defer="defer" jsf:name="scripts/gui/widget-visits.js"/>
+      <script defer="defer" jsf:name="scripts/gui/widget-courselist.js"/>
+      <script defer="defer" jsf:name="scripts/gui/widget-messages.js"/>
+      <script defer="defer" jsf:name="scripts/gui/widget-announcements.js"/>
     </ui:fragment>
+    
   </ui:define>
+  
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main.css"/>
+    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/css/perfect-scrollbar.min.css"/>
+  </ui:define>  
+  
+  <ui:define name="grid-content">
+    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}"> 
+      <div class="flex-row lg-flex-hide md-flex-hide flex-align-items-center">
+        <div class="sm-flex-cell-8 sm-flex-cell-first">
+          <div class="login">
+            <div class="bt-generic bt-login">
+              <a jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
+              </a>
+            </div>
+          </div>  
+        </div>
+        
+        <div class="sm-flex-cell-8  sm-flex-cell-last">
+          <div class="forgot-password">
+            <div class="bt-generic bt-forgotpassword">
+              <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+            </div>
+          </div> 
+        </div>
+      </div>
+    </ui:fragment>
+    
+    <div class="flex-row">
+      <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+        <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first">
+          <div class="box">
+            <div id="siteInfo">
+              <h3>Infoa</h3>
+              <p>Muikku3 on Otavan Opiston kehittämä oppimisympäristö.
+                Ympäristö tarjoaa kaikki tarvitsemasi työkalut opettamiseen ja
+                oppimiseen:</p>
+              <ul>
+                <li><b>Muokattavan etusivun</b> avulla voit personoida ympäristön
+                  mieleiseksesi.</li>
+                <li>Opiskelu onnistuu myös <b>älypuhelimen</b> tai <b>tablet-laitteen</b>
+                  kautta - ilman erillistä sovellusta.</li>
+                <li><b>Koko näytön lukutila</b> rauhoittaa opiskeluympäristön
+                  opiskelua varten.</li>
+                <li><b>Yhdessä kirjoittamisen</b> väline mahdollistaa ryhmätyöt ilman
+                  erillisiä ohjelmia.</li>
+                <li>Oppimisympäristön <b>kalenteri</b> kulkee mukanasi vaikka
+                  älypuhelimessa.</li>
+                <li><b>Kehittyneen haun</b> avulla voit myös ohjata oppimisympäristön
+                  toimintaa.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last">
+          <div class="box">
+            <div id="siteGuide">
+              <h3>Ohjeet</h3>
+              <p>
+                Kirjaudu sisään oikeasta ylänurkasta. <a
+                  href="http://www.nettilukio.fi/">Nettilukioon</a> ja <a
+                  href="http://www.nettiperuskoulu.fi">Nettiperuskouluun</a> voit
+                rekisteröityä linkkien kautta.
+              </p>
+              <p>
+                Jos haluat oppimisympäristön oman oppilaitoksesi käyttöön, ole
+                yhteydessä <a href="mailto:tommi.issakainen@otavanopisto.fi">tommi.issakainen@otavanopisto.fi</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </ui:fragment>
+      
+      <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+        <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-order-2 sm-flex-order-2">
+          <div class="box">
+            <div id="visits"></div> 
+            <div id="workspaces"></div>
+          </div>
+        </div>
+        <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full  md-flex-order-3 sm-flex-order-3">
+          <div class="box">
+            <div id="messages"></div>
+          </div>
+        </div>
+        <div class="lg-flex-cell12-4 md-flex-cell-16 sm-flex-cell-full lg-flex-cell-last md-flex-order-1 sm-flex-order-1">
+          <div class="box">
+            <div id="announcements"></div>
+          </div>
+        </div>
+      </ui:fragment>
+    </div>
 
+  </ui:define>
+  
+  
 </ui:composition>
