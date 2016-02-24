@@ -647,10 +647,10 @@ $(document).ready(function() {
 
   });  
   $(".di-delete-area-button").click(function() {
-
     var deleteArea = function(values) {
+      var workspaceId = $("input[name='workspaceEntityId']").val();
       var areaId = values.forumAreaId;
-      mApi({async: false}).forum.areas.del(areaId).callback(function(err, result) {
+      mApi({async: false}).forum.workspace.areas.del(workspaceId, areaId).callback(function(err, result) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.areadelete', err));
         } else {                  
