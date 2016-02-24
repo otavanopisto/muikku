@@ -312,11 +312,20 @@
       this._readonly = readonly;
       if (readonly) {
         $(this._uploader).attr("disabled", "disabled");
-        $('.muikku-file-input-field-file-remove').hide();
+        if (this.element.data('file-count') > 0) {
+          $(this._uploaderContainer).find('.muikku-file-input-field-description').hide();
+        } else {
+          $(this._uploaderContainer).find('.muikku-file-input-field-description')
+              .html(getLocaleText('plugin.workspace.fileField.fieldHintDisabled'))
+        }
+        $(this._uploaderContainer).find('.muikku-file-input-field-file-remove').hide();
       }
       else {
         $(this._uploader).removeAttr("disabled");
-        $('.muikku-file-input-field-file-remove').show();
+        $(this._uploaderContainer).find('.muikku-file-input-field-description')
+              .html(getLocaleText('plugin.workspace.fileField.fieldHint'))
+        $(this._uploaderContainer).find('.muikku-file-input-field-description').show();
+        $(this._uploaderContainer).find('.muikku-file-input-field-file-remove').show();
       }
     }
   });
