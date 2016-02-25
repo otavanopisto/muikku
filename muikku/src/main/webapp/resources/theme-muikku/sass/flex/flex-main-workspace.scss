@@ -17,10 +17,9 @@ body {
   background-image:url("/gfx/light-diagonal-strips.png");
   background-repeat:repeat;
   background-color:#f0f3f5;
-  height:100vh;
-  font-size:16px;
+  font-size:14px;
   font-weight:300;
-  padding:0 0 30px 0;
+  padding:60px 5px 50px 5px;
   margin: 0;
   font-family:'Open Sans', Arial, sans-serif;
   line-height:1.5em;
@@ -215,7 +214,7 @@ div[class*='dock-dynamic-navi-button'] > a {
 
 /* Content where everything goes */
 main.content {
-  margin:90px 0 0 0;
+  margin:30px 0 0 0;
 }
 
 /* Headers */
@@ -277,18 +276,6 @@ sup {
   vertical-align:super;
   font-size:70%;
 }
-
-/* WORKSPACE NAVIGATION BUBLE CONTAINER */
-#workspaceNavigationWrapperBuble {
-  display:none;
-}
-
-/* WORKSPACE NAVIGATION CONTAINERS */
-#workspaceNavigationWrapper { 
-  position:fixed;
-  top:90px;
-  z-index:21;
-} 
  
 #workspaceDockWrapper,
 #workspaceMaterialsDockWrapper,
@@ -307,7 +294,6 @@ sup {
 }
   
 #workspaceEditDockWrapper {
-/*   background:#288fcd; */
   background:#000;
 }
   
@@ -318,254 +304,7 @@ sup {
   text-align:center;
 }
 
-
-/* WORKSPACE EVALUATION REQUEST BUTTONS */  
-.workspace-dock-navi-button-evaluation { /* Button's master rules */
-  width:60px;
-  margin-bottom:10px;
-  border-radius:3px;
-  
-  a {
-    text-shadow:none;
-    transition: background 0.2s ease-in-out;
-  }
-  
-  &[data-state='unassessed'] { /* Default state */
-    background:#55bbff;
-
-    a:hover {
-      background:#28a1f2;
-      
-      span[class*='workspace-navi-tt-container-'] {
-        background:#28a1f2;
-      }
-      
-    }
-    
-  }
-  
-  &[data-state='pending'] { /* Evaluation Request Pending */
-    background:#0099ff; 
-    transition: background 0.2s ease-in-out;
-
-    a:hover {
-      background:#0075c3;
-      
-      span[class*='workspace-navi-tt-container-'] {
-        background:#0075c3;
-      }
-      
-    }
-    
-    &:hover {
-      background:#f6a930;
-      
-      a {
-        background:#e5961b;
-        
-        &:before {
-          content: "\e9f3"; /* Override Pending icon with Cancellation icon */
-        }
-        
-        &:hover {
-          background:#e5961b;
-        
-          span[class*='workspace-navi-tt-container-'] {
-            background:#e5961b;
-          }
-        
-        }
-
-      }
-
-    }
-    
-  }
-  
-  &[data-state='cancel'] { /* Evaluation Request Cancelled */
-    background:#f6a930; /* Same as Default at this point */
-    
-    a:hover {
-      background:#e5961b;
-      
-      span[class*='workspace-navi-tt-container-'] {
-        background:#e5961b;
-      }
-      
-    }
-    
-  }
-  
-  &[data-state='canceled'] { /* Evaluation Request Cancelled */
-    background:#55bbff; /* Same as Default at this point */
-    
-    a:hover {
-      background:#509ccf;
-      
-      span[class*='workspace-navi-tt-container-'] {
-        background:#509ccf;
-      }
-      
-    }
-    
-  }
-  
-  &[data-state='pass'] { /* Evaluation of Workspace - Pass */
-    background:#1ec30c;
-    
-    a:hover {
-      background:#16a506;
-      
-      span[class*='workspace-navi-tt-container-'] {
-        background:#16a506;
-      }
-      
-    }
-    
-  }
-  
-  &[data-state='fail'] { /* Evaluation of Workspace - Fail */
-    background:#ea7401;
-    
-    a:hover {
-      background:#d66b03;
-      
-      span[class*='workspace-navi-tt-container-'] {
-        background:#d66b03;
-      }
-      
-    }
-  }
-  
-}
-
-/* WORKSPACE NAVIGATION BUTTONS */
-div[class*='workspace-dock-navi-button'] > a,
-div[class*='workspace-dock-navi-button'] > span {
-  cursor:pointer;
-  font-size:32px;
-  color:#fff;
-  text-decoration:none;
-  background:transparent;
-  padding:6px;
-  margin:4px;
-  display:inline-block;
-  position:relative;
-  width:34px;
-  border-radius:3px;
-  
-  span[class*='workspace-navi-tt-container-'] {
-    opacity:0;
-    font-family:'Open Sans', Arial, sans-serif;
-    font-size:16px;
-    height:16px;
-    font-weight:300;
-    position:absolute;
-    top:0px;
-    left:-4500px;
-    width:0px;
-    color:#fff;
-    text-transform:uppercase;
-    padding:13px 15px 15px 14px;
-    border-top-right-radius:3px;
-    border-bottom-right-radius:3px;
-    @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
-    z-index:99;
-    white-space:nowrap;
-  }
-  
-  &:hover {
-    background:#25c29e;
-    
-    span[class*='workspace-navi-tt-container-'] {
-      display:block;
-      background:#25c29e;
-      opacity:1;
-      width:auto;
-      left:45px;
-    }
-    
-  }
-  
-}
-
-/* WORKSPACE EDITING BUTTONS */
-div.workspace-dock-navi-button-workspace-management {
-  
-  .navmore-container {
-    display:none;
-    position:absolute;
-    background:#4c6669;
-    z-index:99;
-    left:-7px;
-    top:-4px;
-    padding:10px;
-    text-align:left;
-    border-radius:3px;
-  }
-  
-}
-
-div.workspace-dock-navi-button-workspace-management > div.icon-cogs {
-  cursor:pointer;
-  font-size:32px;
-  color:#fff;
-  text-decoration:none;
-  background:transparent;
-  padding:6px;
-  margin:4px;
-  display:inline-block;
-  position:relative;
-  width:34px;
-  border-radius:3px;
-  
-  &:hover {
-    background:#4c6669;
-
-    .navmore-container {
-      display:block;
-      
-      .workspace-management-item {
-        font-size:16px;
-      }
-      
-      a {
-        color:#fff;
-        font-size:16px;
-        text-transform:uppercase;
-        white-space:nowrap;
-        font-weight:300;
-        display:block;
-        padding:10px;
-        border-radius:3px;
-        text-decoration:none;
-        
-        &:hover {
-          background:#547d82;
-        }
-        
-      }
-      
-    }
-    
-  }
-  
-}
-
-div[class*='workspace-dock-navi-button-edit-'] > a {
-  cursor:pointer;
-  font-size:18px;
-  color:#fff;
-  text-decoration:none;
-  background:transparent;
-  padding:6px;
-  margin:4px;
-  display:inline-block;
-  position:relative;
-  width:34px;
-  border-radius:3px;
-}
-
 @import "_mobile.scss";
 @import "_tablet.scss";
-@import "_desktop.scss"; 
+@import "_workspace_navigation_wide.scss"; 
+@import "_workspace_navigation_narrow.scss"; 
