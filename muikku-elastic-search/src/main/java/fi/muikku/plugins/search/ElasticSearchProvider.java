@@ -4,8 +4,10 @@ import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,10 +28,12 @@ import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.IdsFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.SchoolDataIdentifier;
@@ -164,8 +168,7 @@ public class ElasticSearchProvider implements SearchProvider {
          *   current date is between start and end date
          */
         
-        List<Long> publishedWorkspaceEntityIds = workspaceEntityController.listPublishedWorkspaceEntityIds();
-        // TODO: Only published workspaces that are currently active
+        Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
         
         filters.add(
           FilterBuilders.orFilter(
@@ -178,7 +181,7 @@ public class ElasticSearchProvider implements SearchProvider {
               FilterBuilders.termsFilter("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()),
               FilterBuilders.termFilter("startedStudies", false),
               FilterBuilders.termFilter("finishedStudies", false),
-              FilterBuilders.inFilter("workspaces", ArrayUtils.toPrimitive(publishedWorkspaceEntityIds.toArray(new Long[0])))
+              FilterBuilders.inFilter("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0])))
             )
           )
         );
@@ -227,6 +230,49 @@ public class ElasticSearchProvider implements SearchProvider {
     }
   }
   
+  private Set<Long> getActiveWorkspaces() {
+    DateTime now = new DateTime();
+    DateTime low = now.minus(now.getMillisOfDay());
+    DateTime high = low.plusDays(1).minus(1); 
+    
+    TermQueryBuilder query = QueryBuilders.termQuery("published", Boolean.TRUE);
+    FilterBuilder filter = 
+      FilterBuilders.orFilter(
+        FilterBuilders.andFilter(
+          FilterBuilders.notFilter(FilterBuilders.existsFilter("beginDate")),
+          FilterBuilders.notFilter(FilterBuilders.existsFilter("endDate"))
+        ),
+        FilterBuilders.andFilter(
+          FilterBuilders.rangeFilter("beginDate").lte(low.getMillis()),
+          FilterBuilders.rangeFilter("endDate").gte(high.getMillis())
+        )
+      );
+  
+    FilteredQueryBuilder filteredQuery = QueryBuilders.filteredQuery(query, filter);
+    SearchResponse response = elasticClient
+      .prepareSearch("muikku")
+      .setTypes("Workspace")
+      .setQuery(filteredQuery)
+      .setNoFields()
+      .setSize(Integer.MAX_VALUE)
+      .execute()
+      .actionGet();
+    
+    SearchHit[] hits = response.getHits().getHits();
+    Set<SchoolDataIdentifier> identifiers = new HashSet<>();
+    
+    for (SearchHit hit : hits) {
+      String[] id = hit.getId().split("/", 2);
+      if (id.length == 2) {
+        String dataSource = id[1];
+        String identifier = id[0];
+        identifiers.add(new SchoolDataIdentifier(identifier, dataSource));
+      }
+    }
+    
+    return workspaceEntityController.findWorkspaceEntityIdsByIdentifiers(identifiers);
+  }
+
   @Override
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
     return searchWorkspaces(schoolDataSource, subjects, identifiers, freeText, includeUnpublished, start, maxResults, null);

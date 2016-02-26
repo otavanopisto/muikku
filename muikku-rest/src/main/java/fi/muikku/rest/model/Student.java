@@ -8,7 +8,7 @@ public class Student {
   }
 
   public Student(String id, String firstName, String lastName, String studyProgrammeName, Boolean hasImage, String nationality, String language, String municipality, String school,
-      String email, Date studyStartDate, Date studyTimeEnd) {
+      String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -21,6 +21,7 @@ public class Student {
     this.school = school;
     this.email = email;
     this.studyStartDate = studyStartDate;
+    this.studyEndDate = studyEndDate;
     this.studyTimeEnd = studyTimeEnd;
   }
   
@@ -111,6 +112,14 @@ public class Student {
   public void setStudyStartDate(Date studyStartDate) {
     this.studyStartDate = studyStartDate;
   }
+  
+  public Date getStudyEndDate() {
+    return studyEndDate;
+  }
+  
+  public void setStudyEndDate(Date studyEndDate) {
+    this.studyEndDate = studyEndDate;
+  }
 
   public Date getStudyTimeEnd() {
     return studyTimeEnd;
@@ -131,5 +140,6 @@ public class Student {
   private String school;
   private String email;
   private Date studyStartDate;
+  private Date studyEndDate;
   private Date studyTimeEnd;
 }
