@@ -15,9 +15,10 @@
     position:fixed;
     z-index:99;
     top:97px;
-    left:5px;
+    left:12px;
     cursor:pointer;
     text-align:center;
+    transition: top 0.3s ease-in-out, left 0.3s ease-in-out;
     
     .icon-navicon {
       padding:6px;
@@ -43,11 +44,10 @@
           box-shadow:0 -1px 5px rgba(0,0,0,0.3);
           
           .workspace-management-item {
-            font-size:16px;
             
             a {
               color:#fff;
-              font-size:16px;
+              font-size:18px;
               text-transform:uppercase;
               white-space:nowrap;
               font-weight:300;
@@ -55,6 +55,10 @@
               padding:10px;
               border-radius:3px;
               text-decoration:none;
+              
+              span {
+                font-size:16px;
+              }
               
               &:hover {
                 background:#547d82;
@@ -74,11 +78,10 @@
           box-shadow:0 1px 5px rgba(0,0,0,0.3);
           
           .workspace-student-item {
-            font-size:16px;
             
             a {
               color:#fff;
-              font-size:16px;
+              font-size:18px;
               text-transform:uppercase;
               white-space:nowrap;
               font-weight:300;
@@ -86,6 +89,10 @@
               padding:10px;
               border-radius:3px;
               text-decoration:none;
+              
+              span {
+                font-size:16px;
+              }
               
               &:hover {
                 background:#56ccb1;

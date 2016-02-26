@@ -22,7 +22,7 @@ body {
   padding:60px 5px 50px 5px;
   margin: 0;
   font-family:'Open Sans', Arial, sans-serif;
-  line-height:1.5em;
+  line-height:1.9em; /* Set line-height:1 to element when there's a need to override */
   color:#2c2c2c;
 }
 
@@ -89,6 +89,7 @@ body {
   right:0;
   opacity:0.9;
   box-shadow:-5px 0 5px rgba(0, 0, 0, 0.2);
+  font-size:14px;
   
   .footer-predefined-bg {
     position:absolute;
@@ -302,6 +303,19 @@ sup {
 #workspaceEditDock,
 #workspaceEvaluationDockWrapper {
   text-align:center;
+}
+
+/* WORKSPACE GLOBAL MATERIAL PAGE */
+.workspace-materials-view-page {
+  background:#fff;
+  padding:20px;
+  font-size:16px;
+  margin:30px 0;
+  
+  p {
+    margin:1em 0 1em 0;
+  }
+  
 }
 
 @import "_workspace_navigation_wide.scss"; 
