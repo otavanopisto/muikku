@@ -18,8 +18,7 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.js"></script>
   </ui:define>
   
-  <ui:define name="styles">
-    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main-workspace.css"/> 
+  <ui:define name="workspace-view-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-index.css"/>  
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.css"/> 
   </ui:define>
@@ -39,31 +38,38 @@
     
     <section class="flex-row">
       <div class="workspace-meta-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseLengthLabel']}</span>
-        <span class="workspace-meta-desc">
-          <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseLength']}">
-            <f:param value="#{workspaceIndexBackingBean.courseLength}"/>
-            <f:param value="#{workspaceIndexBackingBean.courseLengthSymbol}"/>
-          </h:outputFormat>
-        </span> 
-        <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseSubjectLabel']}</span>
-        <span class="workspace-meta-desc">#{workspaceIndexBackingBean.subject}</span> 
-  
+        <div class="workspace-meta-item-wrapper">
+          <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseLengthLabel']}</span>
+          <span class="workspace-meta-desc">
+            <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseLength']}">
+              <f:param value="#{workspaceIndexBackingBean.courseLength}"/>
+              <f:param value="#{workspaceIndexBackingBean.courseLengthSymbol}"/>
+            </h:outputFormat>
+          </span> 
+        </div>
+        <div class="workspace-meta-item-wrapper">
+          <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseSubjectLabel']}</span>
+          <span class="workspace-meta-desc">#{workspaceIndexBackingBean.subject}</span> 
+        </div>
         <ui:fragment rendered="#{workspaceIndexBackingBean.workspaceType ne null}">
-          <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseTypeLabel']}</span>
-          <span class="workspace-meta-desc">#{workspaceIndexBackingBean.workspaceType}</span> 
+          <div class="workspace-meta-item-wrapper">
+            <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseTypeLabel']}</span>
+            <span class="workspace-meta-desc">#{workspaceIndexBackingBean.workspaceType}</span>
+          </div> 
         </ui:fragment>
   
         <ui:fragment rendered="#{(workspaceIndexBackingBean.beginDate ne null) and (workspaceIndexBackingBean.endDate ne null)}">
-          <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseDatesLabel']}</span>
-          <span class="workspace-meta-desc">
-            <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseDates']}">
-              <f:param value="#{workspaceIndexBackingBean.beginDate}"/>
-              <f:param value="#{workspaceIndexBackingBean.endDate}"/>
-            </h:outputFormat>
-          </span> 
+          <div class="workspace-meta-item-wrapper">
+            <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseDatesLabel']}</span>
+            <span class="workspace-meta-desc">
+              <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseDates']}">
+                <f:param value="#{workspaceIndexBackingBean.beginDate}"/>
+                <f:param value="#{workspaceIndexBackingBean.endDate}"/>
+              </h:outputFormat>
+            </span> 
+          </div>
         </ui:fragment>
-        <div class="workspace-publication-container" jsf:rendered="#{workspaceIndexBackingBean.canPublish}" data-published="#{workspaceIndexBackingBean.published}">
+        <div class="workspace-publication-container sm-flex-hide" jsf:rendered="#{workspaceIndexBackingBean.canPublish}" data-published="#{workspaceIndexBackingBean.published}">
           <a class="workspace-publish-button" style="display:none;" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.publish']}</a>
           <a class="workspace-unpublish-button" style="display:none;" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.unpublish']}</a>
         </div>

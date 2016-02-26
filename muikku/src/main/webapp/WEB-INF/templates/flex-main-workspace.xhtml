@@ -4,6 +4,12 @@
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="flex-main.xhtml">
   
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main-workspace.css"/>
+    
+    <ui:insert name="workspace-view-styles"></ui:insert>  
+  </ui:define> 
+  
   <ui:define name="navigation">
     <!-- MUIKKU MAIN NAVIGATION -->
     <nav id="staticNavigationWrapper">

@@ -17,7 +17,7 @@
     background-image:url("/gfx/workspace-default-header.jpg");
     background-repeat:no-repeat;
     background-color:#d1e069;
-    background-size:auto 100%;
+    background-size:cover;
     background-position:center center;
     z-index:10;
     
@@ -58,35 +58,34 @@
     
     .workspace-study-level-indicator {
       position:absolute;
+      font-size:16px;
       top:15px;
-      right:-10px;
+      right:-6px;
       z-index:12;
-      height:26px;
-      padding:4px 12px 4px 14px;
+      line-height:1;
+      padding:8px 12px 8px 14px;
       box-shadow:0 0 40px rgba(0,0,0,0.15);
-      transform: skew(-10deg, 0deg) ;
-      -webkit-transform: skew(-10deg, 0deg) ;
-      -moz-transform: skew(-10deg, 0deg) ;
-      -o-transform: skew(-10deg, 0deg) ;
-      -ms-transform: skew(-10deg, 0deg) ;
+      transform: skew(-5deg, 0deg) ;
+      -webkit-transform: skew(-5deg, 0deg) ;
+      -moz-transform: skew(-5deg, 0deg) ;
+      -o-transform: skew(-5deg, 0deg) ;
+      -ms-transform: skew(-5deg, 0deg) ;
       
       &.indicator1 {
         border-left:2px solid #fff;
         color:#fff;
         background:#4ee23a;
-        min-width:50px;
       }
       
       .workspace-study-level-text {
         position:relative;
-        transform: skew(0deg, 0deg) ;
-        -webkit-transform: skew(10deg, 0deg) ;
-        -moz-transform: skew(10deg, 0deg) ;
-        -o-transform: skew(10deg, 0deg) ;
-        -ms-transform: skew(10deg, 0deg) ;
+        transform: skew(5deg, 0deg) ;
+        -webkit-transform: skew(5deg, 0deg) ;
+        -moz-transform: skew(5deg, 0deg) ;
+        -o-transform: skew(5deg, 0deg) ;
+        -ms-transform: skew(5deg, 0deg) ;
         font-weight:400;
         text-transform:uppercase;
-        height:26px;
       }
       
     }
@@ -104,6 +103,11 @@
   z-index:13;
   padding:5px 25px;
   background:#fff;
+  
+  .workspace-meta-item-wrapper {
+    display:inline-block;
+    margin:0 10px 0 0;
+  }
 
   .workspace-meta-title {
     color:#727272;
@@ -114,7 +118,6 @@
   .workspace-meta-desc {
     color:#000;
     display:inline-block;
-    margin:0 10px 0 0;
   }
   
  .workspace-publication-container {

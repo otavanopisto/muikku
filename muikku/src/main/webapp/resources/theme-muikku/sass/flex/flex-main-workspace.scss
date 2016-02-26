@@ -304,7 +304,8 @@ sup {
   text-align:center;
 }
 
-@import "_mobile.scss";
-@import "_tablet.scss";
 @import "_workspace_navigation_wide.scss"; 
 @import "_workspace_navigation_narrow.scss"; 
+@import "_mobile.scss";
+@import "_mobile_workspace.scss";
+@import "_tablet.scss";
