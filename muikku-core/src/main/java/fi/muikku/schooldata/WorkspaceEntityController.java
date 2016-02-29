@@ -1,7 +1,12 @@
 package fi.muikku.schooldata;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -130,5 +135,33 @@ public class WorkspaceEntityController {
 
   public List<Long> listPublishedWorkspaceEntityIds() {
     return workspaceEntityDAO.listPublishedWorkspaceEntityIds();
+  }
+
+  public Set<Long> findWorkspaceEntityIdsByIdentifiers(Collection<SchoolDataIdentifier> identifiers) {
+    Set<Long> result = new HashSet<>();
+    
+    Map<String, Set<String>> groupedIdentifiers = new HashMap<>();
+    
+    for (SchoolDataIdentifier identifier : identifiers) {
+      Set<String> groupIdentifiers = groupedIdentifiers.get(identifier.getDataSource());
+      if (groupIdentifiers == null) {
+        groupIdentifiers = new HashSet<>();
+        groupedIdentifiers.put(identifier.getDataSource(), groupIdentifiers);
+      }
+      
+      groupIdentifiers.add(identifier.getIdentifier()); 
+    }
+    
+    for (String dataSource : groupedIdentifiers.keySet()) {
+      Set<String> groupIdentifiers = groupedIdentifiers.get(dataSource);
+      SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+      if (schoolDataSource != null) {
+        result.addAll(workspaceEntityDAO.listIdsByDataSourceAndIdentifiers(schoolDataSource, groupIdentifiers));
+      } else {
+        logger.severe("Could not find school data source: " + dataSource);
+      }
+    }
+    
+    return result;
   }
 }

@@ -258,21 +258,10 @@ public class UserRESTService extends AbstractRESTService {
           
           UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
           String emailAddress = userEntity != null ? userEmailEntityController.getUserEmailAddress(userEntity, true) : null;
-            
-          @SuppressWarnings("unchecked")
-          HashMap<String, Object> studyStartDate = (HashMap<String, Object>)o.get("studyStartDate");
-          @SuppressWarnings("unchecked")
-          HashMap<String, Object> studyTimeEnd = (HashMap<String, Object>)o.get("studyTimeEnd");
-          Date studyStartDateDate = null;
-          Date studyTimeEndDate = null;
-          
-          if (studyStartDate != null) {
-            studyStartDateDate = new Date((Long)studyStartDate.get("millis"));
-          }
-          
-          if (studyTimeEnd != null) {
-            studyTimeEndDate = new Date((Long)studyTimeEnd.get("millis"));
-          }
+
+          Date studyStartDate = getDateResult(o.get("studyStartDate"));
+          Date studyEndDate = getDateResult(o.get("studyEndDate"));
+          Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
           
           students.add(new fi.muikku.rest.model.Student(
             studentIdentifier.toId(), 
@@ -285,13 +274,22 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("municipality"), 
             (String) o.get("school"), 
             emailAddress,
-            studyStartDateDate,
-            studyTimeEndDate));
+            studyStartDate,
+            studyEndDate,
+            studyTimeEnd));
         }
       }
     }
 
     return Response.ok(students).build();
+  }
+  
+  private Date getDateResult(Object value) {
+    if (value instanceof Long) {
+      return new Date((Long) value);
+    }
+    
+    return null;
   }
 
   @GET
@@ -328,8 +326,9 @@ public class UserRESTService extends AbstractRESTService {
     }
     
     String emailAddress = userEmailEntityController.getUserEmailAddress(userEntity, true); 
-    Date startDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
-    Date endDate = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;
+    Date studyStartDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
+    Date studyEndDate = user.getStudyEndDate() != null ? user.getStudyEndDate().toDate() : null;
+    Date studyTimeEnd = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;
     
     Student student = new Student(
         studentIdentifier.toId(), 
@@ -342,8 +341,9 @@ public class UserRESTService extends AbstractRESTService {
         user.getMunicipality(), 
         user.getSchool(), 
         emailAddress, 
-        startDate, 
-        endDate);
+        studyStartDate,
+        studyEndDate,
+        studyTimeEnd);
     
     return Response
         .ok(student)
@@ -631,20 +631,9 @@ public class UserRESTService extends AbstractRESTService {
 					
 					if (userEntity != null) {
 					  String emailAddress = userEmailEntityController.getUserEmailAddress(userEntity, true);
-					  
-					  HashMap<String, Object> studyStartDate = (HashMap<String, Object>)o.get("studyStartDate");
-					  HashMap<String, Object> studyTimeEnd = (HashMap<String, Object>)o.get("studyTimeEnd");
-					  Date studyStartDateDate = null;
-					  Date studyTimeEndDate = null;
-					  
-					  if (studyStartDate != null) {
-					    studyStartDateDate = new Date((Long)studyStartDate.get("millis"));
-					  }
-					  
-					  if (studyTimeEnd != null) {
-					    studyTimeEndDate = new Date((Long)studyTimeEnd.get("millis"));
-					  }
-					  
+					  Date studyStartDate = getDateResult(o.get("studyStartDate"));
+	          Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
+	          
 						ret.add(new fi.muikku.rest.model.User(userEntity
 								.getId(), (String) o.get("firstName"),
 								(String) o.get("lastName"), hasImage,
@@ -652,8 +641,8 @@ public class UserRESTService extends AbstractRESTService {
 										.get("language"), (String) o
 										.get("municipality"), (String) o
 										.get("school"), emailAddress,
-										studyStartDateDate,
-										studyTimeEndDate));
+										studyStartDate,
+										studyTimeEnd));
 					}
 				}
 

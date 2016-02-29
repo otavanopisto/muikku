@@ -226,9 +226,8 @@ public class AssessmentRequestRESTService extends PluginRESTService {
           workspaceAssessmentRequest.getDate());
   
       return restAssessmentRequest;
-    } else {
-      logger.severe(String.format("Could not find workspace user entity for worksaceUserIdentifier %s", workspaceUserIdentifier));
-      return null;
     }
+    return null;
   }
+
 }

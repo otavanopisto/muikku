@@ -6,6 +6,8 @@
         readonly: false
       },
       _create : function() {
+        this._initialized = false;
+        
         this._element = $('<div>')
           .addClass("muikku-connect-field")
           .append($('<div>').addClass('muikku-connect-field-terms'))
@@ -222,6 +224,7 @@
           .addClass('muikku-connect-field')
           .hide();
         
+        this._initialized = true;
       },
       
       pairs: function(val) {
@@ -251,7 +254,10 @@
           var counterpart = this._element.find( '.muikku-connect-field-counterpart:eq( '+index+' )' );
           termInput.val($(counterpart).attr('data-field-value'));
         },this));
-        this._element.trigger("change");
+        
+        if (this._initialized) {
+          this._element.trigger("change");
+        }
       },
       _swapElements: function(term, counterpart){
         var termIndex = $(term).parent().find('.muikku-connect-field-term').index(term);
