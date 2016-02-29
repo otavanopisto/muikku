@@ -133,16 +133,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return webDriver;
   }
 
-  protected String getSauceBrowser() {
-    return System.getProperty("it.sauce.browser");
+  protected String getBrowser() {
+    return System.getProperty("it.browser");
   }
   
-  protected String getSauceBrowserVersion() {
-    return System.getProperty("it.sauce.browser.version");
+  protected String getBrowserVersion() {
+    return System.getProperty("it.browser.version");
   }
   
-  protected String getSauceBrowserResolution() {
-    return System.getProperty("it.sauce.browser.resolution");
+  protected String getBrowserResolution() {
+    return System.getProperty("it.browser.resolution");
   }
   
   protected String getSaucePlatform() {
@@ -153,9 +153,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     final DesiredCapabilities capabilities = new DesiredCapabilities();
     final String seleniumVersion = System.getProperty("it.selenium.version");
     
-    final String browser = getSauceBrowser();
-    final String browserVersion = getSauceBrowserVersion();
-    final String browserResolution = getSauceBrowserResolution();
+    final String browser = getBrowser();
+    final String browserVersion = getBrowserVersion();
+    final String browserResolution = getBrowserResolution();
     final String platform = getSaucePlatform();
     
     capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
@@ -217,6 +217,27 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       ((String[]) new String[] { "safari", "8.1", "OS X 10.11", null }),
       ((String[]) new String[] { "chrome", "45.0", "Linux", null }) 
       });
+  }
+  
+
+  protected WebDriver createLocalDriver() {
+    switch (getBrowser()) {
+      case "chrome":
+        return createChromeDriver();
+      case "phantomjs":
+        return createPhantomJsDriver();
+    }
+    
+    throw new RuntimeException(String.format("Unknown browser %s", getBrowser()));
+  }
+  
+  protected WebDriver createPhantomJsDriver() {
+    DesiredCapabilities desiredCapabilities = DesiredCapabilities.phantomjs();
+    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, ".phantomjs/bin/phantomjs");
+    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] { "--ignore-ssl-errors=true", "--webdriver-loglevel=NONE", "--load-images=false" } );
+    PhantomJSDriver driver = new PhantomJSDriver(desiredCapabilities);
+    driver.manage().window().setSize(new Dimension(1024, 768));
+    return driver;
   }
   
   public static long getTestStartTime() {
