@@ -1,6 +1,7 @@
 package fi.muikku.notifier;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.ejb.Stateful;
@@ -12,26 +13,15 @@ import javax.inject.Inject;
 import fi.muikku.dao.notifier.NotifierActionEntityDAO;
 import fi.muikku.dao.notifier.NotifierMethodEntityDAO;
 import fi.muikku.dao.notifier.NotifierUserActionDAO;
-import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.notifier.NotifierActionEntity;
 import fi.muikku.model.notifier.NotifierMethodEntity;
 import fi.muikku.model.notifier.NotifierUserAction;
 import fi.muikku.model.notifier.NotifierUserActionAllowance;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.session.SessionController;
-import fi.muikku.users.UserController;
 
 @Dependent
 @Stateful
 public class NotifierController {
-  @Inject
-  private UserEntityDAO userDAO;
-
-  @Inject
-  private SessionController sessionController;
-
-  @Inject
-  private UserController userController;
   
   @Inject
   private NotifierUserActionDAO notifierUserActionDAO;
@@ -58,6 +48,7 @@ public class NotifierController {
 
   public void sendNotification(NotifierAction action, UserEntity sender, List<UserEntity> recipients, Map<String, Object> params) {
     for (UserEntity recipient : recipients) {
+      params.put("locale", recipient.getLocale() == null ? new Locale("fi") : new Locale(recipient.getLocale()));
       sendNotification(action, sender, recipient, params);
     }
   }

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.Stateful;
@@ -46,6 +48,8 @@ import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceEntityController;
+import fi.muikku.schooldata.entity.User;
+import fi.muikku.servlet.BaseUrl;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
@@ -63,6 +67,10 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 8910816437728659987L;
 
+  @Inject
+  @BaseUrl
+  private String baseUrl;
+  
   @Inject
   private SessionController sessionController;
   
@@ -278,7 +286,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   public Response postMessage(
       CommunicatorNewMessageRESTModel newMessage
    ) throws AuthorizationException {
-    UserEntity user = sessionController.getLoggedUserEntity();
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
     
     CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
     
@@ -301,9 +309,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         
         for (UserGroupUserEntity groupUser : groupUsers) {
           UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
-          UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
-          
-          recipients.add(userEntity);
+          recipients.add(userSchoolDataIdentifier.getUserEntity());
         }
       }
     } else {
@@ -345,10 +351,19 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
-    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
+    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, userEntity, recipients, categoryEntity, 
         newMessage.getCaption(), newMessage.getContent(), tagList);
+    
+    Map<String, Object> params = new HashMap<String, Object>();
+    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
+    params.put("sender", String.format("%s %s", user.getFirstName(), user.getLastName()));
+    params.put("subject", newMessage.getCaption());
+    params.put("content", newMessage.getContent());
+    params.put("url", String.format("%s/communicator", baseUrl));
+    //TODO Hash paramters cannot be utilized in redirect URLs
+    //params.put("url", String.format("%s/communicator#inbox/%d", baseUrl, message.getCommunicatorMessageId().getId()));
       
-    notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
+    notifierController.sendNotification(communicatorNewInboxMessageNotification, userEntity, recipients, params);
     webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
     
     CommunicatorMessageRESTModel result = new CommunicatorMessageRESTModel(message.getId(), message.getCommunicatorMessageId().getId(), 

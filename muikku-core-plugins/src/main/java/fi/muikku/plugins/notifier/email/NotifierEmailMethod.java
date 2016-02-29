@@ -44,7 +44,7 @@ public class NotifierEmailMethod implements NotifierMethod {
     if (message != null) {
       List<String> addresses = userEmailEntityController.listAddressesByUserEntity(context.getRecipient());
       
-      mailer.sendMail(environmentSettingsController.getSystemEmailSenderAddress(), addresses, message.getEmailSubject(context), message.getEmailContent(context));
+      mailer.sendMail(message.getEmailMimeType(context), environmentSettingsController.getSystemEmailSenderAddress(), addresses, message.getEmailSubject(context), message.getEmailContent(context));
     }
   }
 
