@@ -25,6 +25,7 @@
         font-size:18px;
         text-align:right;
         position:relative;
+        font-weight:400;
       }
       
       .workspace-additional-info-wrapper {
@@ -42,30 +43,7 @@
       }
       
       .workspace-study-level-indicator {
-/*         top:130px; */
-/*         transform:none; */
-/*         padding:4px 6px; */
-/*         font-size:14px; */
-/*         display:inline-block; */
-/*         position:relative; */
-/*         left:auto; */
-/*         top:auto; */
-/*         bottom:auto; */
-/*         right:0; */
-/*         border-radius:3px; */
-/*         margin:0 0 5px 0; */
-/*         box-shadow:none; */
-/*         width:7px; */
-/*         letter-spacing:20px; */
         display:none;
-        
-/*         &.indicator1 { */
-/*           border-left:0px; */
-/*         } */
-        
-/*         .workspace-study-level-text { */
-/*           transform:none; */
-/*         } */
       }
     
     }
@@ -83,7 +61,7 @@
     background:#fff;
   
     .workspace-meta-item-wrapper {
-      margin:0 5px 0 0;
+      margin:0 5px 5px 0;
     }
   
     .workspace-meta-title {

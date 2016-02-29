@@ -49,14 +49,6 @@
       }
     });
   });
-  
-  function refreshNavigationWrapperPosition() {
-    var contentContainer = ($('#contentWorkspaceMaterials').length > 0 ? contentContainer = $('#contentWorkspaceMaterials') : contentContainer = $('#content'));
-    var naviWrapper = $('#workspaceNavigationWrapper');
-    $(naviWrapper).css({
-      left:(Math.max(contentContainer.offset().left - naviWrapper.width() - 10, 5)) + 'px'
-    });
-  }
 
   window.onload = function(e) {
     if ($('.workspace-publication-container')) {
@@ -74,14 +66,6 @@
 
   $(document).ready(function() {
 
-    // Workspace navigation
-    if ($('#workspaceNavigationWrapper').length > 0) {
-      refreshNavigationWrapperPosition();
-      $(window).resize(function(){
-        refreshNavigationWrapperPosition();
-      });
-    }
-    
     if ($('.workspace-dock-navi-button-cancel-evaluation'.length > 0)) {
       $('.workspace-dock-navi-button-cancel-evaluation').hide();
     }

@@ -36,6 +36,10 @@ body {
   width:100%;
 }
 
+#content {
+  position:relative;
+}
+
 /* Navigation Icons tooltip */
 [class^="icon-"] span, [class*=" icon-"] span {
   display: inline-block;
