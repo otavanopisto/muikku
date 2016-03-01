@@ -34,6 +34,7 @@ import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Address;
+import fi.pyramus.rest.model.ContactType;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseAssessment;
 import fi.pyramus.rest.model.CourseAssessmentRequest;
@@ -478,14 +479,15 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public List<UserPhoneNumber> createEntities(SchoolDataIdentifier userIdentifier, PhoneNumber[] phoneNumbers) {
-    List<UserPhoneNumber> result = new ArrayList<>();
-    
-    for (PhoneNumber phoneNumber : phoneNumbers) {
-      result.add(new PyramusUserPhoneNumber(userIdentifier, phoneNumber.getNumber()));
+  public UserPhoneNumber createEntity(SchoolDataIdentifier userIdentifier, PhoneNumber phoneNumber, ContactType contactType) {
+    if (phoneNumber != null) {
+      return new PyramusUserPhoneNumber(userIdentifier, 
+        phoneNumber.getNumber(),
+        contactType != null ? contactType.getName() : null,
+        phoneNumber.getDefaultNumber());
     }
     
-    return result;
+    return null;
   }
   
   public TransferCredit createEntity(fi.pyramus.rest.model.TransferCredit transferCredit) {
