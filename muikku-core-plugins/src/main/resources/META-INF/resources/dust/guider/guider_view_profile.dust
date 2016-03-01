@@ -33,6 +33,18 @@
      <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.municipality"/}</span><span class="mf-item-details-value gt-user-details-value">{?municipality}{municipality}{:else}{#localize key="plugin.guider.content.null"/}{/municipality}</span></div>
      <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.school"/}</span><span class="mf-item-details-value gt-user-details-value">{?school}{school}{:else}{#localize key="plugin.guider.content.null"/}{/school}</span></div>
      <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.lastLogin"/}</span><span class="mf-item-details-value gt-user-details-value">{?lastLogin}{lastLogin|formatDate}{:else}{#localize key="plugin.guider.content.null"/}{/lastLogin}</span></div>
+    
+     {#phoneNumbers}
+       <div class="gt-user-details-item">
+         <span class="mf-item-details-label gt-user-details-label">
+           {#localize key="plugin.guider.user.details.label.phoneNumber" arg0=type/}
+         </span>
+         <span class="mf-item-details-value gt-user-details-value">
+           {number}{?defaultNumber} ({#localize key="plugin.guider.user.details.label.phoneNumberDefault" arg0=type/}){/defaultNumber}
+         </span>
+       </div>
+     {/phoneNumbers}
+     
     </div>
     <div class="clear"></div>  
   </div>
