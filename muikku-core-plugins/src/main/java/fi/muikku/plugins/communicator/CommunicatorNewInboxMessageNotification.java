@@ -24,7 +24,7 @@ public class CommunicatorNewInboxMessageNotification implements NotifierAction, 
   @Override
   public String getEmailSubject(NotifierContext context) {
     Locale locale = (Locale) context.getParameter("locale");
-    return localeController.getText(locale, "plugin.communicator.notification.newmessage.mail.subject");
+    return locale == null ? "Uusi viesti Muikussa" : localeController.getText(locale, "plugin.communicator.notification.newmessage.mail.subject");
   }
 
   @Override
@@ -34,6 +34,9 @@ public class CommunicatorNewInboxMessageNotification implements NotifierAction, 
     String messageContent = (String) context.getParameter("content");
     String messageUrl = (String) context.getParameter("url");
     Locale locale = (Locale) context.getParameter("locale");
+    if (messageSender == null || messageSubject == null || messageContent == null || messageUrl == null || locale == null) {
+      return "Uusi viesti Muikussa";
+    }
     return localeController.getText(
         locale,
         "plugin.communicator.notification.newmessage.mail.content",

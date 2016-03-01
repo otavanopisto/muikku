@@ -69,12 +69,9 @@ import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.plugins.evaluation.EvaluationController;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
-import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
-import fi.muikku.servlet.BaseUrl;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
-import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
@@ -95,15 +92,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   private LocalSessionController localSessionController;
 
   @Inject
-  @BaseUrl
-  private String baseUrl;
-  
-  @Inject
   private Logger logger;
   
-  @Inject
-  private UserController userController;
-
   @Inject
   private CommunicatorController communicatorController;
   
@@ -308,13 +298,12 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     fi.muikku.atests.CommunicatorMessage result = new fi.muikku.atests.CommunicatorMessage(message.getId(), communicatorMessageId2, message.getSender(), payload.getCategoryName(), message.getCaption(), message.getContent(), message.getCreated(), payload.getTags(), payload.getRecipientIds(), payload.getRecipientGroupIds(), payload.getRecipientStudentsWorkspaceIds(), payload.getRecipientTeachersWorkspaceIds());
     
     Map<String, Object> params = new HashMap<String, Object>();
-    User sender = userController.findUserByDataSourceAndIdentifier(localSessionController.getLoggedUserSchoolDataSource(), localSessionController.getLoggedUserIdentifier());
-    params.put("sender", String.format("%s %s", sender.getFirstName(), sender.getLastName()));
+    params.put("sender", "Admin User");
     params.put("subject", message.getCaption());
     params.put("content", message.getContent());
-    params.put("url", String.format("%s/communicator", baseUrl));
+    params.put("url", "https://dev.muikku.fi/communicator");
 
-    notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
+    notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients, params);
     webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
     
     return Response.ok(

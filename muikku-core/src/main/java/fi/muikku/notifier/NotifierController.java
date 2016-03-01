@@ -1,7 +1,7 @@
 package fi.muikku.notifier;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.ejb.Stateful;
@@ -9,6 +9,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.LocaleUtils;
 
 import fi.muikku.dao.notifier.NotifierActionEntityDAO;
 import fi.muikku.dao.notifier.NotifierMethodEntityDAO;
@@ -42,13 +44,13 @@ public class NotifierController {
   
   public void sendNotification(NotifierAction action, UserEntity sender, List<UserEntity> recipients) {
     for (UserEntity recipient : recipients) {
-      sendNotification(action, sender, recipient, null);
+      sendNotification(action, sender, recipient, new HashMap<String, Object>());
     }
   }
 
   public void sendNotification(NotifierAction action, UserEntity sender, List<UserEntity> recipients, Map<String, Object> params) {
     for (UserEntity recipient : recipients) {
-      params.put("locale", recipient.getLocale() == null ? new Locale("fi") : new Locale(recipient.getLocale()));
+      params.put("locale", recipient.getLocale() == null ? LocaleUtils.toLocale("fi") : LocaleUtils.toLocale(recipient.getLocale()));
       sendNotification(action, sender, recipient, params);
     }
   }
