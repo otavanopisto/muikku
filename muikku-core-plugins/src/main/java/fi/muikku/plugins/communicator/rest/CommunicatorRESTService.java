@@ -355,14 +355,8 @@ public class CommunicatorRESTService extends PluginRESTService {
         newMessage.getCaption(), newMessage.getContent(), tagList);
     
     Map<String, Object> params = new HashMap<String, Object>();
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
-      params.put("sender", String.format("%s %s", user.getFirstName(), user.getLastName()));
-    }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
+    params.put("sender", String.format("%s %s", user.getFirstName(), user.getLastName()));
     params.put("subject", newMessage.getCaption());
     params.put("content", newMessage.getContent());
     params.put("url", String.format("%s/communicator", baseUrl));
