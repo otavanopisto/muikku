@@ -739,10 +739,14 @@
       }
     },
     
-    _reloadStudents: function () {
+    _clearStudentsView: function () {
       this.element.find('.evaluation-student-wrapper').remove();
       this.element.find('.evaluation-assignments').empty();
       this.element.find('.evaluation-no-students-found').remove();
+    },
+    
+    _reloadStudents: function () {
+      this._clearStudentsView();
       this._loadStudents();
     },
     
@@ -878,6 +882,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           this._workspaceUsers = workspaceStudents;
+          this._clearStudentsView();
           
           if (this._workspaceUsers.length > 0) {
             $.each(workspaceStudents, $.proxy(function (index, workspaceStudent) {
@@ -1233,7 +1238,7 @@
     $('#filter-students-by-assessment-requested').on("click", function () {
       $('#evaluation').evaluation('filter', 'requestedAssessment', $(this).prop('checked') ? true : null);
     });
-
+    
     $('#filter-students-by-not-assessed').on("click", function () {
       $('#evaluation').evaluation('filter', 'assessed', $(this).prop('checked') ? false : null);
     });
