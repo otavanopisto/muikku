@@ -38,11 +38,13 @@
     <div class="mf-item tr-tasklist flex-row">
       <div class="topic lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><h3>{#localize key="plugin.records.tasks.evaluated.topic" /}</h3></div>
       <div class="content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-        {#assignments}
-          {>"records/records_item_open_assignment.dust"/}
-        {:else}    
-          {>"records/records_item_open_noassignments.dust"/}
-        {/assignments}
+        <div class="flex-row">
+          {#assignments}
+            {>"records/records_item_open_assignment.dust"/}
+          {:else}    
+            {>"records/records_item_open_noassignments.dust"/}
+          {/assignments}
+          </div>
       </div>
     </div>  
   </div>

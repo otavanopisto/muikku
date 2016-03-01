@@ -42,3 +42,53 @@
     margin-left:10px;
   }
 }
+
+.tr-task-not-evaluated{
+    span:not(:first-child){
+       margin-left:10px;
+    }  
+  }
+
+.tr-task-evaluated{
+  &:hover{
+   cursor:pointer;
+   background-color:$bgr1;
+  }
+  
+  .title-container{
+  }
+  .content-container{
+    background-color:$bgr4;
+  }  
+  .title{
+    span{
+      display:inline-block;
+      box-sizing:border-box;
+      &:not(:first-child){
+       margin-left:10px;
+      }
+    }
+  
+  }
+  
+  .content{
+    padding:15px;
+  }
+}
+.tr-task-evaluated-grade{
+  background-color:$bgr1;
+  color:#dadada; 
+  padding:5px 10px;
+
+  &.grade {
+    color:#fff;
+    
+    &.passing {
+      background-color:#0acf00;
+    }
+    
+    &.non-passing {
+      background-color:#ea7401;
+    }
+  }
+}
