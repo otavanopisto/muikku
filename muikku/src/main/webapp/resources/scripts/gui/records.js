@@ -233,7 +233,7 @@
   });
   
   $(document).ready(function(){
-    $('.tr-records-view-container').records({
+    $('.tr-content-main').records({
       'userEntityId': MUIKKU_LOGGED_USER_ID,
       'studentIdentifier': MUIKKU_LOGGED_USER
     });

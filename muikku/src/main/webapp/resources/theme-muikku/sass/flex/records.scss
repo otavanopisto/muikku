@@ -1,0 +1,44 @@
+@import "_vars.scss";
+@import "_styles.scss";
+
+/* Transcript of records (.tr-*) */
+
+.tr-study-programme-name{
+  padding-left:5px;
+}
+
+
+
+.tr-item-description-title{
+  span{
+    font-size:19px;
+    font-weight:700;
+    &.tr-item-long{
+      margin-left:10px;
+    }    
+    
+    &.grade {
+      padding:5px 10px;
+      color:#fff;
+      
+      &.passing {
+        background-color:#0acf00;
+      }
+      
+      &.non-passing {
+        background-color:#ea7401;
+      }
+    }
+    
+    &:not(:first-child){
+      margin-left:10px;
+    }
+  }
+}
+
+.tr-item-description-content{
+  span{
+    display:inline-block;
+    margin-left:10px;
+  }
+}

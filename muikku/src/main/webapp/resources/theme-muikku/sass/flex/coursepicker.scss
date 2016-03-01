@@ -3,14 +3,9 @@
 
 /* Coursepicker (.cp-*) */
 
-.cp-content-main {
-  min-height:450px;
-}
+
 
 .cp-course { 
-  
-
- 
   &.not-published {
     font-style:italic;
     opacity:0.8;
@@ -18,13 +13,10 @@
     .cp-course-header-name {
       color:#d89828;
     }
-    
   }
-  
   .cp-course-details {
     position:relative;
   }
-
 }
 
 .cp-course-details-open {
