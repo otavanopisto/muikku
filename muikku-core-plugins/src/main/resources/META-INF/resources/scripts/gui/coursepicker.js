@@ -204,19 +204,19 @@
       var workspaceUrl = $(event.target).closest('.cp-course').find("input[name='workspaceUrl']").val();
       
       var dialogContent = $('<div>')
-        .append($('<div>').addClass("flex-row")
-          .append($('<div>').addClass("cp-course-message lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-first").append([
+        .append($('<div>').addClass("cp-course-message")
+          .append([
             $('<label>').html(message),
             $('<textarea>').attr({ 'name': "signUpMessage"})  
-          ]))
-        );
+          ]));
 
-      if (hasCourseFee) {
-        $('<div>').addClass("flex-row")
-          .append($('<div>').addClass("cp-course-fee lg-flex-cell-full md-flex-cell-full sm-flex-cell-full")
-            .append($('<label>').html(getLocaleText("plugin.coursepicker.singup.fee.label")))
-            .append($('<div>').html(getLocaleText("plugin.coursepicker.singup.fee.content")))
-          ).prependTo(dialogContent)
+      if (!hasCourseFee) {
+        $('<div>').addClass("cp-course-fee")
+          .append([
+            $('<label>').html(getLocaleText("plugin.coursepicker.singup.fee.label")),
+            $('<div>').html(getLocaleText("plugin.coursepicker.singup.fee.content"))
+          ])
+          .prependTo(dialogContent)
       }
       
       dialogContent.dialog({
@@ -226,10 +226,10 @@
         modal: true,
         resizable: false,
         open: $.proxy(function () {
-            this._disablePageScrolling;
+            this._disablePageScrolling();
           }, this),
         beforeClose: $.proxy(function () {
-            this._enablePageScrolling;
+            this._enablePageScrolling();
           }, this),
         buttons: [ 
           {
@@ -242,7 +242,10 @@
           }
         ]
       });  
-      dialogContent.dialog( "widget" ).addClass('flex-dialog');
+      dialogContent.dialog( "widget" ).addClass("flex-row flex-dialog").removeAttr("style");
+      dialogContent.dialog( "widget" ).find(".ui-dialog-titlebar").addClass("lg-flex-cell-full md-flex-cell-full sm-flex-cell-full");
+      dialogContent.dialog( "widget" ).find(".ui-dialog-content").addClass("lg-flex-cell-full md-flex-cell-full sm-flex-cell-full").removeAttr("style");
+      dialogContent.dialog( "widget" ).find(".ui-dialog-buttonpane").addClass("lg-flex-cell-full md-flex-cell-full sm-flex-cell-full");
     }
   });
 

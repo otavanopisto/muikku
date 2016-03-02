@@ -13,13 +13,16 @@ body .ui-dialog.main-functionality-dialog {
   min-height:100vh !important;
   padding:5px;
   overflow:auto;
+  box-sizing:border-box;
    
   .ui-dialog-titlebar {
     background:#84c5c8;
-    padding:20px 60px 20px 20px;
+    padding:10px 60px 10px 20px;
     margin:0 auto;
     max-width:960px;
     box-sizing:border-box;
+    flex-grow:0;
+    align-self:flex-end;
     
     .ui-dialog-title {
       font-size:28px;
@@ -35,6 +38,7 @@ body .ui-dialog.main-functionality-dialog {
       right:15px;
       top:10px;
       transition:opacity 0.3s ease-in-out;
+      position:fixed;
       
       &:hover {
         opacity:1;
@@ -63,13 +67,16 @@ body .ui-dialog.main-functionality-dialog {
   .ui-dialog-content {
     margin:20px auto;
     line-height:1.5em;
-    padding:10px 20px 10px 20px;
+    padding:10px 20px;
     overflow:auto;
     position:relative;
     color:#fff;
     text-transform:none;
     background:#7dbbbe;
     border-radius:5px;
+    max-width:960px;
+    box-sizing:border-box;
+    flex-grow:1;
     
     /* COURSEPICKER'S DESCRIPTION */
     .cp-course-description {
@@ -103,11 +110,16 @@ body .ui-dialog.main-functionality-dialog {
   .ui-dialog-buttonpane {
     margin:0 auto;
     max-width:960px;
-    padding:0 20px 20px 20px;
+    padding:10px 20px;
     box-sizing:border-box;
+    flex-grow:0;
+    align-self:flex-start;
       
     .ui-dialog-buttonset {
-      text-align:center;
+      text-align:right;
+      display:block;
+      width:100%;
+      box-sizing:border-box;
        
       button.signup {
         background:#27b91c; /* GREEN */

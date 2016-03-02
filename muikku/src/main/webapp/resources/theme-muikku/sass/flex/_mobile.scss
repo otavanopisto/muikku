@@ -219,10 +219,19 @@
       }
       
     }
+    
     .ui-dialog-content {
     
       .cp-course-description {
         max-height:5em !important;
+      }
+    
+    }
+    
+    .ui-dialog-buttonpane {
+    
+      .ui-dialog-buttonset {
+        text-align:center !important;
       }
     
     }
