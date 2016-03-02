@@ -116,7 +116,6 @@
     },
     
     _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
-      console.log([workspaceId, workspaceUrl, joinMessage]);
       
       mApi().coursepicker.workspaces.signup.create(workspaceId, {
         message: joinMessage
@@ -204,15 +203,11 @@
       var workspaceId =$(event.target).closest('.cp-course').find("input[name='workspaceId']").val();
       var workspaceUrl = $(event.target).closest('.cp-course').find("input[name='workspaceUrl']").val();
       
-      var dialogContent = $('<div>').addClass("flex-grid")
+      var dialogContent = $('<div>')
         .append($('<div>').addClass("flex-row")
-          .append($('<div>').addClass("cp-course-message lg-flex-cell-8 md-flex-cell-full sm-flex-cell-full lg-flex-cell-first").append([
+          .append($('<div>').addClass("cp-course-message lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-first").append([
             $('<label>').html(message),
             $('<textarea>').attr({ 'name': "signUpMessage"})  
-          ]))
-          .append($('<div>').addClass("cp-course-notification lg-flex-cell-8 md-flex-cell-full sm-flex-cell-full lg-flex-cell-last").append([
-            $('<label>').html(getLocaleText("plugin.coursepicker.singup.notificationLabel")),
-            $('<input>').attr('type', 'checkbox')
           ]))
         );
 
@@ -230,8 +225,12 @@
         draggable: false,
         modal: true,
         resizable: false,
-        open: this._disablePageScrolling,
-        beforeClose: this._enablePageScrolling,
+        open: $.proxy(function () {
+            this._disablePageScrolling;
+          }, this),
+        beforeClose: $.proxy(function () {
+            this._enablePageScrolling;
+          }, this),
         buttons: [ 
           {
             'class': 'send-button',
@@ -243,6 +242,7 @@
           }
         ]
       });  
+      dialogContent.dialog( "widget" ).addClass('flex-dialog');
     }
   });
 
