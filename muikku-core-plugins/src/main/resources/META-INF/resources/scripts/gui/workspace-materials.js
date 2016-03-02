@@ -143,5 +143,29 @@
         .text(saveButton.data('unsaved-text'));
     }
   });
+  
+  $(document).ready(function () {
+    if (MUIKKU_LOGGEDINROLES.student) {
+      mApi().workspace.workspaces.students
+        .read($('.workspaceEntityId').val(), { studentIdentifier: MUIKKU_LOGGED_USER })
+        .callback(function(err, result) {
+          if (!err) {
+            if (!result || !result.length) {
+              var signUpLink = $('<a>')
+                .attr('href', 'javascript:void(null)').text(getLocaleText('plugin.workspace.materials.notSignedUpWarningLink'))
+                .click(function () {
+                  // TODO: Add dialog
+                });
+              
+              var warning = $('<span>')
+                .text(getLocaleText('plugin.workspace.materials.notSignedUpWarning') + ' ')
+                .append(signUpLink);
+           
+              $('.notification-queue').notificationQueue('notification', 'warn', warning);
+            }
+          }
+        });
+    }
+  });
 
 }).call(this);
