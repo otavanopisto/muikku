@@ -1,0 +1,120 @@
+/* SIGN UP DIALOG */
+body .ui-dialog.main-functionality-dialog {
+  position:fixed !important;
+  z-index:99999;
+  background:#84c5c8;
+  left:0 !important;
+  top:0 !important;
+  bottom:0 !important;
+  right:0 !important;
+  width:100% !important;
+  box-sizing:border-box;
+  max-width:100% !important;
+  min-height:100vh !important;
+  padding:5px;
+  overflow:auto;
+   
+  .ui-dialog-titlebar {
+    background:#84c5c8;
+    padding:20px 60px 20px 20px;
+    margin:0 auto;
+    max-width:960px;
+    box-sizing:border-box;
+    
+    .ui-dialog-title {
+      font-size:28px;
+      line-height:1.2em; /* This adds to 1.5em which is defined in body */
+    }
+    
+    .ui-dialog-titlebar-close {
+      background:#84c5c8;
+      width:40px;
+      height:40px;
+      opacity:0.5;
+      padding:0;
+      right:15px;
+      top:10px;
+      transition:opacity 0.3s ease-in-out;
+      
+      &:hover {
+        opacity:1;
+      }
+      
+      &:before {
+        content: "\e903";
+        color:#fff;
+        font-size:40px;
+        font-weight:normal;
+        font-family: 'muikku';
+        speak: none;
+        font-style: normal;
+        text-decoration:none;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+    }
+    
+  }
+  
+  .ui-dialog-content {
+    margin:20px auto;
+    line-height:1.5em;
+    padding:10px 20px 10px 20px;
+    overflow:auto;
+    position:relative;
+    color:#fff;
+    text-transform:none;
+    background:#7dbbbe;
+    border-radius:5px;
+    
+    /* COURSEPICKER'S DESCRIPTION */
+    .cp-course-description {
+      font-size:16px;
+      max-height:15em;
+      overflow:auto;
+      padding:0 10px 0 0;
+      
+      p:first-child {
+        margin:0 0 1em 0;
+      }
+    }
+    
+    label {
+      font-weight:400;
+      font-size:16px;
+      margin:0 0 0 0;
+      display:block;
+      padding:0 5px 5px 0;
+      text-transform:uppercase;
+    }
+    
+    textarea {
+      padding:4px 8px;
+      box-sizing:border-box;
+      min-height:10em;
+    }
+    
+  }
+  
+  .ui-dialog-buttonpane {
+    margin:0 auto;
+    max-width:960px;
+    padding:0 20px 20px 20px;
+    box-sizing:border-box;
+      
+    .ui-dialog-buttonset {
+      text-align:center;
+       
+      button.signup {
+        background:#27b91c; /* GREEN */
+      }
+      
+    }
+      
+  }
+  
+}

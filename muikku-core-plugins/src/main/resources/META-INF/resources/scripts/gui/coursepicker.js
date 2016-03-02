@@ -184,46 +184,63 @@
       this._visitCourse(workspaceUrl);
     },
     
+    _disablePageScrolling: function () {
+      $("body").addClass("disable-page-scrolling");
+    },
+    
+    _enablePageScrolling: function () {
+      $("body").removeClass("disable-page-scrolling");
+    },
+    
     _onAttendButtonClick: function (event) {
       event.preventDefault();
       event.stopPropagation();
 
       var details = $(event.target).closest('.mf-item-details');
-      var title = $(details).find($('.cp-course-long')).html();
-      var desc = $(details).find($('.cp-course-description-text')).html();
+      var title = $(details).find($('.cp-course-long-name')).html();
+      var nameExtension = $(details).find($('.cp-course-extension')).html();
       var message = getLocaleText("plugin.coursepicker.singup.messageLabel");
       var hasCourseFee = $(details).attr('data-fee') == 'yes';
       var workspaceId =$(event.target).closest('.cp-course').find("input[name='workspaceId']").val();
       var workspaceUrl = $(event.target).closest('.cp-course').find("input[name='workspaceUrl']").val();
       
-      var dialogContent = $('<div>')
-        .append($('<div>').html(title))
-        .append($('<div>').html(desc))
-        .append($('<div>').append([
-          $('<label>').html(getLocaleText("plugin.coursepicker.singup.notificationLabel")),
-          $('<input>').attr('type', 'checkbox')
-        ]))
-        .append($('<label>').html(message))
-        .append($('<textarea>').attr({
-          'name': "signUpMessage"
-        }));
-      
+      var dialogContent = $('<div>').addClass("flex-grid")
+        .append($('<div>').addClass("flex-row")
+          .append($('<div>').addClass("cp-course-message lg-flex-cell-8 md-flex-cell-full sm-flex-cell-full lg-flex-cell-first").append([
+            $('<label>').html(message),
+            $('<textarea>').attr({ 'name': "signUpMessage"})  
+          ]))
+          .append($('<div>').addClass("cp-course-notification lg-flex-cell-8 md-flex-cell-full sm-flex-cell-full lg-flex-cell-last").append([
+            $('<label>').html(getLocaleText("plugin.coursepicker.singup.notificationLabel")),
+            $('<input>').attr('type', 'checkbox')
+          ]))
+        );
+
       if (hasCourseFee) {
-        $('<div>')
-          .append($('<label>').html(getLocaleText("plugin.coursepicker.singup.fee.label")))
-          .append($('<div>').html(getLocaleText("plugin.coursepicker.singup.fee.content")))
-          .appendTo(dialogContent)
+        $('<div>').addClass("flex-row")
+          .append($('<div>').addClass("cp-course-fee lg-flex-cell-full md-flex-cell-full sm-flex-cell-full")
+            .append($('<label>').html(getLocaleText("plugin.coursepicker.singup.fee.label")))
+            .append($('<div>').html(getLocaleText("plugin.coursepicker.singup.fee.content")))
+          ).prependTo(dialogContent)
       }
       
       dialogContent.dialog({
-        buttons: [
+        dialogClass: "main-functionality-dialog",
+        title: getLocaleText("plugin.coursepicker.signup.title", title, nameExtension),
+        draggable: false,
+        modal: true,
+        resizable: false,
+        open: this._disablePageScrolling,
+        beforeClose: this._enablePageScrolling,
+        buttons: [ 
           {
-            'text': getLocaleText("plugin.coursepicker.singup.buttonLabel"),
+            'class': 'send-button',
+            'text': getLocaleText("plugin.coursepicker.singup.signupButtonLabel"),
             'click': $.proxy(function () {
               var signUpMessage = dialogContent.find('textarea[name="signUpMessage"]').val();
               this._joinCourse(workspaceId, workspaceUrl, signUpMessage);
             }, this)
-          }          
+          }
         ]
       });  
     }
