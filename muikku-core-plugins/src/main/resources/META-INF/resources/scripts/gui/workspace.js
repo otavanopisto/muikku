@@ -64,14 +64,6 @@
     }
   };
 
-  $(document).ready(function() {
-
-    if ($('.workspace-dock-navi-button-cancel-evaluation'.length > 0)) {
-      $('.workspace-dock-navi-button-cancel-evaluation').hide();
-    }
-   
-  });
-
   $(document).on('click', '.workspace-dock-navi-button-evaluation', function (event) {
     
     if ($(this).attr('data-state') == 'unassessed') {
