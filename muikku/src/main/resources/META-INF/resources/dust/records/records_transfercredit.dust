@@ -1,12 +1,11 @@
-<div class="mf-item tr-item ft-01 tr-item-transfer-credit">
-  <div class="tr-item-details">
-    <div class="tr-item-details-container">       
-      <div class="tr-item-additionalInfo"/>
-      <div class="tr-item-description">
-        <div class="tr-item-header-name">
+<div class="mf-item tr-item ft-01 tr-item-transfer-credit lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+  <div class="mf-item-details tr-item-details flex-row">
+    <div class="mf-item-details-container tr-item-details-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom no-margin-left no-margin-right">       
+      <div class="mf-item-description tr-item-description flex-row">
+        <div class="mf-item-header-name tr-item-header-name lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
           <span class="tr-item-long">{courseName}</span>
         </div>
-        <div class="tr-item-header-details">
+        <div class="mf-item-header-details tr-item-header-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
           {#grade}
             <div class="tr-item-header-detail date"><span>{#localize key="plugin.records.transferCreditsDate" arg0=evaluated /}</div>
             <div class="tr-item-header-detail grade" title="{gradingScale}"><span>{grade}</span></div>
