@@ -37,7 +37,6 @@
       }
       
       this._dialog.dialog({
-        dialogClass: "main-functionality-dialog",
         title: getLocaleText("plugin.workspaceSignUp.title", this.options.name, this.options.nameExtension),
         draggable: false,
         modal: true,
@@ -60,10 +59,15 @@
         ]
       });  
       
-      this._dialog.dialog( "widget" ).addClass("flex-row flex-dialog").removeAttr("style");
+      this._dialog.dialog( "widget" ).addClass("flex-row").removeAttr("style");
       this._dialog.dialog( "widget" ).find(".ui-dialog-titlebar").addClass("lg-flex-cell-full md-flex-cell-full sm-flex-cell-full");
       this._dialog.dialog( "widget" ).find(".ui-dialog-content").addClass("lg-flex-cell-full md-flex-cell-full sm-flex-cell-full").removeAttr("style");
       this._dialog.dialog( "widget" ).find(".ui-dialog-buttonpane").addClass("lg-flex-cell-full md-flex-cell-full sm-flex-cell-full");
+      
+      this.element
+        .appendTo(document.body)
+        .addClass("flex-dialog main-functionality-dialog")
+        .append(this._dialog.dialog( "widget" ));
     },
 
     _disablePageScrolling: function () {
