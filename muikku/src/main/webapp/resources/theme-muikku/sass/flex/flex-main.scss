@@ -26,6 +26,11 @@ body {
   color:#2c2c2c;
 }
 
+.disable-page-scrolling {
+  height:100%;
+  overflow:hidden; 
+}
+
 .ui-widget-overlay {
   background:#000;
   opacity:0.5;

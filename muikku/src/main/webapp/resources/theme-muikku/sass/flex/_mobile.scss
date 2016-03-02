@@ -195,6 +195,47 @@
     .mf-item {
       margin:0 0 5px 0 !important;
     }
+    
+  }
+  
+  .ui-dialog.main-functionality-dialog {
+  
+    .ui-dialog-titlebar {
+      padding:10px 50px 10px 10px !important;
+    
+     .ui-dialog-title {
+        font-size:20px !important;
+        font-weight:400 !important;
+      }
+      
+      .ui-dialog-titlebar-close {
+        width:30px !important;
+        height:30px !important;
+      
+        &:before {
+          font-size:30px !important;
+        }
+      
+      }
+      
+    }
+    
+    .ui-dialog-content {
+    
+      .cp-course-description {
+        max-height:5em !important;
+      }
+    
+    }
+    
+    .ui-dialog-buttonpane {
+    
+      .ui-dialog-buttonset {
+        text-align:center !important;
+      }
+    
+    }
+    
   }
   
 }
