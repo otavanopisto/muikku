@@ -64,6 +64,10 @@ public class WorkspaceDiscussionsBackingBean {
       return NavigationRules.NOT_FOUND;
     }
 
+    if (!sessionController.hasCoursePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity)) {
+      return NavigationRules.ACCESS_DENIED;
+    }
+
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceEntityId = workspaceEntity.getId();
 
