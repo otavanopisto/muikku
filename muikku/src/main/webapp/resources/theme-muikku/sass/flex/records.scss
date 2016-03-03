@@ -3,6 +3,11 @@
 
 /* Transcript of records (.tr-*) */
 
+.tr-content-height-setter{
+  
+  min-height:200px;
+}
+
 .tr-study-programme-name{
   padding-left:5px;
 }
@@ -20,7 +25,7 @@
     &.grade {
       padding:5px 10px;
       color:#fff;
-      
+      margin-left:3px;      
       &.passing {
         background-color:#0acf00;
       }

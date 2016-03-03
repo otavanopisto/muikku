@@ -2,7 +2,6 @@
    <div class="tr-view-tool mf-view-tool icon-goback"></div>
    <div class="clear"></div>
 </div>
-
 {#.}
  <div class="mf-items lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
     <div class="mf-item tr-item ft-01 open flex-row">
