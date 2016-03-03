@@ -1,7 +1,5 @@
-<div class="tr-content-height-setter">
   {#.}
     {>"records/records_item.dust"/}
   {:else}    
     {>"records/records_empty.dust"/}
   {/.}
-</div>

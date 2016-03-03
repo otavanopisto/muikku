@@ -3,16 +3,39 @@
 
 /* Transcript of records (.tr-*) */
 
-.tr-content-height-setter{
-  
-  min-height:200px;
-}
-
 .tr-study-programme-name{
   padding-left:5px;
 }
 
-
+.tr-item-header-details{
+ .tr-details-right{
+  float:right;
+ }
+ .tr-item-header-detail{
+     &.grade {
+      padding:2px 8px;
+      color:#fff;
+      margin-left:3px;      
+      &.passing {
+        background-color:#0acf00;
+      }
+      
+      &.non-passing {
+        background-color:#ea7401;
+      }
+    }
+    
+    &:not(:first-child){
+      margin-left:10px;
+    }
+ 
+ }
+  div{
+   display:inline-block;
+  text-align:right;   
+  }
+  
+}
 
 .tr-item-description-title{
   span{
