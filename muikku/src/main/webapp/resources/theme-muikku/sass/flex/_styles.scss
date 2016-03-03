@@ -65,6 +65,22 @@
   color:#7ed9ff;
 }
 
+/* Workspace Navigation Tooltip Transitions */
+@mixin workspaceTooltipTransition($pr1,$trd1,$tf1) {
+  -webkit-transition-property:$pr1;
+  -webkit-transition-duration:$trd1;
+  -webkit-transition-timing-function:$tf1;
+  -moz-transition-property:$pr1;
+  -moz-transition-duration:$trd1;
+  -moz-transition-timing-function:$tf1;
+  -o-transition-property:$pr1;
+  -o-transition-duration:$trd1;
+  -o-transition-timing-function:$tf1; 
+  transition-property:$pr1;
+  transition-duration:$trd1;
+  transition-timing-function: $tf1;
+}
+
 @mixin no-select {
 -webkit-touch-callout: none;
 -webkit-user-select: none;
