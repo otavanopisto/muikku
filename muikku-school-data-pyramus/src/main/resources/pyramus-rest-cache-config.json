@@ -154,6 +154,12 @@
       "expireTime": 86400000,
       "enabledCaches": ["USER", "SYSTEM"],
       "evictOn": []
+    },
+    "/common/contactTypes/{contactTypeId}": {
+      "cacheStrategy": "EXPIRES",
+      "expireTime": 86400000,
+      "enabledCaches": ["USER", "SYSTEM"],
+      "evictOn": []
     }
   }
 }
