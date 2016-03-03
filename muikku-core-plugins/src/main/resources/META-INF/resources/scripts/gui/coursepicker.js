@@ -174,8 +174,8 @@
       event.stopPropagation();
 
       var details = $(event.target).closest('.mf-item-details');
-      var workspaceName = $(details).find($('.cp-course-long-name')).html();
-      var workspaceNameExtension = $(details).find($('.cp-course-extension')).html();
+      var workspaceName = $(details).find($('.cp-course-long-name')).html() ;
+      var workspaceNameExtension = $(details).find($('.cp-course-extension')).html() || "";
       var hasEvaluationFee = $(details).attr('data-fee') == 'yes';
       var workspaceId =$(event.target).closest('.cp-course').find("input[name='workspaceId']").val();
       var workspaceUrlName = $(event.target).closest('.cp-course').find("input[name='workspaceUrl']").val();
