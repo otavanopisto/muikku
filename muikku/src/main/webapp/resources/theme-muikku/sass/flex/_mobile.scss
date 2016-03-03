@@ -210,7 +210,7 @@
   
     .ui-dialog {
     
-      .ui-dialog-titlebar {
+      .ui-dialog-titlebar.ui-widget-header {
         padding:10px 50px 10px 10px;
       
        .ui-dialog-title {
@@ -230,7 +230,7 @@
         
       }
       
-      .ui-dialog-content {
+      .ui-dialog-content.ui-widget-content {
         margin:10px auto;
     
         .cp-course-description {
@@ -239,7 +239,7 @@
       
       }
       
-      .ui-dialog-buttonpane {
+      .ui-dialog-buttonpane.ui-widget-content {
       
         .ui-dialog-buttonset {
           text-align:center;
