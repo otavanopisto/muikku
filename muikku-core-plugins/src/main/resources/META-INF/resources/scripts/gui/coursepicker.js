@@ -51,6 +51,11 @@
     },
     
     _reloadWorkspaces: function () {
+      this._firstResult = 0;
+      this._loadWorkspaces();
+    },
+    
+    _loadWorkspaces: function () {
       var loader = $('<div>') 
         .addClass('loading')
         .appendTo($(this.element.find('#coursesList')));
@@ -117,7 +122,7 @@
     
     _loadMore: function () {
       this._firstResult += this._maxResults;
-      this._reloadWorkspaces();
+      this._loadWorkspaces();
     },
     
     _onCategoryChange: function (event, data) {
