@@ -45,6 +45,7 @@
           this._disablePageScrolling();
         }, this),
         beforeClose: $.proxy(function () {
+          this.element.remove();
           this._enablePageScrolling();
         }, this),
         buttons: [ 
