@@ -1,6 +1,7 @@
 package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserPhoneNumber;
 import fi.muikku.schooldata.entity.UserProperty;
 import fi.pyramus.rest.model.Address;
+import fi.pyramus.rest.model.ContactType;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.Language;
 import fi.pyramus.rest.model.Municipality;
@@ -623,14 +625,30 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     Long pyramusStudentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
     if (pyramusStudentId != null) {
       phoneNumbers = pyramusClient.get(String.format("/students/students/%d/phoneNumbers", pyramusStudentId), PhoneNumber[].class);
+      if (phoneNumbers == null) {
+        return Collections.emptyList();
+      }
     } else {
       Long pyramusStaffId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
       if (pyramusStaffId != null) {
         phoneNumbers = pyramusClient.get(String.format("/staff/members/%d/phoneNumbers", pyramusStaffId), PhoneNumber[].class);
+        if (phoneNumbers == null) {
+          return Collections.emptyList();
+        }
       }
     }
     
-    return entityFactory.createEntities(userIdentifier, phoneNumbers);
+    List<UserPhoneNumber> result = new ArrayList<>();
+    
+    for (PhoneNumber phoneNumber : phoneNumbers) {
+      ContactType contactType = phoneNumber.getContactTypeId() != null 
+          ? pyramusClient.get(String.format("/common/contactTypes/%d", phoneNumber.getContactTypeId()), ContactType.class) 
+          : null;
+          
+      result.add(entityFactory.createEntity(userIdentifier, phoneNumber, contactType));
+    }
+    
+    return result;
   }
 
   @Override

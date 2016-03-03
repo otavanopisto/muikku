@@ -566,6 +566,18 @@
             }
           }, this));
         }, this))
+        .on('$', $.proxy(function(user, userCallback) {
+          mApi().user.students.phoneNumbers
+            .read(this.options.userIdentifier)
+            .callback($.proxy(function(phoneNumberErr, phoneNumbers) {
+              if (phoneNumberErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', phoneNumberErr);
+              } else {
+                user.phoneNumbers = phoneNumbers;
+                userCallback();
+              }
+            }, this))
+        }, this))
         .callback($.proxy(function(err, user){
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));

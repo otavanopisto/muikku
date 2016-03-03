@@ -10,4 +10,8 @@ public interface UserPhoneNumber extends SchoolDataEntity {
 	
 	public void setNumber(String number);
 	
+	public String getType();
+	
+	public Boolean getDefaultNumber();
+	
 }
