@@ -93,8 +93,9 @@ public class WorkspaceMaterialsBackingBean {
     }
     
     workspaceName = workspace.getName();
+    workspaceNameExtension = workspace.getNameExtension();
     workspaceEntityId = workspaceEntity.getId();
-
+    
     try {
       contentNodes = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false);
     }
@@ -123,6 +124,10 @@ public class WorkspaceMaterialsBackingBean {
   public void setWorkspaceUrlName(String workspaceUrlName) {
     this.workspaceUrlName = workspaceUrlName;
   }
+  
+  public String getWorkspaceNameExtension() {
+    return workspaceNameExtension;
+  }
 
   public String getWorkspaceName() {
     return workspaceName;
@@ -131,7 +136,7 @@ public class WorkspaceMaterialsBackingBean {
   public Long getWorkspaceEntityId() {
     return workspaceEntityId;
   }
-
+  
   public void setWorkspaceEntityId(Long workspaceEntityId) {
     this.workspaceEntityId = workspaceEntityId;
   }
@@ -151,6 +156,7 @@ public class WorkspaceMaterialsBackingBean {
   private WorkspaceRootFolder rootFolder;
   private List<ContentNode> contentNodes;
   private String workspaceName;
+  private String workspaceNameExtension;
   private Long workspaceEntityId;
   private String materialsBaseUrl;
 }

@@ -3,11 +3,11 @@
   $.widget("custom.workspaceSignUpDialog", {
     
     options: {
-      name: null,
-      nameExtension: null,
+      workspaceName: null,
+      workspaceNameExtension: null,
       hasEvaluationFee: false,
-      workspaceId: null,
-      workspaceUrl: null
+      workspaceEntityId: null,
+      signUpRedirectUrl: null
     },
     
     _create : function() {
@@ -37,7 +37,7 @@
       }
       
       this._dialog.dialog({
-        title: getLocaleText("plugin.workspaceSignUp.title", this.options.name, this.options.nameExtension),
+        title: getLocaleText("plugin.workspaceSignUp.title", this.options.workspaceName, this.options.workspaceNameExtension),
         draggable: false,
         modal: true,
         resizable: false,
@@ -79,14 +79,18 @@
     },
     
     _signUp: function (joinMessage) {
-      mApi().coursepicker.workspaces.signup.create(this.options.workspaceId, {
+      mApi().coursepicker.workspaces.signup.create(this.options.workspaceEntityId, {
         message: joinMessage
       })
       .callback($.proxy(function (err) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          window.location = CONTEXTPATH + '/workspace/' + this.options.workspaceUrl;
+          if (this.options.signUpRedirectUrl) {
+            window.location = this.options.signUpRedirectUrl;
+          } else {
+            window.location.reload(true);
+          }
         }
       }, this));
     }   

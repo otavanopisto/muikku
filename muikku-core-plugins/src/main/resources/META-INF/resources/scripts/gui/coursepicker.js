@@ -174,18 +174,18 @@
       event.stopPropagation();
 
       var details = $(event.target).closest('.mf-item-details');
-      var title = $(details).find($('.cp-course-long-name')).html();
-      var nameExtension = $(details).find($('.cp-course-extension')).html();
+      var workspaceName = $(details).find($('.cp-course-long-name')).html();
+      var workspaceNameExtension = $(details).find($('.cp-course-extension')).html();
       var hasEvaluationFee = $(details).attr('data-fee') == 'yes';
       var workspaceId =$(event.target).closest('.cp-course').find("input[name='workspaceId']").val();
-      var workspaceUrl = $(event.target).closest('.cp-course').find("input[name='workspaceUrl']").val();
+      var workspaceUrlName = $(event.target).closest('.cp-course').find("input[name='workspaceUrl']").val();
       
       $('<div>').workspaceSignUpDialog({
-        name: title,
-        nameExtension: nameExtension,
+        workspaceName: workspaceName,
+        workspaceNameExtension: workspaceNameExtension,
         hasEvaluationFee: hasEvaluationFee,
-        workspaceId: workspaceId,
-        workspaceUrl: workspaceUrl
+        workspaceEntityId: workspaceId,
+        signUpRedirectUrl: CONTEXTPATH + '/workspace/' + workspaceUrlName
       });
     }
   });
