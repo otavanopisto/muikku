@@ -169,7 +169,7 @@
         }, this));
     };
     
-    if (MUIKKU_LOGGEDINROLES.student) {
+    if (MUIKKU_LOGGEDINROLES.student && ($('.canSignUp').val() == 'true')) {
       var workspaceEntityId = $('.workspaceEntityId').val();
       
       mApi().workspace.workspaces.students

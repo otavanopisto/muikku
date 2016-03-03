@@ -105,7 +105,8 @@ public class WorkspaceMaterialsBackingBean {
     }
     
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
-      
+    canSignUp = sessionController.hasCoursePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
+    
     return null;
   }
 
@@ -152,6 +153,10 @@ public class WorkspaceMaterialsBackingBean {
   public String getMaterialsBaseUrl() {
     return materialsBaseUrl;
   }
+  
+  public Boolean getCanSignUp() {
+    return canSignUp;
+  }
 
   private WorkspaceRootFolder rootFolder;
   private List<ContentNode> contentNodes;
@@ -159,4 +164,5 @@ public class WorkspaceMaterialsBackingBean {
   private String workspaceNameExtension;
   private Long workspaceEntityId;
   private String materialsBaseUrl;
+  private Boolean canSignUp;
 }
