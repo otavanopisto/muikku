@@ -1,20 +1,29 @@
 /* SIGN UP DIALOG */
-.ui-dialog.main-functionality-dialog {
-  position:fixed !important;
+.flex-dialog {
+  position:fixed;
   z-index:99999;
   background:#84c5c8;
-  left:0 !important;
-  top:0 !important;
-  bottom:0 !important;
-  right:0 !important;
-  width:100% !important;
+  left:0;
+  top:0;
+  bottom:0;
+  right:0;
+  width:100%;
   box-sizing:border-box;
-  max-width:100% !important;
-  min-height:100vh !important;
-  padding:5px;
+  max-width:100%;
+  min-height:100vh;
   overflow:auto;
   box-sizing:border-box;
-   
+}
+  
+.ui-dialog {
+  padding:5px;
+  align-content:center;
+  background:#84c5c8;
+  box-shadow:none;
+  max-width:100%;
+  min-height:100vh;
+  box-sizing:border-box;
+ 
   .ui-dialog-titlebar {
     background:#84c5c8;
     padding:10px 60px 10px 20px;

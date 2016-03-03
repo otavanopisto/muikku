@@ -68,7 +68,7 @@
       
       this.element
         .appendTo(document.body)
-        .addClass("flex-dialog main-functionality-dialog")
+        .addClass("flex-dialog")
         .append(this._dialog.dialog( "widget" ));
     },
 
