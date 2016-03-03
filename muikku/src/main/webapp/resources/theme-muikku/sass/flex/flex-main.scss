@@ -191,7 +191,7 @@ body {
   float:right;
   font-weight:400;
 
-  .lu-user-picture {
+  .lu-picture {
     border:2px solid #fff;
     height:48px;
     width:48px; 
@@ -200,7 +200,7 @@ body {
     box-sizing:border-box; 
     display:inline-block;
     border-radius:100%;
-    margin:0 4px 0 0;
+    margin:0 5px 0 auto;
     z-index:15;
     background-size:100% auto;
     border:2px solid #fff;

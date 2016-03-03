@@ -1,7 +1,7 @@
 @media screen and (max-width: 767px) {
 
   body {
-    padding:50px 5px 60px 5px;
+    padding:60px 5px 54px 5px;
     background-image:url('/gfx/light-diagonal-strips.png');
     background-repeat:repeat;
     background-color:#f0f3f5;
@@ -19,6 +19,11 @@
   #guides {
     margin:0 0 -4px 0;
   }
+  
+  main.content {
+    margin:20px 0 20px 0;
+  }
+    
   
   #staticNavigationWrapper {
     height:60px;
@@ -62,6 +67,7 @@
   
   div.dock-static-navi-button-navimore {
    float:right;
+   margin-right:0;
    
    &:hover {
      border:0;
@@ -129,7 +135,9 @@
            }
           
           }
+          
         }
+        
       }
       
     }
@@ -195,6 +203,7 @@
     .mf-item {
       margin:0 0 5px 0 !important;
     }
+    
   }
   
 }
