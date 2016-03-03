@@ -52,6 +52,7 @@
             'class': 'send-button',
             'text': getLocaleText("plugin.workspaceSignUp.signupButtonLabel"),
             'click': $.proxy(function () {
+              this._dialog.dialog("widget").find(".send-button").attr("disabled", "disabled");
               var signUpMessage = this._dialog.find('textarea[name="signUpMessage"]').val();
               this._signUp(signUpMessage);
             }, this)
