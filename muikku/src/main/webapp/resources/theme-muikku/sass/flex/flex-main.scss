@@ -4,6 +4,7 @@
 @import "_forms.scss";
 @import "_animations.scss";
 @import "_dialog.scss";
+@import "_flex-dialog.scss";
 @import "_buttons.scss";
 @import "_notif-queue.scss";
 @import "_connectionlost.scss";
@@ -24,6 +25,11 @@ body {
   background-repeat:no-repeat,repeat-x;
   background-position: top center, top left;
   color:#2c2c2c;
+}
+
+.disable-page-scrolling {
+  height:100%;
+  overflow:hidden; 
 }
 
 .ui-widget-overlay {

@@ -45,7 +45,7 @@
           .addClass('notification-queue-item')
           .addClass(severityOption['class'])
           .append($('<span>').html(message))
-          .append($('<a>').attr('href', 'javascript:void(null)'))
+          .append($('<a>').addClass('notification-queue-item-close').attr('href', 'javascript:void(null)'))
           .appendTo($(this.element).find('.notification-queue-items')));
       } else {
         throw new Error("Severity " + severity + " is undefined");
@@ -68,7 +68,7 @@
         }, this), severityOption.timeout);
       } 
       
-      $(item).find('a').click($.proxy(this._onRemoveClick, this));
+      $(item).find('a.notification-queue-item-close').click($.proxy(this._onRemoveClick, this));
       
       return $(item);
     },

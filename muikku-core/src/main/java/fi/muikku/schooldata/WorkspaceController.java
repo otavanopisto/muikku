@@ -320,6 +320,11 @@ public class WorkspaceController {
     return workspaceSchoolDataController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
   }
   
+  public WorkspaceUser findWorkspaceUserByWorkspaceEntityAndUser(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    return findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
+  }
+  
   public WorkspaceUser findWorkspaceUser(WorkspaceUserEntity workspaceUserEntity) {
     return workspaceSchoolDataController.findWorkspaceUser(workspaceUserEntity);
   }
