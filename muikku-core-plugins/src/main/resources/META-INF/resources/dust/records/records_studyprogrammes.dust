@@ -1,6 +1,6 @@
 {#students}
   <div class="tr-study-programme-name lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><h3>{studyProgrammeName}</h3></div>
-  <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+  <div class="tr-study-programme-accomplishments lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
     {#workspaces}
       {>"records/records_items.dust"/}
     {/workspaces}
