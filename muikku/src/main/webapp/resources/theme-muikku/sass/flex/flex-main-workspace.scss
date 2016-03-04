@@ -44,6 +44,7 @@ body {
 
 #content {
   position:relative;
+  padding-top:0.01em;
 }
 
 /* Navigation Icons tooltip */
@@ -100,6 +101,7 @@ body {
   opacity:0.9;
   box-shadow:-5px 0 5px rgba(0, 0, 0, 0.2);
   font-size:14px;
+  z-index:999;
   
   .footer-predefined-bg {
     position:absolute;
@@ -115,6 +117,11 @@ body {
   .footer-predefined-content {
     position:relative;
     z-index:2;
+    
+    a {
+      text-decoration:none;
+    }
+    
   }
   
 }
@@ -228,66 +235,6 @@ main.content {
   margin:30px 0 0 0;
 }
 
-/* Headers */
-h1,h2,h3,h4,h5,h6 {
-  color:$header;
-  text-transform:uppercase;
-  margin:0 0 0.5em 0;
-  font-weight:300;
-}
-
-h1 {
-  font-size:29px;
-}
-  
-h2 {
-  font-size:26px;
-}
-
-h3 {
-  font-size:19px;
-}
-
-h4 {
-  font-size:17px;
-}
-
-h5 {
-  font-size:15px;
-  font-weight:400;
-}
-
-h6 {
-  font-size:13px;
-  font-weight:400;
-}
-
-.subtitle {
-  color:$subTitle;
-  font-weight:400;
-}
-
-a {
-  color:$link;
-  text-decoration:none;
-  
-  &:hover {
-    text-decoration:underline;
-  }
-  
-}
-
-/* Subscript & Superscript*/
-sub {
-  vertical-align:sub;
-  font-size:70%;
-}
-
-sup {
-  vertical-align:super;
-  font-size:70%;
-}
- 
 #workspaceDockWrapper,
 #workspaceMaterialsDockWrapper,
 #workspaceEditDockWrapper {

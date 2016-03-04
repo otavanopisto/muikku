@@ -79,6 +79,7 @@ body {
   right:0;
   opacity:0.9;
   box-shadow:-5px 0 5px rgba(0, 0, 0, 0.2);
+  z-index:999;
   
   .footer-predefined-bg {
     position:absolute;
@@ -94,6 +95,11 @@ body {
   .footer-predefined-content {
     position:relative;
     z-index:2;
+    
+    a {
+      text-decoration:none;
+    }
+    
   }
   
 }
