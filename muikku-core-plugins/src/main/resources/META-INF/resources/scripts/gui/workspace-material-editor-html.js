@@ -92,9 +92,10 @@
       
       this._editor = $(this._editorContainer).coOpsCK({
         externalPlugins : {
-          'widget' : CONTEXTPATH + '/scripts/ckplugins/widget/',
-          'lineutils' : CONTEXTPATH + '/scripts/ckplugins/lineutils/',
-          'oembed' : CONTEXTPATH + '/scripts/ckplugins/oembed/',
+          'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.7/',
+          'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.7/',
+          'mathjax': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/mathjax/4.5.7/',
+          'oembed' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/oembed/1.17/',
           'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
           'coops' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/coops/0.1.1/plugin.min.js',
           'coops-connector' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/coops-connector/0.1.1/plugin.min.js',
@@ -119,7 +120,8 @@
                        'muikku-filefield', 
                        'muikku-selection',
                        'muikku-connectfield',
-                       'muikku-embedded'],
+                       'muikku-embedded',
+                       'mathjax'],
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         editorOptions: {
           autoGrowOnStartup : true,
@@ -134,20 +136,21 @@
           contentsCss : CONTEXTPATH +  '/css/custom-ckeditor-contentcss.css',
           format_tags : 'p;h3;h4',
           baseHref: this.options.materialPath + '/', 
+          mathJaxLib: '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
           toolbar: [
             { name: 'document', items : [ 'Source' ] },
             { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+            { name: 'editing', items: [ 'Find', 'Replace', '-', 'SelectAll', '-', 'Scayt' ] },
             { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+            '/',
+            { name: 'styles', items : [ 'Styles','Format' ] },
+            { name: 'insert', items : [ 'Image','oembed','Mathjax','Table','Iframe','SpecialChar' ] },
             { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
             { name: 'colors', items : [ 'TextColor','BGColor' ] },
             '/',
-            { name: 'styles', items : [ 'Styles','Format' ] },
-            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
-            '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
-            { name: 'insert', items : [ 'Image','oembed','Table','Iframe','SpecialChar' ] },          
-            { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] },
-            '/',
-            { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']}
+            { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']},
+            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote', '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },          
+            { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] }
           ],
         }
       });
