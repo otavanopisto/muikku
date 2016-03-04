@@ -103,13 +103,16 @@ public class WorkspaceJournalBackingBean {
       return NavigationRules.NOT_FOUND;
     }
 
-    workspaceBackingBean.setWorkspaceUrlName(urlName);
-    workspaceEntityId = workspaceEntity.getId();
-    
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity)) {
+      return NavigationRules.ACCESS_DENIED;
+    }
+
     if (studentId != null && !sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)){
       return NavigationRules.ACCESS_DENIED;
     }
 
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
+    workspaceEntityId = workspaceEntity.getId();
     posterCache = new HashMap<Long, String>();
     canListAllEntries = sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
     workspaceStudents = prepareWorkspaceStudents();
