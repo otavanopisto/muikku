@@ -3,6 +3,7 @@
 @import "_workspaces-materials-defaults.scss"; /* Material specific styles */
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
+@import "flex/_flex-dialog.scss";
 
 .lazy-pdf {
   height: 822px;
@@ -10,6 +11,11 @@
 
 .lazy-swf {
   height: 500px;
+}
+
+.disable-page-scrolling {
+  height:100%;
+  overflow:hidden; 
 }
   
 body[class^='workspace'] {

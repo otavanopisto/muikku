@@ -206,4 +206,49 @@
     
   }
   
+  .flex-dialog {
+  
+    .ui-dialog {
+    
+      .ui-dialog-titlebar.ui-widget-header {
+        padding:10px 50px 10px 10px;
+      
+       .ui-dialog-title {
+          font-size:20px;
+          font-weight:400;
+        }
+        
+        .ui-dialog-titlebar-close {
+          width:30px;
+          height:30px;
+        
+          &:before {
+            font-size:30px;
+          }
+        
+        }
+        
+      }
+      
+      .ui-dialog-content.ui-widget-content {
+        margin:10px auto;
+    
+        .cp-course-description {
+          max-height:5em;
+        }
+      
+      }
+      
+      .ui-dialog-buttonpane.ui-widget-content {
+      
+        .ui-dialog-buttonset {
+          text-align:center;
+        }
+        
+      }
+    
+    }
+    
+  }
+  
 }
