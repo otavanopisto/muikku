@@ -3,6 +3,17 @@
 
 /* Transcript of records (.tr-*) */
 
+.tr-content-main {
+  &.loading {
+    &:before {
+      @include generic-loader(50px);
+      position:absolute;
+      top:50%;
+      left:50%;
+    }
+  }
+}
+
 .tr-study-programme-name{
   padding-left:5px;
 }
