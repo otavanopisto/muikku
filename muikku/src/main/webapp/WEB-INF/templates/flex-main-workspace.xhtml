@@ -1,0 +1,344 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="flex-main.xhtml">
+  
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main-workspace.css"/>
+    
+    <ui:insert name="workspace-view-styles"></ui:insert>  
+  </ui:define> 
+  
+  <ui:define name="navigation">
+    <!-- MUIKKU MAIN NAVIGATION -->
+    <nav id="staticNavigationWrapper">
+      <div class="static-navigation-bg"></div>
+      <div id="staticNavigation">
+        <!-- DESKTOP/TABLET NAVIGATION -->
+        <!-- HOME -->
+        <div class="dock-static-navi-button-home #{activeTrail eq 'index' ? 'active-trail' : ''}" title="#{i18n.text['plugin.home.home']}">
+          <a href="#{request.contextPath}/" class="icon-home"/>
+        </div>
+        <!-- COURCEPICKER -->
+        <div class="dock-static-navi-button-coursepicker #{activeTrail eq 'coursepicker' ? 'active-trail' : ''}" title="#{i18n.text['plugin.coursepicker.coursepicker']}">
+          <a jsf:outcome="/jsf/coursepicker/index.jsf" class="icon-books tooltip">
+            <span style="display:none" class="dock-notification"></span>
+          </a>
+        </div>
+        <!-- COMMUNICATOR -->
+        <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+          <div class="dock-static-navi-button-communicator #{activeTrail eq 'communicator' ? 'active-trail' : ''}" title="#{i18n.text['plugin.communicator.communicator']}">
+            <a jsf:outcome="/jsf/communicator/index.jsf" class="icon-envelope">
+              <span style="display:none" class="dock-notification"></span>
+            </a>
+          </div>
+          <!-- DISCUSSION -->
+          <div class="dock-static-navi-button-discussion sm-flex-hide #{activeTrail eq 'discussion' ? 'active-trail' : ''}" title="#{i18n.text['plugin.forum.forum']}">
+            <a jsf:outcome="/jsf/discussion/index.jsf" class="icon-bubble">
+              <span style="display:none" class="dock-notification"></span>
+            </a>
+          </div>
+        </ui:fragment>
+        <!-- GUIDER -->
+        <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+          <div class="dock-static-navi-button-guider #{activeTrail eq 'guider' ? 'active-trail' : ''}" title="#{i18n.text['plugin.guider.guider']}">
+            <a jsf:outcome="/jsf/guider/index.jsf" class="icon-members">
+              <span style="display:none" class="dock-notification"></span>
+            </a>
+          </div>
+        </ui:fragment>
+        <!-- TRANSCRIPT of RECORDS -->
+        <ui:fragment rendered="#{sessionBackingBean.studentLoggedIn}">
+          <div class="dock-static-navi-button-records #{activeTrail eq 'records' ? 'active-trail' : ''}" title="#{i18n.text['plugin.records.records']}">
+            <a jsf:outcome="/jsf/records/index.jsf" class="icon-profile">
+              <span style="display:none" class="dock-notification"></span>
+            </a>
+          </div>
+        </ui:fragment>
+        <!-- EVALUATION -->
+        <ui:fragment rendered="#{evaluationWidgetBackingBean.visible}">
+          <div class="dock-static-navi-button-evaluation sm-flex-hide" title="#{i18n.text['plugin.evaluation.evaluation']}">
+            <a jsf:outcome="/jsf/evaluation/index.jsf" class="icon-evaluate" target="top">
+              <span style="display:none" class="dock-notification"></span>
+            </a>
+          </div>
+        </ui:fragment>
+        <!-- ANNOUNCER -->
+        <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+          <div class="dock-static-navi-button-announcer sm-flex-hide #{activeTrail eq 'announcer' ? 'active-trail' : ''}" title="#{i18n.text['plugin.announcer.announcer']}">
+            <a jsf:outcome="/jsf/announcer/index.jsf" class="icon-announcer">
+              <span style="display:none" class="dock-notification"></span>
+            </a>
+          </div>
+        </ui:fragment>
+        <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+          <div class="lu-picture sm-flex-hide" id="loggedUserPicture">
+            <a jsf:outcome="/jsf/workspace/profile.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}"><img src="/gfx/default-user-picture.jpg"/></a> 
+          </div>
+        </ui:fragment>
+
+        <!-- MOBILE NAVIGATION - NAVMORE -->
+        <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+          <div class="dock-static-navi-button-navimore lg-flex-hide md-flex-hide" title="">
+            <div class="icon-navicon">
+              <div class="navmore-container">
+                <!-- DISCUSSION -->
+                <div class="dock-static-navi-button-discussion lg-flex-hide md-flex-hide">
+                  <a jsf:outcome="/jsf/discussion/index.jsf" class="icon-bubble"><span>#{i18n.text['plugin.forum.forum']}</span></a>
+                </div>
+                <!-- EVALUATION -->
+                <ui:fragment rendered="#{evaluationWidgetBackingBean.visible}">
+                  <div class="dock-static-navi-button-evaluation lg-flex-hide md-flex-hide">
+                    <a jsf:outcome="/jsf/evaluation/index.jsf" class="icon-evaluate" target="top"><span>#{i18n.text['plugin.evaluation.evaluation']}</span></a>
+                  </div>
+                </ui:fragment>
+                <!-- ANNOUNCER -->
+                <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+                  <div class="dock-static-navi-button-announcer lg-flex-hide md-flex-hide">
+                    <a jsf:outcome="/jsf/announcer/index.jsf" class="icon-announcer"><span>#{i18n.text['plugin.announcer.announcer']}</span></a>
+                  </div>
+                </ui:fragment>
+                <!-- PROFILE -->
+                <div class="dock-static-navi-button-profile lg-flex-hide md-flex-hide">
+                  <a class="icon-user" jsf:outcome="/jsf/profile/profile.jsf"><span>#{i18n.text['plugin.profile.profile']}</span></a> 
+                </div>
+                <!-- SIGNOUT -->
+                <h:form>
+                  <div class="dock-static-navi-button-logout lg-flex-hide md-flex-hide">
+                    <a jsf:action="#{logoutWidgetBackingBean.logout}" class="icon-signout"><span>#{i18n.text['plugin.logout.logout']}</span></a>
+                  </div>
+                </h:form>
+              </div>
+            </div>
+          </div>
+        </ui:fragment>
+      </div>
+    </nav>
+  </ui:define>
+  
+  <ui:define name="main-content">
+    <div class="flex-grid" id="content">
+      <!-- WORKSPACE NAVIGATION -->
+      <div id="workspaceNavigationWrapper">
+        <ui:fragment rendered="#{workspaceBackingBean.isStudent()}">
+          <!-- WORKSPACE EVALUATION NAVIGATION -->
+          <nav id="workspaceEvaluationDockWrapper">
+            <div id="workspaceEvaluationDock">
+              <div class="workspace-dock-navi-button-evaluation" data-state="#{workspaceBackingBean.assessmentState}">
+                <ui:fragment rendered="#{workspaceBackingBean.assessmentState eq 'unassessed'}">
+                  <a class="icon-assessment-#{workspaceBackingBean.assessmentState} tooltip" 
+                       title="#{i18n.text['plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip']}">
+                    <span class="workspace-navi-tt-container-evaluation">#{i18n.text['plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip']}</span>
+                  </a>   
+                </ui:fragment>
+                <ui:fragment rendered="#{workspaceBackingBean.assessmentState eq 'pending'}">
+                  <a class="icon-assessment-#{workspaceBackingBean.assessmentState} tooltip" 
+                       title="#{i18n.text['plugin.workspace.dock.evaluation.cancelEvaluationButtonTooltip']}">
+                    <span class="workspace-navi-tt-container-evaluation">#{i18n.text['plugin.workspace.dock.evaluation.cancelEvaluationButtonTooltip']}</span>
+                  </a>   
+                </ui:fragment>
+                <ui:fragment rendered="#{workspaceBackingBean.assessmentState eq 'canceled'}">
+                  <a class="icon-assessment-#{workspaceBackingBean.assessmentState} tooltip" 
+                       title="#{i18n.text['plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip']}">
+                    <span class="workspace-navi-tt-container-evaluation">#{i18n.text['plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip']}</span>
+                  </a>   
+                </ui:fragment>
+                <ui:fragment rendered="#{workspaceBackingBean.assessmentState eq 'pass'}">
+                  <a class="icon-assessment-#{workspaceBackingBean.assessmentState} tooltip" 
+                       title="#{i18n.text['plugin.workspace.dock.evaluation.viewEvaluationButtonTooltip']}">
+                    <span class="workspace-navi-tt-container-evaluation">#{i18n.text['plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip']}</span>
+                  </a>   
+                </ui:fragment>
+                <ui:fragment rendered="#{workspaceBackingBean.assessmentState eq 'fail'}">
+                  <a class="icon-assessment-#{workspaceBackingBean.assessmentState} tooltip" 
+                       title="#{i18n.text['plugin.workspace.dock.evaluation.resendRequestEvaluationButtonTooltip']}">
+                    <span class="workspace-navi-tt-container-evaluation">#{i18n.text['plugin.workspace.dock.evaluation.resendRequestEvaluationButtonTooltip']}</span>
+                  </a>   
+                </ui:fragment>
+              </div>
+            </div>
+          </nav>
+        </ui:fragment>
+        
+        <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">
+          <!-- WORKSPACE MANAGEMENT NAVIGATION -->
+          <nav id="workspaceEditDockWrapper">
+            <div id="workspaceEditDock">
+              <div class="workspace-dock-navi-button-workspace-management">
+                <div class="icon-cogs">
+                  <div class="navmore-container">          
+                    <ui:fragment rendered="#{workspaceBackingBean.mayManageMaterials}">
+                      <!-- EDIT MATERIALS -->
+                      <div class="workspace-management-item">
+                        <a class="icon-manage-materials" title="#{i18n.text['plugin.workspace.dock.material-management']}" jsf:outcome="/jsf/workspace/materials-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                          <span>#{i18n.text['plugin.workspace.dock.material-management']}</span>
+                        </a>
+                      </div>  
+                    </ui:fragment>
+                    <!-- EDIT FRONTPAGE -->
+                    <div class="workspace-management-item">
+                      <a class="icon-edit-index" title="#{i18n.text['plugin.workspace.dock.home']}" jsf:outcome="/jsf/workspace/frontpage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                        <span>#{i18n.text['plugin.workspace.dock.editIndex']}</span>
+                      </a>
+                    </div>
+                    <!-- EDIT HELPPAGE -->
+                    <div class="workspace-management-item">
+                      <a class="icon-edit-help" title="#{i18n.text['plugin.workspace.dock.editHelp']}" jsf:outcome="/jsf/workspace/helppage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                        <span>#{i18n.text['plugin.workspace.dock.editHelp']}</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>  
+            </div>
+          </nav>
+        </ui:fragment>
+        
+        <ui:insert name="materials-fullscreen"></ui:insert>
+          
+        <!-- WORKSPACE STUDENT NAVIGATION -->
+        <nav id="workspaceDockWrapper">
+          <div id="workspaceDock">
+            <ui:fragment rendered="#{workspaceBackingBean.homeVisible}">
+              <!-- WORKSPACE HOME -->
+              <div class="workspace-dock-navi-button-home">
+                <a class="icon-home-workspace tooltip" title="#{i18n.text['plugin.workspace.dock.home']}" jsf:outcome="/jsf/workspace/workspace.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                  <span class="workspace-navi-tt-container-home">#{i18n.text['plugin.workspace.dock.home']}</span>
+                </a>
+              </div>
+            </ui:fragment>
+            <ui:fragment rendered="#{workspaceBackingBean.guidesVisible}">
+              <!-- WORKSPACE GUIDES -->
+              <div class="workspace-dock-navi-button-guides">
+                <a class="icon-guides tooltip" title="#{i18n.text['plugin.workspace.dock.guides']}" jsf:outcome="/jsf/workspace/help.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                  <span class="workspace-navi-tt-container-guides">#{i18n.text['plugin.workspace.dock.guides']}</span>
+                </a>
+              </div>
+            </ui:fragment>
+            <ui:fragment rendered="#{workspaceBackingBean.materialsVisible}">
+              <!-- WORKSPACE MATERAILS -->
+              <div class="workspace-dock-navi-button-materials">
+                <a class="icon-materials tooltip" title="#{i18n.text['plugin.workspace.dock.materials']}" jsf:outcome="/jsf/workspace/materials.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                  <span class="workspace-navi-tt-container-materials">#{i18n.text['plugin.workspace.dock.materials']}</span>
+                </a>
+              </div>
+            </ui:fragment>
+            <ui:fragment  rendered="#{workspaceBackingBean.discussionsVisible}">
+              <!-- WORKSPACE DICUSSIONS -->
+              <div class="workspace-dock-navi-button-discussions">
+                <a class="icon-bubble tooltip" title="#{i18n.text['plugin.workspace.dock.discussions']}" jsf:outcome="/jsf/workspace/discussions.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                  <span class="workspace-navi-tt-container-discussions">#{i18n.text['plugin.workspace.dock.discussions']}</span>
+                </a>
+              </div>
+            </ui:fragment>
+            <ui:fragment rendered="#{workspaceBackingBean.usersVisible}">
+              <!-- WORKSPACE STUDENTS -->
+              <div class="workspace-dock-navi-button-members">
+                <a class="icon-members tooltip" title="#{i18n.text['plugin.workspace.dock.members']}" jsf:outcome="/jsf/workspace/users.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                  <span class="workspace-navi-tt-container-members">#{i18n.text['plugin.workspace.dock.members']}</span>
+                </a>
+              </div>
+            </ui:fragment>
+            <ui:fragment rendered="#{workspaceBackingBean.journalVisible}">
+              <!-- WORKSPACE JOURNAL -->
+              <div class="workspace-dock-navi-button-journal">
+                <a class="icon-journal tooltip" title="#{i18n.text['plugin.workspace.dock.journal']}" jsf:outcome="/jsf/workspace/journal.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                  <span class="workspace-navi-tt-container-journal">#{i18n.text['plugin.workspace.dock.journal']}</span>
+                </a>
+              </div>
+            </ui:fragment>
+          </div>
+        </nav>
+      </div>
+      
+      <!-- WORKSPACE NAVIGATION WHEN RESOLUTION IS TOO SMALL -->
+      <div id="workspaceNavigationWrapperBuble">
+        <div class="icon-navicon">
+          <div class="navmore-container">
+            <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">   
+              <div class="navmore-management-links">
+                <ui:fragment rendered="#{workspaceBackingBean.mayManageMaterials}">
+                  <!-- EDIT MATERIALS -->
+                  <div class="workspace-management-item">
+                    <a class="icon-manage-materials" title="#{i18n.text['plugin.workspace.dock.material-management']}" jsf:outcome="/jsf/workspace/materials-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                      <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.material-management']}</span>
+                    </a>
+                  </div>  
+                </ui:fragment>
+                <!-- EDIT FRONTPAGE -->
+                <div class="workspace-management-item">
+                  <a class="icon-edit-index" title="#{i18n.text['plugin.workspace.dock.home']}" jsf:outcome="/jsf/workspace/frontpage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.editIndex']}</span>
+                  </a>
+                </div>
+                <!-- EDIT HELPPAGE -->
+                <div class="workspace-management-item">
+                  <a class="icon-edit-help" title="#{i18n.text['plugin.workspace.dock.editHelp']}" jsf:outcome="/jsf/workspace/helppage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.editHelp']}</span>
+                  </a>
+                </div>
+              </div>
+            </ui:fragment>
+            <div class="navmore-student-links">
+            
+              <ui:fragment rendered="#{workspaceBackingBean.homeVisible}">
+                <!-- WORKSPACE HOME -->
+                <div class="workspace-student-item">
+                  <a class="icon-home-workspace" title="#{i18n.text['plugin.workspace.dock.home']}" jsf:outcome="/jsf/workspace/workspace.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span class="workspace-student-item-label">#{i18n.text['plugin.workspace.dock.home']}</span>
+                  </a>
+                </div>
+              </ui:fragment>
+              <ui:fragment rendered="#{workspaceBackingBean.guidesVisible}">
+                <!-- WORKSPACE GUIDES -->
+                <div class="workspace-student-item">
+                  <a class="icon-guides" title="#{i18n.text['plugin.workspace.dock.guides']}" jsf:outcome="/jsf/workspace/help.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span class="workspace-student-item-label">#{i18n.text['plugin.workspace.dock.guides']}</span>
+                  </a>
+                </div>
+              </ui:fragment>
+              <ui:fragment rendered="#{workspaceBackingBean.materialsVisible}">
+                <!-- WORKSPACE MATERAILS -->
+                <div class="workspace-student-item">
+                  <a class="icon-materials" title="#{i18n.text['plugin.workspace.dock.materials']}" jsf:outcome="/jsf/workspace/materials.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span class="workspace-student-item-label">#{i18n.text['plugin.workspace.dock.materials']}</span>
+                  </a>
+                </div>
+              </ui:fragment>
+              <ui:fragment  rendered="#{workspaceBackingBean.discussionsVisible}">
+                <!-- WORKSPACE DICUSSIONS -->
+                <div class="workspace-student-item">
+                  <a class="icon-bubble" title="#{i18n.text['plugin.workspace.dock.discussions']}" jsf:outcome="/jsf/workspace/discussions.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span class="workspace-student-item-label">#{i18n.text['plugin.workspace.dock.discussions']}</span>
+                  </a>
+                </div>
+              </ui:fragment>
+              <ui:fragment rendered="#{workspaceBackingBean.usersVisible}">
+                <!-- WORKSPACE STUDENTS -->
+                <div class="workspace-student-item">
+                  <a class="icon-members" title="#{i18n.text['plugin.workspace.dock.members']}" jsf:outcome="/jsf/workspace/users.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span class="workspace-student-item-label">#{i18n.text['plugin.workspace.dock.members']}</span>
+                  </a>
+                </div>
+              </ui:fragment>
+              <ui:fragment rendered="#{workspaceBackingBean.journalVisible}">
+                <!-- WORKSPACE JOURNAL -->
+                <div class="workspace-student-item">
+                  <a class="icon-journal" title="#{i18n.text['plugin.workspace.dock.journal']}" jsf:outcome="/jsf/workspace/journal.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span class="workspace-student-item-label">#{i18n.text['plugin.workspace.dock.journal']}</span>
+                  </a>
+                </div>
+              </ui:fragment>
+            </div>   
+          </div>
+        </div>
+      </div>
+    
+    
+      <ui:insert name="grid-content"></ui:insert>
+    </div>
+  </ui:define>
+
+  
+</ui:composition>

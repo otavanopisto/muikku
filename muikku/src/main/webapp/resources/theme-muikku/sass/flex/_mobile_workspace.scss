@@ -1,0 +1,119 @@
+@media screen and (max-width: 767px) {
+
+  /* WORKSPACE */
+  
+  /* WORKSPACE FRONTPAGE HEADER */
+  .content .workspace-header-wrapper {
+    max-width:960px;
+    height:auto;
+    min-height:auto;
+    
+    .workspace-header-container {
+      max-width:950px;
+      height:auto;
+      min-height:auto;
+      z-index:10;
+      background:none;
+      text-align:right;
+      
+      h1.workspace-title {
+        top:auto;
+        right:auto;
+        left:auto;
+        padding:5px 10px 5px 60px;
+        max-width:100%;
+        font-size:18px;
+        text-align:right;
+        position:relative;
+        font-weight:400;
+      }
+      
+      .workspace-additional-info-wrapper {
+        position:relative;
+        left:auto;
+        bottom:auto;
+        right:0;
+        color:#000;
+        padding:7px 6px 7px 60px;
+        font-size:14px;
+        line-height:1;
+        border-radius:3px;
+        margin:0 0 5px 0;
+        background:transparent;
+      }
+      
+      .workspace-study-level-indicator {
+        display:none;
+      }
+    
+    }
+  
+  }
+  
+  .content .workspace-meta-wrapper {
+    font-size:12px;
+    text-transform:uppercase;
+    position:relative;
+    bottom:auto;
+    left:auto;
+    z-index:13;
+    padding:5px;
+    background:#fff;
+  
+    .workspace-meta-item-wrapper {
+      margin:0 5px 5px 0;
+    }
+  
+    .workspace-meta-title {
+      color:#727272;
+      display:inline-block;
+      margin:0;
+    }
+    
+    .workspace-meta-desc {
+      color:#000;
+      display:inline-block;
+    }
+    
+   .workspace-publication-container {
+      position:absolute;
+      top:0px;
+      right:5px;
+      width:200px;
+      font-size:15px;
+      text-transform:uppercase;
+      text-align:right;
+      padding:4px 0px;
+      
+      a {
+        text-decoration:none;
+        font-size:14px;
+        color:#fff !important;
+        border-radius:2px;
+        font-weight:400;
+        padding:2px 6px;
+        
+        &.workspace-publish-button {
+          background:#27b91c;
+        }
+        
+        &.workspace-unpublish-button {
+          background:#ff9703;
+        }
+      
+      }
+  
+    }
+    
+  }
+  
+  #workspaceNavigationWrapperBuble {
+    top:87px;
+    
+    .icon-navicon {
+      font-size:28px;
+    }
+    
+  }
+
+}

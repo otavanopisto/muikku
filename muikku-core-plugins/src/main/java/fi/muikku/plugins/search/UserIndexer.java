@@ -10,8 +10,6 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;

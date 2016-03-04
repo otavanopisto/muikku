@@ -143,5 +143,66 @@
         .text(saveButton.data('unsaved-text'));
     }
   });
+  
+  $(document).ready(function () {
+    var getEvaluationFee = function (workspaceEntityId, callback) {
+      mApi().user.users.basicinfo
+        .read(MUIKKU_LOGGED_USER)
+        .callback($.proxy(function (err, basicInfo) {
+          if (err) {
+            callback(err);
+          } else {
+            if (basicInfo && basicInfo.hasEvaluationFees) {
+              mApi().workspace.workspaces.feeInfo
+                .read(workspaceEntityId)
+                .callback(function (feeErr, feeInfo) {
+                  if (feeErr) {
+                    callback(feeErr);
+                  } else {
+                    callback(null, feeInfo && feeInfo.evaluationHasFee);
+                  }
+                });
+            } else {
+              callback(null, false);
+            }
+          }
+        }, this));
+    };
+    
+    if (MUIKKU_LOGGEDINROLES.student && ($('.canSignUp').val() == 'true')) {
+      var workspaceEntityId = $('.workspaceEntityId').val();
+      
+      mApi().workspace.workspaces.students
+        .read(workspaceEntityId, { studentIdentifier: MUIKKU_LOGGED_USER, archived: false })
+        .callback(function(err, result) {
+          if (!err) {
+            if (!result || !result.length) {
+              var signUpLink = $('<a>')
+                .attr('href', 'javascript:void(null)').text(getLocaleText('plugin.workspace.materials.notSignedUpWarningLink'))
+                .click(function () {
+                  getEvaluationFee(workspaceEntityId, function (err, hasEvaluationFee) {
+                    if (err) {
+                      $('.notification-queue').notificationQueue('notification', 'error', err);
+                    } else {
+                      $('<div>').workspaceSignUpDialog({
+                        workspaceName: $('.workspaceName').val(),
+                        workspaceNameExtension: $('.workspaceNameExtension').val(),
+                        hasEvaluationFee: hasEvaluationFee,
+                        workspaceEntityId: workspaceEntityId
+                      });
+                    }
+                  });
+                });
+              
+              var warning = $('<span>')
+                .text(getLocaleText('plugin.workspace.materials.notSignedUpWarning') + ' ')
+                .append(signUpLink);
+           
+              $('.notification-queue').notificationQueue('notification', 'warn', warning);
+            }
+          }
+        });
+    }
+  });
 
 }).call(this);

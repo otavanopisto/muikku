@@ -241,7 +241,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    return entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/assessmentsRequests/", courseId), CourseAssessmentRequest[].class));
+    return entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/assessmentsRequests/?activeStudents=true", courseId), CourseAssessmentRequest[].class));
   }
 
   @Override

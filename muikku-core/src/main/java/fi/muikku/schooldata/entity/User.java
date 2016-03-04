@@ -2,7 +2,6 @@ package fi.muikku.schooldata.entity;
 
 import org.joda.time.DateTime;
 
-import fi.muikku.search.annotations.IndexField;
 import fi.muikku.search.annotations.IndexId;
 import fi.muikku.search.annotations.Indexable;
 
@@ -42,13 +41,10 @@ public interface User extends SchoolDataEntity {
   @IndexId
   public String getSearchId();
 
-  @IndexField (skip = true)
   public DateTime getStudyStartDate();
 
-  @IndexField (skip = true)
   public DateTime getStudyEndDate();
   
-  @IndexField (skip = true)
   public DateTime getStudyTimeEnd();
 
   public boolean getHidden();

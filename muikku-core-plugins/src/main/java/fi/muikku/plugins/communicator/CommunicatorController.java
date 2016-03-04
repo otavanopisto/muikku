@@ -1,8 +1,11 @@
 package fi.muikku.plugins.communicator;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.inject.Inject;
 
@@ -194,7 +197,25 @@ public class CommunicatorController {
    * @return
    */
   public List<InboxCommunicatorMessage> listMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
-    return communicatorMessageDAO.listByMessageId(user, messageId);
+    Set<InboxCommunicatorMessage> result = new TreeSet<>(new Comparator<InboxCommunicatorMessage>() {
+      @Override
+      public int compare(InboxCommunicatorMessage o1, InboxCommunicatorMessage o2) {
+        if (o1 == null || o1.getId() == null) {
+          if (o2 == null || o2.getId() == null) {
+            return 0;
+          } else {
+            return -1;
+          }
+        }
+        
+        return o1.getId().compareTo(o2.getId());
+      }
+    });
+    
+    result.addAll(communicatorMessageDAO.listBySenderAndMessageId(user, messageId));
+    result.addAll(communicatorMessageDAO.listByRecipientAndMessageId(user, messageId));
+    
+    return new ArrayList<>(result);
   }
 
   public CommunicatorMessageRecipient updateRead(CommunicatorMessageRecipient recipient, boolean value) {

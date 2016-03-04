@@ -221,8 +221,8 @@ $(document).ready(function() {
       if (areaId == undefined){
         mApi({async: false}).forum.workspace.latest.read(workspaceId, {'firstResult' : msgsCount}).on('$', $.proxy(function(msgs, msgsCallback) {
           mApi({async: false}).forum.areas.read(msgs.forumAreaId).callback($.proxy(function(err, area) {
-            mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
-              thread.creatorFullName = user.firstName + ' ' + user.lastName;            
+            mApi({async: false}).user.users.basicinfo.read(msgs.creator).callback($.proxy(function(err, user) {
+              msgs.creatorFullName = user.firstName + ' ' + user.lastName;            
               msgs.areaName = area.name;
               var d = new Date(msgs.created);
               msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
@@ -647,10 +647,10 @@ $(document).ready(function() {
 
   });  
   $(".di-delete-area-button").click(function() {
-
     var deleteArea = function(values) {
+      var workspaceId = $("input[name='workspaceEntityId']").val();
       var areaId = values.forumAreaId;
-      mApi({async: false}).forum.areas.del(areaId).callback(function(err, result) {
+      mApi({async: false}).forum.workspace.areas.del(workspaceId, areaId).callback(function(err, result) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.areadelete', err));
         } else {                  

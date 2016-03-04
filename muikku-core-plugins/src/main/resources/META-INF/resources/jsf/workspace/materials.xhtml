@@ -87,8 +87,11 @@
       </ui:repeat>
     </article>
 
+    <input class="workspaceName" type="hidden" value="#{workspaceMaterialsBackingBean.workspaceName}"/>
+    <input class="workspaceNameExtension" type="hidden" value="#{workspaceMaterialsBackingBean.workspaceNameExtension}"/>
     <input class="workspaceEntityId" type="hidden" value="#{workspaceMaterialsBackingBean.workspaceEntityId}"/>
     <input class="materialsBaseUrl" type="hidden" value="#{workspaceMaterialsBackingBean.materialsBaseUrl}"/>
+    <input class="canSignUp" type="hidden" value="#{workspaceMaterialsBackingBean.canSignUp}"/>
   </ui:define>
 
 </ui:composition>

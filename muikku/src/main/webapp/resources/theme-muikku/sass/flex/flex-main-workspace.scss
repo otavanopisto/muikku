@@ -1,0 +1,335 @@
+@import "_fonts.scss";
+@import "_vars.scss";
+@import "_styles.scss";
+@import "_forms.scss";
+@import "_animations.scss";
+@import "_dialog.scss";
+@import "_flex-dialog.scss";
+@import "_buttons.scss";
+@import "_notif-queue.scss";
+@import "_connectionlost.scss";
+
+html {
+  height: 100%;
+  background:none;
+}
+
+body {
+  background-image:url("/gfx/light-diagonal-strips.png");
+  background-repeat:repeat;
+  background-color:#f0f3f5;
+  font-size:14px;
+  font-weight:300;
+  padding:60px 5px 50px 5px;
+  margin: 0;
+  font-family:'Open Sans', Arial, sans-serif;
+  line-height:1.9em; /* Set line-height:1 to element when there's a need to override */
+  color:#2c2c2c;
+}
+
+.disable-page-scrolling {
+  height:100%;
+  overflow:hidden; 
+}
+
+.ui-widget-overlay {
+  background:#000;
+  opacity:0.5;
+  height:100%;
+  left:0;
+  position:fixed;
+  top:0;
+  width:100%;
+}
+
+#content {
+  position:relative;
+}
+
+/* Navigation Icons tooltip */
+[class^="icon-"] span, [class*=" icon-"] span {
+  display: inline-block;
+  font-family:'Open Sans', Arial, sans-serif !important;
+  padding-left: 4px;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  text-decoration:none;  
+}
+
+.lu-picture {
+  @incude border(2px,#fff,solid);
+  box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
+  height:48px;
+  width:48px;      
+  box-sizing:border-box; 
+  display:inline-block;
+  border-radius:100%;
+  margin:0 10px 0 0;
+  z-index:15;
+  background-size:100% auto;
+  border:2px solid #fff;
+  overflow:hidden;
+  float:right;
+  
+  &:hover {
+    box-shadow:0 0 15px rgba(255, 255, 255, 0.9);
+  }
+  
+  a {
+    height:44px;
+    width:44px;      
+    box-sizing:border-box;
+    display:block;
+    
+    img {
+      width:44px;
+      height:44px;
+      border:0;
+    }
+    
+  }
+
+}
+  
+#footer {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  opacity:0.9;
+  box-shadow:-5px 0 5px rgba(0, 0, 0, 0.2);
+  font-size:14px;
+  
+  .footer-predefined-bg {
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    background:$btBarBgr;
+    opacity:0.95;
+    z-index:1;
+  }
+  
+  .footer-predefined-content {
+    position:relative;
+    z-index:2;
+  }
+  
+}
+
+#helpdesk {
+  font-weight:400;
+  font-size:14px;
+  color:#fff;
+}
+
+#guides {
+  font-weight:400;
+  font-size:14px;
+  color:#fff;
+  
+  a {
+    color:#b3e9ff;
+  }
+  
+}
+
+/* Navigation */
+#staticNavigationWrapper {
+  height:70px;
+  position:fixed;
+  left:0;
+  top:0;
+  right:0;
+  box-shadow:0 3px 10px rgba(0, 0, 0, 0.1);
+  z-index:99;
+}
+
+#staticNavigation {
+  max-width:$siteWidth;
+  margin:0 auto;
+  height:50px;
+  z-index:14;
+  padding:10px;
+  position:relative;
+}
+
+.static-navigation-bg {
+  background:#32acf6 url("/gfx/workspace-navigation-background.png");
+  background-position:30% top;
+  opacity:1;
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  right:0;
+  z-index:13;
+  border-bottom:1px solid $naviWorkspaceBorderBottom;
+}
+
+/* Navigation Icons */
+div[class*="dock-static-navi"] {
+  position:relative;
+  float:left;
+  margin-right:15px;
+  
+  &.active-trail {
+    border-bottom:3px solid #aae3f2;
+    
+    &:hover {
+      border-bottom:3px solid #aae3f2;
+    }
+    
+  }
+  
+  &:hover {
+    border-bottom:3px solid #66aace;
+  }
+}
+
+div[class*='dock-static-navi-button'] > a,
+div[class*='dock-static-navi-button'] > div, 
+div[class*='dock-dynamic-navi-button'] > a {
+  font-size:40px;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  padding:5px 10px;
+  height:40px;
+  display:inline-block;
+  
+  &:hover {
+    @include iconShadow(rgba(255,255,190,0.8));
+  }
+  
+}
+
+/* Navigation Icons Notifier */
+.dock-notification {
+  background-color: #ff0000;
+  border-radius: 10px;
+  border:1px solid #fff;
+  top: 11px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+  height: 16px;
+  min-width: 10px;
+  padding: 0 3px 0 0;
+  position: absolute;
+  text-align: center;
+  right: 4px;
+}
+
+/* Content where everything goes */
+main.content {
+  margin:30px 0 0 0;
+}
+
+/* Headers */
+h1,h2,h3,h4,h5,h6 {
+  color:$header;
+  text-transform:uppercase;
+  margin:0 0 0.5em 0;
+  font-weight:300;
+}
+
+h1 {
+  font-size:29px;
+}
+  
+h2 {
+  font-size:26px;
+}
+
+h3 {
+  font-size:19px;
+}
+
+h4 {
+  font-size:17px;
+}
+
+h5 {
+  font-size:15px;
+  font-weight:400;
+}
+
+h6 {
+  font-size:13px;
+  font-weight:400;
+}
+
+.subtitle {
+  color:$subTitle;
+  font-weight:400;
+}
+
+a {
+  color:$link;
+  text-decoration:none;
+  
+  &:hover {
+    text-decoration:underline;
+  }
+  
+}
+
+/* Subscript & Superscript*/
+sub {
+  vertical-align:sub;
+  font-size:70%;
+}
+
+sup {
+  vertical-align:super;
+  font-size:70%;
+}
+ 
+#workspaceDockWrapper,
+#workspaceMaterialsDockWrapper,
+#workspaceEditDockWrapper {
+  border-radius:3px;
+  width:60px;
+  margin-bottom:10px; 
+}
+
+#workspaceDockWrapper {
+  background:#67d9bf;
+}
+  
+#workspaceMaterialsDockWrapper {
+  background:#288fcd;
+}
+  
+#workspaceEditDockWrapper {
+  background:#000;
+}
+  
+#workspaceDock,
+#workspaceMaterialsDock,
+#workspaceEditDock,
+#workspaceEvaluationDockWrapper {
+  text-align:center;
+}
+
+/* WORKSPACE GLOBAL MATERIAL PAGE */
+.workspace-materials-view-page {
+  background:#fff;
+  padding:20px;
+  font-size:16px;
+  margin:30px 0;
+  
+  p {
+    margin:1em 0 1em 0;
+  }
+  
+}
+
+@import "_workspace_navigation_wide.scss"; 
+@import "_workspace_navigation_narrow.scss"; 
+@import "_mobile.scss";
+@import "_mobile_workspace.scss";
+@import "_tablet.scss";

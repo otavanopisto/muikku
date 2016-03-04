@@ -232,9 +232,19 @@
     
    }
    
-  .cm-message-content{
-   margin-left:70px;
-   margin-right:70px; 
+  .cm-message-content {
+    margin-left:70px;
+    margin-right:70px; 
+   
+    .cm-message-content-text {
+   
+      p {
+        margin:1em 0;
+      }
+   
+    }
+    
+    
   }
   
   .cm-message-content-tools{

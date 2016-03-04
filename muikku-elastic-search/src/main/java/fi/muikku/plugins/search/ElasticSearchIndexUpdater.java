@@ -11,13 +11,16 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.lang3.StringUtils;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.node.Node;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import fi.muikku.search.IndexableEntityVault;
 import fi.muikku.search.SearchIndexUpdater;
@@ -101,7 +104,8 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     try {
       Map<String, ElasticMappingProperties> mappings = new HashMap<>();
       mappings.put(propertyName, properties);
-      String mapping = new ObjectMapper().writeValueAsString(mappings);
+      String mapping = new ObjectMapper()
+        .writeValueAsString(mappings);
       
       elasticClient.admin().indices()
           .preparePutMapping("muikku")
@@ -176,7 +180,10 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
 
   @Override
   public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper()
+      .registerModule(new JodaModule())
+      .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
     String json;
     try {
       json = mapper.writeValueAsString(entity);

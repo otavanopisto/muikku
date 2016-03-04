@@ -1,5 +1,3 @@
-body {
-
 /* JQuery UI Dialog Overrides */
   .ui-widget-overlay {
     background:#000;
@@ -28,13 +26,14 @@ body {
       border-radius:0px;
       padding:8px 36px 8px 12px;
       font-weight:400;
-      line-height:1.5em;
+      line-height:1.5em; 
       
       .ui-dialog-title {
         margin:0;
         font-size:18px;
         width:100%;
         font-weight:300;
+        white-space:normal;
       }
       
       .ui-dialog-titlebar-close {
@@ -107,6 +106,12 @@ body {
           outline:none;
           font-family:'Open Sans', Arial, sans-serif;
           min-width:90px;
+          
+          &[disabled="disabled"] {
+            opacity:0.2;
+            cursor:default;
+          }
+          
         }
         
         button.delete-button,
@@ -135,4 +140,3 @@ body {
     }
   }
   
-}

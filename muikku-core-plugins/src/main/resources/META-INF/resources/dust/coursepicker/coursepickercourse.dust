@@ -9,15 +9,15 @@
         <div class="mf-item-description cp-course-description flex-row">
           <div class="mf-item-header-container cp-course-header-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom no-margin-left no-margin-right">
             <div class="flex-row">
-              <div class="mf-item-header-name cp-course-header-name lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">
+              <div class="mf-item-header-name cp-course-header-name lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12 lg-flex-cell-first md-flex-cell-first sm-flex-cell-first">
                 <span class="cp-course-long">
-                  {name} 
+                  <span class="cp-course-long-name">{name}</span> 
                   {?nameExtension}<i class="cp-course-extension">({nameExtension})</i>{/nameExtension}
                   {?educationTypeName}<i class="cp-course-education-type {educationTypeName}">{educationTypeName}</i>{/educationTypeName}
                 </span>
               </div>
             
-              <div class="mf-item-header-details cp-course-header-details lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4">            
+              <div class="mf-item-header-details cp-course-header-details lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4 lg-flex-cell-last md-flex-cell-last sm-flex-cell-last">            
                 {?evaluationHasFee}
                    <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
                    <span class="cp-course-fee icon-coin-euro" title='{#localize key="plugin.coursepicker.course.evaluationhasfee" /}'></span>
