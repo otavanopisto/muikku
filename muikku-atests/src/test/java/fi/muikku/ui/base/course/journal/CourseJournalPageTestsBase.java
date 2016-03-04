@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import fi.muikku.TestUtilities;
 import fi.muikku.mock.PyramusMock.Builder;
+import fi.muikku.mock.model.MockCourseStudent;
 import fi.muikku.mock.model.MockStaffMember;
 import fi.muikku.mock.model.MockStudent;
 import fi.muikku.ui.AbstractUITest;
@@ -39,6 +40,8 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+      MockCourseStudent courseStudent = new MockCourseStudent(1l, workspace.getId(), student.getId());
+      mockBuilder.addCourseStudent(workspace.getId(), courseStudent); // TODO course student has workspace id :|
       logout();
       mockBuilder.mockLogin(student).build();
       login();
@@ -64,6 +67,8 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       logout();
+      MockCourseStudent courseStudent = new MockCourseStudent(1l, workspace.getId(), student.getId());
+      mockBuilder.addCourseStudent(workspace.getId(), courseStudent); // TODO course student has workspace id :|
       mockBuilder.mockLogin(student).build();
       login();
       try {
