@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,18 +25,23 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
@@ -82,6 +88,24 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
 
+  @Rule
+  public TestWatcher testWatcher = new TestWatcher() {
+      
+    @Override
+    protected void failed(Throwable e, Description description) {
+      try {
+        takeScreenshot();
+      } catch (WebDriverException | IOException e1) {
+        e1.printStackTrace();
+      }
+    }
+    
+    protected void finished(Description description) {
+      getWebDriver().quit();
+    }
+    
+  };
+  
   @Before
   public void setupRestAssured() {
 
@@ -111,25 +135,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   @Override
-  protected void failed(Throwable e, Description description) {
-    try {
-      takeScreenshot();
-    } catch (IOException e1) {
-      throw new RuntimeException(e);
-    }
-  }
-  
-  @Override
   public String getSessionId() {
     return sessionId;
   }
   
-  protected void setWebDriver(RemoteWebDriver webDriver) {
+
+  protected void setWebDriver(WebDriver webDriver) {
     this.webDriver = webDriver;
-    this.sessionId = webDriver.getSessionId().toString();
+    
+    if (webDriver instanceof RemoteWebDriver) {
+      this.sessionId = ((RemoteWebDriver) webDriver).getSessionId().toString();
+    }
   }
   
-  protected RemoteWebDriver getWebDriver() {
+  protected WebDriver getWebDriver() {
     return webDriver;
   }
 
@@ -226,6 +245,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         return createChromeDriver();
       case "phantomjs":
         return createPhantomJsDriver();
+      case "firefox":
+        return createFirefoxDriver();
     }
     
     throw new RuntimeException(String.format("Unknown browser %s", getBrowser()));
@@ -301,16 +322,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForElementToBePresent(By.cssSelector(selector));
     assertVisible(selector);
   }
+   
+  protected void takeScreenshot() throws WebDriverException, IOException {
+    takeScreenshot(new File("target", testName.getMethodName() + ".png"));
+  }
   
-  protected void takeScreenshot() throws IOException {
-    if (getWebDriver() instanceof TakesScreenshot) {
-      Date dNow = new Date();
-      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd-hh:mm:ss");
-      File screenshot = ((TakesScreenshot) getWebDriver()).getScreenshotAs(OutputType.FILE);
-      FileUtils.copyFile(screenshot, new File(System.getProperty("it.report.directory") + ft.format(dNow) + "-" + testName.getMethodName() + ".png"));
+  protected void takeScreenshot(File file) throws WebDriverException, IOException {
+    FileOutputStream fileOuputStream = new FileOutputStream(file);
+    try {
+     fileOuputStream.write(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES));
+    } finally {
+      fileOuputStream.flush();
+      fileOuputStream.close();
     }
   }
-
+  
   protected void sleep(long millis) {
     try {
       Thread.sleep(millis);
@@ -419,8 +445,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     ((JavascriptExecutor) getWebDriver()).executeScript(String.format("document.querySelectorAll('%s').item(0).scrollIntoView(true);", selector));
   }
 
+  protected WebElement findElementByCssSelector(String selector) {
+    return getWebDriver().findElement(By.cssSelector(selector));
+  }
+  
   protected void selectOption(String selector, String value){
-    Select selectField = new Select(getWebDriver().findElementByCssSelector(selector));
+    Select selectField = new Select(findElementByCssSelector(selector));
     selectField.selectByValue(value);
   }
   
@@ -500,7 +530,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void assertSelectedOption(String selector, String expected){
-    Select select = new Select(getWebDriver().findElementByCssSelector(selector));
+    Select select = new Select(findElementByCssSelector(selector));
     WebElement option = select.getFirstSelectedOption();
     String optionText = option.getText();
     assertEquals(expected, optionText);
@@ -766,15 +796,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   }
   
+  protected WebElement findElementByTag(String name) {
+    return getWebDriver().findElement(By.tagName(name));
+  }
+  
   protected String getCKEditorContent() {
-    getWebDriver().switchTo().frame(getWebDriver().findElementByCssSelector(".cke_wysiwyg_frame"));
-    String ckeContent = getWebDriver().findElementByTagName("body").getText();
+    getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
+    String ckeContent = findElementByTag("body").getText();
     getWebDriver().switchTo().defaultContent();
     return ckeContent;
   }
   
   protected void dragAndDrop(String source, String target){
-    if (StringUtils.equals(getSauceBrowser(), "microsoftedge") || StringUtils.equals(getSauceBrowser(), "internet explorer") || StringUtils.equals(getSauceBrowser(), "safari")) {
+    if (StringUtils.equals(getBrowser(), "microsoftedge") || StringUtils.equals(getBrowser(), "internet explorer") || StringUtils.equals(getBrowser(), "safari")) {
       ((JavascriptExecutor) getWebDriver())
         .executeScript(String.format("try { $('%s').simulate('drag-n-drop', { dragTarget: $('%s') }); } catch (e) { console.log(e); } ", source, target ));
     } else {     
@@ -784,6 +818,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       (new Actions(getWebDriver()))
         .dragAndDrop(sourceElement, targetElement)
         .perform();
+    }
+  }
+  
+  protected void addTextToCKEditor(String text) {
+    waitForPresent(".cke_wysiwyg_frame");
+    if (StringUtils.equals(getBrowser(), "phantomjs") ) {
+      ((JavascriptExecutor) getWebDriver()).executeScript("CKEDITOR.instances.textContent.setData('"+ text +"');");
+    } else {
+      waitAndClick("#cke_1_contents");
+      getWebDriver().switchTo().activeElement().sendKeys(text);
     }
   }
   
@@ -801,7 +845,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void switchToFrame(String selector) {
     getWebDriver().switchTo().frame(
-        getWebDriver().findElementByCssSelector(selector)
+      findElementByCssSelector(selector)
     );
   }
   
@@ -813,7 +857,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PSEUDO, ENVIRONMENT, WORKSPACE
   }
 
-  private RemoteWebDriver webDriver;
   private String sessionId;
+  private WebDriver webDriver;
 
 }

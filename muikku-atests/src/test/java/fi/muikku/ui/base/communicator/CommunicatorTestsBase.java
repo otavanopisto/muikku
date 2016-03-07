@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import fi.muikku.TestUtilities;
 import fi.muikku.mock.PyramusMock.Builder;
@@ -34,7 +36,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent(".mf-textfield-subject");
         sendKeys(".mf-textfield-subject", "Test");    
         waitAndClick("#cke_1_contents");
-        getWebDriver().switchTo().activeElement().sendKeys("Communicator test");
+        addTextToCKEditor("Communicator test");
         click("*[name='send']");
         navigate("/communicator#sent", true);
         waitForPresent(".cm-message-header-content-secondary");
@@ -50,8 +52,9 @@ public class CommunicatorTestsBase extends AbstractUITest {
   @Test
   public void communicatorSentMessagesTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
     try{
       try{
         login();
@@ -61,14 +64,12 @@ public class CommunicatorTestsBase extends AbstractUITest {
         sendKeys("#recipientContent", "Test");
         waitAndClick(".ui-autocomplete li.ui-menu-item");
         waitForPresent(".mf-textfield-subject");
-        sendKeys(".mf-textfield-subject", "Test");    
-        waitAndClick("#cke_1_contents");
-        getWebDriver().switchTo().activeElement().sendKeys("Communicator test");
-        click("*[name='send']");
-        // Window.reload screws this up.
-        // waitForPresentVisible(".notification-queue-item-success span");
-  //      waitForPresent(".cm-messages-container");
+        sendKeys(".mf-textfield-subject", "Test");
+        addTextToCKEditor("Communicator test");
+        waitAndClick("*[name='send']");
+        waitForPresent(".cm-messages-container");
         navigate("/communicator#sent", true);
+        waitForPresent(".cm-messages-container");
         waitForPresent("div.cm-message-header-content-secondary");
         assertText("div.cm-message-header-content-secondary", "Test");
       }finally{

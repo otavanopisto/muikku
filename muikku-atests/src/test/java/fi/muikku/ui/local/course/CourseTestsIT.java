@@ -1,4 +1,4 @@
-package fi.muikku.ui.chrome.course;
+package fi.muikku.ui.local.course;
 
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +9,7 @@ public class CourseTestsIT extends CourseTestsBase {
   
   @Before
   public void setUp() {
-    setWebDriver(createChromeDriver());
+    setWebDriver(createLocalDriver());
   }
   
   @After

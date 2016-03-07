@@ -1,4 +1,4 @@
-package fi.muikku.ui.chrome.indexpage;
+package fi.muikku.ui.local.indexpage;
 
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +9,7 @@ public class IndexPageTestsIT extends IndexPageTestsBase {
   
   @Before
   public void setUp() {
-    setWebDriver(createChromeDriver());
+    setWebDriver(createLocalDriver());
   }
   
   @After

@@ -1,4 +1,4 @@
-package fi.muikku.ui.chrome;
+package fi.muikku.ui.local;
 
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +9,7 @@ public class GuiderTestsIT extends GuiderTestsBase {
   
   @Before
   public void setUp() {
-    setWebDriver(createChromeDriver());
+    setWebDriver(createLocalDriver());
   }
   
   @After

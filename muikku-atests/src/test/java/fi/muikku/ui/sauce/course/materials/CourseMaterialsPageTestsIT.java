@@ -30,7 +30,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Override
   public void courseTOCExistsTest() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser())) {
+    if (!"microsoftedge".equals(getBrowser())) {
       // FIXME: this test does not work because ms edge does not support window maximization yet
       super.courseTOCExistsTest();
     }
@@ -38,7 +38,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Override
   public void courseMaterialTOCHighlightTest() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser())) {
+    if (!"microsoftedge".equals(getBrowser())) {
       // FIXME: this test does not work because ms edge does not support window maximization yet
       super.courseMaterialTOCHighlightTest();
     }
@@ -46,7 +46,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
 
   @Override
   public void answerDropdownTestAdmin() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser())) {
+    if (!"microsoftedge".equals(getBrowser())) {
       // FIXME: this test does not work because ms edge does not support window maximization yet
       super.answerDropdownTestAdmin();
     }
@@ -54,7 +54,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Override
   public void answerDropdownTestStudent() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser())) {
+    if (!"microsoftedge".equals(getBrowser())) {
       // FIXME: this test does not work because ms edge does not support window maximization yet
       super.answerDropdownTestStudent();
     }
@@ -62,7 +62,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Override
   public void answerRadioButtonsTestAdmin() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser())) {
+    if (!"microsoftedge".equals(getBrowser())) {
       // FIXME: this test does not work because ms edge does not support window maximization yet
       super.answerRadioButtonsTestAdmin();
     }
@@ -70,7 +70,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Override
   public void answerRadioButtonsTestStudent() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser())) {
+    if (!"microsoftedge".equals(getBrowser())) {
       // FIXME: this test does not work because ms edge does not support window maximization yet
       super.answerRadioButtonsTestStudent();
     }
@@ -78,7 +78,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Override
   public void answerCheckboxTestAdmin() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser())) {
+    if (!"microsoftedge".equals(getBrowser())) {
       // FIXME: this test does not work because ms edge does not support window maximization yet
       super.answerCheckboxTestAdmin();
     }
@@ -86,7 +86,7 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Override
   public void answerCheckboxTestStudent() throws Exception {
-    if (!"microsoftedge".equals(getSauceBrowser())) {
+    if (!"microsoftedge".equals(getBrowser())) {
       // FIXME: this test does not work because ms edge does not support window maximization yet
       super.answerCheckboxTestStudent();
     }
@@ -94,10 +94,10 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
 
   @Override
   public void answerFileFieldTestStudent() throws Exception {
-    if ("microsoftedge".equals(getSauceBrowser())) {
+    if ("microsoftedge".equals(getBrowser())) {
       return;
     }
-    if ("safari".equals(getSauceBrowser())) {
+    if ("safari".equals(getBrowser())) {
       return;
     }
     super.answerFileFieldTestStudent();
@@ -105,10 +105,10 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Override
   public void answerFileFieldTestAdmin() throws Exception {
-    if ("microsoftedge".equals(getSauceBrowser())) {
+    if ("microsoftedge".equals(getBrowser())) {
       return;
     }
-    if ("safari".equals(getSauceBrowser())) {
+    if ("safari".equals(getBrowser())) {
       return;
     }
     super.answerFileFieldTestAdmin();
@@ -116,14 +116,14 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
 
   @Override
   public void removeFileFieldTestAdmin() throws Exception {
-    if ("microsoftedge".equals(getSauceBrowser())) {
+    if ("microsoftedge".equals(getBrowser())) {
       return;
     }
-    if ("safari".equals(getSauceBrowser())) {
+    if ("safari".equals(getBrowser())) {
       return;
     }
 
-    if ("internet explorer".equals(getSauceBrowser()) && "10.0".equals(getSauceBrowserVersion())) {
+    if ("internet explorer".equals(getBrowser()) && "10.0".equals(getBrowserVersion())) {
       return;
     }
     
@@ -132,10 +132,10 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
   
   @Override
   public void removeFileFieldTestStudent() throws Exception {
-    if ("microsoftedge".equals(getSauceBrowser())) {
+    if ("microsoftedge".equals(getBrowser())) {
       return;
     }
-    if ("safari".equals(getSauceBrowser())) {
+    if ("safari".equals(getBrowser())) {
       return;
     }
     super.removeFileFieldTestStudent();

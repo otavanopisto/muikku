@@ -1,4 +1,4 @@
-package fi.muikku.ui.chrome.evaluation;
+package fi.muikku.ui.local.evaluation;
 
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +9,7 @@ public class EvaluationTestsIT extends EvaluationTestsBase {
   
   @Before
   public void setUp() {
-    setWebDriver(createChromeDriver());
+    setWebDriver(createLocalDriver());
   }
   
   @After

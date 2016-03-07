@@ -69,10 +69,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), true);
         click(".workspace-journal-new-entry-button");
-        waitForPresent(".cke_wysiwyg_frame");
-        switchToFrame(".cke_wysiwyg_frame");
-        sendKeys(".cke_editable", "content");
-        switchToDefaultFrame();
+        addTextToCKEditor("content");
         sendKeys(".mf-textfield-subject", "title");
         click("input[type='button'][value='Create']");
         waitForPresent("#content");
