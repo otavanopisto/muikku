@@ -28,10 +28,10 @@
 							<option value="">#{i18n.text['plugin.workspace.journal.studentFilter.showAll']}</option>
 							<ui:repeat value="#{workspaceJournalBackingBean.workspaceStudents}" var="student">
 							  <ui:fragment rendered="#{student.selected}">
-								  <option selected="selected" value="#{student.userEntity.id}">#{student.user.firstName} #{student.user.lastName}</option>
+								  <option selected="selected" value="#{student.userEntity.id}">#{student.user.lastName}, #{student.user.firstName}</option>
 								</ui:fragment>
 								<ui:fragment rendered="#{not student.selected}">
-								  <option value="#{student.userEntity.id}">#{student.user.firstName} #{student.user.lastName}</option>
+								  <option value="#{student.userEntity.id}">#{student.user.lastName}, #{student.user.firstName}</option>
 								</ui:fragment>
 							</ui:repeat>
 						</select>
