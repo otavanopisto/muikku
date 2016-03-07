@@ -1,19 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	template="./templates/workspace-journal-view.xhtml">
+  template="/WEB-INF/templates/flex-main-workspace.xhtml"> 
 
-	<ui:define name="workspace.content.top.static">
-    <!-- Workspace view title -->
-    <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.journal.pageTitle']}</h1>
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/workspace.js"/> 
+    <script defer="defer" jsf:name="/scripts/gui/workspace-journal.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/socialnavigation.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>
+  </ui:define>
   
-		<form style="display: none;">
-			<input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
-		</form>
+  <ui:define name="workspace-view-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-journal.css"/>   
+  </ui:define>
+  
+  <ui:define name="grid-content">
+    <form style="display: none;">
+      <input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
+    </form>
+  
+    <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.journal.pageTitle']}</h1>
+
 		<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
 			<div class="workspace-journal-new-entry-container" style="height:auto;">
 				<div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
@@ -39,9 +54,7 @@
 				</div>
 			</ui:fragment>
 		</form>
-	</ui:define>
 
-	<ui:define name="workspace.content">
 		<div class="workspace-journal-content-wrapper">
     
       <ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
@@ -59,7 +72,7 @@
 
 				<div class="workspace-single-journal-entry" data-entry-id="#{entry.id}">
 					<h:form>
-						<h:commandButton class="delete-entry-#{entry.id}" actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
+						<a class="delete-entry-#{entry.id}" jsf:action="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
 					</h:form>
 					<div class="workspace-journal-entry-view">
 						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
