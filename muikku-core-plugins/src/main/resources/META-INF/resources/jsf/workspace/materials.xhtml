@@ -18,6 +18,7 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.ui.swappable/0.9.5_custom/jquery.ui.swappable.js"/>
     <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/jquery.magnific-popup.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/connectionlostnotifier.js"/>
     <script defer="defer" jsf:name="/scripts/gui/muikku-file-field-component.js"/>
     <script defer="defer" jsf:name="/scripts/gui/muikku-connect-field-component.js"/>
     <script defer="defer" jsf:name="/scripts/gui/workspace.js"/>  
@@ -43,7 +44,7 @@
     </form>
     
     <section class="flex-row">
-      <article class="lg-flex-cell-11 md-flex-cell-11 sm-flex-cell-full no-margin-top">
+      <article class="lg-flex-cell-11 md-flex-cell-11 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first no-margin-top">
         <h1>#{workspaceMaterialsBackingBean.workspaceName}</h1>
         <ui:repeat var="node" value="#{workspaceMaterialsBackingBean.contentNodes}">
           <ui:fragment rendered="#{node.type eq 'folder'}">
@@ -77,7 +78,7 @@
         </ui:repeat>
       </article>
       
-      <nav id="workspaceMaterialsTOCWrapper" class="workspace-materials-toc-wrapper lg-flex-cell-5 md-flex-cell-5 sm-flex-hide no-margin-top">
+      <nav id="workspaceMaterialsTOCWrapper" class="workspace-materials-toc-wrapper lg-flex-cell-5 md-flex-cell-5 sm-flex-hide lg-flex-cell-last md-flex-cell-last no-margin-top">
       <div class="workspace-materials-toc-container">
         <h1 class="workspace-materials-toc-title">#{i18n.text['plugin.workspace.materials.tocTitle']}</h1>
           <div class="workspace-materials-toc-content-scrolling" id="materialsScrollableTOC">
