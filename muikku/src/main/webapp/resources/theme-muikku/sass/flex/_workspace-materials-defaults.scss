@@ -336,83 +336,6 @@ p, h1, h2, h3, h4, h5, h6 {
   word-wrap:break-word;
 }
 
-em,
-i {
-  font-style:italic;
-  font-weight:300;
-}
-
-strong,
-b {
-  font-weight:400; /* This is set to 'normal' because we use thinner font with text rendering */
-  font-style:inherit;
-}
-
-table {
-  margin:initial;
-  padding:initial;
-}
-
-table[cellspacing] {
-  border-collapse:separate;
-  border-spacing:50px;
-}
-
-table[cellpadding] td{
-  border-collapse:separate;
-  padding:50px;
-}
-
-@for $i from 0 through 49 {
-  table[cellspacing="#{$i}"] {
-    border-spacing:#{$i}px;
-  }
-  
-  table[cellpadding="#{$i}"] td {
-    padding:#{$i}px;
-  }
-}
-
-td {
-  padding:initial;
-  margin:initial;
-  width:auto;
-  max-width:100%;
-}
-
-label {
-  display:inline;
-  font-weight:300;
-}
-
-/* Content link overrides */
-a {
-  color:#4290ea; 
-}
-
-/* UL, LI overrides */
-ul {
-  list-style-type:disc;
-  list-style-position:inside;
-}
-
-ol {
-  list-style-type:decimal;
-  list-style-position:inside;
-}
-
-ul,
-ol {
-  margin:0 20px;
-  padding:0;
-
-  li {
-    margin:5px;
-    padding:0;
-  }
-
-}
-
 h1, h2, h3, h4, h5, h6 {
   font-weight:300;
 }
@@ -454,32 +377,6 @@ h4 {
   font-size:19px;
   font-weight:400;
 }
-  
-ul {
-  list-style-type:disc;
-}
-
-ol {
-   list-style-type:decimal;
-}
-
-ul,
-ol {
-  margin:0 20px;
-
-  li {
-    margin:5px;
-  }
-  
-  ol {
-    list-style-type:decimal;
-  }
-  
-  ul {
-    list-style-type:circle;
-  }
-
-}
 
 img {
   max-width:100% !important;
@@ -490,12 +387,18 @@ p {
   margin:15px 0 15px 0;
 }
 
-strong,b {
-  font-weight:600; /* Override values used in reading/management */
+a {
+  color:$link;
 }
 
-em,i {
+em, i {
+  font-style:italic;
+  font-weight:300;
+}
+
+strong, b {
   font-weight:400;
+  font-style:inherit;
 }
 
 table {
@@ -508,13 +411,12 @@ table[cellspacing] {
   border-spacing:50px;
 }
 
-table[cellpadding] td {
+table[cellpadding] td{
   border-collapse:separate;
   padding:50px;
 }
 
 @for $i from 0 through 49 {
-
   table[cellspacing="#{$i}"] {
     border-spacing:#{$i}px;
   }
@@ -522,7 +424,6 @@ table[cellpadding] td {
   table[cellpadding="#{$i}"] td {
     padding:#{$i}px;
   }
-  
 }
 
 td {
@@ -532,11 +433,36 @@ td {
   max-width:100%;
 }
 
-a {
-  color:$link;
+label {
+  display:inline;
+  font-weight:300;
 }
 
-/* Subscript & Superscript*/
+a {
+  color:#4290ea; 
+}
+
+ul {
+  list-style-type:disc;
+  list-style-position:inside;
+}
+
+ol {
+  list-style-type:decimal;
+  list-style-position:inside;
+}
+
+ul, ol {
+  margin:0 20px;
+  padding:0;
+
+  li {
+    margin:5px;
+    padding:0;
+  }
+
+}
+
 sub {
   vertical-align:sub;
   font-size:70%;
