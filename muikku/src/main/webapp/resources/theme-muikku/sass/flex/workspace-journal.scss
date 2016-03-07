@@ -226,7 +226,10 @@ h1.workspace-generic-view-title {
 
 /* Social navigation with New Journal entry */
 #socialNavigation.sn-container {
-  padding:5px;
+  
+  .sn-container.open {
+    padding:5px;
+  }
 
   .jo-message-create {
   
