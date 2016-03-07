@@ -3,7 +3,7 @@
 @import "_custom-ckeditor-styles.scss";
 @import "_workspace-materials-defaults.scss";
 
-.workspace-help-material-page {
+.workspace-helppage-material-page {
   
   h1.workspace-generic-view-title {
     background:#fff;
@@ -13,7 +13,6 @@
   .workspace-materials-view-page {
     background:#fff;
     padding:20px;
-    font-size:16px;
     margin:10px 0;
 
     &:first-of-type {

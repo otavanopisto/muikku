@@ -75,36 +75,6 @@
       display:inline-block;
     }
     
-   .workspace-publication-container {
-      position:absolute;
-      top:0px;
-      right:5px;
-      width:200px;
-      font-size:15px;
-      text-transform:uppercase;
-      text-align:right;
-      padding:4px 0px;
-      
-      a {
-        text-decoration:none;
-        font-size:14px;
-        color:#fff !important;
-        border-radius:2px;
-        font-weight:400;
-        padding:2px 6px;
-        
-        &.workspace-publish-button {
-          background:#27b91c;
-        }
-        
-        &.workspace-unpublish-button {
-          background:#ff9703;
-        }
-      
-      }
-  
-    }
-    
   }
   
   #workspaceNavigationWrapperBuble {
@@ -112,6 +82,45 @@
     
     .icon-navicon {
       font-size:28px;
+    }
+    
+  }
+  
+  .workspace-frontpage-material-page .workspace-materials-view-page.material-view,
+  .workspace-helppage-material-page .workspace-materials-view-page.material-view {
+    padding:10px;  
+  }
+  
+  .workspace-materials-view-page-section.material-view .workspace-materials-view-page.material-view {
+    padding:10px;  
+    
+    .muikku-page-assignment-type {
+      margin:0 0 0 -15px;
+      font-size:13px;
+    }
+    
+    .muikku-connect-field-counterpart,
+    .muikku-connect-field-term {
+      font-size:14px;
+      line-height:14px;
+    }
+    
+    button.muikku-show-correct-answers-button, 
+    button.muikku-hide-correct-answers-button {
+      padding:8px 12px;
+      font-size:13px;
+    }
+    
+    button.muikku-assignment-button {
+    
+      &.muikku-check-exercises,
+      &.muikku-submit-assignment,
+      &.muikku-withdraw-assignment,
+      &.muikku-update-assignment {
+        padding:8px 12px;
+        font-size:13px;
+      }
+    
     }
     
   }

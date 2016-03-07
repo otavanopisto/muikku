@@ -59,7 +59,6 @@
   & > h3, > h4, > h5, > h6 { /* Alternative Section's titles */
     position:relative;
     z-index:13;
-    max-width:700px;
     width:auto;
     background:#fff;
     margin:30px auto -30px auto; 
@@ -80,13 +79,12 @@
 .workspace-materials-view-page.material-view { /* <article> */
   padding:10px 30px;
   margin:30px auto;
-  max-width:640px;
   position:relative;
   background:#fff;
 
   label,select,option,input,textarea { /* Overrides the values used in reading/management */
     font-weight:400;
-    font-size:16px; /* Reset font-size  */
+    font-size:14px;
   }
 
   blockquote {
