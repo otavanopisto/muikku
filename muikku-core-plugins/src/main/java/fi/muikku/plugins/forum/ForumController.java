@@ -123,7 +123,7 @@ public class ForumController {
     return forumThreadReplyDAO.findById(threadReplyId);
   }
   
-  private void createDefaultForumPermissions(ForumArea area, ResourceRights rights) {
+  public void createDefaultForumPermissions(ForumArea area, ResourceRights rights) {
     List<String> permissions = forumResourcePermissionCollection.listPermissions();
     
     for (String permission : permissions) {
@@ -202,6 +202,10 @@ public class ForumController {
 
   public void deleteArea(ForumArea forumArea) {
     forumAreaDAO.delete(forumArea);
+  }
+  
+  public ForumArea findForumAreaById(Long forumAreaId) {
+    return forumAreaDAO.findById(forumAreaId);
   }
 
   public ForumAreaGroup findForumAreaGroup(Long groupId) {

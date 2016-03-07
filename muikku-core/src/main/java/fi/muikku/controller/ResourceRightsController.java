@@ -1,6 +1,7 @@
 package fi.muikku.controller;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.inject.Model;
@@ -20,10 +21,13 @@ import fi.muikku.security.PermissionScope;
 public class ResourceRightsController {
 
   @Inject
+  private Logger logger;
+
+  @Inject
   private PermissionDAO permissionDAO;
   
   @Inject
-  private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
+  private ResourceRolePermissionDAO resourceRolePermissionDAO;
   
   @Inject
   private ResourceRightsDAO resourceRightsDAO;
@@ -42,18 +46,23 @@ public class ResourceRightsController {
   }
   
   public boolean hasResourceRolePermission(ResourceRights resourceRights, RoleEntity role, Permission permission) {
-    return resourceUserRolePermissionDAO.hasResourcePermissionAccess(resourceRights, role, permission);
+    return resourceRolePermissionDAO.hasResourcePermissionAccess(resourceRights, role, permission);
   }
   
-  // TODO: Rethink if these are needed
-//  @Permit (MuikkuPermissions.MANAGE_RESOURCERIGHTS)
   public ResourceRolePermission addResourceUserRolePermission(ResourceRights resourceRights, RoleEntity role, Permission permission) {
-    return resourceUserRolePermissionDAO.create(resourceRights, role, permission);
+    return resourceRolePermissionDAO.create(resourceRights, role, permission);
   }
   
-//  @Permit (MuikkuPermissions.MANAGE_RESOURCERIGHTS)
-  public void deleteResourceUserRolePermission(ResourceRolePermission rolePermission) {
-    resourceUserRolePermissionDAO.delete(rolePermission);
+  public void deleteByResourceRights(ResourceRights resourceRights) {
+    List<ResourceRolePermission> resourceRolePermissions = resourceRolePermissionDAO.listByResourceRights(resourceRights);
+    logger.info(String.format("Deleting %d permissions of ResourceRights %d", resourceRolePermissions.size(), resourceRights.getId()));
+    for (ResourceRolePermission resourceRolePermission : resourceRolePermissions) {
+      resourceRolePermissionDAO.delete(resourceRolePermission);
+    }
+  }
+  
+  public void deleteResourceUserRolePermission(ResourceRolePermission resourceRolePermission) {
+    resourceRolePermissionDAO.delete(resourceRolePermission);
   }
 
 }
