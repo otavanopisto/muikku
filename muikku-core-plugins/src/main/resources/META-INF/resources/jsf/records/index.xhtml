@@ -1,19 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"  
-  template="/jsf/records/templates/records_base.xhtml">
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-functionality.xhtml">
+  
+  <ui:param name="activeTrail" value="records"/>
+  
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/records.js"/>
+    
+    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+      <script defer="defer" jsf:name="/scripts/gui/login.js"/>
+    </ui:fragment>
+    
+  </ui:define>
+  
+  <ui:define name="main-functionality-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/records.css"/>
+  </ui:define>  
 
-
-  <ui:define name="viewScripts">
-    <h:outputScript name="scripts/gui/records.js" />
+  <ui:define name="mf-button-container">
+  </ui:define>  
+  
+  <ui:define name="mf-controls-container">
+  </ui:define>
+    
+  <ui:define name="mf-content-area-instance">
+   <div class="tr-content-main flex-row" data-grades="#{transcriptofRecordsBackingBean.grades}">
+   </div>
   </ui:define>
 
-
-  <ui:define name="content.center.widget">
-    <m:widget name="records-content" size="18" rendered="#{sessionBackingBean.loggedIn}"/>  
+  <ui:define name="mf-content-functions">
   </ui:define>
-     
+
 </ui:composition>

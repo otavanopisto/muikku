@@ -354,6 +354,18 @@
   background-color:#fff;
   margin:0 5px 5px 5px;
 
+  &.ft-01 {
+    border-left: 3px solid $mainFuncFilter1;
+  }
+   
+  &.ft-02 {
+    border-left: 3px solid $mainFuncFilter2;
+  }
+  
+  &.ft-03 {
+    border-left: 3px solid $mainFuncFilter3;
+  }
+
   .topic {
     padding:10px 0 0 10px;
     
@@ -442,7 +454,6 @@
   }
   
   .mf-item-description {
-    width:80%;
     background-color:#fff;  
     overflow:hidden;   
     height:35px;
@@ -452,7 +463,6 @@
   &.foldable {
   
     .mf-item-description {
-      width:100%;
       background-color:#fff;  
       overflow:auto;   
       height:auto;

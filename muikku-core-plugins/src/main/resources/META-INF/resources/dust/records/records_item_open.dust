@@ -1,62 +1,55 @@
-<div class="tr-view-toolbar mf-view-toolbar"> 
+<div class="tr-view-toolbar mf-view-toolbar lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"> 
    <div class="tr-view-tool mf-view-tool icon-goback"></div>
    <div class="clear"></div>
 </div>
-
-
-
-{#.} 
-  <div class="mf-item tr-item ft-01 open">
-    <input type="hidden" name="workspaceId" value="{id}"/>
-    <input type="hidden" name="workspaceUrl" value="{urlName}"/>
-
+{#.}
+ <div class="mf-items lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+    <div class="mf-item tr-item ft-01 open flex-row">
+      <input type="hidden" name="workspaceId" value="{id}"/>
+      <input type="hidden" name="workspaceUrl" value="{urlName}"/>
     
-    <div class="tr-item-details">
-      <div class="tr-item-details-container">       
-        <div class="tr-item-description">
-          <div class="tr-item-open-header-name">
-            {?workspaceGrade}
-              {?passed}
-                <span class="grade passing">{workspaceGrade}</span>
-              {:else}
-                <span class="grade non-passing">{workspaceGrade}</span>
-              {/passed}
-            {/workspaceGrade}
-            <span class="tr-item-long">{workspaceName}</span>
+      <div class="flex-row">
+        <div class="tr-item-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">  
+          <div class="flex-row tr-item-description-title">
+            <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+              {?workspaceGrade}
+                {?passed}
+                  <span class="grade passing">{workspaceGrade}</span>
+                {:else}
+                  <span class="grade non-passing">{workspaceGrade}</span>
+                {/passed}
+              {/workspaceGrade}        
+              <span class="tr-item-long">{workspaceName}</span>          
+            </div>
           </div>
-
-          <div id="detailsCrs-{id}" class="tr-item-content-details" >     
-            <div class="tr-item-description-picture"></div>
-            <div class="tr-item-description-text">{workspaceDescription|s}</div>          
-          </div>
-
-        </div>       
-
-        <div class="clear"></div>
+          <div class="flex-row tr-item-description-content">
+            <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><span>{workspaceDescription|s}</span></div>
+          </div>      
+        </div>
       </div>
     </div>
-
+   {?workspaceVerbalAssessment}
+      <div class="mf-item tr-evaluation-verbal flex-row">
+        <div class="topic lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><h3>{#localize key="plugin.records.workspace.evaluated.verbal.topic" /}</h3></div>
+        <div class="content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">{workspaceVerbalAssessment|s}</div>
+      </div>
+    {/workspaceVerbalAssessment}     
+    <div class="mf-item tr-tasklist flex-row">
+      <div class="topic lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><h3>{#localize key="plugin.records.tasks.evaluated.topic" /}</h3></div>
+      <div class="content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <div class="flex-row">
+          {#assignments}
+            {>"records/records_item_open_assignment.dust"/}
+          {:else}    
+            {>"records/records_item_open_noassignments.dust"/}
+          {/assignments}
+          </div>
+      </div>
+    </div>  
   </div>
-  
-  <div class="mf-item tr-evaluation-verbal">
-    <div class="topic"><h3>{#localize key="plugin.records.workspace.evaluated.verbal.topic" /}</h3></div>
-    <div class="content">{workspaceVerbalAssessment|s}</div>
-  </div>
-  
-  <div class="mf-item tr-tasklist">
-    <div class="topic"><h3>{#localize key="plugin.records.tasks.evaluated.topic" /}</h3></div>
-    <div class="content">
-      {#assignments}
-        {>"records/records_item_assignment.dust"/}
-      {:else}    
-        {>"records/records_item_noassignments.dust"/}
-      {/assignments}
-    </div>
-  </div>  
-
+</div>  
 {:else}
-  <div class="mf-content-empty cm-no-messages">
+  <div class="mf-content-empty cm-no-messages lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
     <h3>{#localize key="plugin.records.empty.topic.all"/}</h3>
   </div>
-
 {/.}
