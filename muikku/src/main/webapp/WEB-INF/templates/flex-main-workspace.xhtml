@@ -256,6 +256,43 @@
       <div id="workspaceNavigationWrapperBuble">
         <div class="icon-navicon">
           <div class="navmore-container">
+            <ui:fragment rendered="#{workspaceBackingBean.isStudent()}">
+              <div class="navmore-evaluation-links">
+                <div class="workspace-evaluation-item workspace-dock-navi-button-evaluation" data-state="#{workspaceBackingBean.assessmentState}">
+                  <ui:fragment rendered="#{workspaceBackingBean.assessmentState eq 'unassessed'}">
+                    <a class="icon-assessment-#{workspaceBackingBean.assessmentState}" 
+                         title="#{i18n.text['plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip']}">
+                      <span class="workspace-evaluation-item-label">#{i18n.text['plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip']}</span>
+                    </a>   
+                  </ui:fragment>
+                  <ui:fragment rendered="#{workspaceBackingBean.assessmentState eq 'pending'}">
+                    <a class="icon-assessment-#{workspaceBackingBean.assessmentState}" 
+                         title="#{i18n.text['plugin.workspace.dock.evaluation.cancelEvaluationButtonTooltip']}">
+                      <span class="workspace-evaluation-item-label">#{i18n.text['plugin.workspace.dock.evaluation.cancelEvaluationButtonTooltip']}</span>
+                    </a>   
+                  </ui:fragment>
+                  <ui:fragment rendered="#{workspaceBackingBean.assessmentState eq 'canceled'}">
+                    <a class="icon-assessment-#{workspaceBackingBean.assessmentState}" 
+                         title="#{i18n.text['plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip']}">
+                      <span class="workspace-evaluation-item-label">#{i18n.text['plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip']}</span>
+                    </a>   
+                  </ui:fragment>
+                  <ui:fragment rendered="#{workspaceBackingBean.assessmentState eq 'pass'}">
+                    <a class="icon-assessment-#{workspaceBackingBean.assessmentState}" 
+                         title="#{i18n.text['plugin.workspace.dock.evaluation.viewEvaluationButtonTooltip']}">
+                      <span class="workspace-evaluation-item-label">#{i18n.text['plugin.workspace.dock.evaluation.requestEvaluationButtonTooltip']}</span>
+                    </a>   
+                  </ui:fragment>
+                  <ui:fragment rendered="#{workspaceBackingBean.assessmentState eq 'fail'}">
+                    <a class="icon-assessment-#{workspaceBackingBean.assessmentState}" 
+                         title="#{i18n.text['plugin.workspace.dock.evaluation.resendRequestEvaluationButtonTooltip']}">
+                      <span class="workspace-evaluation-item-label">#{i18n.text['plugin.workspace.dock.evaluation.resendRequestEvaluationButtonTooltip']}</span>
+                    </a>   
+                  </ui:fragment>
+                </div>
+              </div>
+            </ui:fragment>
+          
             <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">   
               <div class="navmore-management-links">
                 <ui:fragment rendered="#{workspaceBackingBean.mayManageMaterials}">
@@ -280,8 +317,13 @@
                 </div>
               </div>
             </ui:fragment>
-            <div class="navmore-student-links">
             
+            
+            <ui:fragment rendered="#{workspaceBackingBean.materialsVisible}">
+              <ui:insert name="materials-fullscreen-bublelink"></ui:insert>
+            </ui:fragment>
+            
+            <div class="navmore-student-links">
               <ui:fragment rendered="#{workspaceBackingBean.homeVisible}">
                 <!-- WORKSPACE HOME -->
                 <div class="workspace-student-item">

@@ -1,24 +1,108 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core" 
-  xmlns:h="http://java.sun.com/jsf/html" 
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
-  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
-  template="/jsf/workspace/templates/workspace-materials-view.xhtml">
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-workspace.xhtml"> 
 
-  <ui:define name="workspace.content.top.static">
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/> 
+    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.js"/>    
+    <script defer="defer" jsf:name="/scripts/gui/lazypdf.js" />
+    <script defer="defer" jsf:name="/scripts/gui/lazyswf.js" />
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.ui.swappable/0.9.5_custom/jquery.ui.swappable.js"/>
+    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/jquery.magnific-popup.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/connectionlostnotifier.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/muikku-file-field-component.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/muikku-connect-field-component.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/workspace.js"/>  
+    <script defer="defer" jsf:name="/scripts/gui/muikku-field.js"/> 
+    <script defer="defer" jsf:name="/scripts/gui/muikku-material-loader.js"/> 
+    <script defer="defer" jsf:name="/scripts/gui/workspace-signup-dialog.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/workspace-materials.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/js/min/perfect-scrollbar.jquery.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/waypoints/2.0.5/waypoints.min.js"/>
+  </ui:define>
+  
+  <ui:define name="workspace-view-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-materials.css"/>  
+    <link rel="stylesheet" type="text/css" href="/css/muikku-file-field-component.css" /> 
+    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.css"/> 
+    <link rel="StyleSheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/magnific-popup.min.css"/>
+    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/css/perfect-scrollbar.min.css"/>
+  </ui:define>
+  
+  <ui:define name="materials-fullscreen">
+    <nav id="workspaceFullscreenReadingDockWrapper">
+      <div id="workspaceFullscreenReadingDock">
+        <div class="workspace-dock-navi-button-fullscreen">
+          <a class="icon-fullscreen tooltip" title="#{i18n.text['plugin.workspace.dock.material-reading']}" jsf:outcome="/jsf/workspace/materials-reading.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+            <span class="workspace-navi-tt-container-fullscreen">#{i18n.text['plugin.workspace.dock.material-reading']}</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </ui:define>
+  
+  <ui:define name="materials-fullscreen-bublelink">
+    <div class="navmore-fullscreenreading-links">
+      <div class="workspace-fullscreenreading-item">
+        <a class="icon-fullscreen" title="#{i18n.text['plugin.workspace.dock.material-reading']}" jsf:outcome="/jsf/workspace/materials-reading.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+          <span class="workspace-fullscreenreading-item-label">#{i18n.text['plugin.workspace.dock.material-reading']}</span>
+        </a>
+      </div> 
+    </div>   
+  </ui:define>
+  
+  <ui:define name="grid-content">
    <form style="display: none;">
       <input type="hidden" name="max-file-size" value="#{workspaceMaterialsBackingBean.maxFileSize}" />
     </form>
-  </ui:define>
-  
-  <ui:define name="workspace.content">
-
-    <nav class="workspace-materials-toc-wrapper" id="workspaceMaterialsTOCWrapper">
-      <div class="workspace-materials-toc-container">
-        <h1 class="workspace-materials-toc-title">#{i18n.text['plugin.workspace.materials.tocTitle']}</h1>
-        
+    
+    <section class="flex-row">
+      <article class="lg-flex-cell-11 md-flex-cell-11 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first no-margin-top">
+        <h1>#{workspaceMaterialsBackingBean.workspaceName}</h1>
+        <ui:repeat var="node" value="#{workspaceMaterialsBackingBean.contentNodes}">
+          <ui:fragment rendered="#{node.type eq 'folder'}">
+            <section id="page-#{node.workspaceMaterialId}" class="workspace-materials-view-page-section material-view" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-path="#{node.path}">
+              <h2>#{node.title}</h2>
+              <ui:repeat var="articleNode" value="#{node.children}">
+                <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+                  <ui:fragment rendered="#{articleNode.level eq 1}">
+                    <h3>#{articleNode.title}</h3>
+                  </ui:fragment>
+                  <ui:fragment rendered="#{articleNode.level eq 2}">
+                    <h4>#{articleNode.title}</h4>
+                  </ui:fragment>
+                  <ui:fragment rendered="#{articleNode.level eq 3}">
+                    <h5>#{articleNode.title}</h5>
+                  </ui:fragment>
+                  <ui:fragment rendered="#{(articleNode.level eq 4) or (articleNode.level gt 4)}">
+                    <h6>#{articleNode.title}</h6>
+                  </ui:fragment>
+                </ui:fragment>
+                <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+                  <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-workspace-material-assigment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" class="workspace-materials-view-page material-view"/>
+                </ui:fragment>
+              </ui:repeat>
+            </section>
+          </ui:fragment>  
+          
+          <ui:fragment rendered="#{node.type ne 'folder'}">
+            <article id="page-#{node.workspaceMaterialId}" data-correct-answers="#{node.correctAnswers}" data-workspace-material-assigment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" data-path="#{node.path}" class="workspace-materials-view-page material-view"/>
+          </ui:fragment>  
+        </ui:repeat>
+      </article>
+      
+      <nav id="workspaceMaterialsTOCWrapper" class="workspace-materials-toc-wrapper lg-flex-cell-5 md-flex-cell-5 sm-flex-hide lg-flex-cell-last md-flex-cell-last no-margin-top">
+        <div class="workspace-materials-toc-container">
+          <h1 class="workspace-materials-toc-title">#{i18n.text['plugin.workspace.materials.tocTitle']}</h1>
             <div class="workspace-materials-toc-content-scrolling" id="materialsScrollableTOC">
               <ul class="workspace-materials-toc-root">
                 <ui:repeat var="node" value="#{workspaceMaterialsBackingBean.contentNodes}">
@@ -26,7 +110,6 @@
                     <li>
                       <ul class="workspace-materials-toc-section">
                         <li class="workspace-materials-toc-subtitle">#{node.title}</li>
-
                         <ui:repeat var="articleNode" value="#{node.children}">
                           <ui:fragment rendered="#{articleNode.type eq 'folder'}">
                             <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
@@ -40,7 +123,6 @@
                       </ul>
                     </li>
                   </ui:fragment>
-
                   <ui:fragment rendered="#{node.type ne 'folder'}">
                     <li class="workspace-materials-toc-item" data-workspace-material-id="#{node.workspaceMaterialId}">
                       <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
@@ -49,43 +131,9 @@
                 </ui:repeat>
               </ul>
             </div>
-            
-      </div>
-    </nav>
-    
-    <article>
-      <h1>#{workspaceMaterialsBackingBean.workspaceName}</h1>
-      <ui:repeat var="node" value="#{workspaceMaterialsBackingBean.contentNodes}">
-        <ui:fragment rendered="#{node.type eq 'folder'}">
-          <section id="page-#{node.workspaceMaterialId}" class="workspace-materials-view-page-section material-view" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-path="#{node.path}">
-            <h2>#{node.title}</h2>
-            <ui:repeat var="articleNode" value="#{node.children}">
-              <ui:fragment rendered="#{articleNode.type eq 'folder'}">
-                <ui:fragment rendered="#{articleNode.level eq 1}">
-                  <h3>#{articleNode.title}</h3>
-                </ui:fragment>
-                <ui:fragment rendered="#{articleNode.level eq 2}">
-                  <h4>#{articleNode.title}</h4>
-                </ui:fragment>
-                <ui:fragment rendered="#{articleNode.level eq 3}">
-                  <h5>#{articleNode.title}</h5>
-                </ui:fragment>
-                <ui:fragment rendered="#{(articleNode.level eq 4) or (articleNode.level gt 4)}">
-                  <h6>#{articleNode.title}</h6>
-                </ui:fragment>
-              </ui:fragment>
-              <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-workspace-material-assigment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" class="workspace-materials-view-page material-view"/>
-              </ui:fragment>
-            </ui:repeat>
-          </section>
-        </ui:fragment>  
-        
-        <ui:fragment rendered="#{node.type ne 'folder'}">
-          <article id="page-#{node.workspaceMaterialId}" data-correct-answers="#{node.correctAnswers}" data-workspace-material-assigment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" data-path="#{node.path}" class="workspace-materials-view-page material-view"/>
-        </ui:fragment>  
-      </ui:repeat>
-    </article>
+        </div>
+      </nav>
+    </section>
 
     <input class="workspaceName" type="hidden" value="#{workspaceMaterialsBackingBean.workspaceName}"/>
     <input class="workspaceNameExtension" type="hidden" value="#{workspaceMaterialsBackingBean.workspaceNameExtension}"/>

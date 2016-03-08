@@ -1,0 +1,250 @@
+@import "_vars.scss";
+@import "_styles.scss";
+@import "_custom-ckeditor-styles.scss";
+@import "_connect-field.scss";
+@import "_file-field.scss";
+@import "_workspace-materials-defaults.scss";
+
+.lazy-pdf {
+  height: 822px;
+}
+
+.lazy-swf {
+  height: 500px;
+}
+
+#content  > section > article {
+  position:relative;
+  z-index:10;
+  min-width:0;
+
+    & > h1 { /* Material's title */
+    position:relative;
+    z-index:12;
+    max-width:700px;
+    width:auto;
+    background:#fff;
+    margin:0 auto -30px auto; 
+    font-weight:300;
+    color:#000;
+    font-size:30px;
+    padding:30px;
+    text-transform:none;
+    line-height:1.3em;
+  }
+  
+}
+
+.workspace-materials-view-page-section.material-view { /* <section> */
+  position:relative;
+  z-index:10;
+  
+  & > h2 { /* Section's title */
+    position:relative;
+    z-index:12;
+    max-width:700px;
+    width:auto;
+    margin:30px auto -30px auto; 
+    font-weight:300;
+    color:#000;
+    font-size:26px;
+    padding:10px 30px;
+    text-transform:none;
+    line-height:1.3em;
+    border:1px solid #fff;
+    background:#ddf5ff;
+    text-transform:uppercase;
+  }
+  
+  & > h3, > h4, > h5, > h6 { /* Alternative Section's titles */
+    position:relative;
+    z-index:13;
+    width:auto;
+    background:#fff;
+    margin:30px auto -30px auto; 
+    font-weight:300;
+    color:#000;
+    font-size:26px;
+    padding:10px 30px 10px 30px;
+    text-transform:none;
+    line-height:1.3em;
+  }
+  
+  .muikku-file-input-field-file-uploader-container {
+   font-size:14px;
+  }
+  
+}
+
+.workspace-materials-view-page.material-view { /* <article> */
+  padding:10px 30px;
+  margin:30px auto;
+  position:relative;
+  background:#fff;
+
+  label,select,option,input,textarea { /* Overrides the values used in reading/management */
+    font-weight:400;
+    font-size:14px;
+  }
+
+  blockquote {
+    font-family:'Open Sans', Arial, sans-serif;
+    font-style:italic;
+    padding:2px 0;
+    border-style:solid;
+    border-color:#eee;
+    border-width:0;
+    color:#777;
+    font-size:20px;
+    margin:0 40px 0 40px;
+  
+    p {
+      margin:10px 0 10px 0;
+    }
+  
+  }
+  
+  .cke_contents_ltr blockquote {
+    padding-left:20px;
+    padding-right:8px;
+    border-left-width:8px;
+  }
+  
+  .cke_contents_rtl blockquote {
+    padding-left:8px;
+    padding-right:20px;
+    border-right-width:8px;
+  }
+  
+}
+
+nav.workspace-materials-toc-wrapper {
+  background:#fff;
+  text-align:left;
+  font-family:'Open Sans', Arial, sans-serif;
+  text-shadow:none;
+  color:#000;
+  font-size:14px;
+  line-height:1.5em;
+  z-index:11;
+  position:fixed;
+  top:90px;
+  bottom:0;
+  width:290px;
+  
+  &:hover > span {
+    display:none;
+  }
+  
+  ul, 
+  li {
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  
+  .workspace-materials-toc-container {
+    position:relative;
+    height:100%;
+  
+    .workspace-materials-toc-title {
+      text-transform:uppercase;
+      margin:0;
+      padding:10px 12px;
+      font-size:19px;
+      color:#2c2c2c;
+      height:20px;
+    }
+
+    .workspace-materials-toc-content-scrolling {
+      padding:4px;
+      width:100%;
+      box-sizing:border-box;
+      position:absolute;
+      top:40px;
+      bottom:35px;
+      
+      .workspace-materials-toc-root {
+
+        .workspace-materials-toc-item {
+          font-weight:300;
+          list-style:none;
+          word-wrap:break-word;
+          
+          &:first-child {
+            margin-top:5px;
+            padding-top:2px;
+          }
+          
+          &.item-hidden {
+            opacity:0.4;
+          }
+          
+          a {
+            text-decoration:none;
+            color:#2c2c2c;
+            display:block;
+            @include rounded(2px);
+            padding:2px 8px 2px 6px;
+            border-left:2px solid #fff;
+            margin:1px 0;
+            
+            &:hover,
+            &.active {
+              background:#596e7d;
+              color:#fff;
+            }
+            
+            &.evaluated {
+              border-left:2px solid $evaluatedAssignment;
+            }
+            
+            &.exercise {
+              border-left:2px solid $exerciseAssignment;
+            }
+            
+          }
+
+        }
+
+        .workspace-materials-toc-section {
+          margin:0;
+          padding-top:5px;
+          padding-bottom:10px;
+        
+          .workspace-materials-toc-subtitle {
+            text-transform:uppercase;
+            font-size:15px;
+            padding:2px 8px;
+          }
+          
+          .workspace-materials-toc-item {
+            font-weight:300;
+            word-wrap:break-word;
+            
+            a {
+              text-decoration:none;
+              color:#41505b;
+              display:block;
+              @include rounded(2px);
+              padding:2px 8px;
+              
+              &:hover,
+              &.active {
+                background:#596e7d;
+                color:#fff;
+              }
+              
+            }
+            
+          }
+        
+        }
+        
+      }
+      
+    }
+  
+  }
+
+}

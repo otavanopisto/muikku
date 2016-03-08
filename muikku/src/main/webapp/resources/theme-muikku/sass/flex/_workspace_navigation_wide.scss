@@ -182,6 +182,22 @@ div[class*='workspace-dock-navi-button'] > span {
   
 }
 
+
+/* WORKSPACE FULLSCREEN READING BUTTON */
+div[class*='workspace-dock-navi-button-fullscreen'] > a,
+div[class*='workspace-dock-navi-button-fullscreen'] > span {
+
+  &:hover {
+    background:#1a75ac;
+    
+    span[class*='workspace-navi-tt-container-'] {
+      background:#1a75ac;
+    }
+    
+  }
+  
+}
+
 /* WORKSPACE MANAGEMENT BUTTONS */
 div.workspace-dock-navi-button-workspace-management {
   

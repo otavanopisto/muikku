@@ -461,6 +461,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return elements.size();
   }
   
+  protected void hoverOverElement(String selector) {
+    Actions action = new Actions(getWebDriver());
+    action.moveToElement(getWebDriver().findElementByCssSelector(selector)).perform();
+  }
+  
   protected void assertClassNotPresent(String selector, String className) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     String[] classes = StringUtils.split(element.getAttribute("class"), " ");
