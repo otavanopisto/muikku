@@ -281,6 +281,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertVisible(selector);
   }
   
+  protected void hoverOverElement(String selector) {
+    Actions action = new Actions(getWebDriver());
+    action.moveToElement(getWebDriver().findElementByCssSelector(selector)).perform();
+  }
+  
   protected void takeScreenshot() throws IOException {
     if (getWebDriver() instanceof TakesScreenshot) {
       Date dNow = new Date();
