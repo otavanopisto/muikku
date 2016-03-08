@@ -1,5 +1,7 @@
 package fi.muikku.dao.security;
 
+import java.util.List;
+
 import fi.muikku.dao.CoreDAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
@@ -50,6 +52,20 @@ public class ResourceRolePermissionDAO extends CoreDAO<ResourceRolePermission> {
     );
     
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public List<ResourceRolePermission> listByResourceRights(ResourceRights resourceRights) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<ResourceRolePermission> criteria = criteriaBuilder.createQuery(ResourceRolePermission.class);
+    Root<ResourceRolePermission> root = criteria.from(ResourceRolePermission.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(ResourceRolePermission_.resourcePermission), resourceRights)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
   }
 
   @Override

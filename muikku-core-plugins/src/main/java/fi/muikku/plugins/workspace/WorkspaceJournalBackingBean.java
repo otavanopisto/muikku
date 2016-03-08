@@ -3,6 +3,7 @@ package fi.muikku.plugins.workspace;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -231,6 +232,23 @@ public class WorkspaceJournalBackingBean {
           new UserView(user, userEntity, userEntity.getId().equals(studentId))
       );
     }
+    
+    Collections.sort(result, new Comparator<UserView>() {
+      @Override
+      public int compare(UserView o1, UserView o2) {
+        String s1 = o1.getUser().getLastName();
+        String s2 = o2.getUser().getLastName();
+        s1 = s1 == null ? "" : s1;
+        s2 = s2 == null ? "" : s2;
+        int result = s1.compareTo(s2);
+        if (result == 0) {
+          s1 = o1.getUser().getFirstName();
+          s2 = o2.getUser().getFirstName();
+          result = s1.compareTo(s2);
+        }
+        return result;
+      }
+    });
     
     return result;
   }
