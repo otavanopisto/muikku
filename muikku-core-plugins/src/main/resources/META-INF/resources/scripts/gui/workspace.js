@@ -71,8 +71,6 @@
     }
     
     if ($(this).attr('data-state') == 'pending') {
-      $(this).attr('data-state', 'cancel');
-      $(this).children('.icon-assessment-pending').removeClass('icon-assessment-pending').addClass('icon-assessment-cancel');
       confirmEvaluationCancellation();
     }
     
@@ -127,6 +125,7 @@
                       .children('.icon-assessment-' + evalButton.attr('data-state'))
                         .removeClass('icon-assessment-' + evalButton.attr('data-state'))
                         .addClass('icon-assessment-pending')
+                        .attr("title", getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"))
                         .children('span')
                           .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
                   
@@ -152,6 +151,12 @@
   }
   
   function confirmEvaluationCancellation() {
+    
+    var evalButton = $('.workspace-dock-navi-button-evaluation');
+    
+    evalButton.attr('data-state', 'cancel');
+    evalButton.children('.icon-assessment-pending').removeClass('icon-assessment-pending').addClass('icon-assessment-cancel');
+
     renderDustTemplate('workspace/workspace-evaluation-cancellation-confirm.dust', { }, $.proxy(function (text) {
       var dialog = $(text);
       $(text).dialog({
@@ -179,16 +184,16 @@
                       $('.notification-queue').notificationQueue('notification', 'error', err);
                     } else {
                       
-                      var evalButton = $('.workspace-dock-navi-button-evaluation');
-
                       evalButton
                         .children('.icon-assessment-' + evalButton.attr('data-state'))
                           .removeClass('icon-assessment-' + evalButton.attr('data-state'))
                           .addClass('icon-assessment-unassessed')
+                          .attr("title", getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"))
                           .children('span')
                             .text(getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"));
+                        
                     
-                      evalButton.attr('data-state', 'canceled');
+                      evalButton.attr('data-state', 'unassessed');
                       
                       $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
                     }

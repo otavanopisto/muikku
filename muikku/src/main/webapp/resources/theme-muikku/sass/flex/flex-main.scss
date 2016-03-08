@@ -77,9 +77,24 @@ body {
   bottom:0;
   left:0;
   right:0;
-  opacity:0.9;
+  opacity:0.98;
   box-shadow:-5px 0 5px rgba(0, 0, 0, 0.2);
   z-index:999;
+  
+  .footer-custom-bg {
+    background:#485c64;
+    bottom:0;
+    left:0;
+    position:absolute;
+    right:0;
+    top:0;
+    z-index:1;
+  }
+  
+  .footer-custom-content {
+    position:relative;
+    z-index:2;
+  }
   
   .footer-predefined-bg {
     position:absolute;
@@ -88,7 +103,6 @@ body {
     bottom:0;
     right:0;
     background:$btBarBgr;
-    opacity:0.95;
     z-index:1;
   }
   

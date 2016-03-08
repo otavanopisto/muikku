@@ -38,6 +38,28 @@
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/css/perfect-scrollbar.min.css"/>
   </ui:define>
   
+  <ui:define name="materials-fullscreen">
+    <nav id="workspaceFullscreenReadingDockWrapper">
+      <div id="workspaceFullscreenReadingDock">
+        <div class="workspace-dock-navi-button-fullscreen">
+          <a class="icon-fullscreen tooltip" title="#{i18n.text['plugin.workspace.dock.material-reading']}" jsf:outcome="/jsf/workspace/materials-reading.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+            <span class="workspace-navi-tt-container-fullscreen">#{i18n.text['plugin.workspace.dock.material-reading']}</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </ui:define>
+  
+  <ui:define name="materials-fullscreen-bublelink">
+    <div class="navmore-fullscreenreading-links">
+      <div class="workspace-fullscreenreading-item">
+        <a class="icon-fullscreen" title="#{i18n.text['plugin.workspace.dock.material-reading']}" jsf:outcome="/jsf/workspace/materials-reading.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+          <span class="workspace-fullscreenreading-item-label">#{i18n.text['plugin.workspace.dock.material-reading']}</span>
+        </a>
+      </div> 
+    </div>   
+  </ui:define>
+  
   <ui:define name="grid-content">
    <form style="display: none;">
       <input type="hidden" name="max-file-size" value="#{workspaceMaterialsBackingBean.maxFileSize}" />
@@ -79,38 +101,38 @@
       </article>
       
       <nav id="workspaceMaterialsTOCWrapper" class="workspace-materials-toc-wrapper lg-flex-cell-5 md-flex-cell-5 sm-flex-hide lg-flex-cell-last md-flex-cell-last no-margin-top">
-      <div class="workspace-materials-toc-container">
-        <h1 class="workspace-materials-toc-title">#{i18n.text['plugin.workspace.materials.tocTitle']}</h1>
-          <div class="workspace-materials-toc-content-scrolling" id="materialsScrollableTOC">
-            <ul class="workspace-materials-toc-root">
-              <ui:repeat var="node" value="#{workspaceMaterialsBackingBean.contentNodes}">
-                <ui:fragment rendered="#{node.type eq 'folder'}">
-                  <li>
-                    <ul class="workspace-materials-toc-section">
-                      <li class="workspace-materials-toc-subtitle">#{node.title}</li>
-                      <ui:repeat var="articleNode" value="#{node.children}">
-                        <ui:fragment rendered="#{articleNode.type eq 'folder'}">
-                          <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
-                        </ui:fragment>
-                        <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                          <li class="workspace-materials-toc-item" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
-                            <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
-                          </li>
-                        </ui:fragment>
-                      </ui:repeat>
-                    </ul>
-                  </li>
-                </ui:fragment>
-                <ui:fragment rendered="#{node.type ne 'folder'}">
-                  <li class="workspace-materials-toc-item" data-workspace-material-id="#{node.workspaceMaterialId}">
-                    <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
-                  </li>
-                </ui:fragment>
-              </ui:repeat>
-            </ul>
-          </div>
-      </div>
-    </nav>
+        <div class="workspace-materials-toc-container">
+          <h1 class="workspace-materials-toc-title">#{i18n.text['plugin.workspace.materials.tocTitle']}</h1>
+            <div class="workspace-materials-toc-content-scrolling" id="materialsScrollableTOC">
+              <ul class="workspace-materials-toc-root">
+                <ui:repeat var="node" value="#{workspaceMaterialsBackingBean.contentNodes}">
+                  <ui:fragment rendered="#{node.type eq 'folder'}">
+                    <li>
+                      <ul class="workspace-materials-toc-section">
+                        <li class="workspace-materials-toc-subtitle">#{node.title}</li>
+                        <ui:repeat var="articleNode" value="#{node.children}">
+                          <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+                            <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
+                          </ui:fragment>
+                          <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+                            <li class="workspace-materials-toc-item" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
+                              <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+                            </li>
+                          </ui:fragment>
+                        </ui:repeat>
+                      </ul>
+                    </li>
+                  </ui:fragment>
+                  <ui:fragment rendered="#{node.type ne 'folder'}">
+                    <li class="workspace-materials-toc-item" data-workspace-material-id="#{node.workspaceMaterialId}">
+                      <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
+                    </li>
+                  </ui:fragment>
+                </ui:repeat>
+              </ul>
+            </div>
+        </div>
+      </nav>
     </section>
 
     <input class="workspaceName" type="hidden" value="#{workspaceMaterialsBackingBean.workspaceName}"/>
