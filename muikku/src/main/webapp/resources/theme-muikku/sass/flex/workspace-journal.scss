@@ -17,7 +17,7 @@
     color:#ffffff;
     cursor:pointer;
     display:inline-block;
-    font-size:1em;
+    font-size:14px;
     line-height:1.3em;
     text-transform: uppercase;
     padding:8px 12px;
@@ -33,15 +33,13 @@
   position:relative;
 
   .workspace-journal-select-student-container {
-    @include flexbox();
-    flex-flow:row wrap;
-    align-content:center;
-    align-items:center;
     line-height:normal;
     
     .journal-select-student-label,
     .journal-select-student-selection {
       padding:0.5em;
+      font-size:14px;
+      font-weight:300;
     }
     
     .journal-select-student-label {
@@ -50,16 +48,15 @@
     }
     
     .journal-select-student-selection {
-     @include flex(0 1 200px);
-     max-width:250px;
-     border:1px solid #67e1f7;
-     border-radius:5px;
+      max-width:250px;
+      border:1px solid #67e1f7;
+      border-radius:5px;
      
-     &:hover,
-     &:focus {
-       border:1px solid #67e1f7;
-       outline:none;
-     }
+      &:hover,
+      &:focus {
+        border:1px solid #67e1f7;
+        outline:none;
+      }
     }
     
   }
@@ -75,10 +72,9 @@ h1.workspace-generic-view-title {
 .workspace-journal-content-wrapper {
   min-height:500px;
   background:#fff;
-  padding:30px;
+  padding:20px;
   
   .workspace-journal-no-entries {
-    margin:50px;
     box-sizing:border-box;
     font-size:22px;
     font-style:italic;
@@ -104,7 +100,6 @@ h1.workspace-generic-view-title {
     }
     
     .workspace-journal-entry-meta {
-      margin:10px 0 0 0;
     
       .workspace-journal-dateTime {
         font-style:italic;
@@ -151,27 +146,19 @@ h1.workspace-generic-view-title {
     }
     
     .workspace-journal-header-container {
-      margin:0 0 10px 0;
-      padding:5px;
+      padding:5px 0;
       border-bottom:2px solid #f8f8f8;
     
       .workspace-journal-poster-container {
-        @include flexbox();
-        flex-flow:row wrap;
-        align-content:center;
-        align-items:center;
         line-height:normal;
-        margin:0 0 10px 0;
       
         .workspace-journal-poster-image {
-          @include flex(0 0 48px); 
           @incude border(2px,#fff,solid);
           box-shadow:0 0 1px rgba(0, 0, 0, 0.2);
           height:48px;   
           box-sizing:border-box; 
           display:inline-block;
           border-radius:24px;
-          margin:0 15px 0 0;
           z-index:15;
           background-size:100% auto;
           border:2px solid #fff;
@@ -185,19 +172,15 @@ h1.workspace-generic-view-title {
         }
       
         .workspace-journal-poster-name {
-          @include flex(1 1 auto);
           font-size:26px;
         }
         
         .workspace-journal-entry-meta {
-           @include flex(0 0 300pxauto);
-           margin:0;
         
           .workspace-journal-dateTime {
             font-style:italic;
             color:#aaa;
             font-weight:400;
-            margin:0;
           }
           
         }

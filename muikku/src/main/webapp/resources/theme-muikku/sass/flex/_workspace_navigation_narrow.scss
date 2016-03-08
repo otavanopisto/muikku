@@ -104,6 +104,81 @@
           
         }
         
+        .navmore-evaluation-links {
+          margin-top:3px;
+          padding:0;
+          background:#36b497;
+          border-radius:3px;
+          box-shadow:0 1px 5px rgba(0,0,0,0.3);
+          
+          .workspace-evaluation-item {
+            padding:5px;
+          
+            &.workspace-dock-navi-button-evaluation {
+              width:auto;
+              margin:0;
+              
+              a {
+                width:auto;
+              }
+              
+            }
+            
+            a {
+              color:#fff;
+              font-size:18px;
+              text-transform:uppercase;
+              white-space:nowrap;
+              font-weight:300;
+              display:block;
+              padding:10px;
+              border-radius:3px;
+              text-decoration:none;
+              
+              span {
+                font-size:16px;
+              }
+              
+            }
+            
+          }
+          
+        }
+        
+        .navmore-fullscreenreading-links {
+          margin-top:3px;
+          padding:10px;
+          background:#288fcd;
+          border-radius:3px;
+          box-shadow:0 1px 5px rgba(0,0,0,0.3);
+          
+          .workspace-fullscreenreading-item {
+            
+            a {
+              color:#fff;
+              font-size:18px;
+              text-transform:uppercase;
+              white-space:nowrap;
+              font-weight:300;
+              display:block;
+              padding:10px;
+              border-radius:3px;
+              text-decoration:none;
+              
+              span {
+                font-size:16px;
+              }
+              
+              &:hover {
+                background:#1a75ac;
+              }
+              
+            }
+            
+          }
+          
+        }
+        
       }
       
     }
