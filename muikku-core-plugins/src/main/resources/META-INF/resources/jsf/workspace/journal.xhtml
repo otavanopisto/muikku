@@ -85,8 +85,8 @@
             <div class=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
   						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
                 <div class="flex-row">
-    							<div class="workspace-journal-title lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full">#{entry.title}</div>
-                  <div class="workspace-journal-entry-meta lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-right md-flex-right sm-flex-left">
+    							<div class="workspace-journal-title lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">#{entry.title}</div>
+                  <div class="workspace-journal-entry-meta lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last lg-flex-right md-flex-right sm-flex-left">
                     <div class="workspace-journal-dateTime">
                       <h:outputText value="#{entry.created}" >
                         <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
