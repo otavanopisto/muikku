@@ -1,9 +1,7 @@
 {#.}
   <div id="crsId-{id}" class="mf-item foldable cp-course ft-01 {@select key=published}{@eq value="false" type="boolean"}not-published{/eq}{/select}">
     <input type="hidden" name="workspaceId" value="{id}"/>
-    <input type="hidden" name="workspaceUrl" value="{urlName}"/>
-
-    
+    <input type="hidden" name="workspaceUrl" value="{urlName}"/>    
     <div class="mf-item-details cp-course-details flex-row" {?evaluationHasFee}data-fee="yes"{/evaluationHasFee}>
       <div class="mf-item-details-container cp-course-details-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">       
         <div class="mf-item-description cp-course-description flex-row">
@@ -15,8 +13,7 @@
                   {?nameExtension}<i class="cp-course-extension">({nameExtension})</i>{/nameExtension}
                   {?educationTypeName}<i class="cp-course-education-type {educationTypeName}">{educationTypeName}</i>{/educationTypeName}
                 </span>
-              </div>
-            
+              </div>            
               <div class="mf-item-header-details cp-course-header-details lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4 lg-flex-cell-last md-flex-cell-last sm-flex-cell-last">            
                 {?evaluationHasFee}
                    <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
@@ -53,5 +50,4 @@
   <div class="mf-content-empty cm-no-messages">
     <h3>{#localize key="plugin.coursepicker.empty.topic.all"/}</h3>
   </div>
-
 {/.}
