@@ -57,6 +57,7 @@
     width: 100%;
     border:1px solid $brd;
     z-index:1;
+    box-sizing:border-box;
     
     li {
       font-size:0.9em;   
