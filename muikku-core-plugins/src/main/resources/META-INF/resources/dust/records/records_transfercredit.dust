@@ -9,8 +9,8 @@
             <div class="mf-item-header-name tr-item-header-name lg-flex-cell-13 md-flex-cell-12 sm-flex-cell-13 no-margin-left no-margin-top no-margin-bottom">
              <span class="tr-item-long">{courseName}</span>
             </div>
-            <div class="mf-item-header-details tr-item-header-details lg-flex-cell-3 md-flex-cell-4 sm-flex-cell-3 no-margin-top no-margin-bottom no-margin-right">
-              <div class="tr-details-right flex-row">
+            <div class="mf-item-header-details tr-item-header-details lg-flex-cell-3 md-flex-cell-4 sm-flex-cell-3 no-margin-top no-margin-bottom no-margin-right flex-right">
+              <div class="flex-row">
                 {#grade}
                   <div class="tr-item-header-detail date lg-flex-cell-14 md-flex-cell-12 sm-flex-hide no-margin-top no-margin-bottom"><span>{#localize key="plugin.records.transferCreditsDate" arg0=evaluated /}</span></div>
                   {?passed}
