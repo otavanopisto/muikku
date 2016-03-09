@@ -14,19 +14,27 @@
   }
 }
 
-.tr-study-programme-name{
+.tr-item-workspace-assessment {
+  cursor:pointer;
+}
+
+.tr-study-programme-name {
   padding-left:5px;
 }
 
-.tr-item-header-details{
- .tr-details-right{
-  float:right;
- }
- .tr-item-header-detail{
-     &.grade {
-      padding:2px 8px;
+.tr-item-header-details {
+ 
+  .tr-item-header-detail {
+    display:inline-block;
+  
+    &.grade {
+      padding:0 6px;
       color:#fff;
-      margin-left:3px;      
+      box-sizing:border-box; 
+      text-transform:uppercase;
+      font-size:12px;
+      margin-left:5px;
+      
       &.passing {
         background-color:#0acf00;
       }
@@ -35,15 +43,7 @@
         background-color:#ea7401;
       }
     }
-    
-    &:not(:first-child){
-      margin-left:10px;
-    }
- 
- }
-  div{
-   display:inline-block;
-  text-align:right;   
+
   }
   
 }

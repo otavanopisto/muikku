@@ -427,7 +427,7 @@
     display:inline-block;
     vertical-align:center;
     
-    span {
+    > span {
       line-height:normal;  
       display:inline-block;
       margin:0 0 0 5px;
@@ -456,7 +456,7 @@
   .mf-item-description {
     background-color:#fff;  
     overflow:hidden;   
-    height:35px;
+/*     height:35px; */
   }
   
   /* If item is foldable */
