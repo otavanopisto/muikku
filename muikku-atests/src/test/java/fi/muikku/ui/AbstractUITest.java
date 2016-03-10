@@ -94,25 +94,27 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
     @Override
     public Statement apply(Statement base, Description description) {
-      boolean skip = false;
+      boolean browserSkip = false;
+      boolean resolutionSkip = false;
       
       for (Annotation annotation : description.getAnnotations()) {
         if (annotation instanceof TestEnvironments) {
           TestEnvironments testEnvironments = (TestEnvironments) annotation;
           if (testEnvironments.browsers().length > 0) {
-            skip = true;
+            browserSkip = true;
             
             for (TestEnvironments.Browser browser : testEnvironments.browsers()) {
               if (getBrowser().equals(browser)) {
-                skip = false;
+                browserSkip = false;
                 break;
               }
             }
           }
           if(testEnvironments.screenSizes().length > 0) {
+            resolutionSkip = true;
             for (TestEnvironments.ScreenSize screenSize : testEnvironments.screenSizes()) {
               if (getScreenSize().equals(screenSize)) {
-                skip = false;
+                resolutionSkip = false;
                 break;
               }
             } 
@@ -120,7 +122,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         }
       }
       
-      if (!skip) {
+      if (!browserSkip && !resolutionSkip) {
         return super.apply(base, description);
       }
       
@@ -156,31 +158,39 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     case "chrome":
       return TestEnvironments.Browser.CHROME;
     default:
-      break;
-    }
-    return null; 
-  }
-  
-  protected Map<String, Long> getBrowserDimensions() {
-    String resolution = System.getProperty("it.sauce.browser.resolution");
-    if (!resolution.isEmpty()) {
-      String[] widthHeight = org.apache.commons.lang3.StringUtils.split(resolution, "x");
-      Map<String, Long> dimensions = new HashMap<String, Long>();
-      dimensions.put("width", Long.parseLong(widthHeight[0]));
-      dimensions.put("height", Long.parseLong(widthHeight[1]));  
-      return dimensions;
-    }
-    return null;
+      return TestEnvironments.Browser.CHROME;
+    } 
   }
   
   protected TestEnvironments.ScreenSize getScreenSize() {
     Map<String, Long> dimensions = getBrowserDimensions();
-    Long width = dimensions.get("width");
-    if (width > 1099) {
-      return TestEnvironments.ScreenSize.LARGE;
+    if (dimensions != null) {
+      Long width = dimensions.get("width");
+      if (width != null) {
+        if (width > 1099) {
+          return TestEnvironments.ScreenSize.LARGE;
+        }
+        if (768 < width && width < 1099) {
+          return TestEnvironments.ScreenSize.MEDIUM;
+        }
+        if (width < 768) {
+          return TestEnvironments.ScreenSize.SMALL;
+        }
+      }  
     }
-    if (768 < width && width < 1099) {
-      return TestEnvironments.ScreenSize.LARGE;
+    return TestEnvironments.ScreenSize.LARGE;
+  }
+  
+  protected Map<String, Long> getBrowserDimensions() {
+    String resolution = System.getProperty("it.sauce.browser.resolution");
+    if(resolution != null) {
+      if (!resolution.isEmpty()) {
+        String[] widthHeight = org.apache.commons.lang3.StringUtils.split(resolution, "x");
+        Map<String, Long> dimensions = new HashMap<String, Long>();
+        dimensions.put("width", Long.parseLong(widthHeight[0]));
+        dimensions.put("height", Long.parseLong(widthHeight[1]));  
+        return dimensions;
+      } 
     }
     return null;
   }
@@ -229,7 +239,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected String getSauceBrowser() {
-    return System.getProperty("it.sauce.browser");
+    String browser = System.getProperty("it.sauce.browser");
+    if (browser != null) {
+      return browser;
+    }
+    return "";
   }
   
   protected String getSauceBrowserVersion() {

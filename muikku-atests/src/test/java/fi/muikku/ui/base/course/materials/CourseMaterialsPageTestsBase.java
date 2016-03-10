@@ -16,6 +16,7 @@ import org.openqa.selenium.interactions.Actions;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 
+import fi.muikku.TestEnvironments;
 import fi.muikku.TestUtilities;
 import fi.muikku.atests.Workspace;
 import fi.muikku.atests.WorkspaceFolder;
@@ -55,6 +56,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.EDGE,
+      TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void courseFullscreenReadingButtonExistsTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -83,6 +93,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
 
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.EDGE,
+      TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void courseMaterialManagementButtonExistsTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -552,6 +570,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.SAFARI,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void answerConnectFieldByClickingTestAdmin() throws Exception {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
