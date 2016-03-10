@@ -89,7 +89,7 @@
       });
 
   $(document).on('click', '.journal-edit-button', function(event) {
-    editJournalEntry($(this).parent().parent());
+    editJournalEntry($(this).closest('.workspace-single-journal-entry'));
   });
 
   $(document).on('change', '#studentSelectField', function() {
