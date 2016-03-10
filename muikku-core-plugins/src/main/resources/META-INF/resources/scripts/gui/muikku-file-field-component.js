@@ -312,7 +312,7 @@
       this._readonly = readonly;
       if (readonly) {
         $(this._uploader).attr("disabled", "disabled");
-        if ($(this._uploaderContainer).find('.muikku-file-input-field-file').length > 0) {
+        if ($(this._uploaderContainer).find('.muikku-file-input-field-file:visible').length > 0) {
           $(this._uploaderContainer).find('.muikku-file-input-field-description').hide();
         } else {
           $(this._uploaderContainer).find('.muikku-file-input-field-description')
