@@ -16,7 +16,7 @@ public class WorkspaceJournalController {
   private WorkspaceJournalEntryDAO workspaceJournalEntryDAO;
 
   public void createJournalEntry(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title) {
-    workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title, new Date());
+    workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title, new Date(), Boolean.FALSE);
   }
 
   public List<WorkspaceJournalEntry> listEntries(WorkspaceEntity workspaceEntity) {
@@ -44,7 +44,7 @@ public class WorkspaceJournalController {
     return workspaceJournalEntryDAO.updateHtml(workspaceJournalEntryDAO.updateTitle(workspaceJournalEntry, title), html);
   }
   
-  public void deleteJournalEntry(Long workspaceJournalEntryId){
-    workspaceJournalEntryDAO.delete(workspaceJournalEntryDAO.findById(workspaceJournalEntryId));
+  public void archiveJournalEntry(WorkspaceJournalEntry workspaceJournalEntry){
+    workspaceJournalEntryDAO.updateArchived(workspaceJournalEntry, Boolean.TRUE);
   }
 }

@@ -16,8 +16,15 @@
                   'text' : dialog.data('button-delete-text'),
                   'class' : 'delete-button',
                   'click' : function(event) {
-                    $('.delete-entry-' + id).click();
-                    $(this).dialog("destroy").remove();
+                    var workspaceEntityId = $("input[name='workspaceEntityId']").val();
+                    mApi().workspace.workspaces.journal.del(workspaceEntityId, id)
+                      .callback(function(err, result) {
+                        if (!err) {
+                          window.location.reload(true);
+                        } else {
+                          $('.notification-queue').notificationQueue('notification', 'error', err);
+                        }
+                      });
                   }
                 }, {
                   'text' : dialog.data('button-cancel-text'),
@@ -37,7 +44,7 @@
       mApi({async: false}).workspace.workspaces.journal.create(workspaceId, values).callback(
           function(err, result) {
             if (!err) {
-              window.location.reload();
+              window.location.reload(true);
             } else {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
@@ -58,7 +65,7 @@
       mApi({async: false}).workspace.journal.update(id, values).callback(
           function(err, result) {
             if (!err) {
-              window.location.reload();
+              window.location.reload(true);
             } else {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
