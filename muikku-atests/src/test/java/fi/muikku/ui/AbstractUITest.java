@@ -135,11 +135,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
     @Override
     protected void failed(Throwable e, Description description) {
-      try {
-        takeScreenshot();
-      } catch (IOException e1) {
-        throw new RuntimeException(e);
-      }
+//      try {
+//        Doesn't work
+//        takeScreenshot();
+//      } catch (IOException e1) {
+//        throw new RuntimeException(e);
+//      }
     }
     
   };
