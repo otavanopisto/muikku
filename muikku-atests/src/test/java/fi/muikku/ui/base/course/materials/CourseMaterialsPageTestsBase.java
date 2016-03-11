@@ -72,6 +72,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
     try{
       login();
+      maximizeWindow();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
@@ -108,6 +109,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
     try{
       login();
+      maximizeWindow();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
