@@ -65,6 +65,8 @@ public class PyramusSchoolDataEntityFactory {
   @PostConstruct
   public void init() {
     pyramusHost = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "pyramusHost");
+    teacherRoleSetting = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "roles.workspace.TEACHER");
+
   }
   
   public WorkspaceRole createCourseStudentRoleEntity() {
@@ -437,14 +439,11 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   private WorkspaceRoleArchetype getWorkspaceRoleArchetype(Long staffMemberRoleId) {
-    String teacherRoleSetting = pluginSettingsController.getPluginSetting(
-        SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "roles.workspace.TEACHER");
     if (StringUtils.isNumeric(teacherRoleSetting)) {
       if (staffMemberRoleId.equals(NumberUtils.createLong(teacherRoleSetting))) {
         return WorkspaceRoleArchetype.TEACHER;
       }
     }
-
     return WorkspaceRoleArchetype.CUSTOM;
   }
 
@@ -500,4 +499,5 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   private String pyramusHost;
+  private String teacherRoleSetting;
 }
