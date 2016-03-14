@@ -1,6 +1,7 @@
 package fi.muikku.controller;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -17,7 +18,10 @@ import fi.muikku.model.users.UserEntity;
 
 public class PluginSettingsController {
 
-	@Inject
+  @Inject
+  private Logger logger;
+
+  @Inject
 	private PluginSettingDAO pluginSettingDAO;
 
 	@Inject
@@ -55,7 +59,8 @@ public class PluginSettingsController {
 	}
 	
 	public String getPluginSetting(String plugin, String name) {
-		PluginSettingKey key = findPluginSettingKey(plugin, name);
+	  logger.info(String.format("getPluginSetting %s.%s", plugin, name));
+	  PluginSettingKey key = findPluginSettingKey(plugin, name);
 		
 		if (key == null) {
 			key = pluginSettingKeyDAO.create(plugin, name);

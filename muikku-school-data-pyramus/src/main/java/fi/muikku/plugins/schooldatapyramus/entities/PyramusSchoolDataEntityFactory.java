@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +50,7 @@ import fi.pyramus.rest.model.StudentGroupStudent;
 import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.UserRole;
 
+@ApplicationScoped
 public class PyramusSchoolDataEntityFactory {
   
   @Inject
