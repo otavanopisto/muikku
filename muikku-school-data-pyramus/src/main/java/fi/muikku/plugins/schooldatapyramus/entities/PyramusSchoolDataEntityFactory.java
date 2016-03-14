@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -49,29 +50,12 @@ import fi.pyramus.rest.model.StudentGroupStudent;
 import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.UserRole;
 
+@ApplicationScoped
 public class PyramusSchoolDataEntityFactory {
   
   @Inject
   private Logger logger;
   
-  public static class UserWithId {
-    private final User user;
-    private final long id;
-    
-    public UserWithId(User user, long id) {
-      this.user = user;
-      this.id = id;
-    }
-    
-    public User getUser() {
-      return user;
-    }
-    
-    public long getId() {
-      return id;
-    }
-  }
-
   @Inject
   private PyramusIdentifierMapper identifierMapper;
 
@@ -81,6 +65,8 @@ public class PyramusSchoolDataEntityFactory {
   @PostConstruct
   public void init() {
     pyramusHost = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "pyramusHost");
+    teacherRoleSetting = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "roles.workspace.TEACHER");
+
   }
   
   public WorkspaceRole createCourseStudentRoleEntity() {
@@ -453,14 +439,11 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   private WorkspaceRoleArchetype getWorkspaceRoleArchetype(Long staffMemberRoleId) {
-    String teacherRoleSetting = pluginSettingsController.getPluginSetting(
-        SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "roles.workspace.TEACHER");
     if (StringUtils.isNumeric(teacherRoleSetting)) {
       if (staffMemberRoleId.equals(NumberUtils.createLong(teacherRoleSetting))) {
         return WorkspaceRoleArchetype.TEACHER;
       }
     }
-
     return WorkspaceRoleArchetype.CUSTOM;
   }
 
@@ -516,4 +499,5 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   private String pyramusHost;
+  private String teacherRoleSetting;
 }

@@ -2063,4 +2063,22 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
+  @DELETE
+  @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateJournalEntry(@PathParam("JOURNALENTRYID") Long journalEntryId) {
+    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
+    if (workspaceJournalEntry == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!workspaceJournalEntry.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    workspaceJournalController.archiveJournalEntry(workspaceJournalEntry);
+    
+    return Response.noContent().build();
+  }
+
 }
