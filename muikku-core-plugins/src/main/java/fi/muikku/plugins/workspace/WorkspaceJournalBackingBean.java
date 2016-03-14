@@ -148,10 +148,6 @@ public class WorkspaceJournalBackingBean {
     workspaceJournalEntryHtml = "";
   }
 
-  public void deleteWorkspaceJournalEntry(Long workspaceJournalEntryId) {
-    workspaceJournalController.deleteJournalEntry(workspaceJournalEntryId);
-  }
-
   public String getWorkspaceUrlName() {
     return workspaceUrlName;
   }

@@ -32,11 +32,11 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
-public abstract class AbstractIntegrationTest extends TestWatcher {
+public abstract class AbstractIntegrationTest {
 
   @Rule
   public TestName testName = new TestName();
-
+  
   @Before
   public void baseSetupSql() throws Exception {
     String methodName = testName.getMethodName();

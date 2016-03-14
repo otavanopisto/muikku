@@ -78,9 +78,6 @@
 			<ui:repeat var="entry" value="#{workspaceJournalBackingBean.journalEntries}">
 
 				<div class="workspace-single-journal-entry lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" data-entry-id="#{entry.id}">
-					<h:form>
-						<a class="delete-entry-#{entry.id}" jsf:action="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
-					</h:form>
 					<div class="workspace-journal-entry-view flex-row">
             <div class=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
   						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
