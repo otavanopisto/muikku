@@ -63,6 +63,14 @@ public class WorkspaceJournalEntry {
     this.created = created;
   }
 
+  public void setArchived(Boolean archived) {
+    this.archived = archived;
+  }
+   
+  public Boolean getArchived() {
+    return archived;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -84,4 +92,7 @@ public class WorkspaceJournalEntry {
   @Column (updatable=false, nullable=false)
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date created;
+
+  @Column (nullable=false)
+  private Boolean archived;
 }
