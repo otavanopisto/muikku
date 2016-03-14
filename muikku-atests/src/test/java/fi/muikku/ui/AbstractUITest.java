@@ -94,60 +94,60 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
     
-    protected void finished(Description description) {
-      getWebDriver().quit();
-    }
+  protected void finished(Description description) {
+    getWebDriver().quit();
+  }
 
-    @Rule
-    public TestWatcher testWatcher = new TestWatcher() {
+  @Rule
+  public TestWatcher testWatcher = new TestWatcher() {
+  
+  @Override
+  public Statement apply(Statement base, Description description) {
+    boolean browserSkip = false;
+    boolean resolutionSkip = false;
     
-    @Override
-    public Statement apply(Statement base, Description description) {
-      boolean browserSkip = false;
-      boolean resolutionSkip = false;
-      
-      for (Annotation annotation : description.getAnnotations()) {
-        if (annotation instanceof TestEnvironments) {
-          TestEnvironments testEnvironments = (TestEnvironments) annotation;
-          if (testEnvironments.browsers().length > 0) {
-            if (getTestEnvBrowser() != null) {
-              browserSkip = true;
-            
-              for (TestEnvironments.Browser browser : testEnvironments.browsers()) {
-                if (getTestEnvBrowser().equals(browser)) {
-                  browserSkip = false;
-                  break;
-                } 
-              }
+    for (Annotation annotation : description.getAnnotations()) {
+      if (annotation instanceof TestEnvironments) {
+        TestEnvironments testEnvironments = (TestEnvironments) annotation;
+        if (testEnvironments.browsers().length > 0) {
+          if (getTestEnvBrowser() != null) {
+            browserSkip = true;
+          
+            for (TestEnvironments.Browser browser : testEnvironments.browsers()) {
+              if (getTestEnvBrowser().equals(browser)) {
+                browserSkip = false;
+                break;
+              } 
             }
           }
-          if(testEnvironments.screenSizes().length > 0) {
-            if (getScreenSize() != null) {
-              resolutionSkip = true;
-              for (TestEnvironments.ScreenSize screenSize : testEnvironments.screenSizes()) {
-                if (getScreenSize().equals(screenSize)) {
-                  resolutionSkip = false;
-                  break;
-                } 
-              }
-            } 
-          }
+        }
+        if(testEnvironments.screenSizes().length > 0) {
+          if (getScreenSize() != null) {
+            resolutionSkip = true;
+            for (TestEnvironments.ScreenSize screenSize : testEnvironments.screenSizes()) {
+              if (getScreenSize().equals(screenSize)) {
+                resolutionSkip = false;
+                break;
+              } 
+            }
+          } 
         }
       }
-      
-      if (!browserSkip && !resolutionSkip) {
-        return super.apply(base, description);
-      }
-      
-      return new Statement() {
-        @Override
-        public void evaluate() throws Throwable {
-        }
-      };
     }
     
-    @Override
-    protected void failed(Throwable e, Description description) {
+    if (!browserSkip && !resolutionSkip) {
+      return super.apply(base, description);
+    }
+    
+    return new Statement() {
+      @Override
+      public void evaluate() throws Throwable {
+      }
+    };
+  }
+    
+  @Override
+  protected void failed(Throwable e, Description description) {
 //      try {
 //        Doesn't work
 //        takeScreenshot();
