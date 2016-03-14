@@ -140,8 +140,8 @@
     },
     
     _loadWorkspace: function (workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, passed, evaluated, verbalAssessment) {
-
-      this._load();
+      this._clear();
+      this.element.addClass('loading');     
 
       mApi().workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
         .on('$', $.proxy(function (workspaceMaterial, callback) {
@@ -167,7 +167,7 @@
                     workspaceMaterial.gradingScale = grade.scale;
                     workspaceMaterial.passing = grade.passing;
                   }
-                  
+                  this.element.removeClass('loading');
                   callback(); 
                 }
               }, this));
@@ -196,8 +196,8 @@
         }, this));
     },
     _onWorkspaceAssessmentItemClick: function (event) {
+
       var item = $(event.target).hasClass('tr-item') ? $(event.target) : $(event.target).closest('.tr-item');
-      
       var workspaceEntityId = $(item).attr('data-workspace-entity-id');
       var workspaceEntityName =  $(item).attr('data-workspace-entity-name');
       var workspaceEntityDescription = $(item).find('#description').html();
@@ -233,7 +233,7 @@
   });
   
   $(document).ready(function(){
-    $('.tr-records-view-container').records({
+    $('.tr-content-main').records({
       'userEntityId': MUIKKU_LOGGED_USER_ID,
       'studentIdentifier': MUIKKU_LOGGED_USER
     });

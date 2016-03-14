@@ -1,0 +1,41 @@
+@import "_vars.scss";
+@import "_styles.scss";
+@import "_custom-ckeditor-styles.scss";
+@import "_workspace-materials-defaults.scss";
+
+.workspace-helppage-material-page {
+  
+  h1.workspace-generic-view-title {
+    background:#fff;
+    padding:20px;
+  }
+  
+  .workspace-materials-view-page {
+    background:#fff;
+    padding:20px;
+    margin:10px 0;
+
+    &:first-of-type {
+      margin-top:0;
+    }
+
+    p:first-of-type {
+      margin-top:0;
+    }
+    
+    > div > p:last-child {
+      margin-bottom:0;
+    }
+    
+    > div > h1:first-child,
+    > div > h2:first-child,
+    > div > h3:first-child,
+    > div > h4:first-child,
+    > div > h5:first-child,
+    > div > h6:first-child {
+      margin-top:0;
+    }
+    
+  }
+
+}

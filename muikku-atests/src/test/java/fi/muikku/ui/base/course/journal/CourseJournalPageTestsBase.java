@@ -2,11 +2,13 @@ package fi.muikku.ui.base.course.journal;
 
 import static fi.muikku.mock.PyramusMock.mocker;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
 import fi.muikku.TestUtilities;
 import fi.muikku.mock.PyramusMock.Builder;
+import fi.muikku.mock.model.MockCourseStudent;
 import fi.muikku.mock.model.MockStaffMember;
 import fi.muikku.mock.model.MockStudent;
 import fi.muikku.ui.AbstractUITest;
@@ -18,14 +20,22 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
 
   @Test
   public void courseJournalToolsForTeacher() throws Exception {
-    loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try {
-      navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), true);
-      waitForPresent(".workspace-journal-content-wrapper");
-      assertVisible(".workspace-journal-teacher-tools-container");
-    } finally {
-      deleteWorkspace(workspace.getId());
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      login();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+      try {
+        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), true);
+        waitForPresent(".workspace-journal-content-wrapper");
+        assertVisible(".workspace-journal-teacher-tools-container");
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    }
+    finally {
+      mockBuilder.wiremockReset();
     }
   }
 
@@ -39,6 +49,11 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+
+      Long courseId = NumberUtils.createLong(workspace.getIdentifier()); 
+      MockCourseStudent courseStudent = new MockCourseStudent(1l, courseId, student.getId());
+      mockBuilder.addCourseStudent(courseId, courseStudent).build();
+
       logout();
       mockBuilder.mockLogin(student).build();
       login();
@@ -63,6 +78,11 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+
+      Long courseId = NumberUtils.createLong(workspace.getIdentifier()); 
+      MockCourseStudent courseStudent = new MockCourseStudent(1l, courseId, student.getId());
+      mockBuilder.addCourseStudent(courseId, courseStudent).build();
+      
       logout();
       mockBuilder.mockLogin(student).build();
       login();

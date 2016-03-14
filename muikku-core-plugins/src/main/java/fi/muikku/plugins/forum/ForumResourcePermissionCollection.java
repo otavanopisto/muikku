@@ -62,6 +62,10 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   /**
    * Workspace forum Area rights
    */
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT })
+  public static final String FORUM_ACCESSWORKSPACEFORUMS = "FORUM_ACCESSWORKSPACEFORUMS";
   
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER } )

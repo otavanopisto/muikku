@@ -1,110 +1,139 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	template="./templates/workspace-journal-view.xhtml">
+  template="/WEB-INF/templates/flex-main-workspace.xhtml"> 
 
-	<ui:define name="workspace.content.top.static">
-    <!-- Workspace view title -->
-    <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.journal.pageTitle']}</h1>
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/workspace.js"/> 
+    <script defer="defer" jsf:name="/scripts/gui/workspace-journal.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/socialnavigation.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>
+  </ui:define>
   
-		<form style="display: none;">
-			<input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
-		</form>
+  <ui:define name="workspace-view-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-journal.css"/>   
+  </ui:define>
+  
+  <ui:define name="grid-content">
+    <form style="display: none;">
+      <input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
+    </form>
+  
+    <div class="flex-row">
+      <h1 class="workspace-generic-view-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.journal.pageTitle']}</h1>
+    </div>
+    
 		<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
-			<div class="workspace-journal-new-entry-container" style="height:auto;">
-				<div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
-			</div>
+      <div class="flex-row">
+  			<div class="workspace-journal-new-entry-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+  				<div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
+  			</div>
+      </div>
 		</ui:fragment>
-		<form method="get" id="studentSelectForm">
-			<ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
-				<div class="workspace-journal-teacher-tools-container">
-					<div class="workspace-journal-select-student-container">
-						<span class="journal-select-student-label">#{i18n.text['plugin.workspace.journal.studentFilter.label']}</span>
-            <select id="studentSelectField" class="journal-select-student-selection" name="studentId">
-							<option value="">#{i18n.text['plugin.workspace.journal.studentFilter.showAll']}</option>
-							<ui:repeat value="#{workspaceJournalBackingBean.workspaceStudents}" var="student">
-							  <ui:fragment rendered="#{student.selected}">
-								  <option selected="selected" value="#{student.userEntity.id}">#{student.user.firstName} #{student.user.lastName}</option>
-								</ui:fragment>
-								<ui:fragment rendered="#{not student.selected}">
-								  <option value="#{student.userEntity.id}">#{student.user.firstName} #{student.user.lastName}</option>
-								</ui:fragment>
-							</ui:repeat>
-						</select>
-					</div>
-				</div>
-			</ui:fragment>
-		</form>
-	</ui:define>
 
-	<ui:define name="workspace.content">
-		<div class="workspace-journal-content-wrapper">
+    <form method="get" id="studentSelectForm">
+      <div class="flex-row">
+  			<ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
+  				<div class="workspace-journal-teacher-tools-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+  					<div class="workspace-journal-select-student-container flex-row flex-align-items-center">
+  						<span class="journal-select-student-label lg-flex-cell-1 md-flex-cell-1 sm-flex-cell-1">#{i18n.text['plugin.workspace.journal.studentFilter.label']}</span>
+              <select id="studentSelectField" class="journal-select-student-selection lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-15" name="studentId">
+  							<option value="">#{i18n.text['plugin.workspace.journal.studentFilter.showAll']}</option>
+  							<ui:repeat value="#{workspaceJournalBackingBean.workspaceStudents}" var="student">
+  							  <ui:fragment rendered="#{student.selected}">
+  								  <option selected="selected" value="#{student.userEntity.id}">#{student.user.lastName}, #{student.user.firstName}</option>
+  								</ui:fragment>
+  								<ui:fragment rendered="#{not student.selected}">
+  								  <option value="#{student.userEntity.id}">#{student.user.lastName}, #{student.user.firstName}</option>
+  								</ui:fragment>
+  							</ui:repeat>
+  						</select>
+  					</div>
+  				</div>
+  			</ui:fragment>
+      </div>
+    </form>
+    
+		<div class="workspace-journal-content-wrapper flex-row">
     
       <ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
         <ui:fragment rendered="#{fn:length(workspaceJournalBackingBean.journalEntries) lt 1}">
-          <div class="workspace-journal-no-entries">#{i18n.text['plugin.workspace.journal.noEntries']}</div>
+          <div class="workspace-journal-no-entries lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">#{i18n.text['plugin.workspace.journal.noEntries']}</div>
         </ui:fragment>
       </ui:fragment>
       <ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
         <ui:fragment rendered="#{fn:length(workspaceJournalBackingBean.journalEntries) lt 1}">
-          <div class="workspace-journal-no-entries">#{i18n.text['plugin.workspace.journal.studentHasNoEntries']}</div>
+          <div class="workspace-journal-no-entries lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">#{i18n.text['plugin.workspace.journal.studentHasNoEntries']}</div>
         </ui:fragment>
       </ui:fragment>
 
 			<ui:repeat var="entry" value="#{workspaceJournalBackingBean.journalEntries}">
 
-				<div class="workspace-single-journal-entry" data-entry-id="#{entry.id}">
-					<h:form>
-						<h:commandButton class="delete-entry-#{entry.id}" actionListener="#{workspaceJournalBackingBean.deleteWorkspaceJournalEntry(entry.id)}" style="display: none;" />
-					</h:form>
-					<div class="workspace-journal-entry-view">
-						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
-							<div class="workspace-journal-title">#{entry.title}</div>
-              <div class="workspace-journal-entry-meta">
-                <div class="workspace-journal-dateTime">
-                  <h:outputText value="#{entry.created}" >
-                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
-                  </h:outputText>
-                </div>
-              </div>
-              <div class="workspace-journal-content">
-                <h:outputText value="#{entry.html}" escape="false"/>
-              </div>
-						</ui:fragment>
-						<ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
-							<div class="workspace-journal-header-container">
-                <div class="workspace-journal-poster-container">
-                  <div class="workspace-journal-poster-image"><img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/></div>
-                  <div class="workspace-journal-poster-name">#{workspaceJournalBackingBean.posterOf(entry)}</div>
-                  <div class="workspace-journal-entry-meta">
-                  <div class="workspace-journal-dateTime">
-                    <h:outputText value="#{entry.created}" >
-                      <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
-                    </h:outputText>
-                  </div>
+				<div class="workspace-single-journal-entry lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" data-entry-id="#{entry.id}">
+					<div class="workspace-journal-entry-view flex-row">
+            <div class=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+  						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
+                <div class="flex-row">
+    							<div class="workspace-journal-title lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">#{entry.title}</div>
+                  <div class="workspace-journal-entry-meta lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last lg-flex-right md-flex-right sm-flex-left">
+                    <div class="workspace-journal-dateTime">
+                      <h:outputText value="#{entry.created}" >
+                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                      </h:outputText>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="workspace-journal-content-container">
-                <div class="workspace-journal-title">#{entry.title}</div>
-                <div class="workspace-journal-content">
-                  <h:outputText value="#{entry.html}" escape="false"/>
+                <div class="flex-row">
+                  <div class="workspace-journal-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                    <h:outputText value="#{entry.html}" escape="false"/>
+                  </div>
                 </div>
-              </div>
-						</ui:fragment>
+  						</ui:fragment>
+  						<ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
+                <div class="flex-row">
+    							<div class="workspace-journal-header-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                    <div class="workspace-journal-poster-container flex-row flex-align-items-center">
+                      <div class="workspace-journal-poster-image lg-flex-cell-1 md-flex-cell-1 sm-flex-hide"><img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/></div>
+                      <div class="workspace-journal-poster-name lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">#{workspaceJournalBackingBean.posterOf(entry)}</div>
+                      <div class="workspace-journal-entry-meta lg-flex-cell-4 md-flex-cell-5 sm-flex-cell-full lg-flex-right md-flex-right sm-flex-left">
+                        <div class="workspace-journal-dateTime">
+                          <h:outputText value="#{entry.created}" >
+                            <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                          </h:outputText>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-row">
+                  <div class="workspace-journal-content-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                    <div class="workspace-journal-title">#{entry.title}</div>
+                    <div class="workspace-journal-content">
+                      <h:outputText value="#{entry.html}" escape="false"/>
+                    </div>
+                  </div>
+                </div>
+  						</ui:fragment>
+            </div>
 					</div>
 					<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
-						<div class="workspace-journal-footer">
-							<button class="journal-edit-button">#{i18n.text['plugin.workspace.journal.editEntryButton.label']}</button>
-							<button data-entry-id="#{entry.id}" class="journal-delete-button">#{i18n.text['plugin.workspace.journal.deleteEntryButton.label']}</button>
-							<ui:remove>
-								<button class="journal-permanent-url-button">#{i18n.text['plugin.workspace.journal.copyUrlEntryButton.label']}</button>
-							</ui:remove>
-						</div>
+            <div class="flex-row">
+  						<div class="workspace-journal-footer lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+  							<button class="journal-edit-button">#{i18n.text['plugin.workspace.journal.editEntryButton.label']}</button>
+  							<button data-entry-id="#{entry.id}" class="journal-delete-button">#{i18n.text['plugin.workspace.journal.deleteEntryButton.label']}</button>
+  							<ui:remove>
+  								<button class="journal-permanent-url-button">#{i18n.text['plugin.workspace.journal.copyUrlEntryButton.label']}</button>
+  							</ui:remove>
+  						</div>
+            </div>
 					</ui:fragment>
 				</div>
 

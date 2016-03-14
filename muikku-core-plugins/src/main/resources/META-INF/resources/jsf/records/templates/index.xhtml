@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"  
+  template="/jsf/records/templates/records_base.xhtml">
+
+
+  <ui:define name="viewScripts">
+    <h:outputScript name="scripts/gui/records.js" />
+  </ui:define>
+
+
+  <ui:define name="content.center.widget">
+    <m:widget name="records-content" size="18" rendered="#{sessionBackingBean.loggedIn}"/>  
+  </ui:define>
+     
+</ui:composition>

@@ -93,8 +93,9 @@ public class WorkspaceMaterialsBackingBean {
     }
     
     workspaceName = workspace.getName();
+    workspaceNameExtension = workspace.getNameExtension();
     workspaceEntityId = workspaceEntity.getId();
-
+    
     try {
       contentNodes = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false);
     }
@@ -104,7 +105,8 @@ public class WorkspaceMaterialsBackingBean {
     }
     
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
-      
+    canSignUp = sessionController.hasCoursePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
+    
     return null;
   }
 
@@ -123,6 +125,10 @@ public class WorkspaceMaterialsBackingBean {
   public void setWorkspaceUrlName(String workspaceUrlName) {
     this.workspaceUrlName = workspaceUrlName;
   }
+  
+  public String getWorkspaceNameExtension() {
+    return workspaceNameExtension;
+  }
 
   public String getWorkspaceName() {
     return workspaceName;
@@ -131,7 +137,7 @@ public class WorkspaceMaterialsBackingBean {
   public Long getWorkspaceEntityId() {
     return workspaceEntityId;
   }
-
+  
   public void setWorkspaceEntityId(Long workspaceEntityId) {
     this.workspaceEntityId = workspaceEntityId;
   }
@@ -147,10 +153,16 @@ public class WorkspaceMaterialsBackingBean {
   public String getMaterialsBaseUrl() {
     return materialsBaseUrl;
   }
+  
+  public Boolean getCanSignUp() {
+    return canSignUp;
+  }
 
   private WorkspaceRootFolder rootFolder;
   private List<ContentNode> contentNodes;
   private String workspaceName;
+  private String workspaceNameExtension;
   private Long workspaceEntityId;
   private String materialsBaseUrl;
+  private Boolean canSignUp;
 }

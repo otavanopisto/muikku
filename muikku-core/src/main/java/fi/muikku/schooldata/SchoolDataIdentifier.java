@@ -20,7 +20,7 @@ public class SchoolDataIdentifier {
   
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(41, 78)
+    return new HashCodeBuilder(41, 77)
       .append(getDataSource())
       .append(getIdentifier())
       .toHashCode();

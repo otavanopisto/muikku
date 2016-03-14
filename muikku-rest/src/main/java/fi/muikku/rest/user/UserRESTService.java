@@ -2,8 +2,9 @@ package fi.muikku.rest.user;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -50,12 +51,14 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.rest.model.Student;
+import fi.muikku.rest.model.StudentPhoneNumber;
 import fi.muikku.rest.model.UserBasicInfo;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.entity.TransferCredit;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserPhoneNumber;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 import fi.muikku.security.MuikkuPermissions;
@@ -258,21 +261,10 @@ public class UserRESTService extends AbstractRESTService {
           
           UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
           String emailAddress = userEntity != null ? userEmailEntityController.getUserEmailAddress(userEntity, true) : null;
-            
-          @SuppressWarnings("unchecked")
-          HashMap<String, Object> studyStartDate = (HashMap<String, Object>)o.get("studyStartDate");
-          @SuppressWarnings("unchecked")
-          HashMap<String, Object> studyTimeEnd = (HashMap<String, Object>)o.get("studyTimeEnd");
-          Date studyStartDateDate = null;
-          Date studyTimeEndDate = null;
-          
-          if (studyStartDate != null) {
-            studyStartDateDate = new Date((Long)studyStartDate.get("millis"));
-          }
-          
-          if (studyTimeEnd != null) {
-            studyTimeEndDate = new Date((Long)studyTimeEnd.get("millis"));
-          }
+
+          Date studyStartDate = getDateResult(o.get("studyStartDate"));
+          Date studyEndDate = getDateResult(o.get("studyEndDate"));
+          Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
           
           students.add(new fi.muikku.rest.model.Student(
             studentIdentifier.toId(), 
@@ -285,13 +277,22 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("municipality"), 
             (String) o.get("school"), 
             emailAddress,
-            studyStartDateDate,
-            studyTimeEndDate));
+            studyStartDate,
+            studyEndDate,
+            studyTimeEnd));
         }
       }
     }
 
     return Response.ok(students).build();
+  }
+  
+  private Date getDateResult(Object value) {
+    if (value instanceof Long) {
+      return new Date((Long) value);
+    }
+    
+    return null;
   }
 
   @GET
@@ -328,8 +329,9 @@ public class UserRESTService extends AbstractRESTService {
     }
     
     String emailAddress = userEmailEntityController.getUserEmailAddress(userEntity, true); 
-    Date startDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
-    Date endDate = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;
+    Date studyStartDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
+    Date studyEndDate = user.getStudyEndDate() != null ? user.getStudyEndDate().toDate() : null;
+    Date studyTimeEnd = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;
     
     Student student = new Student(
         studentIdentifier.toId(), 
@@ -342,8 +344,9 @@ public class UserRESTService extends AbstractRESTService {
         user.getMunicipality(), 
         user.getSchool(), 
         emailAddress, 
-        startDate, 
-        endDate);
+        studyStartDate,
+        studyEndDate,
+        studyTimeEnd);
     
     return Response
         .ok(student)
@@ -488,6 +491,41 @@ public class UserRESTService extends AbstractRESTService {
   }
   
   @GET
+  @Path("/students/{ID}/phoneNumbers")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudentPhoneNumbers(@PathParam("ID") String id) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
+    }
+    
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (studentEntity == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
+    }
+    
+    if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_PHONE_NUMBERS)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    List<UserPhoneNumber> phoneNumbers = userController.listUserPhoneNumbers(studentIdentifier);
+    Collections.sort(phoneNumbers, new Comparator<UserPhoneNumber>() {
+      @Override
+      public int compare(UserPhoneNumber o1, UserPhoneNumber o2) {
+        return o1.getDefaultNumber() ? -1 : o2.getDefaultNumber() ? 1 : 0;
+      }
+    });
+    
+    return Response.ok(createRestModel(phoneNumbers.toArray(new UserPhoneNumber[0]))).build();
+  }
+
+  @GET
   @Path("/students/{ID}/transferCredits")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listStudentTransferCredits(@PathParam("ID") String id) {
@@ -552,7 +590,6 @@ public class UserRESTService extends AbstractRESTService {
 	@GET
 	@Path("/users")
 	@RESTPermitUnimplemented
-	@SuppressWarnings("unchecked")
 	public Response searchUsers(
 			@QueryParam("searchString") String searchString,
 			@QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
@@ -631,20 +668,9 @@ public class UserRESTService extends AbstractRESTService {
 					
 					if (userEntity != null) {
 					  String emailAddress = userEmailEntityController.getUserEmailAddress(userEntity, true);
-					  
-					  HashMap<String, Object> studyStartDate = (HashMap<String, Object>)o.get("studyStartDate");
-					  HashMap<String, Object> studyTimeEnd = (HashMap<String, Object>)o.get("studyTimeEnd");
-					  Date studyStartDateDate = null;
-					  Date studyTimeEndDate = null;
-					  
-					  if (studyStartDate != null) {
-					    studyStartDateDate = new Date((Long)studyStartDate.get("millis"));
-					  }
-					  
-					  if (studyTimeEnd != null) {
-					    studyTimeEndDate = new Date((Long)studyTimeEnd.get("millis"));
-					  }
-					  
+					  Date studyStartDate = getDateResult(o.get("studyStartDate"));
+	          Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
+	          
 						ret.add(new fi.muikku.rest.model.User(userEntity
 								.getId(), (String) o.get("firstName"),
 								(String) o.get("lastName"), hasImage,
@@ -652,8 +678,8 @@ public class UserRESTService extends AbstractRESTService {
 										.get("language"), (String) o
 										.get("municipality"), (String) o
 										.get("school"), emailAddress,
-										studyStartDateDate,
-										studyTimeEndDate));
+										studyStartDate,
+										studyTimeEnd));
 					}
 				}
 
@@ -827,26 +853,6 @@ public class UserRESTService extends AbstractRESTService {
     return identifier.toId();
   }
   
-	//
-	// FIXME: Re-enable this service
-	//
-	// // @GET
-	// // @Path ("/listEnvironmentUsers")
-	// // public Response listEnvironmentUsers() {
-	// // List<EnvironmentUser> users = userController.listEnvironmentUsers();
-	// //
-	// // TranquilityBuilder tranquilityBuilder =
-	// tranquilityBuilderFactory.createBuilder();
-	// // Tranquility tranquility = tranquilityBuilder.createTranquility()
-	// //
-	// .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
-	// //
-	// // return Response.ok(
-	// // tranquility.entities(users)
-	// // ).build();
-	// // }
-	//
-
 	private SearchProvider getProvider(String name) {
 		Iterator<SearchProvider> i = searchProviders.iterator();
 		while (i.hasNext()) {
@@ -858,4 +864,13 @@ public class UserRESTService extends AbstractRESTService {
 		return null;
 	}
 
+  private List<StudentPhoneNumber> createRestModel(UserPhoneNumber[] entities) {
+    List<StudentPhoneNumber> result = new ArrayList<>();
+    
+    for (UserPhoneNumber entity : entities) {
+      result.add(new StudentPhoneNumber(toId(entity.getUserIdentifier()), entity.getType(), entity.getNumber(), entity.getDefaultNumber()));
+    }
+
+    return result;
+  }
 }

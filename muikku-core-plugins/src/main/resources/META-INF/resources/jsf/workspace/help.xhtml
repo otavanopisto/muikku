@@ -1,28 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-workspace.xhtml"> 
 
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html" xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
-  xmlns:composite="http://java.sun.com/jsf/composite/composite" template="/jsf/workspace/templates/workspace-view.xhtml">
-
-  <!-- Workspace view title -->
-  <ui:define name="workspace.content.top.static">
-    <h1 class="workspace-generic-view-title">#{workspaceHelpPageBackingBean.workspaceName}</h1>
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/workspace.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/muikku-material-loader.js"/> 
+    <script defer="defer" jsf:name="/scripts/gui/workspace-frontpage.js"/>
+    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.js"/>
   </ui:define>
-
-  <ui:define name="workspace.content">
-    <ui:repeat value="#{workspaceHelpPageBackingBean.contentNodes}" var="contentNode">
-      <article id="page-#{contentNode.workspaceMaterialId}"
-        data-workspace-material-id="#{contentNode.workspaceMaterialId}"
-        data-material-id="#{contentNode.materialId}"
-        data-material-type="#{contentNode.type}"
-        data-material-title="#{contentNode.title}"
-        data-material-content="#{contentNode.html}"
-        data-path="#{contentNode.path}"
-        class="workspace-materials-view-page material-view" />
-    </ui:repeat>
-    <input class="workspaceEntityId" type="hidden" value="#{workspaceHelpPageBackingBean.workspaceEntityId}" />
-    <input class="materialsBaseUrl" type="hidden" value="#{workspaceHelpPageBackingBean.materialsBaseUrl}"/>
+  
+  <ui:define name="workspace-view-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-help.css"/>   
+    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.css"/> 
+  </ui:define>
+  
+  <ui:define name="grid-content">
+    <section class="flex-row workspace-helppage-material-page">
+      <h1 class="workspace-generic-view-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{workspaceHelpPageBackingBean.workspaceName}</h1>
+      <ui:repeat value="#{workspaceHelpPageBackingBean.contentNodes}" var="contentNode">
+        <article id="page-#{contentNode.workspaceMaterialId}"
+          data-workspace-material-id="#{contentNode.workspaceMaterialId}"
+          data-material-id="#{contentNode.materialId}"
+          data-material-type="#{contentNode.type}"
+          data-material-title="#{contentNode.title}"
+          data-material-content="#{contentNode.html}"
+          data-path="#{contentNode.path}"
+          class="workspace-materials-view-page material-view lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top" />
+      </ui:repeat>
+      <input class="workspaceEntityId" type="hidden" value="#{workspaceHelpPageBackingBean.workspaceEntityId}" />
+      <input class="materialsBaseUrl" type="hidden" value="#{workspaceHelpPageBackingBean.materialsBaseUrl}"/>
+    </section>
   </ui:define>
 
 </ui:composition>

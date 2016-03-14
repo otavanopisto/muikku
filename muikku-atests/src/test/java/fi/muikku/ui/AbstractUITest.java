@@ -9,14 +9,17 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -25,8 +28,10 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -66,6 +71,7 @@ import com.jayway.restassured.response.Response;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
 import fi.muikku.AbstractIntegrationTest;
+import fi.muikku.TestEnvironments;
 import fi.muikku.TestUtilities;
 import fi.muikku.atests.Announcement;
 import fi.muikku.atests.CommunicatorMessage;
@@ -87,24 +93,122 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
-
-  @Rule
-  public TestWatcher testWatcher = new TestWatcher() {
-      
-    @Override
-    protected void failed(Throwable e, Description description) {
-      try {
-        takeScreenshot();
-      } catch (WebDriverException | IOException e1) {
-        e1.printStackTrace();
-      }
-    }
     
     protected void finished(Description description) {
       getWebDriver().quit();
     }
+
+    @Rule
+    public TestWatcher testWatcher = new TestWatcher() {
+    
+    @Override
+    public Statement apply(Statement base, Description description) {
+      boolean browserSkip = false;
+      boolean resolutionSkip = false;
+      
+      for (Annotation annotation : description.getAnnotations()) {
+        if (annotation instanceof TestEnvironments) {
+          TestEnvironments testEnvironments = (TestEnvironments) annotation;
+          if (testEnvironments.browsers().length > 0) {
+            if (getTestEnvBrowser() != null) {
+              browserSkip = true;
+            
+              for (TestEnvironments.Browser browser : testEnvironments.browsers()) {
+                if (getTestEnvBrowser().equals(browser)) {
+                  browserSkip = false;
+                  break;
+                } 
+              }
+            }
+          }
+          if(testEnvironments.screenSizes().length > 0) {
+            if (getScreenSize() != null) {
+              resolutionSkip = true;
+              for (TestEnvironments.ScreenSize screenSize : testEnvironments.screenSizes()) {
+                if (getScreenSize().equals(screenSize)) {
+                  resolutionSkip = false;
+                  break;
+                } 
+              }
+            } 
+          }
+        }
+      }
+      
+      if (!browserSkip && !resolutionSkip) {
+        return super.apply(base, description);
+      }
+      
+      return new Statement() {
+        @Override
+        public void evaluate() throws Throwable {
+        }
+      };
+    }
+    
+    @Override
+    protected void failed(Throwable e, Description description) {
+//      try {
+//        Doesn't work
+//        takeScreenshot();
+//      } catch (IOException e1) {
+//        throw new RuntimeException(e);
+//      }
+    }
     
   };
+  
+  protected TestEnvironments.Browser getTestEnvBrowser() {
+    switch (getBrowser()) {
+    case "internet explorer":
+      return TestEnvironments.Browser.INTERNET_EXPLORER;
+    case "microsoftedge":
+      return TestEnvironments.Browser.EDGE;
+    case "firefox":
+      return TestEnvironments.Browser.FIREFOX;
+    case "safari":
+      return TestEnvironments.Browser.SAFARI;
+    case "chrome":
+      return TestEnvironments.Browser.CHROME;
+    case "phantomjs":
+      return TestEnvironments.Browser.PHANTOMJS;
+    default:
+      return null;
+    } 
+  }
+  
+  protected TestEnvironments.ScreenSize getScreenSize() {
+    Map<String, Long> dimensions = getBrowserDimensions();
+    if (dimensions != null) {
+      Long width = dimensions.get("width");
+      if (width != null) {
+        if (width > 1099) {
+          return TestEnvironments.ScreenSize.LARGE;
+        }
+        if (768 < width && width < 1099) {
+          return TestEnvironments.ScreenSize.MEDIUM;
+        }
+        if (width < 768) {
+          return TestEnvironments.ScreenSize.SMALL;
+        }
+      }  
+    }
+    return null;
+  }
+  
+  protected Map<String, Long> getBrowserDimensions() {
+    String resolution = System.getProperty("it.sauce.browser.resolution");
+    if(resolution != null) {
+      if (!resolution.isEmpty()) {
+        String[] widthHeight = org.apache.commons.lang3.StringUtils.split(resolution, "x");
+        Map<String, Long> dimensions = new HashMap<String, Long>();
+        dimensions.put("width", Long.parseLong(widthHeight[0]));
+        dimensions.put("height", Long.parseLong(widthHeight[1]));  
+        return dimensions;
+      } 
+    }
+    return null;
+  }
   
   @Before
   public void setupRestAssured() {
@@ -134,6 +238,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .get("/system/cache/flush");
   }
   
+
   @Override
   public String getSessionId() {
     return sessionId;
@@ -153,7 +258,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected String getBrowser() {
-    return System.getProperty("it.browser");
+    String browser = System.getProperty("it.browser");
+    if (browser != null) {
+      return browser;
+    }
+    return "";
   }
   
   protected String getBrowserVersion() {
@@ -510,6 +619,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected int countElements(String selector) {
     List<WebElement> elements = getWebDriver().findElements(By.cssSelector(selector));
     return elements.size();
+  }
+  
+  protected void hoverOverElement(String selector) {
+    Actions action = new Actions(getWebDriver());
+    action.moveToElement(findElementByCssSelector(selector)).perform();
   }
   
   protected void assertClassNotPresent(String selector, String className) {
