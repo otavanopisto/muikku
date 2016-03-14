@@ -56,24 +56,6 @@ public class PyramusSchoolDataEntityFactory {
   @Inject
   private Logger logger;
   
-  public static class UserWithId {
-    private final User user;
-    private final long id;
-    
-    public UserWithId(User user, long id) {
-      this.user = user;
-      this.id = id;
-    }
-    
-    public User getUser() {
-      return user;
-    }
-    
-    public long getId() {
-      return id;
-    }
-  }
-
   @Inject
   private PyramusIdentifierMapper identifierMapper;
 
