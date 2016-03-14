@@ -9,7 +9,6 @@ import fi.muikku.mock.model.MockStaffMember;
 import fi.muikku.mock.model.MockStudent;
 import fi.muikku.ui.AbstractUITest;
 import fi.muikku.atests.Workspace;
-import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.Sex;
 import fi.pyramus.rest.model.UserRole;
 import fi.muikku.mock.PyramusMock.Builder;
