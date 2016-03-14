@@ -101,21 +101,25 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         if (annotation instanceof TestEnvironments) {
           TestEnvironments testEnvironments = (TestEnvironments) annotation;
           if (testEnvironments.browsers().length > 0) {
-            browserSkip = true;
+            if (getBrowser() != null) {
+              browserSkip = true;
             
-            for (TestEnvironments.Browser browser : testEnvironments.browsers()) {
-              if (getBrowser().equals(browser)) {
-                browserSkip = false;
-                break;
+              for (TestEnvironments.Browser browser : testEnvironments.browsers()) {
+                if (getBrowser().equals(browser)) {
+                  browserSkip = false;
+                  break;
+                } 
               }
             }
           }
           if(testEnvironments.screenSizes().length > 0) {
-            resolutionSkip = true;
-            for (TestEnvironments.ScreenSize screenSize : testEnvironments.screenSizes()) {
-              if (getScreenSize().equals(screenSize)) {
-                resolutionSkip = false;
-                break;
+            if (getScreenSize() != null) {
+              resolutionSkip = true;
+              for (TestEnvironments.ScreenSize screenSize : testEnvironments.screenSizes()) {
+                if (getScreenSize().equals(screenSize)) {
+                  resolutionSkip = false;
+                  break;
+                } 
               }
             } 
           }
@@ -150,7 +154,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     switch (getSauceBrowser()) {
     case "internet explorer":
       return TestEnvironments.Browser.INTERNET_EXPLORER;
-    case "edge":
+    case "microsoftedge":
       return TestEnvironments.Browser.EDGE;
     case "firefox":
       return TestEnvironments.Browser.FIREFOX;
@@ -158,8 +162,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       return TestEnvironments.Browser.SAFARI;
     case "chrome":
       return TestEnvironments.Browser.CHROME;
+    case "phantomjs":
+      return TestEnvironments.Browser.PHANTOMJS;
     default:
-      return TestEnvironments.Browser.CHROME;
+      return null;
     } 
   }
   
@@ -179,7 +185,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         }
       }  
     }
-    return TestEnvironments.ScreenSize.LARGE;
+    return null;
   }
   
   protected Map<String, Long> getBrowserDimensions() {
