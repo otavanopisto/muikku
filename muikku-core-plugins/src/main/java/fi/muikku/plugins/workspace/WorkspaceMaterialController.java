@@ -600,7 +600,7 @@ public class WorkspaceMaterialController {
       }
     } catch (Exception e) {
       Throwable cause = e;
-      while (e.getCause() != null) {
+      while (cause != null) {
         cause = cause.getCause();
         if (cause instanceof WorkspaceMaterialContainsAnswersExeption) {
           throw (WorkspaceMaterialContainsAnswersExeption) cause;
@@ -672,7 +672,7 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title) {
-    String urlName = generateUniqueUrlName(title);
+    String urlName = generateUniqueUrlName(parent, title);
     return createWorkspaceFolder(parent, title, urlName);
   }
   

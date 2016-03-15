@@ -1123,7 +1123,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       //UserEntity userEntity = userEntityController.findUserEntityById(reply.getUserEntityId());
       return Response.ok(answerFile.getContent())
         .type(answerFile.getContentType())
-        .header("content-disposition", "attachment; filename =" + answerFile.getFileName())
+        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
         .build();
     }
     return Response.status(Status.NOT_FOUND).build();
@@ -2060,6 +2060,24 @@ public class WorkspaceRESTService extends PluginRESTService {
         restModel.getTitle(),
         restModel.getContent());
 
+    return Response.noContent().build();
+  }
+
+  @DELETE
+  @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateJournalEntry(@PathParam("JOURNALENTRYID") Long journalEntryId) {
+    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
+    if (workspaceJournalEntry == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!workspaceJournalEntry.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    workspaceJournalController.archiveJournalEntry(workspaceJournalEntry);
+    
     return Response.noContent().build();
   }
 
