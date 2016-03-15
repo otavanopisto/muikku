@@ -300,6 +300,12 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     
     if (courseEducationTypes != null ) {
       for (CourseEducationType courseEducationType: courseEducationTypes) {
+        
+        // #1632: if subject didn't determine education type and course only has one education type, use that instead
+        if (educationTypeIdentifier == null && courseEducationTypes.length == 1) {
+          educationTypeIdentifier = identifierMapper.getEducationTypeIdentifier(courseEducationTypes[0].getEducationTypeId());
+        }
+        
         CourseEducationSubtype[] courseEducationSubtypes = pyramusClient.get(
             String.format("/courses/courses/%d/educationTypes/%d/educationSubtypes", course.getId(), courseEducationType.getId()),
             CourseEducationSubtype[].class);
