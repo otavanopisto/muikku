@@ -9,6 +9,27 @@
   background-color:$mainFuncSb; 
 }
 
+.mf-primary-function{
+  .mf-primary-function-content{
+    text-transform:uppercase;
+    border-radius:3px;
+    display:inline-block;
+    line-height:1.3em;
+    color:#ffffff;
+    cursor:pointer;
+    @include buttonFontShadow;
+    @include buttonShadow;  
+    background-color:#ed8e00;
+    border:1px solid #d9e4e8;
+    font-size:1em;
+    background: rgb(237,142,0);
+    @include gradient-top-bottom(rgba(253,167,38,1),rgba(237,142,0,1),#ed8e00);
+    width:100%;
+    box-sizing:border-box;
+    font-weight:400;  
+  }
+}
+
 .mf-dropdown-content {
   text-transform:uppercase;
   border-radius:3px;
