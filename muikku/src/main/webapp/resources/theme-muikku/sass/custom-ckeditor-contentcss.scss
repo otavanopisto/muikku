@@ -16,8 +16,10 @@ body {
   
   .cke_panel_listItem { /* Rules for styles and format dropdowns selected items */
     
-    div.material-styles-block {
+    div.material-styles-block,
+    div.material-styles-text {
       margin:0 auto;
+      display:block;
     }
 
     &.cke_selected {

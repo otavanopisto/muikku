@@ -19,12 +19,15 @@ CKEDITOR.stylesSet.add( 'workspace-material-styles', [
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.thinkingBox"), element: 'div', attributes: { 'class': 'material-thinkingbox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.objectiveBox"), element: 'div', attributes: { 'class': 'material-objectivebox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.informationBox"), element: 'div', attributes: { 'class': 'material-infobox material-styles-block' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.instructionBox"), element: 'div', attributes: { 'class': 'material-instructionbox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.recapBox"), element: 'div', attributes: { 'class': 'material-recapbox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.citationBasic"), element: 'div', attributes: { 'class': 'material-citation-basic material-styles-text' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.citationHighlight"), element: 'div', attributes: { 'class': 'material-citation-highlight material-styles-text' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.longCitation"), element: 'div', attributes: { 'class': 'material-citation-long material-styles-text' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.exampleBox"), element: 'div', attributes: { 'class': 'material-example material-styles-text' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.externalLinkBox"), element: 'div', attributes: { 'class': 'material-linkbox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.audioBox"), element: 'div', attributes: { 'class': 'material-audiobox material-styles-block' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.fileBox"), element: 'div', attributes: { 'class': 'material-filebox material-styles-block' } }
   
   /* Inline Styles */
 
