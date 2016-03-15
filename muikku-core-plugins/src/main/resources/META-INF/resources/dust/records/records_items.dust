@@ -1,5 +1,5 @@
-{#.}
-  {>"records/records_item.dust"/}
-{:else}    
-  {>"records/records_empty.dust"/}
-{/.}
+  {#.}
+    {>"records/records_item.dust"/}
+  {:else}    
+    {>"records/records_empty.dust"/}
+  {/.}

@@ -4,6 +4,7 @@
 @import "_forms.scss";
 @import "_animations.scss";
 @import "_dialog.scss";
+@import "_flex-dialog.scss";
 @import "_buttons.scss";
 @import "_notif-queue.scss";
 @import "_connectionlost.scss";
@@ -24,6 +25,11 @@ body {
   background-repeat:no-repeat,repeat-x;
   background-position: top center, top left;
   color:#2c2c2c;
+}
+
+.disable-page-scrolling {
+  height:100%;
+  overflow:hidden; 
 }
 
 .ui-widget-overlay {
@@ -71,8 +77,24 @@ body {
   bottom:0;
   left:0;
   right:0;
-  opacity:0.9;
+  opacity:0.98;
   box-shadow:-5px 0 5px rgba(0, 0, 0, 0.2);
+  z-index:999;
+  
+  .footer-custom-bg {
+    background:#485c64;
+    bottom:0;
+    left:0;
+    position:absolute;
+    right:0;
+    top:0;
+    z-index:1;
+  }
+  
+  .footer-custom-content {
+    position:relative;
+    z-index:2;
+  }
   
   .footer-predefined-bg {
     position:absolute;
@@ -81,13 +103,17 @@ body {
     bottom:0;
     right:0;
     background:$btBarBgr;
-    opacity:0.95;
     z-index:1;
   }
   
   .footer-predefined-content {
     position:relative;
     z-index:2;
+    
+    a {
+      text-decoration:none;
+    }
+    
   }
   
 }
@@ -191,7 +217,7 @@ body {
   float:right;
   font-weight:400;
 
-  .lu-user-picture {
+  .lu-picture {
     border:2px solid #fff;
     height:48px;
     width:48px; 
@@ -200,7 +226,7 @@ body {
     box-sizing:border-box; 
     display:inline-block;
     border-radius:100%;
-    margin:0 4px 0 0;
+    margin:0 5px 0 auto;
     z-index:15;
     background-size:100% auto;
     border:2px solid #fff;

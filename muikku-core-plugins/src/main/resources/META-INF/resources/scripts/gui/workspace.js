@@ -1,7 +1,7 @@
 (function() {
   'use strict';
   
-  $(document).on('click', '.wi-dock-static-navi-button-evaluation > a.icon-evaluate', function(event){
+  $(document).on('click', '.dock-static-navi-button-evaluation > a.icon-evaluate', function(event){
     event.preventDefault();
     var workspaceEntityId = $('.workspaceEntityId').length > 0 ? $('.workspaceEntityId').val() : $('input[name="workspaceEntityId"]').val();
     var evaluationUrl = $(this).attr('href')+'?workspaceEntityId='+workspaceEntityId;
@@ -49,14 +49,6 @@
       }
     });
   });
-  
-  function refreshNavigationWrapperPosition() {
-    var contentContainer = ($('#contentWorkspaceMaterials').length > 0 ? contentContainer = $('#contentWorkspaceMaterials') : contentContainer = $('#content'));
-    var naviWrapper = $('#workspaceNavigationWrapper');
-    $(naviWrapper).css({
-      left:(Math.max(contentContainer.offset().left - naviWrapper.width() - 30, 10)) + 'px'
-    });
-  }
 
   window.onload = function(e) {
     if ($('.workspace-publication-container')) {
@@ -72,34 +64,13 @@
     }
   };
 
-  $(document).ready(function() {
-    $('#staticNavigationWrapperWorkspace').waypoint('sticky', {
-      stuckClass : 'stuckStNav'
-    });
-  
-    // Workspace navigation
-    if ($('#workspaceNavigationWrapper').length > 0) {
-      refreshNavigationWrapperPosition();
-      $(window).resize(function(){
-        refreshNavigationWrapperPosition();
-      });
-    }
-    
-    if ($('.wi-workspace-dock-navi-button-cancel-evaluation'.length > 0)) {
-      $('.wi-workspace-dock-navi-button-cancel-evaluation').hide();
-    }
-   
-  });
-
-  $(document).on('click', '.wi-workspace-dock-navi-button-evaluation', function (event) {
+  $(document).on('click', '.workspace-dock-navi-button-evaluation', function (event) {
     
     if ($(this).attr('data-state') == 'unassessed') {
       confirmEvaluationRequest(); 
     }
     
     if ($(this).attr('data-state') == 'pending') {
-      $(this).attr('data-state', 'cancel');
-      $(this).children('.icon-assessment-pending').removeClass('icon-assessment-pending').addClass('icon-assessment-cancel');
       confirmEvaluationCancellation();
     }
     
@@ -148,12 +119,13 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     
-                    var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+                    var evalButton = $('.workspace-dock-navi-button-evaluation');
 
                     evalButton
                       .children('.icon-assessment-' + evalButton.attr('data-state'))
                         .removeClass('icon-assessment-' + evalButton.attr('data-state'))
                         .addClass('icon-assessment-pending')
+                        .attr("title", getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"))
                         .children('span')
                           .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
                   
@@ -179,6 +151,12 @@
   }
   
   function confirmEvaluationCancellation() {
+    
+    var evalButton = $('.workspace-dock-navi-button-evaluation');
+    
+    evalButton.attr('data-state', 'cancel');
+    evalButton.children('.icon-assessment-pending').removeClass('icon-assessment-pending').addClass('icon-assessment-cancel');
+
     renderDustTemplate('workspace/workspace-evaluation-cancellation-confirm.dust', { }, $.proxy(function (text) {
       var dialog = $(text);
       $(text).dialog({
@@ -206,16 +184,16 @@
                       $('.notification-queue').notificationQueue('notification', 'error', err);
                     } else {
                       
-                      var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
-
                       evalButton
                         .children('.icon-assessment-' + evalButton.attr('data-state'))
                           .removeClass('icon-assessment-' + evalButton.attr('data-state'))
                           .addClass('icon-assessment-unassessed')
+                          .attr("title", getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"))
                           .children('span')
                             .text(getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"));
+                        
                     
-                      evalButton.attr('data-state', 'canceled');
+                      evalButton.attr('data-state', 'unassessed');
                       
                       $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
                     }
@@ -233,7 +211,7 @@
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {         
-            var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+            var evalButton = $('.workspace-dock-navi-button-evaluation');
 
             evalButton.attr('data-state', 'pending');
             evalButton.children('.icon-assessment-cancel').removeClass('icon-assessment-cancel').addClass('icon-assessment-pending');

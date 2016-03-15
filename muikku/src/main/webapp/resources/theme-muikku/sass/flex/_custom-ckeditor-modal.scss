@@ -1,0 +1,404 @@
+div.cke_reset_all * {
+  font-family:'Open Sans', Arial, sans-serif;
+  font-size:16px;
+  color:#2c2c2c;
+  font-weight:300;
+  border-radius:0px;
+  border:none;
+  box-shadow:none;
+  text-shadow:none;
+}
+
+div.cke_reset_all {
+  
+  /* Because reset_all above we need to re-apply the icon font */
+  [class^="icon-"], [class*=" icon-"] { 
+    font-family: 'muikku';
+    speak: none;
+    font-style: normal;
+    text-decoration:none;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  table.cke_dialog {
+ 
+    div.cke_dialog_body {
+      background:#fff;
+      box-shadow:0 0 80px rgba(0,0,0,0.4);
+      border:none;
+
+      div.cke_dialog_title {
+        color:#fff;
+        background:#7391a7;
+        padding:8px 12px;
+        text-transform:uppercase;
+      }
+      
+      .cke_dialog_close_button {
+        background:transparent;
+        top:8px;
+        right:10px;
+      
+        &:before {
+          font-size:22px;
+          content: "\e63b";
+          color:#fff;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-weight: normal;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          
+          /* Better Font Rendering =========== */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+      
+      }
+      
+      .cke_dialog_contents {
+        padding:0;
+        /* margin:0; */
+      
+        .cke_dialog_contents_body {
+          max-height:600px;
+          overflow:auto;
+          padding:5px 10px;
+          
+          .cke_dialog_ui_vbox_child {
+            padding:0 0 10px;
+            
+            /* Add new row */
+            .icon-add {
+              font-size: 13px;
+              display: inline-block;
+              position:relative;
+              cursor:pointer;
+              
+              span {
+                display:none;
+                background:#7996aa;
+                padding:2px 4px;
+                color:#fff;
+                text-transform:uppercase;
+                font-size:12px;
+              }
+              
+              &:hover {
+              
+                span {
+                  display:block;
+                  position:absolute;
+                  top:-25px;
+                  left:5px;
+                  box-shadow: 0 0 4px rgba(255,255,255,0.9);
+                  z-index:99;
+                }
+              
+              }
+            }
+
+            /* Check correct answer */
+            .icon-checkmark {
+              font-size: 13px;
+              display: inline-block;
+              position:relative;
+              cursor:pointer;
+              position:absolute;
+              left:362px;
+              top:5px;
+              margin:0;
+              font-size:15px;
+            
+              span {
+                display:none;
+                background:#7996aa;
+                padding:2px 4px;
+                color:#fff;
+                text-transform:uppercase;
+                font-size:12px;
+              }
+              
+              &:hover {
+              
+                span {
+                  display:block;
+                  position:absolute;
+                  top:-25px;
+                  box-shadow: 0 0 4px rgba(255,255,255,0.9);
+                  right:5px;
+                }
+              
+              }
+            }
+            
+            /* Delete row */
+            .icon-delete {
+              display: inline-block;
+              position:relative;
+              cursor:pointer;
+              font-size:16px;
+              top:2px;
+              
+              span {
+                display:none;
+                background:#7996aa;
+                padding:2px 4px;
+                color:#fff;
+                text-transform:uppercase;
+                font-size:12px;
+              }
+              
+              &:hover {
+              
+                span {
+                  display:block;
+                  position:absolute;
+                  top:-25px;
+                  box-shadow: 0 0 4px rgba(255,255,255,0.9);
+                  right:5px;
+                }
+              
+              }
+            }
+            
+            .selection-title-container,
+            .textfield-title-container,
+            .memofield-title-container,
+            .connectfield-title-container {
+              position:relative;
+              
+              label {
+                margin-right:10px;
+              }
+            }
+            
+            .connectfield-elements-container .connectfield-element-container {
+            
+              input[type="text"] {
+                width:180px;
+                min-width:180px;
+                margin-right:10px;
+              }
+            
+            }
+            
+            .selection-options-container,
+            .textfield-elements-container,
+            .connectfield-elements-container {
+              max-height:300px;
+              overflow-y:auto;
+              overflow-x:hidden;
+            }
+            
+            .selection-options-container .selection-option-container,
+            .textfield-elements-container .textfield-element-container,
+            .memofield-elements-container .memofield-element-container {
+            
+              input[type="text"] {
+                width:330px;
+              }
+            
+              .sort-handle {
+                @include rounded-top-left(4px);
+                @include rounded-bottom-left(4px);
+                color: #7996aa;
+                background: #f3faff;
+                padding: 6px 4px 6px 6px;
+                font-size: 12px;
+                position: relative;
+                top: -1px;
+                cursor:move;
+                transition:background 0.3s ease-in-out;
+                
+                &:hover {
+                  color: #fff;
+                  background: #7996aa;
+                }
+                
+              }
+
+            
+            }
+
+          }
+
+        }
+        
+        .cke_dialog_footer {
+          outline:none;
+          background:transparent;
+          
+          a.cke_dialog_ui_button {
+            text-transform:uppercase;
+            margin:5px;
+            display:block;
+            font-size:16px;
+            min-width:90px;
+            border:none;
+            outline:none;
+            display:block;
+            padding:6px 0px 5px 0px;
+            background-image:none;
+            box-shadow:none;
+            border-radius:0px;
+            color:#fff;
+            
+            &.cke_dialog_ui_button_cancel,
+            &.cke_dialog_ui_button_cancel:focus,
+            &.cke_dialog_ui_button_cancel:active {
+              background:#7391a7;
+
+              span {
+                font-size:inherit;
+                font-weight:400;
+                line-height:1;
+                text-shadow:none;
+                padding:0;
+              }
+            }
+          
+            &.cke_dialog_ui_button_ok,
+            &.cke_dialog_ui_button_ok:focus,
+            &.cke_dialog_ui_button_ok:active {
+              background:#27b91c;
+              
+              span {
+                font-size:inherit;
+                font-weight:400;
+                line-height:1;
+                text-shadow:none;
+                padding:0;
+              }
+            }
+          
+          }
+          
+        }
+      
+      }
+      
+      label {
+        text-transform:uppercase;
+        font-size:14px;
+      }
+      
+      /* Input field overrides */
+      input[type="text"], textarea {
+        height:auto;
+        border:1px solid #eee;
+        @include rounded(3px);
+        display:inline-block;
+        padding:3px 5px;
+        transition:border,box-shadow 0.1s,0.2s ease-in-out;
+        outline:none;
+        font-size:15px;
+        max-width:100%;
+        box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+        box-sizing:border-box;
+        margin:4px 0px;
+
+        &.max-size {
+          width:100%;
+        }
+        
+        &:focus,
+        &:hover {
+          border:1px solid #97bfed;
+          box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+        }
+    
+        &::-webkit-input-placeholder {
+          color:#b4b4b4;
+          font-style:italic;
+        }
+        
+        &:-moz-placeholder { /* older Firefox*/
+          color:#b4b4b4;
+          font-style:italic;
+        }
+        
+        &::-moz-placeholder { /* Firefox 19+ */ 
+          color:#b4b4b4;
+          font-style:italic;
+        }
+         
+        &:-ms-input-placeholder { 
+          color:#b4b4b4;
+          font-style:italic;
+        }
+        
+        &::input-placeholder {
+          color:#b4b4b4;
+          font-style:italic;
+        }
+        
+      }
+      
+      input[type="radio"],
+      input[type="checkbox"] {
+        margin:0 10px;
+        background:#fff;
+        border:1px solid #eee;
+        transition:border,box-shadow 0.1s,0.2s ease-in-out;
+        outline:none;
+        display:inline-block;
+        box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+        @include rounded(3px);
+        display:inline-block;
+        
+        &:focus,
+        &:hover,
+        &:checked {
+          border:1px solid #97bfed;
+          box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
+        }
+      }
+      
+      /* Select and Option field overrides */
+      select.cke_dialog_ui_input_select {
+        height:auto;
+        line-height:inherit;
+        background:#fff;
+        font-size:15px;
+        border:1px solid #eee;
+        transition:border,box-shadow 0.1s,0.2s ease-in-out;
+        outline:none; /* Thanks Chrome! */
+        display:inline-block;
+        margin:4px 0px;
+        box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+        @include rounded(3px);
+        max-width:100%;
+        word-wrap:break-word;
+        
+        &:focus,
+        &:hover {
+          border:1px solid #97bfed;
+          box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
+        }
+      
+        option {
+          background:#fff;
+          font-weight:300;
+          padding:0px 3px;
+        }
+      
+      }
+    }
+   
+   
+    
+  }
+  
+}
+

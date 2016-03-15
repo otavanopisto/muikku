@@ -600,7 +600,7 @@ public class WorkspaceMaterialController {
       }
     } catch (Exception e) {
       Throwable cause = e;
-      while (e.getCause() != null) {
+      while (cause != null) {
         cause = cause.getCause();
         if (cause instanceof WorkspaceMaterialContainsAnswersExeption) {
           throw (WorkspaceMaterialContainsAnswersExeption) cause;

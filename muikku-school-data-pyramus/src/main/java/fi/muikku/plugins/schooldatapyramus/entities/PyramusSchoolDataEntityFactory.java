@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +35,7 @@ import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Address;
+import fi.pyramus.rest.model.ContactType;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseAssessment;
 import fi.pyramus.rest.model.CourseAssessmentRequest;
@@ -48,29 +50,12 @@ import fi.pyramus.rest.model.StudentGroupStudent;
 import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.UserRole;
 
+@ApplicationScoped
 public class PyramusSchoolDataEntityFactory {
   
   @Inject
   private Logger logger;
   
-  public static class UserWithId {
-    private final User user;
-    private final long id;
-    
-    public UserWithId(User user, long id) {
-      this.user = user;
-      this.id = id;
-    }
-    
-    public User getUser() {
-      return user;
-    }
-    
-    public long getId() {
-      return id;
-    }
-  }
-
   @Inject
   private PyramusIdentifierMapper identifierMapper;
 
@@ -80,6 +65,8 @@ public class PyramusSchoolDataEntityFactory {
   @PostConstruct
   public void init() {
     pyramusHost = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "pyramusHost");
+    teacherRoleSetting = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "roles.workspace.TEACHER");
+
   }
   
   public WorkspaceRole createCourseStudentRoleEntity() {
@@ -452,14 +439,11 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   private WorkspaceRoleArchetype getWorkspaceRoleArchetype(Long staffMemberRoleId) {
-    String teacherRoleSetting = pluginSettingsController.getPluginSetting(
-        SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "roles.workspace.TEACHER");
     if (StringUtils.isNumeric(teacherRoleSetting)) {
       if (staffMemberRoleId.equals(NumberUtils.createLong(teacherRoleSetting))) {
         return WorkspaceRoleArchetype.TEACHER;
       }
     }
-
     return WorkspaceRoleArchetype.CUSTOM;
   }
 
@@ -478,14 +462,15 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public List<UserPhoneNumber> createEntities(SchoolDataIdentifier userIdentifier, PhoneNumber[] phoneNumbers) {
-    List<UserPhoneNumber> result = new ArrayList<>();
-    
-    for (PhoneNumber phoneNumber : phoneNumbers) {
-      result.add(new PyramusUserPhoneNumber(userIdentifier, phoneNumber.getNumber()));
+  public UserPhoneNumber createEntity(SchoolDataIdentifier userIdentifier, PhoneNumber phoneNumber, ContactType contactType) {
+    if (phoneNumber != null) {
+      return new PyramusUserPhoneNumber(userIdentifier, 
+        phoneNumber.getNumber(),
+        contactType != null ? contactType.getName() : null,
+        phoneNumber.getDefaultNumber());
     }
     
-    return result;
+    return null;
   }
   
   public TransferCredit createEntity(fi.pyramus.rest.model.TransferCredit transferCredit) {
@@ -514,4 +499,5 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   private String pyramusHost;
+  private String teacherRoleSetting;
 }

@@ -8,10 +8,10 @@
   
   <ui:define name="scripts">
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
-    <script defer="defer" jsf:name="scripts/gui/locales.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
-    <script defer="defer" jsf:name="scripts/gui/dustloader.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.5/js/min/perfect-scrollbar.jquery.min.js"/>
     
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
@@ -19,10 +19,10 @@
     </ui:fragment>
     
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <script defer="defer" jsf:name="scripts/gui/widget-visits.js"/>
-      <script defer="defer" jsf:name="scripts/gui/widget-courselist.js"/>
-      <script defer="defer" jsf:name="scripts/gui/widget-messages.js"/>
-      <script defer="defer" jsf:name="scripts/gui/widget-announcements.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/widget-visits.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/widget-courselist.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/widget-messages.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/widget-announcements.js"/>
     </ui:fragment>
     
   </ui:define>
@@ -65,18 +65,12 @@
                 Ympäristö tarjoaa kaikki tarvitsemasi työkalut opettamiseen ja
                 oppimiseen:</p>
               <ul>
-                <li><b>Muokattavan etusivun</b> avulla voit personoida ympäristön
-                  mieleiseksesi.</li>
-                <li>Opiskelu onnistuu myös <b>älypuhelimen</b> tai <b>tablet-laitteen</b>
-                  kautta - ilman erillistä sovellusta.</li>
-                <li><b>Koko näytön lukutila</b> rauhoittaa opiskeluympäristön
-                  opiskelua varten.</li>
-                <li><b>Yhdessä kirjoittamisen</b> väline mahdollistaa ryhmätyöt ilman
-                  erillisiä ohjelmia.</li>
-                <li>Oppimisympäristön <b>kalenteri</b> kulkee mukanasi vaikka
-                  älypuhelimessa.</li>
-                <li><b>Kehittyneen haun</b> avulla voit myös ohjata oppimisympäristön
-                  toimintaa.</li>
+				        <li>Avoimen lähdekoodin ympäristö</li>
+				        <li>Opiskelu tulee onnistumaan myös älypuhelimen tai tablet-laitteen kautta - ilman erillistä sovellusta.</li>
+				        <li>Koko näytön lukutila rauhoittaa opiskeluympäristön opiskelua varten.</li>
+				        <li>Automaattisesti tallentuvat tehtävät mahdollistavat laitteelta toiselle siirtymisen ilman että tuotettu sisältö katoaa. </li>
+				        <li>Pyramus-oppilaistoshallintajärjestelmän avulla voit hallita opiskelelijoita ja kursseja</li>
+				        <li>Opettajien ja opiskelijoiden suunnittelma, ammattilaisten toteuttama</li>
               </ul>
             </div>
           </div>
@@ -90,7 +84,7 @@
                 Kirjaudu sisään oikeasta ylänurkasta. <a
                   href="http://www.nettilukio.fi/">Nettilukioon</a> ja <a
                   href="http://www.nettiperuskoulu.fi">Nettiperuskouluun</a> voit
-                rekisteröityä linkkien kautta.
+                hakea linkkien kautta.
               </p>
               <p>
                 Jos haluat oppimisympäristön oman oppilaitoksesi käyttöön, ole

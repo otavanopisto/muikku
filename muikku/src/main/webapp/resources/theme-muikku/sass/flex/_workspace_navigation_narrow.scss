@@ -1,0 +1,197 @@
+@media screen and  (max-width: 1099px) {
+  
+  /* WORKSPACE NAVIGATION CONTAINER */
+  #workspaceNavigationWrapper {
+    display:none;
+  }
+  
+  /* WORKSPACE NAVIGATION BUBLE CONTAINER */
+  #workspaceNavigationWrapperBuble {
+    display:block;
+    background:#36b497;
+    border:2px solid #fff;
+    border-radius:100%;
+    box-shadow:0 0 10px rgba(0,0,0,0.3);
+    position:fixed;
+    z-index:99;
+    top:97px;
+    left:12px;
+    cursor:pointer;
+    text-align:center;
+    transition: top 0.3s ease-in-out, left 0.3s ease-in-out;
+    
+    .icon-navicon {
+      padding:6px;
+      color:#fff;
+      margin:4px;
+      font-size:32px;
+      position:relative;
+      background:transparent;
+      
+      .navmore-container {
+        display:none;
+        position:absolute;
+        left:-4px;
+        top:-4px;
+        background:transparent;
+        border-radius:3px;
+        text-align:left;
+        
+        .navmore-management-links {
+          padding:10px;
+          background:#4c6669;
+          border-radius:3px;
+          box-shadow:0 -1px 5px rgba(0,0,0,0.3);
+          
+          .workspace-management-item {
+            
+            a {
+              color:#fff;
+              font-size:18px;
+              text-transform:uppercase;
+              white-space:nowrap;
+              font-weight:300;
+              display:block;
+              padding:10px;
+              border-radius:3px;
+              text-decoration:none;
+              
+              span {
+                font-size:16px;
+              }
+              
+              &:hover {
+                background:#547d82;
+              }
+              
+            }
+            
+          }
+          
+        }
+        
+        .navmore-student-links {
+          margin-top:3px;
+          padding:10px;
+          background:#36b497;
+          border-radius:3px;
+          box-shadow:0 1px 5px rgba(0,0,0,0.3);
+          
+          .workspace-student-item {
+            
+            a {
+              color:#fff;
+              font-size:18px;
+              text-transform:uppercase;
+              white-space:nowrap;
+              font-weight:300;
+              display:block;
+              padding:10px;
+              border-radius:3px;
+              text-decoration:none;
+              
+              span {
+                font-size:16px;
+              }
+              
+              &:hover {
+                background:#56ccb1;
+              }
+              
+            }
+            
+          }
+          
+        }
+        
+        .navmore-evaluation-links {
+          margin-top:3px;
+          padding:0;
+          background:#36b497;
+          border-radius:3px;
+          box-shadow:0 1px 5px rgba(0,0,0,0.3);
+          
+          .workspace-evaluation-item {
+            padding:5px;
+          
+            &.workspace-dock-navi-button-evaluation {
+              width:auto;
+              margin:0;
+              
+              a {
+                width:auto;
+              }
+              
+            }
+            
+            a {
+              color:#fff;
+              font-size:18px;
+              text-transform:uppercase;
+              white-space:nowrap;
+              font-weight:300;
+              display:block;
+              padding:10px;
+              border-radius:3px;
+              text-decoration:none;
+              
+              span {
+                font-size:16px;
+              }
+              
+            }
+            
+          }
+          
+        }
+        
+        .navmore-fullscreenreading-links {
+          margin-top:3px;
+          padding:10px;
+          background:#288fcd;
+          border-radius:3px;
+          box-shadow:0 1px 5px rgba(0,0,0,0.3);
+          
+          .workspace-fullscreenreading-item {
+            
+            a {
+              color:#fff;
+              font-size:18px;
+              text-transform:uppercase;
+              white-space:nowrap;
+              font-weight:300;
+              display:block;
+              padding:10px;
+              border-radius:3px;
+              text-decoration:none;
+              
+              span {
+                font-size:16px;
+              }
+              
+              &:hover {
+                background:#1a75ac;
+              }
+              
+            }
+            
+          }
+          
+        }
+        
+      }
+      
+    }
+    
+    &:hover {
+      box-shadow:none;
+    
+      .navmore-container {
+        display:block;
+      }
+      
+    }
+    
+  }
+  
+}
