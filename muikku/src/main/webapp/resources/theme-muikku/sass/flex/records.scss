@@ -4,14 +4,18 @@
 /* Transcript of records (.tr-*) */
 
 .tr-content-main {
+  
   &.loading {
     height:200px;
+    
     &:before {
       @include generic-loader(50px);
       margin-top:50%;
       margin-left:50%;
     }
+    
   }
+  
 }
 
 .tr-item-workspace-assessment {
@@ -34,7 +38,7 @@
       text-transform:uppercase;
       font-size:12px;
       margin-left:5px;
-      
+
       &.passing {
         background-color:#0acf00;
       }
@@ -42,24 +46,28 @@
       &.non-passing {
         background-color:#ea7401;
       }
+      
     }
 
   }
   
 }
 
-.tr-item-description-title{
-  span{
+.tr-item-description-title {
+  
+  span {
     font-size:19px;
     font-weight:700;
-    &.tr-item-long{
+    
+    &.tr-item-long {
       margin-left:10px;
     }    
     
     &.grade {
       padding:5px 10px;
       color:#fff;
-      margin-left:3px;      
+      margin-left:3px; 
+           
       &.passing {
         background-color:#0acf00;
       }
@@ -67,54 +75,68 @@
       &.non-passing {
         background-color:#ea7401;
       }
+      
     }
     
-    &:not(:first-child){
+    &:not(:first-child) {
       margin-left:10px;
     }
+    
   }
+  
 }
 
-.tr-item-description-content{
-  span{
+.tr-item-description-content {
+  
+  span {
     display:inline-block;
     margin-left:10px;
   }
+  
 }
 
-.tr-task-not-evaluated{
-    span:not(:first-child){
-       margin-left:10px;
-    }  
-  }
+.tr-task-not-evaluated {
+  span:not(:first-child) {
+    margin-left:10px;
+  }  
+    
+}
 
-.tr-task-evaluated{
-  &:hover{
-   cursor:pointer;
-   background-color:$bgr1;
+.tr-task-evaluated {
+  
+  &:hover {
+    cursor:pointer;
+    background-color:$bgr1;
   }
   
-  .title-container{
+  .title-container {
   }
-  .content-container{
+  
+  .content-container {
     background-color:$bgr4;
   }  
-  .title{
-    span{
+  
+  .title {
+  
+    span {
       display:inline-block;
       box-sizing:border-box;
-      &:not(:first-child){
+      
+      &:not(:first-child) {
        margin-left:10px;
       }
+      
     }
   
   }
   
-  .content{
+  .content {
     padding:15px;
   }
+  
 }
-.tr-task-evaluated-grade{
+
+.tr-task-evaluated-grade {
   background-color:$bgr1;
   color:#dadada; 
   padding:5px 10px;
@@ -129,5 +151,7 @@
     &.non-passing {
       background-color:#ea7401;
     }
+    
   }
+
 }
