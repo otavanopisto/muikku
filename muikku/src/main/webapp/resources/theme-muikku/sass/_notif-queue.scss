@@ -67,7 +67,7 @@
   z-index:9999;
 }
 
-.notification-queue-item a {
+.notification-queue-item a.notification-queue-item-close {
   @include background-image('gfx/eventqueueclose.png');
   top: 12px;
   cursor: pointer;

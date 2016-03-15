@@ -127,15 +127,9 @@ public class CommunicatorRESTService extends PluginRESTService {
           user, msg.getCommunicatorMessageId());
       
       for (CommunicatorMessageRecipient r : recipients) {
-        if (Boolean.FALSE.equals(r.getReadByReceiver())) {
-          hasUnreadMsgs = true;
-          break;
-        }
-        
+        hasUnreadMsgs = hasUnreadMsgs || Boolean.FALSE.equals(r.getReadByReceiver()); 
         Date created = r.getCommunicatorMessage().getCreated();
-        
-        if ((latestMessageDate == null) || (latestMessageDate.before(created)))
-          latestMessageDate = created;
+        latestMessageDate = latestMessageDate == null || latestMessageDate.before(created) ? created : latestMessageDate;
       }
       
       result.add(new CommunicatorMessageItemRESTModel(

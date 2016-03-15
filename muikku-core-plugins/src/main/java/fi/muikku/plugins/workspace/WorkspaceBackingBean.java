@@ -13,6 +13,7 @@ import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
+import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
@@ -63,9 +64,9 @@ public class WorkspaceBackingBean {
     homeVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "home");
     guidesVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "guides");
     materialsVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "materials");
-    discussionsVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "discussions");
+    discussionsVisible = sessionController.hasCoursePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "discussions");
     usersVisible = sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "users");
-    journalVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "journal");
+    journalVisible = sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "journal");
   }
 
   public Long getWorkspaceId() {

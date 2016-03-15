@@ -6,8 +6,8 @@ import fi.muikku.schooldata.entity.AbstractUserPhoneNumber;
 
 public class PyramusUserPhoneNumber extends AbstractUserPhoneNumber {
 
-  public PyramusUserPhoneNumber(SchoolDataIdentifier userIdentifier, String number) {
-    super(userIdentifier, number);
+  public PyramusUserPhoneNumber(SchoolDataIdentifier userIdentifier, String number, String type, Boolean defaultNumber) {
+    super(userIdentifier, number, type, defaultNumber);
   }
 
   @Override

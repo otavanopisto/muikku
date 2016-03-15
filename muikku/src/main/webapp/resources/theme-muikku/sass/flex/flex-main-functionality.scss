@@ -8,7 +8,80 @@
 .mf-button-container {
   background-color:$mainFuncSb; 
 }
+
+.mf-dropdown-content {
+  text-transform:uppercase;
+  border-radius:3px;
+  display:inline-block;
+  line-height:1.3em;
+  color:#ffffff;
+  cursor:pointer;
+  @include buttonFontShadow;
+  @include buttonShadow;  
+  background-color:#ed8e00;
+  border:1px solid #d9e4e8;
+  font-size:1em;
+  background: rgb(237,142,0);
+  @include gradient-top-bottom(rgba(253,167,38,1),rgba(237,142,0,1),#ed8e00);
+  width:100%;
+  box-sizing:border-box;
+  font-weight:400;
+
+  .mf-dropdown-text {
+    display:inline-block;
+    padding:12px;
+    white-space:nowrap;
+  } 
   
+  .mf-dropdown-arrow {
+    border-left:1px solid #f6c06d;
+    display:inline-block;
+    float:right;
+    padding:4px 4px 3px 4px;
+    font-size:2.45em;    
+  } 
+}
+
+.mf-dropdown {  
+  position: relative;
+  
+  &.active .mf-dropdown-content {
+    @include gradient-top-bottom(rgba(237,142,0,1),rgba(253,167,38,1),#ed8e00);
+  }
+  
+  ul {
+    position: absolute;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    border:1px solid $brd;
+    z-index:1;
+    box-sizing:border-box;
+    box-shadow:0 5px 10px rgba(0,0,0,0.1);
+    
+    li {
+      font-size:0.9em;   
+      padding:5px;
+      background-color:#fff;
+      
+      a {
+        text-decoration:none;
+        color:#000;
+      }
+      
+      &:hover {
+        background-color:#1a9bfc;  
+        color:#fff;
+        a {
+          text-decoration:none;
+          color:#fff;
+        }
+      }
+    }
+  }
+}
+
 .mf-side-button-dropdown {
   display:none;
   
@@ -284,6 +357,18 @@
   background-color:#fff;
   margin:0 5px 5px 5px;
 
+  &.ft-01 {
+    border-left: 3px solid $mainFuncFilter1;
+  }
+   
+  &.ft-02 {
+    border-left: 3px solid $mainFuncFilter2;
+  }
+  
+  &.ft-03 {
+    border-left: 3px solid $mainFuncFilter3;
+  }
+
   .topic {
     padding:10px 0 0 10px;
     
@@ -372,7 +457,6 @@
   }
   
   .mf-item-description {
-    width:80%;
     background-color:#fff;  
     overflow:hidden;   
     height:35px;
@@ -382,7 +466,6 @@
   &.foldable {
   
     .mf-item-description {
-      width:100%;
       background-color:#fff;  
       overflow:auto;   
       height:auto;

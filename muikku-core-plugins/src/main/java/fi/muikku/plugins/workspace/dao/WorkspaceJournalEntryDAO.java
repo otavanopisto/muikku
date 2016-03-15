@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.CorePluginsDAO;
@@ -18,13 +19,14 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
 
   private static final long serialVersionUID = 63917373561361361L;
 
-  public WorkspaceJournalEntry create(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title, Date created) {
+  public WorkspaceJournalEntry create(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title, Date created, Boolean archived) {
     WorkspaceJournalEntry journalEntry = new WorkspaceJournalEntry();
     journalEntry.setUserEntityId(userEntity.getId());
     journalEntry.setWorkspaceEntityId(workspaceEntity.getId());
     journalEntry.setHtml(html);
     journalEntry.setTitle(title);
     journalEntry.setCreated(created);
+    journalEntry.setArchived(archived);
     return persist(journalEntry);
   }
 
@@ -35,7 +37,13 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     CriteriaQuery<WorkspaceJournalEntry> criteria = criteriaBuilder.createQuery(WorkspaceJournalEntry.class);
     Root<WorkspaceJournalEntry> root = criteria.from(WorkspaceJournalEntry.class);
     criteria.select(root);
-    criteria.where(criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntityId));
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntityId),
+        criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.archived), Boolean.FALSE)
+      )
+    );
+      
     criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceJournalEntry_.created)));
 
     return entityManager.createQuery(criteria).getResultList();
@@ -51,7 +59,8 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntityId),
-            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId)
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId),
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.archived), Boolean.FALSE)
         )
     );
     criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceJournalEntry_.created)));
@@ -69,7 +78,8 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntityId),
-            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId)
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId),
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.archived), Boolean.FALSE)
         )
     );
     criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceJournalEntry_.created)));
@@ -90,7 +100,8 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntityId),
-            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId)
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId),
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.archived), Boolean.FALSE)
         )
     );
 
@@ -106,9 +117,10 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     workspaceJournalEntry.setHtml(html);
     return persist(workspaceJournalEntry);
   }
-  
-  public void delete(WorkspaceJournalEntry workspaceJournalEntry){
-    super.delete(workspaceJournalEntry);
+
+  public WorkspaceJournalEntry updateArchived(WorkspaceJournalEntry workspaceJournalEntry, Boolean archived) {
+    workspaceJournalEntry.setArchived(archived);
+    return persist(workspaceJournalEntry);
   }
-  
+
 }

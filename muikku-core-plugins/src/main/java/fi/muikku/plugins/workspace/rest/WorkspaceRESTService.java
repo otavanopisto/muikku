@@ -85,6 +85,7 @@ import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 import fi.muikku.search.SearchProvider.Sort;
@@ -543,8 +544,17 @@ public class WorkspaceRESTService extends PluginRESTService {
       @QueryParam("archived") Boolean archived,
       @QueryParam("requestedAssessment") Boolean requestedAssessment,
       @QueryParam("assessed") Boolean assessed,
+      @QueryParam("studentIdentifier") String studentId,
       @QueryParam("orderBy") String orderBy) {
-
+    
+    SchoolDataIdentifier studentIdentifier = null;
+    if (StringUtils.isNotBlank(studentId)) {    
+      studentIdentifier = SchoolDataIdentifier.fromId(studentId);
+      if (studentIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed student identifier %s", studentId)).build();
+      }
+    }
+    
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -553,15 +563,29 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Access check
     if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
+      if (studentIdentifier == null || !studentIdentifier.equals(sessionController.getLoggedUser())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
-    // Students via WorkspaceSchoolDataBridge
-    List<fi.muikku.schooldata.entity.WorkspaceUser> workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
+    List<fi.muikku.schooldata.entity.WorkspaceUser> workspaceUsers = null;
+    
+    if (studentIdentifier != null) {
+      workspaceUsers = new ArrayList<>();
+      
+      WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, studentIdentifier);
+      if (workspaceUser != null) {
+        workspaceUsers.add(workspaceUser);
+      }
+    } else {
+      // Students via WorkspaceSchoolDataBridge
+      workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
+    }
+    
     if (workspaceUsers.isEmpty()) {
       return Response.noContent().build();
     }
-    
+
     List<WorkspaceStudent> result = null;
     result = new ArrayList<>();
 
@@ -1099,7 +1123,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       //UserEntity userEntity = userEntityController.findUserEntityById(reply.getUserEntityId());
       return Response.ok(answerFile.getContent())
         .type(answerFile.getContentType())
-        .header("content-disposition", "attachment; filename =" + answerFile.getFileName())
+        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
         .build();
     }
     return Response.status(Status.NOT_FOUND).build();
@@ -2036,6 +2060,24 @@ public class WorkspaceRESTService extends PluginRESTService {
         restModel.getTitle(),
         restModel.getContent());
 
+    return Response.noContent().build();
+  }
+
+  @DELETE
+  @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateJournalEntry(@PathParam("JOURNALENTRYID") Long journalEntryId) {
+    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
+    if (workspaceJournalEntry == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!workspaceJournalEntry.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    workspaceJournalController.archiveJournalEntry(workspaceJournalEntry);
+    
     return Response.noContent().build();
   }
 
