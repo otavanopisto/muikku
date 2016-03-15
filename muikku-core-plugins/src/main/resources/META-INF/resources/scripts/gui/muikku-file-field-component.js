@@ -312,11 +312,11 @@
       this._readonly = readonly;
       if (readonly) {
         $(this._uploader).attr("disabled", "disabled");
-        if (this.element.data('file-count') > 0) {
+        if ($(this._uploaderContainer).find('.muikku-file-input-field-file:visible').length > 0) {
           $(this._uploaderContainer).find('.muikku-file-input-field-description').hide();
         } else {
           $(this._uploaderContainer).find('.muikku-file-input-field-description')
-              .html(getLocaleText('plugin.workspace.fileField.fieldHintDisabled'))
+              .html(getLocaleText('plugin.workspace.fileField.fieldHintDisabled'));
         }
         $(this._uploaderContainer).find('.muikku-file-input-field-file-remove').hide();
       }
