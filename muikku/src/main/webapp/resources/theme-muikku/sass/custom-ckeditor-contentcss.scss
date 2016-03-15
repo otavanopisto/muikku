@@ -1,8 +1,6 @@
 @import "_custom-ckeditor-styles.scss";
 @import "_fonts.scss";
 
-
-
 body {
   font-family:'Open Sans', Arial, sans-serif;
   line-height:1.5em;
@@ -16,15 +14,23 @@ body {
     margin:0 !important;
   }
   
-  .cke_panel_listItem.cke_selected { /* Rules for styles and format dropdowns selected items */
-
-   > a {
-      background:#72c1f5;
-      outline:none;
-      border:0;
-      box-shadow:none;
+  .cke_panel_listItem { /* Rules for styles and format dropdowns selected items */
+    
+    div.material-styles-block {
+      margin:0 auto;
     }
+
+    &.cke_selected {
   
+     > a {
+        background:#72c1f5;
+        outline:none;
+        border:0;
+        box-shadow:none;
+      }
+    
+    }
+
   }
   
   &.cke_editable {
