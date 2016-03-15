@@ -672,7 +672,7 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title) {
-    String urlName = generateUniqueUrlName(title);
+    String urlName = generateUniqueUrlName(parent, title);
     return createWorkspaceFolder(parent, title, urlName);
   }
   
