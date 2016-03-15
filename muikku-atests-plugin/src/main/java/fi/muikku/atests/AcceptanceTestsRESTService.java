@@ -1,8 +1,10 @@
 package fi.muikku.atests;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,13 +43,11 @@ import fi.muikku.plugins.announcer.AnnouncementController;
 import fi.muikku.plugins.announcer.model.Announcement;
 import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
-import fi.muikku.plugins.communicator.CommunicatorPermissionCollection;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
-import fi.muikku.plugins.communicator.rest.CommunicatorMessageRESTModel;
 import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumAreaGroup;
@@ -66,16 +66,13 @@ import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.muikku.rest.model.UserGroup;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.plugins.evaluation.EvaluationController;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
-import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
-import fi.muikku.users.UserGroupController;
 import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -93,7 +90,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Inject
   @LocalSession
   private LocalSessionController localSessionController;
-  
+
   @Inject
   private Logger logger;
   
@@ -299,7 +296,14 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       payload.getCaption(), payload.getContent(), tagList);
     Long communicatorMessageId2 = message.getCommunicatorMessageId().getId();
     fi.muikku.atests.CommunicatorMessage result = new fi.muikku.atests.CommunicatorMessage(message.getId(), communicatorMessageId2, message.getSender(), payload.getCategoryName(), message.getCaption(), message.getContent(), message.getCreated(), payload.getTags(), payload.getRecipientIds(), payload.getRecipientGroupIds(), payload.getRecipientStudentsWorkspaceIds(), payload.getRecipientTeachersWorkspaceIds());
-    notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
+    
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("sender", "Admin User");
+    params.put("subject", message.getCaption());
+    params.put("content", message.getContent());
+    params.put("url", "https://dev.muikku.fi/communicator");
+
+    notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients, params);
     webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
     
     return Response.ok(

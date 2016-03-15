@@ -1,5 +1,6 @@
 package fi.muikku.notifier;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,29 +10,20 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.LocaleUtils;
+
 import fi.muikku.dao.notifier.NotifierActionEntityDAO;
 import fi.muikku.dao.notifier.NotifierMethodEntityDAO;
 import fi.muikku.dao.notifier.NotifierUserActionDAO;
-import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.notifier.NotifierActionEntity;
 import fi.muikku.model.notifier.NotifierMethodEntity;
 import fi.muikku.model.notifier.NotifierUserAction;
 import fi.muikku.model.notifier.NotifierUserActionAllowance;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.session.SessionController;
-import fi.muikku.users.UserController;
 
 @Dependent
 @Stateful
 public class NotifierController {
-  @Inject
-  private UserEntityDAO userDAO;
-
-  @Inject
-  private SessionController sessionController;
-
-  @Inject
-  private UserController userController;
   
   @Inject
   private NotifierUserActionDAO notifierUserActionDAO;
@@ -52,12 +44,13 @@ public class NotifierController {
   
   public void sendNotification(NotifierAction action, UserEntity sender, List<UserEntity> recipients) {
     for (UserEntity recipient : recipients) {
-      sendNotification(action, sender, recipient, null);
+      sendNotification(action, sender, recipient, new HashMap<String, Object>());
     }
   }
 
   public void sendNotification(NotifierAction action, UserEntity sender, List<UserEntity> recipients, Map<String, Object> params) {
     for (UserEntity recipient : recipients) {
+      params.put("locale", recipient.getLocale() == null ? LocaleUtils.toLocale("fi") : LocaleUtils.toLocale(recipient.getLocale()));
       sendNotification(action, sender, recipient, params);
     }
   }
