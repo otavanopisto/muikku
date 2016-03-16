@@ -4,6 +4,10 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/flex-main-workspace.xhtml">
+
+  <f:metadata>
+    <f:viewAction action="#{workspaceIndexBackingBean.visit}"/>
+  </f:metadata>  
   
   <ui:define name="scripts">
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>

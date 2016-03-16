@@ -213,10 +213,6 @@ public class WorkspaceIndexBackingBean {
     workspaceVisitController.visit(getWorkspaceEntity());
   }
   
-  public Long getNumVisits() {
-    return workspaceVisitController.getNumVisits(getWorkspaceEntity());
-  }
-  
   public String getWorkspaceType() {
     return workspaceType;
   }
