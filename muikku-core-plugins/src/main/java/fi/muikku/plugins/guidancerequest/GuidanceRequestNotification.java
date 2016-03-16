@@ -7,6 +7,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import fi.muikku.i18n.LocaleController;
+import fi.muikku.mail.MailType;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.notifier.NotifierAction;
 import fi.muikku.notifier.NotifierContext;
@@ -59,6 +60,11 @@ public class GuidanceRequestNotification implements NotifierAction, NotifierEmai
     String content = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.content");
     
     return MessageFormat.format(content, userName, guidanceRequest.getMessage());
+  }
+
+  @Override
+  public MailType getEmailMimeType(NotifierContext context) {
+    return MailType.PLAINTEXT;
   }
 
   private GuidanceRequest getGuidanceRequest(NotifierContext context) {
