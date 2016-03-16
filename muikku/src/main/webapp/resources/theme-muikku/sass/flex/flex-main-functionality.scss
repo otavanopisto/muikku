@@ -56,6 +56,9 @@
     padding: 0;
     width: 100%;
     border:1px solid $brd;
+    z-index:1;
+    box-sizing:border-box;
+    box-shadow:0 5px 10px rgba(0,0,0,0.1);
     
     li {
       font-size:0.9em;   
@@ -427,7 +430,7 @@
     display:inline-block;
     vertical-align:center;
     
-    span {
+    > span {
       line-height:normal;  
       display:inline-block;
       margin:0 0 0 5px;
@@ -456,7 +459,7 @@
   .mf-item-description {
     background-color:#fff;  
     overflow:hidden;   
-    height:35px;
+/*     height:35px; */
   }
   
   /* If item is foldable */

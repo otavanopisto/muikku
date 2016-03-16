@@ -10,7 +10,6 @@ import fi.muikku.controller.EnvironmentSettingsController;
 
 public class Mailer {
 
-  @SuppressWarnings("cdi-ambiguous-dependency")
   @Inject
   private MailBridge bridge;
   
@@ -31,6 +30,10 @@ public class Mailer {
   
   public void sendMail(MailType mailType, List<String> to, String subject, String content) {
     this.sendMail(mailType, environmentSettingsController.getSystemEmailSenderAddress(), to, new ArrayList<String>(), new ArrayList<String>(), subject, content, new ArrayList<MailAttachment>());
+  }
+
+  public void sendMail(MailType mailType, String from, List<String> to, String subject, String content) {
+    this.sendMail(mailType, from, to, new ArrayList<String>(), new ArrayList<String>(), subject, content, new ArrayList<MailAttachment>());
   }
   
   public void sendMail(String from, String to, String subject, String content) {

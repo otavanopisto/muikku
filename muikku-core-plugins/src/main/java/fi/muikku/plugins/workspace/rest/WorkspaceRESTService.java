@@ -1123,7 +1123,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       //UserEntity userEntity = userEntityController.findUserEntityById(reply.getUserEntityId());
       return Response.ok(answerFile.getContent())
         .type(answerFile.getContentType())
-        .header("content-disposition", "attachment; filename =" + answerFile.getFileName())
+        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
         .build();
     }
     return Response.status(Status.NOT_FOUND).build();
