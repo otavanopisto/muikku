@@ -1,0 +1,42 @@
+{#threads}
+<div class="mf-item di-message open mf-category-{forumAreaId}-brd" id="{id}">
+  <div class="di-message-topic mf-item-topic">
+    <div class="di-message-details-sender">
+      <input type="hidden" name="mf-person-id" value="{sender}"/>
+      <div class="di-user-picture default "></div>
+      <span class="mf-item-header-content-primary di-message-header-content-primary">
+       <span title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span>
+       <span class="mf-category-{forumAreaId}-font" title="{#localize key="plugin.discussion.titleText.area"/}">{areaName}</span>
+       <span title="{#localize key="plugin.discussion.titleText.date"/}">{prettyDate}</span>
+      </span>
+      <span class="mf-item-header-content-secondary di-message-header-content-secondary" title="{#localize key="plugin.discussion.titleText.date"/}">{title}</span>    
+      <div class="clear"></div>
+    </div>    
+  </div>
+  <div class="mf-item-details di-message-details">
+    <div class="mf-item-details-container di-message-details-container">    
+      {#mayRemoveThread}
+        <a class="di-remove-thread-link">{#localize key="plugin.discussion.removeThread"/}</a>
+      {/mayRemoveThread}
+      <div class="mf-item-description di-message-info">
+        <div class="mf-item-content di-message-content ">     
+          <div class="mf-item-content-text di-message-content-text" title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</div>          
+          <div class="mf-item-content-tools di-message-content-tools">
+            <div class="di-message-content-tools-container mf-item-tools">
+              <div class="di-message-tool di-message-reply-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
+              {#canEdit}
+                <div class="di-message-tool di-message-edit-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
+              {/canEdit}                
+            </div>
+            <div class="di-message-content-tools-reply-container"></div>
+            <div class="clear"></div>
+          </div>
+        </div>
+      </div>       
+      <div class="clear"></div>
+    </div>
+  </div>
+  <input type="hidden" name="areaId" value="{forumAreaId}"/>
+  <input type="hidden" name="threadId" value="{id}"/>
+</div>  
+{/threads}
