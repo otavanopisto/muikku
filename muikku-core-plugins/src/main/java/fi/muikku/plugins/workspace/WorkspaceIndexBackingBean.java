@@ -137,6 +137,7 @@ public class WorkspaceIndexBackingBean {
     }
     
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
+    workspaceVisitController.visit(workspaceEntity);
     
     return null;
   }
@@ -155,10 +156,6 @@ public class WorkspaceIndexBackingBean {
 
   public void setWorkspaceUrlName(String workspaceUrlName) {
     this.workspaceUrlName = workspaceUrlName;
-  }
-
-  private WorkspaceEntity getWorkspaceEntity() {
-    return workspaceController.findWorkspaceEntityById(workspaceId);
   }
 
   public String getWorkspaceName() {
@@ -209,10 +206,6 @@ public class WorkspaceIndexBackingBean {
     this.workspaceEntityId = workspaceEntityId;
   }
 
-  public void visit() {
-    workspaceVisitController.visit(getWorkspaceEntity());
-  }
-  
   public String getWorkspaceType() {
     return workspaceType;
   }
