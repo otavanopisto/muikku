@@ -10,8 +10,20 @@
   font-size:1.05em;
   line-height:1.7em;
   position:relative;
-  box-shadow:0 0 10px rgba(0, 0, 0, 0.03);
-  border:1px solid #fff;
+  
+  p:first-child,
+  ul:first-child,
+  ol:first-child,
+  blockquote:first-child {
+    margin-top:0 !important;
+  }
+  
+  p:last-child,
+  ul:last-child,
+  ol:last-child,
+  blockquote:last-child {
+    margin-bottom:0 !important;
+  }
 
   &:after {
     width:64px;
@@ -151,6 +163,21 @@
   min-height:1em;
   background-repeat:no-repeat;
   position:relative;
+  
+  p:first-child,
+  ul:first-child,
+  ol:first-child,
+  blockquote:first-child {
+    margin-top:0 !important;
+  }
+  
+  p:last-child,
+  ul:last-child,
+  ol:last-child,
+  blockquote:last-child {
+    margin-bottom:0 !important;
+  }
+  
 
   a {
     color:#006a96;
