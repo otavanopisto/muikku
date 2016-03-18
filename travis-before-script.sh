@@ -1,6 +1,4 @@
 #!/bin/bash
-echo "Running before script with test setup: run tests: $run_tests, start sauce tunnel: $start_sc_tunnel, deploy: $deploy"
-
 if [[ $run_tests = "true" ]]; then
   if [[ $start_sc_tunnel == "true" ]]; then 
     curl -sS https://saucelabs.com/downloads/sc-4.3.12-linux.tar.gz|tar -xzC /tmp/;
