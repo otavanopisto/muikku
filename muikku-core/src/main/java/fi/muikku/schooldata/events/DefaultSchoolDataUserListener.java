@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentUser;
@@ -54,7 +54,7 @@ public class DefaultSchoolDataUserListener {
     if (event.getEmails() != null) {
       for (String email : event.getEmails()) {
         if (!validEmail(email)) {
-          logger.log(Level.SEVERE, "Found invalid email address (%s), removed from synchronization", email);
+          logger.log(Level.SEVERE, String.format("Found invalid email address (%s), removed from synchronization", email));
         } else {
           emails.add(email);
         }
@@ -178,8 +178,7 @@ public class DefaultSchoolDataUserListener {
   }
   
   private boolean validEmail(String email) {
-    return emailPattern.matcher(email).matches();
+    return EmailValidator.getInstance().isValid(email);
   }
 
-  private Pattern emailPattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 }

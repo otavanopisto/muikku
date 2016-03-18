@@ -87,6 +87,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>commons-validator</groupId>
+      <artifactId>commons-validator</artifactId>
+    </dependency>
+    
     <!-- Scribe -->
 
     <dependency>
