@@ -1,0 +1,147 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-workspace.xhtml">
+  
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
+  </ui:define>
+  
+  <ui:define name="workspace-view-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-edit.css"/>  
+  </ui:define>
+
+  <ui:define name="grid-content">
+    <section class="flex-row workspace-edit-name">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <input type="text" value="Työtilan nimi"/>
+      </div>
+    </section>
+    
+    <section class="flex-row workspace-edit-image">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <h2 class="workspace-edit-generic-title">Työtilan kuva</h2>
+        <div class="workspace-edit-image-container">
+          <img src="/gfx/workspace-default-header.jpg" width="950" height="240">
+        </div>
+      </div>
+    </section>
+    
+    <section class="flex-row workspace-edit-additionalinfo">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <h2 class="workspace-edit-generic-title">Työtilan lisätiedot</h2>
+        <div class="workspace-edit-additionalinfo-container">
+        
+          <div class="flex-row">
+            <div class="lg-flex-cell-8">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full">Nimen tarkenne</div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full">
+                  <input type="text" value="Ryhmäkurssin 12.12.2012 - 13.12.2015"/>
+                </div>
+              </div>
+            </div>
+            <div class="lg-flex-cell-8">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full">Laajuus</div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full">
+                  <input type="text" value="20"/>
+                  <select>
+                    <option>Opintontunti</option>
+                    <option>Opintonpiste</option>
+                    <option>Opintonviikko</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex-row">
+            <div class="lg-flex-cell-8">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full">Aine</div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full">
+                  <select>
+                    <option>Biologia</option>
+                    <option>Fysiikka</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="lg-flex-cell-8">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full">Linja</div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full">
+                  <select>
+                    <option>Lukio</option>
+                    <option>Peruskoulu</option>
+                    <option>Ammatillinen</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex-row">
+            <div class="lg-flex-cell-8">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full">Soveltuvuus</div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full">
+                  <select>
+                    <option>Lukio - Valtakunnallinen syventävä</option>
+                    <option>Lukio - Koulukohtainen syventävä</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="lg-flex-cell-8">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full">Tyyppi</div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full">
+                  <select>
+                    <option>Nonstop</option>
+                    <option>Ryhmäkurssi</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex-row">
+            <div class="lg-flex-cell-8">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full">Alkamispäivä</div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full">
+                  <input type="date" value="01.01.2019"/>
+                </div>
+              </div>
+            </div>
+            <div class="lg-flex-cell-8">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full">Loppumispäivä</div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full">
+                  <input type="date" value="24.12.2020"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+    
+    <section class="flex-row">
+    </section>
+
+    <section class="flex-row workspace-frontpage-material-page">
+    
+    </section>
+  </ui:define>
+
+</ui:composition>

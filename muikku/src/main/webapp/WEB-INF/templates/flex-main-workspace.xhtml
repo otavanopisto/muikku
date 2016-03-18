@@ -168,6 +168,12 @@
               <div class="workspace-dock-navi-button-workspace-management">
                 <div class="icon-cogs">
                   <div class="navmore-container">          
+                    <!-- EDIT MATERIALS -->
+                    <div class="workspace-management-item">
+                      <a class="icon-manage-materials" title="#{i18n.text['plugin.workspace.dock.workspace-edit']}" jsf:outcome="/jsf/workspace/workspace-edit.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                        <span>#{i18n.text['plugin.workspace.dock.workspace-edit']}</span>
+                      </a>
+                      </div>  
                     <ui:fragment rendered="#{workspaceBackingBean.mayManageMaterials}">
                       <!-- EDIT MATERIALS -->
                       <div class="workspace-management-item">
@@ -295,6 +301,12 @@
           
             <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">   
               <div class="navmore-management-links">
+                <!-- EDIT WORKSPACE -->
+                <div class="workspace-management-item">
+                  <a class="icon-manage-materials" title="#{i18n.text['plugin.workspace.dock.workspace-edit']}" jsf:outcome="/jsf/workspace/workspace-edit.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.workspace-edit']}</span>
+                  </a>
+                </div>  
                 <ui:fragment rendered="#{workspaceBackingBean.mayManageMaterials}">
                   <!-- EDIT MATERIALS -->
                   <div class="workspace-management-item">
