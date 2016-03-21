@@ -326,7 +326,6 @@
 } 
 
 .mf-tools-mobile{
-
   .mf-tools-mobile-activate{    
     background: #0099ff none repeat scroll 0 0;
     border-radius: 50%;
@@ -339,20 +338,30 @@
     right: 20px;
     text-align: center;
     width: 50px;
+    &:hover{
+      padding-bottom:39px;
+      background-color:#0065cb;
+      .mf-tools-mobile-list{
+        display: block;
+        margin-top: -215px;
+        padding-bottom: 25px;
+      }  
+      .mf-tools-mobile-activate{    
+        padding: 8px 0 40px;
+      }    
+    }
   }
   
   .mf-tools-mobile-list{
     display:none;
   }
   .mf-tool-container{
-    margin-top:5px;
+    margin-top:15px;
+    margin-left:0;
+    padding: 0 1px 14px;
   }
-  
-  &:hover{
-  .mf-tools-mobile-list{
-    display:block;
-  }  
-  }
+
+
 }
 
 

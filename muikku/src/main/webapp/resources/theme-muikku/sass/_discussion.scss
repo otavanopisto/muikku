@@ -73,11 +73,7 @@
    
         
     &.closed {
-      height:60px;
-      
-      > div {
-        height:60px;
-      }
+        height:70px; d
        .di-user-picture {
         float:left;
         height:30px;
@@ -132,7 +128,8 @@
           
           span {
             margin:0 0 0 3px;
-            
+            font-style:italic;
+            font-weight:700;
             p {
               margin: 0 0 0 10px;
               

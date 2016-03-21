@@ -14,7 +14,8 @@
     <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>
     <script defer="defer" jsf:name="/scripts/gui/mainfunctions.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.klass/0.1a/jquery.klass-0.1a.js"/>    
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.klass/0.1a/jquery.klass-0.1a.js"/>
+    <script defer="defer" type="text/javascript" src="/scripts/gui/socialnavigation.js"/>   
     <script defer="defer" jsf:name="/scripts/gui/discussion.js"/>    
   </ui:define>
   
@@ -23,6 +24,8 @@
   </ui:define>  
   
   <ui:define name="mf-content-master"> 
+    <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
+    <input type="hidden" name="areaPermissions" value="#{forumBackingBean.areaPermissions}"/>  
     <div id="discussion">
       <ui:insert name="mf-content-functions">
         <div class="mf-content-functions flex-row flex-align-items-center">
@@ -39,30 +42,23 @@
                 <select id="discussionAreaSelect" name="areas"> 
                 </select>
               </div>
-              
               <div class="di-admin-tools lg-flex-hide md-flex-hide sm-flex-cell-3 flex-left">
                 <div class="mf-tools-mobile">
                   <div class="mf-tools-mobile-activate icon-navicon">
                     <div class="mf-tools-mobile-list">
                       <div class="mf-tool-container di-new-area-container">
-                        <div class="mf-tool di-new-area-button icon-add"
-                          title="#{i18n.text['plugin.discussion.createarea.topic']}"></div>
+                        <div class="mf-tool di-new-area-button icon-add" title="#{i18n.text['plugin.discussion.createarea.topic']}"></div>
                       </div>
                       <div class="mf-tool-container di-edit-area-container">
-                        <div class="mf-tool di-edit-area-button icon-edit"
-                          title="#{i18n.text['plugin.discussion.editarea.topic']}"></div>
+                        <div class="mf-tool di-edit-area-button icon-edit" title="#{i18n.text['plugin.discussion.editarea.topic']}"></div>
                       </div>
-                      <div
-                        class="mf-tool-container di-delete-area-container">
-                        <div
-                          class="mf-tool di-delete-area-button icon-delete"
-                          title="#{i18n.text['plugin.discussion.deletearea.topic']}"></div>
+                      <div class="mf-tool-container di-delete-area-container">
+                        <div class="mf-tool di-delete-area-button icon-delete" title="#{i18n.text['plugin.discussion.deletearea.topic']}"></div>
                       </div>
                     </div>                  
                   </div>                  
                 </div>
               </div>              
-              
               <div class="di-admin-tools lg-flex-cell-11 md-flex-cell-11 sm-flex-cell-11 sm-flex-hide flex-left">
                 <div class="mf-tool-container di-new-area-container">
                   <div class="mf-tool di-new-area-button icon-add" title="#{i18n.text['plugin.discussion.createarea.topic']}"></div>    
@@ -81,14 +77,7 @@
       <ui:insert name="mf-content-area">
         <div class="mf-content-area flex-row">
           <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-          <div class="cp-content-main flex-row">
-            <div id="coursesList" class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full sm-flex-order-1"></div>
-            <div class="mf-items-paging lg-flex-cell-full md-flex-cell-full sm-flex-cell-full sm-flex-order-2">
-<!--               <div class="mf-paging-toolbar"> -->
-<!--                 <div class="mf-paging-tool mf-page-link-load-more cp-page-link-load-more">#{i18n.text['plugin.coursepicker.more']}</div> -->
-<!--               </div> -->
-            </div>            
-          </div>
+            <div class="di-content-main flex-row"></div>          
           </div>
         </div>
       </ui:insert>

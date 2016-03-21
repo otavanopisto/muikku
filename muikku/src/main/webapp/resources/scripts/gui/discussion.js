@@ -32,7 +32,6 @@ $(document).ready(function() {
       // todo: parse url
 
       this._refreshAreas();
-
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic > span', $.proxy(this._onMessageClick, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this._onBackClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
@@ -47,20 +46,20 @@ $(document).ready(function() {
     },
 
     _refreshLatest : function() {
-
       this._clearMessages();       
       this._addLoading(DiscImpl.msgContainer);  
-      
       mApi({async: false}).forum.latest.read().on('$', $.proxy(function(msgs, msgsCallback) {
         mApi({async: false}).forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
           msgs.areaName = area.name;
         });
-        
         mApi({async: false}).user.users.basicinfo.read(msgs.creator).callback($.proxy(function(err, user) {
           msgs.creatorFullName = user.firstName + ' ' + user.lastName;
           var d = new Date(msgs.created);
           msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
+          msgs.userRandomNo = Math.floor(Math.random() * 6) + 1;
+          msgs.nameLetter = user.firstName.substring(0,1);
           msgsCallback();
+          
         },this));
       }, this)).callback($.proxy(function(err, threads) {
         if (err) {
@@ -170,6 +169,8 @@ $(document).ready(function() {
               thread.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(thread.created);
               thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              thread.userRandomNo = Math.floor(Math.random() * 6) + 1;
+              thread.nameLetter = user.firstName.substring(0,1);              
               threadCallback();
             },this));
           }, this));
@@ -228,6 +229,8 @@ $(document).ready(function() {
               msgs.creatorFullName = user.firstName + ' ' + user.lastName;            
               var d = new Date(msgs.created);
               msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              msgs.userRandomNo = Math.floor(Math.random() * 6) + 1;
+              msgs.nameLetter = user.firstName.substring(0,1);              
               msgsCallback();
             }, this));            
           },this));
@@ -547,7 +550,7 @@ $(document).ready(function() {
 
     _klass : {
       // Variables for the class
-      msgContainer : ".di-messages-container",
+      msgContainer : ".di-content-main",
       subContainer : ".di-submessages-container"
     }
 
