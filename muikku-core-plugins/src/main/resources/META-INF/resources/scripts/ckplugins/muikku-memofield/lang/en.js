@@ -5,5 +5,6 @@ CKEDITOR.plugins.setLang('muikku-memofield', 'en', {
   propertiesDialogTitle: 'Memo Field Properties', 
   propertiesDialogRows: 'Rows',
   propertiesDialogCols: 'Columns',
-  propertiesDialogExample: 'Example'
+  propertiesDialogExample: 'Example',
+  propertiesDialogRichEdit: 'Use Rich Text Editor'
 });

@@ -434,6 +434,9 @@
             }
           }
         });
+      if (data.meta.richedit == true) {
+        field.addClass('ckeditor-field');
+      }
       $(object).replaceWith(field);
     }
   });
@@ -928,6 +931,26 @@
     }
         
     $(data.pageElement).find('.js-lazyyt').lazyYT();
+    
+    // Memo fields using CKEditor
+    $(data.pageElement).find('.ckeditor-field').each($.proxy(function (index, ckField) {
+      CKEDITOR.replace(ckField, {
+        height : (($(ckField).attr('rows')||5) * 30) + 'px',
+        entities: false,
+        entities_latin: false,
+        entities_greek: false,
+        toolbar: [
+                  { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+                  { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+                  { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+                  { name: 'links', items: [ 'Link' ] },
+                  { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+                  { name: 'styles', items: [ 'Format' ] },
+                  { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+                  { name: 'tools', items: [ 'Maximize' ] }
+                ]
+      });
+    }, this));
     
     var maxFileSize = null;
     if ($("input[name='max-file-size']").length) {
