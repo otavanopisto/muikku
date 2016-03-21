@@ -1,3 +1,3 @@
-<div class="di-replies-container mf-subitem-container">
+<div class="di-replies-container mf-subitem-container md-flex-cell-full sm-flex-cell-full flex-order-0">
    {>"discussion/discussion_replies_page.dust"/}      
 </div>

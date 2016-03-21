@@ -1,5 +1,5 @@
 {#threads}
-<div class="mf-item di-message open mf-category-{forumAreaId}-brd" id="{id}">
+<div class="mf-item di-message open mf-category-{forumAreaId}-brd md-flex-cell-full sm-flex-cell-full flex-order-1" id="{id}">
   <div class="di-message-topic mf-item-topic">
     <div class="di-message-details-sender">
       <input type="hidden" name="mf-person-id" value="{sender}"/>
