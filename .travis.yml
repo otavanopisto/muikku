@@ -18,12 +18,12 @@ before_install:
   -in travis-encrypted.tar.enc -out travis-encrypted.tar -d
 - tar xvf travis-encrypted.tar  
 - unset GEM_PATH
-- bash travis-setenv.sh
+- . travis-setenv.sh
 install:
-- bash travis-install.sh
+- . travis-install.sh
 before_script:
 script:
-- bash travis-script.sh
+- . travis-script.sh
 after_script:
 - if [ $use_sc = true ]; then killall sc; fi;
 #- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
@@ -88,7 +88,7 @@ env:
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=announcer
 
 after_success:
-- bash travis-after-success.sh
+- . travis-after-success.sh
 after_failure:
 - if [ $use_sc = true ]; then killall sc; fi;
 #- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
