@@ -15,7 +15,6 @@ import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.plugins.schooldatalocal.entities.LocalEnvironmentRoleImpl;
-import fi.muikku.plugins.schooldatalocal.entities.LocalUserEmailImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserImageImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserPropertyImpl;
@@ -221,11 +220,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 */
 	@Override
 	public UserEmail updateUserEmail(UserEmail userEmail) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		UserEmail email = toLocalUserEmailImpl(localUserSchoolDataController.updateUserEmail(userEmail.getIdentifier(), userEmail.getAddress()));
-		if (email != null) {
-			return email;
-		}
-		
 		throw new UnexpectedSchoolDataBridgeException("Unexpected error occured while updating LocalUserEmail");
 	}
 	
@@ -448,10 +442,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	}
 
 	private UserEmail toLocalUserEmailImpl(LocalUserEmail localUserEmail) {
-		if (localUserEmail != null) {
-		  return new LocalUserEmailImpl(localUserEmail.getId().toString(), localUserEmail.getUser().getId().toString(), localUserEmail.getAddress());
-		}
-		
 		return null;
 	}
 

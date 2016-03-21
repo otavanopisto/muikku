@@ -25,6 +25,7 @@ import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.TransferCredit;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserAddress;
+import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.UserPhoneNumber;
 import fi.muikku.schooldata.entity.Workspace;
@@ -44,6 +45,7 @@ import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseStudent;
 import fi.pyramus.rest.model.CourseType;
 import fi.pyramus.rest.model.EducationalTimeUnit;
+import fi.pyramus.rest.model.Email;
 import fi.pyramus.rest.model.PhoneNumber;
 import fi.pyramus.rest.model.StudentGroup;
 import fi.pyramus.rest.model.StudentGroupStudent;
@@ -471,6 +473,14 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     return null;
+  }
+
+  public UserEmail createEntity(SchoolDataIdentifier userIdentifier, Email email, ContactType contactType) {
+    return new PyramusUserEmail(toIdentifier(identifierMapper.getEmailIdentifier(email.getId())), 
+        userIdentifier, 
+        email.getAddress(), 
+        contactType != null ? contactType.getName() : null,
+        email.getDefaultAddress());
   }
   
   public TransferCredit createEntity(fi.pyramus.rest.model.TransferCredit transferCredit) {
