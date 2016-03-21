@@ -11,10 +11,5 @@ public class CoursePickerTestsIT extends CoursePickerTestsBase {
   public void setUp() {
     setWebDriver(createLocalDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
-  
+
 }

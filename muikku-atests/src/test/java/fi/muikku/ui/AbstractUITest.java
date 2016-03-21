@@ -693,7 +693,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void logout() {
     navigate("/", true);
     waitAndClick("a.lu-action-signout");
-    waitForPresent(".content");    
+    waitForPresent("body");    
   }
   
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {

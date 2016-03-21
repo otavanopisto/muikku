@@ -11,10 +11,5 @@ public class CourseJournalPageTestsIT extends CourseJournalPageTestsBase {
   public void setUp() {
     setWebDriver(createLocalDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
-  
+
 }

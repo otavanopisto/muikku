@@ -11,10 +11,5 @@ public class EvaluationTestsIT extends EvaluationTestsBase {
   public void setUp() {
     setWebDriver(createLocalDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
-  
+
 }

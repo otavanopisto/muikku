@@ -11,10 +11,5 @@ public class GuiderTestsIT extends GuiderTestsBase {
   public void setUp() {
     setWebDriver(createLocalDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
-  
+
 }

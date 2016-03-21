@@ -23,11 +23,6 @@ public class CourseMaterialsPageTestsIT extends CourseMaterialsPageTestsBase {
     setWebDriver(createSauceWebDriver());
   }
   
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
-  
   @Override
   public void courseTOCExistsTest() throws Exception {
     if (!"microsoftedge".equals(getBrowser())) {

@@ -11,10 +11,5 @@ public class AnnouncerTestsIT extends AnnouncerTestsBase {
   public void setUp() {
     setWebDriver(createLocalDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
-  
+
 }

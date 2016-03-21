@@ -12,9 +12,4 @@ public class CourseTestsIT extends CourseTestsBase {
     setWebDriver(createLocalDriver());
   }
   
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
-  
 }

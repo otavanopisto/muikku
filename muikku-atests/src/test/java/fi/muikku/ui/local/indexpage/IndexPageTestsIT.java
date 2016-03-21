@@ -11,10 +11,5 @@ public class IndexPageTestsIT extends IndexPageTestsBase {
   public void setUp() {
     setWebDriver(createLocalDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
-  
+
 }
