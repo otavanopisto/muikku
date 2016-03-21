@@ -1,5 +1,4 @@
 #!/bin/bash
-mvn clean
 echo Variables be like run_tests: $run_tests, test_suite: $test_suite, suite: $suite, it_profile: $it_profile
 if [[ $run_tests = "true" && $test_suite = $suite || $run_tests = "true" && $it_profile = "rest-it" ]]; then
   pushd .;
