@@ -38,11 +38,12 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick("#cke_1_contents");
         addTextToCKEditor("Communicator test");
         click("*[name='send']");
+        waitForPresent(".cm-messages-container");
         navigate("/communicator#sent", true);
         waitForPresent(".cm-message-header-content-secondary");
         assertText(".cm-message-header-content-secondary", "Test");  
       }finally{
-        deleteCommunicatorMessages(); 
+        deleteCommunicatorMessages();
       }
     }finally {
       mockBuilder.wiremockReset();
