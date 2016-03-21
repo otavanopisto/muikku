@@ -51,6 +51,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.rest.model.Student;
+import fi.muikku.rest.model.StudentEmail;
 import fi.muikku.rest.model.StudentPhoneNumber;
 import fi.muikku.rest.model.UserBasicInfo;
 import fi.muikku.schooldata.GradingController;
@@ -58,6 +59,7 @@ import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.SchoolDataIdentifier;
 import fi.muikku.schooldata.entity.TransferCredit;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserPhoneNumber;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
@@ -524,6 +526,41 @@ public class UserRESTService extends AbstractRESTService {
     
     return Response.ok(createRestModel(phoneNumbers.toArray(new UserPhoneNumber[0]))).build();
   }
+  
+  @GET
+  @Path("/students/{ID}/emails")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudentEmails(@PathParam("ID") String id) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
+    }
+    
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (studentEntity == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
+    }
+    
+    if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_EMAILS)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    List<UserEmail> emails = userController.listUserEmails(studentIdentifier);
+    Collections.sort(emails, new Comparator<UserEmail>() {
+      @Override
+      public int compare(UserEmail o1, UserEmail o2) {
+        return o1.getDefaultAddress() ? -1 : o2.getDefaultAddress() ? 1 : 0;
+      }
+    });
+    
+    return Response.ok(createRestModel(emails.toArray(new UserEmail[0]))).build();
+  }
 
   @GET
   @Path("/students/{ID}/transferCredits")
@@ -869,6 +906,16 @@ public class UserRESTService extends AbstractRESTService {
     
     for (UserPhoneNumber entity : entities) {
       result.add(new StudentPhoneNumber(toId(entity.getUserIdentifier()), entity.getType(), entity.getNumber(), entity.getDefaultNumber()));
+    }
+
+    return result;
+  }
+
+  private List<StudentEmail> createRestModel(UserEmail[] entities) {
+    List<StudentEmail> result = new ArrayList<>();
+    
+    for (UserEmail entity : entities) {
+      result.add(new StudentEmail(toId(entity.getUserIdentifier()), entity.getType(), entity.getAddress(), entity.getDefaultAddress()));
     }
 
     return result;
