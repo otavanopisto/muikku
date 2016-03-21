@@ -578,6 +578,18 @@
               }
             }, this))
         }, this))
+        .on('$', $.proxy(function(user, emailCallback) {
+          mApi().user.students.emails
+            .read(this.options.userIdentifier)
+            .callback($.proxy(function(emailErr, emails) {
+              if (emailErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', emailErr);
+              } else {
+                user.emails = emails;
+                emailCallback();
+              }
+            }, this))
+        }, this))
         .callback($.proxy(function(err, user){
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
