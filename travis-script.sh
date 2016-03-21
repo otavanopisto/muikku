@@ -1,6 +1,7 @@
 #!/bin/bash
 mvn clean
-if [[ $run_tests = "true" && $test_suite = $suite ]] || [[ $run_test = "true" && $it_profile = "rest-it" ]]; then
+echo Variables be like run_tests: $run_tests, test_suite: $test_suite, suite: $suite, it_profile: $it_profile
+if [[ $run_tests = "true" && $test_suite = $suite || $run_tests = "true" && $it_profile = "rest-it" ]]; then
   pushd .;
   cd muikku-atests;
   set -e;
