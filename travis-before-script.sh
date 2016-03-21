@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ $run_tests = "true" ]]; then
+if [[ $run_tests == "true" ]]; then
   if [[ $start_sc_tunnel == "true" ]]; then 
     curl -sS https://saucelabs.com/downloads/sc-4.3.12-linux.tar.gz|tar -xzC /tmp/;
     /tmp/sc-4.3.12-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER -f /tmp/sc-ready -r 10 --pidfile /tmp/sc.pid --vm-version dev-varnish --daemonize;
@@ -14,7 +14,7 @@ if [[ $run_tests = "true" ]]; then
       fi;
     done;
   fi;
-  if [[ $it_browser = "phantomjs" ]]; then
+  if [[ $browser == "phantomjs" ]]; then
     if [[ ! -f muikku-atests/.phantomjs/bin/phantomjs ]]; then
       rm -fR muikku-atests/.phantomjs
       curl -sSL "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"|tar -xvjC muikku-atests/
