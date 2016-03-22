@@ -1,8 +1,8 @@
-<div class="mf-items-toolbar md-flex-cell-full sm-flex-cell-full flex-order-0"> 
-   <div class="mf-items-tool icon-goback" data-from-view="{threads.fromView}"></div>
-   <div class="clear"></div>
+<div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+  <div class="mf-items-toolbar flex-row"> 
+     <div class="mf-items-tool icon-goback" data-from-view="{threads.fromView}"></div>
+  </div>
+  {#.}
+      {>"discussion/discussion_item_open.dust"/}  
+  {/.}
 </div>
-{#.}
-    {>"discussion/discussion_item_open.dust"/}  
-{/.}
-

@@ -1,42 +1,80 @@
+<div class="flex-row">
+
 {#threads}
-<div class="mf-item di-message open mf-category-{forumAreaId}-brd md-flex-cell-full sm-flex-cell-full flex-order-1" id="{id}">
-  <div class="di-message-topic mf-item-topic">
-    <div class="di-message-details-sender">
-      <input type="hidden" name="mf-person-id" value="{sender}"/>
-      <div class="di-user-picture default "></div>
-      <span class="mf-item-header-content-primary di-message-header-content-primary">
-       <span title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span>
-       <span class="mf-category-{forumAreaId}-font" title="{#localize key="plugin.discussion.titleText.area"/}">{areaName}</span>
-       <span title="{#localize key="plugin.discussion.titleText.date"/}">{prettyDate}</span>
-      </span>
-      <span class="mf-item-header-content-secondary di-message-header-content-secondary" title="{#localize key="plugin.discussion.titleText.date"/}">{title}</span>    
-      <div class="clear"></div>
-    </div>    
-  </div>
-  <div class="mf-item-details di-message-details">
-    <div class="mf-item-details-container di-message-details-container">    
-      {#mayRemoveThread}
-        <a class="di-remove-thread-link">{#localize key="plugin.discussion.removeThread"/}</a>
-      {/mayRemoveThread}
-      <div class="mf-item-description di-message-info">
-        <div class="mf-item-content di-message-content ">     
-          <div class="mf-item-content-text di-message-content-text" title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</div>          
-          <div class="mf-item-content-tools di-message-content-tools">
-            <div class="di-message-content-tools-container mf-item-tools">
-              <div class="di-message-tool di-message-reply-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
-              {#canEdit}
-                <div class="di-message-tool di-message-edit-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
-              {/canEdit}                
-            </div>
-            <div class="di-message-content-tools-reply-container"></div>
-            <div class="clear"></div>
-          </div>
+  <div class="mf-item di-message open mf-category-{forumAreaId}-brd lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" id="{id}">
+    <div class="di-message-topic mf-item-topic flex-row">    
+      <div class="di-message-meta lg-flex-cell-13 md-flex-cell-13 sm-flex-cell-13">
+        <input type="hidden" name="mf-person-id" value="{sender}"/>
+        <div class="flex-row">
+          <div class="di-user-picture default lg-flex-cell-1 md-flex-cell-1 sm-flex-hide"></div>
+          <div class="di-message-details lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-15">
+            <span title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span>
+            <span class="mf-category-{forumAreaId}-font" title="{#localize key="plugin.discussion.titleText.area"/}">{areaName}</span>
+          </div> 
         </div>
-      </div>       
-      <div class="clear"></div>
+      </div>        
+      <div class="lg-flex-cell-3 md-flex-cell-3 sm-flex-cell-3">
+        {#mayRemoveThread}
+          <a class="di-remove-thread-link">{#localize key="plugin.discussion.removeThread"/}</a>
+        {/mayRemoveThread}          
+      </div>  
     </div>
-  </div>
-  <input type="hidden" name="areaId" value="{forumAreaId}"/>
-  <input type="hidden" name="threadId" value="{id}"/>
-</div>  
+    <div class="flex-row">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <span class="" title="{#localize key="plugin.discussion.titleText.date"/}">{title}</span>
+      </div>    
+    </div>
+    <div class="flex-row">
+      <div class="mf-item-content-text di-message-content-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</div>              
+    </div>
+    <div class="flex-row">
+      <div class="mf-item-content-tools di-message-content-tools lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <div class="di-message-content-tools-container mf-item-tools">
+          <div class="di-message-tool di-message-reply-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
+          {#canEdit}
+            <div class="di-message-tool di-message-edit-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
+          {/canEdit}                
+        </div>
+        <div class="di-message-content-tools-reply-container flex-row"></div>
+      </div>
+    </div>
+<!--       <div class="di-message-details-sender"> -->
+<!--         <input type="hidden" name="mf-person-id" value="{sender}"/> -->
+<!--         <div class="di-user-picture default "></div> -->
+<!--         <span class="mf-item-header-content-primary di-message-header-content-primary"> -->
+<!--          <span title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span> -->
+<!--          <span class="mf-category-{forumAreaId}-font" title="{#localize key="plugin.discussion.titleText.area"/}">{areaName}</span> -->
+<!--          <span title="{#localize key="plugin.discussion.titleText.date"/}">{prettyDate}</span> -->
+<!--         </span> -->
+<!--         <span class="mf-item-header-content-secondary di-message-header-content-secondary" title="{#localize key="plugin.discussion.titleText.date"/}">{title}</span>     -->
+<!--         <div class="clear"></div> -->
+<!--       </div>     -->
+<!--     </div> -->
+<!--     <div class="mf-item-details di-message-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"> -->
+<!--       <div class="mf-item-details-container di-message-details-container flex-row">     -->
+<!--         {#mayRemoveThread} -->
+<!--           <a class="di-remove-thread-link">{#localize key="plugin.discussion.removeThread"/}</a> -->
+<!--         {/mayRemoveThread} -->
+<!--         <div class="mf-item-description di-message-info lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"> -->
+<!--           <div class="mf-item-content di-message-content ">      -->
+<!--             <div class="mf-item-content-text di-message-content-text" title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</div>           -->
+<!--             <div class="mf-item-content-tools di-message-content-tools"> -->
+<!--               <div class="di-message-content-tools-container mf-item-tools"> -->
+<!--                 <div class="di-message-tool di-message-reply-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.message"/}</span></div> -->
+<!--                 {#canEdit} -->
+<!--                   <div class="di-message-tool di-message-edit-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div> -->
+<!--                 {/canEdit}                 -->
+<!--               </div> -->
+<!--               <div class="di-message-content-tools-reply-container"></div> -->
+<!--               <div class="clear"></div> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--         </div>        -->
+<!--         <div class="clear"></div> -->
+<!--       </div> -->
+    <input type="hidden" name="areaId" value="{forumAreaId}"/>
+    <input type="hidden" name="threadId" value="{id}"/>
+  </div>  
 {/threads}
+
+</div>
