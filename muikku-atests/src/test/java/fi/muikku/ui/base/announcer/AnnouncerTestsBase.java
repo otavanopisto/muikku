@@ -40,9 +40,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         click(".mf-form-header");
         waitForPresent("#ui-datepicker-div");
         waitForNotVisible("#ui-datepicker-div");
-        switchToFrame(".cke_wysiwyg_frame");
-        sendKeys(".cke_editable", "Announcer test announcement");
-        switchToDefaultFrame();
+        addTextToCKEditor("Announcer test announcement");
         waitAndClick(".mf-toolbar input[name='send']");
         waitForPresent(".an-announcement");
         reloadCurrentPage();
@@ -75,9 +73,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         click(".mf-form-header");
         waitForNotVisible("#ui-datepicker-div");
         waitForPresent("#ui-datepicker-div");
-        switchToFrame(".cke_wysiwyg_frame");
-        sendKeys(".cke_editable", "Announcer test announcement");
-        switchToDefaultFrame();
+        addTextToCKEditor("Announcer test announcement");
         waitAndClick(".mf-toolbar input[name='send']");
         waitForPresent(".an-announcement");
         assertTextIgnoreCase(".an-announcement-topic>span", "Test title");

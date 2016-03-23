@@ -1,4 +1,4 @@
-package fi.muikku.ui.chrome.course.journal;
+package fi.muikku.ui.local.course.journal;
 
 import org.junit.After;
 import org.junit.Before;
@@ -9,12 +9,7 @@ public class CourseJournalPageTestsIT extends CourseJournalPageTestsBase {
   
   @Before
   public void setUp() {
-    setWebDriver(createChromeDriver());
+    setWebDriver(createLocalDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
-  
+
 }

@@ -22,9 +22,5 @@ public class CourseDiscussionTestsIT extends CourseDiscussionTestsBase {
   public void setUp() throws MalformedURLException {
     setWebDriver(createSauceWebDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
+
 }

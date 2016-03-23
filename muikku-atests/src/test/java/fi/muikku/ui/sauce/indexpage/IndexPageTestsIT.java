@@ -22,9 +22,5 @@ public class IndexPageTestsIT extends IndexPageTestsBase {
   public void setUp() throws MalformedURLException {
     setWebDriver(createSauceWebDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
+
 }

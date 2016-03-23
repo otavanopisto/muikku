@@ -22,9 +22,5 @@ public class EvaluationTestsIT extends EvaluationTestsBase {
   public void setUp() throws MalformedURLException {
     setWebDriver(createSauceWebDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
+
 }

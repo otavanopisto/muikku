@@ -180,6 +180,7 @@
                   }
                 }
               }
+              $(page).attr('data-binary-type', binaryType);
 
               renderDustTemplate(this.options.dustTemplate, { 
                 workspaceMaterialId: workspaceMaterialId,
