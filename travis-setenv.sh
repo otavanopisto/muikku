@@ -26,7 +26,7 @@ fi;
 
 if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" && $it_profile = "rest-it" ]]; then
   commitmessage=`git log --pretty=format:"%s" -1`;
-  if [[ ($commitmessage == *"Merge pull request"*) && ($commitmessage == *"from muikku/devel"*) ]]; then 
+  if [[ ($commitmessage == *"Merge pull request"*) && ($commitmessage == *"from otavanopisto/devel"*) ]]; then 
     export release="true"
   fi;
 fi;
