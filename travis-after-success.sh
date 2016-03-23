@@ -19,7 +19,7 @@ if [[ $release = "true" ]]; then
   git checkout master
   git reset --hard 
   mvn versions:force-releases -Dincludes=fi.pyramus:* --settings ~/.m2/mySettings.xml
-  mvn -B release:prepare release:perform -DdryRun=true --settings ~/.m2/mySettings.xml
+  mvn -B release:prepare release:perform --settings ~/.m2/mySettings.xml
   git checkout devel
   git reset --hard
   git pull
