@@ -85,6 +85,15 @@ body {
   margin:30px auto;
   position:relative;
   background:#fff;
+  
+  &[data-binary-type="pdf"] {
+    padding:0;
+    
+    h2 {
+      padding:20px 30px 10px 30px;
+    }
+    
+  }
 
   label,select,option,input,textarea { /* Overrides the values used in reading/management */
     font-weight:400;
