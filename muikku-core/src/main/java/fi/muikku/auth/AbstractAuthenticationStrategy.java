@@ -22,6 +22,7 @@ import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.security.AuthSourceSetting;
 import fi.muikku.model.security.UserIdentification;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
@@ -112,9 +113,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
         // But has existing user in the system, so we attach the identification into the same user
         userIdentification = userIdentificationController.createUserIdentification(emailUser, authSource, externalId);
       } else {
-        // New user account        
-        UserEntity userEntity = userEntityController.createUserEntity((SchoolDataSource) null, null, sessionController.getLocale());
-
+ 
         List<User> users = null;
         
         // If user can be found from datasources by emails, we just attach those users to new entity
@@ -124,22 +123,25 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
         } finally {
           schoolDataBridgeSessionController.endSystemSession();
         }
-
-        if (!users.isEmpty()) {
-          for (User user : users) {
-            userSchoolDataIdentifierController.createUserSchoolDataIdentifier(user.getSchoolDataSource(), user.getIdentifier(), userEntity);
-          }
-          
-          // Your guess for default identity is the first of returned users.
-          activeUser = users.get(0);
-        } else {
-          // If user could not be found from any of the sources we create new and attach those 
-          for (SchoolDataSource schoolDataSource : schoolDataController.listSchoolDataSources()) {
-            User user = userSchoolDataController.createUser(schoolDataSource, firstName, lastName);
-            if (user != null && activeUser == null) {
-              activeUser = user;
+        
+        UserEntity userEntity = null;
+        for (User user : users) {
+          UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
+              user.getSchoolDataSource(), user.getIdentifier());
+          if (userSchoolDataIdentifier != null) {
+            if (userEntity == null) {
+              userEntity = userSchoolDataIdentifier.getUserEntity();
+            }
+            else if (!userEntity.getId().equals(userSchoolDataIdentifier.getUserEntity().getId())) {
+              logger.severe(String.format("User %s.%s points to multiple UserEntity instances", user.getSchoolDataSource(), user.getIdentifier()));
+              return new AuthenticationResult(Status.CONFLICT, ConflictReason.SEVERAL_USERS_BY_EMAILS);
             }
           }
+        }
+        
+        if (userEntity == null) {
+          logger.severe(String.format("Unable to resolve UserEntity for %s", StringUtils.join(emails, ',')));
+          return new AuthenticationResult(Status.NO_EMAIL);
         }
         
         userIdentification = userIdentificationController.createUserIdentification(userEntity, authSource, externalId);
