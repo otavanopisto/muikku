@@ -590,6 +590,18 @@
               }
             }, this))
         }, this))
+        .on('$', $.proxy(function(user, addressesCallback) {
+          mApi().user.students.addresses
+            .read(this.options.userIdentifier)
+            .callback($.proxy(function(addressesErr, addresses) {
+              if (addressesErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', addressesErr);
+              } else {
+                user.addresses = addresses;
+                addressesCallback();
+              }
+            }, this))
+        }, this))
         .callback($.proxy(function(err, user){
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));

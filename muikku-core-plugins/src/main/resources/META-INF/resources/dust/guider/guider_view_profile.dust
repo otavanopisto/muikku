@@ -65,7 +65,17 @@
          </span>
        </div>
      {/phoneNumbers}
-     
+
+     {#addresses}
+       <div class="gt-user-details-item">
+         <span class="mf-item-details-label gt-user-details-label">
+           {#localize key="plugin.guider.user.details.label.address" arg0=type/}
+         </span>
+         <span class="mf-item-details-value gt-user-details-value">
+           {?street}{street}{/street}{?postalCode} {postalCode}{/postalCode}{?city} {city}{/city}{?region} {region}{/region}{?country} {country}{/country}{?defaultAddress} ({#localize key="plugin.guider.user.details.label.addressDefault"/}){/defaultAddress}
+         </span>
+       </div>
+     {/addresses}
     </div>
     <div class="clear"></div>  
   </div>
