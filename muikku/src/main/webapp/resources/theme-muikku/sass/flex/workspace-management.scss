@@ -1,0 +1,60 @@
+@import "_vars.scss";
+@import "_styles.scss";
+
+#content {
+  background:#fff;
+  padding:0px;
+}
+
+h2.workspace-management-generic-title {
+  margin:0;
+  padding:10px 20px;
+  font-weight:300;
+  text-transform:uppercase;
+  background:#eaf8fe;
+}
+
+.workspace-management-name {
+  
+  input {
+    font-size:26px;
+    font-weight:300;
+  }
+  
+}
+
+.workspace-management-container {
+  padding:0 20px 0 20px;
+  margin:20px 0;
+
+  img {
+    width:100%;
+    display:block;
+    line-height:1;
+  }
+  
+}
+
+.additionalinfo-title label {
+  text-transform:uppercase;
+  font-weight:400;
+}
+
+.additionalinfo-data {
+  
+  input.workspace-length {
+    width:60px;
+    text-align:center;
+  }
+  
+  textarea.workspace-description {
+    width:100%;
+    box-sizing:border-box;
+    height:100px;
+  }
+  
+}
+
+
+
+
