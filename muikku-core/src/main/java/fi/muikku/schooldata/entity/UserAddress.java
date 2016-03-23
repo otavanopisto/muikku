@@ -25,5 +25,9 @@ public interface UserAddress extends SchoolDataEntity {
 	public String getCountry();
 	
 	public void setCountry(String country);
+  
+  public String getType();
+  
+  public Boolean getDefaultAddress();
 	
 }

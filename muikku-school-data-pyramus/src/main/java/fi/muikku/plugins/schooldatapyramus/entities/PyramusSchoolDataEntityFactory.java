@@ -449,19 +449,15 @@ public class PyramusSchoolDataEntityFactory {
     return WorkspaceRoleArchetype.CUSTOM;
   }
 
-  public List<UserAddress> createEntities(SchoolDataIdentifier userIdentifier, Address[] addresses) {
-    List<UserAddress> result = new ArrayList<>();
-    
-    for (Address address : addresses) {
-      result.add(new PyramusUserAddress(userIdentifier, 
-          address.getStreetAddress(), 
-          address.getPostalCode(), 
-          address.getCity(), 
-          null, 
-          address.getCountry()));
-    }
-    
-    return result;
+  public UserAddress createEntity(SchoolDataIdentifier userIdentifier, Address address, ContactType contactType) {
+    return new PyramusUserAddress(userIdentifier, 
+      address.getStreetAddress(), 
+      address.getPostalCode(), 
+      address.getCity(), 
+      null, 
+      address.getCountry(),
+      contactType != null ? contactType.getName() : null,
+      address.getDefaultAddress());
   }
 
   public UserPhoneNumber createEntity(SchoolDataIdentifier userIdentifier, PhoneNumber phoneNumber, ContactType contactType) {

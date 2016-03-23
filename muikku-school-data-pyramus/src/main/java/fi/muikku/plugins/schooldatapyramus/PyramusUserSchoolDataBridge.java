@@ -644,7 +644,19 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
     }
     
-    return entityFactory.createEntities(userIdentifier, addresses);
+    if (addresses == null) {
+      return Collections.emptyList();
+    }
+    
+    List<UserAddress> result = new ArrayList<>(addresses.length);
+    for (Address address : addresses) {
+      ContactType contactType = address.getContactTypeId() != null 
+        ? pyramusClient.get(String.format("/common/contactTypes/%d", address.getContactTypeId()), ContactType.class) 
+        : null;
+      result.add(entityFactory.createEntity(userIdentifier, address, contactType));
+    }
+    
+    return result;
   }
 
   @Override

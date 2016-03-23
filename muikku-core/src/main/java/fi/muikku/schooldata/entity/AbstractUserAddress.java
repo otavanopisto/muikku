@@ -4,7 +4,7 @@ import fi.muikku.schooldata.SchoolDataIdentifier;
 
 public abstract class AbstractUserAddress implements UserAddress {
   
-  public AbstractUserAddress(SchoolDataIdentifier userIdentifier, String street, String postalCode, String city, String region, String country) {
+  public AbstractUserAddress(SchoolDataIdentifier userIdentifier, String street, String postalCode, String city, String region, String country, String type, Boolean defaultAddress) {
     super();
     this.userIdentifier = userIdentifier;
     this.street = street;
@@ -12,6 +12,8 @@ public abstract class AbstractUserAddress implements UserAddress {
     this.city = city;
     this.region = region;
     this.country = country;
+    this.type = type;
+    this.defaultAddress = defaultAddress;
   }
 
   @Override
@@ -68,6 +70,16 @@ public abstract class AbstractUserAddress implements UserAddress {
   public void setCountry(String country) {
     this.country = country;
   }
+  
+  @Override
+  public String getType() {
+    return type;
+  }
+  
+  @Override
+  public Boolean getDefaultAddress() {
+    return defaultAddress;
+  }
 
   private SchoolDataIdentifier userIdentifier;
   private String street;
@@ -75,5 +87,6 @@ public abstract class AbstractUserAddress implements UserAddress {
   private String city;
   private String region;
   private String country;
-
+  private String type;
+  private Boolean defaultAddress;
 }
