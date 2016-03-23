@@ -25,8 +25,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
           waitAndClick(".di-new-message-button");
           waitAndClick(".mf-textfield-subcontainer input");
           sendKeys(".mf-textfield-subcontainer input", "Test title for discussion");
-          waitAndClick("#cke_1_contents");
-          getWebDriver().switchTo().activeElement().sendKeys("Test text for discussion.");
+          addTextToCKEditor("Test text for discussion.");
           click("*[name='send']");
           waitForPresent(".di-message-meta-content>span>p");
           assertText(".di-message-meta-content>span>p", "Test text for discussion.");
@@ -84,8 +83,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
             navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
             waitAndClick(".di-message-meta-topic>span");
             waitAndClick(".di-message-reply-link");
-            waitAndClick("#cke_1_contents");
-            getWebDriver().switchTo().activeElement().sendKeys("Test reply for test.");
+            addTextToCKEditor("Test reply for test.");
             click("*[name='send']");
             waitForPresent(".mf-subitem-content-text>p");
             assertText(".mf-subitem-content-text>p", "Test reply for test.");

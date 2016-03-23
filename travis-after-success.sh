@@ -1,29 +1,33 @@
 #!/bin/bash
-if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
-  echo PR. Skipping deploy
-  exit 0
-fi;
-if [[ "$TRAVIS_BRANCH" == "master" && "$it_profile" == "rest-it" ]]; then
+if [[ $release = "true" ]]; then
+  eval `ssh-agent -s`
+  ssh-add .travisdeploykey
+  git config user.name "Travis CI"
+  git config user.email "travis@travis-ci.org"
   python travis-prepare-maven.py
+  git checkout master
+  git reset --hard 
+  echo Replacing SNAPSHOT versions to releases
+  mvn versions:force-releases -Dincludes=fi.pyramus:* --settings ~/.m2/mySettings.xml
+  git add .
+  git commit -m "Updated dependency versions"
+  echo Releasing
+  mvn -B release:prepare release:perform --settings ~/.m2/mySettings.xml
+  echo Deploying
   pushd .
   cd muikku
   mvn clean deploy --settings ~/.m2/mySettings.xml -Pgoogle-calendar-plugin,mongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=otavanopisto
   mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=janakkala
   popd
-elif [[ "$TRAVIS_BRANCH" == "devel" && "$it_profile" == "rest-it" ]]; then
-  if [[ "$findbugs_skip" == "false" ]]; then
-      python travis-upload-reports.py
-  fi;
-  python travis-prepare-maven.py
-  mvn clean install
-  pushd .
-  cd muikku
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pgoogle-calendar-plugin,mongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=otavanopisto
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=janakkala
-  popd
-else
-  echo Skipping it_profile: $it_profile, PR: $TRAVIS_PULL_REQUEST , BRANCH: $TRAVIS_BRANCH
+  echo Merging changes back to devel
+  git checkout devel
+  git reset --hard
+  git pull
+  git merge master
+  mvn versions:use-latest-snapshots -Dincludes=fi.pyramus:* --settings ~/.m2/mySettings.xml
+  git push
 fi;
+
 
 
 

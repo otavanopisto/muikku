@@ -21,9 +21,5 @@ public class CourseJournalPageTestsIT extends CourseJournalPageTestsBase {
   public void setUp() throws MalformedURLException {
     setWebDriver(createSauceWebDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
+
 }

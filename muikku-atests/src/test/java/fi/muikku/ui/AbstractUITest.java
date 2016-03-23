@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
@@ -32,16 +33,20 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
@@ -88,57 +93,65 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
-  
+    
+  protected void finished(Description description) {
+    try {
+      getWebDriver().quit();      
+    } catch (Exception e) {
+
+    }
+  }
+
   @Rule
   public TestWatcher testWatcher = new TestWatcher() {
+  
+  @Override
+  public Statement apply(Statement base, Description description) {
+    boolean browserSkip = false;
+    boolean resolutionSkip = false;
     
-    @Override
-    public Statement apply(Statement base, Description description) {
-      boolean browserSkip = false;
-      boolean resolutionSkip = false;
-      
-      for (Annotation annotation : description.getAnnotations()) {
-        if (annotation instanceof TestEnvironments) {
-          TestEnvironments testEnvironments = (TestEnvironments) annotation;
-          if (testEnvironments.browsers().length > 0) {
-            if (getBrowser() != null) {
-              browserSkip = true;
-            
-              for (TestEnvironments.Browser browser : testEnvironments.browsers()) {
-                if (getBrowser().equals(browser)) {
-                  browserSkip = false;
-                  break;
-                } 
-              }
+    for (Annotation annotation : description.getAnnotations()) {
+      if (annotation instanceof TestEnvironments) {
+        TestEnvironments testEnvironments = (TestEnvironments) annotation;
+        if (testEnvironments.browsers().length > 0) {
+          if (getTestEnvBrowser() != null) {
+            browserSkip = true;
+          
+            for (TestEnvironments.Browser browser : testEnvironments.browsers()) {
+              if (getTestEnvBrowser().equals(browser)) {
+                browserSkip = false;
+                break;
+              } 
             }
           }
-          if(testEnvironments.screenSizes().length > 0) {
-            if (getScreenSize() != null) {
-              resolutionSkip = true;
-              for (TestEnvironments.ScreenSize screenSize : testEnvironments.screenSizes()) {
-                if (getScreenSize().equals(screenSize)) {
-                  resolutionSkip = false;
-                  break;
-                } 
-              }
-            } 
-          }
+        }
+        if(testEnvironments.screenSizes().length > 0) {
+          if (getScreenSize() != null) {
+            resolutionSkip = true;
+            for (TestEnvironments.ScreenSize screenSize : testEnvironments.screenSizes()) {
+              if (getScreenSize().equals(screenSize)) {
+                resolutionSkip = false;
+                break;
+              } 
+            }
+          } 
         }
       }
-      
-      if (!browserSkip && !resolutionSkip) {
-        return super.apply(base, description);
-      }
-      
-      return new Statement() {
-        @Override
-        public void evaluate() throws Throwable {
-        }
-      };
     }
     
-    @Override
-    protected void failed(Throwable e, Description description) {
+    if (!browserSkip && !resolutionSkip) {
+      return super.apply(base, description);
+    }
+    
+    return new Statement() {
+      @Override
+      public void evaluate() throws Throwable {
+      }
+    };
+  }
+    
+  @Override
+  protected void failed(Throwable e, Description description) {
 //      try {
 //        Doesn't work
 //        takeScreenshot();
@@ -149,9 +162,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
   };
   
-  
-  protected TestEnvironments.Browser getBrowser() {
-    switch (getSauceBrowser()) {
+  protected TestEnvironments.Browser getTestEnvBrowser() {
+    switch (getBrowser()) {
     case "internet explorer":
       return TestEnvironments.Browser.INTERNET_EXPLORER;
     case "microsoftedge":
@@ -230,48 +242,52 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .get("/system/cache/flush");
   }
   
- 
+
   @Override
   public String getSessionId() {
     return sessionId;
   }
   
-  protected void setWebDriver(RemoteWebDriver webDriver) {
+
+  protected void setWebDriver(WebDriver webDriver) {
     this.webDriver = webDriver;
-    this.sessionId = webDriver.getSessionId().toString();
+    
+    if (webDriver instanceof RemoteWebDriver) {
+      this.sessionId = ((RemoteWebDriver) webDriver).getSessionId().toString();
+    }
   }
   
-  protected RemoteWebDriver getWebDriver() {
+  protected WebDriver getWebDriver() {
     return webDriver;
   }
 
-  protected String getSauceBrowser() {
-    String browser = System.getProperty("it.sauce.browser");
+  protected String getBrowser() {
+    String browser = System.getProperty("it.browser");
     if (browser != null) {
       return browser;
     }
     return "";
   }
   
-  protected String getSauceBrowserVersion() {
-    return System.getProperty("it.sauce.browser.version");
+  protected String getBrowserVersion() {
+    return System.getProperty("it.browser.version");
   }
   
-  protected String getSauceBrowserResolution() {
-    return System.getProperty("it.sauce.browser.resolution");
+  protected String getBrowserResolution() {
+    return System.getProperty("it.browser.resolution");
   }
   
   protected String getSaucePlatform() {
-    return System.getProperty("it.sauce.platform");
+    return System.getProperty("it.platform");
   }
   
   protected RemoteWebDriver createSauceWebDriver() throws MalformedURLException {
     final DesiredCapabilities capabilities = new DesiredCapabilities();
     final String seleniumVersion = System.getProperty("it.selenium.version");
     
-    final String browser = getSauceBrowser();
-    final String browserVersion = getSauceBrowserVersion();
-    final String browserResolution = getSauceBrowserResolution();
+    final String browser = getBrowser();
+    final String browserVersion = getBrowserVersion();
+    final String browserResolution = getBrowserResolution();
     final String platform = getSaucePlatform();
     
     capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
@@ -335,6 +351,29 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       });
   }
   
+
+  protected WebDriver createLocalDriver() {
+    switch (getBrowser()) {
+      case "chrome":
+        return createChromeDriver();
+      case "phantomjs":
+        return createPhantomJsDriver();
+      case "firefox":
+        return createFirefoxDriver();
+    }
+    
+    throw new RuntimeException(String.format("Unknown browser %s", getBrowser()));
+  }
+  
+  protected WebDriver createPhantomJsDriver() {
+    DesiredCapabilities desiredCapabilities = DesiredCapabilities.phantomjs();
+    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, ".phantomjs/bin/phantomjs");
+    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] { "--ignore-ssl-errors=true", "--webdriver-loglevel=NONE", "--load-images=false" } );
+    PhantomJSDriver driver = new PhantomJSDriver(desiredCapabilities);
+    driver.manage().window().setSize(new Dimension(1280, 1024));
+    return driver;
+  }
+  
   public static long getTestStartTime() {
     return TEST_START_TIME;
   }
@@ -396,16 +435,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForElementToBePresent(By.cssSelector(selector));
     assertVisible(selector);
   }
+   
+  protected void takeScreenshot() throws WebDriverException, IOException {
+    takeScreenshot(new File("target", testName.getMethodName() + ".png"));
+  }
   
-  protected void takeScreenshot() throws IOException {
-    if (getWebDriver() instanceof TakesScreenshot) {
-      Date dNow = new Date();
-      SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd-hh:mm:ss");
-      File screenshot = ((TakesScreenshot) getWebDriver()).getScreenshotAs(OutputType.FILE);
-      FileUtils.copyFile(screenshot, new File(System.getProperty("it.report.directory") + ft.format(dNow) + "-" + testName.getMethodName() + ".png"));
+  protected void takeScreenshot(File file) throws WebDriverException, IOException {
+    FileOutputStream fileOuputStream = new FileOutputStream(file);
+    try {
+     fileOuputStream.write(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES));
+    } finally {
+      fileOuputStream.flush();
+      fileOuputStream.close();
     }
   }
-
+  
   protected void sleep(long millis) {
     try {
       Thread.sleep(millis);
@@ -514,8 +558,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     ((JavascriptExecutor) getWebDriver()).executeScript(String.format("document.querySelectorAll('%s').item(0).scrollIntoView(true);", selector));
   }
 
+  protected WebElement findElementByCssSelector(String selector) {
+    return getWebDriver().findElement(By.cssSelector(selector));
+  }
+  
   protected void selectOption(String selector, String value){
-    Select selectField = new Select(getWebDriver().findElementByCssSelector(selector));
+    Select selectField = new Select(findElementByCssSelector(selector));
     selectField.selectByValue(value);
   }
   
@@ -579,7 +627,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void hoverOverElement(String selector) {
     Actions action = new Actions(getWebDriver());
-    action.moveToElement(getWebDriver().findElementByCssSelector(selector)).perform();
+    action.moveToElement(findElementByCssSelector(selector)).perform();
   }
   
   protected void assertClassNotPresent(String selector, String className) {
@@ -600,7 +648,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void assertSelectedOption(String selector, String expected){
-    Select select = new Select(getWebDriver().findElementByCssSelector(selector));
+    Select select = new Select(findElementByCssSelector(selector));
     WebElement option = select.getFirstSelectedOption();
     String optionText = option.getText();
     assertEquals(expected, optionText);
@@ -649,7 +697,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void logout() {
     navigate("/", true);
     waitAndClick("a.lu-action-signout");
-    waitForPresent("main.content");    
+    waitForPresent("body");    
   }
   
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
@@ -866,15 +914,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   }
   
+  protected WebElement findElementByTag(String name) {
+    return getWebDriver().findElement(By.tagName(name));
+  }
+  
   protected String getCKEditorContent() {
-    getWebDriver().switchTo().frame(getWebDriver().findElementByCssSelector(".cke_wysiwyg_frame"));
-    String ckeContent = getWebDriver().findElementByTagName("body").getText();
+    getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
+    String ckeContent = findElementByTag("body").getText();
     getWebDriver().switchTo().defaultContent();
     return ckeContent;
   }
   
   protected void dragAndDrop(String source, String target){
-    if (StringUtils.equals(getSauceBrowser(), "microsoftedge") || StringUtils.equals(getSauceBrowser(), "internet explorer") || StringUtils.equals(getSauceBrowser(), "safari")) {
+    if (StringUtils.equals(getBrowser(), "microsoftedge") || StringUtils.equals(getBrowser(), "internet explorer") || StringUtils.equals(getBrowser(), "safari")) {
       ((JavascriptExecutor) getWebDriver())
         .executeScript(String.format("try { $('%s').simulate('drag-n-drop', { dragTarget: $('%s') }); } catch (e) { console.log(e); } ", source, target ));
     } else {     
@@ -884,6 +936,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       (new Actions(getWebDriver()))
         .dragAndDrop(sourceElement, targetElement)
         .perform();
+    }
+  }
+  
+  protected void addTextToCKEditor(String text) {
+    waitForPresent(".cke_wysiwyg_frame");
+    if (StringUtils.equals(getBrowser(), "phantomjs") ) {
+      ((JavascriptExecutor) getWebDriver()).executeScript("CKEDITOR.instances.textContent.setData('"+ text +"');");
+    } else {
+      waitAndClick("#cke_1_contents");
+      getWebDriver().switchTo().activeElement().sendKeys(text);
     }
   }
   
@@ -901,7 +963,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void switchToFrame(String selector) {
     getWebDriver().switchTo().frame(
-        getWebDriver().findElementByCssSelector(selector)
+      findElementByCssSelector(selector)
     );
   }
   
@@ -913,7 +975,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PSEUDO, ENVIRONMENT, WORKSPACE
   }
 
-  private RemoteWebDriver webDriver;
   private String sessionId;
+  private WebDriver webDriver;
 
 }
