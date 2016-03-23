@@ -55,6 +55,9 @@ public class WorkspaceMaterialsBackingBean {
   @Inject
   private NavigationController navigationController;
 
+  @Inject
+  private WorkspaceVisitController workspaceVisitController;
+
   @RequestAction
   public String init() {
     String urlName = getWorkspaceUrlName();
@@ -106,6 +109,7 @@ public class WorkspaceMaterialsBackingBean {
     
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
     canSignUp = sessionController.hasCoursePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
+    workspaceVisitController.visit(workspaceEntity);
     
     return null;
   }
