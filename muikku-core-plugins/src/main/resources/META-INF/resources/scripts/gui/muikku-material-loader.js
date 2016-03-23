@@ -412,7 +412,8 @@
           materialId: data.materialId,
           embedId: data.embedId,
           readonly: data.readOnlyFields||false,
-          trackChange: false,
+          trackChange: data.meta.richedit,
+          trackKeyUp: !!!data.meta.richedit,
           canCheckAnswer: function() {
             return false;
           },
@@ -933,6 +934,8 @@
         
     $(data.pageElement).find('.js-lazyyt').lazyYT();
     
+    $(data.pageElement).find('.ckeditor-field').muikkuRichMemoField();
+    /**
     // Memo fields using CKEditor
     $(data.pageElement).find('.ckeditor-field').each($.proxy(function (index, ckField) {
       CKEDITOR.replace(ckField, {
@@ -952,7 +955,7 @@
                 ]
       });
     }, this));
-    
+    **/
     var maxFileSize = null;
     if ($("input[name='max-file-size']").length) {
       maxFileSize = Number($("input[name='max-file-size']").val());
