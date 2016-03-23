@@ -47,9 +47,6 @@ public class WorkspaceHelpPageBackingBean {
   @Named
   private WorkspaceBackingBean workspaceBackingBean;
 
-  @Inject
-  private WorkspaceVisitController workspaceVisitController;
-
   @RequestAction
   public String init() {
     String urlName = getWorkspaceUrlName();
@@ -110,10 +107,6 @@ public class WorkspaceHelpPageBackingBean {
     this.workspaceUrlName = workspaceUrlName;
   }
 
-  private WorkspaceEntity getWorkspaceEntity() {
-    return workspaceController.findWorkspaceEntityById(workspaceId);
-  }
-
   public String getWorkspaceName() {
     return workspaceName;
   }
@@ -126,14 +119,6 @@ public class WorkspaceHelpPageBackingBean {
     this.workspaceEntityId = workspaceEntityId;
   }
 
-  public void visit() {
-    workspaceVisitController.visit(getWorkspaceEntity());
-  }
-  
-  public Long getNumVisits() {
-    return workspaceVisitController.getNumVisits(getWorkspaceEntity());
-  }
-  
   public List<ContentNode> getContentNodes() {
     return contentNodes;
   }

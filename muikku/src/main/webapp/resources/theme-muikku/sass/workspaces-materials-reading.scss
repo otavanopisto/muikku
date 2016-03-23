@@ -320,6 +320,15 @@ body.workspace-materials-reading {
       word-wrap: break-word;
       position:relative;
       
+      &[data-binary-type="pdf"] {
+        padding:0;
+        
+        h2 {
+          padding:20px 30px 10px 30px;
+        }
+        
+      }
+      
       &.folder {
         position:relative;
         max-width:700px;
