@@ -1,6 +1,10 @@
 @import "_vars.scss";
 @import "_styles.scss";
 
+body {
+  padding:60px 0 75px 0;
+}
+
 #content {
   background:#fff;
   padding:0px;
@@ -26,11 +30,28 @@ h2.workspace-management-generic-title {
 .workspace-management-container {
   padding:0 20px 0 20px;
   margin:20px 0;
+  position:relative;
 
   img {
     width:100%;
     display:block;
     line-height:1;
+  }
+  
+  select {
+    font-size:16px;
+    padding:5px 20px 5px 5px;
+  }
+  
+  textarea {
+    width:100%;
+    box-sizing:border-box;
+    height:100px;
+  }
+  
+  input.workspace-length {
+    width:60px;
+    text-align:center;
   }
   
 }
@@ -42,19 +63,89 @@ h2.workspace-management-generic-title {
 
 .additionalinfo-data {
   
-  input.workspace-length {
-    width:60px;
-    text-align:center;
+}
+
+.workspace-management-image-actions {
+  position:absolute;
+  right:30px;
+  bottom:10px;
+  
+  .workspace-management-image-edit,
+  .workspace-management-image-delete {
+    display:inline-block;
+    margin:0 5px;
+
+    &:before {
+      border-radius:100%;
+      box-shadow:0 0 10px rgba(0, 0, 0, 0.2);
+      color:#fff;
+      display:block;
+      font-size:20px;
+      height:20px;
+      line-height:1;
+      padding:8px;
+      text-align:center;
+      width:20px;
+      border:2px solid #fff;
+      cursor:pointer;
+    }
+  
   }
   
-  textarea.workspace-description {
-    width:100%;
-    box-sizing:border-box;
-    height:100px;
+  .workspace-management-image-edit.icon-edit:before {
+    background:#23a6de;
+  }
+  
+  .workspace-management-image-delete.icon-delete:before {
+    background:#de2323;
   }
   
 }
 
+/* FOOTER FOR SAVING CHANGES */
+.workspace-management-footer {
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  
+  background:#233740;
+  opacity:0.95;
+  z-index:99;
+  
+  .workspace-management-footer-actions-container {
+    margin:10px auto;
+    min-width:200px;
+    max-width:960px;
+    text-align:center;
+    
+    
+    button {
+      border:0;
+      padding:6px 12px;
+      text-transform:uppercase;
+      font-size:18px;
+      font-weight:300;
+      color:#fff;
+      margin:0 10px;
+      cursor:pointer;
+      
+      &.save {
+        background:#27b91c;
+      }
+      
+      &.cancel {
+        background:#7391a7;
+      }
+      
+    }
+    
+  }
+  
+}
 
+footer#footer {
+  display:none;
+}
 
 

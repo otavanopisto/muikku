@@ -18,157 +18,169 @@
   </ui:define>
 
   <ui:define name="grid-content">
-    <section class="flex-row workspace-management-name">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <div class="workspace-management-container">
-          <input type="text" name="workspaceName" value="Työtilan nimi"/>
-        </div>
-      </div>
-    </section>
-    
-    <section class="flex-row workspace-management-image">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">Työtilan kuva</h2>
-        <div class="workspace-management-container">
-          <img src="/gfx/workspace-default-header.jpg" />
-        </div>
-      </div>
-    </section>
-    
-    <section class="flex-row workspace-management-additionalinfo">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">Työtilan lisätiedot</h2>
-        <div class="workspace-management-container">
-        
-          <div class="flex-row">
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>Nimen tarkenne</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <input type="text" value="Ryhmäkurssin 12.12.2012 - 13.12.2015"/>
-                </div>
-              </div>
-            </div>
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>Laajuus</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <input class="workspace-length" name="workspaceLength" type="text" value="20"/>
-                </div>
-              </div>
-            </div>
+      <section class="flex-row workspace-management-name">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <div class="workspace-management-container">
+            <input type="text" name="workspaceName" value="Työtilan nimi"/>
           </div>
-          
-          <div class="flex-row">
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>Aine</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                </div>
-              </div>
-            </div>
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>Linja</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="flex-row">
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>Soveltuvuus</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                </div>
-              </div>
-            </div>
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>Tyyppi</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex-row">
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>Alkamispäivä</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <input type="text" class="date-field hasDatepicker" name="beginDate" value="01.01.2019"/>
-                </div>
-              </div>
-            </div>
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>Loppumispäivä</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <input type="text" class="date-field hasDatepicker" name="endDate" value="24.12.2020"/>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="flex-row">
-            <div class="additionalinfo-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-              <label>Kuvaus</label>
-            </div>
-            <div class="additionalinfo-data lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-              <textarea name="workspaceDescription" class="workspace-description">Kuvaus...</textarea>
-            </div>
-          </div>
-          
-          
         </div>
-      </div>
-    </section>
-    
-    <section class="flex-row workspace-management-licence">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">Työtilan lisenssi</h2>
-        <div class="workspace-management-container">
-        
+      </section>
+      
+      <section class="flex-row workspace-management-image">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">Työtilan kuva</h2>
+          <div class="workspace-management-container">
+            <div class="workspace-management-image-actions">
+              <div class="icon-edit workspace-management-image-edit"></div>
+              <div class="icon-delete workspace-management-image-delete"></div>
+            </div>
+            <img src="/gfx/workspace-default-header.jpg" />
+          </div>
         </div>
-      </div>
-    </section>
-    
-    <section class="flex-row workspace-management-teacher">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">Työtilan opettaja(t)</h2>
-        <div class="workspace-management-container">
-        
+      </section>
+      
+      <section class="flex-row workspace-management-additionalinfo">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">Työtilan lisätiedot</h2>
+          <div class="workspace-management-container">
+          
+            <div class="flex-row">
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>Nimen tarkenne</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                    <input type="text" value="Ryhmäkurssin 12.12.2012 - 13.12.2015"/>
+                  </div>
+                </div>
+              </div>
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>Laajuus</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                    <input class="workspace-length" name="workspaceLength" type="text" value="20"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex-row">
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>Aine</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  </div>
+                </div>
+              </div>
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>Linja</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex-row">
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>Soveltuvuus</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  </div>
+                </div>
+              </div>
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>Tyyppi</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <div class="flex-row">
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>Alkamispäivä</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                    <input type="text" class="date-field hasDatepicker" name="beginDate" value="01.01.2019"/>
+                  </div>
+                </div>
+              </div>
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>Loppumispäivä</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                    <input type="text" class="date-field hasDatepicker" name="endDate" value="24.12.2020"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex-row">
+              <div class="additionalinfo-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                <label>Kuvaus</label>
+              </div>
+              <div class="additionalinfo-data lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                <textarea name="workspaceDescription" class="workspace-description">Kuvaus...</textarea>
+              </div>
+            </div>
+            
+            
+          </div>
         </div>
-      </div>
-    </section>
-    
-    <section class="flex-row workspace-management-producer">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">Työtilan tuottaja(t)</h2>
-        <div class="workspace-management-container">
-        
+      </section>
+      
+      <section class="flex-row workspace-management-licence">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">Työtilan lisenssi</h2>
+          <div class="workspace-management-container">
+            <select name="workspace-licence">
+              <option value="CC 3.0 plaa plaa">CC 3.0</option>
+            </select>
+          </div>
         </div>
-      </div>
-    </section>
-    
+      </section>
+      
+      <section class="flex-row workspace-management-teacher">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">Työtilan opettaja(t)</h2>
+          <div class="workspace-management-container">
+            <input type="text" value="Opettajien tiedot tähän pilkulla eroteltuina"/>
+          </div>
+        </div>
+      </section>
+      
+      <section class="flex-row workspace-management-producer">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">Työtilan tuottaja(t)</h2>
+          <div class="workspace-management-container">
+            <input type="text" value="Tuottajien tiedot tähän pilkulla eroteltuina"/>
+          </div>
+        </div>
+      </section>
+      
+      <section class="workspace-management-footer">
+        <div class="workspace-management-footer-actions-container">
+          <button class="cancel" type="button">Cancel</button>
+          <button class="save" type="button">Save Changes</button>
+        </div>
+      </section>
   </ui:define>
 
 </ui:composition>
