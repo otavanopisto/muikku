@@ -147,6 +147,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.PHANTOMJS,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void courseTOCExistsTest() throws Exception {
     maximizeWindow();
     
@@ -183,6 +192,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
    
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.PHANTOMJS,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void courseMaterialTOCHighlightTest() throws Exception {
     maximizeWindow();
     
@@ -371,7 +389,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -414,7 +431,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -465,7 +481,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -508,7 +523,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -555,7 +569,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -598,7 +611,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -761,8 +773,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.SAFARI,
     }
   )
   public void answerFileFieldTestStudent() throws Exception {
@@ -813,8 +823,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.SAFARI,
     }
   )
   public void answerFileFieldTestAdmin() throws Exception {
@@ -858,9 +866,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     browsers = {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.SAFARI,
     }
   )
   public void removeFileFieldTestAdmin() throws Exception {
@@ -909,8 +914,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.SAFARI,
     }
   )
   public void removeFileFieldTestStudent() throws Exception {
