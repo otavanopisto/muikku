@@ -1,4 +1,4 @@
-package fi.muikku.ui.chrome.course.discussion;
+package fi.muikku.ui.local.course.discussion;
 
 import org.junit.After;
 import org.junit.Before;
@@ -9,12 +9,7 @@ public class CourseDiscussionTestsIT extends CourseDiscussionTestsBase {
   
   @Before
   public void setUp() {
-    setWebDriver(createChromeDriver());
-  }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
+    setWebDriver(createLocalDriver());
   }
   
 }
