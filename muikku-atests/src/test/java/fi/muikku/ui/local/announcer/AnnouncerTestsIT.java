@@ -1,4 +1,4 @@
-package fi.muikku.ui.chrome.announcer;
+package fi.muikku.ui.local.announcer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -9,12 +9,7 @@ public class AnnouncerTestsIT extends AnnouncerTestsBase {
   
   @Before
   public void setUp() {
-    setWebDriver(createChromeDriver());
+    setWebDriver(createLocalDriver());
   }
-  
-  @After
-  public void tearDown() {
-    getWebDriver().quit();
-  }
-  
+
 }

@@ -147,6 +147,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.PHANTOMJS,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void courseTOCExistsTest() throws Exception {
     maximizeWindow();
     
@@ -183,6 +192,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
    
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.PHANTOMJS,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void courseMaterialTOCHighlightTest() throws Exception {
     maximizeWindow();
     
@@ -232,7 +250,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
         waitForElementToBePresent(By.cssSelector(".muikku-page-assignment-type"));
-        String actual = getWebDriver().findElementByCssSelector("#page-45>div").getAttribute("class");
+        String actual = findElementByCssSelector("#page-45>div").getAttribute("class");
         String expected = new String("muikku-page-assignment-type evaluated");
         assertEquals(expected, actual);
         WireMock.reset();
@@ -258,7 +276,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
         waitForElementToBePresent(By.cssSelector(".muikku-page-assignment-type"));
-        String actual = getWebDriver().findElementByCssSelector(String.format("#page-%d>div", htmlMaterial1.getId())).getAttribute("class");
+        String actual = findElementByCssSelector(String.format("#page-%d>div", htmlMaterial1.getId())).getAttribute("class");
         String expected = new String("muikku-page-assignment-type exercise");
         assertEquals(expected, actual);
         WireMock.reset();
@@ -272,6 +290,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.EDGE,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void answerTextFieldTestAdmin() throws Exception {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
@@ -290,7 +317,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
         assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
         assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+        waitAndSendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
         waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
@@ -306,6 +333,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.EDGE,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void answerTextFieldTestStudent() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -348,6 +384,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void answerDropdownTestAdmin() throws Exception {
     loginAdmin();
     maximizeWindow();
@@ -382,6 +426,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void answerDropdownTestStudent() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -424,6 +476,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void answerRadioButtonsTestAdmin() throws Exception {
     loginAdmin();
     maximizeWindow();
@@ -458,6 +518,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void answerRadioButtonsTestStudent() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -496,6 +564,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void answerCheckboxTestAdmin() throws Exception {
     loginAdmin();
     maximizeWindow();
@@ -530,6 +606,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void answerCheckboxTestStudent() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -578,7 +662,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.SAFARI,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.PHANTOMJS
+      TestEnvironments.Browser.EDGE,
     }
   )
   public void answerConnectFieldByClickingTestAdmin() throws Exception {
@@ -630,6 +714,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
 
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.EDGE,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
   public void answerConnectFieldByDraggingTestAdmin() throws Exception {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
@@ -675,6 +768,13 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+    }
+  )
   public void answerFileFieldTestStudent() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -718,6 +818,13 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }  
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+    }
+  )
   public void answerFileFieldTestAdmin() throws Exception {
     loginAdmin();
     
@@ -755,6 +862,12 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
 
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+    }
+  )
   public void removeFileFieldTestAdmin() throws Exception {
     loginAdmin();
     
@@ -796,6 +909,13 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
 
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+    }
+  )
   public void removeFileFieldTestStudent() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
