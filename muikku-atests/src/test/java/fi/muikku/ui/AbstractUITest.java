@@ -95,7 +95,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
     
   protected void finished(Description description) {
-    getWebDriver().quit();
+    try {
+      getWebDriver().quit();      
+    } catch (Exception e) {
+
+    }
   }
 
   @Rule
