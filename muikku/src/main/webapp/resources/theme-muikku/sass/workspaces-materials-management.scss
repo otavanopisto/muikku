@@ -15,6 +15,8 @@ body.workspace-materials-management {
   >.cke_combopanel { /* Increases width for styles and format dropdowns in CKEditor */
     width:350px;
     height:250px;
+    box-shadow:0 0 3px rgba(0, 0, 0, 0.2) !important;
+    border:3px solid #abdbed !important;
   }
   
   /* WORKSPACE NAVIGATION - FULLSCREEN */
