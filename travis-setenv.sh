@@ -1,18 +1,12 @@
 #!/bin/bash
 export run_tests=false
 export start_sc_tunnel=false
-export deploy=false
 export rc=false
 export release=false
 export test_suite=false
 
 if [[ $TRAVIS_PULL_REQUEST != "false" && $TRAVIS_BRANCH == "devel" ]]; then
   export test_suite="phantom"
-  export run_tests="true"
-fi;
-
-if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "devel" && $it_profile = "rest-it" ]]; then
-  export deploy="true"
   export run_tests="true"
 fi;
 
@@ -31,5 +25,5 @@ if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" && $it_profi
   fi;
 fi;
 
-echo "Test setup: run tests: $run_tests, test suite: $test_suite, start sauce tunnel: $start_sc_tunnel, deploy: $deploy, rc: $rc, release: $release"
+echo "Test setup: run tests: $run_tests, test suite: $test_suite, start sauce tunnel: $start_sc_tunnel, rc: $rc, release: $release"
 
