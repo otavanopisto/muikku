@@ -14,12 +14,16 @@ if [[ $release = "true" ]]; then
   ssh-add .travisdeploykey
   git config user.name "Travis CI"
   git config user.email "travis@travis-ci.org"
-
   python travis-prepare-maven.py
   git checkout master
   git reset --hard 
+  echo Replacing SNAPSHOT versions to releases
   mvn versions:force-releases -Dincludes=fi.pyramus:* --settings ~/.m2/mySettings.xml
+  git add .
+  git commit -m "Updated dependency versions"
+  echo Releasing
   mvn -B release:prepare release:perform --settings ~/.m2/mySettings.xml
+  echo Merging changes back to devel
   git checkout devel
   git reset --hard
   git pull
