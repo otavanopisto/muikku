@@ -51,7 +51,8 @@
                   <label>#{i18n.text['plugin.workspace.management.settings.visibility']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <!-- Julkaisunapit -->
+                  <div><input type="radio" name="visibility" value="a" /> Julkaistu</div>
+                  <div><input type="radio" name="visibility" value="b" /> Ei Julkaistu</div>
                 </div>
               </div>
             </div>
@@ -61,7 +62,8 @@
                   <label>#{i18n.text['plugin.workspace.management.settings.accessibility']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <!-- Radionappilista -->
+                  <div><input type="radio" name="visibility" value="a" /> Avoin kaikille</div>
+                  <div><input type="radio" name="visibility" value="b" /> Vaatii kirjautumisen</div>
                 </div>
               </div>
             </div>
@@ -94,6 +96,7 @@
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
                   <input class="workspace-length" name="workspaceLength" type="text" value="20"/>
+                  select
                 </div>
               </div>
             </div>
@@ -106,6 +109,7 @@
                   <label>#{i18n.text['plugin.workspace.management.additionalInfo.subject']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  select
                 </div>
               </div>
             </div>
@@ -115,6 +119,7 @@
                   <label>Linja</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  select
                 </div>
               </div>
             </div>
@@ -124,9 +129,10 @@
             <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
               <div class="flex-row flex-align-items-center">
                 <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>Soveltuvuus</label>
+                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.targetAudience']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  select
                 </div>
               </div>
             </div>
@@ -136,6 +142,7 @@
                   <label>#{i18n.text['plugin.workspace.management.additionalInfo.courseType']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  select
                 </div>
               </div>
             </div>
@@ -181,9 +188,7 @@
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
         <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceLicenceSectionTitle']}</h2>
         <div class="workspace-management-container">
-          <select name="workspace-licence">
-            <option value="CC 3.0 plaa plaa">CC 3.0</option>
-          </select>
+          select
         </div>
       </div>
     </section>
@@ -192,7 +197,8 @@
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
         <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceTeachersSectionTitle']}</h2>
         <div class="workspace-management-container">
-          <input type="text" value="Opettajien tiedot tähän pilkulla eroteltuina"/>
+          <div class="teacher-data">Opettaja 1.</div>
+          <div class="teacher-data">Opettaja 1.</div>
         </div>
       </div>
     </section>
