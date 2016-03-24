@@ -3,6 +3,7 @@ export run_tests=false
 export start_sc_tunnel=false
 export release=false
 export test_suite=false
+export deploy_snapshot=false
 
 if [[ $TRAVIS_PULL_REQUEST != "false" && $TRAVIS_BRANCH == "devel" ]]; then
   export test_suite="phantom"
@@ -22,6 +23,10 @@ if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" && $it_profi
   if [[ ($commitmessage == *"Merge pull request"*) && ($commitmessage == *"from otavanopisto/devel"*) ]]; then 
     export release="true"
   fi;
+fi;
+
+if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "devel" && $it_profile = "rest-it" ]]; then
+  export deploy_snapshot=true
 fi;
 
 echo "Test setup: run tests: $run_tests, test suite: $test_suite, start sauce tunnel: $start_sc_tunnel, release: $release"

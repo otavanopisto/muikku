@@ -28,6 +28,14 @@ if [[ $release = "true" ]]; then
   git push
 fi;
 
+if [[ $deploy_snapshot == "true" ]]; then
+  echo Deploying snapshot
+  pushd .
+  cd muikku
+  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins
+  popd
+fi;
+
 
 
 
