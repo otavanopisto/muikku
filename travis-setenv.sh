@@ -37,5 +37,5 @@ if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" && $it_profi
   fi;
 fi;
 
-echo "Test setup: run tests: $run_tests, test suite: $test_suite, start sauce tunnel: $start_sc_tunnel, release: $release"
+echo "Test setup: run tests: $run_tests, test suite: $test_suite, start sauce tunnel: $start_sc_tunnel, release: $release, deploy_snapshot: $deploy_snapshot, deploy_release: $deploy_release"
 
