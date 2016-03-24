@@ -7,8 +7,10 @@ if [[ $release = "true" ]]; then
   eval `ssh-agent -s`
   ssh-add .travisdeploykey
   rm -f .travisdeploykey
+  git remote set-url origin git@github.com:otavanopisto/muikku.git
   git config user.name "Travis CI"
   git config user.email "travis@travis-ci.org"
+  git config --global push.default simple
   git checkout master
   git reset --hard
   git pull
