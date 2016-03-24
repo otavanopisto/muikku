@@ -1,0 +1,223 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-workspace.xhtml">
+  
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
+  </ui:define>
+  
+  <ui:define name="workspace-view-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-management.css"/>  
+  </ui:define>
+
+  <ui:define name="grid-content">
+    <section class="flex-row workspace-management-name">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+        <div class="workspace-management-container">
+          <input type="text" name="workspaceName" value="Työtilan nimi"/>
+        </div>
+      </div>
+    </section>
+    
+    <section class="flex-row workspace-management-image">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.imageSectionTitle']}</h2>
+        <div class="workspace-management-container">
+          <div class="workspace-management-image-actions">
+            <div class="icon-edit workspace-management-image-edit"></div>
+            <div class="icon-delete workspace-management-image-delete"></div>
+          </div>
+          <img src="/gfx/workspace-default-header.jpg" />
+        </div>
+      </div>
+    </section>
+    
+    <section class="flex-row workspace-management-settings">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.settingsSectionTitle']}</h2>
+        <div class="workspace-management-container">
+          
+          <div class="flex-row">
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                  <label>#{i18n.text['plugin.workspace.management.settings.visibility']}</label>
+                </div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  <div><input type="radio" name="visibility" value="a" /> Julkaistu</div>
+                  <div><input type="radio" name="visibility" value="b" /> Ei Julkaistu</div>
+                </div>
+              </div>
+            </div>
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                  <label>#{i18n.text['plugin.workspace.management.settings.accessibility']}</label>
+                </div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  <div><input type="radio" name="visibility" value="a" /> Avoin kaikille</div>
+                  <div><input type="radio" name="visibility" value="b" /> Vaatii kirjautumisen</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+    
+    <section class="flex-row workspace-management-additionalinfo">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.additionalInfoSectionTitle']}</h2>
+        <div class="workspace-management-container">
+        
+          <div class="flex-row">
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.nameExtension']}</label>
+                </div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  <input type="text" value="Ryhmäkurssin 12.12.2012 - 13.12.2015"/>
+                </div>
+              </div>
+            </div>
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.length']}</label>
+                </div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  <input class="workspace-length" name="workspaceLength" type="text" value="20"/>
+                  select
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex-row">
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.subject']}</label>
+                </div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  select
+                </div>
+              </div>
+            </div>
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                  <label></label>
+                </div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex-row">
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.targetAudience']}</label>
+                </div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  select
+                </div>
+              </div>
+            </div>
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.courseType']}</label>
+                </div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  select
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-row">
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.startDate']}</label>
+                </div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  <input type="text" class="date-field hasDatepicker" name="beginDate" value="01.01.2019"/>
+                </div>
+              </div>
+            </div>
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+              <div class="flex-row flex-align-items-center">
+                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.endDate']}</label>
+                </div>
+                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                  <input type="text" class="date-field hasDatepicker" name="endDate" value="24.12.2020"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex-row">
+            <div class="additionalinfo-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+              <label>#{i18n.text['plugin.workspace.management.additionalInfo.description']}</label>
+            </div>
+            <div class="additionalinfo-data lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+              <textarea name="workspaceDescription" class="workspace-description">Kuvaus...</textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+    
+    <section class="flex-row workspace-management-licence">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceLicenceSectionTitle']}</h2>
+        <div class="workspace-management-container">
+          select
+        </div>
+      </div>
+    </section>
+    
+    <section class="flex-row workspace-management-teacher">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceTeachersSectionTitle']}</h2>
+        <div class="workspace-management-container">
+          <div class="teacher-data">Opettaja 1.</div>
+          <div class="teacher-data">Opettaja 1.</div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="flex-row workspace-management-producer">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceProducersSectionTitle']}</h2>
+        <div class="workspace-management-container">
+          <input type="text" value="Tuottajien tiedot tähän pilkulla eroteltuina"/>
+        </div>
+      </div>
+    </section>
+    
+    <section class="workspace-management-footer">
+      <div class="workspace-management-footer-actions-container">
+        <button class="cancel" type="button">#{i18n.text['plugin.workspace.management.workspaceButtons.cancel']}</button>
+        <button class="save" type="button">#{i18n.text['plugin.workspace.management.workspaceButtons.save']}</button>
+      </div>
+    </section>
+  </ui:define>
+
+</ui:composition>
