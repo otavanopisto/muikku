@@ -179,8 +179,7 @@ public class InboxCommunicatorMessageDAO extends CorePluginsDAO<InboxCommunicato
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), recipient.getId()),
-            criteriaBuilder.equal(msgJoin.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId),
-            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
+            criteriaBuilder.equal(msgJoin.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId)
         )
     );
     
