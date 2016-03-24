@@ -1,7 +1,6 @@
 #!/bin/bash
 export run_tests=false
 export start_sc_tunnel=false
-export rc=false
 export release=false
 export test_suite=false
 
@@ -25,5 +24,5 @@ if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" && $it_profi
   fi;
 fi;
 
-echo "Test setup: run tests: $run_tests, test suite: $test_suite, start sauce tunnel: $start_sc_tunnel, rc: $rc, release: $release"
+echo "Test setup: run tests: $run_tests, test suite: $test_suite, start sauce tunnel: $start_sc_tunnel, release: $release"
 
