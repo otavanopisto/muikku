@@ -260,6 +260,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("orderBy") List<String> orderBy,
+        @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
+        @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults,
         @Context Request request) {
     List<fi.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
 
@@ -327,7 +329,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
       
       // TODO: Pagination support
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, 0, 50, sorts);
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
