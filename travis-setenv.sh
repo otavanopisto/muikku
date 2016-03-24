@@ -12,7 +12,7 @@ fi;
 if [[ $TRAVIS_PULL_REQUEST != "false" && $TRAVIS_BRANCH == "master" ]]; then
   export test_suite="full"
   export run_tests="true"
-  if [[ $it_profile != "rest-it" && $browser != "phantom" ]]; then 
+  if [[ $it_profile != "rest-it" && $browser != "phantomjs" ]]; then 
     export start_sc_tunnel="true"
   fi;
 fi;
