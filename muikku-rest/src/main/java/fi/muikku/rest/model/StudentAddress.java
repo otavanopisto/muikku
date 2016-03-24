@@ -1,12 +1,14 @@
-package fi.muikku.schooldata.entity;
+package fi.muikku.rest.model;
 
-import fi.muikku.schooldata.SchoolDataIdentifier;
+public class StudentAddress {
 
-public abstract class AbstractUserAddress implements UserAddress {
-  
-  public AbstractUserAddress(SchoolDataIdentifier userIdentifier, String street, String postalCode, String city, String region, String country, String type, Boolean defaultAddress) {
+  public StudentAddress() {
+  }
+
+  public StudentAddress(String studentIdentifier, String street, String postalCode, String city, String region,
+      String country, String type, Boolean defaultAddress) {
     super();
-    this.userIdentifier = userIdentifier;
+    this.studentIdentifier = studentIdentifier;
     this.street = street;
     this.postalCode = postalCode;
     this.city = city;
@@ -16,72 +18,71 @@ public abstract class AbstractUserAddress implements UserAddress {
     this.defaultAddress = defaultAddress;
   }
 
-  @Override
-  public SchoolDataIdentifier getUserIdentifier() {
-    return userIdentifier;
+  public String getStudentIdentifier() {
+    return studentIdentifier;
   }
 
-  @Override
+  public void setStudentIdentifier(String studentIdentifier) {
+    this.studentIdentifier = studentIdentifier;
+  }
+
   public String getStreet() {
     return street;
   }
 
-  @Override
   public void setStreet(String street) {
     this.street = street;
   }
 
-  @Override
   public String getPostalCode() {
     return postalCode;
   }
 
-  @Override
   public void setPostalCode(String postalCode) {
     this.postalCode = postalCode;
   }
 
-  @Override
   public String getCity() {
     return city;
   }
 
-  @Override
   public void setCity(String city) {
     this.city = city;
   }
 
-  @Override
   public String getRegion() {
     return region;
   }
 
-  @Override
   public void setRegion(String region) {
     this.region = region;
   }
 
-  @Override
   public String getCountry() {
     return country;
   }
 
-  @Override
   public void setCountry(String country) {
     this.country = country;
   }
-  
-  @Override
+
   public String getType() {
     return type;
   }
-  
-  @Override
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
   public Boolean getDefaultAddress() {
     return defaultAddress;
   }
 
-  private SchoolDataIdentifier userIdentifier;
+  public void setDefaultAddress(Boolean defaultAddress) {
+    this.defaultAddress = defaultAddress;
+  }
+
+  private String studentIdentifier;
   private String street;
   private String postalCode;
   private String city;

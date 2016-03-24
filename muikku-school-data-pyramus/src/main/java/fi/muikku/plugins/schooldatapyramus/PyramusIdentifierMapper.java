@@ -331,4 +331,12 @@ public class PyramusIdentifierMapper {
     return Long.parseLong(gradingScaleIdentifier);
   }
   
+  public String getEmailIdentifier(Long emailId) {
+    return emailId != null ? emailId.toString() : null;
+  }
+  
+  public Long getPyramusEmailId(String emailIdentifier) {
+    return NumberUtils.createLong(emailIdentifier);
+  }
+  
 }
