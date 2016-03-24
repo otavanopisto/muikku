@@ -44,7 +44,10 @@ input[type="radio"] {
 }
 
 select {
- 
+  color:$formFontColor;
+  font-size:18px;    
+  font-weight:300;
+  font-family:"Open Sans", Arial, sans-serif;
 }
 
 label {
