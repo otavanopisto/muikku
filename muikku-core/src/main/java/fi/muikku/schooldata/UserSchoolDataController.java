@@ -209,6 +209,22 @@ public class UserSchoolDataController {
     return null;
   }
 
+  public List<UserEmail> listUserEmails(SchoolDataIdentifier userIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        try {
+          return schoolDataBridge.listUserEmailsByUserIdentifier(userIdentifier.getIdentifier());
+        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user emails", e);
+        }
+      }
+    }
+
+    return null;
+  }
+
   public UserEmail findUserEmail(SchoolDataSource schoolDataSource, String identifier) {
     UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
     if (schoolDataBridge != null) {

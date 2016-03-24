@@ -14,7 +14,7 @@ if [[ $run_tests == "true" ]]; then
       fi;
     done;
   fi;
-  if [[ $browser == "phantomjs" ]]; then
+  if [[ $browser == "phantomjs" && $test_suite == "phantom" ]]; then
     if [[ ! -f muikku-atests/.phantomjs/bin/phantomjs ]]; then
       rm -fR muikku-atests/.phantomjs
       curl -sSL "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2"|tar -xvjC muikku-atests/
