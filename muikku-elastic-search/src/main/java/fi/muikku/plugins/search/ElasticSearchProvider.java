@@ -175,6 +175,7 @@ public class ElasticSearchProvider implements SearchProvider {
             FilterBuilders.inFilter("archetype", EnvironmentRoleArchetype.TEACHER.name().toLowerCase(), EnvironmentRoleArchetype.MANAGER.name().toLowerCase(), EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()),
             FilterBuilders.andFilter(
               FilterBuilders.termsFilter("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()),
+              FilterBuilders.termFilter("startedStudies", true),
               FilterBuilders.notFilter(FilterBuilders.termFilter("active", false))
             ),
             FilterBuilders.andFilter(
