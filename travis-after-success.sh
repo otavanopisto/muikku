@@ -1,14 +1,4 @@
 #!/bin/bash
-
-if [[ $deploy = "true" ]]; then
-  python travis-prepare-maven.py
-  pushd .
-  cd muikku
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pgoogle-calendar-plugin,mongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=otavanopisto
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=janakkala
-  popd
-fi;
-
 if [[ $release = "true" ]]; then
   eval `ssh-agent -s`
   ssh-add .travisdeploykey
@@ -23,6 +13,12 @@ if [[ $release = "true" ]]; then
   git commit -m "Updated dependency versions"
   echo Releasing
   mvn -B release:prepare release:perform --settings ~/.m2/mySettings.xml
+  echo Deploying
+  pushd .
+  cd muikku
+  mvn clean deploy --settings ~/.m2/mySettings.xml -Pgoogle-calendar-plugin,mongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=otavanopisto
+  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins -Dclassifier=janakkala
+  popd
   echo Merging changes back to devel
   git checkout devel
   git reset --hard
@@ -30,6 +26,14 @@ if [[ $release = "true" ]]; then
   git merge master
   mvn versions:use-latest-snapshots -Dincludes=fi.pyramus:* --settings ~/.m2/mySettings.xml
   git push
+fi;
+
+if [[ $deploy_snapshot == "true" ]]; then
+  echo Deploying snapshot
+  pushd .
+  cd muikku
+  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,pyramus-plugins
+  popd
 fi;
 
 

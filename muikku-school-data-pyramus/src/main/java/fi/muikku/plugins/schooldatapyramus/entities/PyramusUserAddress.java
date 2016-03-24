@@ -6,8 +6,8 @@ import fi.muikku.schooldata.entity.AbstractUserAddress;
 
 public class PyramusUserAddress extends AbstractUserAddress {
   
-  public PyramusUserAddress(SchoolDataIdentifier userIdentifier, String street, String postalCode, String city, String region, String country) {
-    super(userIdentifier, street, postalCode, city, region, country);
+  public PyramusUserAddress(SchoolDataIdentifier userIdentifier, String street, String postalCode, String city, String region, String country, String type, Boolean defaultAddress) {
+    super(userIdentifier, street, postalCode, city, region, country, type, defaultAddress);
   }
 
   @Override

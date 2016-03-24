@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -36,6 +37,7 @@ import fi.muikku.schooldata.entity.UserProperty;
 import fi.pyramus.rest.model.Address;
 import fi.pyramus.rest.model.ContactType;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
+import fi.pyramus.rest.model.Email;
 import fi.pyramus.rest.model.Language;
 import fi.pyramus.rest.model.Municipality;
 import fi.pyramus.rest.model.Nationality;
@@ -54,6 +56,9 @@ import fi.pyramus.rest.model.UserRole;
 
 @Dependent
 public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
+  
+  @Inject
+  private Logger logger;
 
   @Inject
   private PyramusIdentifierMapper identifierMapper;
@@ -307,7 +312,36 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   public List<UserEmail> listUserEmailsByUserIdentifier(String userIdentifier)
       throws SchoolDataBridgeRequestException,
       UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+    
+    Email[] emails = null;
+    
+    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+    if (studentId != null) {
+      emails = pyramusClient.get(String.format("/students/students/%d/emails", studentId), Email[].class);
+    } else {
+      Long staffId = identifierMapper.getPyramusStaffId(userIdentifier);
+      if (staffId != null) {
+        emails = pyramusClient.get(String.format("/staff/members/%d/emails", staffId), Email[].class);
+      } else {
+        logger.severe(String.format("Malformed user identifier %s", userIdentifier));
+      }
+    }
+    
+    if (emails != null) {
+      List<UserEmail> result = new ArrayList<>(emails.length);
+      
+      for (Email email : emails) {
+        ContactType contactType = email != null ? pyramusClient.get("/common/contactTypes/" + email.getContactTypeId(), ContactType.class) : null;
+        UserEmail userEmail = entityFactory.createEntity(new SchoolDataIdentifier(userIdentifier, getSchoolDataSource()), email, contactType);
+        if (userEmail != null) {
+          result.add(userEmail);
+        }
+      }
+      
+      return result;
+    }
+    
+    return Collections.emptyList();
   }
 
   @Override
@@ -610,7 +644,19 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
     }
     
-    return entityFactory.createEntities(userIdentifier, addresses);
+    if (addresses == null) {
+      return Collections.emptyList();
+    }
+    
+    List<UserAddress> result = new ArrayList<>(addresses.length);
+    for (Address address : addresses) {
+      ContactType contactType = address.getContactTypeId() != null 
+        ? pyramusClient.get(String.format("/common/contactTypes/%d", address.getContactTypeId()), ContactType.class) 
+        : null;
+      result.add(entityFactory.createEntity(userIdentifier, address, contactType));
+    }
+    
+    return result;
   }
 
   @Override
