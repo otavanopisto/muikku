@@ -57,7 +57,7 @@ public class UserEmailEntityController {
   }
   
   public UserEmailEntity findUserEmailEntityByUserEmail(UserEmail userEmail) {
-    return findUserEmailEntityByDataSourceAndIdentifier(userEmail.getSchoolDataSource(), userEmail.getIdentifier());
+    return findUserEmailEntityByDataSourceAndIdentifier(userEmail.getIdentifier().getDataSource(), userEmail.getIdentifier().getIdentifier());
   }
   
   /**

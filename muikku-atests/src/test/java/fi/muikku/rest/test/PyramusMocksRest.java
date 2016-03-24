@@ -175,7 +175,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         .withStatus(200)));
 
     List<String> emails = new ArrayList<String>();
-    emails.add("testuser@made.up");
+    emails.add("testuser@example.com");
     WhoAmI whoAmI = new WhoAmI((long) 1, "Test", "User", emails);
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -205,7 +205,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         .withStatus(200)));
 
     List<String> emails = new ArrayList<String>();
-    emails.add("teacher@made.up");
+    emails.add("teacher@example.com");
     WhoAmI whoAmI = new WhoAmI((long) 2, "Teacher", "User", emails);
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -235,7 +235,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         .withStatus(200)));
 
     List<String> emails = new ArrayList<String>();
-    emails.add("admin@made.up");
+    emails.add("admin@example.com");
     WhoAmI whoAmI = new WhoAmI((long) 4, "Admin", "User", emails);
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -373,13 +373,13 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     Map<String, String> variables = null;
     List<String> tags = null;
     
-    Student student1 = mockStudent(1l, 1l, "Test", "User", "testuser@made.up", tags, variables, payloads, toDate(2010, 1, 1), getNextYear());
-    Student student2 = mockStudent(6l, 6l, "Hidden", "Dragon", "crouchingtiger@made.up", tags, variables, payloads, toDate(2010, 1, 1), toDate(2011, 1, 1));
+    Student student1 = mockStudent(1l, 1l, "Test", "User", "testuser@example.com", tags, variables, payloads, toDate(2010, 1, 1), getNextYear());
+    Student student2 = mockStudent(6l, 6l, "Hidden", "Dragon", "crouchingtiger@example.com", tags, variables, payloads, toDate(2010, 1, 1), toDate(2011, 1, 1));
 
-    StaffMember staffMember1 = mockStaffMember(2l, 2l, "Test", "Staff1member", "teacher@made.up", UserRole.USER, tags, variables, payloads);
-    StaffMember staffMember2 = mockStaffMember(3l, 3l, "Test", "Staff2member", "mana@made.up", UserRole.MANAGER, tags, variables, payloads);
-    StaffMember staffMember3 = mockStaffMember(4l, 4l, "Test", "Administrator", "admin@made.up", UserRole.ADMINISTRATOR, tags, variables, payloads);
-    StaffMember staffMember4 = mockStaffMember(5l, 5l, "Trusted", "System", "trusted@made.up", UserRole.TRUSTED_SYSTEM, tags, variables, payloads);
+    StaffMember staffMember1 = mockStaffMember(2l, 2l, "Test", "Staff1member", "teacher@example.com", UserRole.USER, tags, variables, payloads);
+    StaffMember staffMember2 = mockStaffMember(3l, 3l, "Test", "Staff2member", "mana@example.com", UserRole.MANAGER, tags, variables, payloads);
+    StaffMember staffMember3 = mockStaffMember(4l, 4l, "Test", "Administrator", "admin@example.com", UserRole.ADMINISTRATOR, tags, variables, payloads);
+    StaffMember staffMember4 = mockStaffMember(5l, 5l, "Trusted", "System", "trusted@example.com", UserRole.TRUSTED_SYSTEM, tags, variables, payloads);
 
     Student[] studentArray = { student1, student2 };
     StaffMember[] staffArray = { staffMember1, staffMember2, staffMember3, staffMember4 };
