@@ -1,13 +1,17 @@
 #!/bin/bash
+if [[ $release = "true" || $deploy_snapshot == "true" || $deploy_release == "true" ]]; then
+  python travis-prepare-maven.py
+fi;
+
 if [[ $release = "true" ]]; then
   eval `ssh-agent -s`
   ssh-add .travisdeploykey
   rm -f .travisdeploykey
   git config user.name "Travis CI"
   git config user.email "travis@travis-ci.org"
-  python travis-prepare-maven.py
   git checkout master
-  git reset --hard 
+  git reset --hard
+  git pull
   pushd .
   echo Replacing SNAPSHOT versions to releases
   mvn versions:force-releases -Dincludes=fi.pyramus:* --settings ~/.m2/mySettings.xml
@@ -17,8 +21,7 @@ if [[ $release = "true" ]]; then
   mvn -B release:prepare release:perform --settings ~/.m2/mySettings.xml
   popd
   echo Merging changes back to devel
-  git checkout devel
-  git reset --hard
+  git checkout -B devel
   git pull
   git merge master
   mvn versions:use-latest-snapshots -Dincludes=fi.pyramus:* --settings ~/.m2/mySettings.xml
