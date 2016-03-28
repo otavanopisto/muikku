@@ -1,4 +1,4 @@
-package fi.muikku.plugins.fish.rest;
+package fi.otavanopisto.muikku.plugins.fish.rest;
 
 import java.util.Random;
 
@@ -11,8 +11,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import fi.muikku.plugin.PluginRESTService;
-import fi.muikku.plugins.fish.RestFishController;
+import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.fish.RestFishController;
 
 @RequestScoped
 @Path("/fish")

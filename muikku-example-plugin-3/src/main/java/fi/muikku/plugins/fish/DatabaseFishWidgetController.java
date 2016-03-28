@@ -1,4 +1,4 @@
-package fi.muikku.plugins.fish;
+package fi.otavanopisto.muikku.plugins.fish;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,8 +7,8 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import fi.muikku.plugins.fish.dao.FishMessageDAO;
-import fi.muikku.plugins.fish.model.FishMessage;
+import fi.otavanopisto.muikku.plugins.fish.dao.FishMessageDAO;
+import fi.otavanopisto.muikku.plugins.fish.model.FishMessage;
 
 @Dependent
 @Stateful

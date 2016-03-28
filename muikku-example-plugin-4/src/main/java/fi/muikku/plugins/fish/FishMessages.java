@@ -1,4 +1,4 @@
-package fi.muikku.plugins.fish;
+package fi.otavanopisto.muikku.plugins.fish;
 
 public class FishMessages {
     public FishMessages(FishMessage[] messages) {
