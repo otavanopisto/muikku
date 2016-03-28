@@ -1,4 +1,4 @@
-package fi.muikku.developertools.rewrite;
+package fi.otavanopisto.muikku.developertools.rewrite;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class WebLibFolderRewriteRules extends HttpConfigurationProvider {
     
     ClassVisitorImpl classVisitor = new ClassVisitorImpl(annotationHandlers, context);
     ByteCodeFilter byteCodeFilter = new ByteCodeFilter(annotationType);
-    PackageFilter packageFilter = new PackageNotFilter(null, Arrays.asList("fi.muikku.developertools.rewrite"));
+    PackageFilter packageFilter = new PackageNotFilter(null, Arrays.asList("fi.otavanopisto.muikku.developertools.rewrite"));
     
     WebLibFolderFinder webLibFolderFinder = new WebLibFolderFinder(context, classloader, packageFilter, byteCodeFilter);
     webLibFolderFinder.findClasses(classVisitor);

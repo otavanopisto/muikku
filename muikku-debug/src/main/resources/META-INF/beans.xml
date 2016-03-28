@@ -9,7 +9,7 @@
         http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
   <interceptors>
-    <class>fi.muikku.debug.CDIDebugInterceptor</class>
+    <class>fi.otavanopisto.muikku.debug.CDIDebugInterceptor</class>
   </interceptors>
 
 </beans>

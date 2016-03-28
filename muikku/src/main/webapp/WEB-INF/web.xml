@@ -38,7 +38,7 @@
 
   <context-param>
     <param-name>oauth.provider.provider-class</param-name>
-    <param-value>fi.muikku.rest.OAuthProvider</param-value>
+    <param-value>fi.otavanopisto.muikku.rest.OAuthProvider</param-value>
   </context-param>
 
   <context-param>
@@ -64,7 +64,7 @@
 
   <filter>
     <filter-name>EncodingFilter</filter-name>
-    <filter-class>fi.muikku.EncodingFilter</filter-class>
+    <filter-class>fi.otavanopisto.muikku.EncodingFilter</filter-class>
     <init-param>
       <param-name>encoding</param-name>
       <param-value>UTF-8</param-value>

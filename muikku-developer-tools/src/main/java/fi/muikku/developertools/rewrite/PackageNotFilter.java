@@ -1,4 +1,4 @@
-package fi.muikku.developertools.rewrite;
+package fi.otavanopisto.muikku.developertools.rewrite;
 
 import java.util.List;
 

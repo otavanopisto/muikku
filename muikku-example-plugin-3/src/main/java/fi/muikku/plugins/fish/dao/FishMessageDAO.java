@@ -1,8 +1,8 @@
-package fi.muikku.plugins.fish.dao;
+package fi.otavanopisto.muikku.plugins.fish.dao;
 
-import fi.muikku.dao.DAO;
-import fi.muikku.dao.PluginDAO;
-import fi.muikku.plugins.fish.model.FishMessage;
+import fi.otavanopisto.muikku.dao.DAO;
+import fi.otavanopisto.muikku.dao.PluginDAO;
+import fi.otavanopisto.muikku.plugins.fish.model.FishMessage;
 
 @DAO
 public class FishMessageDAO extends PluginDAO<FishMessage> {
