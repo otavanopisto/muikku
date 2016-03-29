@@ -726,7 +726,7 @@
 
 .mf-content {
       
-  .mf-fieldRow {
+  .mf-form-row {
     position:relative;
     margin:2px 0 3px 0;
     
@@ -751,28 +751,23 @@
       position:relative;
       top:0;
       
-      .mf-textfield-subelement {
-        display:inline-block;
-        float:left;
-      }
       
       .mf-textfield-subcontainer {
         border:2px solid #fff;
         color:#000;
         border-radius:3px;
-        padding:0 8px;
-        margin:0 0 4px 0;
         background-color:#fff;
         
         .mf-textfield-title {
           color:$formTitle;
-          padding:6px 5px;
+          flex-shrink:0;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         
         .mf-textfield-content {
           color:$formTitle;
-          padding:6px 5px;
-          width:500px;
+          flex-shrink:1;
         }
         
       }
@@ -781,13 +776,10 @@
         border:0 solid #fff;
         color:#000;
         border-radius:3px;
-        padding:5px 8px;
         line-height:1em;
-        margin-left:5px;
-        margin-top:5px;
-        min-width:200px;
-        width:auto;
-        
+        padding-top:5px;
+        padding-bottom:5px;
+        padding-left:5px;
         &:focus {
           background-color:#eee;     
           border:0;
@@ -823,7 +815,6 @@
     
       select {
         min-width:200px;
-        margin-left:5px;
         
         option {
           padding:8px;
