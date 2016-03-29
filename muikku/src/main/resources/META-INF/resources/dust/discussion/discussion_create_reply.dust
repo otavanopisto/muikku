@@ -2,8 +2,6 @@
   <div class="di-message-create lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
     <form>
       <div class="mf-form-header flex-row"><h3>{#localize key="plugin.discussion.createmessage.topic"/}</h3></div>
-      <input type="hidden" name="sticky" value="false" />
-      <input type="hidden" name="locked" value="false" />
       <div class="mf-content flex-row">
         <div class="di-message-new-body lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
           <div class="mf-form-row flex-row flex-align-items-center">
