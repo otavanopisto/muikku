@@ -5,8 +5,10 @@
       <div class="di-message-meta lg-flex-cell-13 md-flex-cell-13 sm-flex-cell-13">
         <input type="hidden" name="mf-person-id" value="{sender}"/>
         <div class="flex-row">
-          <div class="di-user-picture default lg-flex-cell-1 md-flex-cell-1 sm-flex-hide"></div>
-          <div class="di-message-details lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-15">
+          <div class="lg-flex-cell-1 md-flex-cell-1 sm-flex-hide">
+            <div class="di-user-picture default usr-{userRandomNo}">{nameLetter}</div>
+          </div>  
+          <div class="di-message-details lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-full">
             <span title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span>
             <span title="{#localize key="plugin.discussion.titleText.date"/}">{prettyDate}</span>
           </div> 

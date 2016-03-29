@@ -149,6 +149,42 @@
     /* Message clicked open */
     &.open {
       position:relative;
+      .di-user-picture {
+        border-radius: 100%;
+        color: #fff;
+        font-size: 20px;
+        height: 20px;
+        line-height: 1;
+        padding: 4px;
+        text-align: center;
+        width: 20px;
+        &.default {
+          &.usr-1 {      
+           background-color:$category1;
+          }     
+          &.usr-2 {
+           background-color:$category2;      
+          }     
+          &.usr-3 {
+           background-color:$category3;      
+          }     
+          &.usr-4 {
+           background-color:$category4;      
+          }
+          &.usr-5 {
+           background-color:$category5;      
+          }             
+          &.usr-6 {
+           background-color:$category6;      
+          }             
+        }
+        &.reply-recipient {
+          display:inline-block;
+          float:none;
+          height:20px;
+          width:20px;
+        }          
+      } 
     
       &.owner {
         border-left:5px solid $brd2; 
@@ -158,25 +194,6 @@
         }
          
       }
-
-      .di-user-picture {
-        float:left;
-        height:22px;
-        width:22px;w
-       
-         
-        &.default {
-
-        }
-         
-        &.reply-recipient {
-          display:inline-block;
-          float:none;
-          height:20px;
-          width:20px;
-        }
-        
-      }   
     
       .di-message-topic {
         h3 {
@@ -188,9 +205,6 @@
         } 
       
       }
-    
-      .di-message-details {
-      
         a.di-remove-thread-link {
           background:#de3211;
           border-radius:3px;
@@ -201,29 +215,11 @@
           padding:2px 6px;
           color:#fff !important;
           cursor:pointer;
-        }
-      
-      }
-      
-      .di-message-details-sender {
-          
-        div {
-          float:left;
-        }
-        
-        .di-message-header-content-primary {
-          display: block;
+        }    
+      .di-message-details {
           font-size: 22px;
           font-weight: 300;
-          line-height: 1em;
-          margin: 2px 0 0;
-          padding: 0 0 0 40px;
-          
-          span{
-          
-            display:inline-block;
-        
-            padding-top:3px;
+          span{          
             &:not(:first-child){
               margin-left:5px;
               &:before{
@@ -232,47 +228,36 @@
                color:#000;
               }
             }
-          }
-        }
-        
-        .di-message-header-content-secondary {
-          display: block;
-          font-size: 22px;
-          font-weight: 600;
-          line-height: 1em;
-          margin: 17px 0 0;
-          padding: 0 0 0 3px;
-        }
+          }      
 
-      }
       
-      .di-message-content {
-        float:none;
-         
-        .di-message-content-text  {
-          padding:3px;
-          font-weight:300;
-          
-          p:last-child {
-            margin:10px 0 0 0;
-          }
-          
-        }
-        
-        .di-message-content-tools {
-          padding:15px 0;
-        
-          .di-message-content-tools-container {
-          
-            .di-message-tool {
-              box-shadow:none;
-            }
-          
-          }
-        
-        } 
-        
       }
+
+      .di-message-title {
+        font-size: 22px;
+        font-weight: 600;
+        margin-left:10px;
+          
+      }
+
+
+     .di-message-content-text  {
+          margin-left:10px;
+          font-weight:300;
+     }      
+
+      .di-message-content-tools {
+        margin-left:10px;      
+        .di-message-content-tools-container {
+        
+          .di-message-tool {
+            box-shadow:none;
+          }
+        
+        }
+      
+      } 
+      
 
     }
   

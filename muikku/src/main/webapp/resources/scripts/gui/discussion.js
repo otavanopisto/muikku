@@ -294,6 +294,9 @@ $(document).ready(function() {
               var d = new Date(replies.created);
               replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
               replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
+              replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
+              replies.nameLetter = user.firstName.substring(0,1);
+              
               repliesCallback();
             }, this));          
         },this));
@@ -325,6 +328,8 @@ $(document).ready(function() {
             thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             var d = new Date(thread.created);
             thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+            thread.userRandomNo = Math.floor(Math.random() * 6) + 1;
+            thread.nameLetter = user.firstName.substring(0,1);
             threadCallback();
           },this));          
         }, this));
@@ -359,6 +364,8 @@ $(document).ready(function() {
             var d = new Date(replies.created);
             replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
             replies.threadId = threadId;
+            replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
+            replies.nameLetter = user.firstName.substring(0,1);
             repliesCallback();
           },this));          
         }, this));
