@@ -118,20 +118,25 @@
       .di-message-area-name {
         span {
           display:block;
-          min-width:5px;
           min-height:15px; 
           font-size:14px;
           line-height:14px;
-          padding:0 5px;
           margin-top:4px;
         }
         
+        .di-message-area-name-text{
+          padding-left:5px;
+        }
+        
       }
-      .di-message-replies{
+ .di-message-time{
+   font-size:12px;
+   overflow:hidden;
+ }      
+      .di-message-replies span{
         background-color: #fff8c1;
         display: inline-block;
         font-weight: 600;
-        margin-left: 10px;
         padding-bottom: 5px;
         padding-top: 5px;
         text-align: center;
