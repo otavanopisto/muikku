@@ -2,7 +2,7 @@
 {#threads}
   <div class="mf-item di-message open mf-category-{forumAreaId}-brd lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-left no-margin-right" id="{id}">
     <div class="di-message-topic mf-item-topic flex-row flex-align-items-center">    
-      <div class="di-message-meta lg-flex-cell-13 md-flex-cell-13 sm-flex-cell-13">
+      <div class="di-message-meta lg-flex-cell-13 md-flex-cell-13 sm-flex-cell-11">
         <input type="hidden" name="mf-person-id" value="{sender}"/>
         <div class="flex-row flex-align-items-center">
           <div class="lg-flex-cell-1 md-flex-cell-1 sm-flex-hide">
@@ -14,7 +14,7 @@
           </div> 
         </div>
       </div>        
-      <div class="lg-flex-cell-3 md-flex-cell-3 sm-flex-cell-3">
+      <div class="lg-flex-cell-3 md-flex-cell-3 sm-flex-cell-5 flex-right">
         {#mayRemoveThread}
           <a class="di-remove-thread-link">{#localize key="plugin.discussion.removeThread"/}</a>
         {/mayRemoveThread}          

@@ -190,7 +190,6 @@
           width:20px;
         }          
       } 
-    
       &.owner {
         border-left:5px solid $brd2; 
          
@@ -199,7 +198,6 @@
         }
          
       }
-    
       .di-message-topic {
         h3 {
           margin:0 0 1em;
@@ -208,19 +206,15 @@
           font-weight:300;
           font-size:22px;
         } 
-      
       }
-        a.di-remove-thread-link {
-          background:#de3211;
-          border-radius:3px;
-          display:inline-block;
-          position:absolute;
-          right:15px;
-          top:15px;
-          padding:2px 6px;
-          color:#fff !important;
-          cursor:pointer;
-        }    
+      a.di-remove-thread-link {
+        background:#de3211;
+        border-radius:3px;
+        display:inline-block;
+        padding:2px 6px;
+        color:#fff !important;
+        cursor:pointer;
+      }    
       .di-message-details {
           font-size: 22px;
           font-weight: 300;
@@ -234,8 +228,6 @@
               }
             }
           }      
-
-      
       }
 
       .di-message-title {
