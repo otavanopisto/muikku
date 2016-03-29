@@ -36,8 +36,5 @@
         <input type="button" name="cancel" value='{#localize key="plugin.discussion.createmessage.cancel"/}'/>
       </div>   
     </form>
-  
-  
   </div>
-  
 </div>
