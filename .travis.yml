@@ -10,32 +10,22 @@ cache:
   directories:
   - $HOME/.m2
   - muikku-atests/.cargo
+  - muikku-atests/.phantomjs
 addons:
   hosts:
   - dev.muikku.fi
 before_install:
+- openssl aes-256-cbc -K $encrypted_7ee9c890e4a1_key -iv $encrypted_7ee9c890e4a1_iv
+  -in travis-encrypted.tar.enc -out travis-encrypted.tar -d
+- tar xvf travis-encrypted.tar  
 - unset GEM_PATH
-- if [ $use_sc == true ] && [ $TRAVIS_BRANCH != 'master' ]; then 
-    if [ $TRAVIS_PULL_REQUEST != false ]; then
-      curl -sS https://saucelabs.com/downloads/sc-4.3.12-linux.tar.gz|tar -xzC /tmp/;
-      /tmp/sc-4.3.12-linux/bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY -i $TRAVIS_JOB_NUMBER -f /tmp/sc-ready -r 10 --pidfile /tmp/sc.pid --vm-version dev-varnish --daemonize;
-      t=0;
-      while [ ! -f /tmp/sc-ready ]; do 
-        sleep 0.5; 
-        t=$((t+1)); 
-        if [ $t -gt 180 ]; then 
-          killall sc;
-          echo "Unable to get Sauce connection within 3 minutes";
-          exit 1;
-        fi;
-      done;
-    fi;
-  fi;
+- . travis-setenv.sh
 install:
-- bash travis-install.sh
+- . travis-install.sh
 before_script:
+- . travis-before-script.sh
 script:
-- bash travis-script.sh
+- . travis-script.sh
 after_script:
 - if [ $use_sc = true ]; then killall sc; fi;
 #- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
@@ -50,44 +40,57 @@ env:
   - secure: LZViiGyq2B/NfKRByoaA5AumTd0tpS0AaH03sRebV6MF9kcyeWJC+Idv8EyYttyed9GLQM0Qk6aVvvop3dguJNNOMnrKAFoxN4u09QDG+o8IuQiCzFQmEtXBipP+08lqsgn7wfVBD4MyhWHrmJeatq1C/So4IkaMwaYvq6eo7A4=
   - secure: QmDnYj3Lb3nMzyKDkGShAU2N3TOt1Bn0ku2KokVD+y3Q7lTdcfdvMCeBiFI7qPDrWU9bPaiTRh0+/sMWLM7J0aFg8e7OljqJrArKSB+i3leTl+/L/x9cplESMjV5u5cjtsUCmGX3ywSfhpwlGzkILVFl3ZE2eI2e2+OoOfZrezY=
   matrix:
-  - it_profile=rest-it findbugs_skip=false use_sc=false
+  - goals=verify run=always perform_release=true it_profile=rest-it findbugs_skip=false use_sc=false
 
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="microsoftedge" browser_version="20.10240" browser_resolution="1280x1024" platform="Windows 10" package=course
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="microsoftedge" browser_version="20.10240" browser_resolution="1280x1024" platform="Windows 10" package=course/discussions
-  - it_profile=travis findbugs_skip=true use_sc=true browser="microsoftedge" browser_version="20.10240" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="microsoftedge" browser_version="20.10240" browser_resolution="1280x1024" platform="Windows 10" package=course/picker
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="microsoftedge" browser_version="20.10240" browser_resolution="1280x1024" platform="Windows 10" package=indexpage
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="microsoftedge" browser_version="20.10240" browser_resolution="1280x1024" platform="Windows 10" package=course
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="microsoftedge" browser_version="20.10240" browser_resolution="1280x1024" platform="Windows 10" package=course/discussions
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="microsoftedge" browser_version="20.10240" browser_resolution="1280x1024" platform="Windows 10" package=course/picker
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="microsoftedge" browser_version="20.10240" browser_resolution="1280x1024" platform="Windows 10" package=indexpage
 
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=course
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=course/discussions
-  - it_profile=travis findbugs_skip=true use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=course/picker
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=indexpage
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=course
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=course/discussions
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=course/picker
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=indexpage
 
   # - it_profile=travis findbugs_skip=true use_sc=true browser="safari" browser_version="9.0" browser_resolution="1024x768" platform="OS X 10.11" package=course
   # - it_profile=travis findbugs_skip=true use_sc=true browser="safari" browser_version="9.0" browser_resolution="1024x768" platform="OS X 10.11" package=course/discussions
-  - it_profile=travis findbugs_skip=true use_sc=true browser="safari" browser_version="9.0" browser_resolution="1024x768" platform="OS X 10.11" package=course/materials
   # - it_profile=travis findbugs_skip=true use_sc=true browser="safari" browser_version="9.0" browser_resolution="1024x768" platform="OS X 10.11" package=course/picker
   # - it_profile=travis findbugs_skip=true use_sc=true browser="safari" browser_version="9.0" browser_resolution="1024x768" platform="OS X 10.11" package=indexpage
 
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course/discussions
-  - it_profile=travis findbugs_skip=true use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course/materials
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course/picker
-  # - it_profile=travis findbugs_skip=true use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=indexpage
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course/discussions
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course/picker
+  # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=indexpage
 
-  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=communicator
-  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course
-  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/discussions
-  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
-  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/picker
-  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/journal
-  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/users
-  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=evaluation
-  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=indexpage
-  - it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=announcer
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="microsoftedge" browser_version="20.10240" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="safari" browser_version="9.0" browser_resolution="1024x768" platform="OS X 10.11" package=course/materials
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course/materials
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=communicator
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/discussions
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/picker
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/journal
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/users
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=evaluation
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=indexpage
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=announcer
+
+# PhantomJS
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=communicator
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course/discussions
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course/materials
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course/picker
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course/journal
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course/users
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=evaluation
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=indexpage
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=announcer
+
 after_success:
-- bash travis-after-success.sh
+- . travis-after-success.sh
 after_failure:
 - if [ $use_sc = true ]; then killall sc; fi;
 #- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;

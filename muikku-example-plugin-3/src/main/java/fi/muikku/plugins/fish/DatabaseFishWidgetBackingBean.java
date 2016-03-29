@@ -1,12 +1,12 @@
-package fi.muikku.plugins.fish;
+package fi.otavanopisto.muikku.plugins.fish;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.i18n.LocaleController;
-import fi.muikku.plugins.fish.model.FishMessage;
-import fi.muikku.session.SessionController;
+import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.plugins.fish.model.FishMessage;
+import fi.otavanopisto.muikku.session.SessionController;
 
 import java.util.List;
 import java.util.Random;

@@ -7,9 +7,9 @@
   <description>Muikku Learning Environment</description>
 
   <parent>
-    <groupId>fi.muikku</groupId>
+    <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.6-SNAPSHOT</version>
+    <version>1.1.10-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -183,22 +183,22 @@
     <!-- Muikku -->
 
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>core</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>plugin</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>rest</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>persistence</artifactId>
     </dependency>
     
@@ -208,7 +208,7 @@
     </dependency>
 
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>core-plugins</artifactId>
     </dependency>
   </dependencies>
@@ -218,15 +218,15 @@
       <id>pyramus-plugins</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>muikku-school-data-pyramus</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>pyramus-oauth-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -235,9 +235,9 @@
       <id>elastic-search-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>elastic-search-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
         
         <!-- 
@@ -265,9 +265,9 @@
       <id>dummy-mail-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>dummy-mail-bridge-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -276,9 +276,9 @@
       <id>jndi-mail-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>jndi-mail-bridge-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -287,9 +287,9 @@
       <id>mongo-log-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>mongo-log-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -298,9 +298,9 @@
       <id>google-calendar-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>google-calendar-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -309,9 +309,9 @@
       <id>atests-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>atests-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -320,9 +320,9 @@
       <id>h2db-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>h2db-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -331,9 +331,9 @@
       <id>google-oauth-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>google-oauth-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -342,9 +342,9 @@
       <id>facebook-oauth-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>facebook-oauth-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -353,9 +353,9 @@
       <id>calendar-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>calendar-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -364,9 +364,9 @@
       <id>evaluation-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>evaluation-plugin</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -375,9 +375,9 @@
       <id>deus-nex-machina-plugin</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>deus-nex-machina</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -386,9 +386,9 @@
       <id>developer-tools</id>
       <dependencies>
         <dependency>
-          <groupId>fi.muikku</groupId>
+          <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>developer-tools</artifactId>
-          <version>1.1.6-SNAPSHOT</version>
+          <version>1.1.10-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>

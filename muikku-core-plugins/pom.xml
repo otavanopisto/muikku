@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>fi.muikku</groupId>
+		<groupId>fi.otavanopisto.muikku</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.1.6-SNAPSHOT</version>
+		<version>1.1.10-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -170,17 +170,17 @@
 		<!-- Muikku -->
 
 		<dependency>
-			<groupId>fi.muikku</groupId>
+			<groupId>fi.otavanopisto.muikku</groupId>
 			<artifactId>plugin</artifactId>
 		</dependency>
 
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>core-plugins-persistence</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>forum-plugin-rest-model</artifactId>
     </dependency>
 
@@ -192,7 +192,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>fi.muikku</groupId>
+			<groupId>fi.otavanopisto.muikku</groupId>
 			<artifactId>rest</artifactId>
 		</dependency>
 

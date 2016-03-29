@@ -7,11 +7,23 @@
   padding:10px 15px 10px 85px;
   margin:20px auto;
   min-height:64px;
-  font-size:1.05em;
-  line-height:1.7em;
+  font-size:16px;
   position:relative;
-  box-shadow:0 0 10px rgba(0, 0, 0, 0.03);
-  border:1px solid #fff;
+  line-height:1.7em;
+  
+  p:first-child,
+  ul:first-child,
+  ol:first-child,
+  blockquote:first-child {
+    margin-top:0 !important;
+  }
+  
+  p:last-child,
+  ul:last-child,
+  ol:last-child,
+  blockquote:last-child {
+    margin-bottom:0 !important;
+  }
 
   &:after {
     width:64px;
@@ -37,7 +49,6 @@
   border-top:2px solid #76ccd4;
   color:#000;
   padding:12px 20px;
-  min-height:1.7em;
 }
 
 /* Pondering */
@@ -147,10 +158,25 @@
 .material-styles-text { 
   max-width:920px;
   margin:20px auto;
-  line-height:2em;
-  min-height:1em;
+  min-height:14px;
   background-repeat:no-repeat;
   position:relative;
+  line-height:1.7em;
+  
+  p:first-child,
+  ul:first-child,
+  ol:first-child,
+  blockquote:first-child {
+    margin-top:0 !important;
+  }
+  
+  p:last-child,
+  ul:last-child,
+  ol:last-child,
+  blockquote:last-child {
+    margin-bottom:0 !important;
+  }
+  
 
   a {
     color:#006a96;
@@ -170,31 +196,32 @@
   quotes: "\201C""\201D";
   
   &:before {
-    color: #ccc;
-    content: open-quote;
-    display: inline-block;
-    font-family: arial;
-    font-size: 3.5em;
-    font-style: normal;
-    left: 0;
-    line-height: 0.1em;
-    margin-right: 0.25em;
-    vertical-align: -0.4em;
-    width: 0.1em;
+    color:#ccc;
+    content:open-quote;
+    display:inline-block;
+    font-family:arial;
+    font-size:70px;
+    font-style:normal;
+    left:0;
+    line-height:1px;
+    margin-right:25px;
+    vertical-align:-25px;
+    width:0px;
   }
   
   &:after {
-    color: #ccc;
-    content: close-quote;
-    display: inline-block;
-    font-family: arial;
-    font-size: 3.5em;
-    font-style: normal;
+    color:#ccc;
+    content:close-quote;
+    display:inline-block;
+    font-family:arial;
+    font-size:70px;
+    font-style:normal;
     left: 3px;
-    line-height: 0.1em;
-    margin-left: 0.05em;
+    line-height:1px;
+    margin-left:5px;
     position: relative;
-    vertical-align: -0.4em;
+    vertical-align:-25px;
+    width:1px;
   }
   
 }
@@ -207,38 +234,38 @@
   font-size:20px;
   border-left:3px solid #a30606;
   border-radius:0px;
-  line-height:2em;
+  line-height:40px;
   font-style:italic;
-  min-height:1.7em;
   display:inline-block;
   quotes: "\201C""\201D";
   
   &:before {
-    color: #ccc;
-    content: open-quote;
-    display: inline-block;
-    font-family: arial;
-    font-size: 3.5em;
+    color:#ccc;
+    content:open-quote;
+    display:inline-block;
+    font-family:arial;
+    font-size:70px;
     font-style: normal;
-    left: 0;
-    line-height: 0.1em;
-    margin-right: 0.25em;
-    vertical-align: -0.4em;
-    width: 0.1em;
+    left:0;
+    line-height:1px;
+    margin-right:25px;
+    vertical-align:-25px;
+    width:0px;
   }
   
   &:after {
-    color: #ccc;
-    content: close-quote;
-    display: inline-block;
-    font-family: arial;
-    font-size: 3.5em;
-    font-style: normal;
-    left: 3px;
-    line-height: 0.1em;
-    margin-left: 0.05em;
-    position: relative;
-    vertical-align: -0.4em;
+    color:#ccc;
+    content:close-quote;
+    display:inline-block;
+    font-family:arial;
+    font-size:70px;
+    font-style:normal;
+    left:3px;
+    line-height:1px;
+    margin-left:5px;
+    position:relative;
+    vertical-align:-25px;
+    width:1px;
   }
   
 }
@@ -248,19 +275,18 @@
   padding:5px 10px 5px 40px;
   color:#000;
   quotes: "\201C""\201D";
-  line-height:1.5em;
-  min-height:1.5em;
   box-shadow:none;
   text-shadow:none;
-  font-size:0.9em;
+  font-size:16px;
   position:relative;
   background:#f8f8f8;
+  font-style:normal;
   
   &:before {
     position:absolute;
     content: open-quote;
     font-family: arial;
-    font-size: 3.5em;
+    font-size:55px;
     left:10px;
     position:absolute;
     top:20px;
@@ -275,17 +301,7 @@
   color:#000;
   border-left:3px solid #11a0ff;
   border-radius:0px;
-  line-height:1.5em;
-  min-height:1.5em;
   box-shadow:none;
   text-shadow:none;
-  font-size:0.9em;
-}
-
-/* Chat */
-.material-chatbubble {
-  background-color:#f2f2f2;
-  color:#000;
-  padding:12px 20px;
-  min-height:1.7em;
+  font-size:16px;
 }

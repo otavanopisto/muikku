@@ -1,4 +1,4 @@
-package fi.muikku.plugins.fish;
+package fi.otavanopisto.muikku.plugins.fish;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,12 +8,12 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import fi.muikku.controller.WidgetController;
-import fi.muikku.model.widgets.DefaultWidget;
-import fi.muikku.model.widgets.Widget;
-import fi.muikku.model.widgets.WidgetSpace;
-import fi.muikku.model.widgets.WidgetVisibility;
-import fi.muikku.plugin.PluginDescriptor;
+import fi.otavanopisto.muikku.controller.WidgetController;
+import fi.otavanopisto.muikku.model.widgets.DefaultWidget;
+import fi.otavanopisto.muikku.model.widgets.Widget;
+import fi.otavanopisto.muikku.model.widgets.WidgetSpace;
+import fi.otavanopisto.muikku.model.widgets.WidgetVisibility;
+import fi.otavanopisto.muikku.plugin.PluginDescriptor;
 
 @ApplicationScoped
 @Stateful
