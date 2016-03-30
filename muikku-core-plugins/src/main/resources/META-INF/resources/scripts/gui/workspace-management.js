@@ -80,6 +80,34 @@
       }, this); 
     },
     
+    _createWorkspaceUpdate: function () {
+      return $.proxy(function (callback) {
+        mApi().workspace.workspaces
+          .read(this.options.workspaceEntityId)
+          .callback($.proxy(function (getErr, workspace) {
+            if (getErr) {
+              callback(getErr);
+            } else {
+              var name = this.element.find('*[name="workspaceName"]').val();
+              var nameExtension = this.element.find('*[name="workspaceNameExtension"]').val();
+              var description = CKEDITOR.instances['workspace-description'].getData();
+              var published = this.element.find('*[name="published"]:checked').val() == 'true';
+
+              mApi().workspace.workspaces
+                .update(this.options.workspaceEntityId, $.extend(workspace, {
+                  name: name,
+                  nameExtension: nameExtension,
+                  description: description,
+                  published: published
+                }))
+                .callback(function (err, updatedWorkspace) {
+                  callback(err, updatedWorkspace);
+                })
+            }
+          }, this))
+      }, this); 
+    },
+    
     _createWorkspaceDetailsUpdate: function () {
       return $.proxy(function (callback) {
         mApi().workspace.workspaces.details
@@ -105,7 +133,7 @@
     },
     
     _onSaveClick: function (event) {
-      async.series([this._createWorkspaceDetailsUpdate()], function (err, results) {
+      async.series([this._createWorkspaceUpdate(), this._createWorkspaceDetailsUpdate()], function (err, results) {
         
       });
     }
