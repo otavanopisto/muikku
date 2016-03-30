@@ -10,7 +10,9 @@
     <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>
     <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/workspace-management.js"/>
   </ui:define>
   
   <ui:define name="workspace-view-styles">
@@ -22,15 +24,15 @@
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
         <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.management.pageTitle']}</h1>
         <div class="workspace-management-container">
-          <input type="text" name="workspaceName" value="Työtilan nimi"/>
+          <input type="text" name="workspaceName"/>
         </div>
         <div class="workspace-management-container">
-          <a href="#">#{i18n.text['plugin.workspace.management.viewInPyramus']}</a>
+          <a href="#" target="_blank" class="external-view-url">#{i18n.text['plugin.workspace.management.viewInPyramus']}</a>
         </div>
       </div>
     </section>
     
-    <section class="flex-row workspace-management-image">
+    <section class="flex-row workspace-management-image" style="display: none">
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
         <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.imageSectionTitle']}</h2>
         <div class="workspace-management-container">
@@ -55,12 +57,12 @@
                   <label>#{i18n.text['plugin.workspace.management.settings.visibility']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <div><input type="radio" name="visibility" value="a" /> Julkaistu</div>
-                  <div><input type="radio" name="visibility" value="b" /> Ei Julkaistu</div>
+                  <div><input type="radio" name="published" value="true" /> Julkaistu</div>
+                  <div><input type="radio" name="published" value="false" /> Ei Julkaistu</div>
                 </div>
               </div>
             </div>
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last" style="display: none">
               <div class="flex-row flex-align-items-center">
                 <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
                   <label>#{i18n.text['plugin.workspace.management.settings.accessibility']}</label>
@@ -89,7 +91,7 @@
                   <label>#{i18n.text['plugin.workspace.management.additionalInfo.nameExtension']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <input type="text" value="Ryhmäkurssin 12.12.2012 - 13.12.2015"/>
+                  <input type="text" name="workspaceNameExtension"/>
                 </div>
               </div>
             </div>
@@ -105,7 +107,7 @@
             </div>
           </div>
           
-          <div class="flex-row">
+          <div class="flex-row" style="display: none">
             <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
               <div class="flex-row flex-align-items-center">
                 <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
@@ -135,7 +137,7 @@
                   <label>#{i18n.text['plugin.workspace.management.additionalInfo.startDate']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <input type="text" class="date-field hasDatepicker" name="beginDate" value="01.01.2019"/>
+                  <input type="text" class="date-field" name="beginDate"/>
                 </div>
               </div>
             </div>
@@ -145,7 +147,7 @@
                   <label>#{i18n.text['plugin.workspace.management.additionalInfo.endDate']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <input type="text" class="date-field hasDatepicker" name="endDate" value="24.12.2020"/>
+                  <input type="text" class="date-field" name="endDate"/>
                 </div>
               </div>
             </div>
@@ -156,7 +158,7 @@
               <label>#{i18n.text['plugin.workspace.management.additionalInfo.description']}</label>
             </div>
             <div class="additionalinfo-data lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-              <textarea name="workspaceDescription" class="workspace-description">Kuvaus...</textarea>
+              <textarea name="workspaceDescription" class="ckeditor-field workspace-description"></textarea>
             </div>
           </div>
 
@@ -164,7 +166,7 @@
       </div>
     </section>
     
-    <section class="flex-row workspace-management-licence">
+    <section class="flex-row workspace-management-licence" style="display: none">
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
         <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceLicenceSectionTitle']}</h2>
         <div class="workspace-management-container">
@@ -173,7 +175,7 @@
       </div>
     </section>
     
-    <section class="flex-row workspace-management-teacher">
+    <section class="flex-row workspace-management-teacher" style="display: none">
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
         <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceTeachersSectionTitle']}</h2>
         <div class="workspace-management-container">
@@ -183,7 +185,7 @@
       </div>
     </section>
     
-    <section class="flex-row workspace-management-producer">
+    <section class="flex-row workspace-management-producer" style="display: none">
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
         <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceProducersSectionTitle']}</h2>
         <div class="workspace-management-container">
@@ -198,6 +200,8 @@
         <button class="save" type="button">#{i18n.text['plugin.workspace.management.workspaceButtons.save']}</button>
       </div>
     </section>
+    
+    <input type="hidden" class="workspace-entity-id" value="#{workspaceManagementBackingBean.workspaceEntityId}"/>
   </ui:define>
 
 </ui:composition>
