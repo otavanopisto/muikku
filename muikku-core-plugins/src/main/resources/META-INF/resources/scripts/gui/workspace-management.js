@@ -33,9 +33,6 @@
           this.element.find('*[name="workspaceName"]').val(workspace.name);
           this.element.find('.external-view-url').attr('href', details.externalViewUrl);
           this.element.find('*[name="published"][value="' + (workspace.published ? 'true' : 'false') + '"]').prop('checked', 'checked');
-          
-          console.log(workspace);
-          console.log(details);
           this.element.find('*[name="workspaceNameExtension"]').val(workspace.nameExtension);
           this.element.find('*[name="beginDate"]').val(details.beginDate);
           this.element.find('*[name="endDate"]').val(details.endDate);
@@ -53,10 +50,12 @@
               $(dateField).datepicker('setDate', new Date(value));
             }
           });
-          
+                    
           this.element.find('.ckeditor-field').each($.proxy(function (index, ckField) {
             CKEDITOR.replace(ckField, this.options.ckeditor);
           }, this));
+          
+          this.element.on('click', '.save', $.proxy(this._onSaveClick, this));
         }
       }, this));
     },
@@ -79,6 +78,32 @@
             callback(err, details);
           })
       }, this); 
+    },
+    
+    _createWorkspaceDetailsUpdate: function () {
+      return $.proxy(function (callback) {
+        mApi().workspace.workspaces.details
+          .read(this.options.workspaceEntityId)
+          .callback($.proxy(function (getErr, details) {
+            var beginDate = this.element.find('*[name="beginDate"]').datepicker('getDate');
+            var endDate = this.element.find('*[name="endDate"]').datepicker('getDate');
+            
+            mApi().workspace.workspaces.details
+              .update(this.options.workspaceEntityId, $.extend(details, {
+                beginDate: beginDate != null ? beginDate.getTime() : null,
+                endDate: endDate != null ? endDate.getTime() : null
+              }))
+              .callback(function (err, updatedDetails) {
+                callback(err, updatedDetails);
+              })
+          }, this))
+      }, this); 
+    },
+    
+    _onSaveClick: function (event) {
+      async.series([this._createWorkspaceDetailsUpdate()], function (err, results) {
+        
+      });
     }
   });
   
