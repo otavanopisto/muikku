@@ -1,4 +1,4 @@
-package fi.muikku.plugins.workspace;
+package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -16,19 +16,19 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
-import fi.muikku.jsf.NavigationRules;
-import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.muikku.schooldata.CourseMetaController;
-import fi.muikku.schooldata.SchoolDataBridgeSessionController;
-import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.schooldata.entity.CourseLengthUnit;
-import fi.muikku.schooldata.entity.EducationType;
-import fi.muikku.schooldata.entity.Subject;
-import fi.muikku.schooldata.entity.Workspace;
-import fi.muikku.schooldata.entity.WorkspaceType;
-import fi.muikku.security.MuikkuPermissions;
-import fi.muikku.session.SessionController;
+import fi.otavanopisto.muikku.jsf.NavigationRules;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
+import fi.otavanopisto.muikku.schooldata.entity.EducationType;
+import fi.otavanopisto.muikku.schooldata.entity.Subject;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.muikku.session.SessionController;
 
 @Named
 @Stateful
