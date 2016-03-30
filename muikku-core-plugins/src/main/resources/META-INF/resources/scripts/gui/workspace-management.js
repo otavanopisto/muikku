@@ -23,7 +23,12 @@
     },
     
     _create: function () {
+      var loader = $('<div>')
+        .addClass('loading')
+        .appendTo(this.element);
+      
       async.parallel([this._createWorkspaceLoad(), this._createWorkspaceDetailsLoad()], $.proxy(function (err, results) {
+        loader.remove();
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
@@ -132,9 +137,16 @@
       }, this); 
     },
     
-    _onSaveClick: function (event) {
+    _onSaveClick: function (event) {      
+      var loader = $('<div>')
+        .addClass('loading')
+        .appendTo(this.element);
+
       async.series([this._createWorkspaceUpdate(), this._createWorkspaceDetailsUpdate()], function (err, results) {
-        
+        loader.remove();
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
       });
     }
   });
