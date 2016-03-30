@@ -85,17 +85,21 @@
         mApi().workspace.workspaces.details
           .read(this.options.workspaceEntityId)
           .callback($.proxy(function (getErr, details) {
-            var beginDate = this.element.find('*[name="beginDate"]').datepicker('getDate');
-            var endDate = this.element.find('*[name="endDate"]').datepicker('getDate');
-            
-            mApi().workspace.workspaces.details
-              .update(this.options.workspaceEntityId, $.extend(details, {
-                beginDate: beginDate != null ? beginDate.getTime() : null,
-                endDate: endDate != null ? endDate.getTime() : null
-              }))
-              .callback(function (err, updatedDetails) {
-                callback(err, updatedDetails);
-              })
+            if (getErr) {
+              callback(getErr);
+            } else {
+              var beginDate = this.element.find('*[name="beginDate"]').datepicker('getDate');
+              var endDate = this.element.find('*[name="endDate"]').datepicker('getDate');
+              
+              mApi().workspace.workspaces.details
+                .update(this.options.workspaceEntityId, $.extend(details, {
+                  beginDate: beginDate != null ? beginDate.getTime() : null,
+                  endDate: endDate != null ? endDate.getTime() : null
+                }))
+                .callback(function (err, updatedDetails) {
+                  callback(err, updatedDetails);
+                })
+            }
           }, this))
       }, this); 
     },
