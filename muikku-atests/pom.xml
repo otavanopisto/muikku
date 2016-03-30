@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>fi.muikku</groupId>
+    <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.6-SNAPSHOT</version>
+    <version>1.1.10-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -115,14 +115,14 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.40-SNAPSHOT</version>
+      <version>0.7.40</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.40-SNAPSHOT</version>
+      <version>0.7.40</version>
       <scope>test</scope>
     </dependency>
 
@@ -207,37 +207,37 @@
     </dependency>
     
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>persistence</artifactId>
     </dependency>
     
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>core-plugins-persistence</artifactId>
     </dependency>
     
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>muikku-school-data-pyramus-persistence</artifactId>
     </dependency>
     
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>forum-plugin-rest-model</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>evaluation-plugin-rest-model</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>evaluation-plugin-persistence</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>atests-plugin-rest-model</artifactId>
       <version>${project.version}</version>
     </dependency>    
@@ -329,7 +329,7 @@
             <configuration>
 
               <dependenciesToScan>
-                <dependency>fi.muikku:core-plugins</dependency>
+                <dependency>fi.otavanopisto.muikku:core-plugins</dependency>
               </dependenciesToScan>
 
               <includes>
@@ -556,7 +556,7 @@
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
-                      <command>/subsystem=logging/logger=fi.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
+                      <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
                     </commands>
                   </execute-commands>
                 </configuration>
@@ -659,7 +659,7 @@
             <configuration>
 
               <dependenciesToScan>
-                <dependency>fi.muikku:core-plugins</dependency>
+                <dependency>fi.otavanopisto.muikku:core-plugins</dependency>
               </dependenciesToScan>
 
               <includes>
@@ -895,7 +895,7 @@
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
-                      <command>/subsystem=logging/logger=fi.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
+                      <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
                     </commands>
                   </execute-commands>
                 </configuration>
@@ -1024,7 +1024,7 @@
             <configuration>
 
               <dependenciesToScan>
-                <dependency>fi.muikku:core-plugins</dependency>
+                <dependency>fi.otavanopisto.muikku:core-plugins</dependency>
               </dependenciesToScan>
 
               <includes>
@@ -1259,7 +1259,7 @@
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
-                      <command>/subsystem=logging/logger=fi.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
+                      <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
                     </commands>
                   </execute-commands>
                 </configuration>
@@ -1354,7 +1354,7 @@
             <configuration>
 
               <dependenciesToScan>
-                <dependency>fi.muikku:core-plugins</dependency>
+                <dependency>fi.otavanopisto.muikku:core-plugins</dependency>
               </dependenciesToScan>
 
               <includes>
@@ -1581,7 +1581,7 @@
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
-                      <command>/subsystem=logging/logger=fi.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
+                      <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
                     </commands>
                   </execute-commands>
                 </configuration>

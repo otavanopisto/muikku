@@ -1,4 +1,4 @@
-package fi.muikku.plugins.fish;
+package fi.otavanopisto.muikku.plugins.fish;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,15 +11,15 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
 
-import fi.muikku.controller.WidgetController;
-import fi.muikku.i18n.LocaleBundle;
-import fi.muikku.i18n.LocaleLocation;
-import fi.muikku.model.widgets.DefaultWidget;
-import fi.muikku.model.widgets.Widget;
-import fi.muikku.model.widgets.WidgetSpace;
-import fi.muikku.model.widgets.WidgetVisibility;
-import fi.muikku.plugin.LocalizedPluginDescriptor;
-import fi.muikku.plugin.PluginDescriptor;
+import fi.otavanopisto.muikku.controller.WidgetController;
+import fi.otavanopisto.muikku.i18n.LocaleBundle;
+import fi.otavanopisto.muikku.i18n.LocaleLocation;
+import fi.otavanopisto.muikku.model.widgets.DefaultWidget;
+import fi.otavanopisto.muikku.model.widgets.Widget;
+import fi.otavanopisto.muikku.model.widgets.WidgetSpace;
+import fi.otavanopisto.muikku.model.widgets.WidgetVisibility;
+import fi.otavanopisto.muikku.plugin.LocalizedPluginDescriptor;
+import fi.otavanopisto.muikku.plugin.PluginDescriptor;
 
 @ApplicationScoped
 @Stateful
@@ -70,8 +70,8 @@ public class LocalizedFishPluginDescriptor implements PluginDescriptor, Localize
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.fish.LocalizedFishPluginMessages", LocaleUtils.toLocale("fi"))));
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.fish.LocalizedFishPluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.plugins.fish.LocalizedFishPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.plugins.fish.LocalizedFishPluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
   }
 

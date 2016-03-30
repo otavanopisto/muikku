@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>fi.muikku</groupId>
+	<groupId>fi.otavanopisto.muikku</groupId>
 	<artifactId>bom</artifactId>
-	<version>1.1.6-SNAPSHOT</version>
+	<version>1.1.10-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku BOM</name>
 
@@ -38,7 +38,7 @@
 
 		<!-- Muikku -->
 
-		<muikku.version>1.1.6-SNAPSHOT</muikku.version>
+		<muikku.version>1.1.10-SNAPSHOT</muikku.version>
 
 		<!-- Coops -->
 		<coops-spec.version>1.0.0</coops-spec.version>
@@ -144,79 +144,79 @@
 			<!-- Muikku -->
 
 			<dependency>
-				<groupId>fi.muikku</groupId>
+				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>plugin</artifactId>
 				<version>${muikku.version}</version>
 			</dependency>
 
       <dependency>
-        <groupId>fi.muikku</groupId>
+        <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>debug</artifactId>
         <version>${muikku.version}</version>
       </dependency>
 
 			<dependency>
-				<groupId>fi.muikku</groupId>
+				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>rest</artifactId>
 				<version>${muikku.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>fi.muikku</groupId>
+				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>persistence</artifactId>
 				<version>${muikku.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>fi.muikku</groupId>
+				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>core</artifactId>
 				<version>${muikku.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>fi.muikku</groupId>
+				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>core-plugins</artifactId>
 				<version>${muikku.version}</version>
 			</dependency>
 
       <dependency>
-        <groupId>fi.muikku</groupId>
+        <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>core-plugins-persistence</artifactId>
         <version>${muikku.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>fi.muikku</groupId>
+        <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>forum-plugin-rest-model</artifactId>
         <version>${muikku.version}</version>
       </dependency>
 
 			<dependency>
-				<groupId>fi.muikku</groupId>
+				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>muikku-school-data-pyramus</artifactId>
 				<version>${muikku.version}</version>
 			</dependency>
 
       <dependency>
-        <groupId>fi.muikku</groupId>
+        <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>muikku-school-data-pyramus-persistence</artifactId>
         <version>${muikku.version}</version>
       </dependency>
     
       <dependency>
-        <groupId>fi.muikku</groupId>
+        <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>evaluation-plugin</artifactId>
         <version>${muikku.version}</version>
       </dependency>
     
       <dependency>
-        <groupId>fi.muikku</groupId>
+        <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>evaluation-plugin-persistence</artifactId>
         <version>${muikku.version}</version>
       </dependency>
     
       <dependency>
-        <groupId>fi.muikku</groupId>
+        <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>evaluation-plugin-rest-model</artifactId>
         <version>${muikku.version}</version>
       </dependency>

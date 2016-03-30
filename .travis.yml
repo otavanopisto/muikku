@@ -10,6 +10,7 @@ cache:
   directories:
   - $HOME/.m2
   - muikku-atests/.cargo
+  - muikku-atests/.phantomjs
 addons:
   hosts:
   - dev.muikku.fi

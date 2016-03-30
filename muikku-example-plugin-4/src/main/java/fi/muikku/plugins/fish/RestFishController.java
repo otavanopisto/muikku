@@ -1,4 +1,4 @@
-package fi.muikku.plugins.fish;
+package fi.otavanopisto.muikku.plugins.fish;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;

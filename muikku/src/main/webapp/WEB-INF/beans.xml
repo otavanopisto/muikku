@@ -12,7 +12,7 @@
     <class>fi.otavanopisto.security.AdminInterceptor</class>
     <class>fi.otavanopisto.security.LoggedInInterceptor</class>
     <class>fi.otavanopisto.security.PermitInterceptor</class>
-    <class>fi.muikku.LoggedInterceptor</class>
+    <class>fi.otavanopisto.muikku.LoggedInterceptor</class>
   </interceptors>
   
 </beans>

@@ -9,7 +9,7 @@
   <tag>
     <tag-name>widgetSpaceSet</tag-name>
     <component>
-      <component-type>fi.muikku.facelet.WidgetSpaceSet</component-type>
+      <component-type>fi.otavanopisto.muikku.facelet.WidgetSpaceSet</component-type>
     </component>
     <attribute>
       <description>Additional class attributes for all child widgetSpaces.</description>
@@ -26,8 +26,8 @@
   <tag>
     <tag-name>widgetSpace</tag-name>
     <component>
-      <component-type>fi.muikku.facelet.WidgetSpace</component-type>
-      <handler-class>fi.muikku.facelets.WidgetSpaceComponentHandler</handler-class>
+      <component-type>fi.otavanopisto.muikku.facelet.WidgetSpace</component-type>
+      <handler-class>fi.otavanopisto.muikku.facelets.WidgetSpaceComponentHandler</handler-class>
     </component>
     <attribute>
       <description>Widget space name</description>
@@ -54,8 +54,8 @@
   <tag>
     <tag-name>widget</tag-name>
     <component>
-      <component-type>fi.muikku.facelet.Widget</component-type>
-      <handler-class>fi.muikku.facelets.WidgetComponentHandler</handler-class>
+      <component-type>fi.otavanopisto.muikku.facelet.Widget</component-type>
+      <handler-class>fi.otavanopisto.muikku.facelets.WidgetComponentHandler</handler-class>
     </component>
     <attribute>
       <description>Widget name (must equal to widget xhtml file name, e.g. example widget must have a corresponding xhtml file in /src/main/resources/META-INF/resources/widgets/example.xhtml)</description>
@@ -77,12 +77,12 @@
   <tag>
     <description>Used to include external widgets into widget spaces. Meant to be used by WidgetSpaceController only.</description>
     <tag-name>includeWidgets</tag-name>
-    <handler-class>fi.muikku.facelets.IncludeWidgetsTagHandler</handler-class>
+    <handler-class>fi.otavanopisto.muikku.facelets.IncludeWidgetsTagHandler</handler-class>
   </tag>
   
   <tag>
     <tag-name>embedJSF</tag-name>
-    <handler-class>fi.muikku.facelets.EmbedJSF</handler-class>
+    <handler-class>fi.otavanopisto.muikku.facelets.EmbedJSF</handler-class>
   </tag>
   
 </facelet-taglib>

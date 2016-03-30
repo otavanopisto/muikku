@@ -20,8 +20,12 @@
   <ui:define name="grid-content">
     <section class="flex-row workspace-management-name">
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+        <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.management.pageTitle']}</h1>
         <div class="workspace-management-container">
           <input type="text" name="workspaceName" value="Työtilan nimi"/>
+        </div>
+        <div class="workspace-management-container">
+          <a href="#">#{i18n.text['plugin.workspace.management.viewInPyramus']}</a>
         </div>
       </div>
     </section>
@@ -62,8 +66,8 @@
                   <label>#{i18n.text['plugin.workspace.management.settings.accessibility']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <div><input type="radio" name="visibility" value="a" /> Avoin kaikille</div>
-                  <div><input type="radio" name="visibility" value="b" /> Vaatii kirjautumisen</div>
+                  <div><input type="radio" name="accessibility" value="a" /> Avoin kaikille</div>
+                  <div><input type="radio" name="accessibility" value="b" /> Vaatii kirjautumisen</div>
                 </div>
               </div>
             </div>
@@ -92,31 +96,7 @@
             <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
               <div class="flex-row flex-align-items-center">
                 <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.length']}</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <input class="workspace-length" name="workspaceLength" type="text" value="20"/>
-                  select
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="flex-row">
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.subject']}</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  select
-                </div>
-              </div>
-            </div>
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label></label>
+                  
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
                   
