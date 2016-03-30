@@ -507,8 +507,11 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     if ((payload.getDescription() != null) || (payload.getName() != null)) {
       try {
-        if ((!StringUtils.equals(payload.getName(), workspace.getName())) || (!StringUtils.equals(payload.getDescription(), workspace.getDescription()))) {
+        if ((!StringUtils.equals(payload.getName(), workspace.getName())) || 
+            (!StringUtils.equals(payload.getDescription(), workspace.getDescription())) || 
+            (!StringUtils.equals(payload.getNameExtension(), workspace.getNameExtension()))) {
           workspace.setName(payload.getName());
+          workspace.setNameExtension(payload.getNameExtension());
           workspace.setDescription(payload.getDescription());
           workspace = workspaceController.updateWorkspace(workspace);
         }
