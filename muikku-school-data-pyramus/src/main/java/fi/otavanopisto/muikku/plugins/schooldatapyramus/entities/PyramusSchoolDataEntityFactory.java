@@ -308,12 +308,18 @@ public class PyramusSchoolDataEntityFactory {
         course.getName(),
         course.getNameExtension(),
         viewLink,
-        course.getDescription(),
         identifierMapper.getWorkspaceTypeIdentifier(course.getTypeId()),
         identifierMapper.getWorkspaceCourseIdentifier(course.getSubjectId(), course.getCourseNumber()),
-        modified.toDate(), identifierMapper.getSubjectIdentifier(course.getSubjectId()), educationTypeIdentifier,
-        course.getLength(), identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
-        course.getBeginDate(), course.getEndDate(), course.getArchived(), courseFeeApplicable);
+        course.getDescription(),
+        identifierMapper.getSubjectIdentifier(course.getSubjectId()), 
+        educationTypeIdentifier,
+        modified.toDate(), 
+        course.getLength(), 
+        identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
+        course.getBeginDate(), 
+        course.getEndDate(), 
+        course.getArchived(), 
+        courseFeeApplicable);
   }
 
   public WorkspaceType createEntity(CourseType courseType) {

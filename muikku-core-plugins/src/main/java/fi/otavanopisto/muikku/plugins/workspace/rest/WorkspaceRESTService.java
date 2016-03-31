@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -427,8 +428,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspace == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+    
+    String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
 
-    return Response.ok(new WorkspaceDetails(workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
+    return Response.ok(new WorkspaceDetails(typeId, workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
   }
   
   @PUT
@@ -453,13 +456,27 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("externalViewUrl is read-only property").build();
     }
     
-    if (!isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) || !isEqualDateTime(workspace.getEndDate(), payload.getEndDate())) {
+    SchoolDataIdentifier typeIdentifier = null;    
+    if (payload.getTypeId() != null) {
+      typeIdentifier = SchoolDataIdentifier.fromId(payload.getTypeId());
+      if (typeIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invlid typeId %s", payload.getTypeId())).build();
+      }
+    }
+    
+    if (!isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) || 
+        !isEqualDateTime(workspace.getEndDate(), payload.getEndDate()) ||
+        !Objects.equals(typeIdentifier, workspace.getWorkspaceTypeId())) {
       workspace.setBeginDate(payload.getBeginDate());
       workspace.setEndDate(payload.getEndDate());
+      workspace.setWorkspaceTypeId(typeIdentifier);
       workspaceController.updateWorkspace(workspace);
     }
-      
-    return Response.ok(new WorkspaceDetails(workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
+    
+
+    String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
+
+    return Response.ok(new WorkspaceDetails(typeId, workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
   }
   
   private boolean isEqualDateTime(DateTime dateTime1, DateTime dateTime2) {
@@ -1336,6 +1353,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
+    
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
         workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, nameExtension, description, numVisits, lastVisit);
   }

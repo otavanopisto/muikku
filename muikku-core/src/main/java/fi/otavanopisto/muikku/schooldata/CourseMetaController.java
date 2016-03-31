@@ -76,7 +76,11 @@ public class CourseMetaController {
 	}
 	
 	/* EducationType */
-	
+
+	public EducationType findEducationType(SchoolDataIdentifier identifier) {
+	  return findEducationType(identifier.getDataSource(), identifier.getIdentifier());
+	}
+	 
 	public EducationType findEducationType(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {

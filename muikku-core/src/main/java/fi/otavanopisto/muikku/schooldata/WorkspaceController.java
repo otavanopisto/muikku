@@ -151,8 +151,8 @@ public class WorkspaceController {
   
   /* WorkspaceType */
 
-  public WorkspaceType findWorkspaceType(String schoolDataSource, String identifier) {
-    return workspaceSchoolDataController.findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
+  public WorkspaceType findWorkspaceType(SchoolDataIdentifier identifier) {
+    return workspaceSchoolDataController.findWorkspaceTypeByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
   }
 
   /* Workspace Entity */

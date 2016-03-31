@@ -157,12 +157,12 @@ public class PyramusIdentifierMapper {
     return NumberUtils.createLong(lengthUnitIdentifier);
   }
 
-  public String getWorkspaceTypeIdentifier(Long pyramusCourseTypeId) {
-    return pyramusCourseTypeId == null ? null : String.valueOf(pyramusCourseTypeId);
+  public SchoolDataIdentifier getWorkspaceTypeIdentifier(Long pyramusCourseTypeId) {
+    return pyramusCourseTypeId == null ? null : new SchoolDataIdentifier(String.valueOf(pyramusCourseTypeId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
 
-  public Long getPyramusCourseTypeId(String workspaceTypeIdentifier) {
-    return workspaceTypeIdentifier != null ? NumberUtils.createLong(workspaceTypeIdentifier) : null;
+  public Long getPyramusCourseTypeId(SchoolDataIdentifier workspaceTypeIdentifier) {
+    return workspaceTypeIdentifier != null ? NumberUtils.createLong(workspaceTypeIdentifier.getIdentifier()) : null;
   }
   
   public String getWorkspaceCourseIdentifier(Long subjectId, Integer courseNumber) {

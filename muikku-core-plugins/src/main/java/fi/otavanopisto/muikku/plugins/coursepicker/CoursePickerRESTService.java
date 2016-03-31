@@ -291,8 +291,8 @@ public class CoursePickerRESTService extends PluginRESTService {
     Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
     String educationTypeName = null;
     
-    if (StringUtils.isNotBlank(workspace.getWorkspaceTypeId())) {
-      EducationType educationType = courseMetaController.findEducationType(workspace.getSchoolDataSource(), workspace.getWorkspaceTypeId());
+    if (workspace.getWorkspaceTypeId() != null) {
+      EducationType educationType = courseMetaController.findEducationType(workspace.getWorkspaceTypeId());
       if (educationType != null) {
         educationTypeName = educationType.getName();
       }
