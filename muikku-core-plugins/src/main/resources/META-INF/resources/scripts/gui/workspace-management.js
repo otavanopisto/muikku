@@ -226,10 +226,16 @@
     },
     
     _onMaterialProducerRemoveClick: function (event) {
-      $(event.target)
-        .closest('.workspace-material-producer')
-        .attr('data-status', 'REMOVED')
-        .hide();
+      var producer = $(event.target)
+        .closest('.workspace-material-producer');
+      
+      if (producer.attr('data-status') == 'NEW') {
+        producer.remove();
+      } else {
+        producer
+          .attr('data-status', 'REMOVED')
+          .hide();
+      }
     },
     
     _onSaveClick: function (event) {      
