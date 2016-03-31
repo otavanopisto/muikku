@@ -1,12 +1,12 @@
-package fi.muikku.plugins;
+package fi.otavanopisto.muikku.plugins;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import fi.muikku.plugin.PluginDescriptor;
-import fi.muikku.plugin.PluginLibraryDescriptor;
-import fi.muikku.plugins.fish.FishPluginDescriptor;
+import fi.otavanopisto.muikku.plugin.PluginDescriptor;
+import fi.otavanopisto.muikku.plugin.PluginLibraryDescriptor;
+import fi.otavanopisto.muikku.plugins.fish.FishPluginDescriptor;
 
 public class FishPluginLibraryDescriptor implements PluginLibraryDescriptor {
 
