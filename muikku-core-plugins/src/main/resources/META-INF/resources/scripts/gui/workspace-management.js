@@ -97,7 +97,7 @@
         .appendTo(this.element.find('.workspace-material-producers'))
         .append($('<a>')
             .addClass('workspace-material-producer-remove')
-            .attr('href', 'javascript:null(void)'));
+            .attr('href', 'javascript:void(null)'));
     },
     
     _createWorkspaceTypesLoad: function () {
@@ -217,7 +217,7 @@
     },
 
     _onMaterialProducerKeyDown: function (event) {
-      if (((event.keyCode ? event.keyCode : event.which) == 13) || (event.key == ',')) {
+      if (((event.keyCode ? event.keyCode : event.which) == 13)) {
         event.preventDefault();
         var input = this.element.find('.workspace-material-producer-add');
         this._addMaterialProducerElement('', 'NEW', input.val());
