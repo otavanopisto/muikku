@@ -27,7 +27,7 @@
         .addClass('loading')
         .appendTo(this.element);
       
-      async.parallel([this._createWorkspaceTypesLoad(), this._createWorkspaceLoad(), this._createWorkspaceDetailsLoad()], $.proxy(function (err, results) {
+      async.parallel([this._createWorkspaceTypesLoad(), this._createWorkspaceLoad(), this._createWorkspaceDetailsLoad(), this._createWorkspaceMaterialProducersLoad()], $.proxy(function (err, results) {
         loader.remove();
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -35,6 +35,11 @@
           var workspaceTypes = results[0];
           var workspace = results[1];
           var details = results[2];
+          var producers = results[3];
+          
+          $.each(producers, $.proxy(function (index, producer) {
+            this._addMaterialProducerElement(producer.id, 'EXISTING', producer.name);
+          }, this));
           
           this.element.find('*[name="workspaceName"]').val(workspace.name);
           this.element.find('.external-view-url').attr('href', details.externalViewUrl);
@@ -67,6 +72,9 @@
               $(dateField).datepicker('setDate', new Date(value));
             }
           });
+          
+          this.element.on('keydown', '.workspace-material-producer-add', $.proxy(this._onMaterialProducerKeyDown, this));
+          this.element.on('click', '.workspace-material-producer-remove', $.proxy(this._onMaterialProducerRemoveClick, this));
                     
           this.element.find('.ckeditor-field').each($.proxy(function (index, ckField) {
             CKEDITOR.replace(ckField, this.options.ckeditor);
@@ -75,6 +83,21 @@
           this.element.on('click', '.save', $.proxy(this._onSaveClick, this));
         }
       }, this));
+    },
+    
+    _addMaterialProducerElement: function (id, status, name) {
+      $('<span>')
+        .attr({
+          'data-id': id,
+          'data-status': status,
+          'data-name': name
+        })
+        .addClass('workspace-material-producer')
+        .text(name)
+        .insertBefore(this.element.find('.workspace-material-producer-add'))
+        .append($('<a>')
+            .addClass('workspace-material-producer-remove')
+            .attr('href', 'javascript:null(void)'));
     },
     
     _createWorkspaceTypesLoad: function () {
@@ -103,6 +126,16 @@
           .read(this.options.workspaceEntityId)
           .callback(function (err, details) {
             callback(err, details);
+          })
+      }, this); 
+    },
+    
+    _createWorkspaceMaterialProducersLoad: function () {
+      return $.proxy(function (callback) {
+        mApi().workspace.workspaces.materialProducers
+          .read(this.options.workspaceEntityId)
+          .callback(function (err, materialProducers) {
+            callback(err, materialProducers);
           })
       }, this); 
     },
@@ -161,12 +194,67 @@
       }, this); 
     },
     
+    _createCreateWorkspaceMaterialProducer: function (name) {
+      return $.proxy(function (callback) {
+        mApi().workspace.workspaces.materialProducers
+          .create(this.options.workspaceEntityId, {
+            name: name
+          })
+          .callback(function (err, materialProducer) {
+            callback(err, materialProducer);
+          })
+      }, this); 
+    },
+    
+    _createDeleteWorkspaceMaterialProducer: function (id) {
+      return $.proxy(function (callback) {
+        mApi().workspace.workspaces.materialProducers
+          .del(this.options.workspaceEntityId, id)
+          .callback(function (err) {
+            callback(err);
+          })
+      }, this); 
+    },
+
+    _onMaterialProducerKeyDown: function (event) {
+      if (((event.keyCode ? event.keyCode : event.which) == 13) || (event.key == ',')) {
+        event.preventDefault();
+        var input = this.element.find('.workspace-material-producer-add');
+        this._addMaterialProducerElement('', 'NEW', input.val());
+        input.val('');
+      }
+    },
+    
+    _onMaterialProducerRemoveClick: function (event) {
+      $(event.target)
+        .closest('.workspace-material-producer')
+        .attr('data-status', 'REMOVED')
+        .hide();
+    },
+    
     _onSaveClick: function (event) {      
       var loader = $('<div>')
         .addClass('loading')
         .appendTo(this.element);
+      
+      var operations = [this._createWorkspaceUpdate(), this._createWorkspaceDetailsUpdate()];
 
-      async.series([this._createWorkspaceUpdate(), this._createWorkspaceDetailsUpdate()], function (err, results) {
+      this.element.find('.workspace-material-producer').each($.proxy(function (index, producer) {
+        var id = $(producer).attr('data-id');
+        var status = $(producer).attr('data-status');
+        var name = $(producer).attr('data-name');
+        
+        switch (status) {
+          case 'NEW':
+            operations.push(this._createCreateWorkspaceMaterialProducer(name));
+          break;
+          case 'REMOVED':
+            operations.push(this._createDeleteWorkspaceMaterialProducer(id));
+          break;
+        }        
+      }, this));
+      
+      async.series(operations, function (err, results) {
         loader.remove();
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);

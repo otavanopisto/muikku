@@ -13,6 +13,7 @@ import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.otavanopisto.muikku.dao.users.RoleSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
+import fi.otavanopisto.muikku.dao.workspace.WorkspaceMaterialProducerDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceSettingsDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserSignupDAO;
@@ -23,6 +24,7 @@ import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserRoleType;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceSettings;
@@ -80,6 +82,9 @@ public class WorkspaceController {
 
   @Inject
   private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
+
+  @Inject
+  private WorkspaceMaterialProducerDAO workspaceMaterialProducerDAO;
 
   /* Workspace */
 
@@ -411,5 +416,22 @@ public class WorkspaceController {
       Date date, String message) {
     return workspaceUserSignupDAO.create(workspaceEntity, userEntity, date, message);
   }
+  
+  /* WorkspaceMaterialProducer */
 
+  public WorkspaceMaterialProducer createWorkspaceMaterialProducer(WorkspaceEntity workspaceEntity, String name) {
+    return workspaceMaterialProducerDAO.create(workspaceEntity, name);
+  }
+
+  public WorkspaceMaterialProducer findWorkspaceMaterialProducer(Long workspaceMaterialProducerId) {
+    return workspaceMaterialProducerDAO.findById(workspaceMaterialProducerId);
+  }
+  
+  public List<WorkspaceMaterialProducer> listWorkspaceMaterialProducers(WorkspaceEntity workspaceEntity) {
+    return workspaceMaterialProducerDAO.listByWorkspaceEntity(workspaceEntity);
+  }
+
+  public void deleteWorkspaceMaterialProducer(WorkspaceMaterialProducer workspaceMaterialProducer) {
+    workspaceMaterialProducerDAO.delete(workspaceMaterialProducer); 
+  }
 }
