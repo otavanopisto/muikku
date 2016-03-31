@@ -86,10 +86,11 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -177,6 +178,14 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Inject
   private CopiedWorkspaceEntityFinder copiedWorkspaceEntityFinder;
   
+  @GET
+  @Path("/workspaceTypes")
+  @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
+  public Response listWorkspaceTypes() {
+    List<WorkspaceType> types = workspaceController.listWorkspaceTypes();  
+    return Response.ok(createRestModel(types.toArray(new WorkspaceType[0]))).build();
+  }
+
   @POST
   @Path("/workspaces/")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -1285,6 +1294,16 @@ public class WorkspaceRESTService extends PluginRESTService {
     workspaceMaterialReplyController.updateWorkspaceMaterialReply(workspaceMaterialReply, payload.getState());
     
     return Response.noContent().build();
+  }
+  
+  private List<fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceType> createRestModel(WorkspaceType... types) {
+    List<fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceType> result = new ArrayList<>();
+    
+    for (WorkspaceType type : types) {
+      result.add(new fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceType(type.getIdentifier().toId(), type.getName()));
+    }
+    
+    return result;
   }
   
   private List<WorkspaceMaterialReply> createRestModel(fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply... entries) {

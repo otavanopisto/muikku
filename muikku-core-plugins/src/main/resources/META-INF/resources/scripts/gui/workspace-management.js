@@ -27,13 +27,14 @@
         .addClass('loading')
         .appendTo(this.element);
       
-      async.parallel([this._createWorkspaceLoad(), this._createWorkspaceDetailsLoad()], $.proxy(function (err, results) {
+      async.parallel([this._createWorkspaceTypesLoad(), this._createWorkspaceLoad(), this._createWorkspaceDetailsLoad()], $.proxy(function (err, results) {
         loader.remove();
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          var workspace = results[0];
-          var details = results[1];
+          var workspaceTypes = results[0];
+          var workspace = results[1];
+          var details = results[2];
           
           this.element.find('*[name="workspaceName"]').val(workspace.name);
           this.element.find('.external-view-url').attr('href', details.externalViewUrl);
@@ -42,6 +43,17 @@
           this.element.find('*[name="beginDate"]').val(details.beginDate);
           this.element.find('*[name="endDate"]').val(details.endDate);
           this.element.find('.workspace-description').val(workspace.description);
+          
+          $.each(workspaceTypes, $.proxy(function (index, workspaceType) {
+            var option = $('<option>')
+              .attr('value', workspaceType.identifier)
+              .text(workspaceType.name)
+              .appendTo(this.element.find('.workspace-type'));
+            
+            if (workspaceType.identifier == details.typeId) {
+              option.prop('selected', 'selected');
+            }
+          }, this));
           
           this.element.find('.date-field').each(function (index, dateField) {
             var value = parseInt($(dateField).val());
@@ -63,6 +75,16 @@
           this.element.on('click', '.save', $.proxy(this._onSaveClick, this));
         }
       }, this));
+    },
+    
+    _createWorkspaceTypesLoad: function () {
+      return $.proxy(function (callback) {
+        mApi().workspace.workspaceTypes
+          .read()
+          .callback(function (err, workspaceTypes) {
+            callback(err, workspaceTypes);
+          })
+      }, this); 
     },
     
     _createWorkspaceLoad: function () {
@@ -123,11 +145,13 @@
             } else {
               var beginDate = this.element.find('*[name="beginDate"]').datepicker('getDate');
               var endDate = this.element.find('*[name="endDate"]').datepicker('getDate');
-              
+              var typeId = this.element.find('.workspace-type').val();
+      
               mApi().workspace.workspaces.details
                 .update(this.options.workspaceEntityId, $.extend(details, {
                   beginDate: beginDate != null ? beginDate.getTime() : null,
-                  endDate: endDate != null ? endDate.getTime() : null
+                  endDate: endDate != null ? endDate.getTime() : null,
+                  typeId: typeId != null ? typeId : null
                 }))
                 .callback(function (err, updatedDetails) {
                   callback(err, updatedDetails);
