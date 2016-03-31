@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table WorkspaceMaterialProducer (
+      id bigint not null auto_increment,
+      name varchar(255),
+      workspaceEntity_id bigint,
+      primary key (id))
+  </sql>
+  
+  <sql>
+    alter table WorkspaceMaterialProducer 
+      add constraint FK_b550bx1m464tk2n7v4qf46c2p 
+      foreign key (workspaceEntity_id) 
+      references WorkspaceEntity (id)
+  </sql>
+
+</update>
