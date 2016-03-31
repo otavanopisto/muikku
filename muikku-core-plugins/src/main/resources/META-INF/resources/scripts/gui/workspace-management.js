@@ -94,7 +94,7 @@
         })
         .addClass('workspace-material-producer')
         .text(name)
-        .insertBefore(this.element.find('.workspace-material-producer-add'))
+        .appendTo(this.element.find('.workspace-material-producers'))
         .append($('<a>')
             .addClass('workspace-material-producer-remove')
             .attr('href', 'javascript:null(void)'));
