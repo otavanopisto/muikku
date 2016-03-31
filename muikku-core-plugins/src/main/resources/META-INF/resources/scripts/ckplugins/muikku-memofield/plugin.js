@@ -107,7 +107,8 @@
           'name': name,
           'columns': this.getContentElement('info', 'cols').getValue(),
           'rows': this.getContentElement('info', 'rows').getValue(),
-          'example': this.getContentElement('info', 'example').getValue()
+          'example': this.getContentElement('info', 'example').getValue(),
+          'richedit': this.getContentElement('info', 'richedit').getValue()
         };
         
         var object = new CKEDITOR.dom.element('object');
@@ -151,6 +152,14 @@
             label: editor.lang['muikku-memofield'].propertiesDialogExample,
             setup: function(json) {
               this.setValue(json.example);
+            }
+          },
+          {
+            id: 'richedit',
+            type: 'checkbox',
+            label: editor.lang['muikku-memofield'].propertiesDialogRichEdit,
+            setup: function(json) {
+              this.setValue(json.richedit);
             }
           }
         ]
