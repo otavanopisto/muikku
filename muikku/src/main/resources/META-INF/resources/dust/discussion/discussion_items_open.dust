@@ -1,8 +1,0 @@
-<div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-  <div class="mf-items-toolbar flex-row"> 
-     <div class="mf-items-tool icon-goback" data-from-view="{threads.fromView}"></div>
-  </div>
-  {#.}
-      {>"discussion/discussion_item_open.dust"/}  
-  {/.}
-</div>
