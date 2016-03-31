@@ -13,7 +13,8 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>    
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.klass/0.1a/jquery.klass-0.1a.js"/>  
     <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
-    <script defer="defer" jsf:name="/scripts/gui/workspace-discussions.js"/>
+    <script defer="defer" type="text/javascript" src="/scripts/gui/socialnavigation.js"/>       
+    <script defer="defer" jsf:name="/scripts/gui/workspace-discussions.js"/>    
   </ui:define>
   
   <ui:define name="workspace-view-styles">
@@ -24,7 +25,10 @@
 
  
   <ui:define name="grid-content">
-    <main id="content" class="di-content-main">
+    <input type="hidden" name="userEntityId" value="#{muikkuSession.loggedUserEntity.id}"/>
+    <input type="hidden" name="workspaceEntityId" value="#{workspaceDiscussionsBackingBean.workspaceEntityId}"/>
+    <input type="hidden" name="areaPermissions" value="#{workspaceDiscussionsBackingBean.areaPermissions}"/>
+    <main id="content">
       <section>
         <h1 class="workspace-generic-view-title ">#{i18n.text['plugin.workspace.discussions.pageTitle']} - #{workspaceDiscussionsBackingBean.workspaceName}</h1>
         <div class="mf-content-functions flex-row flex-align-items-center">
