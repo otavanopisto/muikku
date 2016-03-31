@@ -466,11 +466,13 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}/materialProducers")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorkspaceMaterialProducers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    // TODO: Security
-    
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     return Response
@@ -482,11 +484,13 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}/materialProducers/{ID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteWorkspaceMaterialProducer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") Long workspaceMaterialProducerId) {
-    // TODO: Security
-    
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     WorkspaceMaterialProducer materialProducer = workspaceController.findWorkspaceMaterialProducer(workspaceMaterialProducerId);
