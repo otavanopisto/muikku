@@ -264,6 +264,8 @@
         loader.remove();
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          window.location.reload(true);
         }
       });
     }
