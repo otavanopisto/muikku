@@ -17,12 +17,12 @@ body[class^='workspace'] {
        Use this class if there is no need for specific titles and layouts
      */
     h1.workspace-generic-view-title { 
-      padding:30px;
+      padding:20px;
       margin:0; 
     }
     
     h2.workspace-generic-title { 
-      padding:10px 30px;
+      padding:10px 20px;
       margin:0; 
     }
     
@@ -32,7 +32,7 @@ body[class^='workspace'] {
     
     h1.page-title {
       font-size:25px;
-      padding:30px;
+      padding:20px;
       margin:0;
       
       text-transform:uppercase;
@@ -535,7 +535,7 @@ body[class^='workspace'] {
   }
   
   h1 {
-    font-size:29px;
+    font-size:30px;
   }
     
   h2 { /* Page title */

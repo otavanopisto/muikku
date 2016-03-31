@@ -213,8 +213,6 @@ class WorkspaceSchoolDataController {
   }
 
   public List<WorkspaceType> listWorkspaceTypes() {
-    // TODO: This method WILL cause performance problems, replace with something more sensible 
-    
     List<WorkspaceType> result = new ArrayList<>();
     
     for (WorkspaceSchoolDataBridge workspaceBridge : getWorkspaceBridges()) {

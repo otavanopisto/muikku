@@ -10,13 +10,22 @@ public class WorkspaceDetails {
   public WorkspaceDetails() {
   }
 
-  public WorkspaceDetails(DateTime beginDate, DateTime endDate, String externalViewUrl) {
+  public WorkspaceDetails(String typeId, DateTime beginDate, DateTime endDate, String externalViewUrl) {
     super();
+    this.typeId = typeId;
     this.beginDate = beginDate;
     this.endDate = endDate;
     this.externalViewUrl = externalViewUrl;
   }
 
+  public String getTypeId() {
+    return typeId;
+  }
+  
+  public void setTypeId(String typeId) {
+    this.typeId = typeId;
+  }
+  
   public String getExternalViewUrl() {
     return externalViewUrl;
   }
@@ -33,6 +42,8 @@ public class WorkspaceDetails {
     return endDate;
   }
 
+  private String typeId;
+  
   private String externalViewUrl;
   
   @JsonSerialize(using=DateTimeSerializer.class)

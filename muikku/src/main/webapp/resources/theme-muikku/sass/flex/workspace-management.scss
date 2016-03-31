@@ -1,0 +1,184 @@
+@import "_vars.scss";
+@import "_styles.scss";
+@import "_jquery.datepicker.scss";
+
+body {
+  padding:60px 0 75px 0;
+  
+  .loading {
+    position:fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    background:#000;
+    opacity:0.7;
+    z-index:9999;
+  
+    &:before {
+      @include generic-loader(50px);
+      position:absolute;
+      left:50%;
+      top:50%;
+      margin:-25px 0 0 -25px;
+    }
+    
+  }
+  
+}
+
+#content {
+  background:#fff;
+  padding:0px;
+}
+
+h1.workspace-generic-view-title {
+  font-weight:300;
+  font-size:30px;
+  padding:20px;
+  margin:0;
+}
+
+h2.workspace-management-generic-title {
+  margin:0;
+  padding:10px 20px;
+  font-weight:300;
+  text-transform:uppercase;
+  background:#eaf8fe;
+}
+
+.workspace-management-name {
+  
+  input {
+    font-size:26px;
+    font-weight:300;
+  }
+  
+}
+
+.workspace-management-container {
+  padding:0 20px 0 20px;
+  margin:20px 0;
+  position:relative;
+
+  img {
+    width:100%;
+    display:block;
+    line-height:1;
+  }
+  
+  select {
+    padding:5px 20px 5px 5px;
+  }
+  
+  textarea {
+    width:100%;
+    box-sizing:border-box;
+    height:100px;
+  }
+  
+  input.workspace-length {
+    width:60px;
+    text-align:center;
+  }
+  
+}
+
+.additionalinfo-title label {
+  text-transform:uppercase;
+  font-weight:400;
+}
+
+.additionalinfo-data {
+  
+}
+
+.teacher-data {
+  display:inline-block;
+  margin:0 10px 0 0;
+}
+
+.workspace-management-image-actions {
+  position:absolute;
+  right:30px;
+  bottom:10px;
+  
+  .workspace-management-image-edit,
+  .workspace-management-image-delete {
+    display:inline-block;
+    margin:0 5px;
+
+    &:before {
+      border-radius:100%;
+      box-shadow:0 0 10px rgba(0, 0, 0, 0.2);
+      color:#fff;
+      display:block;
+      font-size:20px;
+      height:20px;
+      line-height:1;
+      padding:8px;
+      text-align:center;
+      width:20px;
+      border:2px solid #fff;
+      cursor:pointer;
+    }
+  
+  }
+  
+  .workspace-management-image-edit.icon-edit:before {
+    background:#23a6de;
+  }
+  
+  .workspace-management-image-delete.icon-delete:before {
+    background:#de2323;
+  }
+  
+}
+
+/* FOOTER FOR SAVING CHANGES */
+.workspace-management-footer {
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  
+  background:#233740;
+  opacity:0.95;
+  z-index:99;
+  
+  .workspace-management-footer-actions-container {
+    margin:10px auto;
+    min-width:200px;
+    max-width:960px;
+    text-align:center;
+    
+    
+    button {
+      border:0;
+      padding:6px 12px;
+      text-transform:uppercase;
+      font-size:18px;
+      font-weight:300;
+      color:#fff;
+      margin:0 10px;
+      cursor:pointer;
+      
+      &.save {
+        background:#27b91c;
+      }
+      
+      &.cancel {
+        background:#7391a7;
+      }
+      
+    }
+    
+  }
+  
+}
+
+footer#footer {
+  display:none;
+}
+
+

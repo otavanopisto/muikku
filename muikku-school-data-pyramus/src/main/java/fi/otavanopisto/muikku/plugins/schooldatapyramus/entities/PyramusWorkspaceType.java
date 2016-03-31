@@ -1,30 +1,21 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.AbstractWorkspaceType;
 
-public class PyramusWorkspaceType implements WorkspaceType {
+public class PyramusWorkspaceType extends AbstractWorkspaceType {
 	
-	public PyramusWorkspaceType(String identifier, String name) {
-		this.identifier = identifier;
-		this.name = name;
-	}
-	
-	@Override
+  public PyramusWorkspaceType() {
+    super();
+  }  
+  
+	public PyramusWorkspaceType(SchoolDataIdentifier identifier, String name) {
+    super(identifier, name);
+  }
+
+  @Override
 	public String getSchoolDataSource() {
 		return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
 	}
-	
-	@Override
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-	
-	private String identifier;
-	private String name;
 }

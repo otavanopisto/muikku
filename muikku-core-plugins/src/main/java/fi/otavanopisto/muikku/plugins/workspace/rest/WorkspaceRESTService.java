@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -85,10 +86,11 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -176,6 +178,14 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Inject
   private CopiedWorkspaceEntityFinder copiedWorkspaceEntityFinder;
   
+  @GET
+  @Path("/workspaceTypes")
+  @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
+  public Response listWorkspaceTypes() {
+    List<WorkspaceType> types = workspaceController.listWorkspaceTypes();  
+    return Response.ok(createRestModel(types.toArray(new WorkspaceType[0]))).build();
+  }
+
   @POST
   @Path("/workspaces/")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -427,8 +437,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspace == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+    
+    String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
 
-    return Response.ok(new WorkspaceDetails(workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
+    return Response.ok(new WorkspaceDetails(typeId, workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
   }
   
   @PUT
@@ -453,13 +465,27 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("externalViewUrl is read-only property").build();
     }
     
-    if (!isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) || !isEqualDateTime(workspace.getEndDate(), payload.getEndDate())) {
+    SchoolDataIdentifier typeIdentifier = null;    
+    if (payload.getTypeId() != null) {
+      typeIdentifier = SchoolDataIdentifier.fromId(payload.getTypeId());
+      if (typeIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invlid typeId %s", payload.getTypeId())).build();
+      }
+    }
+    
+    if (!isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) || 
+        !isEqualDateTime(workspace.getEndDate(), payload.getEndDate()) ||
+        !Objects.equals(typeIdentifier, workspace.getWorkspaceTypeId())) {
       workspace.setBeginDate(payload.getBeginDate());
       workspace.setEndDate(payload.getEndDate());
+      workspace.setWorkspaceTypeId(typeIdentifier);
       workspaceController.updateWorkspace(workspace);
     }
-      
-    return Response.ok(new WorkspaceDetails(workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
+    
+
+    String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
+
+    return Response.ok(new WorkspaceDetails(typeId, workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
   }
   
   private boolean isEqualDateTime(DateTime dateTime1, DateTime dateTime2) {
@@ -507,8 +533,11 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     if ((payload.getDescription() != null) || (payload.getName() != null)) {
       try {
-        if ((!StringUtils.equals(payload.getName(), workspace.getName())) || (!StringUtils.equals(payload.getDescription(), workspace.getDescription()))) {
+        if ((!StringUtils.equals(payload.getName(), workspace.getName())) || 
+            (!StringUtils.equals(payload.getDescription(), workspace.getDescription())) || 
+            (!StringUtils.equals(payload.getNameExtension(), workspace.getNameExtension()))) {
           workspace.setName(payload.getName());
+          workspace.setNameExtension(payload.getNameExtension());
           workspace.setDescription(payload.getDescription());
           workspace = workspaceController.updateWorkspace(workspace);
         }
@@ -1267,6 +1296,16 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
   
+  private List<fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceType> createRestModel(WorkspaceType... types) {
+    List<fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceType> result = new ArrayList<>();
+    
+    for (WorkspaceType type : types) {
+      result.add(new fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceType(type.getIdentifier().toId(), type.getName()));
+    }
+    
+    return result;
+  }
+  
   private List<WorkspaceMaterialReply> createRestModel(fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply... entries) {
     List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply> result = new ArrayList<>();
 
@@ -1333,6 +1372,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
+    
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
         workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, nameExtension, description, numVisits, lastVisit);
   }

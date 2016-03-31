@@ -24,6 +24,15 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-settings:before {
+    content: "\f013";
+}
+.icon-edit-materials:before {
+    content: "\f044";
+}
+.icon-permissions:before {
+    content: "\f049";
+}
 .icon-error:before {
     content: "\e904";
 }
@@ -47,9 +56,6 @@
 }
 .icon-goback:before {
     content: "\e60f";
-}
-.icon-manage-materials:before {
-    content: "\e63c";
 }
 .icon-week:before {
     content: "\e600";
@@ -266,12 +272,6 @@
 }
 .icon-correct-answers:before {
     content: "\e642";
-}
-.icon-edit-index:before {
-    content: "\e640";
-}
-.icon-edit-help:before {
-    content: "\e641";
 }
 .icon-spinner:before {
     content: "\e900";
