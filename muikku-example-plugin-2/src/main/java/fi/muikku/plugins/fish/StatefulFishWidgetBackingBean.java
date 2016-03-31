@@ -1,4 +1,4 @@
-package fi.muikku.plugins.fish;
+package fi.otavanopisto.muikku.plugins.fish;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;

@@ -13,11 +13,11 @@
   </application>
 
   <lifecycle>
-    <phase-listener>fi.muikku.jsf.PostRedirectMessagesSupport</phase-listener>
+    <phase-listener>fi.otavanopisto.muikku.jsf.PostRedirectMessagesSupport</phase-listener>
   </lifecycle>
 
   <factory>
-    <exception-handler-factory>fi.muikku.errors.ExceptionHandlerFactory</exception-handler-factory>
+    <exception-handler-factory>fi.otavanopisto.muikku.errors.ExceptionHandlerFactory</exception-handler-factory>
   </factory>
 
 </faces-config>
