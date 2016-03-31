@@ -12,9 +12,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage_;
-import fi.otavanopisto.muikku.plugins.communicator.model.InboxCommunicatorMessage_;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
@@ -22,7 +19,10 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage_;
 import fi.otavanopisto.muikku.plugins.communicator.model.InboxCommunicatorMessage;
+import fi.otavanopisto.muikku.plugins.communicator.model.InboxCommunicatorMessage_;
 
 
 public class InboxCommunicatorMessageDAO extends CorePluginsDAO<InboxCommunicatorMessage> {
@@ -179,8 +179,7 @@ public class InboxCommunicatorMessageDAO extends CorePluginsDAO<InboxCommunicato
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), recipient.getId()),
-            criteriaBuilder.equal(msgJoin.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId),
-            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
+            criteriaBuilder.equal(msgJoin.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId)
         )
     );
     
