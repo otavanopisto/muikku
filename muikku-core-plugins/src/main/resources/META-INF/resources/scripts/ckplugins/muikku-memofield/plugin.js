@@ -149,7 +149,7 @@
           {
             id: 'example',
             type: 'textarea',
-            label: 'humppa' + editor.lang['muikku-memofield'].propertiesDialogExample,
+            label: editor.lang['muikku-memofield'].propertiesDialogExample,
             setup: function(json) {
               this.setValue(json.example);
             }
