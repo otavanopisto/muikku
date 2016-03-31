@@ -1,16 +1,17 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.cache;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -23,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.webhook.WebhookNotificationEvent;
 
 @ApplicationScoped
-@Singleton
 public class EntityCacheEvictor {
   
   @Inject
@@ -34,15 +34,23 @@ public class EntityCacheEvictor {
 
   @PostConstruct
   public void init() {
-    caches = new ArrayList<>();
+    caches = Collections.synchronizedSet(new HashSet<AbstractEntityCache>());
   }
   
   public void addCache(AbstractEntityCache cache) {
-    caches.add(cache);
+    try {
+      caches.add(cache);
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Failed to add cache to entity cache evictor", e);
+    }
   }
   
   public void removeCache(AbstractEntityCache cache) {
-    caches.remove(cache);
+    try {
+      caches.remove(cache);
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Failed to remove cache from entity cache evictor", e);
+    }
   }
 
   public void evictPath(String path) {
@@ -111,6 +119,6 @@ public class EntityCacheEvictor {
     }
   }
   
-  private List<AbstractEntityCache> caches;
+  private Set<AbstractEntityCache> caches;
 
 }
