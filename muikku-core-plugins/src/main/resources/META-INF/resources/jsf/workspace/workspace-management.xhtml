@@ -129,15 +129,6 @@
               </div>
             </div>
           </div>
-          
-          <div class="flex-row">
-            <div class="additionalinfo-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-              <label>#{i18n.text['plugin.workspace.management.additionalInfo.description']}</label>
-            </div>
-            <div class="additionalinfo-data lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-              <textarea name="workspace-description" class="ckeditor-field workspace-description"></textarea>
-            </div>
-          </div>
 
         </div>
       </div>
@@ -167,6 +158,15 @@
         <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceProducersSectionTitle']}</h2>
         <div class="workspace-management-container workspace-material-producers">
           <input type="text" class="workspace-material-producer-add"/>
+        </div>
+      </div>
+    </section>
+    
+    <section class="flex-row workspace-management-description">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.descriptionSectionTitle']}</h2>
+        <div class="workspace-management-container">
+          <textarea name="workspace-description" class="ckeditor-field workspace-description"></textarea>
         </div>
       </div>
     </section>
