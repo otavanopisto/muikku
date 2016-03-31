@@ -144,12 +144,12 @@
             { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
             '/',
             { name: 'styles', items : [ 'Styles','Format' ] },
-            { name: 'insert', items : [ 'Image','oembed','Mathjax','Table','Iframe','SpecialChar' ] },
+            { name: 'insert', items : [ 'Image','oembed','Mathjax','Table','Iframe','SpecialChar', 'CreateDiv' ] },
             { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
             { name: 'colors', items : [ 'TextColor','BGColor' ] },
             '/',
             { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']},
-            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote', '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },          
+            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },          
             { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] }
           ],
         }

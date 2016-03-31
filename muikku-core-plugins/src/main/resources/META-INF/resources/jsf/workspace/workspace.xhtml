@@ -27,9 +27,11 @@
     <header class="flex-row workspace-header-wrapper">
       <div class="workspace-header-container lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-16 no-margin-bottom">
         <h1 class="workspace-title">#{workspaceIndexBackingBean.workspaceName}</h1>
-        <div class="workspace-study-level-indicator indicator1">
-          <div class="workspace-study-level-text">#{workspaceIndexBackingBean.educationType}</div>
-        </div>
+        <ui:fragment rendered="#{workspaceIndexBackingBean.educationType ne null}">
+          <div class="workspace-study-level-indicator indicator1">
+            <div class="workspace-study-level-text">#{workspaceIndexBackingBean.educationType}</div>
+          </div>
+        </ui:fragment>
         <ui:fragment rendered="#{workspaceIndexBackingBean.workspaceNameExtension ne null}">
           <div class="workspace-additional-info-wrapper"><span>#{workspaceIndexBackingBean.workspaceNameExtension}</span></div>
         </ui:fragment>

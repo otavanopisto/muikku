@@ -206,11 +206,13 @@ div.workspace-dock-navi-button-workspace-management {
     position:absolute;
     background:#4c6669;
     z-index:99;
-    left:-7px;
-    top:-4px;
+    left:55px;
+    top:0;
     padding:10px;
     text-align:left;
-    border-radius:3px;
+    border-bottom-left-radius:3px;
+    border-top-right-radius:3px;
+    border-bottom-right-radius:3px;
   }
   
 }
@@ -221,15 +223,19 @@ div.workspace-dock-navi-button-workspace-management > div.icon-cogs {
   color:#fff;
   text-decoration:none;
   background:transparent;
-  padding:6px;
-  margin:4px;
+  padding:10px 6px;
   display:inline-block;
   position:relative;
-  width:34px;
+  width:100%;
+  box-sizing:border-box;
   border-radius:3px;
   
   &:hover {
     background:#4c6669;
+    border-top-left-radius:3px;
+    border-bottom-left-radius:3px;
+    border-top-right-radius:0px;
+    border-bottom-right-radius:0px;
 
     .navmore-container {
       display:block;

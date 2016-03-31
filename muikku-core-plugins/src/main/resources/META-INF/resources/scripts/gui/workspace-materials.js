@@ -2,7 +2,7 @@
   'use strict';
   
    function scrollToPage(workspaceMaterialId, animate) {
-    var topOffset = 100;
+    var topOffset = 90;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
     if (animate) {
       $(window).data('scrolling', true);

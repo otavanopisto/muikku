@@ -205,6 +205,19 @@
     
   }
   
+  /* Records */
+  
+  .tr-item-header-detail.grade {
+    height:30px;
+    padding:0 !important;
+    width:5px;
+    
+    > span {
+      display:none;
+    }
+    
+  }
+  
   .flex-dialog {
   
     .ui-dialog {

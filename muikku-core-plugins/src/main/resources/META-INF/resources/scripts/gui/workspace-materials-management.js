@@ -1462,7 +1462,7 @@
                 newPage.empty();
                 $(document).muikkuMaterialLoader('loadMaterial', newPage);
                 // TODO Concurrency? Has the material been loaded before edit?
-                editPage(newPage);
+                //editPage(newPage);
               } 
             }, this));
           }, newPage));
@@ -1516,7 +1516,7 @@
             newPage.empty();
             $(document).muikkuMaterialLoader('loadMaterial', newPage);
             // TODO Concurrency? Has the material been loaded before edit?
-            editPage(newPage);
+            //editPage(newPage);
           } 
         }, this));
       });
