@@ -1,4 +1,4 @@
-package fi.muikku.plugins.fish.model;
+package fi.otavanopisto.muikku.plugins.fish.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

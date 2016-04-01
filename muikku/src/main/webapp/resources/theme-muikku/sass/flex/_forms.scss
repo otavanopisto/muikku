@@ -5,12 +5,12 @@ form * {
 }
 
 input[type="text"],
+input[type="date"],
 input[type="password"],
 textarea {   
   font-weight:300;
   font-family:"Open Sans", Arial, sans-serif;
   border-radius:2px;
-  padding:10px;
   font-size:18px;     
   border:1px solid $formBorderColor;
   color:$formFontColor;
@@ -43,7 +43,10 @@ input[type="radio"] {
 }
 
 select {
- 
+  color:$formFontColor;
+  font-size:16px;    
+  font-weight:300;
+  font-family:"Open Sans", Arial, sans-serif;
 }
 
 label {

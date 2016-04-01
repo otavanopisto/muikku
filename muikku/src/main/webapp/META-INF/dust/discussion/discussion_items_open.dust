@@ -1,0 +1,8 @@
+<div class="mf-items-toolbar"> 
+   <div class="mf-items-tool icon-goback" data-from-view="{threads.fromView}"></div>
+   <div class="clear"></div>
+</div>
+{#.}
+    {>"discussion/discussion_item_open.dust"/}  
+{/.}
+

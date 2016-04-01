@@ -2,8 +2,6 @@
   <div id="crsId-{id}" class="mf-item foldable cp-course ft-01 {@select key=published}{@eq value="false" type="boolean"}not-published{/eq}{/select}">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
-
-    
     <div class="mf-item-details cp-course-details flex-row" {?evaluationHasFee}data-fee="yes"{/evaluationHasFee}>
       <div class="mf-item-details-container cp-course-details-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">       
         <div class="mf-item-description cp-course-description flex-row">

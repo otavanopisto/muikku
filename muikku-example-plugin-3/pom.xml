@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>fi.muikku</groupId>
+    <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
@@ -153,7 +153,7 @@
                 <processor>fi.tranquil.TranquilModelAnnotationProcessor</processor>
               </processors>
               <optionMap>
-                <lookupPackage>fi.muikku.plugins.coreplugins</lookupPackage>
+                <lookupPackage>fi.otavanopisto.muikku.plugins.coreplugins</lookupPackage>
               </optionMap>
             </configuration>
           </execution>
@@ -196,7 +196,7 @@
     <!-- Core provided dependencies -->
   
     <dependency>
-      <groupId>fi.muikku</groupId>
+      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>plugin</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -217,7 +217,7 @@
 
 
 	<dependency>
-		<groupId>fi.muikku</groupId>
+		<groupId>fi.otavanopisto.muikku</groupId>
 		<artifactId>persistence</artifactId>
 	</dependency>
   </dependencies>

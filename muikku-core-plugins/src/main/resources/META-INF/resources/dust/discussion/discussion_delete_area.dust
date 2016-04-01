@@ -1,39 +1,31 @@
-<div class="mf-form di-createarea-form-container wide" id="{id}">
-  <div class="di-area-create">
-    
+<div class="mf-form di-deletearea-form-container flex-row" id="{id}">
+  <div class="di-area-create lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
     <form>
-      <div class="mf-form-header"><h3>{#localize key="plugin.discussion.deletearea.topic"/}</h3></div>
-<!--       <div class="mf-form-info">{#localize key="plugin.discussion.deletearea.info"/}</div> -->
-      <div class="mf-content">
-          <div class="di-area-new-body">
-            <div class="mf-fieldRow">
-              <div id="areaSelect" class="mf-select">
-                <select id="forumAreaIdSelect" name="forumAreaId">
-                 <option>{#localize key="plugin.discussion.deletearea.selectarea"/}</option>
-                 {#.}
-                <!--  TODO: removing an area with threads -->
-                <!-- <option value="{id}">{name} ( {@ne key=numThreads value=0}{#localize key="plugin.discussion.deletearea.threads" arg0=numThreads /}{:else}{#localize key="plugin.discussion.deletearea.nothreads" /}{/ne} )</option> -->
-                  {@eq key=numThreads value=0}
-                    <option value="{id}">{name}</option>
-                  {:else}
-                    <option disabled="disabled">{name} ({#localize key="plugin.discussion.deletearea.noremove" arg0=numThreads /})</option>
-                  {/eq}
-                 {:else}
-                   <option>{#localize key="plugin.discussion.selectarea.empty" /}</option>
-                 {/.}
-                </select>
-              </div>      
-            </div>
-          </div>
+      <div class="mf-form-header flex-row"><h3>{#localize key="plugin.discussion.deletearea.topic"/}</h3></div>
+      <div class="mf-content flex-row">
+        <div class="di-area-new-body lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+          <div id="areaSelect" class="mf-select">
+            <select id="forumAreaIdSelect" name="forumAreaId">
+             <option>{#localize key="plugin.discussion.deletearea.selectarea"/}</option>
+             {#.}
+            <!--  TODO: removing an area with threads -->
+            <!-- <option value="{id}">{name} ( {@ne key=numThreads value=0}{#localize key="plugin.discussion.deletearea.threads" arg0=numThreads /}{:else}{#localize key="plugin.discussion.deletearea.nothreads" /}{/ne} )</option> -->
+              {@eq key=numThreads value=0}
+                <option value="{id}">{name}</option>
+              {:else}
+                <option disabled="disabled">{name} ({#localize key="plugin.discussion.deletearea.noremove" arg0=numThreads /})</option>
+              {/eq}
+             {:else}
+               <option>{#localize key="plugin.discussion.selectarea.empty" /}</option>
+             {/.}
+            </select>
+          </div>    
+       </div>   
        </div>
-  
-       <div class="mf-toolbar">
+       <div class="mf-toolbar flex-row">
         <input type="button" name="send" value='{#localize key="plugin.discussion.deletearea.send"/}'/>
         <input type="button" name="cancel" value='{#localize key="plugin.discussion.deletearea.cancel"/}'/>
       </div>   
     </form>
-  
-  
   </div>
-  
 </div>

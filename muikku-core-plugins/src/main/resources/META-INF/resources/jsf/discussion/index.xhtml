@@ -1,16 +1,87 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"  
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-  template="./templates/discussion_base.xhtml">
-
-
-  <ui:define name="content.center.widget">
-    <m:widget name="discussion-messages" size="24" /> 
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-functionality.xhtml">
+  
+  <ui:param name="activeTrail" value="discussion"/>
+  
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/mainfunctions.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.klass/0.1a/jquery.klass-0.1a.js"/>
+    <script defer="defer" type="text/javascript" src="/scripts/gui/socialnavigation.js"/>   
+    <script defer="defer" jsf:name="/scripts/gui/discussion.js"/>    
   </ui:define>
-     
+  
+  <ui:define name="main-functionality-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/discussion.css"/>
+  </ui:define>  
+  
+  <ui:define name="mf-content-master"> 
+    <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
+    <input type="hidden" name="areaPermissions" value="#{forumBackingBean.areaPermissions}"/>  
+    <div id="discussion">
+      <ui:insert name="mf-content-functions">
+        <div class="mf-content-functions flex-row flex-align-items-center">
+          <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-6 sm-flex-order-1 sm-flex-cell-first">
+            <div class="mf-primary-function">
+              <div class="di-new-message-button mf-primary-function-content">
+                <span class="mf-primary-function-text">#{i18n.text['plugin.communicator.newMessage']}</span>
+              </div>
+            </div>            
+          </div>
+          <div class="mf-controls-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-10 sm-flex-order-2 sm-flex-cell-last">
+            <div class="di-content-functions flex-row">
+              <div class="di-browse-areas-container lg-flex-cell-5 md-flex-cell-5 sm-flex-cell-16 flex-cell-first">
+                <select id="discussionAreaSelect" name="areas"> 
+                </select>
+              </div>
+              <div class="di-admin-tools lg-flex-hide md-flex-hide flex-left">
+                <div class="mf-tools-mobile">
+                  <div class="mf-tools-mobile-activate icon-navicon">
+                    <div class="mf-tools-mobile-list">
+                      <div class="mf-tool-container di-new-area-container">
+                        <div class="mf-tool di-new-area-button icon-add" title="#{i18n.text['plugin.discussion.createarea.topic']}"></div>
+                      </div>
+                      <div class="mf-tool-container di-edit-area-container">
+                        <div class="mf-tool di-edit-area-button icon-edit" title="#{i18n.text['plugin.discussion.editarea.topic']}"></div>
+                      </div>
+                      <div class="mf-tool-container di-delete-area-container">
+                        <div class="mf-tool di-delete-area-button icon-delete" title="#{i18n.text['plugin.discussion.deletearea.topic']}"></div>
+                      </div>
+                    </div>                  
+                  </div>                  
+                </div>
+              </div>              
+              <div class="di-admin-tools lg-flex-cell-11 md-flex-cell-11 sm-flex-cell-11 sm-flex-hide flex-left">
+                <div class="mf-tool-container di-new-area-container">
+                  <div class="mf-tool di-new-area-button icon-add" title="#{i18n.text['plugin.discussion.createarea.topic']}"></div>    
+                </div>             
+                <div class="mf-tool-container di-edit-area-container">
+                  <div class="mf-tool di-edit-area-button icon-edit" title="#{i18n.text['plugin.discussion.editarea.topic']}"></div>    
+                </div>
+                <div class="mf-tool-container di-delete-area-container">
+                  <div class="mf-tool di-delete-area-button icon-delete" title="#{i18n.text['plugin.discussion.deletearea.topic']}"></div>    
+                </div>               
+              </div>
+            </div>
+          </div>      
+        </div>
+      </ui:insert>
+      <ui:insert name="mf-content-area">
+        <div class="mf-content-area flex-row">
+          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+            <div class="di-content-main flex-row"></div>          
+          </div>
+        </div>
+      </ui:insert>
+    </div>
+  </ui:define>
+  
 </ui:composition>

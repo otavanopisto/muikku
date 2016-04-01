@@ -412,7 +412,8 @@
           materialId: data.materialId,
           embedId: data.embedId,
           readonly: data.readOnlyFields||false,
-          trackChange: false,
+          trackChange: data.meta.richedit,
+          trackKeyUp: !!!data.meta.richedit,
           canCheckAnswer: function() {
             return false;
           },
@@ -435,6 +436,9 @@
             }
           }
         });
+      if (data.meta.richedit == true) {
+        field.addClass('ckeditor-field');
+      }
       $(object).replaceWith(field);
     }
   });
@@ -930,6 +934,8 @@
         
     $(data.pageElement).find('.js-lazyyt').lazyYT();
     
+    $(data.pageElement).find('.ckeditor-field').muikkuRichMemoField();
+
     var maxFileSize = null;
     if ($("input[name='max-file-size']").length) {
       maxFileSize = Number($("input[name='max-file-size']").val());
