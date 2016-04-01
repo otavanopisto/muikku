@@ -1,6 +1,6 @@
 
 
-  <div class="di-messages-pages lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+  <div class="di-messages-pages">
       {?.}
         {>"discussion/discussion_page.dust"/}  
       {:else}
@@ -8,4 +8,4 @@
       {/.}  
   </div>
 
-
+  <div class="clear"></div>
