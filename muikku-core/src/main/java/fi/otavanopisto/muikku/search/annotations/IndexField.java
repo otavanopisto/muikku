@@ -11,5 +11,6 @@ public @interface IndexField {
 
   String name() default "";
   boolean skip() default false;
+  boolean toId() default false;
   
 }
