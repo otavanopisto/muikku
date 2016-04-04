@@ -104,15 +104,25 @@ public class IndexEntityProcessor {
 
   private boolean isIndexable(Object entity) {
     if (entity != null) {
-      if (entity.getClass().isAnnotationPresent(Indexable.class))  {
+      return isIndexable(entity.getClass()); 
+    }
+    
+    return false;
+  }
+
+  private boolean isIndexable(Class<?> clazz) {
+    if (clazz.isAnnotationPresent(Indexable.class))  {
+      return true;
+    }      
+    
+    for (Class<?> entityInterface : clazz.getInterfaces()) {
+      if (entityInterface.isAnnotationPresent(Indexable.class))  {
         return true;
-      }      
-      
-      for (Class<?> entityInterface : entity.getClass().getInterfaces()) {
-        if (entityInterface.isAnnotationPresent(Indexable.class))  {
-          return true;
-        }     
-      }
+      }     
+    }
+    
+    if ((clazz.getSuperclass() != null) && (!Object.class.equals(clazz))) {
+      return isIndexable(clazz.getSuperclass());
     }
     
     return false;
