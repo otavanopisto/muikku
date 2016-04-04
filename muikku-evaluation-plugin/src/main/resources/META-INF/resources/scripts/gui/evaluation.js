@@ -790,6 +790,7 @@
               if(studentElement.find('.workspace-evaluation-requested-date').length == 0){
                 $('<div>')
                 .attr('data-evaluation-date', workspaceAssessmentRequest.date)
+                .attr('title', getLocaleText("plugin.evaluation.studentGrid.assessmentRequested.label"))
                 .addClass('workspace-evaluation-requested-date')
                 .text(formatDate(new Date(workspaceAssessmentRequest.date)))
                 .prependTo(studentElement);
@@ -894,7 +895,9 @@
                   studentFirstName: workspaceStudent.firstName,
                   studentLastName: workspaceStudent.lastName,
                   studentStudyProgrammeName: workspaceStudent.studyProgrammeName,
-                  assessment: workspaceStudent.assessment
+                  assessment: workspaceStudent.assessment,
+                  enrollmentTime: (new Date()).getTime()
+                  
                 })
                 .appendTo(this.element.find('.evaluation-students'));
             }, this));
@@ -1127,19 +1130,18 @@
       this.element.append($('<div>').addClass('evaluation-student-picture'));
       this.element.append($('<div>').addClass('evaluation-student-name').text(this._displayName).append($('<span>').text(this._studyProgrammeName)));
       this.element.append($('<div>').addClass('evaluation-student-clickarea'));
+      this.element.prepend($('<div>').addClass('workspace-student-joined-date').text(this.options.enrollmentTime));
       
       if (this.options.assessment) {
         this.element.removeClass('workspace-evaluation-requested');
         
         var evaluatedDate = $('<div>')
           .addClass('workspace-evaluated-date')
+          .attr('title', getLocaleText("plugin.evaluation.studentGrid.evaluated.label"))
           .text(formatDate(new Date(this.options.assessment.evaluated)));
         
-        if (this.element.hasClass('workspace-evaluation-requested')) {
-          this.element.find('workspace-evaluation-requested-date').before(evaluatedDate);
-        } else {
-          evaluatedDate.prependTo(this.element);
-        }
+        evaluatedDate.prependTo(this.element);
+        
         this.element.addClass('workspace-evaluated');
         
         if(!this.options.assessment.passed){
