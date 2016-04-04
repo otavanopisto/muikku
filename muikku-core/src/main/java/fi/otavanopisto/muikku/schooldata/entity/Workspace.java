@@ -62,7 +62,7 @@ public interface Workspace extends SchoolDataEntity {
 
   public String getSubjectIdentifier();
 
-  public String getEducationTypeIdentifier();
+  public SchoolDataIdentifier getEducationTypeIdentifier();
 
   public Double getLength();
 

@@ -133,6 +133,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   public Response listWorkspaces(
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
+        @QueryParam("educationTypes") List<String> educationTypes,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
@@ -185,7 +186,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         sorts.add(new Sort("name.untouched", Sort.Order.ASC));
       }
       
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults, sorts);
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, searchString, includeUnpublished, firstResult, maxResults, sorts);
       
       schoolDataBridgeSessionController.startSystemSession();
       try {
@@ -208,11 +209,19 @@ public class CoursePickerRESTService extends PluginRESTService {
                 boolean canSignup = getCanSignup(workspaceEntity);
                 boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
                 Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
-                String educationTypeIdentifier = (String) result.get("educationTypeIdentifier");
+                String educationTypeId = (String) result.get("educationTypeIdentifier");
                 String educationTypeName = null;
                 
-                if (StringUtils.isNotBlank(educationTypeIdentifier)) {
-                  EducationType educationType = courseMetaController.findEducationType(dataSource, educationTypeIdentifier);
+                if (StringUtils.isNotBlank(educationTypeId)) {
+                  EducationType educationType = null;
+                  if (StringUtils.isNumeric(educationTypeId)) {
+                    // TODO: Remove this, just a fallback to older system
+                    educationType = courseMetaController.findEducationType(dataSource, educationTypeId);
+                  } else {
+                    SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromString(educationTypeId);
+                    educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
+                  }
+                  
                   if (educationType != null) {
                     educationTypeName = educationType.getName();
                   }

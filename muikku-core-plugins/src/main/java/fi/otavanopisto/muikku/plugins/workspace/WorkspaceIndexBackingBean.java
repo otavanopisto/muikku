@@ -108,7 +108,7 @@ public class WorkspaceIndexBackingBean {
       }
       
       WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId()); 
-      EducationType educationTypeObject = StringUtils.isBlank(workspace.getEducationTypeIdentifier()) ? null : courseMetaController.findEducationType(workspace.getSchoolDataSource(), workspace.getEducationTypeIdentifier());
+      EducationType educationTypeObject = workspace.getEducationTypeIdentifier() == null ? null : courseMetaController.findEducationType(workspace.getEducationTypeIdentifier());
       Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
       CourseLengthUnit lengthUnit = null;
       if ((workspace.getLength() != null) && (workspace.getLengthUnitIdentifier() != null)) {

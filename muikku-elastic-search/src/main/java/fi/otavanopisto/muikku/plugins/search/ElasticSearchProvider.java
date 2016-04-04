@@ -276,11 +276,11 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
-    return searchWorkspaces(schoolDataSource, subjects, identifiers, freeText, includeUnpublished, start, maxResults, null);
+    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, freeText, includeUnpublished, start, maxResults, null);
   }
   
   @Override
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts) {
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<String> educationTypes, String freeText, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts) {
     if (identifiers != null && identifiers.isEmpty()) {
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>());
     }
@@ -302,6 +302,10 @@ public class ElasticSearchProvider implements SearchProvider {
       
       if (subjects != null && !subjects.isEmpty()) {
         filters.add(FilterBuilders.termsFilter("subjectIdentifier", subjects));
+      }
+      
+      if (educationTypes != null && !educationTypes.isEmpty()) {
+        filters.add(FilterBuilders.termsFilter("educationTypeIdentifier", educationTypes));
       }
       
       if (identifiers != null) {
