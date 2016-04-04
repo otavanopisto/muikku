@@ -281,7 +281,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     if (course == null)
       return null;
     
-    String educationTypeIdentifier = null;
+    SchoolDataIdentifier educationTypeIdentifier = null;
    
     if (course.getSubjectId() != null) {
       Subject subject = pyramusClient.get("/common/subjects/" + course.getSubjectId(), fi.pyramus.rest.model.Subject.class);

@@ -275,7 +275,7 @@ public class PyramusSchoolDataEntityFactory {
 
   public Workspace createEntity(
       Course course,
-      String educationTypeIdentifier,
+      SchoolDataIdentifier educationTypeIdentifier,
       Map<String, List<String>> educationTypeCodeMap
   ) {
     if (course == null) {

@@ -1,13 +1,16 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
-import fi.otavanopisto.muikku.schooldata.entity.EducationType;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.AbstractEducationType;
 
-public class PyramusEducationType implements EducationType {
+public class PyramusEducationType extends AbstractEducationType {
 
-  public PyramusEducationType(String identifier, String name) {
-    this.name = name;
-    this.identifier = identifier;
+  public PyramusEducationType() {
+  }
+  
+  public PyramusEducationType(SchoolDataIdentifier identifier, String name) {
+    super(identifier, name);
   }
 
   @Override
@@ -15,16 +18,4 @@ public class PyramusEducationType implements EducationType {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
   }
 
-  @Override
-  public String getIdentifier() {
-    return identifier;
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  private String name;
-  private String identifier;
 }
