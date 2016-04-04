@@ -157,6 +157,10 @@ public class WorkspaceController {
   /* WorkspaceType */
 
   public WorkspaceType findWorkspaceType(SchoolDataIdentifier identifier) {
+    if (identifier == null) {
+      return null;
+    }
+    
     return workspaceSchoolDataController.findWorkspaceTypeByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
   }
   
