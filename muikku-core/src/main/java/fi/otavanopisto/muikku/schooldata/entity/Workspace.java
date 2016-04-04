@@ -5,6 +5,7 @@ import java.util.Date;
 import org.joda.time.DateTime;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.search.annotations.IndexField;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
@@ -47,6 +48,9 @@ public interface Workspace extends SchoolDataEntity {
   
   public void setEndDate(DateTime endDate);
 
+  @IndexField (
+    toId = true
+  )
   public SchoolDataIdentifier getWorkspaceTypeId();
   public void setWorkspaceTypeId(SchoolDataIdentifier workspaceTypeId);
 

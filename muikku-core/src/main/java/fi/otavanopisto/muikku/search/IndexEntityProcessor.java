@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.IndexIgnore;
@@ -57,6 +58,16 @@ public class IndexEntityProcessor {
         }
         
         Object fieldValue = indexableGetter.invoke(entity);
+        if (indexField != null && indexField.toId()) {
+          if (fieldValue != null) {
+            if (fieldValue instanceof SchoolDataIdentifier) {
+              fieldValue = ((SchoolDataIdentifier) fieldValue).toId();
+            } else {
+              logger.severe(String.format("Invalid type %s for @Indexable toId", fieldValue.getClass().getName()));
+            }
+          }
+        }
+        
         indexObject.put(fieldName, fieldValue);
       }
 
