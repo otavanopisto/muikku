@@ -286,7 +286,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("includeArchivedWorkspaceUsers") @DefaultValue ("false") Boolean includeArchivedWorkspaceUsers,
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
-        @QueryParam("educationTypes") List<String> educationTypes,
+        @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("orderBy") List<String> orderBy,
@@ -358,7 +358,19 @@ public class WorkspaceRESTService extends PluginRESTService {
         sorts.add(new Sort("name.untouched", Sort.Order.ASC));
       }
       
-      // TODO: Pagination support
+      List<SchoolDataIdentifier> educationTypes = null;
+      if (educationTypeIds != null) {
+        educationTypes = new ArrayList<>(educationTypeIds.size());
+        for (String educationTypeId : educationTypeIds) {
+          SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+          if (educationTypeIdentifier != null) {
+            educationTypes.add(educationTypeIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed education type identifier", educationTypeId)).build();
+          }
+        }
+      }
+      
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, searchString, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();

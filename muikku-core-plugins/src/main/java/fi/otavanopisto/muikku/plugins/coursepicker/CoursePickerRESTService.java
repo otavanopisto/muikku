@@ -133,7 +133,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   public Response listWorkspaces(
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
-        @QueryParam("educationTypes") List<String> educationTypes,
+        @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
@@ -186,6 +186,19 @@ public class CoursePickerRESTService extends PluginRESTService {
         sorts.add(new Sort("name.untouched", Sort.Order.ASC));
       }
       
+      List<SchoolDataIdentifier> educationTypes = null;
+      if (educationTypeIds != null) {
+        educationTypes = new ArrayList<>(educationTypeIds.size());
+        for (String educationTypeId : educationTypeIds) {
+          SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+          if (educationTypeIdentifier != null) {
+            educationTypes.add(educationTypeIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed education type identifier", educationTypeId)).build();
+          }
+        }
+      }
+      
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, searchString, includeUnpublished, firstResult, maxResults, sorts);
       
       schoolDataBridgeSessionController.startSystemSession();
@@ -218,8 +231,12 @@ public class CoursePickerRESTService extends PluginRESTService {
                     // TODO: Remove this, just a fallback to older system
                     educationType = courseMetaController.findEducationType(dataSource, educationTypeId);
                   } else {
-                    SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromString(educationTypeId);
-                    educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
+                    SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+                    if (educationTypeIdentifier == null) {
+                      logger.severe(String.format("Malformatted educationTypeIdentifier %s", educationTypeId));
+                    } else {
+                      educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
+                    }
                   }
                   
                   if (educationType != null) {

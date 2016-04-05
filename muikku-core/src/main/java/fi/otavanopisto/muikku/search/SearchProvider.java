@@ -18,7 +18,7 @@ public interface SearchProvider {
   
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults);
   
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<String> educationTypeIdentifiers, String freeText, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts);
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, String freeText, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts);
   
   public SearchResult searchWorkspaces(String searchTerm, int start, int maxResults);
   
