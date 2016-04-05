@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity_;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceVisibility;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -172,6 +173,11 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
     );
    
     return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public WorkspaceEntity updateVisibility(WorkspaceEntity workspaceEntity, WorkspaceVisibility visibility) {
+    workspaceEntity.setVisibility(visibility);
+    return persist(workspaceEntity);
   }
   
   public WorkspaceEntity updatePublished(WorkspaceEntity workspaceEntity, Boolean published) {

@@ -3,6 +3,8 @@ package fi.otavanopisto.muikku.model.workspace;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -57,6 +59,14 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
   public void setPublished(Boolean published) {
     this.published = published;
   }
+  
+  public WorkspaceVisibility getVisibility() {
+    return visibility;
+  }
+  
+  public void setVisibility(WorkspaceVisibility visibility) {
+    this.visibility = visibility;
+  }
 
   public Boolean getArchived() {
     return archived;
@@ -86,6 +96,11 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
 	@NotNull
   @Column(nullable = false)
   private Boolean published;
+	
+	@NotNull
+  @Column(nullable = false)
+  @Enumerated (EnumType.STRING)
+	private WorkspaceVisibility visibility;
   
   @NotNull
   @Column(nullable = false)
