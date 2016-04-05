@@ -8,13 +8,14 @@ public class MemoFieldMeta extends FieldMeta {
     
   }
   
-  public MemoFieldMeta(String name, Integer columns, Integer rows, String help, String hint, String example) {
+  public MemoFieldMeta(String name, Integer columns, Integer rows, String help, String hint, String example, Boolean richedit) {
     super(name);
     this.columns = columns;
     this.rows = rows;
     this.help = help;
     this.hint = hint;
     this.example = example;
+    this.richedit = richedit;
   }
 
   @Override
@@ -63,10 +64,19 @@ public class MemoFieldMeta extends FieldMeta {
     this.example = example;
   }
 
+  public Boolean getRichedit() {
+    return richedit;
+  }
+
+  public void setRichedit(Boolean richedit) {
+    this.richedit = richedit;
+  }
+
   private Integer columns;
   private Integer rows;
   private String help;
   private String hint;
   private String example;
+  private Boolean richedit;
   
 }

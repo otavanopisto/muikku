@@ -48,7 +48,7 @@ public class FieldTranslator {
   }
 
   public MemoFieldMeta translateMemoField(String name, Integer columns, Integer rows, String help, String hint) {
-    return new MemoFieldMeta(name, columns, rows, help, hint, "" /* no example */);
+    return new MemoFieldMeta(name, columns, rows, help, hint, "" /* no example */, false);
   }
 
   private String generateUniqueName(List<SelectFieldOptionMeta> options) {
