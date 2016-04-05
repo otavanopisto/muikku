@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.IndexIgnore;
@@ -57,6 +58,16 @@ public class IndexEntityProcessor {
         }
         
         Object fieldValue = indexableGetter.invoke(entity);
+        if (indexField != null && indexField.toId()) {
+          if (fieldValue != null) {
+            if (fieldValue instanceof SchoolDataIdentifier) {
+              fieldValue = ((SchoolDataIdentifier) fieldValue).toId();
+            } else {
+              logger.severe(String.format("Invalid type %s for @Indexable toId", fieldValue.getClass().getName()));
+            }
+          }
+        }
+        
         indexObject.put(fieldName, fieldValue);
       }
 
@@ -104,15 +115,25 @@ public class IndexEntityProcessor {
 
   private boolean isIndexable(Object entity) {
     if (entity != null) {
-      if (entity.getClass().isAnnotationPresent(Indexable.class))  {
+      return isIndexable(entity.getClass()); 
+    }
+    
+    return false;
+  }
+
+  private boolean isIndexable(Class<?> clazz) {
+    if (clazz.isAnnotationPresent(Indexable.class))  {
+      return true;
+    }      
+    
+    for (Class<?> entityInterface : clazz.getInterfaces()) {
+      if (entityInterface.isAnnotationPresent(Indexable.class))  {
         return true;
-      }      
-      
-      for (Class<?> entityInterface : entity.getClass().getInterfaces()) {
-        if (entityInterface.isAnnotationPresent(Indexable.class))  {
-          return true;
-        }     
-      }
+      }     
+    }
+    
+    if ((clazz.getSuperclass() != null) && (!Object.class.equals(clazz))) {
+      return isIndexable(clazz.getSuperclass());
     }
     
     return false;
