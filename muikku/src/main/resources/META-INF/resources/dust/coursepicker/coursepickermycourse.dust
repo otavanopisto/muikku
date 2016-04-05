@@ -1,0 +1,44 @@
+{#.}
+
+  <div id="crsId-{workspaceEntity.id}" class="cp-course ft-01">
+    <input type="hidden" name="workspaceId" value="{workspaceEntity.id}"/>
+    <input type="hidden" name="workspaceUrl" value="{workspaceEntity.urlName}"/>
+
+    <div class="cp-course-details" {?evaluationHasFee}data-fee="yes"{/evaluationHasFee}>
+
+      <div class="cp-course-details-container">       
+        <div class="cp-course-additionalInfo">    
+        </div>
+        <div class="cp-course-description">
+          <div class="cp-course-header-name">
+           <span class="cp-course-short"></span>
+           <span class="cp-course-long">{workspaceEntity.name}</span>
+          </div>
+          
+          <div class="cp-course-header-details">
+            {?evaluationHasFee}
+              <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
+              <span class="cp-course-fee icon-coin-euro" title='{#localize key="plugin.coursepicker.course.evaluationhasfee" /}'></span>
+            {/evaluationHasFee}           
+          </div>
+                  
+          <div id="detailsCrs-{workspaceEntity.id}" class="cp-course-content-details" style="display:none;">     
+            <div class="cp-course-description-picture"></div>
+            <div class="cp-course-description-text">{workspaceEntity.description|s}</div>          
+            <div class="cp-course-details-toolbar">
+              <input class="bt-coursepicker cp-course-tour-button" type="button" value='{#localize key="plugin.coursepicker.course.checkout" /}' />
+            </div>
+          </div>
+        </div>       
+
+        <div class="clear"></div>
+      </div> 
+    </div>
+  </div>
+ 
+{:else}
+  <div class="mf-content-empty cm-no-messages">
+    <h3>{#localize key="plugin.coursepicker.empty.topic.my"/}</h3>
+  </div>
+
+{/.}
