@@ -340,7 +340,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
       
       // TODO: Pagination support
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults, sorts);
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
@@ -622,6 +622,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
       workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
+    
+    workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
     
     // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
     workspaceIndexer.indexWorkspace(workspaceEntity);
@@ -1448,8 +1450,16 @@ public class WorkspaceRESTService extends PluginRESTService {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     
-    return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
-        workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, nameExtension, description, numVisits, lastVisit);
+    return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), 
+        workspaceEntity.getUrlName(),
+        workspaceEntity.getAccess(),
+        workspaceEntity.getArchived(), 
+        workspaceEntity.getPublished(), 
+        name, 
+        nameExtension, 
+        description, 
+        numVisits, 
+        lastVisit);
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFolder createRestModel(WorkspaceFolder workspaceFolder) {
