@@ -59,13 +59,13 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
   public void setPublished(Boolean published) {
     this.published = published;
   }
-  
-  public WorkspaceVisibility getVisibility() {
-    return visibility;
+
+  public WorkspaceAccess getAccess() {
+    return access;
   }
   
-  public void setVisibility(WorkspaceVisibility visibility) {
-    this.visibility = visibility;
+  public void setAccess(WorkspaceAccess access) {
+    this.access = access;
   }
 
   public Boolean getArchived() {
@@ -100,7 +100,7 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
 	@NotNull
   @Column(nullable = false)
   @Enumerated (EnumType.STRING)
-	private WorkspaceVisibility visibility;
+	private WorkspaceAccess access;
   
   @NotNull
   @Column(nullable = false)

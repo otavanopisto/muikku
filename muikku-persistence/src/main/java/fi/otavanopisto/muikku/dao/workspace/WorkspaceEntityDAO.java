@@ -11,7 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity_;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceVisibility;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -20,12 +20,13 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
   
 	private static final long serialVersionUID = -5129003092406973620L;
 
-	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, String urlName, Boolean published, Boolean archived) {
+	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, String urlName, WorkspaceAccess access, Boolean published, Boolean archived) {
     WorkspaceEntity workspaceEntity = new WorkspaceEntity();
     
     workspaceEntity.setDataSource(dataSource);
     workspaceEntity.setIdentifier(identifier);
     workspaceEntity.setUrlName(urlName);
+    workspaceEntity.setAccess(access);
     workspaceEntity.setArchived(archived);
     workspaceEntity.setPublished(published);
     
@@ -175,8 +176,8 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public WorkspaceEntity updateVisibility(WorkspaceEntity workspaceEntity, WorkspaceVisibility visibility) {
-    workspaceEntity.setVisibility(visibility);
+  public WorkspaceEntity updateAccess(WorkspaceEntity workspaceEntity, WorkspaceAccess access) {
+    workspaceEntity.setAccess(access);
     return persist(workspaceEntity);
   }
   
