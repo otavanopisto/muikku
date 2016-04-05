@@ -95,6 +95,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     course.setName(name);
     course.setNameExtension(nameExtension);
     course.setDescription(description);
+    course.setVariables(null);
     
     Course createdCourse = pyramusClient.post("/courses/courses/", course);
     if (createdCourse == null) {

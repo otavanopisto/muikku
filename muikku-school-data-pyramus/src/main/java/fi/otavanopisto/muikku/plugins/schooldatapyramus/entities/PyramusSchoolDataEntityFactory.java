@@ -325,6 +325,10 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public WorkspaceType createEntity(CourseType courseType) {
+    if (courseType == null) {
+      return null;
+    }
+    
     return new PyramusWorkspaceType(identifierMapper.getWorkspaceTypeIdentifier(courseType.getId()),
         courseType.getName());
   }
