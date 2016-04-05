@@ -45,15 +45,14 @@
   				<div class="workspace-journal-teacher-tools-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
   					<div class="workspace-journal-select-student-container flex-row flex-align-items-center">
   						<span class="journal-select-student-label lg-flex-cell-1 md-flex-cell-1 sm-flex-cell-1">#{i18n.text['plugin.workspace.journal.studentFilter.label']}</span>
-              <select id="studentSelectField" class="journal-select-student-selection lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-15" name="studentId">
-  							<option value="">#{i18n.text['plugin.workspace.journal.studentFilter.showAll']}</option>
-  							<ui:repeat value="#{workspaceJournalBackingBean.workspaceStudents}" var="student">
-  							  <ui:fragment rendered="#{student.selected}">
-  								  <option selected="selected" value="#{student.userEntity.id}">#{student.user.lastName}, #{student.user.firstName}</option>
-  								</ui:fragment>
-  								<ui:fragment rendered="#{not student.selected}">
-  								  <option value="#{student.userEntity.id}">#{student.user.lastName}, #{student.user.firstName}</option>
-  								</ui:fragment>
+              <select id="studentSelectField" class="journal-select-student-selection lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-15" name="studentId" size="1" jsf:value="#{null}">
+  							<option jsfc="f:selectItem" value="#{null}" itemLabel="#{i18n.text['plugin.workspace.journal.studentFilter.showAll']}" />
+  							<ui:repeat value="#{workspaceJournalBackingBean.workspaceStudents}"
+  							           var="student"
+  							           jsfc="f:selectItems"
+  							           itemLabel="#{student.user.lastName.concat(', ').concat(student.user.firstName)}"
+  							           itemValue="#{student.userEntity.id}">
+  								<option></option>
   							</ui:repeat>
   						</select>
   					</div>
