@@ -388,7 +388,7 @@ body.evaluation {
         transition:background 0.3s ease-in-out;
         
         &:hover {
-          color:#047bca;
+          box-shadow:0 0 0 5px #c1e8ff;
         }
         
         > span {
