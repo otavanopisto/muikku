@@ -28,7 +28,7 @@ import fi.otavanopisto.security.LoggedIn;
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/materials-reading", to = "/jsf/workspace/materials-reading.jsf")
 @LoggedIn
-public class WorkspaceMaterialsReadingBackingBean {
+public class WorkspaceMaterialsReadingBackingBean extends AbstractWorkspaceBackingBean {
 
   @Inject
   private Logger logger;

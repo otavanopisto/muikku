@@ -28,7 +28,7 @@ import fi.otavanopisto.security.LoggedIn;
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/helppage-management", to = "/jsf/workspace/helppage-management.jsf")
 @LoggedIn
-public class WorkspaceHelpPageManagementBackingBean {
+public class WorkspaceHelpPageManagementBackingBean extends AbstractWorkspaceBackingBean {
 
   @Inject
   private Logger logger;

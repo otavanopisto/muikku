@@ -31,7 +31,7 @@ import fi.otavanopisto.security.LoggedIn;
 @RequestScoped
 @Join (path = "/workspace/{workspaceUrlName}/discussions", to = "/jsf/workspace/discussions.jsf")
 @LoggedIn
-public class WorkspaceDiscussionsBackingBean {
+public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBean {
   
   @Parameter
   private String workspaceUrlName;
@@ -58,11 +58,11 @@ public class WorkspaceDiscussionsBackingBean {
     }
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
     }
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
 
     if (!sessionController.hasCoursePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity)) {
       return NavigationRules.ACCESS_DENIED;
@@ -91,7 +91,6 @@ public class WorkspaceDiscussionsBackingBean {
   public String getWorkspaceName() {
     return workspaceName;
   }
-  
   
   public String getWorkspaceUrlName() {
     return workspaceUrlName;

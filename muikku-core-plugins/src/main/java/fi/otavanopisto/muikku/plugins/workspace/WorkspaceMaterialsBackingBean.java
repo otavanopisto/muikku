@@ -28,8 +28,8 @@ import fi.otavanopisto.muikku.session.SessionController;
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/materials", to = "/jsf/workspace/materials.jsf")
-public class WorkspaceMaterialsBackingBean {
-
+public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean {
+  
   @Inject
   private Logger logger;
 

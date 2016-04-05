@@ -22,7 +22,7 @@ import fi.otavanopisto.security.LoggedIn;
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/users", to = "/jsf/workspace/users.jsf")
 @LoggedIn
-public class WorkspaceUsersBackingBean {
+public class WorkspaceUsersBackingBean extends AbstractWorkspaceBackingBean {
 
   @Inject
   private SessionController sessionController;
