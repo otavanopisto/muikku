@@ -2,6 +2,6 @@
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
   <sql>alter table WorkspaceEntity add access varchar(255) not null</sql>
-  <sql>update WorkspaceEntity set access = 'ANYONE'</sql>
+  <sql>update WorkspaceEntity set access = 'LOGGED_IN'</sql>
 
 </update>
