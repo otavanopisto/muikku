@@ -14,20 +14,21 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import fi.otavanopisto.muikku.jsf.NavigationController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/materials-reading", to = "/jsf/workspace/materials-reading.jsf")
-@LoggedIn
 public class WorkspaceMaterialsReadingBackingBean extends AbstractWorkspaceBackingBean {
 
   @Inject
@@ -45,7 +46,13 @@ public class WorkspaceMaterialsReadingBackingBean extends AbstractWorkspaceBacki
   @Inject
   @Named
   private WorkspaceBackingBean workspaceBackingBean;
+
+  @Inject
+  private NavigationController navigationController;
   
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
   @Inject
   private SessionController sessionController;
 
@@ -57,8 +64,7 @@ public class WorkspaceMaterialsReadingBackingBean extends AbstractWorkspaceBacki
       return NavigationRules.NOT_FOUND;
     }
 
-    WorkspaceEntity workspaceEntity = workspaceController
-        .findWorkspaceEntityByUrlName(urlName);
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
     }
@@ -68,13 +74,33 @@ public class WorkspaceMaterialsReadingBackingBean extends AbstractWorkspaceBacki
         return NavigationRules.NOT_FOUND;
       }
     }
+    
+    if (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE) {
+      if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_MATERIALS, workspaceEntity)) {
+        if (!sessionController.isLoggedIn()) {
+          return navigationController.requireLogin();
+        } else {
+          return NavigationRules.ACCESS_DENIED;
+        }
+      }
+    }
 
-    rootFolder = workspaceMaterialController
-        .findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+    rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    workspaceName = workspace.getName();
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      if (workspace == null) {
+        logger.log(Level.SEVERE, String.format("Could not find workspace for workspace entity (%d)", workspaceEntity.getId()));
+        return NavigationRules.NOT_FOUND;
+      }
+      
+      workspaceName = workspace.getName();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
     workspaceEntityId = workspaceEntity.getId();
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
     
