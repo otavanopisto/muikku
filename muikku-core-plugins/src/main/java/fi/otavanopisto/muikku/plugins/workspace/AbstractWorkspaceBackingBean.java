@@ -7,7 +7,6 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -36,16 +35,25 @@ public abstract class AbstractWorkspaceBackingBean {
       return NavigationRules.NOT_FOUND;
     }
     
-    if (workspaceEntity.getAccess() == WorkspaceAccess.MEMBERS_ONLY) {
-      if (!sessionController.isLoggedIn()) {
-        return navigationController.requireLogin();
-      }
-      
-      if (workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, sessionController.getLoggedUser()) == null) {
-        if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_MEMBERS_ONLY_WORKSPACE, workspaceEntity)) {
-          return NavigationRules.ACCESS_DENIED;
+    switch (workspaceEntity.getAccess()) {
+      case ANYONE:
+      break;
+      case LOGGED_IN:
+        if (!sessionController.isLoggedIn()) {
+          return navigationController.requireLogin();
         }
-      }
+      break;
+      case MEMBERS_ONLY:
+        if (!sessionController.isLoggedIn()) {
+          return navigationController.requireLogin();
+        }
+        
+        if (workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, sessionController.getLoggedUser()) == null) {
+          if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_MEMBERS_ONLY_WORKSPACE, workspaceEntity)) {
+            return NavigationRules.ACCESS_DENIED;
+          }
+        }
+      break;
     }
     
     return null;

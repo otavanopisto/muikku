@@ -182,6 +182,7 @@ public class CoursePickerRESTService extends PluginRESTService {
 
       List<WorkspaceAccess> accesses = new ArrayList<>(Arrays.asList(WorkspaceAccess.ANYONE));
       if (sessionController.isLoggedIn()) {
+        accesses.add(WorkspaceAccess.LOGGED_IN);
         accesses.add(WorkspaceAccess.MEMBERS_ONLY);
       }
 

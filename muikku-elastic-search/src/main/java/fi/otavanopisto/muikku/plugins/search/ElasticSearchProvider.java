@@ -308,6 +308,9 @@ public class ElasticSearchProvider implements SearchProvider {
             case ANYONE:
               accessFilters.add(FilterBuilders.termFilter("access", access));
             break;
+            case LOGGED_IN:
+              accessFilters.add(FilterBuilders.termFilter("access", access));
+            break;
             case MEMBERS_ONLY:
               IdsFilterBuilder idFilter = new IdsFilterBuilder("Workspace");
               for (SchoolDataIdentifier userWorkspace : getUserWorkspaces(accessUser)) {
