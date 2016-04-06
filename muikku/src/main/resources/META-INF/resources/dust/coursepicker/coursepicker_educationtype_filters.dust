@@ -1,12 +1,14 @@
 {?educationTypes}
-  <div class="mf-list-title"><span>{title}</span></div>
-  <ul class="mf-list-content gt-filters"> 
-    {#educationTypes}
-      <li id="{type}-{id}">
-        <a class="cp-education-type-filter" data-id="{identifier}">
-          <span>{name}</span>
-        </a></li>    
-      </li>    
-    {/educationTypes}
-  </ul>
+  <div class="mf-list-container ">
+    <div class="mf-list-title"><span>Otsikko{title}</span></div>
+    <ul class="mf-list-content cp-filters"> 
+      {#educationTypes}
+        <li id="{type}-{id}">
+          <a class="cp-education-type-filter" data-id="{identifier}">
+            <span>{name}</span>
+          </a></li>    
+        </li>    
+      {/educationTypes}
+    </ul>
+  </div>
 {/educationTypes}
