@@ -177,7 +177,8 @@
               
               var warning = $('<span>')
                 .text(getLocaleText('plugin.workspace.materials.notSignedUpWarning') + ' ')
-                .append(signUpLink);
+                .append(signUpLink)
+                .append('.');
            
               $('.notification-queue').notificationQueue('notification', 'warn', warning);
             }
