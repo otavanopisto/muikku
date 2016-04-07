@@ -227,6 +227,43 @@
       if (stateOptions['check-answers']) {
         this._checkExercises();
       }
+      
+      
+      var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(this.element).attr('data-workspace-material-id') + '"]');
+      if (tocItem) {
+        switch ($(this.element).attr('data-workspace-material-state')) {
+          case "SUBMITTED":
+            if ($(this.element).attr("data-workspace-material-assigment-type") == "EVALUATED") {
+              $(tocItem).find('.assignment').append($('<span>')
+                  .addClass('submitted')
+                  .attr("title", getLocaleText('plugin.workspace.materials.assignmentDoneTooltip'))
+              );
+            } else {
+              $(tocItem).find('.exercise').append($('<span>')
+                  .addClass('submitted')
+                  .attr("title", getLocaleText('plugin.workspace.materials.exerciseDoneTooltip'))
+              );
+            }
+            break;
+          case "WITHDRAWN":
+            $(tocItem).find('.assignment').children('span').remove();
+            break;
+          case "PASSED":
+            $(tocItem).find('.assignment').append($('<span>')
+                .addClass('evaluated-passed')
+                .attr("title", getLocaleText('plugin.workspace.materials.assignmentPassedTooltip'))
+            );
+            break;
+          case "FAILED":
+            $(tocItem).find('.assignment').append($('<span>')
+                .addClass('evaluated-failed')
+                .attr("title", getLocaleText('plugin.workspace.materials.assignmentFailedTooltip'))
+            );
+            break;
+        }
+        
+      }
+
     },
     
     _hasDisplayableAnswers: function() {

@@ -67,17 +67,17 @@
           .addClass('muikku-page-assignment-type exercise')
           .text(getLocaleText("plugin.workspace.materialsLoader.exerciseAssignmentLabel"))
       );
-      var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(page).attr('data-workspace-material-id') + '"]');
-      if (tocItem) {
-        switch ($(page).attr('data-workspace-material-state')) {
-          case "SUBMITTED":
-            $(tocItem).find('.exercise').append($('<span>')
-                .addClass('submitted')
-                .attr("title", getLocaleText('plugin.workspace.materials.exerciseDoneTooltip'))
-            );
-            break;
-        }
-      }
+//      var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(page).attr('data-workspace-material-id') + '"]');
+//      if (tocItem) {
+//        switch ($(page).attr('data-workspace-material-state')) {
+//          case "SUBMITTED":
+//            $(tocItem).find('.exercise').append($('<span>')
+//                .addClass('submitted')
+//                .attr("title", getLocaleText('plugin.workspace.materials.exerciseDoneTooltip'))
+//            );
+//            break;
+//        }
+//      }
     });
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
@@ -85,29 +85,29 @@
           .addClass('muikku-page-assignment-type assignment')
           .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
-      var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(page).attr('data-workspace-material-id') + '"]');
-      if (tocItem) {
-        switch ($(page).attr('data-workspace-material-state')) {
-          case "SUBMITTED":
-            $(tocItem).find('.assignment').append($('<span>')
-                .addClass('submitted')
-                .attr("title", getLocaleText('plugin.workspace.materials.assignmentDoneTooltip'))
-            );
-            break;
-          case "PASSED":
-            $(tocItem).find('.assignment').append($('<span>')
-                .addClass('evaluated-passed')
-                .attr("title", getLocaleText('plugin.workspace.materials.assignmentPassedTooltip'))
-            );
-            break;
-          case "FAILED":
-            $(tocItem).find('.assignment').append($('<span>')
-                .addClass('evaluated-failed')
-                .attr("title", getLocaleText('plugin.workspace.materials.assignmentFailedTooltip'))
-            );
-            break;
-        }
-      }
+//      var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(page).attr('data-workspace-material-id') + '"]');
+//      if (tocItem) {
+//        switch ($(page).attr('data-workspace-material-state')) {
+//          case "SUBMITTED":
+//            $(tocItem).find('.assignment').append($('<span>')
+//                .addClass('submitted')
+//                .attr("title", getLocaleText('plugin.workspace.materials.assignmentDoneTooltip'))
+//            );
+//            break;
+//          case "PASSED":
+//            $(tocItem).find('.assignment').append($('<span>')
+//                .addClass('evaluated-passed')
+//                .attr("title", getLocaleText('plugin.workspace.materials.assignmentPassedTooltip'))
+//            );
+//            break;
+//          case "FAILED":
+//            $(tocItem).find('.assignment').append($('<span>')
+//                .addClass('evaluated-failed')
+//                .attr("title", getLocaleText('plugin.workspace.materials.assignmentFailedTooltip'))
+//            );
+//            break;
+//        }
+//      }
     });
     
     $(window).data('initializing', false);
