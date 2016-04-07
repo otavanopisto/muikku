@@ -675,10 +675,11 @@ sup {
     text-align: center;
     text-transform:uppercase;
     display:inline-block;
-    margin:0 0 0 -36px;
+    margin:0 0 0 -26px;
     font-weight:400;
+    position:relative;
     
-    &.evaluated {
+    &.assignment {
       background: $evaluatedAssignment;
     }
     

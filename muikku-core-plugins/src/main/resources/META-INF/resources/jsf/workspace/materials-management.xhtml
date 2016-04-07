@@ -56,7 +56,7 @@
 												data-workspace-node-id="#{articleNode.workspaceMaterialId}">
 												<h:outputLink
 													value="#page-#{articleNode.workspaceMaterialId}"
-													class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+													class="#{articleNode.assignmentType eq 'EVALUATED' ? 'assignment' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
 												<span
 												class="workspace-materials-toc-itemDragHandle icon-move"></span>
 											</li>
@@ -70,7 +70,7 @@
 										class="workspace-materials-toc-item #{node.hidden ? 'item-hidden' : ''}"
 										data-workspace-node-id="#{node.workspaceMaterialId}"><h:outputLink
 											value="#page-#{node.workspaceMaterialId}"
-											class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
+											class="#{node.assignmentType eq 'EVALUATED' ? 'assignment' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
 										<span class="workspace-materials-toc-itemDragHandle icon-move"></span>
 									</li>
 								</ul>

@@ -180,10 +180,10 @@ body.workspace-materials-reading {
               text-decoration:none;
               color:#2c2c2c;
               display:block;
-/*                   @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out); */
               @include rounded(2px);
               padding:2px 8px 2px 6px;
               border-left:2px solid #e8f0f5;
+              position:relative;
               
               &:hover,
               &.active {
@@ -191,12 +191,108 @@ body.workspace-materials-reading {
                 color:#fff;
               }
 
-              &.evaluated {
+              &.assignment {
                 border-left:2px solid $evaluatedAssignment;
+                
+                /* Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room */
+                &.done,
+                &.evaluated-passed,
+                &.evaluated-failed {
+                  padding-right:20px;
+                }
+                
               }
               
               &.exercise {
                 border-left:2px solid $exerciseAssignment;
+                
+                 /* Adjust link padding when exercise is "done" so icon has more room */
+                 &.done {
+                  padding-right:20px;
+                }
+                
+              }
+              
+              /* When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed" */
+              span.done,
+              span.evaluated-passed,
+              span.evaluated-failed {
+                color:#fff;
+                position:absolute;
+                right:3px;
+                top:5px;
+                display:block;
+                height:14px;
+                width:14px;
+                border-radius:100%;
+                border:1px solid #fff;
+                line-height:1;
+              }
+              
+              /* Color and icon for "done" assignment and exercise */
+              .done:before {
+                content: "\e639";
+                background:#0099ff;
+                font-size:10px;
+                height:10px;
+                width:10px;
+                padding:2px;
+                border-radius:100%;
+                font-family:'muikku' !important;
+                speak:none;
+                font-style:normal;
+                font-weight:normal;
+                font-variant:normal;
+                text-transform:none;
+                line-height:1;
+                -webkit-font-smoothing:antialiased;
+                -moz-osx-font-smoothing:grayscale;
+                position:absolute;
+                top:0;
+              }
+              
+              /* Color and icon for "evaluated-passed" assignment */
+              .evaluated-passed:before {
+                content:"\f164";
+                background:#1ec30c;
+                font-size:10px;
+                height:10px;
+                width:10px;
+                padding:2px;
+                border-radius:100%;
+                font-family:'muikku' !important;
+                speak:none;
+                font-style:normal;
+                font-weight:normal;
+                font-variant:normal;
+                text-transform:none;
+                line-height:1;
+                -webkit-font-smoothing:antialiased;
+                -moz-osx-font-smoothing:grayscale;
+                position:absolute;
+                top:0;
+              }
+              
+              /* Color and icon for "evaluated-failed" assignment */
+              .evaluated-failed:before {
+                content:"\f165";
+                background:#ea7401;
+                font-size:10px;
+                height:10px;
+                width:10px;
+                padding:2px;
+                border-radius:100%;
+                font-family:'muikku' !important;
+                speak:none;
+                font-style:normal;
+                font-weight:normal;
+                font-variant:normal;
+                text-transform:none;
+                line-height:1;
+                -webkit-font-smoothing:antialiased;
+                -moz-osx-font-smoothing:grayscale;
+                position:absolute;
+                top:0;
               }
               
             }
@@ -233,7 +329,6 @@ body.workspace-materials-reading {
                 text-decoration:none;
                 color:#2c2c2c;
                 display:block;
-/*                     @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out); */
                 @include rounded(2px);
                 padding:2px 8px;
                 
@@ -242,11 +337,15 @@ body.workspace-materials-reading {
                   background:#596e7d;
                   color:#fff;
                 }
+                
               }
   
             }
+            
           }
+          
         }
+        
       }
     
     }
