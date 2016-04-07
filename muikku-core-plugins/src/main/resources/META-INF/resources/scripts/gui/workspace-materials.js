@@ -59,7 +59,7 @@
         window.location.hash = 'p-' + workspaceMaterialId;
       }
     }, {
-      offset: '60%'
+      offset: '0%'
     });
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
@@ -71,7 +71,7 @@
       if (tocItem) {
         switch ($(page).attr('data-workspace-material-state')) {
           case "SUBMITTED":
-            $(tocItem).append($('<span>')
+            $(tocItem).find('.exercise').append($('<span>')
                 .addClass('submitted')
                 .attr("title", getLocaleText('plugin.workspace.materials.exerciseDoneTooltip'))
             );
@@ -89,19 +89,19 @@
       if (tocItem) {
         switch ($(page).attr('data-workspace-material-state')) {
           case "SUBMITTED":
-            $(tocItem).append($('<span>')
+            $(tocItem).find('.assignment').append($('<span>')
                 .addClass('submitted')
                 .attr("title", getLocaleText('plugin.workspace.materials.assignmentDoneTooltip'))
             );
             break;
           case "PASSED":
-            $(tocItem).append($('<span>')
+            $(tocItem).find('.assignment').append($('<span>')
                 .addClass('evaluated-passed')
                 .attr("title", getLocaleText('plugin.workspace.materials.assignmentPassedTooltip'))
             );
             break;
           case "FAILED":
-            $(tocItem).append($('<span>')
+            $(tocItem).find('.assignment').append($('<span>')
                 .addClass('evaluated-failed')
                 .attr("title", getLocaleText('plugin.workspace.materials.assignmentFailedTooltip'))
             );
