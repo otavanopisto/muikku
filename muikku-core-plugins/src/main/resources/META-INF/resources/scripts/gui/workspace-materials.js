@@ -178,8 +178,23 @@
               
               var warning = $('<span>')
                 .text(getLocaleText('plugin.workspace.materials.notSignedUpWarning') + ' ')
-                .append(signUpLink);
+                .append(signUpLink)
+                .append('.');
            
+              $('.notification-queue').notificationQueue('notification', 'warn', warning);
+            }
+          }
+        });
+    }
+    else if (MUIKKU_LOGGEDINROLES.student) {
+      var workspaceEntityId = $('.workspaceEntityId').val();
+      mApi().workspace.workspaces.students
+        .read(workspaceEntityId, { studentIdentifier: MUIKKU_LOGGED_USER, archived: false })
+        .callback(function(err, result) {
+          if (!err) {
+            if (!result || !result.length) {
+              var warning = $('<span>')
+                .text(getLocaleText('plugin.workspace.materials.cannotSignUpWarning'));
               $('.notification-queue').notificationQueue('notification', 'warn', warning);
             }
           }
