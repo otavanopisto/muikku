@@ -66,13 +66,10 @@
       if (tocItem) {
         switch ($(page).attr('data-workspace-material-state')) {
           case "SUBMITTED":
-            //$(tocItem).addClass('');
-            break;
-          case "PASSED":
-            //$(tocItem).addClass('');
-            break;
-          case "FAILED":
-            //$(tocItem).addClass('');
+            $(tocItem).append($('<span>')
+                .addClass('submitted')
+                .attr("title", getLocaleText('plugin.workspace.materials.exerciseDoneTooltip'))
+            );
             break;
         }
       }
@@ -87,13 +84,22 @@
       if (tocItem) {
         switch ($(page).attr('data-workspace-material-state')) {
           case "SUBMITTED":
-            //$(tocItem).addClass('');
+            $(tocItem).append($('<span>')
+                .addClass('submitted')
+                .attr("title", getLocaleText('plugin.workspace.materials.assignmentDoneTooltip'))
+            );
             break;
           case "PASSED":
-            //$(tocItem).addClass('');
+            $(tocItem).append($('<span>')
+                .addClass('evaluated-passed')
+                .attr("title", getLocaleText('plugin.workspace.materials.assignmentPassedTooltip'))
+            );
             break;
           case "FAILED":
-            //$(tocItem).addClass('');
+            $(tocItem).append($('<span>')
+                .addClass('evaluated-failed')
+                .attr("title", getLocaleText('plugin.workspace.materials.assignmentFailedTooltip'))
+            );
             break;
         }
       }

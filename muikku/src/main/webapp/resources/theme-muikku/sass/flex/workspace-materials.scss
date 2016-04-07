@@ -213,7 +213,7 @@ nav.workspace-materials-toc-wrapper {
               border-left:2px solid $evaluatedAssignment;
               
               /* Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room */
-              &.done,
+              &.submitted,
               &.evaluated-passed,
               &.evaluated-failed {
                 padding-right:20px;
@@ -225,14 +225,14 @@ nav.workspace-materials-toc-wrapper {
               border-left:2px solid $exerciseAssignment;
               
                /* Adjust link padding when exercise is "done" so icon has more room */
-               &.done {
+               &.submitted {
                 padding-right:20px;
               }
               
             }
             
             /* When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed" */
-            span.done,
+            span.submitted,
             span.evaluated-passed,
             span.evaluated-failed {
               color:#fff;
@@ -248,7 +248,7 @@ nav.workspace-materials-toc-wrapper {
             }
             
             /* Color and icon for "done" assignment and exercise */
-            .done:before {
+            .submitted:before {
               content: "\e639";
               background:#0099ff;
               font-size:10px;
