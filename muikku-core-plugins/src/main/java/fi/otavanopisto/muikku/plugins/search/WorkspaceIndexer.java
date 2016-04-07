@@ -63,6 +63,8 @@ public class WorkspaceIndexer {
     try {
       Map<String, Object> extra = new HashMap<>();
       extra.put("published", workspaceEntity.getPublished());
+      extra.put("access", workspaceEntity.getAccess());
+      
       indexer.index(Workspace.class.getSimpleName(), workspace, extra);
     } catch (Exception e) {
       logger.warning(String.format("could not index workspace #%s/%s", workspace.getIdentifier(), workspace.getSchoolDataSource()));

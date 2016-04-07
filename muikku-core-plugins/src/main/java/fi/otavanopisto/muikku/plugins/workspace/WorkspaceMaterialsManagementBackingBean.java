@@ -29,7 +29,7 @@ import fi.otavanopisto.security.LoggedIn;
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/materials-management", to = "/jsf/workspace/materials-management.jsf")
 @LoggedIn
-public class WorkspaceMaterialsManagementBackingBean {
+public class WorkspaceMaterialsManagementBackingBean extends AbstractWorkspaceBackingBean {
 
   @Inject
   private Logger logger;

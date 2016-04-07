@@ -26,7 +26,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/help", to = "/jsf/workspace/help.jsf")
-public class WorkspaceHelpPageBackingBean {
+public class WorkspaceHelpPageBackingBean extends AbstractWorkspaceBackingBean {
 
   @Inject
   private Logger logger;
