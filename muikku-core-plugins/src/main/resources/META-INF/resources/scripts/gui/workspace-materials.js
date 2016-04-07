@@ -69,16 +69,17 @@
       );
       var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(page).attr('data-workspace-material-id') + '"]');
       if (tocItem) {
-        switch ($(page).attr('data-workspace-material-state'))
+        switch ($(page).attr('data-workspace-material-state')) {
           case "SUBMITTED":
-            //$(tocItem).addClass(...);
+            //$(tocItem).addClass('');
             break;
           case "PASSED":
-            //$(tocItem).addClass(...);
+            //$(tocItem).addClass('');
             break;
           case "FAILED":
-            //$(tocItem).addClass(...);
+            //$(tocItem).addClass('');
             break;
+        }
       }
     });
     
@@ -89,16 +90,17 @@
       );
       var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(page).attr('data-workspace-material-id') + '"]');
       if (tocItem) {
-        switch ($(page).attr('data-workspace-material-state'))
+        switch ($(page).attr('data-workspace-material-state')) {
           case "SUBMITTED":
-            //$(tocItem).addClass(...);
+            //$(tocItem).addClass('');
             break;
           case "PASSED":
-            //$(tocItem).addClass(...);
+            //$(tocItem).addClass('');
             break;
           case "FAILED":
-            //$(tocItem).addClass(...);
+            //$(tocItem).addClass('');
             break;
+        }
       }
     });
     

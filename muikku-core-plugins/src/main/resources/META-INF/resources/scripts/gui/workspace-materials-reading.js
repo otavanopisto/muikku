@@ -62,6 +62,20 @@
           .addClass('muikku-page-assignment-type exercise')
           .text(getLocaleText("plugin.workspace.materialsLoader.exerciseAssignmentLabel"))
       );
+      var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(page).attr('data-workspace-material-id') + '"]');
+      if (tocItem) {
+        switch ($(page).attr('data-workspace-material-state')) {
+          case "SUBMITTED":
+            //$(tocItem).addClass('');
+            break;
+          case "PASSED":
+            //$(tocItem).addClass('');
+            break;
+          case "FAILED":
+            //$(tocItem).addClass('');
+            break;
+        }
+      }
     });
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
@@ -69,6 +83,20 @@
           .addClass('muikku-page-assignment-type assignment')
           .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
+      var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(page).attr('data-workspace-material-id') + '"]');
+      if (tocItem) {
+        switch ($(page).attr('data-workspace-material-state')) {
+          case "SUBMITTED":
+            //$(tocItem).addClass('');
+            break;
+          case "PASSED":
+            //$(tocItem).addClass('');
+            break;
+          case "FAILED":
+            //$(tocItem).addClass('');
+            break;
+        }
+      }
     });
 
     $(window).data('initializing', false);
