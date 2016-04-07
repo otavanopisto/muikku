@@ -2,7 +2,7 @@
   {#students}
     <div class="workspace-users" data-user-id="{id}">
       <div class="workspace-users-name">{lastName}, {firstName} ({studyProgrammeName})</div>
-      <div class="workspace-users-unarchive">{#localize key="plugin.workspace.users.student.unarchiveLink.label"/}</div>
+      <div class="workspace-users-unarchive" data-user-name="{lastName}, {firstName}">{#localize key="plugin.workspace.users.student.unarchiveLink.label"/}</div>
     </div>
   {:else}
     <div class="workspace-users-empty">
