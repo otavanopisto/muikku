@@ -18,7 +18,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/profile", to = "/jsf/workspace/profile.jsf")
-public class WorkspaceProfileBackingBean {
+public class WorkspaceProfileBackingBean extends AbstractWorkspaceBackingBean {
 
   @Parameter
   private String workspaceUrlName;

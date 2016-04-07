@@ -21,6 +21,11 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
         @IndexableFieldMultiField(name = "name", type="string", index = "analyzed"),
         @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
       }
+    ),
+    @IndexableFieldOption (
+      name = "access",
+      type = "string",
+      index = "not_analyzed"
     )
   }
 )

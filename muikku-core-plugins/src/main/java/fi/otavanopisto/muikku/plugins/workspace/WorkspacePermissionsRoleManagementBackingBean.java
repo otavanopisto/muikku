@@ -36,7 +36,7 @@ import fi.otavanopisto.security.LoggedIn;
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/rolepermissions", to = "/jsf/workspace/permissions-role.jsf")
 @LoggedIn
-public class WorkspacePermissionsRoleManagementBackingBean {
+public class WorkspacePermissionsRoleManagementBackingBean extends AbstractWorkspaceBackingBean {
 
   @Parameter
   private String workspaceUrlName;

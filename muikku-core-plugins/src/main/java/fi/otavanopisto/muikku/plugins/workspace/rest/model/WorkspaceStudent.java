@@ -1,11 +1,13 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import java.util.Date;
+
 public class WorkspaceStudent {
 
   public WorkspaceStudent() {
   }
 
-  public WorkspaceStudent(String id, Long workspaceId, Long userId, String firstName, String lastName, String studyProgrammeName, Boolean archived) {
+  public WorkspaceStudent(String id, Long workspaceId, Long userId, String firstName, String lastName, String studyProgrammeName, Date enrolmentTime, Boolean archived) {
     super();
     this.id = id;
     this.workspaceId = workspaceId;
@@ -13,6 +15,7 @@ public class WorkspaceStudent {
     this.firstName = firstName;
     this.lastName = lastName;
     this.studyProgrammeName = studyProgrammeName;
+    this.enrolmentTime = enrolmentTime;
     this.setArchived(archived);
   }
 
@@ -64,6 +67,14 @@ public class WorkspaceStudent {
     this.studyProgrammeName = studyProgrammeName;
   }
   
+  public Date getEnrolmentTime() {
+    return enrolmentTime;
+  }
+  
+  public void setEnrolmentTime(Date enrolmentTime) {
+    this.enrolmentTime = enrolmentTime;
+  }
+  
   public Boolean getArchived() {
     return archived;
   }
@@ -80,6 +91,7 @@ public class WorkspaceStudent {
   private String studyProgrammeName;
   private Long workspaceId;
   private Long userId;
+  private Date enrolmentTime;
   private Boolean archived;
 
 }

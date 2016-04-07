@@ -20,7 +20,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/workspace-management", to = "/jsf/workspace/workspace-management.jsf")
-public class WorkspaceManagementBackingBean {
+public class WorkspaceManagementBackingBean extends AbstractWorkspaceBackingBean {
 
   @Parameter
   private String workspaceUrlName;

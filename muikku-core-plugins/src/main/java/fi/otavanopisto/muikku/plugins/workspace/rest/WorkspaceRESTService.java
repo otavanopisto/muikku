@@ -340,7 +340,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
       
       // TODO: Pagination support
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults, sorts);
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
@@ -623,6 +623,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
     
+    workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
+    
     // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
     workspaceIndexer.indexWorkspace(workspaceEntity);
     
@@ -725,6 +727,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           String firstName = user.getFirstName();
           String lastName = user.getLastName();
           String studyProgrammeName = user.getStudyProgrammeName();
+          DateTime enrolmentTime = workspaceUser.getEnrolmentTime();
           
           result.add(new WorkspaceStudent(workspaceUserIdentifier.toId(), 
             workspaceUserId, 
@@ -732,6 +735,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             firstName, 
             lastName, 
             studyProgrammeName,
+            enrolmentTime != null ? enrolmentTime.toDate() : null,
             userArchived));
         } else {
           logger.log(Level.SEVERE, String.format("Could not find user for identifier %s", userIdentifier));
@@ -1448,8 +1452,16 @@ public class WorkspaceRESTService extends PluginRESTService {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     
-    return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
-        workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, nameExtension, description, numVisits, lastVisit);
+    return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), 
+        workspaceEntity.getUrlName(),
+        workspaceEntity.getAccess(),
+        workspaceEntity.getArchived(), 
+        workspaceEntity.getPublished(), 
+        name, 
+        nameExtension, 
+        description, 
+        numVisits, 
+        lastVisit);
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFolder createRestModel(WorkspaceFolder workspaceFolder) {
@@ -1998,12 +2010,18 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
     
+    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, userIdentifier);
+    if (workspaceUser == null) {
+      return Response.status(Status.NOT_FOUND).entity("School data workspace user not found").build();
+    }
+    
     WorkspaceStudent workspaceStudent = new WorkspaceStudent(userIdentifier.toId(), 
         workspaceEntity.getId(), 
         workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), 
         user.getFirstName(), 
         user.getLastName(), 
         user.getStudyProgrammeName(),
+        workspaceUser.getEnrolmentTime() != null ? workspaceUser.getEnrolmentTime().toDate() : null,
         workspaceUserEntity.getArchived());
     
     return Response.ok(workspaceStudent).build();
