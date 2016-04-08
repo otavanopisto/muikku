@@ -78,11 +78,13 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialRepl
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStaffMember;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudent;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -113,6 +115,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private CourseMetaController courseMetaController;
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -185,6 +190,19 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response listWorkspaceTypes() {
     List<WorkspaceType> types = workspaceController.listWorkspaceTypes();  
     return Response.ok(createRestModel(types.toArray(new WorkspaceType[0]))).build();
+  }
+  
+  @GET
+  @Path("/educationTypes")
+  @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
+  public Response listEducationTypes() {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      List<EducationType> types = courseMetaController.listEducationTypes();
+      return Response.ok(createRestModel(types.toArray(new EducationType[0]))).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
 
   @POST
@@ -268,6 +286,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("includeArchivedWorkspaceUsers") @DefaultValue ("false") Boolean includeArchivedWorkspaceUsers,
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
+        @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("orderBy") List<String> orderBy,
@@ -339,8 +358,20 @@ public class WorkspaceRESTService extends PluginRESTService {
         sorts.add(new Sort("name.untouched", Sort.Order.ASC));
       }
       
-      // TODO: Pagination support
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
+      List<SchoolDataIdentifier> educationTypes = null;
+      if (educationTypeIds != null) {
+        educationTypes = new ArrayList<>(educationTypeIds.size());
+        for (String educationTypeId : educationTypeIds) {
+          SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+          if (educationTypeIdentifier != null) {
+            educationTypes.add(educationTypeIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed education type identifier", educationTypeId)).build();
+          }
+        }
+      }
+      
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
@@ -1380,6 +1411,16 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     for (WorkspaceType type : types) {
       result.add(new fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceType(type.getIdentifier().toId(), type.getName()));
+    }
+    
+    return result;
+  }
+  
+  private List<fi.otavanopisto.muikku.plugins.workspace.rest.EducationType> createRestModel(EducationType... types) {
+    List<fi.otavanopisto.muikku.plugins.workspace.rest.EducationType> result = new ArrayList<>();
+    
+    for (EducationType type : types) {
+      result.add(new fi.otavanopisto.muikku.plugins.workspace.rest.EducationType(type.getIdentifier().toId(), type.getName()));
     }
     
     return result;

@@ -55,6 +55,21 @@ public class SchoolDataIdentifier {
     }
     return new SchoolDataIdentifier(identifier, dataSource);
   }
+  
+  public static SchoolDataIdentifier fromString(String id) {
+    int index = id == null ? -1 : id.indexOf('/');
+    if (index == -1) {
+      return null;
+    }
+    
+    String identifier = id.substring(0, index);
+    String dataSource = id.substring(index + 1);
+    if (StringUtils.isBlank(dataSource) || StringUtils.isBlank(identifier)) {
+      return null;
+    }
+    
+    return new SchoolDataIdentifier(identifier, dataSource);
+  }
 
   private String identifier;
   private String dataSource;

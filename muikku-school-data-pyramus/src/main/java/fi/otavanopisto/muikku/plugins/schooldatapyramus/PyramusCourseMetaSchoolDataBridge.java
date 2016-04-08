@@ -14,6 +14,7 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSubject;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.CourseMetaSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.entity.CourseIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
@@ -166,10 +167,25 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
     Long educationTypeId = pyramusIdentifierMapper.getPyramusEducationTypeId(identifier);
     fi.pyramus.rest.model.EducationType restEducationType = pyramusClient.get("/common/educationTypes/" + educationTypeId, fi.pyramus.rest.model.EducationType.class);
     if (restEducationType != null) {
-      return new PyramusEducationType(identifier, restEducationType.getName());
+      return new PyramusEducationType(new SchoolDataIdentifier(identifier, getSchoolDataSource()), restEducationType.getName());
     }
     
     return null;
+  }
+
+  @Override
+  public List<EducationType> listEducationTypes() {
+    List<EducationType> result = new ArrayList<>();
+    
+    fi.pyramus.rest.model.EducationType[] types = pyramusClient.get("/common/educationTypes", fi.pyramus.rest.model.EducationType[].class);
+    if (types != null) {
+      for (fi.pyramus.rest.model.EducationType type : types) {
+        SchoolDataIdentifier identifier = pyramusIdentifierMapper.getEducationTypeIdentifier(type.getId());
+        result.add(new PyramusEducationType(identifier, type.getName())); 
+      }
+    }
+    
+    return result;
   }
   
   @Override

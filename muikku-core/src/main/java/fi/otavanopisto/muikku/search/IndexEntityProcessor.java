@@ -138,7 +138,7 @@ public class IndexEntityProcessor {
     
     return false;
   }
-
+  
   private String getEnitityId(Object entity) {
     Method method = getEntityIdMethod(entity);
     if (method != null) {

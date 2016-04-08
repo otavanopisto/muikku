@@ -137,8 +137,8 @@ public class PyramusIdentifierMapper {
     return NumberUtils.createLong(subjectIdentifier);
   }
 
-  public String getEducationTypeIdentifier(Long pyramusEducationTypeId) {
-    return pyramusEducationTypeId == null ? null : String.valueOf(pyramusEducationTypeId);
+  public SchoolDataIdentifier getEducationTypeIdentifier(Long pyramusEducationTypeId) {
+    return pyramusEducationTypeId == null ? null : new SchoolDataIdentifier(String.valueOf(pyramusEducationTypeId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
 
   public Long getPyramusEducationTypeId(String educationTypeIdentifier) {

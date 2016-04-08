@@ -8,18 +8,31 @@
       this._hasEvaluationFees = true;
       this._categoryId = null;
       this._search = null;
+      this._educationTypes = [];
       this.element.find('.cp-page-link-load-more').addClass('disabled');
       
-      this._resolveEvaluationFees($.proxy(function () {
-        this.element.on('change', ".cp-category-dropdown", $.proxy(this._onCategoryChange, this));
-        this.element.on('keyup', "input[name='coursePickerSearch']", $.proxy(this._onSearchKeyUp, this));
-        this.element.on("click", ".cp-page-link-load-more", $.proxy(this._onLoadMoreClick, this));
-        this.element.on("click", ".cp-course-copy-button", $.proxy(this._onCopyCourseClick, this));
-        this.element.on("click", ".cp-course-details", $.proxy(this._onDetailsClick, this));
-        this.element.on("click", ".cp-course-tour-button", $.proxy(this._onTourButtonClick, this));
-        this.element.on("click", ".cp-course-attend-button", $.proxy(this._onAttendButtonClick, this));
-        
-        this._reloadWorkspaces();
+      this._load($.proxy(function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._hasEvaluationFees = results[0];
+          var educationTypes = results[1];
+          
+          renderDustTemplate('coursepicker/coursepicker_educationtype_filters.dust', { educationTypes: educationTypes }, $.proxy(function (text) {
+            this.element.find('.cp-filters').html(text);
+          }, this));
+          
+          this.element.on('change', ".cp-category-dropdown", $.proxy(this._onCategoryChange, this));
+          this.element.on('keyup', "input[name='coursePickerSearch']", $.proxy(this._onSearchKeyUp, this));
+          this.element.on("click", ".cp-page-link-load-more", $.proxy(this._onLoadMoreClick, this));
+          this.element.on("click", ".cp-course-copy-button", $.proxy(this._onCopyCourseClick, this));
+          this.element.on("click", ".cp-course-details", $.proxy(this._onDetailsClick, this));
+          this.element.on("click", ".cp-course-tour-button", $.proxy(this._onTourButtonClick, this));
+          this.element.on("click", ".cp-course-attend-button", $.proxy(this._onAttendButtonClick, this));
+          this.element.on("click", ".cp-education-type-filter", $.proxy(this._onEducationTypeFilterClick, this));
+          
+          this._reloadWorkspaces();
+        }
       }, this));
       
     },
@@ -34,20 +47,46 @@
       this._reloadWorkspaces();
     },
     
-    _resolveEvaluationFees: function (callback) {
-      if (!MUIKKU_LOGGED_USER) {
-        this._hasEvaluationFees = false;
-        callback();
-      } else {
-        mApi().user.users.basicinfo
-          .read(MUIKKU_LOGGED_USER)
-          .callback($.proxy(function (err, basicInfo) {
-            if (!err) {
-              this._hasEvaluationFees = basicInfo && basicInfo.hasEvaluationFees;
-              callback();
-            }
-          }, this));
-      }
+    educationTypes: function (educationTypes) {
+      this._educationTypes = educationTypes||[];
+ 
+      this.element.find('.cp-education-type-filter').each(function (index, element) {
+        $(element).closest('li').removeClass('selected');
+      });
+      
+      $.each(this._educationTypes, $.proxy(function (index, typeId) {
+        this.element.find('.cp-education-type-filter[data-id="' + typeId + '"]').closest('li').addClass('selected');
+      }, this));
+      
+      this._reloadWorkspaces();
+    },
+    
+    _load: function (callback) {
+      async.parallel([this._createResolveEvaluationFees(), this._createEducationTypesLoad()], function (err, results) {
+        callback(err, results);
+      }); 
+    },
+    
+    _createResolveEvaluationFees: function () {
+      return $.proxy(function (callback) {
+        if (!MUIKKU_LOGGED_USER) {
+          callback(null, false);
+        } else {
+          mApi().user.users.basicinfo
+            .read(MUIKKU_LOGGED_USER)
+            .callback($.proxy(function (err, basicInfo) {
+              callback(err, basicInfo && basicInfo.hasEvaluationFees);
+            }, this));
+        }
+      }, this);
+    },
+    
+    _createEducationTypesLoad: function () {
+      return $.proxy(function (callback) {
+        mApi().workspace.educationTypes
+          .read()
+          .callback(callback);
+      }, this);
     },
     
     _reloadWorkspaces: function () {
@@ -67,7 +106,8 @@
         orderBy: ['alphabet'],
         search: this._search,
         myWorkspaces: this._categoryId == 'te' ||  this._categoryId == 'my',
-        includeUnpublished: this._categoryId == 'te'
+        includeUnpublished: this._categoryId == 'te',
+        educationTypes: this._educationTypes
       };
 
       mApi().coursepicker.workspaces
@@ -192,6 +232,16 @@
         workspaceEntityId: workspaceId,
         signUpRedirectUrl: CONTEXTPATH + '/workspace/' + workspaceUrlName
       });
+    },
+    
+    _onEducationTypeFilterClick: function (event) {
+      var filterElement = $(event.target).closest('.cp-education-type-filter');
+      if (filterElement.closest('li').hasClass('selected')) {
+        this.educationTypes([]);
+      } else {
+        var typeId = filterElement.attr('data-id');
+        this.educationTypes([typeId]);
+      }
     }
   });
 

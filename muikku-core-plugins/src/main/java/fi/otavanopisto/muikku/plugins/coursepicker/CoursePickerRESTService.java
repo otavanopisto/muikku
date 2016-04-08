@@ -135,6 +135,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   public Response listWorkspaces(
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
+        @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
@@ -193,7 +194,20 @@ public class CoursePickerRESTService extends PluginRESTService {
         sorts.add(new Sort("name.untouched", Sort.Order.ASC));
       }
       
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
+      List<SchoolDataIdentifier> educationTypes = null;
+      if (educationTypeIds != null) {
+        educationTypes = new ArrayList<>(educationTypeIds.size());
+        for (String educationTypeId : educationTypeIds) {
+          SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+          if (educationTypeIdentifier != null) {
+            educationTypes.add(educationTypeIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed education type identifier", educationTypeId)).build();
+          }
+        }
+      }
+      
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
       
       schoolDataBridgeSessionController.startSystemSession();
       try {
@@ -216,11 +230,18 @@ public class CoursePickerRESTService extends PluginRESTService {
                 boolean canSignup = getCanSignup(workspaceEntity);
                 boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
                 Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
-                String educationTypeIdentifier = (String) result.get("educationTypeIdentifier");
+                String educationTypeId = (String) result.get("educationTypeIdentifier");
                 String educationTypeName = null;
                 
-                if (StringUtils.isNotBlank(educationTypeIdentifier)) {
-                  EducationType educationType = courseMetaController.findEducationType(dataSource, educationTypeIdentifier);
+                if (StringUtils.isNotBlank(educationTypeId)) {
+                  EducationType educationType = null;
+                  SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+                  if (educationTypeIdentifier == null) {
+                    logger.severe(String.format("Malformatted educationTypeIdentifier %s", educationTypeId));
+                  } else {
+                    educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
+                  }
+                  
                   if (educationType != null) {
                     educationTypeName = educationType.getName();
                   }
