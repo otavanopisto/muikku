@@ -417,12 +417,14 @@ public class ElasticSearchProvider implements SearchProvider {
     for (SearchHit hit : hits) {
       Map<String, SearchHitField> fields = hit.getFields();
       SearchHitField workspaceField = fields.get("workspaces");
-      for (Object value : workspaceField.getValues()) {
-        if (value instanceof Number) {
-          Long workspaceEntityId = ((Number) value).longValue();
-          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-          if (workspaceEntity != null) {
-            result.add(new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier()));
+      if (workspaceField != null && workspaceField.getValues() != null) {
+        for (Object value : workspaceField.getValues()) {
+          if (value instanceof Number) {
+            Long workspaceEntityId = ((Number) value).longValue();
+            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+            if (workspaceEntity != null) {
+              result.add(new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier()));
+            }
           }
         }
       }
