@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.coursepicker;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -35,6 +36,7 @@ import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
@@ -53,8 +55,8 @@ import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -133,6 +135,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   public Response listWorkspaces(
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
+        @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
@@ -178,6 +181,12 @@ public class CoursePickerRESTService extends PluginRESTService {
         }
       }
 
+      List<WorkspaceAccess> accesses = new ArrayList<>(Arrays.asList(WorkspaceAccess.ANYONE));
+      if (sessionController.isLoggedIn()) {
+        accesses.add(WorkspaceAccess.LOGGED_IN);
+        accesses.add(WorkspaceAccess.MEMBERS_ONLY);
+      }
+
       List<Sort> sorts = null;
       
       if (orderBy != null && orderBy.contains("alphabet")) {
@@ -185,7 +194,20 @@ public class CoursePickerRESTService extends PluginRESTService {
         sorts.add(new Sort("name.untouched", Sort.Order.ASC));
       }
       
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults, sorts);
+      List<SchoolDataIdentifier> educationTypes = null;
+      if (educationTypeIds != null) {
+        educationTypes = new ArrayList<>(educationTypeIds.size());
+        for (String educationTypeId : educationTypeIds) {
+          SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+          if (educationTypeIdentifier != null) {
+            educationTypes.add(educationTypeIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed education type identifier", educationTypeId)).build();
+          }
+        }
+      }
+      
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
       
       schoolDataBridgeSessionController.startSystemSession();
       try {
@@ -208,11 +230,18 @@ public class CoursePickerRESTService extends PluginRESTService {
                 boolean canSignup = getCanSignup(workspaceEntity);
                 boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
                 Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
-                String educationTypeIdentifier = (String) result.get("educationTypeIdentifier");
+                String educationTypeId = (String) result.get("educationTypeIdentifier");
                 String educationTypeName = null;
                 
-                if (StringUtils.isNotBlank(educationTypeIdentifier)) {
-                  EducationType educationType = courseMetaController.findEducationType(dataSource, educationTypeIdentifier);
+                if (StringUtils.isNotBlank(educationTypeId)) {
+                  EducationType educationType = null;
+                  SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+                  if (educationTypeIdentifier == null) {
+                    logger.severe(String.format("Malformatted educationTypeIdentifier %s", educationTypeId));
+                  } else {
+                    educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
+                  }
+                  
                   if (educationType != null) {
                     educationTypeName = educationType.getName();
                   }

@@ -12,17 +12,14 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
-    
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>
     <script defer="defer" jsf:name="/scripts/gui/mainfunctions.js"/>
     <script defer="defer" jsf:name="/scripts/gui/workspace-signup-dialog.js"/>
     <script defer="defer" jsf:name="/scripts/gui/coursepicker.js"/>
     <script defer="defer" jsf:name="/scripts/gui/workspace-copy-wizard.js"/>
-    
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
       <script defer="defer" jsf:name="/scripts/gui/login.js"/>
-    </ui:fragment>
-    
+    </ui:fragment>    
   </ui:define>
   
   <ui:define name="main-functionality-styles">
@@ -59,7 +56,7 @@
               </ul>
             </div>
           </div>
-          <div class="mf-controls-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-8 sm-flex-order-2 sm-flex-cell-last">
+          <div class="mf-controls-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-8 sm-flex-order-2">
             <div class="cp-content-functions">
               <div class="cp-search">
                 <div class="cp-search-field"> 
@@ -73,9 +70,10 @@
       </ui:insert>
       <ui:insert name="mf-content-area">
         <div class="mf-content-area flex-row">
-          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top">
           <div class="cp-content-main flex-row">
-            <div id="coursesList" class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full sm-flex-order-1"></div>
+            <div class="lg-flex-cell-4 cp-filters no-margin-top"></div>
+            <div id="coursesList" class="lg-flex-cell-12 lg-flex-cell-last md-flex-cell-full sm-flex-cell-full sm-flex-order-1 no-margin-left"></div>
             <div class="mf-items-paging lg-flex-cell-full md-flex-cell-full sm-flex-cell-full sm-flex-order-2">
               <div class="mf-paging-toolbar">
                 <div class="mf-paging-tool mf-page-link-load-more cp-page-link-load-more">#{i18n.text['plugin.coursepicker.more']}</div>

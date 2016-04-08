@@ -675,15 +675,100 @@ sup {
     text-align: center;
     text-transform:uppercase;
     display:inline-block;
-    margin:0 0 0 -36px;
+    margin:0 0 0 -26px;
     font-weight:400;
+    position:relative;
     
-    &.evaluated {
+    &.assignment {
       background: $evaluatedAssignment;
     }
     
     &.exercise {
       background: $exerciseAssignment;
+    }
+    
+    /* When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed" */
+    span.done,
+    span.evaluated-passed,
+    span.evaluated-failed {
+      color:#fff;
+      position:absolute;
+      right:-32px;
+      top:2px;
+      display:block;
+      height:28px;
+      width:28px;
+      border-radius:100%;
+      line-height:1;
+    }
+    
+    /* Color and icon for "done" assignment and exercise */
+    .done:before {
+      content: "\e639";
+      background:#0099ff;
+      font-size:24px;
+      height:24px;
+      width:24px;
+      padding:2px;
+      border-radius:100%;
+      font-family:'muikku' !important;
+      speak:none;
+      font-style:normal;
+      font-weight:normal;
+      font-variant:normal;
+      text-transform:none;
+      line-height:1;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      position:absolute;
+      top:0;
+      left:0;
+    }
+    
+    /* Color and icon for "evaluated-passed" assignment */
+    .evaluated-passed:before {
+      content:"\f164";
+      background:#1ec30c;
+      font-size:24px;
+      height:24px;
+      width:24px;
+      padding:2px;
+      border-radius:100%;
+      font-family:'muikku' !important;
+      speak:none;
+      font-style:normal;
+      font-weight:normal;
+      font-variant:normal;
+      text-transform:none;
+      line-height:1;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      position:absolute;
+      top:0;
+      left:0;
+    }
+    
+    /* Color and icon for "evaluated-failed" assignment */
+    .evaluated-failed:before {
+      content:"\f165";
+      background:#ea7401;
+      font-size:24px;
+      height:24px;
+      width:24px;
+      padding:2px;
+      border-radius:100%;
+      font-family:'muikku' !important;
+      speak:none;
+      font-style:normal;
+      font-weight:normal;
+      font-variant:normal;
+      text-transform:none;
+      line-height:1;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      position:absolute;
+      top:0;
+      left:0;
     }
     
   }

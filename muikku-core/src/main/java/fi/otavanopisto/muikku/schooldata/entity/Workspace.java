@@ -21,6 +21,27 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
         @IndexableFieldMultiField(name = "name", type="string", index = "analyzed"),
         @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
       }
+    ),
+    @IndexableFieldOption (
+      name = "educationTypeIdentifier",
+      type = "multi_field",
+      multiFields = {
+        @IndexableFieldMultiField(name = "educationTypeIdentifier", type="string", index = "analyzed"),
+        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+      }
+    ),
+    @IndexableFieldOption (
+      name = "workspaceTypeId",
+      type = "multi_field",
+      multiFields = {
+        @IndexableFieldMultiField(name = "workspaceTypeId", type="string", index = "analyzed"),
+        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+      }
+    ),
+    @IndexableFieldOption (
+      name = "access",
+      type = "string",
+      index = "not_analyzed"
     )
   }
 )
@@ -62,7 +83,10 @@ public interface Workspace extends SchoolDataEntity {
 
   public String getSubjectIdentifier();
 
-  public String getEducationTypeIdentifier();
+  @IndexField (
+    toId = true
+  )
+  public SchoolDataIdentifier getEducationTypeIdentifier();
 
   public Double getLength();
 

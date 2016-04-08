@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class WorkspaceEntityController { 
@@ -40,7 +41,7 @@ public class WorkspaceEntityController {
       return null;
     }
     
-    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, Boolean.FALSE, Boolean.FALSE);
+    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, WorkspaceAccess.ANYONE, Boolean.FALSE, Boolean.FALSE);
 
 //  TODO: Re-enable workspace settings template
 //    WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l);
@@ -109,6 +110,10 @@ public class WorkspaceEntityController {
     return listWorkspaceEntitiesByDataSource(schoolDataSource, firstResult, maxResults); 
   }
 
+
+  public WorkspaceEntity updateAccess(WorkspaceEntity workspaceEntity, WorkspaceAccess access) {
+    return workspaceEntityDAO.updateAccess(workspaceEntity, access);
+  }
 
   public WorkspaceEntity updatePublished(WorkspaceEntity workspaceEntity, Boolean published) {
     return workspaceEntityDAO.updatePublished(workspaceEntity, published);

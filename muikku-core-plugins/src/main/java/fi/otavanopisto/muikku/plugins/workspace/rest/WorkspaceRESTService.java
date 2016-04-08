@@ -78,11 +78,13 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialRepl
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStaffMember;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudent;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -113,6 +115,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private CourseMetaController courseMetaController;
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -185,6 +190,19 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response listWorkspaceTypes() {
     List<WorkspaceType> types = workspaceController.listWorkspaceTypes();  
     return Response.ok(createRestModel(types.toArray(new WorkspaceType[0]))).build();
+  }
+  
+  @GET
+  @Path("/educationTypes")
+  @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
+  public Response listEducationTypes() {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      List<EducationType> types = courseMetaController.listEducationTypes();
+      return Response.ok(createRestModel(types.toArray(new EducationType[0]))).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
 
   @POST
@@ -268,6 +286,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("includeArchivedWorkspaceUsers") @DefaultValue ("false") Boolean includeArchivedWorkspaceUsers,
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
+        @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("orderBy") List<String> orderBy,
@@ -339,8 +358,20 @@ public class WorkspaceRESTService extends PluginRESTService {
         sorts.add(new Sort("name.untouched", Sort.Order.ASC));
       }
       
-      // TODO: Pagination support
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, firstResult, maxResults, sorts);
+      List<SchoolDataIdentifier> educationTypes = null;
+      if (educationTypeIds != null) {
+        educationTypes = new ArrayList<>(educationTypeIds.size());
+        for (String educationTypeId : educationTypeIds) {
+          SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+          if (educationTypeIdentifier != null) {
+            educationTypes.add(educationTypeIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed education type identifier", educationTypeId)).build();
+          }
+        }
+      }
+      
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
@@ -623,6 +654,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
     
+    workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
+    
     // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
     workspaceIndexer.indexWorkspace(workspaceEntity);
     
@@ -725,6 +758,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           String firstName = user.getFirstName();
           String lastName = user.getLastName();
           String studyProgrammeName = user.getStudyProgrammeName();
+          DateTime enrolmentTime = workspaceUser.getEnrolmentTime();
           
           result.add(new WorkspaceStudent(workspaceUserIdentifier.toId(), 
             workspaceUserId, 
@@ -732,6 +766,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             firstName, 
             lastName, 
             studyProgrammeName,
+            enrolmentTime != null ? enrolmentTime.toDate() : null,
             userArchived));
         } else {
           logger.log(Level.SEVERE, String.format("Could not find user for identifier %s", userIdentifier));
@@ -1381,6 +1416,16 @@ public class WorkspaceRESTService extends PluginRESTService {
     return result;
   }
   
+  private List<fi.otavanopisto.muikku.plugins.workspace.rest.EducationType> createRestModel(EducationType... types) {
+    List<fi.otavanopisto.muikku.plugins.workspace.rest.EducationType> result = new ArrayList<>();
+    
+    for (EducationType type : types) {
+      result.add(new fi.otavanopisto.muikku.plugins.workspace.rest.EducationType(type.getIdentifier().toId(), type.getName()));
+    }
+    
+    return result;
+  }
+  
   private List<WorkspaceMaterialReply> createRestModel(fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply... entries) {
     List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply> result = new ArrayList<>();
 
@@ -1448,8 +1493,16 @@ public class WorkspaceRESTService extends PluginRESTService {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     
-    return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
-        workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, nameExtension, description, numVisits, lastVisit);
+    return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), 
+        workspaceEntity.getUrlName(),
+        workspaceEntity.getAccess(),
+        workspaceEntity.getArchived(), 
+        workspaceEntity.getPublished(), 
+        name, 
+        nameExtension, 
+        description, 
+        numVisits, 
+        lastVisit);
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFolder createRestModel(WorkspaceFolder workspaceFolder) {
@@ -1998,12 +2051,18 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
     }
     
+    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, userIdentifier);
+    if (workspaceUser == null) {
+      return Response.status(Status.NOT_FOUND).entity("School data workspace user not found").build();
+    }
+    
     WorkspaceStudent workspaceStudent = new WorkspaceStudent(userIdentifier.toId(), 
         workspaceEntity.getId(), 
         workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), 
         user.getFirstName(), 
         user.getLastName(), 
         user.getStudyProgrammeName(),
+        workspaceUser.getEnrolmentTime() != null ? workspaceUser.getEnrolmentTime().toDate() : null,
         workspaceUserEntity.getArchived());
     
     return Response.ok(workspaceStudent).build();

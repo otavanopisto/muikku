@@ -106,6 +106,16 @@ public class CourseMetaController {
   
     return null;
   }
+
+  public List<EducationType> listEducationTypes() {
+    List<EducationType> result = new ArrayList<>();
+    
+    for (CourseMetaSchoolDataBridge courseMetaBridge : getCourseMetaBridges()) {
+      result.addAll(courseMetaBridge.listEducationTypes());
+    }
+
+    return result;
+  }
   
   /* CourseLenthUnit */
   

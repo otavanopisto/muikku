@@ -54,27 +54,27 @@
             <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
               <div class="flex-row flex-align-items-center">
                 <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>#{i18n.text['plugin.workspace.management.settings.visibility']}</label>
+                  <label>#{i18n.text['plugin.workspace.management.settings.publicity']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <div><input type="radio" name="published" value="true" /> #{i18n.text['plugin.workspace.management.settings.visibility.publish']}</div>
-                  <div><input type="radio" name="published" value="false" /> #{i18n.text['plugin.workspace.management.settings.visibility.unpublish']}</div>
+                  <div><input type="radio" name="published" value="true" /> #{i18n.text['plugin.workspace.management.settings.publicity.publish']}</div>
+                  <div><input type="radio" name="published" value="false" /> #{i18n.text['plugin.workspace.management.settings.publicity.unpublish']}</div>
                 </div>
               </div>
             </div>
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last" style="display: none">
+            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
               <div class="flex-row flex-align-items-center">
                 <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>#{i18n.text['plugin.workspace.management.settings.accessibility']}</label>
+                  <label>#{i18n.text['plugin.workspace.management.settings.access']}</label>
                 </div>
                 <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <div><input type="radio" name="accessibility" value="a" /> #{i18n.text['plugin.workspace.management.settings.accessibility.openForAll']}</div>
-                  <div><input type="radio" name="accessibility" value="b" /> #{i18n.text['plugin.workspace.management.settings.accessibility.loginRequired']}</div>
+                  <div><input type="radio" name="access" value="MEMBERS_ONLY" />#{i18n.text['plugin.workspace.management.settings.access.membersOnly']}</div>
+                  <div><input type="radio" name="access" value="LOGGED_IN" />#{i18n.text['plugin.workspace.management.settings.access.loggedIn']}</div>
+                  <div><input type="radio" name="access" value="ANYONE" />#{i18n.text['plugin.workspace.management.settings.access.anyone']}</div>
                 </div>
               </div>
             </div>
           </div>
-          
         </div>
       </div>
     </section>

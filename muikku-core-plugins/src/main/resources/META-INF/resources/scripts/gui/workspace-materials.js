@@ -46,7 +46,8 @@
 
     $(window).data('initializing', true);
     $(document).muikkuMaterialLoader({
-      loadAnswers: true,
+      loadAnswers: MUIKKU_LOGGED_USER ? true : false,
+      readOnlyFields: MUIKKU_LOGGED_USER ? false: true,
       workspaceEntityId: $('.workspaceEntityId').val(),
       baseUrl: $('.materialsBaseUrl').val()
     }).muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
@@ -59,7 +60,7 @@
         window.location.hash = 'p-' + workspaceMaterialId;
       }
     }, {
-      offset: '60%'
+      offset: '0%'
     });
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
@@ -71,7 +72,7 @@
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
-          .addClass('muikku-page-assignment-type evaluated')
+          .addClass('muikku-page-assignment-type assignment')
           .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
     });
@@ -177,8 +178,23 @@
               
               var warning = $('<span>')
                 .text(getLocaleText('plugin.workspace.materials.notSignedUpWarning') + ' ')
-                .append(signUpLink);
+                .append(signUpLink)
+                .append('.');
            
+              $('.notification-queue').notificationQueue('notification', 'warn', warning);
+            }
+          }
+        });
+    }
+    else if (MUIKKU_LOGGEDINROLES.student) {
+      var workspaceEntityId = $('.workspaceEntityId').val();
+      mApi().workspace.workspaces.students
+        .read(workspaceEntityId, { studentIdentifier: MUIKKU_LOGGED_USER, archived: false })
+        .callback(function(err, result) {
+          if (!err) {
+            if (!result || !result.length) {
+              var warning = $('<span>')
+                .text(getLocaleText('plugin.workspace.materials.cannotSignUpWarning'));
               $('.notification-queue').notificationQueue('notification', 'warn', warning);
             }
           }

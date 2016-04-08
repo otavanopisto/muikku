@@ -16,7 +16,7 @@ public class PyramusWorkspace extends AbstractWorkspace {
 
   public PyramusWorkspace(String identifier, String name, String nameExtension, String viewLink,
       SchoolDataIdentifier workspaceTypeId, String courseIdentifierIdentifier, String description,
-      String subjectIdentifier, String educationTypeIdentifier, Date modified, Double length,
+      String subjectIdentifier, SchoolDataIdentifier educationTypeIdentifier, Date modified, Double length,
       String lengthUnitIdentifier, DateTime beginDate, DateTime endDate, boolean archived,
       boolean evaluationFeeApplicable) {
     super(identifier, name, nameExtension, viewLink, workspaceTypeId, courseIdentifierIdentifier, description,

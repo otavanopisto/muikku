@@ -3,21 +3,35 @@ $(document).ready(function(){
   
   $(".bt-mainFunction").click(function(){
     var sendMessage = function(values){
-      delete values.recipient;
-      
-      mApi({async: false}).communicator.messages.create(values)
-        .callback(function (err, result) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.newMessage.error'));
-          } else {
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage.success'));
-          }
-        });
-      
-      window.location.reload(true);
-
+//    var test = values.recipientIds.length;
+    
+      if (!values.recipientIds) {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.norecipients'));
+        return false;
+      }
+      if (values.caption.trim() === '') {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.notitle'));
+        return false;
+      }
+      if (values.content.trim() === '') {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.nomessage'));
+        return false;
+      }      
+      else {      
+        delete values.recipient;
+        
+        mApi({async: false}).communicator.messages.create(values)
+          .callback(function (err, result) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.newMessage.error'));
+            } else {
+              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage.success'));
+            }
+          });
+        
+        window.location.reload(true);
+      }
     }   
-
     openInSN('/communicator/communicator_create_message.dust', null, sendMessage);    
   });
   CommunicatorImpl = $.klass({

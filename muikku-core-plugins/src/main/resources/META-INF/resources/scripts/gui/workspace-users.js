@@ -76,20 +76,22 @@
 
     _onWorkspaceStudentArchiveClick: function (event) {
       var userElement = $(event.target).closest('.workspace-users');
+      var userName = $(event.target).attr('data-user-name');
       this._confirmArchive($.proxy(function() {
         this._archive(userElement);
-      }, this));
+      }, this), userName);
     },
 
     _onWorkspaceStudentUnarchiveClick: function (event) {
       var userElement = $(event.target).closest('.workspace-users');
+      var userName = $(event.target).attr('data-user-name');
       this._confirmUnarchive($.proxy(function() {
         this._unarchive(userElement);
-      }, this));
+      }, this), userName);
     },
     
-    _confirmArchive: function(confirmCallback) {
-      renderDustTemplate('workspace/workspace-users-archive-request-confirm.dust', {}, $.proxy(function(text) {
+    _confirmArchive: function(confirmCallback, userName) {
+      renderDustTemplate('workspace/workspace-users-archive-request-confirm.dust', {userName}, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({
           modal : true,
@@ -117,8 +119,8 @@
       }, this));
     },
     
-    _confirmUnarchive: function(confirmCallback) {
-      renderDustTemplate('workspace/workspace-users-unarchive-request-confirm.dust', {}, $.proxy(function(text) {
+    _confirmUnarchive: function(confirmCallback, userName) {
+      renderDustTemplate('workspace/workspace-users-unarchive-request-confirm.dust', {userName}, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({
           modal : true,

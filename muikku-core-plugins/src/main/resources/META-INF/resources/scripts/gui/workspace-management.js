@@ -44,6 +44,7 @@
           this.element.find('*[name="workspaceName"]').val(workspace.name);
           this.element.find('.external-view-url').attr('href', details.externalViewUrl);
           this.element.find('*[name="published"][value="' + (workspace.published ? 'true' : 'false') + '"]').prop('checked', 'checked');
+          this.element.find('*[name="access"][value="' + workspace.access + '"]').prop('checked', 'checked');
           this.element.find('*[name="workspaceNameExtension"]').val(workspace.nameExtension);
           this.element.find('*[name="beginDate"]').val(details.beginDate);
           this.element.find('*[name="endDate"]').val(details.endDate);
@@ -152,13 +153,15 @@
               var nameExtension = this.element.find('*[name="workspaceNameExtension"]').val();
               var description = CKEDITOR.instances['workspace-description'].getData();
               var published = this.element.find('*[name="published"]:checked').val() == 'true';
-
+              var access = this.element.find('*[name="access"]:checked').val();
+              
               mApi().workspace.workspaces
                 .update(this.options.workspaceEntityId, $.extend(workspace, {
                   name: name,
                   nameExtension: nameExtension,
                   description: description,
-                  published: published
+                  published: published,
+                  access: access
                 }))
                 .callback(function (err, updatedWorkspace) {
                   callback(err, updatedWorkspace);

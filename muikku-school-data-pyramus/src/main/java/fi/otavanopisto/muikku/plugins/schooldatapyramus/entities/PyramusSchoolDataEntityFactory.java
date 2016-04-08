@@ -225,7 +225,8 @@ public class PyramusSchoolDataEntityFactory {
       identifier, 
       userIdentifier, 
       workspaceIdentifier,
-      roleIdentifier
+      roleIdentifier,
+      null
     );
   }
   
@@ -257,7 +258,8 @@ public class PyramusSchoolDataEntityFactory {
       identifier, 
       userIdentifier, 
       workspaceIdentifier,
-      roleIdentifier
+      roleIdentifier,
+      courseStudent.getEnrolmentTime()
     );
   }
 
@@ -275,7 +277,7 @@ public class PyramusSchoolDataEntityFactory {
 
   public Workspace createEntity(
       Course course,
-      String educationTypeIdentifier,
+      SchoolDataIdentifier educationTypeIdentifier,
       Map<String, List<String>> educationTypeCodeMap
   ) {
     if (course == null) {

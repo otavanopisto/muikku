@@ -58,18 +58,28 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
         IndexableFieldOption[] fieldOptions = indexable.options();
         if (fieldOptions != null) {
           for (IndexableFieldOption fieldOption : fieldOptions) {
-            if (StringUtils.isNotBlank(fieldOption.type())) {
-              IndexableFieldMultiField[] multiFields = fieldOption.multiFields();
-              Map<String, ElasticMappingPropertyOptionField> fields = null;
+            switch (fieldOption.type()) {
+              case "multi_field":
+                if (StringUtils.isNotBlank(fieldOption.type())) {
+                  IndexableFieldMultiField[] multiFields = fieldOption.multiFields();
+                  Map<String, ElasticMappingPropertyOptionField> fields = null;
 
-              if (multiFields != null && multiFields.length > 0) {
-                fields = new HashMap<>();
-                for (IndexableFieldMultiField multiField : multiFields) {
-                  fields.put(multiField.name(), new ElasticMappingPropertyOptionField(multiField.type(), multiField.index()));
+                  if (multiFields != null && multiFields.length > 0) {
+                    fields = new HashMap<>();
+                    for (IndexableFieldMultiField multiField : multiFields) {
+                      fields.put(multiField.name(), new ElasticMappingPropertyOptionField(multiField.type(), multiField.index()));
+                    }
+                  }
+
+                  properties.put(fieldOption.name(), new ElasticMappingMultifieldProperty(fields));
                 }
-              }
-
-              properties.put(fieldOption.name(), new ElasticMappingProperty(fieldOption.type(), fields));
+              break;
+              case "string":
+                properties.put(fieldOption.name(), new ElasticMappingStringProperty(fieldOption.index()));
+              break;
+              default:
+                logger.severe(String.format("Unknown field type %s", fieldOption.type()));
+              break;
             }
           }
         }
@@ -131,24 +141,45 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
 
     private Map<String, ElasticMappingProperty> properties;
   }
+  
+  public abstract static class ElasticMappingProperty {
 
-  public static class ElasticMappingProperty {
-
-    public ElasticMappingProperty(String type, Map<String, ElasticMappingPropertyOptionField> fields) {
-      super();
+    public ElasticMappingProperty(String type) {
       this.type = type;
-      this.fields = fields;
     }
-
+    
     public String getType() {
       return type;
+    }
+
+    private String type;
+  }
+
+  public static class ElasticMappingStringProperty extends ElasticMappingProperty {
+
+    public ElasticMappingStringProperty(String index) {
+      super("string");
+      this.index = index;
+    }
+
+    public String getIndex() {
+      return index;
+    }
+      
+    private String index;
+  }
+  
+  public static class ElasticMappingMultifieldProperty extends ElasticMappingProperty {
+
+    public ElasticMappingMultifieldProperty(Map<String, ElasticMappingPropertyOptionField> fields) {
+      super("multi_field");
+      this.fields = fields;
     }
 
     public Map<String, ElasticMappingPropertyOptionField> getFields() {
       return fields;
     }
 
-    private String type;
     private Map<String, ElasticMappingPropertyOptionField> fields;
   }
 
