@@ -3,9 +3,6 @@
     <div class="mf-list-title"><span>{#localize key="plugin.coursepicker.filters.title"/}</span></div>
     <ul class="mf-list-content cp-filters"> 
       {#educationTypes}
-      
-        <!--  "selected"-class should be applied to "li" -->
-        
         <li id="{type}-{id}">
           <a class="cp-education-type-filter" data-id="{identifier}">
             <span>{name}</span>
