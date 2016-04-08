@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Singleton;
 import javax.ejb.Timeout;
@@ -24,6 +25,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.search.SearchReindexEvent;
+import fi.otavanopisto.muikku.search.SearchReindexEvent.Task;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
@@ -65,10 +67,31 @@ public class SchoolDataSearchReindexListener {
   private static final int DEFAULT_TIMEOUT_SECONDS = 5;
   private static final int DEFAULT_BATCH_SIZE = 50;
   
+  @PostConstruct
+  public void init() {
+    active = false;
+  }
+  
   public void onReindexEvent(@Observes SearchReindexEvent event) {
-    setOffset("userIndex", 0);
-    setOffset("workspaceIndex", 0);
-    setOffset("groupIndex", 0);
+    if (active) {
+      logger.log(Level.INFO, "Already reindexing, refused to start another reindexing task.");
+      return;
+    }
+    
+    active = true;
+    tasks = event.getTasks();
+    
+    if (tasks.contains(Task.USERS)) {
+      setOffset("userIndex", 0);
+    }
+    
+    if (tasks.contains(Task.WORKSPACES)) {
+      setOffset("workspaceIndex", 0);
+    }
+    
+    if (tasks.contains(Task.USER_GROUPS)) {
+      setOffset("groupIndex", 0);
+    }
     
     logger.log(Level.INFO, "Reindex initiated.");
 
@@ -79,10 +102,26 @@ public class SchoolDataSearchReindexListener {
   private void onTimeOut(Timer timer) {
     logger.log(Level.INFO, "Commencing Reindex task.");
     try {
-      boolean alldone = reindexUserGroups() && reindexUsers() && reindexWorkspaceEntities();
+      boolean allDone = true;
+     
+      if (tasks.contains(Task.USERS)) {
+        allDone = allDone && reindexUsers();
+      }
+      
+      if (allDone && tasks.contains(Task.WORKSPACES)) {
+        allDone = allDone && reindexWorkspaceEntities();
+      }
+      
+      if (allDone && tasks.contains(Task.USER_GROUPS)) {
+        allDone = allDone && reindexUserGroups();
+      }
   
-      if (!alldone)
+      if (!allDone) {
         startTimer(getTimeout());
+      } else {
+        logger.log(Level.INFO, "Reindexing complete.");
+        active = false;
+      }
     } catch (Exception ex) {
       logger.log(Level.SEVERE, "Reindexing of entities failed.", ex);
     }
@@ -193,7 +232,11 @@ public class SchoolDataSearchReindexListener {
   
   private void startTimer(int duration) {
     if (this.timer != null) {
-      this.timer.cancel();
+      try {
+        this.timer.cancel();
+      } catch (Exception e) {
+      }
+      
       this.timer = null;
     }
     
@@ -204,4 +247,6 @@ public class SchoolDataSearchReindexListener {
   }
   
   private Timer timer;
+  private boolean active;
+  private List<Task> tasks;
 }
