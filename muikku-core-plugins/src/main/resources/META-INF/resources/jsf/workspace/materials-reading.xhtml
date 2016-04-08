@@ -42,8 +42,8 @@
                         <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
                       </ui:fragment>
                       <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                        <li class="workspace-materials-toc-item">
-                          <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+                        <li class="workspace-materials-toc-item" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
+                          <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'assignment' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
                         </li>
                       </ui:fragment>
                     </ui:repeat>
@@ -52,8 +52,8 @@
               </ui:fragment>
 
               <ui:fragment rendered="#{node.type ne 'folder'}">
-                <li class="workspace-materials-toc-item">
-                  <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
+                <li class="workspace-materials-toc-item" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
+                  <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'assignment' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
                 </li>
               </ui:fragment>
             </ui:repeat>

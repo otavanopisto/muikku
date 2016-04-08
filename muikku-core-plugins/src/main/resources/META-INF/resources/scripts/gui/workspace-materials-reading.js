@@ -55,7 +55,7 @@
         window.location.hash = 'p-' + workspaceMaterialId;
       }
     }, {
-      offset: '60%'
+      offset: '0%'
     });
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
@@ -67,7 +67,7 @@
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
-          .addClass('muikku-page-assignment-type evaluated')
+          .addClass('muikku-page-assignment-type assignment')
           .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
     });

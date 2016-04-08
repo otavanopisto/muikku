@@ -150,12 +150,11 @@ body.workspace-materials-management {
               text-decoration:none;
               color:#2c2c2c;
               display:block;
-/*                   @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out); */
               @include rounded(2px);
               padding:2px 24px 2px 6px;
               border-left:2px solid #e8f0f5;
               
-              &.evaluated {
+              &.assignment {
                 border-left:2px solid $evaluatedAssignment;
                 margin:1px 0 0 0;
               }
