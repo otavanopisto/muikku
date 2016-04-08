@@ -37,7 +37,7 @@ import fi.otavanopisto.security.LoggedIn;
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/journal", to = "/jsf/workspace/journal.jsf")
 @LoggedIn
-public class WorkspaceJournalBackingBean {
+public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
   
   public static final class UserView {
     private final User user;

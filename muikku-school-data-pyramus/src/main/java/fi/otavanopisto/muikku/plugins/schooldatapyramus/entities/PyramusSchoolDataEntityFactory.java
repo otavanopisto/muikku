@@ -225,7 +225,8 @@ public class PyramusSchoolDataEntityFactory {
       identifier, 
       userIdentifier, 
       workspaceIdentifier,
-      roleIdentifier
+      roleIdentifier,
+      null
     );
   }
   
@@ -257,7 +258,8 @@ public class PyramusSchoolDataEntityFactory {
       identifier, 
       userIdentifier, 
       workspaceIdentifier,
-      roleIdentifier
+      roleIdentifier,
+      courseStudent.getEnrolmentTime()
     );
   }
 

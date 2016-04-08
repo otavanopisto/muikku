@@ -771,7 +771,7 @@
         }
         
         .mf-textfield-content {
-          color:$formTitle;
+          color:$formFontColor;
           flex-shrink:1;
           font-size:14px;
         }
@@ -782,7 +782,6 @@
         border:0 solid #fff;
         color:#000;
         border-radius:3px;
-        line-height:1em;
         padding-top:5px;
         padding-bottom:5px;
         padding-left:5px;

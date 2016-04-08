@@ -33,7 +33,7 @@ import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/material-upload", to = "/jsf/workspace/material-upload.jsf")
-public class WorkspaceMaterialUploadBackingBean {
+public class WorkspaceMaterialUploadBackingBean extends AbstractWorkspaceBackingBean {
 
   @Parameter
   private String workspaceUrlName;

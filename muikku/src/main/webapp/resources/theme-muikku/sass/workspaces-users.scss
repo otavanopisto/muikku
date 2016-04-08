@@ -61,12 +61,15 @@ body[class^='workspace'] {
     .workspace-users {
       padding:4px 5px;
       @include flexbox();
-      transition:background 0.3s ease-in-out;
+      transition:background 0.3s ease-in-out, border 0.4s ease-in-out;
       background:#fff;
       border-radius:2px;
+      border:1px solid #fff;
       
       &:hover {
-        background:#f8f8f8;
+
+        background:#9fd8ff;
+        
       }
       
       .workspace-users-name {
@@ -78,12 +81,16 @@ body[class^='workspace'] {
       .workspace-users-delete {
         @include flex(0 0 auto);
         padding:0 5px;
-        margin:0 5px;
         border-radius:2px;
         color:#fff;
         font-size:14px;
         font-weight:400;
         cursor:pointer;
+        
+        &:not(:last-child){
+          margin:0 5px;
+        }
+        
       }
       
       .workspace-users-archive {

@@ -22,7 +22,6 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
         @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
       }
     ),
-
     @IndexableFieldOption (
       name = "educationTypeIdentifier",
       type = "multi_field",
@@ -31,7 +30,6 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
         @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
       }
     ),
-
     @IndexableFieldOption (
       name = "workspaceTypeId",
       type = "multi_field",
@@ -39,6 +37,11 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
         @IndexableFieldMultiField(name = "workspaceTypeId", type="string", index = "analyzed"),
         @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
       }
+    ),
+    @IndexableFieldOption (
+      name = "access",
+      type = "string",
+      index = "not_analyzed"
     )
   }
 )

@@ -17,8 +17,10 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.jsf.NavigationController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -28,8 +30,8 @@ import fi.otavanopisto.muikku.session.SessionController;
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/materials", to = "/jsf/workspace/materials.jsf")
-public class WorkspaceMaterialsBackingBean {
-
+public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean {
+  
   @Inject
   private Logger logger;
 
@@ -58,6 +60,9 @@ public class WorkspaceMaterialsBackingBean {
   @Inject
   private WorkspaceVisitController workspaceVisitController;
 
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
   @RequestAction
   public String init() {
     String urlName = getWorkspaceUrlName();
@@ -78,25 +83,34 @@ public class WorkspaceMaterialsBackingBean {
       }
     }
 
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_MATERIALS, workspaceEntity)) {
-      if (!sessionController.isLoggedIn()) {
-        return navigationController.requireLogin();
-      } else {
-        return NavigationRules.ACCESS_DENIED;
+    if (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE) {
+      if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_MATERIALS, workspaceEntity)) {
+        if (!sessionController.isLoggedIn()) {
+          return navigationController.requireLogin();
+        } else {
+          return NavigationRules.ACCESS_DENIED;
+        }
       }
     }
     
     rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    if (workspace == null) {
-      logger.log(Level.SEVERE, String.format("Could not find workspace for workspace entity (%d)", workspaceEntity.getId()));
-      return NavigationRules.NOT_FOUND;
-    }
     
-    workspaceName = workspace.getName();
-    workspaceNameExtension = workspace.getNameExtension();
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      if (workspace == null) {
+        logger.log(Level.SEVERE, String.format("Could not find workspace for workspace entity (%d)", workspaceEntity.getId()));
+        return NavigationRules.NOT_FOUND;
+      }
+      
+      workspaceName = workspace.getName();
+      workspaceNameExtension = workspace.getNameExtension();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+      
     workspaceEntityId = workspaceEntity.getId();
     
     try {

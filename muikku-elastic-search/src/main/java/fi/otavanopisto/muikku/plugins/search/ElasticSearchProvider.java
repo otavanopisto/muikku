@@ -26,16 +26,20 @@ import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.IdsFilterBuilder;
+import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -276,11 +280,11 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
-    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, freeText, includeUnpublished, start, maxResults, null);
+    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, freeText, null, null, includeUnpublished, start, maxResults, null);
   }
   
   @Override
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypes, String freeText, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts) {
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypes, String freeText, List<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts) {
     if (identifiers != null && identifiers.isEmpty()) {
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>());
     }
@@ -294,6 +298,31 @@ public class ElasticSearchProvider implements SearchProvider {
       
       if (!includeUnpublished) {
         filters.add(FilterBuilders.termFilter("published", Boolean.TRUE));
+      }
+      
+      if (accesses != null) {
+        List<FilterBuilder> accessFilters = new ArrayList<>();
+        
+        for (WorkspaceAccess access : accesses) {
+          switch (access) {
+            case ANYONE:
+              accessFilters.add(FilterBuilders.termFilter("access", access));
+            break;
+            case LOGGED_IN:
+              accessFilters.add(FilterBuilders.termFilter("access", access));
+            break;
+            case MEMBERS_ONLY:
+              IdsFilterBuilder idFilter = new IdsFilterBuilder("Workspace");
+              for (SchoolDataIdentifier userWorkspace : getUserWorkspaces(accessUser)) {
+                idFilter.addIds(String.format("%s/%s", userWorkspace.getIdentifier(), userWorkspace.getDataSource()));
+              }
+              
+              accessFilters.add(FilterBuilders.andFilter(idFilter, FilterBuilders.termFilter("access", access)));
+            break;
+          }
+        }
+
+        filters.add(FilterBuilders.orFilter(accessFilters.toArray(new FilterBuilder[0])));
       }
       
       if (StringUtils.isNotBlank(schoolDataSource)) {
@@ -369,6 +398,38 @@ public class ElasticSearchProvider implements SearchProvider {
     }
   }
 
+  private Set<SchoolDataIdentifier> getUserWorkspaces(SchoolDataIdentifier userIdentifier) {
+    Set<SchoolDataIdentifier> result = new HashSet<>();
+    
+    IdsQueryBuilder query = QueryBuilders.idsQuery("User");
+    query.addIds(String.format("%s/%s", userIdentifier.getIdentifier(), userIdentifier.getDataSource()));
+    
+    SearchResponse response = elasticClient
+      .prepareSearch("muikku")
+      .setTypes("User")
+      .setQuery(query)
+      .addField("workspaces")
+      .setSize(1)
+      .execute()
+      .actionGet();
+    
+    SearchHit[] hits = response.getHits().getHits();
+    for (SearchHit hit : hits) {
+      Map<String, SearchHitField> fields = hit.getFields();
+      SearchHitField workspaceField = fields.get("workspaces");
+      for (Object value : workspaceField.getValues()) {
+        if (value instanceof Number) {
+          Long workspaceEntityId = ((Number) value).longValue();
+          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+          if (workspaceEntity != null) {
+            result.add(new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier()));
+          }
+        }
+      }
+    }
+    
+    return result;
+  }
 
   @Override
   public SearchResult searchWorkspaces(String searchTerm, int start, int maxResults) {

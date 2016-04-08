@@ -41,7 +41,8 @@
     
     $(window).data('initializing', true);
     $(document).muikkuMaterialLoader({
-      loadAnswers: true,
+      loadAnswers: MUIKKU_LOGGED_USER ? true : false,
+      readOnlyFields: MUIKKU_LOGGED_USER ? false: true,
       workspaceEntityId: $('.workspaceEntityId').val(),
       baseUrl: $('.materialsBaseUrl').val()
     }).muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
