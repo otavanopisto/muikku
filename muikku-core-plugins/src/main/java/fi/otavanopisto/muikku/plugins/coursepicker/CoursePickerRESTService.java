@@ -235,16 +235,11 @@ public class CoursePickerRESTService extends PluginRESTService {
                 
                 if (StringUtils.isNotBlank(educationTypeId)) {
                   EducationType educationType = null;
-                  if (StringUtils.isNumeric(educationTypeId)) {
-                    // TODO: Remove this, just a fallback to older system
-                    educationType = courseMetaController.findEducationType(dataSource, educationTypeId);
+                  SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+                  if (educationTypeIdentifier == null) {
+                    logger.severe(String.format("Malformatted educationTypeIdentifier %s", educationTypeId));
                   } else {
-                    SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
-                    if (educationTypeIdentifier == null) {
-                      logger.severe(String.format("Malformatted educationTypeIdentifier %s", educationTypeId));
-                    } else {
-                      educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
-                    }
+                    educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
                   }
                   
                   if (educationType != null) {
