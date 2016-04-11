@@ -3,9 +3,8 @@ $(document).ready(function(){
   
   $(".bt-mainFunction").click(function(){
     var sendMessage = function(values){
-//    var test = values.recipientIds.length;
     
-      if (!values.recipientIds) {
+      if (!values.recipientIds && !values.recipientGroupIds && !values.recipientStudentsWorkspaceIds && !values.recipientTeachersWorkspaceIds) {
         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.norecipients'));
         return false;
       }
