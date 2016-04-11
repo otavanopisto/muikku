@@ -108,7 +108,8 @@
           'muikku-memofield': CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
           'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
           'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/',
-          'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/'
+          'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/',
+          'autogrow' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autogrow/4.5.8/plugin.js'
         },
         extraPlugins : [
                        'oembed',
@@ -123,7 +124,8 @@
                        'muikku-selection',
                        'muikku-connectfield',
                        'muikku-embedded',
-                       'mathjax'],
+                       'mathjax',
+                       'autogrow'],
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         editorOptions: {
           autoGrowOnStartup : true,
