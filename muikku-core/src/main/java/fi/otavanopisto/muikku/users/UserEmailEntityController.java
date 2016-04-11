@@ -6,14 +6,9 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserEmailEntityDAO;
-import fi.otavanopisto.muikku.dao.users.UserEmailSchoolDataIdentifierDAO;
-import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEmailEntity;
-import fi.otavanopisto.muikku.model.users.UserEmailSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 
 public class UserEmailEntityController {
   
@@ -23,41 +18,12 @@ public class UserEmailEntityController {
   @Inject
   private UserEmailEntityDAO userEmailEntityDAO;
   
-  @Inject
-  private UserEmailSchoolDataIdentifierDAO userEmailSchoolDataIdentifierDAO;
-  
-  @Inject
-  private SchoolDataSourceDAO schoolDataSourceDAO;
-  
   public UserEmailEntity findUserEmailEntityById(Long id) {
     return userEmailEntityDAO.findById(id);
   }
   
   public UserEmailEntity findUserEmailEntityByAddress(String address) {
     return userEmailEntityDAO.findByAddress(address);
-  }
-  
-  public UserEmailEntity findUserEmailEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
-    UserEmailSchoolDataIdentifier schoolDataIdentifier = userEmailSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
-    if (schoolDataIdentifier != null) {
-      return schoolDataIdentifier.getUserEmailEntity();
-    }
-    
-    return null;
-  }
-  
-  public UserEmailEntity findUserEmailEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
-    if (schoolDataSource == null) {
-      logger.severe("Could not find datasource " + dataSource);
-      return null;
-    }
-    
-    return findUserEmailEntityByDataSourceAndIdentifier(schoolDataSource, identifier);
-  }
-  
-  public UserEmailEntity findUserEmailEntityByUserEmail(UserEmail userEmail) {
-    return findUserEmailEntityByDataSourceAndIdentifier(userEmail.getIdentifier().getDataSource(), userEmail.getIdentifier().getIdentifier());
   }
   
   /**
