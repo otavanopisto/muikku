@@ -7,6 +7,7 @@
         entities: false,
         entities_latin: false,
         entities_greek: false,
+        autoGrow_onStartup: true,
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
