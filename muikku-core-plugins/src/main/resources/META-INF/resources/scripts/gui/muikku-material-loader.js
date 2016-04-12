@@ -935,6 +935,18 @@
     $(data.pageElement).find('.js-lazyyt').lazyYT();
     
     $(data.pageElement).find('.ckeditor-field').muikkuRichMemoField();
+    
+    $(data.pageElement)
+      .find('.muikku-text-field')
+      .autoGrowInput({ 
+        minWidth: function() {
+          
+        }
+        maxWidth: function() { 
+          return $(data.pageElement).width()-40; 
+        },
+        comfortZone:0
+      });
 
     var maxFileSize = null;
     if ($("input[name='max-file-size']").length) {
