@@ -49,6 +49,7 @@
           this.element.find('*[name="beginDate"]').val(details.beginDate);
           this.element.find('*[name="endDate"]').val(details.endDate);
           this.element.find('.workspace-description').val(workspace.description);
+          this.element.find('.default-material-license').val(workspace.materialDefaultLicense);
           
           $.each(workspaceTypes, $.proxy(function (index, workspaceType) {
             var option = $('<option>')
@@ -161,6 +162,7 @@
               var description = CKEDITOR.instances['workspace-description'].getData();
               var published = this.element.find('*[name="published"]:checked').val() == 'true';
               var access = this.element.find('*[name="access"]:checked').val();
+              var materialDefaultLicense = this.element.find('.default-material-license').val();
               
               mApi().workspace.workspaces
                 .update(this.options.workspaceEntityId, $.extend(workspace, {
@@ -168,7 +170,8 @@
                   nameExtension: nameExtension,
                   description: description,
                   published: published,
-                  access: access
+                  access: access,
+                  materialDefaultLicense: materialDefaultLicense
                 }))
                 .callback(function (err, updatedWorkspace) {
                   callback(err, updatedWorkspace);

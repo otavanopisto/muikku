@@ -75,6 +75,14 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
   public void setArchived(Boolean archived) {
     this.archived = archived;
   }
+  
+  public String getDefaultMaterialLicense() {
+    return defaultMaterialLicense;
+  }
+  
+  public void setDefaultMaterialLicense(String defaultMaterialLicense) {
+    this.defaultMaterialLicense = defaultMaterialLicense;
+  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -106,4 +114,5 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
   @Column(nullable = false)
   private Boolean archived;
   
+  private String defaultMaterialLicense;
 }

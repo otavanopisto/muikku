@@ -115,6 +115,10 @@ public class WorkspaceEntityController {
     return workspaceEntityDAO.updateAccess(workspaceEntity, access);
   }
 
+  public WorkspaceEntity updateDefaultMaterialLicense(WorkspaceEntity workspaceEntity, String defaultMaterialLicense) {
+    return workspaceEntityDAO.updateDefaultMaterialLicense(workspaceEntity, defaultMaterialLicense);
+  }
+
   public WorkspaceEntity updatePublished(WorkspaceEntity workspaceEntity, Boolean published) {
     return workspaceEntityDAO.updatePublished(workspaceEntity, published);
   }
