@@ -937,7 +937,9 @@
     $(data.pageElement).find('.ckeditor-field').muikkuRichMemoField();
     
     /* Add autosize to textarea */
-    autosize($('textarea'));
+    if ((typeof autosize) == 'function') {
+      autosize($('textarea'));
+    }
 
     var maxFileSize = null;
     if ($("input[name='max-file-size']").length) {
