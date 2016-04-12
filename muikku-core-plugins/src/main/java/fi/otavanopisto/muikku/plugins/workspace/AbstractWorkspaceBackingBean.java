@@ -8,14 +8,19 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.otavanopisto.muikku.jsf.NavigationController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public abstract class AbstractWorkspaceBackingBean {
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
   private NavigationController navigationController;
@@ -48,7 +53,8 @@ public abstract class AbstractWorkspaceBackingBean {
           return navigationController.requireLogin();
         }
         
-        if (workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, sessionController.getLoggedUser()) == null) {
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+        if (workspaceUserEntity == null) {
           if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_MEMBERS_ONLY_WORKSPACE, workspaceEntity)) {
             return NavigationRules.ACCESS_DENIED;
           }
