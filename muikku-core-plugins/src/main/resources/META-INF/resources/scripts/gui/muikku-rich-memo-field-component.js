@@ -7,6 +7,7 @@
         entities: false,
         entities_latin: false,
         entities_greek: false,
+        autoGrow_onStartup: true,
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
@@ -18,9 +19,10 @@
           { name: 'tools', items: [ 'Maximize' ] }
         ],
         externalPlugins : {
-          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js'
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
+          'autogrow' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autogrow/4.5.8/plugin.js'
         },
-        extraPlugins : 'change'
+        extraPlugins : 'change,autogrow'
       }
     },
     _create : function() {

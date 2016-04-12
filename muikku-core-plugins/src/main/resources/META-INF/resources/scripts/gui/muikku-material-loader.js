@@ -949,6 +949,9 @@
           });
       });
 
+    /* Add autosize to textarea */
+    autosize($('textarea'));
+
     var maxFileSize = null;
     if ($("input[name='max-file-size']").length) {
       maxFileSize = Number($("input[name='max-file-size']").val());
