@@ -938,14 +938,17 @@
     
     $(data.pageElement)
       .find('.muikku-text-field')
-      .autoGrowInput({ 
-        minWidth: function() {
-          
-        }
-        maxWidth: function() { 
-          return $(data.pageElement).width()-40; 
-        },
-        comfortZone:0
+      .each(function() {
+        var $elem = $(this);
+        $(this).autoGrowInput({ 
+          minWidth: function() {
+            // esim: $elem.attr('minlength')
+          },
+          maxWidth: function() { 
+            return $(data.pageElement).width()-40; 
+          },
+          comfortZone:0
+        });
       });
 
     var maxFileSize = null;
