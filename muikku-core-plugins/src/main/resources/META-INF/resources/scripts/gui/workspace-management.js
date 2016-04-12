@@ -285,6 +285,8 @@
   });
   
   $(document).ready(function () {
+    webshim.polyfill('forms');
+    
     $(document.body).workspaceManagement({
       workspaceEntityId: $('.workspace-entity-id').val()
     });
