@@ -11,6 +11,7 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.license-selector/0.0.1/jquery.license-selector.min.js"/>
     <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" jsf:name="/scripts/gui/workspace-management.js"/>
   </ui:define>
@@ -134,11 +135,11 @@
       </div>
     </section>
     
-    <section class="flex-row workspace-management-licence" style="display: none">
+    <section class="flex-row workspace-management-licence">
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
         <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceLicenceSectionTitle']}</h2>
         <div class="workspace-management-container">
-          select
+          <input type="url" class="default-material-license"/>
         </div>
       </div>
     </section>

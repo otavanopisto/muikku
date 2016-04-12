@@ -81,6 +81,13 @@
             CKEDITOR.replace(ckField, this.options.ckeditor);
           }, this));
           
+          this.element.find('.default-material-license').licenseSelector({
+            locale: getLocale() == 'fi' ? 'fi' : 'en',
+            types: {
+              'ogl': false
+            }
+          });
+
           this.element.on('click', '.save', $.proxy(this._onSaveClick, this));
         }
       }, this));
