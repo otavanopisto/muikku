@@ -24,6 +24,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Path("/forgotpassword")
@@ -44,7 +45,10 @@ public class ForgotPasswordRESTService extends PluginRESTService {
   private UserSchoolDataController userSchoolDataController;
 
   @Inject
-  private UserEntityController userController;
+  private UserEntityController userEntityController;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
   
   @Inject
   private UserPendingPasswordChangeDAO userPendingPasswordChangeDAO; 
@@ -66,9 +70,7 @@ public class ForgotPasswordRESTService extends PluginRESTService {
   @GET
   @RESTPermitUnimplemented
   public Response resetPassword(@QueryParam("email") String email) {
-    // TODO: this might not be optimal, but we have to find the datasource for the user
-    
-    UserEntity userEntity = userController.findUserEntityByEmailAddress(email);
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email); 
     
     if (userEntity == null)
       return Response.status(Status.NOT_FOUND).build();
@@ -108,7 +110,7 @@ public class ForgotPasswordRESTService extends PluginRESTService {
   public Response confirmResetPassword(ConfirmResetPassword crp) {
     UserPendingPasswordChange passwordChange = userPendingPasswordChangeDAO.findByConfirmationHash(crp.getResetCode());
     
-    UserEntity userEntity = userController.findUserEntityById(passwordChange.getUserEntity());
+    UserEntity userEntity = userEntityController.findUserEntityById(passwordChange.getUserEntity());
     
     // TODO: tis a guesstimate of the datasource
     SchoolDataSource schoolDataSource = userEntity.getDefaultSchoolDataSource();

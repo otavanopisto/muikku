@@ -2,5 +2,31 @@
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
   <sql>drop table UserEmailSchoolDataIdentifier</sql>
+  
+  <sql>alter table UserEmailEntity add column userSchoolDataIdentifier_id bigint</sql>
+  <sql>
+    alter table UserEmailEntity
+    add constraint FK_ramkqq68vwxysanlb4jlx3xx7
+    foreign key (userSchoolDataIdentifier_id) references UserSchoolDataIdentifier (id)
+  </sql>
+  
+  <sql>
+    update
+      UserEmailEntity uee,
+      UserSchoolDataIdentifier usdi,
+      UserEntity ue
+    set
+      uee.userSchoolDataIdentifier_id = usdi.id
+    where
+      usdi.identifier = ue.defaultIdentifier and
+      usdi.dataSource_id = ue.defaultSchoolDataSource_id and
+      usdi.userEntity_id = uee.user_id
+  </sql>
+  
+  <sql>alter table UserEmailEntity drop foreign key FK_en80u0et4iwby9b1mtonooi77</sql>
+  <sql>alter table UserEmailEntity drop column user_id</sql>
+  
+  <sql>alter table UserEmailEntity drop index UK_g0173v4nvpdyt9uqf1mxwu4r6</sql>
+  <sql>create unique index UK_g0173v4nvpdyt9uqf1mxwu4r6 on UserEmailEntity (userSchoolDataIdentifier_id, address)</sql>
 
 </update>

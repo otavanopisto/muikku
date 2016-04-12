@@ -2,8 +2,13 @@ package fi.otavanopisto.muikku.users;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -82,21 +87,35 @@ public class UserEntityController implements Serializable {
   public UserEntity findUserEntityByUserIdentifier(SchoolDataIdentifier userIdentifier) {
     return findUserEntityByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
   }
-
-  public List<UserEntity> listUserEntitiesByEmails(List<String> emails) {
-    return userEmailEntityDAO.listUsersByAddresses(emails);
+  
+  public UserEntity findUserEntityByEmailAddress(String emailAddress) {
+    UserEntity result = null;
+    Collection<String> emails = new HashSet<>();
+    emails.add(emailAddress);
+    List<UserEmailEntity> emailEntities = userEmailEntityDAO.listByAddresses(emails);
+    for (UserEmailEntity emailEntity : emailEntities) {
+      if (result == null) {
+        result = emailEntity.getUserSchoolDataIdentifier().getUserEntity();
+      }
+      else if (!result.getId().equals(emailEntity.getUserSchoolDataIdentifier().getUserEntity().getId())) {
+        logger.severe(String.format("Email %s resolves to multiple UserEntity instances", emailAddress));
+        return null;
+      }
+    }
+    return result;
   }
-      
-  /**
-  * Returns the user corresponding to the given email address. If the email address does not belong to any user, returns <code>null</code>.
-  * 
-  * @param address Email address
-  * 
-  * @return The user corresponding to the given email address, or <code>null</code> if not found 
-  */
-  public UserEntity findUserEntityByEmailAddress(String address) {
-   UserEmailEntity userEmail = userEmailEntityDAO.findByAddress(address);
-   return userEmail == null ? null : userEmail.getUser();
+
+  public Collection<UserEntity> listUserEntitiesByEmails(Collection<String> emails) {
+    if (emails == null || emails.isEmpty()) {
+      return Collections.emptyList();
+    }
+    List<UserEmailEntity> userEmailEntities = userEmailEntityDAO.listByAddresses(emails);
+    Map<Long, UserEntity> userEntities = new HashMap<>();
+    for (UserEmailEntity userEmailEntity : userEmailEntities) {
+      UserEntity userEntity = userEmailEntity.getUserSchoolDataIdentifier().getUserEntity();
+      userEntities.put(userEntity.getId(), userEntity);
+    }
+    return userEntities.values();
   }
 
   public List<String> listUserEntityIdentifiersByDataSource(SchoolDataSource dataSource) {
@@ -164,4 +183,5 @@ public class UserEntityController implements Serializable {
   public UserEntity archiveUserEntity(UserEntity userEntity) {
     return userEntityDAO.updateArchived(userEntity, Boolean.TRUE);
   }
+
 }

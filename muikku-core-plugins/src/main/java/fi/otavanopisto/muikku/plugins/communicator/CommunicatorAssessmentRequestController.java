@@ -165,10 +165,10 @@ public class CommunicatorAssessmentRequestController {
       
       List<String> teacherEmails = new ArrayList<>(teachers.size());
       for (UserEntity teacher : teachers){
-       String teacherEmail = userEmailEntityController.getUserEmailAddress(teacher, false);
-       if (StringUtils.isNotBlank(teacherEmail)) {
-         teacherEmails.add(teacherEmail);
-       }
+        String teacherEmail = userEmailEntityController.getUserDefaultEmailAddress(teacher, false);
+        if (StringUtils.isNotBlank(teacherEmail)) {
+          teacherEmails.add(teacherEmail);
+        }
       }
       if (!teacherEmails.isEmpty()) {
         mailer.sendMail(MailType.HTML, teacherEmails, messageTitle, messageBody);
@@ -246,7 +246,7 @@ public class CommunicatorAssessmentRequestController {
 
       List<String> teacherEmails = new ArrayList<>(teachers.size());
       for (UserEntity teacher : teachers){
-       String teacherEmail = userEmailEntityController.getUserEmailAddress(teacher, false);
+       String teacherEmail = userEmailEntityController.getUserDefaultEmailAddress(teacher, false);
        if (StringUtils.isNotBlank(teacherEmail)) {
          teacherEmails.add(teacherEmail);
        }

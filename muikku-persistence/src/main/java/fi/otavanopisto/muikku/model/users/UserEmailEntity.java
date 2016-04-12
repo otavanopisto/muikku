@@ -25,24 +25,14 @@ public class UserEmailEntity implements ContextReference {
     return id;
   }
   
-  /**
-   * Returns the user this email belongs to.
-   * 
-   * @return The user this email belongs to
-   */
-  public UserEntity getUser() {
-    return user;
-  }
-  
-  /**
-   * Sets the user this email belongs to.
-   * 
-   * @param user The user this email belongs to
-   */
-  public void setUser(UserEntity user) {
-    this.user = user;
+  public UserSchoolDataIdentifier getUserSchoolDataIdentifier() {
+    return userSchoolDataIdentifier;
   }
 
+  public void setUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    this.userSchoolDataIdentifier = userSchoolDataIdentifier;
+  }
+  
   /**
    * Returns the email address of this entity.
    * 
@@ -66,7 +56,7 @@ public class UserEmailEntity implements ContextReference {
   private Long id;
   
   @ManyToOne
-  private UserEntity user;
+  private UserSchoolDataIdentifier userSchoolDataIdentifier;
 
   @NotNull
   @Column(nullable = false, unique = true)
