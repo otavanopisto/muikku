@@ -77,7 +77,29 @@ h2.workspace-management-generic-title {
     height:100px;
   }
   
+}
 
+.workspace-material-license {
+  
+  .default-material-license {
+    margin:10px 0 0 0;
+  }
+  
+  .creative-commons-container {
+  
+    label {
+      display:inline-block;
+      margin:0 10px 0 5px;
+      font-weight:300;
+    }
+  
+    > label {
+      display:block;
+      font-weight:400;
+      margin:0;
+    }
+  
+  }
   
 }
 
