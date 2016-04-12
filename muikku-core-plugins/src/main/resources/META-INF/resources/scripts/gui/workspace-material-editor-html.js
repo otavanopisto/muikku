@@ -129,6 +129,8 @@
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         editorOptions: {
           autoGrowOnStartup : true,
+          autoGrow_maxHeight: $( window ).height() - $('span.cke_top').height() - 240,
+          autoGrow_minHeight: 400, 
           allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
           entities: false,
           entities_latin: false,
