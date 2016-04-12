@@ -89,6 +89,7 @@
             }
           });
 
+          this.element.on('submit', 'form', $.proxy(this._onFormSubmit, this));
           this.element.on('click', '.save', $.proxy(this._onSaveClick, this));
         }
       }, this));
@@ -251,7 +252,25 @@
       }
     },
     
+    _onFormSubmit: function (event) {
+      event.preventDefault();
+    },
+    
     _onSaveClick: function (event) {      
+      event.preventDefault();
+      
+      var form = $(event.target).closest('form')[0];
+      
+      if (form) {
+        $(form).find('.validate-form-button')[0].click();
+        try {
+          if (!form.checkValidity()) {
+            return;
+          }
+        } catch (e) {
+        }
+      }
+      
       var loader = $('<div>')
         .addClass('loading')
         .appendTo(this.element);
