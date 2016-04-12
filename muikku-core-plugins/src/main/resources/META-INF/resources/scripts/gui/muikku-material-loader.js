@@ -939,16 +939,14 @@
     $(data.pageElement)
       .find('.muikku-text-field')
       .each(function() {
-        var $elem = $(this);
-        $(this).autoGrowInput({ 
-          minWidth: function() {
-            // esim: $elem.attr('minlength')
-          },
-          maxWidth: function() { 
-            return $(data.pageElement).width()-40; 
-          },
-          comfortZone:0
-        });
+        $(this)
+          .autoGrowInput({
+            minWidth: $(this).width(),
+            maxWidth: function() { 
+               return $(data.pageElement).width()-40; 
+            },
+            comfortZone:0
+          });
       });
 
     var maxFileSize = null;
