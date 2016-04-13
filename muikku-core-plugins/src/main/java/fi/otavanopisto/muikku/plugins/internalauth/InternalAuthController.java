@@ -4,11 +4,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.internalauth.dao.InternalAuthDAO;
 import fi.otavanopisto.muikku.plugins.internalauth.model.InternalAuth;
-import fi.otavanopisto.muikku.users.UserEmailEntityController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 
 public class InternalAuthController {
 
@@ -16,20 +15,15 @@ public class InternalAuthController {
   private InternalAuthDAO internalAuthDAO;
 
   @Inject
-  private UserEmailEntityController userEmailEntityController;
+  private UserEntityController userEntityController;
 
   public InternalAuth findInternalAuthByEmailAndPassword(String email, String password) {
-    
     String passwordHash = DigestUtils.md5Hex(password);
-    UserEmailEntity userEmailEntity = userEmailEntityController.findUserEmailEntityByAddress(email);;
-    if (userEmailEntity != null) {
-      UserEntity userEntity = userEmailEntity.getUser();
-      if (userEntity != null) {
-        InternalAuth internalAuth = internalAuthDAO.findByUserIdAndPassword(userEntity.getId(), passwordHash);
-        return internalAuth;
-      }
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
+    if (userEntity != null) {
+      InternalAuth internalAuth = internalAuthDAO.findByUserIdAndPassword(userEntity.getId(), passwordHash);
+      return internalAuth;
     }
-
     return null;
   }
 

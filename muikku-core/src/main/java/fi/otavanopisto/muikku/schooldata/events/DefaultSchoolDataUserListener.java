@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.schooldata.events;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,34 +50,24 @@ public class DefaultSchoolDataUserListener {
     List<SchoolDataIdentifier> discoveredIdentifiers = event.getDiscoveredIdentifiers();
     List<SchoolDataIdentifier> updatedIdentifiers = event.getUpdatedIdentifiers();
     List<SchoolDataIdentifier> removedIdentifiers = event.getRemovedIdentifiers();
-
-    List<String> emails = new ArrayList<>();
-    if (event.getEmails() != null) {
-      for (String email : event.getEmails()) {
-        if (!validEmail(email)) {
-          logger.log(Level.SEVERE, String.format("Found invalid email address (%s), removed from synchronization", email));
-        } else {
-          emails.add(email);
-        }
-      }
-    }
     
-    if (emails.isEmpty()) {
+    Collection<String> allEmails = event.getAllEmails();
+    if (allEmails.isEmpty()) {
       logger.warning("Updating user without email addresses");
-    } else {
+    }
+    else {
       // Attempt to find existing users by given emails
-      
-      List<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(emails);
+      Collection<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(allEmails);
       if (emailUsers.isEmpty()) {
         // Could not find any users with given emails
       } else if (emailUsers.size() > 1) {
-        logger.log(Level.SEVERE, String.format("Multiple users found with given emails (%s)", StringUtils.join(emails, ',')));
+        logger.log(Level.SEVERE, String.format("Multiple users found with given emails (%s)", StringUtils.join(allEmails, ',')));
         return;
       } else {
-        UserEntity emailUser = emailUsers.get(0);
+        UserEntity emailUser = emailUsers.iterator().next();
         if (userEntityId != null) {
           if (!emailUser.getId().equals(userEntityId)) {
-            logger.log(Level.SEVERE, String.format("One or more of emails %s belong to another user", StringUtils.join(emails, ',')));
+            logger.log(Level.SEVERE, String.format("One or more of emails %s belong to another user", StringUtils.join(allEmails, ',')));
             return;
           }
         } else {
@@ -112,20 +103,31 @@ public class DefaultSchoolDataUserListener {
       
       // Attach discovered identities to user
       for (SchoolDataIdentifier identifier : discoveredIdentifiers) {
+        List<String> identifierEmails = event.getEmails().get(identifier);
+            
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(
             identifier.getDataSource(),
             identifier.getIdentifier());
         if (userSchoolDataIdentifier == null) {
-          userSchoolDataIdentifierController.createUserSchoolDataIdentifier(identifier.getDataSource(), identifier.getIdentifier(), userEntity);
+          userSchoolDataIdentifier = userSchoolDataIdentifierController.createUserSchoolDataIdentifier(identifier.getDataSource(), identifier.getIdentifier(), userEntity);
           logger.log(Level.FINE, String.format("Added new identifier %s for user %d", identifier, userEntity.getId()));
         }
         else if (userSchoolDataIdentifier.getArchived()) {
           userSchoolDataIdentifierController.unarchiveUserSchoolDataIdentifier(userSchoolDataIdentifier);
         }
+        
+        userEmailEntityController.setUserEmails(userSchoolDataIdentifier, getValidEmails(identifierEmails));
       }
       
-      // Update user emails
-      userEmailEntityController.setUserEmails(userEntity, emails);
+      for (SchoolDataIdentifier identifier : updatedIdentifiers) {
+        List<String> emails = event.getEmails().get(identifier);
+        userEmailEntityController.setUserEmails(identifier, getValidEmails(emails));
+      }
+      
+      for (SchoolDataIdentifier identifier : removedIdentifiers) {
+        List<String> emails = event.getEmails().get(identifier);
+        userEmailEntityController.setUserEmails(identifier, getValidEmails(emails));
+      }
 
       // Update users environment role
       if (event.getEnvironmentRoleIdentifier() != null) {
@@ -175,6 +177,20 @@ public class DefaultSchoolDataUserListener {
       }
     }
     
+  }
+  
+  private List<String> getValidEmails(List<String> emails) {
+    List<String> result = new ArrayList<>();
+    if (emails != null && !emails.isEmpty()) {
+      for (String email : emails) {
+        if (!validEmail(email)) {
+          logger.log(Level.SEVERE, String.format("Found invalid email address (%s), removed from synchronization", email));
+        } else {
+          result.add(email);
+        }
+      }
+    }
+    return result;
   }
   
   private boolean validEmail(String email) {

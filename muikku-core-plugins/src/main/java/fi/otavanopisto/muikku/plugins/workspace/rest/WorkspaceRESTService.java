@@ -655,6 +655,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
+    workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, payload.getMaterialDefaultLicense());
     
     // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
     workspaceIndexer.indexWorkspace(workspaceEntity);
@@ -1501,6 +1502,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         name, 
         nameExtension, 
         description, 
+        workspaceEntity.getDefaultMaterialLicense(),
         numVisits, 
         lastVisit);
   }

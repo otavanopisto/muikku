@@ -11,6 +11,8 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.8/ckeditor.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.license-selector/0.0.2/jquery.license-selector.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/webshim/1.15.10/minified/polyfiller.js"></script>
     <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" jsf:name="/scripts/gui/workspace-management.js"/>
   </ui:define>
@@ -20,164 +22,167 @@
   </ui:define>
 
   <ui:define name="grid-content">
-    <section class="flex-row workspace-management-name">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.management.pageTitle']}</h1>
-        <div class="workspace-management-container">
-          <input type="text" name="workspaceName"/>
-        </div>
-        <div class="workspace-management-container">
-          <a href="#" target="_blank" class="external-view-url">#{i18n.text['plugin.workspace.management.viewInPyramus']}</a>
-        </div>
-      </div>
-    </section>
-    
-    <section class="flex-row workspace-management-image" style="display: none">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.imageSectionTitle']}</h2>
-        <div class="workspace-management-container">
-          <div class="workspace-management-image-actions">
-            <div class="icon-edit workspace-management-image-edit"></div>
-            <div class="icon-delete workspace-management-image-delete"></div>
+    <form>
+      <section class="flex-row workspace-management-name">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.management.pageTitle']}</h1>
+          <div class="workspace-management-container">
+            <input type="text" name="workspaceName" required="required"/>
           </div>
-          <img src="/gfx/workspace-default-header.jpg" />
+          <div class="workspace-management-container">
+            <a href="#" target="_blank" class="external-view-url">#{i18n.text['plugin.workspace.management.viewInPyramus']}</a>
+          </div>
         </div>
-      </div>
-    </section>
-    
-    <section class="flex-row workspace-management-settings">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.settingsSectionTitle']}</h2>
-        <div class="workspace-management-container">
+      </section>
+      
+      <section class="flex-row workspace-management-image" style="display: none">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.imageSectionTitle']}</h2>
+          <div class="workspace-management-container">
+            <div class="workspace-management-image-actions">
+              <div class="icon-edit workspace-management-image-edit"></div>
+              <div class="icon-delete workspace-management-image-delete"></div>
+            </div>
+            <img src="/gfx/workspace-default-header.jpg" />
+          </div>
+        </div>
+      </section>
+      
+      <section class="flex-row workspace-management-settings">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.settingsSectionTitle']}</h2>
+          <div class="workspace-management-container">
+            
+            <div class="flex-row">
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>#{i18n.text['plugin.workspace.management.settings.publicity']}</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                    <div><input type="radio" name="published" value="true" /> #{i18n.text['plugin.workspace.management.settings.publicity.publish']}</div>
+                    <div><input type="radio" name="published" value="false" /> #{i18n.text['plugin.workspace.management.settings.publicity.unpublish']}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>#{i18n.text['plugin.workspace.management.settings.access']}</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                    <div><input type="radio" name="access" value="MEMBERS_ONLY" />#{i18n.text['plugin.workspace.management.settings.access.membersOnly']}</div>
+                    <div><input type="radio" name="access" value="LOGGED_IN" />#{i18n.text['plugin.workspace.management.settings.access.loggedIn']}</div>
+                    <div><input type="radio" name="access" value="ANYONE" />#{i18n.text['plugin.workspace.management.settings.access.anyone']}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section class="flex-row workspace-management-additionalinfo">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.additionalInfoSectionTitle']}</h2>
+          <div class="workspace-management-container">
           
-          <div class="flex-row">
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>#{i18n.text['plugin.workspace.management.settings.publicity']}</label>
+            <div class="flex-row">
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>#{i18n.text['plugin.workspace.management.additionalInfo.nameExtension']}</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                    <input type="text" name="workspaceNameExtension"/>
+                  </div>
                 </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <div><input type="radio" name="published" value="true" /> #{i18n.text['plugin.workspace.management.settings.publicity.publish']}</div>
-                  <div><input type="radio" name="published" value="false" /> #{i18n.text['plugin.workspace.management.settings.publicity.unpublish']}</div>
+              </div>
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>#{i18n.text['plugin.workspace.management.additionalInfo.courseType']}</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                    <select class="workspace-type"></select>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>#{i18n.text['plugin.workspace.management.settings.access']}</label>
+  
+            <div class="flex-row">
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>#{i18n.text['plugin.workspace.management.additionalInfo.startDate']}</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                    <input type="text" class="date-field" name="beginDate"/>
+                  </div>
                 </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <div><input type="radio" name="access" value="MEMBERS_ONLY" />#{i18n.text['plugin.workspace.management.settings.access.membersOnly']}</div>
-                  <div><input type="radio" name="access" value="LOGGED_IN" />#{i18n.text['plugin.workspace.management.settings.access.loggedIn']}</div>
-                  <div><input type="radio" name="access" value="ANYONE" />#{i18n.text['plugin.workspace.management.settings.access.anyone']}</div>
+              </div>
+              <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                <div class="flex-row flex-align-items-center">
+                  <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                    <label>#{i18n.text['plugin.workspace.management.additionalInfo.endDate']}</label>
+                  </div>
+                  <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
+                    <input type="text" class="date-field" name="endDate"/>
+                  </div>
                 </div>
               </div>
             </div>
+  
           </div>
         </div>
-      </div>
-    </section>
-    
-    <section class="flex-row workspace-management-additionalinfo">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.additionalInfoSectionTitle']}</h2>
-        <div class="workspace-management-container">
-        
-          <div class="flex-row">
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.nameExtension']}</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <input type="text" name="workspaceNameExtension"/>
-                </div>
-              </div>
-            </div>
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.courseType']}</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <select class="workspace-type"></select>
-                </div>
-              </div>
-            </div>
+      </section>
+      
+      <section class="flex-row workspace-management-teacher" style="display: none">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceTeachersSectionTitle']}</h2>
+          <div class="workspace-management-container">
+            <div class="teacher-data">Opettaja 1.</div>
+            <div class="teacher-data">Opettaja 1.</div>
           </div>
-
-          <div class="flex-row">
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.startDate']}</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <input type="text" class="date-field" name="beginDate"/>
-                </div>
-              </div>
-            </div>
-            <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-              <div class="flex-row flex-align-items-center">
-                <div class="additionalinfo-title lg-flex-cell-6 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
-                  <label>#{i18n.text['plugin.workspace.management.additionalInfo.endDate']}</label>
-                </div>
-                <div class="additionalinfo-data lg-flex-cell-10 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
-                  <input type="text" class="date-field" name="endDate"/>
-                </div>
-              </div>
-            </div>
+        </div>
+      </section>
+      
+      <section class="flex-row workspace-management-producer">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceProducersSectionTitle']}</h2>
+          <div class="workspace-management-container workspace-material-producers">
+            <input type="text" class="workspace-material-producer-add"/>
           </div>
-
         </div>
-      </div>
-    </section>
+      </section>
     
-    <section class="flex-row workspace-management-licence" style="display: none">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceLicenceSectionTitle']}</h2>
-        <div class="workspace-management-container">
-          select
+      <section class="flex-row workspace-management-license">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceLicenceSectionTitle']}</h2>
+          <div class="workspace-management-container workspace-material-license">
+            <input type="url" class="default-material-license"/>
+          </div>
         </div>
-      </div>
-    </section>
-    
-    <section class="flex-row workspace-management-teacher" style="display: none">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceTeachersSectionTitle']}</h2>
-        <div class="workspace-management-container">
-          <div class="teacher-data">Opettaja 1.</div>
-          <div class="teacher-data">Opettaja 1.</div>
+      </section>
+      
+      <section class="flex-row workspace-management-description">
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.descriptionSectionTitle']}</h2>
+          <div class="workspace-management-container">
+            <textarea name="workspace-description" class="ckeditor-field workspace-description"></textarea>
+          </div>
         </div>
-      </div>
-    </section>
-    
-    <section class="flex-row workspace-management-producer">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.workspaceProducersSectionTitle']}</h2>
-        <div class="workspace-management-container workspace-material-producers">
-          <input type="text" class="workspace-material-producer-add"/>
+      </section>
+      
+      <section class="workspace-management-footer">
+        <div class="workspace-management-footer-actions-container">
+          <button class="save" type="button">#{i18n.text['plugin.workspace.management.workspaceButtons.save']}</button>
         </div>
-      </div>
-    </section>
-    
-    <section class="flex-row workspace-management-description">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.descriptionSectionTitle']}</h2>
-        <div class="workspace-management-container">
-          <textarea name="workspace-description" class="ckeditor-field workspace-description"></textarea>
-        </div>
-      </div>
-    </section>
-    
-    <section class="workspace-management-footer">
-      <div class="workspace-management-footer-actions-container">
-        <button class="save" type="button">#{i18n.text['plugin.workspace.management.workspaceButtons.save']}</button>
-      </div>
-    </section>
-    
-    <input type="hidden" class="workspace-entity-id" value="#{workspaceManagementBackingBean.workspaceEntityId}"/>
+      </section>
+      
+      <input type="hidden" class="workspace-entity-id" value="#{workspaceManagementBackingBean.workspaceEntityId}"/>
+      <input class="validate-form-button" type="submit" style="display:none;"/>
+    </form>
   </ui:define>
 
 </ui:composition>

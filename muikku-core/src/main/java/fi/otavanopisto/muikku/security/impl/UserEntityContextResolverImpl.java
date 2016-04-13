@@ -20,7 +20,7 @@ public class UserEntityContextResolverImpl implements UserContextResolver {
       return (UserEntity) contextReference;
     
     if (UserEmailEntity.class.isInstance(contextReference))
-      return ((UserEmailEntity) contextReference).getUser();
+      return ((UserEmailEntity) contextReference).getUserSchoolDataIdentifier().getUserEntity();
     
     return null;
   }
