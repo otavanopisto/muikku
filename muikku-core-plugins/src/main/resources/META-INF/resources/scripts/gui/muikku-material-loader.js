@@ -936,6 +936,22 @@
     
     $(data.pageElement).find('.ckeditor-field').muikkuRichMemoField();
     
+    /* Add autoGrow to textfield */
+    if (jQuery().autoGrowInput) {
+      $(data.pageElement)
+        .find('.muikku-text-field')
+        .each(function() {
+          $(this)
+            .autoGrowInput({
+              minWidth: $(this).width(),
+              maxWidth: function() { 
+                 return $(data.pageElement).width()-40; 
+              },
+              comfortZone:0
+            });
+        });
+    }
+
     /* Add autosize to textarea */
     if ((typeof autosize) == 'function') {
       autosize($('textarea'));
