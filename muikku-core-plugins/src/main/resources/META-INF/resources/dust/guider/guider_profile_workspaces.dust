@@ -27,7 +27,7 @@
         <div class="gt-course-activity-row">
           <label>{#localize key="plugin.guider.assessmentStateLabel"/}</label>
           <span>
-            {@select key=assessmentState}
+            {@select key=activity.assessmentState}
               {@eq value="CANCELED"}{#localize key="plugin.guider.assessmentState.CANCELED"/}{/eq}
               {@eq value="PENDING"}{#localize key="plugin.guider.assessmentState.PENDING"/}{/eq}
               {@eq value="PASS"}{#localize key="plugin.guider.assessmentState.PASS"/}{/eq}
