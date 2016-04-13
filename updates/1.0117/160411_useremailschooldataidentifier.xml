@@ -27,6 +27,6 @@
   <sql>alter table UserEmailEntity drop column user_id</sql>
   
   <sql>alter table UserEmailEntity drop index UK_g0173v4nvpdyt9uqf1mxwu4r6</sql>
-  <sql>create unique index UK_g0173v4nvpdyt9uqf1mxwu4r6 on UserEmailEntity (userSchoolDataIdentifier_id, address)</sql>
+  <sql>alter table UserEmailEntity add constraint UK_t8uw5fsbxilv1jfuujd1nvgun  unique (userSchoolDataIdentifier_id, address)</sql>
 
 </update>

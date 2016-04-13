@@ -181,11 +181,13 @@ public class DefaultSchoolDataUserListener {
   
   private List<String> getValidEmails(List<String> emails) {
     List<String> result = new ArrayList<>();
-    for (String email : emails) {
-      if (!validEmail(email)) {
-        logger.log(Level.SEVERE, String.format("Found invalid email address (%s), removed from synchronization", email));
-      } else {
-        result.add(email);
+    if (emails != null && !emails.isEmpty()) {
+      for (String email : emails) {
+        if (!validEmail(email)) {
+          logger.log(Level.SEVERE, String.format("Found invalid email address (%s), removed from synchronization", email));
+        } else {
+          result.add(email);
+        }
       }
     }
     return result;

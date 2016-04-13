@@ -893,7 +893,7 @@ public class PyramusUpdater {
             }
           }
         } else {
-          // If the student instance if archived, we add it the the removed indentifiers list
+          // If the student instance if archived, we add it the the removed identifiers list
           removedIdentifiers.add(identifier);
         }
         
@@ -1027,8 +1027,10 @@ public class PyramusUpdater {
   private List<SchoolDataIdentifier> toIdentifiers(List<String> identifiers) {
     List<SchoolDataIdentifier> result = new ArrayList<>();
     
-    for (String identifier : identifiers) {
-      result.add(toIdentifier(identifier));
+    if (identifiers != null && !identifiers.isEmpty()) {
+      for (String identifier : identifiers) {
+        result.add(toIdentifier(identifier));
+      }
     }
     
     return result;

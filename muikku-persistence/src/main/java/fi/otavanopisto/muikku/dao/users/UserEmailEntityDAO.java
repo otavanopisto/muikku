@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.dao.users;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -58,6 +59,9 @@ public class UserEmailEntityDAO extends CoreDAO<UserEmailEntity> {
   }
 
   public List<UserEmailEntity> listByAddresses(Collection<String> addresses) {
+    if (addresses == null || addresses.isEmpty()) {
+      return Collections.emptyList();
+    }
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
