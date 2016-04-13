@@ -7,9 +7,11 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.EnvironmentSettingsController;
 import fi.otavanopisto.muikku.mail.Mailer;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.notifier.NotifierAction;
 import fi.otavanopisto.muikku.notifier.NotifierContext;
 import fi.otavanopisto.muikku.notifier.NotifierMethod;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 
 public class NotifierEmailMethod implements NotifierMethod {
@@ -40,10 +42,11 @@ public class NotifierEmailMethod implements NotifierMethod {
   @Override
   public void sendNotification(NotifierAction action, NotifierContext context) {
     NotifierEmailMessageComposer message = emailMessageComposer.select(new NotifierEmailContentAnnotationLiteral(action.getName())).get();
-
     if (message != null) {
-      List<String> addresses = userEmailEntityController.listAddressesByUserEntity(context.getRecipient());
-      
+      // List email addresses of user entity (only default identifier)
+      UserEntity userEntity = context.getRecipient();
+      SchoolDataIdentifier identifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+      List<String> addresses = userEmailEntityController.getUserEmailAddresses(identifier);
       mailer.sendMail(message.getEmailMimeType(context), environmentSettingsController.getSystemEmailSenderAddress(), addresses, message.getEmailSubject(context), message.getEmailContent(context));
     }
   }
