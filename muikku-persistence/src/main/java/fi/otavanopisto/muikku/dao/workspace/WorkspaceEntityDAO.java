@@ -180,6 +180,11 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
     workspaceEntity.setAccess(access);
     return persist(workspaceEntity);
   }
+
+  public WorkspaceEntity updateDefaultMaterialLicense(WorkspaceEntity workspaceEntity, String defaultMaterialLicense) {
+    workspaceEntity.setDefaultMaterialLicense(defaultMaterialLicense);
+    return persist(workspaceEntity);
+  }
   
   public WorkspaceEntity updatePublished(WorkspaceEntity workspaceEntity, Boolean published) {
     workspaceEntity.setPublished(published);
