@@ -120,7 +120,7 @@ public class MaterialAttachmentUploadServlet extends HttpServlet {
     for (WorkspaceMaterial sharedWorkspaceMaterial : parentWorkspaceMaterials) {
       WorkspaceMaterial uploadedWorkspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(sharedWorkspaceMaterial, uploadedMaterial);
       if (sharedWorkspaceMaterial.getId().equals(parentWorkspaceMaterial.getId())) {
-        uploadedUrl = "/" + workspaceMaterialController.getCompletePath(uploadedWorkspaceMaterial);
+        uploadedUrl = uploadedWorkspaceMaterial.getUrlName();
       }
     }
     
