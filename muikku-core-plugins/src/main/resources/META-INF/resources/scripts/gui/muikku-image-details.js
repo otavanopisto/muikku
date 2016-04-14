@@ -14,11 +14,14 @@
     _appendDetails: function (type, text, url) {
       if (text || url) {
         if (!this._details) {
-          var figure = this.element.parent('figure');
+          var figure = this.element.closest('figure');
           if (!figure.length) {
-            var figure = $('<figure>').insertBefore(this.element);
+            var figure = $('<figure>')
+              .insertBefore(this.element);
             this.element.appendTo(figure);
           }
+          
+          figure.css('max-width', this.element.width())
           
           this._details = $('<details>')
             .insertAfter(this.element);
