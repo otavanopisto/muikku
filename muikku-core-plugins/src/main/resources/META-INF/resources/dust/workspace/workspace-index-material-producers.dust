@@ -1,0 +1,5 @@
+<footer>
+  {#materialProducers}
+    <div class="workspace-material-producer">{name}</div>
+  {/materialProducers}
+</footer>
