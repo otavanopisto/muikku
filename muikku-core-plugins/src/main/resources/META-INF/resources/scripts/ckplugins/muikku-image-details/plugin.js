@@ -1,8 +1,6 @@
 /**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben, Otavan
- *          opisto. All rights reserved.
+ * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben, Otavan opisto. All rights reserved.
  */
-
 (function() {
   'use strict';
 
@@ -25,6 +23,8 @@
         id: 'details',
         label: lang.detailsTab,
         elements: [{
+          type: 'hbox',
+          children: [{
             id : 'source',
             type : 'text',
             label : lang.sourceLabel,
@@ -44,7 +44,10 @@
             commit: function(widget) {
               widget.parts.image.setAttribute('data-source-url', this.getValue());
             }
-          }, {
+          }]
+        }, {
+          type: 'hbox',
+          children: [{
             id : 'license',
             type : 'text',
             label : lang.licenseLabel,
@@ -64,7 +67,10 @@
             commit: function(widget) {
               widget.parts.image.setAttribute('data-license-url', this.getValue());
             }
-          }, {
+          }]
+        }, {
+          type: 'hbox',
+          children: [{
             id : 'author',
             type : 'text',
             label : lang.authorLabel,
@@ -85,6 +91,7 @@
               widget.parts.image.setAttribute('data-author-url', this.getValue());
             }
           }]
+        }]
       });
     }
   });
