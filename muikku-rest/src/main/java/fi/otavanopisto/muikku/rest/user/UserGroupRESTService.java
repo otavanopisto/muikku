@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -35,22 +36,22 @@ import fi.otavanopisto.muikku.users.UserGroupEntityController;
 @Stateful
 @RequestScoped
 @Path("/usergroup")
-@Produces ("application/json")
+@Produces("application/json")
 public class UserGroupRESTService extends AbstractRESTService {
-  
+
   @Inject
   private SessionController sessionController;
 
   @Inject
-  private UserGroupEntityController userGroupEntityController; 
+  private UserGroupEntityController userGroupEntityController;
 
   @Inject
   private UserGroupController userGroupController;
-  
+
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
-  
+
   @Inject
   private Logger logger;
 
@@ -58,58 +59,71 @@ public class UserGroupRESTService extends AbstractRESTService {
   @Path("/groups")
   @RESTPermitUnimplemented
   public Response searchUserGroups(
+      @QueryParam("userIdentifier") String userIdentifier,
       @QueryParam("searchString") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults) {
-    
+
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
-    SearchProvider elasticSearchProvider = getProvider("elastic-search");
-    if (elasticSearchProvider != null) {
-      String[] fields = new String[] { "name" };
-      SearchResult result = null;
 
-      if (StringUtils.isBlank(searchString)) {
-        result = elasticSearchProvider.matchAllSearch(firstResult,
-            maxResults, UserGroup.class);
-      } else {
-        result = elasticSearchProvider.search(searchString, fields,
-            firstResult, maxResults, UserGroup.class);
+    List<UserGroupEntity> entities = new ArrayList<>();
+
+    if (userIdentifier != null) {
+      SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userIdentifier);
+      if (identifier != null) {
+        entities = userGroupEntityController.listUserGroupsByUserIdentifier(identifier);
       }
+    } else {
+      SearchProvider elasticSearchProvider = getProvider("elastic-search");
+      if (elasticSearchProvider != null) {
+        String[] fields = new String[] { "name" };
+        SearchResult result = null;
 
-      List<Map<String, Object>> results = result.getResults();
-
-      List<fi.otavanopisto.muikku.rest.model.UserGroup> ret = new ArrayList<fi.otavanopisto.muikku.rest.model.UserGroup>();
-
-      if (!results.isEmpty()) {
-        for (Map<String, Object> o : results) {
-          String[] id = ((String) o.get("id")).split("/", 2);
-
-          UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(id[1], id[0]);
-          if (userGroupEntity != null) {
-            Long userCount = userGroupEntityController.getGroupUserCount(userGroupEntity);
-            ret.add(new fi.otavanopisto.muikku.rest.model.UserGroup(
-                userGroupEntity.getId(), 
-                (String) o.get("name"),
-                userCount));
-          }
+        if (StringUtils.isBlank(searchString)) {
+          result = elasticSearchProvider.matchAllSearch(firstResult, maxResults, UserGroup.class);
+        } else {
+          result = elasticSearchProvider.search(searchString, fields, firstResult, maxResults, UserGroup.class);
         }
 
-        return Response.ok(ret).build();
-      } else
-        return Response.noContent().build();
+        List<Map<String, Object>> results = result.getResults();
+
+        if (!results.isEmpty()) {
+          for (Map<String, Object> o : results) {
+            String[] id = ((String) o.get("id")).split("/", 2);
+
+            UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(
+                id[1], id[0]);
+            if (userGroupEntity != null) {
+              entities.add(userGroupEntity);
+            }
+          }
+        }
+      }
     }
 
-    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+    if (entities.isEmpty()) {
+      return Response.noContent().build();
+    } else {
+      List<fi.otavanopisto.muikku.rest.model.UserGroup> ret = new ArrayList<fi.otavanopisto.muikku.rest.model.UserGroup>();
+
+      for (UserGroupEntity entity : entities) {
+
+        Long userCount = userGroupEntityController.getGroupUserCount(entity);
+        UserGroup group = userGroupController.findUserGroup(entity);
+        ret.add(new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount));
+      }
+
+      return Response.ok(ret).build();
+    }
   }
 
   @GET
   @Path("/groups/{ID}")
   @RESTPermitUnimplemented
   public Response findById(@PathParam("ID") Long groupId) {
-    
+
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -119,7 +133,6 @@ public class UserGroupRESTService extends AbstractRESTService {
     if (userGroupEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
 
     UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
     if (userGroup == null) {
@@ -128,12 +141,9 @@ public class UserGroupRESTService extends AbstractRESTService {
     }
 
     Long userCount = userGroupEntityController.getGroupUserCount(userGroupEntity);
-    
-    return Response
-        .ok(new fi.otavanopisto.muikku.rest.model.UserGroup(
-          userGroupEntity.getId(),
-          userGroup.getName(),
-          userCount))
+
+    return Response.ok(
+        new fi.otavanopisto.muikku.rest.model.UserGroup(userGroupEntity.getId(), userGroup.getName(), userCount))
         .build();
   }
 
