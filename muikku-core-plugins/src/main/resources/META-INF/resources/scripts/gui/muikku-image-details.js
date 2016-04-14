@@ -17,25 +17,31 @@
           var figure = this.element.closest('figure');
           if (!figure.length) {
             var figure = $('<figure>')
+              .addClass('image')
               .insertBefore(this.element);
             this.element.appendTo(figure);
           }
           
           figure.css('max-width', this.element.width())
           
-          this._details = $('<details>')
+          this._details = $('<div>')
+            .addClass('image-details icon-copyright')
             .insertAfter(this.element);
+        
+          this._detailsContainer = $('<div>')
+            .addClass('image-details-container')
+            .appendTo(this._details);
         }
         
         if (url) {
           $('<a>')
-            .attr('src', url)
+            .attr('href', url)
             .text(text||url)
-            .appendTo(this._details);
+            .appendTo(this._detailsContainer);
         } else {
           $('<span>')
             .text(text||url)
-            .appendTo(this._details);
+            .appendTo(this._detailsContainer);
         }
       }
     },
