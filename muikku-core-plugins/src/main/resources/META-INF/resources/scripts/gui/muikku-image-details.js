@@ -14,6 +14,12 @@
     _appendDetails: function (type, text, url) {
       if (text || url) {
         if (!this._details) {
+          var figure = this.element.parent('figure');
+          if (!figure.length) {
+            var figure = $('<figure>').insertBefore(this.element);
+            this.element.appendTo(figure);
+          }
+          
           this._details = $('<details>')
             .insertAfter(this.element);
         }
