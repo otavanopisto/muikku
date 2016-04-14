@@ -116,7 +116,7 @@
           'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
           'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/',
           'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/',
-          'muikku-image-extra': CONTEXTPATH + '/scripts/ckplugins/muikku-image-extra/'
+          'muikku-image-details': CONTEXTPATH + '/scripts/ckplugins/muikku-image-details/'
         },
         extraPlugins : [
                        'oembed',
@@ -132,7 +132,7 @@
                        'muikku-selection',
                        'muikku-connectfield',
                        'muikku-embedded',
-                       'muikku-image-extra',
+                       'muikku-image-details',
                        'mathjax',
                        'autogrow',
                        'uploadimage'],

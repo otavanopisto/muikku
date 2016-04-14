@@ -6,25 +6,28 @@
 (function() {
   'use strict';
 
-  
-  CKEDITOR.plugins.add('muikku-image-extra', {
+  CKEDITOR.plugins.add('muikku-image-details', {
+    lang: 'fi,en',
     init: function(editor) {
       
     }
   });
 
   CKEDITOR.on( 'dialogDefinition', function( ev ) {
+    var editor = ev.editor;
+    var lang = editor.lang['muikku-image-details'];
+
     var dialogName = ev.data.name;
     var dialogDefinition = ev.data.definition;
     
     if (dialogName == 'image2') {
       dialogDefinition.addContents({
-        id: 'Extra',
-        label: 'Extra', //lang.extraTab,
+        id: 'details',
+        label: lang.detailsTab,
         elements: [{
             id : 'source',
             type : 'text',
-            label : 'Source',
+            label : lang.sourceLabel,
             setup: function(widget) {
               this.setValue(widget.parts.image.getAttribute('data-source'));
             },
@@ -34,7 +37,7 @@
           }, {
             id : 'source-url',
             type : 'text',
-            label : 'Source URL',
+            label : lang.sourceUrlLabel,
             setup: function(widget) {
               this.setValue(widget.parts.image.getAttribute('data-source-url'));
             },
@@ -44,7 +47,7 @@
           }, {
             id : 'license',
             type : 'text',
-            label : 'License',
+            label : lang.licenseLabel,
             setup: function(widget) {
               this.setValue(widget.parts.image.getAttribute('data-license'));
             },
@@ -54,7 +57,7 @@
           }, {
             id : 'license-url',
             type : 'text',
-            label : 'License URL',
+            label : lang.licenseUrlLabel,
             setup: function(widget) {
               this.setValue(widget.parts.image.getAttribute('data-license-url'));
             },
@@ -64,7 +67,7 @@
           }, {
             id : 'author',
             type : 'text',
-            label : 'Author',
+            label : lang.authorLabel,
             setup: function(widget) {
               this.setValue(widget.parts.image.getAttribute('data-author'));
             },
@@ -74,7 +77,7 @@
           }, {
             id : 'author-url',
             type : 'text',
-            label : 'Author URL',
+            label : lang.authorUrlLabel,
             setup: function(widget) {
               this.setValue(widget.parts.image.getAttribute('data-author-url'));
             },
