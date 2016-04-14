@@ -101,6 +101,7 @@
           'filetools' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/4.5.8/plugin.js',
           'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.8/plugin.js',
           'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.8/plugin.js',
+          'image2' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/image2/4.5.8/plugin.js',
           'oembed' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/oembed/1.17/',
           'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
           'coops' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/coops/0.1.1/plugin.min.js',
@@ -114,7 +115,8 @@
           'muikku-memofield': CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
           'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
           'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/',
-          'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/'
+          'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/',
+          'muikku-image-extra': CONTEXTPATH + '/scripts/ckplugins/muikku-image-extra/'
         },
         extraPlugins : [
                        'oembed',
@@ -123,12 +125,14 @@
                        'coops-dmp',
                        'coops-sessionevents', 
                        'audio',
+                       'image2',
                        'muikku-textfield', 
                        'muikku-memofield', 
                        'muikku-filefield', 
                        'muikku-selection',
                        'muikku-connectfield',
                        'muikku-embedded',
+                       'muikku-image-extra',
                        'mathjax',
                        'autogrow',
                        'uploadimage'],
