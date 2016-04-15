@@ -208,17 +208,19 @@ figure.image {
       font-family:'Open Sans', Arial, sans-serif;
       opacity:0.9;
       background:#fff;
-      padding:20px;
+      padding:10px;
       font-size:13px;
       
       a {
         color:#0099ff;
-        padding:0 5px;
+        padding:0 5px 0 0;
+        line-height:140%;
       }
       
       span {
         color:#000;
-        padding:0 5px;
+        padding:0 5px 0 0;
+        line-height:140%;
       }
       
     }
@@ -242,6 +244,7 @@ figure.image {
     padding:4px 8px 8px 8px;
     line-height:130%;
     border-radius:2px;
+    box-sizing:border-box;
   }
   
 }

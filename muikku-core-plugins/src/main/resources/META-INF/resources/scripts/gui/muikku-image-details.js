@@ -6,7 +6,7 @@
     _create : function() {
       this._details = null;
       
-      $.each(['source', 'license', 'author'], $.proxy(function (index, type) {
+      $.each(['source', 'author', 'license'], $.proxy(function (index, type) {
         this._appendDetails(type, this.element.attr('data-' + type), this.element.attr('data-' + type + '-url'));
       }, this));
     },

@@ -907,11 +907,6 @@
       });
     });
     
-    if (jQuery().imageDetails) {
-      $(data.pageElement).find('img')
-        .imageDetails();
-    }
-    
     if (jQuery().magnificPopup) {
       // Lazy loading with magnific popup
       $(data.pageElement).find('img.lazy').each(function (index, img) {
@@ -935,6 +930,11 @@
     } else {
       // Lazy loading
      $(data.pageElement).find('img.lazy').lazyload();
+    }
+    
+    if (jQuery().imageDetails) {
+      $(data.pageElement).find('img')
+        .imageDetails();
     }
         
     $(data.pageElement).find('.js-lazyyt').lazyYT();
