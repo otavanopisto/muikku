@@ -800,16 +800,22 @@ body.workspace-materials-management {
             padding:10px;
             font-size:13px;
             
+            span.image-details-label {
+              padding:0 5px 0 0;
+            }
+            
             a {
               color:#0099ff;
-              padding:0 5px 0 0;
+              padding:0;
               line-height:140%;
+              word-wrap:break-word;
             }
             
             span {
               color:#000;
-              padding:0 5px 0 0;
+              padding:0;
               line-height:140%;
+              word-wrap:break-word;
             }
             
           }

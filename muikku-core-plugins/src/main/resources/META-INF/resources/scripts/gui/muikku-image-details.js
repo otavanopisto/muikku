@@ -3,6 +3,13 @@
   
   $.widget("custom.imageDetails", {
     
+    options: {
+      typePostfix: {
+        'source': '&nbsp;/&nbsp;',
+        'author': ',&nbsp;'
+      }
+    },
+    
     _create : function() {
       this._details = null;
       
@@ -36,7 +43,7 @@
             .insertAfter(this.element);
         
           this._detailsContainer = $('<div>')
-            .append($('<span>').text(getLocaleText('plugin.workspace.materials.detailsSourceLabel')))
+            .append($('<span>').addClass('image-details-label').text(getLocaleText('plugin.workspace.materials.detailsSourceLabel')))
             .addClass('image-details-container')
             .appendTo(this._details);
         }
@@ -49,6 +56,12 @@
         } else {
           $('<span>')
             .text(text||url)
+            .appendTo(this._detailsContainer);
+        }
+        
+        if (this.options.typePostfix[type]) {
+          $('<span>')
+            .html(this.options.typePostfix[type])
             .appendTo(this._detailsContainer);
         }
       }
