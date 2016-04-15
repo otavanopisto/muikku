@@ -78,6 +78,11 @@ public class UserGroupRESTService extends AbstractRESTService {
 
     if (userIdentifier != null) {
       SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userIdentifier);
+      
+      if (identifier == null) {
+        Response.status(Status.BAD_REQUEST).entity("Malformed userIdentifier").build();
+      }
+      
       UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(identifier);      
       
