@@ -1,5 +1,10 @@
-<footer>
-  {#materialProducers}
-    <div class="workspace-material-producer">{name}</div>
-  {/materialProducers}
-</footer>
+{?materialProducers}
+  <footer id="workspaceFrontpageFooter">
+    <div class="workspace-footer-producers-wrapper">
+      <span class="workspace-material-producers-label">{#localize key="plugin.workspace.index.producersLabel"/}:</span>
+      {#materialProducers}
+        <span class="workspace-material-producer">{name}{@sep}, {/sep}</span>
+      {/materialProducers}
+    </div>
+  </footer>
+{/materialProducers}  
