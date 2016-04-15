@@ -23,7 +23,11 @@
    <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.language"/}</span><span class="mf-item-details-value gt-user-details-value">{?language}{language}{:else}{#localize key="plugin.guider.content.null"/}{/language}</span></div>
    <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.municipality"/}</span><span class="mf-item-details-value gt-user-details-value">{?municipality}{municipality}{:else}{#localize key="plugin.guider.content.null"/}{/municipality}</span></div>
    <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.school"/}</span><span class="mf-item-details-value gt-user-details-value">{?school}{school}{:else}{#localize key="plugin.guider.content.null"/}{/school}</span></div>
+   {?groups}
    <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.groups"/}</span></div>
+   {:else}
+   <div class="gt-user-details-item"><span>{#localize key="plugin.guider.user.details.label.noGroups"/}</span></div>
+   {/groups}
    {#groups}
    <div class="gt-user-details-item"><span class="mf-item-details-value gt-user-details-value gt-user-details-indent">{name}</span></div>
    {/groups}

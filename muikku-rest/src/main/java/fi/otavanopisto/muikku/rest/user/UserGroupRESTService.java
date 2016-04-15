@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
@@ -29,7 +30,9 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
@@ -44,6 +47,9 @@ public class UserGroupRESTService extends AbstractRESTService {
 
   @Inject
   private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private UserEntityController userEntityController;
 
   @Inject
   private UserGroupController userGroupController;
@@ -72,6 +78,13 @@ public class UserGroupRESTService extends AbstractRESTService {
 
     if (userIdentifier != null) {
       SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userIdentifier);
+      UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(identifier);      
+      
+      if (!(loggedUserEntity.equals(userEntity) || sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_USER_USERGROUPS))) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      
       if (identifier != null) {
         entities = userGroupEntityController.listUserGroupsByUserIdentifier(identifier);
       }
