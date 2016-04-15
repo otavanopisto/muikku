@@ -20,6 +20,7 @@
               <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
               <span class="cp-course-fee icon-coin-euro" title='{#localize key="plugin.coursepicker.course.evaluationhasfee" /}'></span>
             {/evaluationHasFee}           
+            {?educationTypeName}<i class="cp-course-education-type {educationTypeName}">{educationTypeName}</i>{/educationTypeName}            
           </div>
                   
           <div id="detailsCrs-{workspaceEntity.id}" class="cp-course-content-details" style="display:none;">     
