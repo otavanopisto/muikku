@@ -179,101 +179,29 @@
   
 }
 
-/* WORKSPACE FOOTER */
-footer#contentFooter {
-  min-height:200px;
+footer#workspaceFrontpageFooter {
   background:#fff;
   box-sizing:border-box;
   max-width:960px;
   position:relative;
   padding:20px;
-  border-top:10px solid #eee;
-  font-size:14px;
-  
-  .workspace-footer-teacher-wrapper {
-    clear:both;
-    margin:0 0 20px 0;
-  
-    .workspace-footer-teacher-image {
-      float:left;
-      width:80px;
-      height:95px;
-      overflow:hidden;
-      margin:0 20px 0 0;
-      @include background-image('gfx/workspace-default-teacher.jpg');
-      background-repeat:no-repeat;
-    }
-    
-    .workspace-footer-teacher-name {
-      float:left;
-      
-      span.workspace-footer-teacher-name-label {
-        text-transform:uppercase;
-        color:#727272;
-        display:inline-block;
-        margin:0 5px 0 0;
-      }
-      
-      span.workspace-footer-teacher-name-data {
-        text-transform:uppercase;
-        color:#000;
-        display:inline-block;
-      }
-    }
-  
-  }
-  
-  .workspace-footer-licence-wrapper {
-    min-height:40px;
-    background:#98c807;
-    margin:0 -20px 20px -20px;
-    clear:both;
-    padding:20px;
-    
-    .workspace-footer-licence-icon-wrapper {
-      float:left;
-    }
-    
-    .workspace-footer-licence-text-wrapper {
-      float:left;
-      color:#e6ffe9;
-      font-size:16px;
-      line-height:1.5em;
-      min-height:20px;
-      font-weight:400;
-      
-      a.workspace-footer-licence-link#workspaceFooterLicenceLink {
-        font-weight:600;
-        color:#fff;
-        text-decoration:none;
-        
-        &:hover {
-          text-decoration:underline;
-        }
-        
-      }
-    }
-  }
   
   .workspace-footer-producers-wrapper {
-    margin:20px 0 0 0;
+    font-size:14px;
+    font-weight:300;
   
-    .workspace-footer-producers-name {
-      
-      span.workspace-footer-producers-name-label {
-        text-transform:uppercase;
-        color:#727272;
-        display:inline-block;
-        margin:0 5px 0 0;
-      }
-      
-      span.workspace-footer-producers-name-data {
-        text-transform:uppercase;
-        color:#000;
-        display:inline-block;
-      }
+    .workspace-material-producers-label {
+      color:#727272;
+      padding:0 5px 0 0;
+      text-transform:uppercase;
+    }
+    
+    .workspace-material-producer {
+      padding:0;
+      color:#000;
+      text-transform:uppercase;
     }
   
   }
-
+  
 }
