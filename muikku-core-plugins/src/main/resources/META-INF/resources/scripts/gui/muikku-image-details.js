@@ -16,6 +16,9 @@
       $.each(['source', 'author', 'license'], $.proxy(function (index, type) {
         this._appendDetails(type, this.element.attr('data-' + type), this.element.attr('data-' + type + '-url'));
       }, this));
+      
+      this.element.closest('figure')
+        .css('max-width', this.element.width());
     },
     
     _appendDetails: function (type, text, url) {
@@ -35,8 +38,6 @@
               this.element.appendTo(figure);
             }
           }
-          
-          figure.css('max-width', this.element.width())
           
           this._details = $('<div>')
             .addClass('image-details icon-copyright')
