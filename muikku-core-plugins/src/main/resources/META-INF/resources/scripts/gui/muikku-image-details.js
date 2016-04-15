@@ -27,7 +27,7 @@
               figure.insertBefore(this.element);
               this.element.appendTo(figure);
             }
-          } 
+          }
           
           figure.css('max-width', this.element.width())
           
@@ -36,6 +36,7 @@
             .insertAfter(this.element);
         
           this._detailsContainer = $('<div>')
+            .append($('<span>').text(getLocaleText('plugin.workspace.materials.detailsSourceLabel')))
             .addClass('image-details-container')
             .appendTo(this._details);
         }

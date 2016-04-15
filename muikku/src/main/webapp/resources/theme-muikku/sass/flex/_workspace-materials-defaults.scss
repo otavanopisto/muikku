@@ -430,6 +430,13 @@ figure.image {
       padding:10px;
       font-size:13px;
       
+      >*:nth-child(3):before, 
+      >*:nth-child(4):before {
+        content: '/ ';
+        color: #000;
+        text-decoration: none;
+      }
+      
       a {
         color:#0099ff;
         padding:0 5px 0 0;
