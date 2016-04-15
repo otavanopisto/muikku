@@ -68,7 +68,19 @@ h2.workspace-management-generic-title {
   }
   
   select {
-    padding:5px 20px 5px 5px;
+    border-radius:2px;
+    font-size:18px;     
+    border:1px solid $formBorderColor;
+    background-color:$formBackgroundColor; 
+    max-width:100%;
+    box-sizing:border-box;
+    padding:5px 6px;
+    
+    option {
+      background:#fff;
+      padding:4px 6px;
+    }
+    
   }
   
   textarea {

@@ -82,7 +82,7 @@
     },
     
     _loadFilters: function (callback) {
-      async.parallel([this._loadWorkspaces, this._loadFlags], $.proxy(function(err, filters){
+      async.parallel([ this._loadFlags,this._loadWorkspaces], $.proxy(function(err, filters){
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
         } else {
