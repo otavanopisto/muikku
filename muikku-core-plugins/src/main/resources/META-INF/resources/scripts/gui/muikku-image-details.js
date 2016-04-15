@@ -17,10 +17,17 @@
           var figure = this.element.closest('figure');
           if (!figure.length) {
             var figure = $('<figure>')
-              .addClass('image')
-              .insertBefore(this.element);
-            this.element.appendTo(figure);
-          }
+              .addClass('image');
+
+            var parentLink = this.element.parent('a');
+            if (parentLink.length) {
+              figure.insertBefore(parentLink);
+              parentLink.appendTo(figure);
+            } else {
+              figure.insertBefore(this.element);
+              this.element.appendTo(figure);
+            }
+          } 
           
           figure.css('max-width', this.element.width())
           
