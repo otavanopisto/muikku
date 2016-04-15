@@ -81,7 +81,11 @@ public class UserGroupRESTService extends AbstractRESTService {
       UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(identifier);      
       
-      if (!(loggedUserEntity.equals(userEntity) || sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_USER_USERGROUPS))) {
+      if (userEntity == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      
+      if (!(loggedUserEntity.getId().equals(userEntity.getId()) || sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_USER_USERGROUPS))) {
         return Response.status(Status.FORBIDDEN).build();
       }
       
