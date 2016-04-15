@@ -389,7 +389,7 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     String workspaceName = workspace.getName();
 
-    String userName = user.getFirstName() + " " + user.getLastName();
+    String userName = user.getDisplayName();
 
     for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
       teachers.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
@@ -424,7 +424,7 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     List<String> teacherEmails = new ArrayList<>(teachers.size());
     for (UserEntity teacher : teachers){
-     String teacherEmail = userEmailEntityController.getUserEmailAddress(teacher, false);
+     String teacherEmail = userEmailEntityController.getUserDefaultEmailAddress(teacher, false);
      if (StringUtils.isNotBlank(teacherEmail)) {
        teacherEmails.add(teacherEmail);
      }

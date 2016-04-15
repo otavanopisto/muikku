@@ -38,11 +38,7 @@ public class CoOpsSessionEventsController {
       if (userEntityId != null) {
         UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
         if (userEntity != null) {
-          List<String> addresses = userEmailEntityController.listAddressesByUserEntity(userEntity);
-          if (!addresses.isEmpty()) {
-            email = addresses.get(0);
-          }
-          
+          email = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
           User user = userController.findUserByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
           if (user != null) {
             displayName = user.getFirstName() + ' ' + user.getLastName();

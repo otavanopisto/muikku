@@ -12,6 +12,7 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
@@ -38,7 +39,7 @@ public class ProfileBackingBean {
   @RequestAction
   @LoggedIn
   public String init() {
-    UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
     User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
     List<UserAddress> userAddresses = userController.listUserAddresses(user);
     List<UserPhoneNumber> userPhoneNumbers = userController.listUserPhoneNumbers(user);
@@ -55,8 +56,8 @@ public class ProfileBackingBean {
       phoneNumbers.add(userPhoneNumber.getNumber());
     }
     
-    // TODO: Shouldn't these emails come from school data bridge?
-    emails = userEmailEntityController.listAddressesByUserEntity(loggedUserEntity);
+    SchoolDataIdentifier identifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+    emails = userEmailEntityController.getUserEmailAddresses(identifier);
     
     return null;
   }

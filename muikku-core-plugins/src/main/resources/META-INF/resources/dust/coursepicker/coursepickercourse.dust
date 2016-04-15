@@ -14,11 +14,11 @@
                 </span>
               </div>
               <div class="mf-item-header-details cp-course-header-details lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4 flex-right">
-                {?educationTypeName}<i class="cp-course-education-type {educationTypeName}">{educationTypeName}</i>{/educationTypeName}
                 {?evaluationHasFee}
                   <!--  All you need is this tag from the rest and it is passed to the modal by existence of ".cp-course-fee"-element -->
                   <span class="cp-course-fee icon-coin-euro" title='{#localize key="plugin.coursepicker.course.evaluationhasfee" /}'></span>
                 {/evaluationHasFee} 
+                {?educationTypeName}<i class="cp-course-education-type {educationTypeName}">{educationTypeName}</i>{/educationTypeName}
               </div>
             </div>
           </div>

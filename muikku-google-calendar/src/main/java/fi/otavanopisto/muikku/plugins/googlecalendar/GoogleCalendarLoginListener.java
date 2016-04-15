@@ -13,6 +13,7 @@ import fi.otavanopisto.muikku.plugins.calendar.CalendarController;
 import fi.otavanopisto.muikku.plugins.calendar.model.UserCalendar;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
 public class GoogleCalendarLoginListener {
   
@@ -28,7 +29,7 @@ public class GoogleCalendarLoginListener {
   
   @Inject
   private UserEmailEntityController userEmailEntityController;
-
+  
   @Inject
   private CalendarController calendarController;
 
@@ -43,8 +44,7 @@ public class GoogleCalendarLoginListener {
         logger.info("User does not have a calendar, creating one");
         try {
           userCalendar = calendarController.createCalendar(userEntity, "google", CALENDAR_SUMMARY, CALENDAR_DESCRIPTION, Boolean.TRUE);
-
-          for (String email : userEmailEntityController.listAddressesByUserEntity(userEntity)) {
+          for (String email : userEmailEntityController.getUserEmailAddresses(event.getUserIdentifier())) {
             try {
               logger.info(String.format("Sharing Google calendar with %s", email));
               googleCalendarClient.insertCalendarUserAclRule(userCalendar.getCalendarId(), email, "owner");

@@ -9,14 +9,11 @@ public class Workspace {
   public Workspace() {
   }
 
-  public Workspace(Long id, String urlName, WorkspaceAccess access, Boolean archived, Boolean published, String name, String nameExtension, String description) {
-    this(id, urlName, access, archived, published, name, nameExtension, description, 0l, null);
-  }
-
-  public Workspace(Long id, String urlName, WorkspaceAccess access, Boolean archived, Boolean published, String name, String nameExtension, String description, Long numVisits, Date lastVisit) {
+  public Workspace(Long id, String urlName, WorkspaceAccess access, Boolean archived, Boolean published, String name, String nameExtension, String description, String materialDefaultLicense, Long numVisits, Date lastVisit) {
     super();
     this.id = id;
     this.urlName = urlName;
+    this.materialDefaultLicense = materialDefaultLicense;
     this.archived = archived;
     this.access = access;
     this.published = published;
@@ -91,6 +88,14 @@ public class Workspace {
     this.access = access;
   }
   
+  public String getMaterialDefaultLicense() {
+    return materialDefaultLicense;
+  }
+  
+  public void setMaterialDefaultLicense(String materialDefaultLicense) {
+    this.materialDefaultLicense = materialDefaultLicense;
+  }
+  
   public Boolean getPublished() {
     return published;
   }
@@ -116,5 +121,6 @@ public class Workspace {
   private Long numVisits;
   private Date lastVisit;
   private WorkspaceAccess access;
+  private String materialDefaultLicense;
   private Boolean published;
 }

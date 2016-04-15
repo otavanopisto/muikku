@@ -82,7 +82,7 @@
     },
     
     _loadFilters: function (callback) {
-      async.parallel([this._loadWorkspaces, this._loadFlags], $.proxy(function(err, filters){
+      async.parallel([ this._loadFlags,this._loadWorkspaces], $.proxy(function(err, filters){
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.filters', err));
         } else {
@@ -118,7 +118,11 @@
     
     _loadWorkspaces: function (callback) {
       mApi().workspace.workspaces
-        .read({ ownerIdentifier: MUIKKU_LOGGED_USER })
+        .read({
+          userIdentifier: MUIKKU_LOGGED_USER,
+          maxResults: 500,
+          orderBy: 'alphabet'
+        })
         .callback(function (err, workspaces) {
           if (err) {
             callback(err);
@@ -324,15 +328,23 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
         } else {        
-          renderDustTemplate('guider/guider_item_details.dust', user, $.proxy(function(text) {              
-            userElement.find('.gt-user-details-content')
-              .html(text);
+          mApi().usergroup.groups.read({userIdentifier: userIdentifier}).callback($.proxy(function(err, groups) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
+            } else {
+              var dustContext = user;
+              dustContext.groups = groups;
+              renderDustTemplate('guider/guider_item_details.dust', dustContext, $.proxy(function(text) {              
+                userElement.find('.gt-user-details-content')
+                  .html(text);
 
-            userElement
-              .removeClass('loading closed')
-              .addClass('open');
+                userElement
+                  .removeClass('loading closed')
+                  .addClass('open');
+              }, this));
+            }
           }, this));
-        } 
+        }
       }, this)); 
     },
     

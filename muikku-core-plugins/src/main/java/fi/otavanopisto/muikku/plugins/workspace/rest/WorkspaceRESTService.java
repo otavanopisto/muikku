@@ -497,15 +497,45 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materialProducers")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (handling = Handling.INLINE)
   public Response listWorkspaceMaterialProducers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
 
+    if (workspaceEntity.getArchived()) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!workspaceEntity.getPublished()) {
+      if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
     if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
+      switch (workspaceEntity.getAccess()) {
+        case ANYONE:
+        break;
+        case LOGGED_IN:
+          if (!sessionController.isLoggedIn()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+          }
+        break;
+        case MEMBERS_ONLY:
+          if (!sessionController.isLoggedIn()) {
+            return Response.status(Status.UNAUTHORIZED).build();
+          }
+          
+          WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+          if (workspaceUserEntity == null) {
+            if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_MEMBERS_ONLY_WORKSPACE, workspaceEntity)) {
+              return Response.status(Status.FORBIDDEN).build();
+            }
+          }
+        break;
+      }
     }
     
     return Response
@@ -655,6 +685,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
+    workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, payload.getMaterialDefaultLicense());
     
     // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
     workspaceIndexer.indexWorkspace(workspaceEntity);
@@ -1501,6 +1532,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         name, 
         nameExtension, 
         description, 
+        workspaceEntity.getDefaultMaterialLicense(),
         numVisits, 
         lastVisit);
   }

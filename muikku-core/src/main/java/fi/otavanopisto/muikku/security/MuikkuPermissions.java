@@ -196,6 +196,12 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @Scope (PermissionScope.RESOURCE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
   public static final String MANAGE_RESOURCERIGHTS = "MANAGE_RESOURCERIGHTS";
+  
+  /* USERGROUPS */
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR })
+  public static final String LIST_USER_USERGROUPS = "LIST_USER_USERGROUPS";
 
   @Override
   public List<String> listPermissions() {

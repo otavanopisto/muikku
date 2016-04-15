@@ -49,6 +49,7 @@
           this.element.find('*[name="beginDate"]').val(details.beginDate);
           this.element.find('*[name="endDate"]').val(details.endDate);
           this.element.find('.workspace-description').val(workspace.description);
+          this.element.find('.default-material-license').val(workspace.materialDefaultLicense);
           
           $.each(workspaceTypes, $.proxy(function (index, workspaceType) {
             var option = $('<option>')
@@ -81,6 +82,14 @@
             CKEDITOR.replace(ckField, this.options.ckeditor);
           }, this));
           
+          this.element.find('.default-material-license').licenseSelector({
+            locale: getLocale() == 'fi' ? 'fi' : 'en',
+            types: {
+              'ogl': false
+            }
+          });
+
+          this.element.on('submit', 'form', $.proxy(this._onFormSubmit, this));
           this.element.on('click', '.save', $.proxy(this._onSaveClick, this));
         }
       }, this));
@@ -154,6 +163,7 @@
               var description = CKEDITOR.instances['workspace-description'].getData();
               var published = this.element.find('*[name="published"]:checked').val() == 'true';
               var access = this.element.find('*[name="access"]:checked').val();
+              var materialDefaultLicense = this.element.find('.default-material-license').val();
               
               mApi().workspace.workspaces
                 .update(this.options.workspaceEntityId, $.extend(workspace, {
@@ -161,7 +171,8 @@
                   nameExtension: nameExtension,
                   description: description,
                   published: published,
-                  access: access
+                  access: access,
+                  materialDefaultLicense: materialDefaultLicense
                 }))
                 .callback(function (err, updatedWorkspace) {
                   callback(err, updatedWorkspace);
@@ -241,7 +252,25 @@
       }
     },
     
+    _onFormSubmit: function (event) {
+      event.preventDefault();
+    },
+    
     _onSaveClick: function (event) {      
+      event.preventDefault();
+      
+      var form = $(event.target).closest('form')[0];
+      
+      if (form) {
+        $(form).find('.validate-form-button')[0].click();
+        try {
+          if (!form.checkValidity()) {
+            return;
+          }
+        } catch (e) {
+        }
+      }
+      
       var loader = $('<div>')
         .addClass('loading')
         .appendTo(this.element);
@@ -275,6 +304,8 @@
   });
   
   $(document).ready(function () {
+    webshim.polyfill('forms');
+    
     $(document.body).workspaceManagement({
       workspaceEntityId: $('.workspace-entity-id').val()
     });

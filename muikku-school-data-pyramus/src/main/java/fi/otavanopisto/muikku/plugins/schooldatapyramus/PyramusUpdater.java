@@ -837,7 +837,7 @@ public class PyramusUpdater {
     List<String> removedIdentifiers = new ArrayList<>();
     List<String> updatedIdentifiers = new ArrayList<>();
     List<String> discoveredIdentifiers = new ArrayList<>();
-    List<String> emails = new ArrayList<>();
+    Map<SchoolDataIdentifier, List<String>> emails = new HashMap<>();
     
     // List all person's students and staffMembers
     Student[] students = pyramusClient.get().get(String.format("/persons/persons/%d/students", person.getId()), Student[].class);
@@ -865,7 +865,9 @@ public class PyramusUpdater {
       // Iterate over all student instances
       for (Student student : students) {
         String identifier = identifierMapper.getStudentIdentifier(student.getId());
-  
+        SchoolDataIdentifier schoolDataIdentifier = toIdentifier(identifier);
+        List<String> identifierEmails = new ArrayList<String>();
+        
         if (!student.getArchived()) {
           // If student is not archived, add it to identifiers list 
           identifiers.add(identifier);
@@ -882,8 +884,8 @@ public class PyramusUpdater {
             for (Email studentEmail : studentEmails) {
               if (studentEmail.getContactTypeId() != null) {
                 ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
-                if (!contactType.getNonUnique() && !emails.contains(studentEmail.getAddress())) {
-                  emails.add(studentEmail.getAddress());
+                if (!contactType.getNonUnique() && !identifierEmails.contains(studentEmail.getAddress())) {
+                  identifierEmails.add(studentEmail.getAddress());
                 }
               } else {
                 logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
@@ -891,9 +893,11 @@ public class PyramusUpdater {
             }
           }
         } else {
-          // If the student instance if archived, we add it the the removed indentifiers list
+          // If the student instance if archived, we add it the the removed identifiers list
           removedIdentifiers.add(identifier);
         }
+        
+        emails.put(schoolDataIdentifier, identifierEmails);
       }
     }
     
@@ -901,6 +905,9 @@ public class PyramusUpdater {
       for (StaffMember staffMember : staffMembers) {
         // Add staffMember identifier into the identifier list
         String identifier = identifierMapper.getStaffIdentifier(staffMember.getId());
+        SchoolDataIdentifier schoolDataIdentifier = toIdentifier(identifier);
+        List<String> identifierEmails = new ArrayList<String>();
+
         identifiers.add(identifier);
         
         // If it's the specified defaultUserId, update defaultIdentifier and role accordingly
@@ -915,14 +922,16 @@ public class PyramusUpdater {
           for (Email staffMemberEmail : staffMemberEmails) {
             if (staffMemberEmail.getContactTypeId() != null) {
               ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
-              if (!contactType.getNonUnique() && !emails.contains(staffMemberEmail.getAddress())) {
-                emails.add(staffMemberEmail.getAddress());
+              if (!contactType.getNonUnique() && !identifierEmails.contains(staffMemberEmail.getAddress())) {
+                identifierEmails.add(staffMemberEmail.getAddress());
               }
             } else {
               logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
             }
           }
         }
+        
+        emails.put(schoolDataIdentifier, identifierEmails);
       }
     }
     
@@ -974,7 +983,7 @@ public class PyramusUpdater {
   }
 
   private void fireSchoolDataUserUpdated(Long userEntityId, SchoolDataIdentifier defaultIdentifier, List<SchoolDataIdentifier> removedIdentifiers, List<SchoolDataIdentifier> updatedIdentifiers,
-      List<SchoolDataIdentifier> discoveredIdentifiers, List<String> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
+      List<SchoolDataIdentifier> discoveredIdentifiers, Map<SchoolDataIdentifier, List<String>> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
 
     if (discoveredIdentifiers == null) {
       discoveredIdentifiers = Collections.emptyList();
@@ -999,7 +1008,7 @@ public class PyramusUpdater {
   }
   
   private void fireSchoolDataUserUpdated(Long userEntityId, String defaultIdentifier, List<String> removedIdentifiers, List<String> updatedIdentifiers,
-      List<String> discoveredIdentifiers, List<String> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
+      List<String> discoveredIdentifiers, Map<SchoolDataIdentifier, List<String>> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
     
     fireSchoolDataUserUpdated(userEntityId, 
         toIdentifier(defaultIdentifier), 
@@ -1018,8 +1027,10 @@ public class PyramusUpdater {
   private List<SchoolDataIdentifier> toIdentifiers(List<String> identifiers) {
     List<SchoolDataIdentifier> result = new ArrayList<>();
     
-    for (String identifier : identifiers) {
-      result.add(toIdentifier(identifier));
+    if (identifiers != null && !identifiers.isEmpty()) {
+      for (String identifier : identifiers) {
+        result.add(toIdentifier(identifier));
+      }
     }
     
     return result;
@@ -1054,16 +1065,21 @@ public class PyramusUpdater {
       List<SchoolDataIdentifier> removedIdentifiers = Arrays.asList(identifier);
       List<SchoolDataIdentifier> updatedIdentifiers = new ArrayList<>();
       List<SchoolDataIdentifier> discoveredIdentifiers = new ArrayList<>();
+      Map<SchoolDataIdentifier, List<String>> emails = new HashMap<>();
+      
+      for (SchoolDataIdentifier removedIdentifier : removedIdentifiers) {
+        emails.put(removedIdentifier, new ArrayList<String>());
+      }
       
       for (UserSchoolDataIdentifier existingIdentifier : existingIdentifiers) {
-        if (!(existingIdentifier.getDataSource().getIdentifier().equals(identifier.getDataSource()) && 
-            existingIdentifier.getIdentifier().equals(identifier.getIdentifier()))) {
-          updatedIdentifiers.add(new SchoolDataIdentifier(existingIdentifier.getIdentifier(), existingIdentifier.getDataSource().getIdentifier()));
+        if (!(existingIdentifier.getDataSource().getIdentifier().equals(identifier.getDataSource()) && existingIdentifier.getIdentifier().equals(identifier.getIdentifier()))) {
+          SchoolDataIdentifier updatedIdentifier = new SchoolDataIdentifier(existingIdentifier.getIdentifier(), existingIdentifier.getDataSource().getIdentifier());
+          updatedIdentifiers.add(updatedIdentifier);
+          emails.put(updatedIdentifier, userEmailEntityController.getUserEmailAddresses(updatedIdentifier));
         }
       }
       
       SchoolDataIdentifier enivormentRoleIdentifier = getUserEntityEnvironmentRoleIdentifier(userEntity);
-      List<String> emails = userEmailEntityController.listAddressesByUserEntity(userEntity);
       
       fireSchoolDataUserUpdated(userEntity.getId(), 
           defaultIdentifier, 
