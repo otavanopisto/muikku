@@ -931,6 +931,11 @@
       // Lazy loading
      $(data.pageElement).find('img.lazy').lazyload();
     }
+    
+    if (jQuery().imageDetails) {
+      $(data.pageElement).find('img')
+        .imageDetails();
+    }
         
     $(data.pageElement).find('.js-lazyyt').lazyYT();
     
