@@ -118,7 +118,11 @@
     
     _loadWorkspaces: function (callback) {
       mApi().workspace.workspaces
-        .read({ ownerIdentifier: MUIKKU_LOGGED_USER })
+        .read({
+          userIdentifier: MUIKKU_LOGGED_USER,
+          maxResults: 500,
+          orderBy: 'alphabet'
+        })
         .callback(function (err, workspaces) {
           if (err) {
             callback(err);
