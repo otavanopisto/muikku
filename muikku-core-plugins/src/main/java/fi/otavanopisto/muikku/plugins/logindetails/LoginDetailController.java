@@ -59,20 +59,24 @@ public class LoginDetailController {
     
     if (provider != null) {
       ArrayList<HashMap<String,Object>> logEntries = provider.getLogEntries(COLLECTION_NAME, query, count);
-      for (HashMap<String,Object> logEntry : logEntries) {
-        if (StringUtils.equals((String) logEntry.get("eventType"), "login")) {
-          String userIdentifierId = (String) logEntry.get("userIdentifier");
-          String authenticationProvder = (String) logEntry.get("authenticationProvder");
-          String address = (String) logEntry.get("address");
-          Long time = NumberUtils.createLong((String) logEntry.get("time"));
-          
-          if (!StringUtils.equals(userIdentifierId, userIdentifier.toId())) {
-            logger.severe(String.format("Query returned login details for userIdentifer %s instead of requested %s", userIdentifierId, userIdentifier.toId()));
-            continue;
-          }
+      if (logEntries != null) {
+        for (HashMap<String,Object> logEntry : logEntries) {
+          if (StringUtils.equals((String) logEntry.get("eventType"), "login")) {
+            String userIdentifierId = (String) logEntry.get("userIdentifier");
+            String authenticationProvder = (String) logEntry.get("authenticationProvder");
+            String address = (String) logEntry.get("address");
+            Long time = NumberUtils.createLong((String) logEntry.get("time"));
             
-          result.add(new LoginDetails(userIdentifier, authenticationProvder, address, time != null ? new Date(time) : null));
+            if (!StringUtils.equals(userIdentifierId, userIdentifier.toId())) {
+              logger.severe(String.format("Query returned login details for userIdentifer %s instead of requested %s", userIdentifierId, userIdentifier.toId()));
+              continue;
+            }
+              
+            result.add(new LoginDetails(userIdentifier, authenticationProvder, address, time != null ? new Date(time) : null));
+          }
         }
+      } else {
+        logger.severe(String.format("Could not list user's last logins log provider returned null"));
       }
     } else {
       logger.severe(String.format("Could not list user's last logins because log provider %s could not be found", LOG_PROVIDER));

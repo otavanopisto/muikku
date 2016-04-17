@@ -931,10 +931,36 @@
       // Lazy loading
      $(data.pageElement).find('img.lazy').lazyload();
     }
+    
+    if (jQuery().imageDetails) {
+      $(data.pageElement).find('img')
+        .imageDetails();
+    }
         
     $(data.pageElement).find('.js-lazyyt').lazyYT();
     
     $(data.pageElement).find('.ckeditor-field').muikkuRichMemoField();
+    
+    /* Add autoGrow to textfield */
+    if (jQuery().autoGrowInput) {
+      $(data.pageElement)
+        .find('.muikku-text-field')
+        .each(function() {
+          $(this)
+            .autoGrowInput({
+              minWidth: $(this).width(),
+              maxWidth: function() { 
+                 return $(data.pageElement).width()-40; 
+              },
+              comfortZone:0
+            });
+        });
+    }
+
+    /* Add autosize to textarea */
+    if ((typeof autosize) == 'function') {
+      autosize($('textarea'));
+    }
 
     var maxFileSize = null;
     if ($("input[name='max-file-size']").length) {

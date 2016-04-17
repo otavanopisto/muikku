@@ -41,7 +41,7 @@ public class WorkspaceEntityController {
       return null;
     }
     
-    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, WorkspaceAccess.ANYONE, Boolean.FALSE, Boolean.FALSE);
+    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, WorkspaceAccess.LOGGED_IN, Boolean.FALSE, Boolean.FALSE);
 
 //  TODO: Re-enable workspace settings template
 //    WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l);
@@ -113,6 +113,10 @@ public class WorkspaceEntityController {
 
   public WorkspaceEntity updateAccess(WorkspaceEntity workspaceEntity, WorkspaceAccess access) {
     return workspaceEntityDAO.updateAccess(workspaceEntity, access);
+  }
+
+  public WorkspaceEntity updateDefaultMaterialLicense(WorkspaceEntity workspaceEntity, String defaultMaterialLicense) {
+    return workspaceEntityDAO.updateDefaultMaterialLicense(workspaceEntity, defaultMaterialLicense);
   }
 
   public WorkspaceEntity updatePublished(WorkspaceEntity workspaceEntity, Boolean published) {

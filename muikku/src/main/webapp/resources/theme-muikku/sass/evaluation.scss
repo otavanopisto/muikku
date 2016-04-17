@@ -175,10 +175,9 @@ body.evaluation {
         }
         
       }
+      
     }
-    
 
-    
   }
   
   .evaluation-content-wrapper {
@@ -770,6 +769,26 @@ body.evaluation {
                       font-weight:400;
                     }
                     
+                    .textfield-wrapper {
+                      display:inline-block;
+                      position:relative;
+                    
+                      span.muikku-text-field-hint {
+                        display:inline-block;
+                        padding:2px 8px;
+                        background:#fff8be;
+                        border-top-right-radius:3px;
+                        border-bottom-right-radius:3px;
+                        color:#4c4c4c;
+                        white-space:nowrap;
+                        font-style:italic;
+                        transition:opacity 0.2s ease-in-out;
+                        font-size:14px;
+                        margin:0 10px 0 0;
+                      }
+                  
+                    }
+                    
                   }
                 
                   &[data-open-state="closed"] {
@@ -878,6 +897,26 @@ body.evaluation {
                   font-weight:400;
                 }
                 
+                .textfield-wrapper {
+                  display:inline-block;
+                  position:relative;
+                
+                  span.muikku-text-field-hint {
+                    display:inline-block;
+                    padding:2px 8px;
+                    background:#fff8be;
+                    border-top-right-radius:3px;
+                    border-bottom-right-radius:3px;
+                    color:#4c4c4c;
+                    white-space:nowrap;
+                    font-style:italic;
+                    transition:opacity 0.2s ease-in-out;
+                    font-size:14px;
+                    margin:0 10px 0 0;
+                  }
+              
+                }
+                
               }
               
             }
@@ -887,6 +926,7 @@ body.evaluation {
         }
         
       }
+      
     }
     
     #evaluationEvaluateFormWrapper {

@@ -107,7 +107,7 @@ public class MongoLogProvider implements LogProvider {
         results.add((HashMap<String, Object>) cursor.next().toMap());
       }
       return results;
-    } catch (MongoTimeoutException e) {
+    } catch (Exception e) {
       logger.warning("Connection to mongoDB timed out!, disabling logging to mongoDB");
       enabled = false;
       return null;

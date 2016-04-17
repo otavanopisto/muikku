@@ -92,9 +92,16 @@
       
       this._editor = $(this._editorContainer).coOpsCK({
         externalPlugins : {
-          'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.7/',
-          'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.7/',
-          'mathjax': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/mathjax/4.5.7/',
+          'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.8/',
+          'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.8/',
+          'mathjax': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/mathjax/4.5.8/',
+          'autogrow' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autogrow/4.5.8/plugin.js',
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/plugin.js',
+          'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.8/plugin.js',
+          'filetools' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/4.5.8/plugin.js',
+          'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.8/plugin.js',
+          'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.8/plugin.js',
+          'image2' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/image2/4.5.8/plugin.js',
           'oembed' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/oembed/1.17/',
           'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
           'coops' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/coops/0.1.1/plugin.min.js',
@@ -108,7 +115,8 @@
           'muikku-memofield': CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
           'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
           'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/',
-          'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/'
+          'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/',
+          'muikku-image-details': CONTEXTPATH + '/scripts/ckplugins/muikku-image-details/'
         },
         extraPlugins : [
                        'oembed',
@@ -117,16 +125,23 @@
                        'coops-dmp',
                        'coops-sessionevents', 
                        'audio',
+                       'image2',
                        'muikku-textfield', 
                        'muikku-memofield', 
                        'muikku-filefield', 
                        'muikku-selection',
                        'muikku-connectfield',
                        'muikku-embedded',
-                       'mathjax'],
+                       'muikku-image-details',
+                       'mathjax',
+                       'autogrow',
+                       'uploadimage'],
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         editorOptions: {
+          uploadUrl: '/materialAttachmentUploadServlet' + this.options.materialPath,
           autoGrowOnStartup : true,
+          autoGrow_maxHeight: $( window ).height() - $('span.cke_top').height() - 240,
+          autoGrow_minHeight: 400, 
           allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
           entities: false,
           entities_latin: false,

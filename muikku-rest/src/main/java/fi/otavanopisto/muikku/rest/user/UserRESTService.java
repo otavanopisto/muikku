@@ -264,7 +264,7 @@ public class UserRESTService extends AbstractRESTService {
           }
           
           UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
-          String emailAddress = userEntity != null ? userEmailEntityController.getUserEmailAddress(userEntity, true) : null;
+          String emailAddress = userEntity != null ? userEmailEntityController.getUserDefaultEmailAddress(userEntity, true) : null;
 
           Date studyStartDate = getDateResult(o.get("studyStartDate"));
           Date studyEndDate = getDateResult(o.get("studyEndDate"));
@@ -332,7 +332,7 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
     }
     
-    String emailAddress = userEmailEntityController.getUserEmailAddress(userEntity, true); 
+    String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true); 
     Date studyStartDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
     Date studyEndDate = user.getStudyEndDate() != null ? user.getStudyEndDate().toDate() : null;
     Date studyTimeEnd = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;
@@ -741,7 +741,7 @@ public class UserRESTService extends AbstractRESTService {
 									id[0]);
 					
 					if (userEntity != null) {
-					  String emailAddress = userEmailEntityController.getUserEmailAddress(userEntity, true);
+					  String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
 					  Date studyStartDate = getDateResult(o.get("studyStartDate"));
 	          Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
 	          
@@ -862,7 +862,7 @@ public class UserRESTService extends AbstractRESTService {
 		// TODO: User Image
 		boolean hasImage = false;
 		
-		String emailAddress = userEmailEntityController.getUserEmailAddress(userEntity, true); 
+		String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true); 
 		
 		Date startDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
 		Date endDate = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;

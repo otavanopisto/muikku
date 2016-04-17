@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.auth;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -29,7 +30,6 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
-import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
@@ -50,9 +50,6 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
 
   @Inject
   private UserEntityController userEntityController;
-
-  @Inject
-  private UserEmailEntityController userEmailEntityController;
 
   @Inject
   private SchoolDataController schoolDataController;
@@ -92,12 +89,12 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       return new AuthenticationResult(Status.NO_EMAIL);
     }
     
-    List<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(emails);
+    Collection<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(emails);
     if (emailUsers.size() > 1) {
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.SEVERAL_USERS_BY_EMAILS);
     }
 
-    UserEntity emailUser = emailUsers.size() == 1 ? emailUsers.get(0) : null;
+    UserEntity emailUser = emailUsers.size() == 1 ? emailUsers.iterator().next() : null;
     boolean newAccount = false;
     User activeUser = null;
 
@@ -161,13 +158,6 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       return new AuthenticationResult(AuthenticationResult.Status.ERROR);
     }
 
-    List<String> existingAddresses = userEmailEntityController.listAddressesByUserEntity(userIdentification.getUser());
-    for (String email : emails) {
-      if (!existingAddresses.contains(email)) {
-        userEmailEntityController.addUserEmail(userIdentification.getUser(), email);
-      }
-    }
-
     return login(userIdentification, activeUser, newAccount);
   }
 
@@ -201,6 +191,5 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.LOGGED_IN_AS_DIFFERENT_USER);
     }
   }
-
 
 }

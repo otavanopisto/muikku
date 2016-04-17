@@ -68,7 +68,19 @@ h2.workspace-management-generic-title {
   }
   
   select {
-    padding:5px 20px 5px 5px;
+    border-radius:2px;
+    font-size:18px;     
+    border:1px solid $formBorderColor;
+    background-color:$formBackgroundColor; 
+    max-width:100%;
+    box-sizing:border-box;
+    padding:5px 6px;
+    
+    option {
+      background:#fff;
+      padding:4px 6px;
+    }
+    
   }
   
   textarea {
@@ -77,7 +89,29 @@ h2.workspace-management-generic-title {
     height:100px;
   }
   
+}
 
+.workspace-material-license {
+  
+  .default-material-license {
+    margin:10px 0 0 0;
+  }
+  
+  .creative-commons-container {
+  
+    label {
+      display:inline-block;
+      margin:0 10px 0 5px;
+      font-weight:300;
+    }
+  
+    > label {
+      display:block;
+      font-weight:400;
+      margin:0;
+    }
+  
+  }
   
 }
 
