@@ -317,11 +317,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     if (doMinVisitFilter) {
-      if (userEntity != null) {
-        workspaceEntities = workspaceVisitController.listWorkspaceEntitiesByMinVisitsOrderByLastVisit(userEntity, minVisits);
-      } else {
-        workspaceEntities = workspaceVisitController.listWorkspaceEntitiesByMinVisitsOrderByLastVisit(sessionController.getLoggedUserEntity(), minVisits);
-      }
+      UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+      workspaceEntities = workspaceVisitController.listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(loggedUserEntity, minVisits);
     } else {
       if (userIdentifier != null) {
         if (includeArchivedWorkspaceUsers) {
