@@ -1,7 +1,6 @@
 $(document).ready(function() {
 
   mApi().workspace.workspaces.read({
-    userId : MUIKKU_LOGGED_USER_ID,
     minVisits : 1,
     orderBy : "lastVisit"
   }).on('$', function(workspace, workspaceCallback) {

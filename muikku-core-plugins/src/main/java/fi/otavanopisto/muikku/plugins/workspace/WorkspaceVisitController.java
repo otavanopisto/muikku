@@ -76,10 +76,11 @@ public class WorkspaceVisitController {
     return result;
   }  
   
-  public List<WorkspaceEntity> listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(UserEntity userEntity, Long numVisits) {
+  public List<WorkspaceEntity> listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(UserEntity userEntity, Long numVisits, int limit) {
     List<WorkspaceVisit> workspaceVisits = workspaceVisitDAO.listByUserEntityAndMinVisitsOrderByLastVisit(userEntity, numVisits, null, null);
     
     List<WorkspaceEntity> result = new ArrayList<>(workspaceVisits.size());
+    int resultsSoFar = 0;
     for (WorkspaceVisit workspaceVisit : workspaceVisits) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceVisit.getWorkspaceEntityId());
       List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
@@ -87,6 +88,10 @@ public class WorkspaceVisitController {
         UserSchoolDataIdentifier userSchoolDataIdentifier = wue.getUserSchoolDataIdentifier();
         if (userSchoolDataIdentifier.getUserEntity().getId().equals(userEntity.getId())) {
           result.add(workspaceEntity);
+          resultsSoFar++;
+          if (resultsSoFar >= limit) {
+            return result;
+          }
           break;
         }
       }

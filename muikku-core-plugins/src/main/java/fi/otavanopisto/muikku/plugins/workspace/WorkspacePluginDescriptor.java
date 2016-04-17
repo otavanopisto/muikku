@@ -12,6 +12,8 @@ import fi.otavanopisto.muikku.plugin.LocalizedPluginDescriptor;
 import fi.otavanopisto.muikku.plugin.PluginDescriptor;
 
 public class WorkspacePluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
+  
+  public static final String PLUGIN_NAME = "workspace";
 
   @Override
   public void init() {
@@ -19,7 +21,7 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, LocalizedPlu
 
 	@Override
 	public String getName() {
-		return "workspace";
+		return PLUGIN_NAME;
 	}
 
   @Override
