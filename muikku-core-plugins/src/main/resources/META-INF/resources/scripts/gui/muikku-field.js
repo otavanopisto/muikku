@@ -1,5 +1,19 @@
 (function() {
   'use strict';
+  
+  
+  function recolorCheckboxFields(elem) {
+    var labels = $(elem).find(".muikku-field-incorrect-answer > label[for]");
+    var answers = [];
+    for (var i=0; i<labels.length, i++) {
+      var label = labels[i];
+      
+      var id = $(label).attr('for');
+      var answer = $(label).html();
+      answers.push({id: id, answer: answer});
+      if (console) console.log("id: " + id + ", answer:" + answer);
+    } 
+  }
 
   $(document).on('workspace:field-answer-error', function (event, data) {
     try {
@@ -378,6 +392,8 @@
                 );
               });
               $(field).after(exampleDetails);
+              
+              recolorCheckboxFields(field);
             }
           }
         }
