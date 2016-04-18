@@ -35,7 +35,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
-import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.Tag;
@@ -58,7 +57,6 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialDeleteError;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspacePluginDescriptor;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -111,8 +109,6 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class WorkspaceRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -5286350366083446537L;
-  private static final int VISITS_LIMIT_DEFAULT = 5;
-  private static final String VISITS_LIMIT_KEY = "visitsLimit";
   
   @Inject
   private Logger logger;
@@ -187,9 +183,6 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private CopiedWorkspaceEntityFinder copiedWorkspaceEntityFinder;
-  
-  @Inject
-  private PluginSettingsController pluginSettingsController;
   
   @GET
   @Path("/workspaceTypes")
@@ -325,12 +318,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     if (doMinVisitFilter) {
       UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-      String visitsLimitString = pluginSettingsController.getPluginSetting(WorkspacePluginDescriptor.PLUGIN_NAME, VISITS_LIMIT_KEY);
-      int visitsLimit = VISITS_LIMIT_DEFAULT;
-      if (StringUtils.isNumeric(visitsLimitString)) {
-        visitsLimit = Integer.valueOf(visitsLimitString);
-      }
-      workspaceEntities = workspaceVisitController.listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(loggedUserEntity, minVisits, visitsLimit);
+      workspaceEntities = workspaceVisitController.listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(loggedUserEntity, minVisits);
     } else {
       if (userIdentifier != null) {
         if (includeArchivedWorkspaceUsers) {

@@ -7,23 +7,17 @@ import java.util.List;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceVisitDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceVisit;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
-import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class WorkspaceVisitController {
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-
-  @Inject
-  private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
   private WorkspaceVisitDAO workspaceVisitDAO;
@@ -76,25 +70,23 @@ public class WorkspaceVisitController {
     return result;
   }  
   
-  public List<WorkspaceEntity> listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(UserEntity userEntity, Long numVisits, int limit) {
-    List<WorkspaceVisit> workspaceVisits = workspaceVisitDAO.listByUserEntityAndMinVisitsOrderByLastVisit(userEntity, numVisits, null, null);
+  public List<WorkspaceEntity> listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(UserEntity userEntity, Long numVisits) {
     
+    List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(userEntity);
+    List<Long> workspaceEntityIds = new ArrayList<>();
+    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+      workspaceEntityIds.add(workspaceEntity.getId());
+    }
+    List<WorkspaceVisit> workspaceVisits = workspaceVisitDAO.listByWorkspaceEntityIdsAndUserEntityAndMinVisitsOrderByLastVisit(
+        workspaceEntityIds,
+        userEntity,
+        numVisits,
+        null,
+        null); 
+   
     List<WorkspaceEntity> result = new ArrayList<>(workspaceVisits.size());
-    int resultsSoFar = 0;
     for (WorkspaceVisit workspaceVisit : workspaceVisits) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceVisit.getWorkspaceEntityId());
-      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
-      for (WorkspaceUserEntity wue : workspaceUserEntities) {
-        UserSchoolDataIdentifier userSchoolDataIdentifier = wue.getUserSchoolDataIdentifier();
-        if (userSchoolDataIdentifier.getUserEntity().getId().equals(userEntity.getId())) {
-          result.add(workspaceEntity);
-          resultsSoFar++;
-          if (resultsSoFar >= limit) {
-            return result;
-          }
-          break;
-        }
-      }
+      result.add(workspaceEntityController.findWorkspaceEntityById(workspaceVisit.getWorkspaceEntityId()));
     }
 
     return result;
