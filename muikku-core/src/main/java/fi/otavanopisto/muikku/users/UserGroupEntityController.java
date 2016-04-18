@@ -117,7 +117,7 @@ public class UserGroupEntityController {
   }
 
   public List<UserGroupUserEntity> listUserGroupUserEntitiesByUserGroupEntity(UserGroupEntity userGroupEntity) {
-    return userGroupUserEntityDAO.listByUserGroupEntity(userGroupEntity);
+    return userGroupUserEntityDAO.listByUserGroupEntityAndArchived(userGroupEntity, Boolean.FALSE);
   }
 
   public List<UserGroupEntity> listUserGroupsByUserEntity(UserEntity userEntity) {
