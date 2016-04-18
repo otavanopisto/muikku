@@ -317,6 +317,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     if (doMinVisitFilter) {
+      if (!sessionController.isLoggedIn()) {
+        return Response.status(Status.UNAUTHORIZED).entity("You need to be logged in to filter by visit count").build();
+      }
       UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
       workspaceEntities = workspaceVisitController.listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(loggedUserEntity, minVisits);
     } else {

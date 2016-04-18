@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace.dao;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -91,7 +92,7 @@ public class WorkspaceVisitDAO extends CorePluginsDAO<WorkspaceVisit> {
   }
 
   public List<WorkspaceVisit> listByWorkspaceEntityIdsAndUserEntityAndMinVisitsOrderByLastVisit(
-      List<Long> workspaceEntityIds,
+      Collection<Long> workspaceEntityIds,
       UserEntity userEntity,
       Long numVisits,
       Integer firstResult,
@@ -103,13 +104,22 @@ public class WorkspaceVisitDAO extends CorePluginsDAO<WorkspaceVisit> {
     CriteriaQuery<WorkspaceVisit> criteria = criteriaBuilder.createQuery(WorkspaceVisit.class);
     Root<WorkspaceVisit> root = criteria.from(WorkspaceVisit.class);
     criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        root.get(WorkspaceVisit_.workspaceEntityId).in(workspaceEntityIds),
-        criteriaBuilder.equal(root.get(WorkspaceVisit_.userEntityId), userEntity.getId()),
-        criteriaBuilder.greaterThanOrEqualTo(root.get(WorkspaceVisit_.numVisits), numVisits)
-      )
-    );
+    if (workspaceEntityIds.isEmpty()) {
+      criteria.where(
+        criteriaBuilder.and(
+          criteriaBuilder.equal(root.get(WorkspaceVisit_.userEntityId), userEntity.getId()),
+          criteriaBuilder.greaterThanOrEqualTo(root.get(WorkspaceVisit_.numVisits), numVisits)
+        )
+      );
+    } else {
+      criteria.where(
+        criteriaBuilder.and(
+          root.get(WorkspaceVisit_.workspaceEntityId).in(workspaceEntityIds),
+          criteriaBuilder.equal(root.get(WorkspaceVisit_.userEntityId), userEntity.getId()),
+          criteriaBuilder.greaterThanOrEqualTo(root.get(WorkspaceVisit_.numVisits), numVisits)
+        )
+      );
+    }
     
     criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceVisit_.lastVisit)));
     
