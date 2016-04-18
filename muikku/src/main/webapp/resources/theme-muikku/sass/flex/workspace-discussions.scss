@@ -45,6 +45,11 @@
         line-height: 1.3em;
         text-transform: uppercase;       
         padding: 12px; 
+        &.disabled{
+          background:#dadada;
+          color: #efefef;
+        }
+
         span{
 
           white-space: nowrap;
@@ -53,6 +58,7 @@
       
       .di-new-message-button {
         font-weight:400;
+        
       }
       
     }

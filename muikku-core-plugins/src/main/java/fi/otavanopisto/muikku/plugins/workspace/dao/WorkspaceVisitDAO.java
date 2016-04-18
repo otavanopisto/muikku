@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.dao;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -89,6 +91,47 @@ public class WorkspaceVisitDAO extends CorePluginsDAO<WorkspaceVisit> {
     
     return query.getResultList();
   }
+
+  public List<WorkspaceVisit> listByWorkspaceEntityIdsAndUserEntityAndMinVisitsOrderByLastVisit(
+      Collection<Long> workspaceEntityIds,
+      UserEntity userEntity,
+      Long numVisits,
+      Integer firstResult,
+      Integer maxResults
+  ) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceVisit> criteria = criteriaBuilder.createQuery(WorkspaceVisit.class);
+    Root<WorkspaceVisit> root = criteria.from(WorkspaceVisit.class);
+    criteria.select(root);
+    if (workspaceEntityIds == null || workspaceEntityIds.isEmpty()) {
+      return Collections.emptyList();
+    } else {
+      criteria.where(
+        criteriaBuilder.and(
+          root.get(WorkspaceVisit_.workspaceEntityId).in(workspaceEntityIds),
+          criteriaBuilder.equal(root.get(WorkspaceVisit_.userEntityId), userEntity.getId()),
+          criteriaBuilder.greaterThanOrEqualTo(root.get(WorkspaceVisit_.numVisits), numVisits)
+        )
+      );
+    }
+    
+    criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceVisit_.lastVisit)));
+    
+    TypedQuery<WorkspaceVisit> query = entityManager.createQuery(criteria);
+    
+    if (firstResult != null) {
+      query.setFirstResult(firstResult);
+    }
+    
+    if (maxResults != null) {
+      query.setMaxResults(maxResults);
+    }
+    
+    return query.getResultList();
+  }
+  
   
   public void updateNumVisitsAndLastVisit(WorkspaceVisit workspaceVisit, Long numVisits, Date lastVisit) {
     workspaceVisit.setNumVisits(numVisits);

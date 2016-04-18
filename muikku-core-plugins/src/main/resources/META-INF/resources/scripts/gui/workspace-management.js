@@ -305,10 +305,16 @@
   
   $(document).ready(function () {
     webshim.polyfill('forms');
-    
+    var workspaceEntityId = $('.workspaceEntityId').val();
     $(document.body).workspaceManagement({
-      workspaceEntityId: $('.workspace-entity-id').val()
+      workspaceEntityId: workspaceEntityId
     });
+    var evaluationLink = $('.dock-static-navi-button-evaluation > a.icon-evaluate');
+    if (evaluationLink) {
+      var href = $(evaluationLink).attr('href');
+      $(evaluationLink).attr('href', href + '?workspaceEntityId=' + workspaceEntityId);
+      $(evaluationLink).attr('target', '_blank');
+    }
   });
   
   
