@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.dao;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -104,13 +105,8 @@ public class WorkspaceVisitDAO extends CorePluginsDAO<WorkspaceVisit> {
     CriteriaQuery<WorkspaceVisit> criteria = criteriaBuilder.createQuery(WorkspaceVisit.class);
     Root<WorkspaceVisit> root = criteria.from(WorkspaceVisit.class);
     criteria.select(root);
-    if (workspaceEntityIds.isEmpty()) {
-      criteria.where(
-        criteriaBuilder.and(
-          criteriaBuilder.equal(root.get(WorkspaceVisit_.userEntityId), userEntity.getId()),
-          criteriaBuilder.greaterThanOrEqualTo(root.get(WorkspaceVisit_.numVisits), numVisits)
-        )
-      );
+    if (workspaceEntityIds == null || workspaceEntityIds.isEmpty()) {
+      return Collections.emptyList();
     } else {
       criteria.where(
         criteriaBuilder.and(
