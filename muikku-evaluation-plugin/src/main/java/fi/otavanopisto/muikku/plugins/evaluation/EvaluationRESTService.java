@@ -403,6 +403,7 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   private WorkspaceMaterialEvaluation createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation evaluation) {
+    Boolean passingGrade = null;
     String grade = null;
     if (evaluation.getGradingScaleSchoolDataSource() != null &&
         evaluation.getGradingScaleIdentifier() != null &&
@@ -416,6 +417,7 @@ public class EvaluationRESTService extends PluginRESTService {
           evaluation.getGradeSchoolDataSource(),
           evaluation.getGradeIdentifier());
       grade = gradingScaleItem.getName();
+      passingGrade = gradingScaleItem.isPassingGrade();
     }
 
     return new WorkspaceMaterialEvaluation(
@@ -429,7 +431,8 @@ public class EvaluationRESTService extends PluginRESTService {
         grade,
         evaluation.getGradeIdentifier(), 
         evaluation.getGradeSchoolDataSource(),
-        evaluation.getVerbalAssessment());
+        evaluation.getVerbalAssessment(),
+        passingGrade);
   }
   
 }
