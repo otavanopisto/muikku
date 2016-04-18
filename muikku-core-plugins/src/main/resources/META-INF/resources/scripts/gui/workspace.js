@@ -1,13 +1,6 @@
 (function() {
   'use strict';
   
-  $(document).on('click', '.dock-static-navi-button-evaluation > a.icon-evaluate', function(event){
-    event.preventDefault();
-    var workspaceEntityId = $('.workspaceEntityId').length > 0 ? $('.workspaceEntityId').val() : $('input[name="workspaceEntityId"]').val();
-    var evaluationUrl = $(this).attr('href')+'?workspaceEntityId='+workspaceEntityId;
-    window.open(evaluationUrl, '_blank');
-  });
-  
   $(document).on('click', '.workspace-publish-button', function (event) {
     var workspaceEntityId = $('.workspaceEntityId').val();
 
@@ -221,5 +214,17 @@
       });
     }, this));
   }
+
+  $(document).ready(function () {
+    var workspaceEntityId = $('.workspaceEntityId').val();
+    if (workspaceEntityId) {
+      var evaluationLink = $('.dock-static-navi-button-evaluation > a.icon-evaluate');
+      if (evaluationLink) {
+        var href = $(evaluationLink).attr('href');
+        $(evaluationLink).attr('href', href + '?workspaceEntityId=' + workspaceEntityId);
+        $(evaluationLink).attr('target', '_blank');
+      }
+    }
+  });
 
 }).call(this);
