@@ -2,7 +2,9 @@ package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -65,6 +67,28 @@ public class WorkspaceVisitController {
     List<WorkspaceEntity> result = new ArrayList<>(workspaceVisits.size());
     for (WorkspaceVisit workspaceVisit : workspaceVisits) {
       result.add(workspaceEntityController.findWorkspaceEntityById(workspaceVisit.getWorkspaceEntityId()));
+    }
+
+    return result;
+  }  
+  
+  public List<WorkspaceEntity> listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(UserEntity userEntity, Long numVisits) {
+    
+    List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(userEntity);
+    Map<Long, WorkspaceEntity> workspaceEntityMap = new HashMap<>();
+    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+      workspaceEntityMap.put(workspaceEntity.getId(), workspaceEntity);
+    }
+    List<WorkspaceVisit> workspaceVisits = workspaceVisitDAO.listByWorkspaceEntityIdsAndUserEntityAndMinVisitsOrderByLastVisit(
+        workspaceEntityMap.keySet(),
+        userEntity,
+        numVisits,
+        null,
+        null); 
+   
+    List<WorkspaceEntity> result = new ArrayList<>(workspaceVisits.size());
+    for (WorkspaceVisit workspaceVisit : workspaceVisits) {
+      result.add(workspaceEntityMap.get(workspaceVisit.getWorkspaceEntityId()));
     }
 
     return result;
