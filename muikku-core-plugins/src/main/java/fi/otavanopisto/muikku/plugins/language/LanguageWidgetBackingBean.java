@@ -34,8 +34,6 @@ public class LanguageWidgetBackingBean {
     if (localSessionController.isLoggedIn()) {
       userEntityController.updateLocale(localSessionController.getLoggedUserEntity(), locale);
     }
-
-    //return RequestUtils.getViewIdWithRedirect(FacesContext.getCurrentInstance().getViewRoot().getViewId());
     return "?faces-redirect=true";
   }
   
