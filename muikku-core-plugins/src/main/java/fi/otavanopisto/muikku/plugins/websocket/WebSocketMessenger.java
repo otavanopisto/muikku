@@ -38,22 +38,13 @@ public class WebSocketMessenger {
     sessions = new HashMap<>();
   }
   
-  /**
-   * TODO: Logged user management in session (incl. Login/logout)
-   * TODO: Why basic remote?
-   */
-  
-  public void sendMessage2(String eventType, Object data, List<UserEntity> recipients) {
-    List<Long> recipientIds = new ArrayList<Long>(recipients.size());
-    for (UserEntity userEntity : recipients) {
-      recipientIds.add(userEntity.getId());
-    }
-
-    sendMessage(eventType, data, recipientIds);
-  }
-  
-  public void sendMessage(String eventType, Object data, List<Long> recipients) {
+  public void sendMessage(String eventType, Object data, List<UserEntity> recipients) {
     try {
+      List<Long> recipientIds = new ArrayList<Long>(recipients.size());
+      for (UserEntity userEntity : recipients) {
+        recipientIds.add(userEntity.getId());
+      }
+      
       WebSocketMessage message = new WebSocketMessage(eventType, data);
       ObjectMapper mapper = new ObjectMapper();
       String strMessage = mapper.writeValueAsString(message);
@@ -62,7 +53,7 @@ public class WebSocketMessenger {
         if (session.isOpen()) {
           Long userId = (Long) session.getUserProperties().get("UserId");
   
-          if ((userId != null) && (recipients.contains(userId))) {
+          if ((userId != null) && (recipientIds.contains(userId))) {
             session.getBasicRemote().sendText(strMessage);
           }
         }
