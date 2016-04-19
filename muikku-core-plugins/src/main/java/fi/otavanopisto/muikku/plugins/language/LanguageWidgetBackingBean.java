@@ -35,7 +35,9 @@ public class LanguageWidgetBackingBean {
       userEntityController.updateLocale(localSessionController.getLoggedUserEntity(), locale);
     }
 
-    return RequestUtils.getViewIdWithRedirect(FacesContext.getCurrentInstance().getViewRoot().getViewId());
+    //return RequestUtils.getViewIdWithRedirect(FacesContext.getCurrentInstance().getViewRoot().getViewId());
+    return "?faces-redirect=true";
   }
   
 }
+
