@@ -28,6 +28,12 @@
           if (!figure.length) {
             var figure = $('<figure>')
               .addClass('image');
+            
+            var float = this.element.css('float');
+            if (float) {
+              this.element.css('float', 'none');
+              figure.css('float', float);
+            }
 
             var parentLink = this.element.parent('a');
             if (parentLink.length) {
