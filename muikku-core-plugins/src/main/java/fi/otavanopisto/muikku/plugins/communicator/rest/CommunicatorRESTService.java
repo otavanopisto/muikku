@@ -321,8 +321,8 @@ public class CommunicatorRESTService extends PluginRESTService {
         List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
             workspaceEntity, WorkspaceRoleArchetype.STUDENT);
         
-        for (WorkspaceUserEntity wosu : workspaceUsers) {
-          recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());
+        for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
+          recipients.add(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
         }
       } else
         return Response.status(Status.BAD_REQUEST).build();
@@ -358,7 +358,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     //params.put("url", String.format("%s/communicator#inbox/%d", baseUrl, message.getCommunicatorMessageId().getId()));
       
     notifierController.sendNotification(communicatorNewInboxMessageNotification, userEntity, recipients, params);
-    webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
+    webSocketMessenger.sendMessage("Communicator:newmessagereceived", null, recipients);
     
     CommunicatorMessageRESTModel result = new CommunicatorMessageRESTModel(message.getId(), message.getCommunicatorMessageId().getId(), 
         message.getSender(), message.getCategory().getName(), message.getCaption(), message.getContent(), message.getCreated(), 
@@ -408,24 +408,6 @@ public class CommunicatorRESTService extends PluginRESTService {
     }
     return tagsStr;
   }
-  
-//  private Set<Tag> parseTags(String tags) {
-//    Set<Tag> result = new HashSet<Tag>();
-//    
-//    if (tags != null) {
-//      List<String> tagStrs = Arrays.asList(tags.split("\\s*,\\s*"));
-//      for (String t : tagStrs) {
-//        Tag tag = tagController.findTag(t);
-//        
-//        if (tag == null)
-//          tag = tagController.createTag(t);
-//        
-//        result.add(tag);
-//      }
-//    }
-//    
-//    return result;
-//  }
 
   private Set<Tag> parseTags(Set<String> tags) {
     Set<Tag> result = new HashSet<Tag>();
@@ -517,7 +499,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients, categoryEntity, newMessage.getCaption(), newMessage.getContent(), tagList);
 
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
-    webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
+    webSocketMessenger.sendMessage("Communicator:newmessagereceived", null, recipients);
     
     CommunicatorMessageRESTModel result = new CommunicatorMessageRESTModel(message.getId(), message.getCommunicatorMessageId().getId(), 
         message.getSender(), message.getCategory().getName(), message.getCaption(), message.getContent(), message.getCreated(), 

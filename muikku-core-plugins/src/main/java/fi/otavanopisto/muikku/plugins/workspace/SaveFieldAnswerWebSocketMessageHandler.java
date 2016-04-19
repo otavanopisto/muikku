@@ -163,7 +163,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       
       message.setOriginTicket(event.getTicket());
       String data = mapper.writeValueAsString(message);
-      webSocketMessenger.sendMessage("workspace:field-answer-saved", data, Arrays.asList(userEntity.getId()));
+      webSocketMessenger.sendMessage("workspace:field-answer-saved", data, Arrays.asList(userEntity));
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Failed to unmarshal SaveFieldAnswerWebSocketMessage", e);
     }

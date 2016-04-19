@@ -26,7 +26,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.atests.WorkspaceDiscussionGroup;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.otavanopisto.muikku.model.base.Tag;
@@ -44,7 +43,6 @@ import fi.otavanopisto.muikku.plugins.announcer.AnnouncementController;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
@@ -305,7 +303,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     params.put("url", "https://dev.muikku.fi/communicator");
 
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients, params);
-    webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
+    webSocketMessenger.sendMessage("Communicator:newmessagereceived", null, recipients);
     
     return Response.ok(
       result
@@ -694,18 +692,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         entity.getLocked());
   }
   
-//  private fi.otavanopisto.muikku.atests.Announcement createRestEntity(Announcement entity) {
-//    return new fi.otavanopisto.muikku.atests.Announcement(entity.getId(), null,
-//        entity.getPublisherUserEntityId(), 
-//        entity.getCaption(), 
-//        entity.getContent(), 
-//        entity.getCreated(),
-//        entity.getStartDate(),
-//        entity.getEndDate(),
-//        entity.isArchived(),
-//        entity.isPubliclyVisible());
-//  }
-  
   private Set<Tag> parseTags(Set<String> tags) {
     Set<Tag> result = new HashSet<Tag>();
     
@@ -720,22 +706,5 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     
     return result;
   }
-  private Set<String> tagIdsToStr(Set<Long> tagIds) {
-    Set<String> tagsStr = new HashSet<String>();
-    for (Long tagId : tagIds) {
-      Tag tag = tagController.findTagById(tagId);
-      if (tag != null)
-        tagsStr.add(tag.getText());
-    }
-    return tagsStr;
-  }
-  private List<Long> getMessageRecipientIdList(CommunicatorMessage msg) {
-    List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(msg);
-    List<Long> recipients = new ArrayList<Long>();
-    for (CommunicatorMessageRecipient messageRecipient : messageRecipients) {
-      recipients.add(messageRecipient.getId());
-    }
 
-    return recipients;
-  }
 }
