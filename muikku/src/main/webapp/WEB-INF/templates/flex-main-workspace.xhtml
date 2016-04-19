@@ -73,9 +73,9 @@
           </div>
         </ui:fragment>
         <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-          <div class="lu-picture sm-flex-hide" id="loggedUserPicture">
-            <a jsf:outcome="/jsf/workspace/profile.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}"><img src="/gfx/default-user-picture.jpg"/></a> 
-          </div>
+          <a jsf:outcome="/jsf/profile/profile.jsf">
+            <span class="lu-picture sm-flex-hide" id="loggedUserPicture"/>
+          </a>
         </ui:fragment>
         
         <div class="language sm-flex-hide">
