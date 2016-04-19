@@ -358,7 +358,6 @@ public class CommunicatorRESTService extends PluginRESTService {
     //params.put("url", String.format("%s/communicator#inbox/%d", baseUrl, message.getCommunicatorMessageId().getId()));
       
     notifierController.sendNotification(communicatorNewInboxMessageNotification, userEntity, recipients, params);
-    webSocketMessenger.sendMessage("Communicator:newmessagereceived", null, recipients);
     
     CommunicatorMessageRESTModel result = new CommunicatorMessageRESTModel(message.getId(), message.getCommunicatorMessageId().getId(), 
         message.getSender(), message.getCategory().getName(), message.getCaption(), message.getContent(), message.getCreated(), 
@@ -499,7 +498,6 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients, categoryEntity, newMessage.getCaption(), newMessage.getContent(), tagList);
 
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
-    webSocketMessenger.sendMessage("Communicator:newmessagereceived", null, recipients);
     
     CommunicatorMessageRESTModel result = new CommunicatorMessageRESTModel(message.getId(), message.getCommunicatorMessageId().getId(), 
         message.getSender(), message.getCategory().getName(), message.getCaption(), message.getContent(), message.getCreated(), 

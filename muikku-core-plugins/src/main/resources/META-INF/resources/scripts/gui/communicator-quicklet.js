@@ -74,7 +74,7 @@
     },
     _refreshUnreadMessagesFlappidiFlap: function () {
       var _this = this;
-      mApi({async: false}).communicator.receiveditemscount.read()
+      mApi().communicator.cacheClear().receiveditemscount.read()
         .callback(function (err, result) {
           var newMessagesCounterFlap = _this._widgetElement.find(".wi-dock-notification");
           if (result > 0) {

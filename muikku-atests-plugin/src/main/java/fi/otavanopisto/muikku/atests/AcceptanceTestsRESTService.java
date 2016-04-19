@@ -60,7 +60,6 @@ import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
-import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -143,10 +142,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private NotifierController notifierController;
-  
-  @Inject
-  private WebSocketMessenger webSocketMessenger;
-  
+
   @Inject
   private CommunicatorNewInboxMessageNotification communicatorNewInboxMessageNotification;
   
@@ -303,7 +299,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     params.put("url", "https://dev.muikku.fi/communicator");
 
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients, params);
-    webSocketMessenger.sendMessage("Communicator:newmessagereceived", null, recipients);
     
     return Response.ok(
       result

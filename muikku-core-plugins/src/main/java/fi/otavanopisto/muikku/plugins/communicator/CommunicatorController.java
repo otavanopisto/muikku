@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jsoup.Jsoup;
@@ -23,6 +24,7 @@ import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipi
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageTemplateDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.InboxCommunicatorMessageDAO;
+import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
@@ -52,7 +54,10 @@ public class CommunicatorController {
   
   @Inject
   private CommunicatorMessageSignatureDAO communicatorMessageSignatureDAO;
-  
+
+  @Inject
+  private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
+
   private String clean(String html) {
     Document doc = Jsoup.parseBodyFragment(html);
     doc = new Cleaner(Whitelist.relaxed()).clean(doc);
@@ -90,6 +95,7 @@ public class CommunicatorController {
 
     for (UserEntity recipient : recipients) {
       communicatorMessageRecipientDAO.create(message, recipient.getId());
+      communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
     }
     
     return message;
