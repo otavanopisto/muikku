@@ -8,8 +8,14 @@
     xmlns:jsf="http://xmlns.jcp.org/jsf"
     template="/WEB-INF/templates/main-view.xhtml">
     
+  <ui:define name="viewScripts">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/webshim/1.15.10/minified/polyfiller.js"></script>
+    <script type="text/javascript" src="/scripts/gui/forgotpassword-reset.js"></script>
+  </ui:define>
+ 
   <ui:define name="sitebody">
   
+    
     <div class="reset-password-background"></div>
     <div class="reset-password-overlay"></div>
     
@@ -42,6 +48,7 @@
             <a class="reset-password-cancel-button" jsf:outcome="/index.jsf">#{i18n.text['plugin.forgotpassword.resetPassword.cancel']}</a>
           </div>
         </h:form>
+        
         <div class="clear"></div>
       </div>
     
