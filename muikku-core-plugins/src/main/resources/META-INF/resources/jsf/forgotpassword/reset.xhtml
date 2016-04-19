@@ -20,20 +20,27 @@
       <div class="reset-password-container">
       
         <h1>#{i18n.text['plugin.forgotpassword.resetPassword.title']}</h1>
-      
+
+        <div class="formElementRow">
+          <label class="formLabel">#{i18n.text['plugin.forgotpassword.resetPassword.username']}</label>
+          <input type="text" readonly="readonly" disabled="disabled" value="#{resetPasswordBackingBean.username}"></input>
+        </div>
+        
         <h:form>
-          <h:panelGroup layout="block" styleClass="formElementRow">
-            <h:outputLabel for="password1" styleClass="formLabel" value="#{i18n.text['plugin.forgotpassword.resetPassword.password']}" />
-            <h:inputSecret id="password1" redisplay="false" required="true" value="#{resetPasswordBackingBean.password1}"/>
-          </h:panelGroup>
-          <h:panelGroup layout="block" styleClass="formElementRow">
-            <h:outputLabel for="password2" styleClass="formLabel" value="#{i18n.text['plugin.forgotpassword.resetPassword.passwordAgain']}" />
-            <h:inputSecret id="password2" redisplay="false" required="true" value="#{resetPasswordBackingBean.password2}"/>
-          </h:panelGroup>
-          <h:panelGroup layout="block" styleClass="formElementRow">
-            <h:commandButton styleClass="reset-password-reset-button" action="#{resetPasswordBackingBean.savePassword}" value="#{i18n.text['plugin.forgotpassword.resetPassword.save']}" />
+          <div class="formElementRow">
+            <label class="formLabel" for="password1">#{i18n.text['plugin.forgotpassword.resetPassword.password']}</label>
+            <input id="password1" type="password" jsf:redisplay="false" jsf:value="#{resetPasswordBackingBean.password1}" required="required"/>
+          </div>
+
+          <div class="formElementRow">
+            <label class="formLabel" for="password2">#{i18n.text['plugin.forgotpassword.resetPassword.passwordAgain']}</label>
+            <input id="password2" type="password" jsf:redisplay="false" jsf:value="#{resetPasswordBackingBean.password2}" required="required"/>
+          </div>
+
+          <div class="formElementRow">
+            <input type="submit" class="reset-password-reset-button" jsf:action="#{resetPasswordBackingBean.savePassword}" value="#{i18n.text['plugin.forgotpassword.resetPassword.save']}"/>
             <a class="reset-password-cancel-button" jsf:outcome="/index.jsf">#{i18n.text['plugin.forgotpassword.resetPassword.cancel']}</a>
-          </h:panelGroup>
+          </div>
         </h:form>
         <div class="clear"></div>
       </div>

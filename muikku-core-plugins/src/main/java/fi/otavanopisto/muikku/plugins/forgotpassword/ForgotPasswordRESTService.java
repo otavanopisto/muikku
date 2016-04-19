@@ -24,7 +24,6 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Path("/forgotpassword")
@@ -46,9 +45,6 @@ public class ForgotPasswordRESTService extends PluginRESTService {
 
   @Inject
   private UserEntityController userEntityController;
-
-  @Inject
-  private UserEmailEntityController userEmailEntityController;
   
   @Inject
   private UserPendingPasswordChangeDAO userPendingPasswordChangeDAO; 
