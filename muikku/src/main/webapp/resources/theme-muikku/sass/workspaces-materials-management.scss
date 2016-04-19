@@ -759,7 +759,7 @@ body.workspace-materials-management {
       }
       
       figure.image {
-        margin:0;
+        margin:5px;
         position:relative;
         width:auto;
         line-height:1;
@@ -797,7 +797,7 @@ body.workspace-materials-management {
             font-family:'Open Sans', Arial, sans-serif;
             opacity:0.9;
             background:#fff;
-            padding:10px;
+            padding:15px 10px;
             font-size:13px;
             
             span.image-details-label {
@@ -840,6 +840,7 @@ body.workspace-materials-management {
           line-height:130%;
           border-radius:2px;
           box-sizing:border-box;
+          text-align:left;
         }
         
       }

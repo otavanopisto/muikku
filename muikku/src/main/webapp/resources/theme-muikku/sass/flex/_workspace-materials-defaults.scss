@@ -389,7 +389,7 @@ a > img {
 }
 
 figure.image {
-  margin:0;
+  margin:5px;
   position:relative;
   width:auto;
   line-height:1;
@@ -427,7 +427,7 @@ figure.image {
       font-family:'Open Sans', Arial, sans-serif;
       opacity:0.9;
       background:#fff;
-      padding:10px;
+      padding:15px 10px;
       font-size:13px;
       word-wrap:break-word;
       
@@ -471,6 +471,7 @@ figure.image {
     line-height:130%;
     border-radius:2px;
     box-sizing:border-box;
+    text-align:left;
   }
   
 }

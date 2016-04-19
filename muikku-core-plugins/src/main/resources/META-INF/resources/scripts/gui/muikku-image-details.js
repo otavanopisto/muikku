@@ -41,7 +41,7 @@
           
           this._details = $('<div>')
             .addClass('image-details icon-copyright')
-            .insertAfter(this.element);
+            .appendTo(figure);
         
           this._detailsContainer = $('<div>')
             .append($('<span>').addClass('image-details-label').text(getLocaleText('plugin.workspace.materials.detailsSourceLabel')))
@@ -51,7 +51,10 @@
         
         if (url) {
           $('<a>')
-            .attr('href', url)
+            .attr({
+              href: url,
+              target: "_blank"
+            })
             .text(text||url)
             .appendTo(this._detailsContainer);
         } else {
