@@ -1281,7 +1281,7 @@
       })
       .animate({
         opacity:1,
-        height:'260px'
+        height:'195px'
       }, {
         duration : 300,
         easing : "easeInOutQuint",
