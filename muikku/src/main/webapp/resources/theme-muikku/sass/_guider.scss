@@ -103,11 +103,11 @@
 }
 
 .gt-search{
-  margin-left:10px;
-  width:300px;
+  width:100%;
+  box-sizing:border-box;
 
 }
-.gt-search-icon{
+.gt-search-icon {
   display:inline-block;
   color:#c4cdd1;
   font-size:30pt;
@@ -115,16 +115,14 @@
   
 }
 .gt-search-field{
-   width:200px;
-   display:inline-block;
-   margin-top:10px;
+   box-sizing:border-box;
+   padding:10px;
 }
 
 .gt-search-field > input{
- margin-left:10px;
- padding:10px;
- font-size:20px;
- color:#c4cdd1;
+  padding:10px;
+  font-size:20px;
+  color:#c4cdd1;
 }
 
 .gt-content-main{
