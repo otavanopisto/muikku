@@ -237,7 +237,7 @@ $(document).ready(function(){
     _deleteMessages : function(ids, reload){
       var messages = ids.length;
       var endpoint = mApi({async: false}).communicator.items;
-      var hash = window.location.hash != '' ? window.location.hash.substring(1) : "none";
+      var hash = window.location.hash != '' ? window.location.hash.substring(1, window.location.hash.indexOf("/")) : "none";
       var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
       reload = (reload == undefined) ?  true : reload;
       
