@@ -116,7 +116,8 @@
           'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
           'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/',
           'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/',
-          'muikku-image-details': CONTEXTPATH + '/scripts/ckplugins/muikku-image-details/'
+          'muikku-image-details': CONTEXTPATH + '/scripts/ckplugins/muikku-image-details/',
+          'muikku-word-definition': CONTEXTPATH + '/scripts/ckplugins/muikku-word-definition/'
         },
         extraPlugins : [
                        'oembed',
@@ -133,6 +134,7 @@
                        'muikku-connectfield',
                        'muikku-embedded',
                        'muikku-image-details',
+                       'muikku-word-definition',
                        'mathjax',
                        'autogrow',
                        'uploadimage'],
@@ -161,7 +163,7 @@
             { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
             '/',
             { name: 'styles', items : [ 'Styles','Format' ] },
-            { name: 'insert', items : [ 'Image','Audio','oembed','Mathjax','Table','Iframe','SpecialChar', 'CreateDiv' ] },
+            { name: 'insert', items : [ 'Image','Audio','oembed','Mathjax','Table','Iframe','MuikkuWordDefinition','SpecialChar', 'CreateDiv' ] },
             { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
             { name: 'colors', items : [ 'TextColor','BGColor' ] },
             '/',

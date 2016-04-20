@@ -387,7 +387,23 @@ a > img {
   cursor:-webkit-zoom-in;
   cursor:-moz-zoom-in;
 }
-
+    
+span[data-muikku-word-definition] {
+  border-bottom: 2px double green;
+  
+  &:hover:after {
+    position: absolute;
+    background: #acd;
+    padding: 5px;
+    line-height: 12px;
+    border: 1px solid #79a;
+    margin-top: 0.5em;
+    margin-left: 10px;
+    font-size: 12px;
+    content: attr(data-muikku-word-definition);
+  }
+}
+          
 figure.image {
   margin:5px;
   position:relative;
