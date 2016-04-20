@@ -1,59 +1,73 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:jsf="http://xmlns.jcp.org/jsf"
-    template="/WEB-INF/templates/main-view.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main.xhtml">
     
-  <ui:define name="viewScripts">
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/webshim/1.15.10/minified/polyfiller.js"></script>
+  <ui:define name="scripts">
+   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/webshim/1.15.10/minified/polyfiller.js"></script>
     <script type="text/javascript" src="/scripts/gui/forgotpassword-reset.js"></script>
   </ui:define>
- 
-  <ui:define name="sitebody">
   
-    
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/forgot-password.css"/>  
+  </ui:define>
+ 
+  <ui:define name="grid-content">
+
     <div class="reset-password-background"></div>
     <div class="reset-password-overlay"></div>
     
-    <div class="reset-password-wrapper">
-    
-      <div class="muikku-logo"></div>
-    
-      <div class="reset-password-container">
+    <div class="reset-password-wrapper flex-row flex-align-items-center">
       
-        <h1>#{i18n.text['plugin.forgotpassword.resetPassword.title']}</h1>
-
-        <div class="formElementRow">
-          <label class="formLabel">#{i18n.text['plugin.forgotpassword.resetPassword.username']}</label>
-          <input type="text" readonly="readonly" disabled="disabled" value="#{resetPasswordBackingBean.username}"></input>
+      <div class=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+      
+        <div class="flex-row">
+          <div class="muikku-logo lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom"></div>
+        </div>
+      
+        <div class="flex-row">
+          <div class="reset-password-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+              
+            <h1>#{i18n.text['plugin.forgotpassword.resetPassword.title']}</h1>
+    
+            <div class="flex-row">
+              <div class="username-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                <label class="formLabel">#{i18n.text['plugin.forgotpassword.resetPassword.username']}</label>
+                <input type="text" readonly="readonly" value="#{resetPasswordBackingBean.username}"></input>
+              </div>
+            </div>
+            
+            <h:form>
+              <div class="flex-row">
+                <div class="password-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                  <label class="formLabel" for="password1">#{i18n.text['plugin.forgotpassword.resetPassword.password']}</label>
+                  <input id="password1" type="password" jsf:redisplay="false" jsf:value="#{resetPasswordBackingBean.password1}" required="required"/>
+                </div>
+              </div>
+    
+              <div class="flew-rox">
+                <div class="password-again-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                  <label class="formLabel" for="password2">#{i18n.text['plugin.forgotpassword.resetPassword.passwordAgain']}</label>
+                  <input id="password2" type="password" jsf:redisplay="false" jsf:value="#{resetPasswordBackingBean.password2}" required="required"/>
+                </div>
+              </div>
+    
+              <div class="flex-row">
+                <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                  <input type="submit" class="reset-password-reset-button" jsf:action="#{resetPasswordBackingBean.savePassword}" value="#{i18n.text['plugin.forgotpassword.resetPassword.save']}"/>
+                  <a class="reset-password-cancel-button" jsf:outcome="/index.jsf">#{i18n.text['plugin.forgotpassword.resetPassword.cancel']}</a>
+                </div>
+              </div>
+            </h:form>
+          
+          </div>
         </div>
         
-        <h:form>
-          <div class="formElementRow">
-            <label class="formLabel" for="password1">#{i18n.text['plugin.forgotpassword.resetPassword.password']}</label>
-            <input id="password1" type="password" jsf:redisplay="false" jsf:value="#{resetPasswordBackingBean.password1}" required="required"/>
-          </div>
-
-          <div class="formElementRow">
-            <label class="formLabel" for="password2">#{i18n.text['plugin.forgotpassword.resetPassword.passwordAgain']}</label>
-            <input id="password2" type="password" jsf:redisplay="false" jsf:value="#{resetPasswordBackingBean.password2}" required="required"/>
-          </div>
-
-          <div class="formElementRow">
-            <input type="submit" class="reset-password-reset-button" jsf:action="#{resetPasswordBackingBean.savePassword}" value="#{i18n.text['plugin.forgotpassword.resetPassword.save']}"/>
-            <a class="reset-password-cancel-button" jsf:outcome="/index.jsf">#{i18n.text['plugin.forgotpassword.resetPassword.cancel']}</a>
-          </div>
-        </h:form>
-        
-        <div class="clear"></div>
       </div>
-    
+      
     </div>
-    
 
   </ui:define>
 
