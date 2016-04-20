@@ -82,6 +82,11 @@
       return request.read.apply(request, arguments);
     },
 
+    cacheClear: function () {
+      this._service.cacheClear();
+      return this;
+    },
+
     update: function () {
       var request = new RequestImpl(this._client);
       this._client.opts.stringifyData = true;
