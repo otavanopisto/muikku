@@ -124,6 +124,9 @@
     float:left;
     color:#000;
     cursor:pointer;
+    &:not(:first-child){
+      margin-left:10px;
+    }    
   }
   
 
@@ -259,8 +262,6 @@
     
   }
   
-  
-  
   .cm-message-tool{
     padding:0 10px 0 10px;
     border:1px solid $brd2;
@@ -272,6 +273,7 @@
     &:not(:first-child){
      margin-left:10px;
     }
+    
     
     span{
      font-size:0.75em;

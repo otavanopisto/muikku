@@ -219,8 +219,9 @@ $(document).ready(function(){
       if(openElement.length > 0){
         var id = [openElement.attr("data-thread-id")];
         
-        this._deleteMessages(id);
+        this._deleteMessages(id, false);
         this._onMessageBackClick();
+        window.location.reload(true);        
       }else{
         var inputs = $(CommunicatorImpl.msgContainer).find("input:checked");    
         var deleteQ = [];
@@ -234,19 +235,20 @@ $(document).ready(function(){
       }
     },    
     
-    _deleteMessages : function(ids){
+    _deleteMessages : function(ids, reload){
       var messages = ids.length;
       var endpoint = mApi({async: false}).communicator.items;
-      
       var hash = window.location.hash != '' ? window.location.hash.substring(1) : "none";
       var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
-
+      reload = (reload == undefined) ?  true : reload;
+      
       if (hash == "sent") {
         endpoint = mApi({async: false}).communicator.sentitems;
       }
 
       var batch = $.map(ids, function(id){
         return endpoint.del(id);
+        
       });
       
       mApi({async: false}).batch(batch).callback($.proxy(function(err){
@@ -256,7 +258,9 @@ $(document).ready(function(){
          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
         } else {
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
+          if(reload === true){
            window.location.reload(true);
+          }
         }
       }, this));
     },
