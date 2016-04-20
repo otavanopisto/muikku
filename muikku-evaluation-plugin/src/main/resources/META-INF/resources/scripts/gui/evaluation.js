@@ -1281,13 +1281,14 @@
       })
       .animate({
         opacity:1,
-        height:'160px'
+        height:'260px'
       }, {
         duration : 300,
         easing : "easeInOutQuint",
         complete: function() {
           $('.evaluation-available-workspaces')
             .attr('data-hidden', '0');
+          $('.evaluation-available-workspaces').perfectScrollbar('update');
         }
       });  
     } else {
@@ -1309,11 +1310,10 @@
             .css({
               visibility: 'hidden'
             });
+          $('.evaluation-available-workspaces').perfectScrollbar('update');
         }
       });
     }
-    
-    
 
   });
 
