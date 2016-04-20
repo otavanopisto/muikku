@@ -217,8 +217,7 @@ $(document).ready(function(){
       openElement = parent.find(".open");
      
       if(openElement.length > 0){
-        var id = [openElement.attr("data-thread-id")];
-        
+        var id = [openElement.attr("data-thread-id")];       
         this._deleteMessages(id, false);
         this._onMessageBackClick();
         window.location.reload(true);        
