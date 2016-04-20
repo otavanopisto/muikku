@@ -9,4 +9,17 @@ public class NavigationController {
     return null;
   }
   
+  public String notFound() {
+    return NavigationRules.NOT_FOUND;
+  }
+  
+  public String accessDenied() {
+    return NavigationRules.ACCESS_DENIED;
+  }
+  
+  public String internalError() {
+    return NavigationRules.INTERNAL_ERROR;
+  }
+  
+  
 }
