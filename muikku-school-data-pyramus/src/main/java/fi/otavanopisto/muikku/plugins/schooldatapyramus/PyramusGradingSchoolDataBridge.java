@@ -25,10 +25,10 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
-import fi.pyramus.rest.model.CourseAssessment;
-import fi.pyramus.rest.model.CourseAssessmentRequest;
-import fi.pyramus.rest.model.CourseStudent;
-import fi.pyramus.rest.model.Grade;
+import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
+import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
+import fi.otavanopisto.pyramus.rest.model.CourseStudent;
+import fi.otavanopisto.pyramus.rest.model.Grade;
 
 public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
@@ -58,12 +58,12 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
 		}
 
-    return createGradingScaleEntity(pyramusClient.get("/common/gradingScales/" + identifier, fi.pyramus.rest.model.GradingScale.class));
+    return createGradingScaleEntity(pyramusClient.get("/common/gradingScales/" + identifier, fi.otavanopisto.pyramus.rest.model.GradingScale.class));
 	}
 
 	@Override
 	public List<GradingScale> listGradingScales() throws UnexpectedSchoolDataBridgeException {
-	  fi.pyramus.rest.model.GradingScale[] gradingScales = pyramusClient.get("/common/gradingScales/?filterArchived=true", fi.pyramus.rest.model.GradingScale[].class);
+	  fi.otavanopisto.pyramus.rest.model.GradingScale[] gradingScales = pyramusClient.get("/common/gradingScales/?filterArchived=true", fi.otavanopisto.pyramus.rest.model.GradingScale[].class);
     if (gradingScales == null) {
       throw new UnexpectedSchoolDataBridgeException("Null response");
     }
@@ -77,7 +77,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
 		}
 
-    return createGradingScaleItemEntity(pyramusClient.get("/common/gradingScales/" + gradingScaleIdentifier + "/grades/" + identifier, fi.pyramus.rest.model.Grade.class));
+    return createGradingScaleItemEntity(pyramusClient.get("/common/gradingScales/" + gradingScaleIdentifier + "/grades/" + identifier, fi.otavanopisto.pyramus.rest.model.Grade.class));
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     return result;
   }
 
-  private GradingScale createGradingScaleEntity(fi.pyramus.rest.model.GradingScale g) {
+  private GradingScale createGradingScaleEntity(fi.otavanopisto.pyramus.rest.model.GradingScale g) {
     if (g == null) {
       return null;
     }
@@ -116,10 +116,10 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     return new PyramusGradingScale(g.getId().toString(), g.getName());
   }
 
-  private List<GradingScale> createGradingScaleEntities(fi.pyramus.rest.model.GradingScale[] gradingScales) {
+  private List<GradingScale> createGradingScaleEntities(fi.otavanopisto.pyramus.rest.model.GradingScale[] gradingScales) {
     List<GradingScale> result = new ArrayList<>();
 
-    for (fi.pyramus.rest.model.GradingScale g : gradingScales)
+    for (fi.otavanopisto.pyramus.rest.model.GradingScale g : gradingScales)
       result.add(createGradingScaleEntity(g));
       
     return result;
@@ -147,7 +147,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
  
-    Grade grade = pyramusClient.get(String.format("/common/gradingScales/%d/grades/%d", gradingScaleId, gradeId), fi.pyramus.rest.model.Grade.class);
+    Grade grade = pyramusClient.get(String.format("/common/gradingScales/%d/grades/%d", gradingScaleId, gradeId), fi.otavanopisto.pyramus.rest.model.Grade.class);
     if (grade == null) {
       logger.severe(String.format("Could not create workspace assessment because grade %d could not be found from Pyramus", gradeId));
       return null; 
@@ -191,7 +191,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
  
-    Grade grade = pyramusClient.get(String.format("/common/gradingScales/%d/grades/%d", gradingScaleId, gradeId), fi.pyramus.rest.model.Grade.class);
+    Grade grade = pyramusClient.get(String.format("/common/gradingScales/%d/grades/%d", gradingScaleId, gradeId), fi.otavanopisto.pyramus.rest.model.Grade.class);
     if (grade == null) {
       logger.severe(String.format("Could not update workspace assessment because grade %d could not be found from Pyramus", gradeId));
       return null; 
@@ -287,14 +287,14 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return Collections.emptyList();
     }
     
-    fi.pyramus.rest.model.TransferCredit[] transferCredits = pyramusClient.get(String.format("/students/students/%d/transferCredits", studentId), fi.pyramus.rest.model.TransferCredit[].class);
+    fi.otavanopisto.pyramus.rest.model.TransferCredit[] transferCredits = pyramusClient.get(String.format("/students/students/%d/transferCredits", studentId), fi.otavanopisto.pyramus.rest.model.TransferCredit[].class);
     if (transferCredits == null) {
       return Collections.emptyList();
     }
     
     List<TransferCredit> result = new ArrayList<>();
     
-    for (fi.pyramus.rest.model.TransferCredit transferCredit : transferCredits) {
+    for (fi.otavanopisto.pyramus.rest.model.TransferCredit transferCredit : transferCredits) {
       result.add(entityFactory.createEntity(transferCredit));
     }
     

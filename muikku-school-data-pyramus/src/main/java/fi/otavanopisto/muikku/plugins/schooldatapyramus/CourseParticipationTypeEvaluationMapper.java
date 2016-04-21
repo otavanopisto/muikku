@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
-import fi.pyramus.rest.model.Grade;
+import fi.otavanopisto.pyramus.rest.model.Grade;
 
 @ApplicationScoped
 public class CourseParticipationTypeEvaluationMapper {

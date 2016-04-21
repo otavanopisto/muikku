@@ -31,10 +31,10 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.muikku.ui.PyramusMocks;
-import fi.pyramus.rest.model.CourseAssessment;
-import fi.pyramus.rest.model.CourseStaffMember;
-import fi.pyramus.rest.model.Sex;
-import fi.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class EvaluationTestsBase extends AbstractUITest {
 
@@ -334,7 +334,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           click(".save-evaluation-button");
   //        There's no JSONComparator that allows different values. And since dev machine and travis testing gives different dates we can not test requestBody with CourseAssessment model.
           
-          CourseAssessment cAss = new fi.pyramus.rest.model.CourseAssessment(null, courseStudent.getId(), 1l, 1l, admin.getId(), null, "<p>Test evaluation.</p>\n");
+          CourseAssessment cAss = new fi.otavanopisto.pyramus.rest.model.CourseAssessment(null, courseStudent.getId(), 1l, 1l, admin.getId(), null, "<p>Test evaluation.</p>\n");
           verify(postRequestedFor(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseId)))
             .withHeader("Content-Type", equalTo("application/json"))
             .withRequestBody(equalToJson(objectMapper.writeValueAsString(cAss), wiremock.org.skyscreamer.jsonassert.JSONCompareMode.LENIENT)));

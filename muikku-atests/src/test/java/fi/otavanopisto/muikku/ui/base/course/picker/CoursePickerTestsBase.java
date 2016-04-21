@@ -16,7 +16,7 @@ import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.muikku.ui.PyramusMocks;
-import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
 public class CoursePickerTestsBase extends AbstractUITest {
   

@@ -30,34 +30,34 @@ import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockLoggable;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
-import fi.pyramus.rest.model.ContactType;
-import fi.pyramus.rest.model.CourseStaffMember;
-import fi.pyramus.rest.model.CourseStaffMemberRole;
-import fi.pyramus.rest.model.CourseStudent;
-import fi.pyramus.rest.model.CourseType;
-import fi.pyramus.rest.model.EducationType;
-import fi.pyramus.rest.model.EducationalTimeUnit;
-import fi.pyramus.rest.model.Email;
-import fi.pyramus.rest.model.Grade;
-import fi.pyramus.rest.model.GradingScale;
-import fi.pyramus.rest.model.Person;
-import fi.pyramus.rest.model.StaffMember;
-import fi.pyramus.rest.model.Student;
-import fi.pyramus.rest.model.StudentGroup;
-import fi.pyramus.rest.model.StudentGroupStudent;
-import fi.pyramus.rest.model.StudentGroupUser;
-import fi.pyramus.rest.model.StudyProgramme;
-import fi.pyramus.rest.model.StudyProgrammeCategory;
-import fi.pyramus.rest.model.Subject;
-import fi.pyramus.rest.model.WhoAmI;
-import fi.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
-import fi.pyramus.webhooks.WebhookCourseStudentCreatePayload;
-import fi.pyramus.webhooks.WebhookPersonCreatePayload;
-import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
-import fi.pyramus.webhooks.WebhookStudentCreatePayload;
-import fi.pyramus.webhooks.WebhookStudentGroupCreatePayload;
-import fi.pyramus.webhooks.WebhookStudentGroupStaffMemberCreatePayload;
-import fi.pyramus.webhooks.WebhookStudentGroupStudentCreatePayload;
+import fi.otavanopisto.pyramus.rest.model.ContactType;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
+import fi.otavanopisto.pyramus.rest.model.CourseStudent;
+import fi.otavanopisto.pyramus.rest.model.CourseType;
+import fi.otavanopisto.pyramus.rest.model.EducationType;
+import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
+import fi.otavanopisto.pyramus.rest.model.Email;
+import fi.otavanopisto.pyramus.rest.model.Grade;
+import fi.otavanopisto.pyramus.rest.model.GradingScale;
+import fi.otavanopisto.pyramus.rest.model.Person;
+import fi.otavanopisto.pyramus.rest.model.StaffMember;
+import fi.otavanopisto.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.StudentGroup;
+import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
+import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
+import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
+import fi.otavanopisto.pyramus.rest.model.StudyProgrammeCategory;
+import fi.otavanopisto.pyramus.rest.model.Subject;
+import fi.otavanopisto.pyramus.rest.model.WhoAmI;
+import fi.otavanopisto.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookCourseStudentCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookStaffMemberCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookStudentGroupCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookStudentGroupStaffMemberCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookStudentGroupStudentCreatePayload;
 
 public class PyramusMock {
   
@@ -91,7 +91,7 @@ public class PyramusMock {
         pmock.studyProgrammeCategories.add(new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false));
         pmock.studyProgrammes.add(new StudyProgramme(1l, "test", "Test Study Programme", 1l, false));
         
-        pmock.courseTypes.add(new fi.pyramus.rest.model.CourseType((long) 1, "Nonstop", false));
+        pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 1, "Nonstop", false));
         
       }
 

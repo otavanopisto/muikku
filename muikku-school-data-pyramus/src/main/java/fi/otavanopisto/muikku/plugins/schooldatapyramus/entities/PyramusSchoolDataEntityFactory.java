@@ -35,22 +35,22 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRole;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
-import fi.pyramus.rest.model.Address;
-import fi.pyramus.rest.model.ContactType;
-import fi.pyramus.rest.model.Course;
-import fi.pyramus.rest.model.CourseAssessment;
-import fi.pyramus.rest.model.CourseAssessmentRequest;
-import fi.pyramus.rest.model.CourseStaffMember;
-import fi.pyramus.rest.model.CourseStaffMemberRole;
-import fi.pyramus.rest.model.CourseStudent;
-import fi.pyramus.rest.model.CourseType;
-import fi.pyramus.rest.model.EducationalTimeUnit;
-import fi.pyramus.rest.model.Email;
-import fi.pyramus.rest.model.PhoneNumber;
-import fi.pyramus.rest.model.StudentGroup;
-import fi.pyramus.rest.model.StudentGroupStudent;
-import fi.pyramus.rest.model.StudentGroupUser;
-import fi.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.Address;
+import fi.otavanopisto.pyramus.rest.model.ContactType;
+import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
+import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
+import fi.otavanopisto.pyramus.rest.model.CourseStudent;
+import fi.otavanopisto.pyramus.rest.model.CourseType;
+import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
+import fi.otavanopisto.pyramus.rest.model.Email;
+import fi.otavanopisto.pyramus.rest.model.PhoneNumber;
+import fi.otavanopisto.pyramus.rest.model.StudentGroup;
+import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
+import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
+import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 @ApplicationScoped
 public class PyramusSchoolDataEntityFactory {
@@ -78,7 +78,7 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   @SuppressWarnings("incomplete-switch")
-  public User createEntity(fi.pyramus.rest.model.StaffMember staffMember) {
+  public User createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember staffMember) {
     String displayName = staffMember.getFirstName() + " " + staffMember.getLastName();
     switch (staffMember.getRole()) {
       case ADMINISTRATOR:
@@ -119,17 +119,17 @@ public class PyramusSchoolDataEntityFactory {
         active);
   }
 
-  public List<User> createEntity(fi.pyramus.rest.model.StaffMember... staffMembers) {
+  public List<User> createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember... staffMembers) {
     List<User> result = new ArrayList<>();
 
-    for (fi.pyramus.rest.model.StaffMember staffMember : staffMembers) {
+    for (fi.otavanopisto.pyramus.rest.model.StaffMember staffMember : staffMembers) {
       result.add(createEntity(staffMember));
     }
 
     return result;
   }
 
-  public User createEntity(fi.pyramus.rest.model.Student student, fi.pyramus.rest.model.StudyProgramme studyProgramme,
+  public User createEntity(fi.otavanopisto.pyramus.rest.model.Student student, fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme,
       String nationality, String language, String municipality, String school, DateTime studyStartDate, DateTime studyEndDate,
       DateTime studyTimeEnd, boolean hidden) {
     StringBuilder displayName = new StringBuilder();
@@ -165,7 +165,7 @@ public class PyramusSchoolDataEntityFactory {
         active);
   }
 
-  public EnvironmentRole createEntity(fi.pyramus.rest.model.UserRole role) {
+  public EnvironmentRole createEntity(fi.otavanopisto.pyramus.rest.model.UserRole role) {
     if (role == null) {
       return null;
     }
@@ -181,10 +181,10 @@ public class PyramusSchoolDataEntityFactory {
     return new PyramusEnvironmentRole("ENV-STUDENT", archetype, "Student");
   }
 
-  public List<EnvironmentRole> createEntity(fi.pyramus.rest.model.UserRole... roles) {
+  public List<EnvironmentRole> createEntity(fi.otavanopisto.pyramus.rest.model.UserRole... roles) {
     List<EnvironmentRole> result = new ArrayList<>();
 
-    for (fi.pyramus.rest.model.UserRole role : roles) {
+    for (fi.otavanopisto.pyramus.rest.model.UserRole role : roles) {
       result.add(createEntity(role));
     }
 
@@ -204,7 +204,7 @@ public class PyramusSchoolDataEntityFactory {
   public List<WorkspaceRole> createEntity(CourseStaffMemberRole[] staffMemberRoles) {
     List<WorkspaceRole> result = new ArrayList<>();
 
-    for (fi.pyramus.rest.model.CourseStaffMemberRole staffMemberRole : staffMemberRoles) {
+    for (fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole staffMemberRole : staffMemberRoles) {
       result.add(createEntity(staffMemberRole));
     }
 
@@ -491,7 +491,7 @@ public class PyramusSchoolDataEntityFactory {
         email.getDefaultAddress());
   }
   
-  public TransferCredit createEntity(fi.pyramus.rest.model.TransferCredit transferCredit) {
+  public TransferCredit createEntity(fi.otavanopisto.pyramus.rest.model.TransferCredit transferCredit) {
     SchoolDataIdentifier identifier = identifierMapper.getTransferCreditIdentifier(transferCredit.getId());
     SchoolDataIdentifier studentIdentifier = transferCredit.getStudentId() != null ? toIdentifier(identifierMapper.getStudentIdentifier(transferCredit.getStudentId())) : null;
     SchoolDataIdentifier gradeIdentifier = transferCredit.getGradeId() != null ? identifierMapper.getGradeIdentifier(transferCredit.getGradeId()) : null;
