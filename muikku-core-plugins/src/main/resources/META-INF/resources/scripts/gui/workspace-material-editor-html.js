@@ -163,7 +163,7 @@
             { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
             '/',
             { name: 'styles', items : [ 'Styles','Format' ] },
-            { name: 'insert', items : [ 'Image','Audio','oembed','Mathjax','Table','Iframe','MuikkuWordDefinition','SpecialChar', 'CreateDiv' ] },
+            { name: 'insert', items : [ 'Image','Audio','oembed','Mathjax','Table','Iframe','SpecialChar', 'CreateDiv' ] },
             { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
             { name: 'colors', items : [ 'TextColor','BGColor' ] },
             '/',
