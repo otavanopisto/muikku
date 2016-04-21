@@ -3,13 +3,28 @@
   font-size:13px;
   box-shadow:0 0 50px rgba(0,0,0,0.2);
   border:0;
-  width:20em;
+  width:auto;
   padding:0;
+  background:#f2f5f7;
+  display:none;
+  
+  .ui-helper-clearfix::before, 
+  .ui-helper-clearfix::after {
+    border-collapse:collapse;
+    content:"";
+    display:table;
+  }
+  
+  .ui-helper-clearfix::after {
+      clear:both;
+  }
   
   .ui-widget-header {
     border:0;
     background:#6aa4cf;
     padding:4px 0px;
+    position:relative;
+    border-radius:0px;
 
     .ui-datepicker-prev {
       color:#fff;
@@ -18,6 +33,7 @@
       top:0;
       left:0;
       padding:8px 4px;
+      border-radius:0px;
       
       span {
         display:none;
@@ -26,6 +42,7 @@
       &:hover {
         background:transparent;
         border:0px;
+        text-decoration:none;
       }
     
       &:before {
@@ -56,6 +73,7 @@
       top:0;
       right:0;
       padding:8px 4px;
+      border-radius:0px;
       
       span {
         display:none;
@@ -64,6 +82,7 @@
       &:hover {
         background:transparent;
         border:0px;
+        text-decoration:none;
       }
       
       &:before {
@@ -92,6 +111,9 @@
       text-transform:uppercase;
       font-weight:300;
       font-size:18px;
+      line-height:1.8em;
+      margin:0 2.3em;
+      text-align:center;
     }
     
   }
@@ -100,13 +122,41 @@
     box-sizing:border-box;
     border:2px solid #fff;
     margin:0;
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+    
+    th {
+      border:0 none;
+      font-weight:bold;
+      padding:0.7em 0.3em;
+      text-align:center;
+    }
   
     td {
-    
+      border:0;
+      padding:1px;
+      max-width:100%;
+      width:38px;
+      height:32px;
+      box-sizing:border-box;
+      
+      .ui-state-default {
+        background:#d7ebf9;
+        color:#2779aa;
+      }
+
       a {
         border:0;
-        padding:0 6px 2px 0;
+        padding:0 5px 0 0;
         background:#d4edff;
+        display:block;
+        text-align:right;
+        text-decoration:none;
+        font-weight:bold;
+        height:32px;
+        width:auto;
+        box-sizing:border-box;
         
         &:hover {
           background:#9cd5f8;
@@ -121,7 +171,7 @@
           background:#3baae3;
           color:#fff;
         }
-        
+
       }
     
     }
