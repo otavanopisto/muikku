@@ -20,8 +20,10 @@
     
     for (var i=0; i < answers.length; i++) {
       var answer = answers[i];
-      if (correctAnswers.indexOf(answer.answer) >= 0) {
-        $(document.getElementById(answer.id)).addClass("muikku-field-correct-answer-override");
+      var checkbox = document.getElementById(answer.id);
+      if ((checkbox.checked && correctAnswers.indexOf(answer.answer) >= 0) ||
+          (!checkbox.checked && correctAnswers.indexOf(answer.answer) === -1)) {
+        $(checkbox).addClass("muikku-field-correct-answer-override");
       }
     }
   }
