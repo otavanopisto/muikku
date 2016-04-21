@@ -469,7 +469,6 @@
   .mf-item-tools{
 
      .mf-item-tool{
-
         dispay:inline-block;
         color:$bgr1;
         text-decoration:none;
@@ -481,9 +480,11 @@
         &:hover{
           color:#000;
         } 
-    
+        
+        &:not(:first-child){
+          margin-left:10px;
+        }        
     }
-    
 }
 
   
