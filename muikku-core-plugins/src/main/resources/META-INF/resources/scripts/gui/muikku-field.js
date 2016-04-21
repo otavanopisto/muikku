@@ -20,10 +20,16 @@
     
     for (var i=0; i < answers.length; i++) {
       var answer = answers[i];
-      var checkbox = document.getElementById(answer.id);
-      if ((checkbox.checked && correctAnswers.indexOf(answer.answer) >= 0) ||
-          (!checkbox.checked && correctAnswers.indexOf(answer.answer) === -1)) {
-        $(checkbox).addClass("muikku-field-correct-answer-override");
+      var inputElem = document.getElementById(answer.id);
+      if (inputElem.type === "checkbox") {
+        if ((inputElem.checked && correctAnswers.indexOf(answer.answer) >= 0) ||
+            (inputElem.checked && correctAnswers.indexOf(answer.answer) === -1)) {
+          $(inputElem).addClass("muikku-field-correct-answer-override");
+        }
+      } else if (inputElem.type === "radio") {
+        if (correctAnswers.indexOf(answer.answer) >= 0) {
+          $(inputElem).addClass("muikku-field-correct-answer-override");
+        }
       }
     }
   }
