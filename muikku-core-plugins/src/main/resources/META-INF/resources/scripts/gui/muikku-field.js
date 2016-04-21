@@ -3,16 +3,27 @@
   
   
   function recolorCheckboxFields(elem) {
-    var labels = $(elem).find(".muikku-field-incorrect-answer > label[for]");
+    var labels = $(elem).find("label[for]");
     var answers = [];
-    for (var i=0; i<labels.length, i++) {
+    for (var i=0; i<labels.length; i++) {
       var label = labels[i];
       
       var id = $(label).attr('for');
       var answer = $(label).html();
       answers.push({id: id, answer: answer});
-      if (console) console.log("id: " + id + ", answer:" + answer);
     } 
+    
+    var correctAnswers = [];
+    $(elem).siblings(".muikku-field-examples").find("muikku-field-example").foreach(function() {
+      correctAnswers.push($(this).html());
+    });
+    
+    for (var i=0; i < answers.length; i++) {
+      var answer = answers[i];
+      if (correctAnswers.indexOf(answer.answer) > 0) {
+        $(document.getElementById(answer.id)).addClass("muikku-correct-field");
+      }
+    }
   }
 
   $(document).on('workspace:field-answer-error', function (event, data) {
