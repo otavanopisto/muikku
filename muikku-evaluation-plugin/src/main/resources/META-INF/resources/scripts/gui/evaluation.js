@@ -42,10 +42,23 @@
           { name: 'styles', items: [ 'Format' ] },
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
-        ]
+        ],
+        extraPlugins: {
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
+          'autosave': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autosave/0.13/'
+        }
       }
     },
     _create: function () {
+      var extraPlugins = [];
+      
+      $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
+        CKEDITOR.plugins.addExternal(plugin, url);
+        extraPlugins.push(plugin);
+      }, this));
+      
+      this.options.ckeditor.extraPlugins = extraPlugins.join(',');
+      
       this._load($.proxy(function (text) {
         this._dialog = $(text);
         
