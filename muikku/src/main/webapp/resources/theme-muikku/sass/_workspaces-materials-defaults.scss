@@ -635,9 +635,10 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   }
   
-  span[data-muikku-word-definition] {
+  mark[data-muikku-word-definition] {
     border-bottom:1px dashed #007925;
     color:#007925;
+    background: transparent;
     cursor:help;
     font-weight:400;
     position:relative;

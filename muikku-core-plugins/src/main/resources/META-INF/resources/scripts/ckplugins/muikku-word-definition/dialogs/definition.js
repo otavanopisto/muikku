@@ -14,40 +14,59 @@ CKEDITOR.dialog.add('muikkuWordDefinitionDialog', function (editor) {
         label: lang.definitionDialogTextLabel,
         setup: function(editor) {
           var text = null;
-          var ranges = editor.getSelection().getRanges();
           
-          for (var i = 0, l = ranges.length; i < l; i++) {
-            var range = ranges[i];
-            var iterator = range.createIterator();
-            var p = null;
-            
-            while ((p = iterator.getNextParagraph()) != null) {
-              var def = p.findOne('span[data-muikku-word-definition]');
-              if (def) {
-                text = def.getAttribute('data-muikku-word-definition');
-              }
-              
-              if (text) {
+          var selectionNode = editor.getSelection().getCommonAncestor();
+          while (selectionNode.type != CKEDITOR.NODE_ELEMENT) {
+            selectionNode = selectionNode.getParent();
+            if ((selectionNode == null) || ("body" == selectionNode.getName())) {
+              selectionNode = null;
+              break;
+            }
+          }
+          
+          if (selectionNode) {
+            while ("mark" == selectionNode.getName()) {
+              selectionNode = selectionNode.getParent();
+              if ((selectionNode == null) || ("body" == selectionNode.getName())) {
+                selectionNode = null;
                 break;
               }
             }
-            
+          }
+      
+          if (selectionNode) {
+            var mark = null;
+            if ("mark" == selectionNode.getName()) {
+              mark = selectionNode;
+            }
+
+            if (mark) {
+              text = mark.getAttribute('data-muikku-word-definition');
+            }
+           
             if (text) {
-              break;
+              editor.getSelection().selectElement(mark);
             }
           }
           
           this.setValue(text);
         },
         commit: function(editor) {
-          var style = new CKEDITOR.style({ 
-            element: 'span', 
+          var removeStyle = new CKEDITOR.style({ 
+            element: 'mark',
+            alwaysRemoveElement: true
+          });
+          
+          removeStyle.remove(editor);
+          
+          var applyStyle = new CKEDITOR.style({ 
+            element: 'mark',
             attributes: { 
               'data-muikku-word-definition': this.getValue() 
             }
           });
           
-          style.apply(editor);
+          applyStyle.apply(editor);
         }
       }]
     }],
