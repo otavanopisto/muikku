@@ -418,7 +418,11 @@
               });
               $(field).after(exampleDetails);
               
-              recolorCheckboxFields(field);
+              if (requestAnswers === false) { 
+                $(elem).find(".muikku-field-correct-answer-override").removeClass("muikku-field-correct-answer-override");
+              } else {
+                recolorCheckboxFields(field);
+              }
             }
           }
         }
