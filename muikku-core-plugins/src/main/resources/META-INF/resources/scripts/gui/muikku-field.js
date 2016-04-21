@@ -3,18 +3,24 @@
   
   
   function recolorCheckboxFields(elem) {
+    $(elem).find(".muikku-field-correct-answer-override").removeClass("muikku-field-correct-answer-override");
+    
+    if ($(elem).next(".muikku-field-examples").length === 0) {
+      return;
+    }
+    
     var labels = $(elem).find("label[for]");
     var answers = [];
     for (var i=0; i<labels.length; i++) {
       var label = labels[i];
-      
+
       var id = $(label).attr('for');
       var answer = $(label).html();
       answers.push({id: id, answer: answer});
     } 
     
     var correctAnswers = [];
-    $(elem).siblings(".muikku-field-examples").find(".muikku-field-example").each(function() {
+    $(elem).next(".muikku-field-examples").find(".muikku-field-example").each(function() {
       correctAnswers.push($(this).html());
     });
     
