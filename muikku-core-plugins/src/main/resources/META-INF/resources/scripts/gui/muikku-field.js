@@ -23,7 +23,7 @@
       var inputElem = document.getElementById(answer.id);
       if (inputElem.type === "checkbox") {
         if ((inputElem.checked && correctAnswers.indexOf(answer.answer) >= 0) ||
-            (inputElem.checked && correctAnswers.indexOf(answer.answer) === -1)) {
+            (!inputElem.checked && correctAnswers.indexOf(answer.answer) === -1)) {
           $(inputElem).addClass("muikku-field-correct-answer-override");
         }
       } else if (inputElem.type === "radio") {
