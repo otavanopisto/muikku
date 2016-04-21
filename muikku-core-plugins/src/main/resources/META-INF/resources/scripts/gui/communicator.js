@@ -224,7 +224,7 @@ $(document).ready(function(){
       }else{
         var inputs = $(CommunicatorImpl.msgContainer).find("input:checked");    
         var deleteQ = [];
-        for (i = 0; i < inputs.length; i++){
+        for (var i = 0; i < inputs.length; i++){
           var msgId = $(inputs[i]).attr("value");
           deleteQ.push(msgId);
         }         
@@ -237,7 +237,14 @@ $(document).ready(function(){
     _deleteMessages : function(ids, reload){
       var messages = ids.length;
       var endpoint = mApi({async: false}).communicator.items;
-      var hash = window.location.hash != '' ? window.location.hash.substring(1, window.location.hash.indexOf("/")) : "none";
+      var hash = window.location.hash;
+      if (hash != '') {
+        var slashIndex = window.location.hash.indexOf("/");
+        hash = slashIndex == -1 ? hash.substring(1) : hash.substring(1, slashIndex);
+      }
+      else {
+        hash = "none";
+      }
       var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
       reload = (reload == undefined) ?  true : reload;
       
