@@ -672,6 +672,19 @@ sup {
     }
     
   }
+
+
+  .muikku-field-incorrect-answer .muikku-field-correct-answer-override {
+    box-shadow:0 0 1px 3px rgba(0,255,42,0.3) !important;
+    border:3px solid #00ff2a !important;
+    @include rounded(3px);
+    
+    &:hover {
+      box-shadow:0 0 2px 3px rgba(0,255,42,0.3) !important;
+      border:3px solid #00ff2a !important;
+    }
+    
+  }
   
   /* For checkbox/radio/connectfields checks */
   div.muikku-field-correct-answer {

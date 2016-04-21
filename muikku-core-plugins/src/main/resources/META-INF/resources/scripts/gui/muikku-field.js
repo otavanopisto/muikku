@@ -14,14 +14,14 @@
     } 
     
     var correctAnswers = [];
-    $(elem).siblings(".muikku-field-examples").find("muikku-field-example").foreach(function() {
+    $(elem).siblings(".muikku-field-examples").find(".muikku-field-example").each(function() {
       correctAnswers.push($(this).html());
     });
     
     for (var i=0; i < answers.length; i++) {
       var answer = answers[i];
-      if (correctAnswers.indexOf(answer.answer) > 0) {
-        $(document.getElementById(answer.id)).addClass("muikku-correct-field");
+      if (correctAnswers.indexOf(answer.answer) >= 0) {
+        $(document.getElementById(answer.id)).addClass("muikku-field-correct-answer-override");
       }
     }
   }
