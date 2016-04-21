@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.mock.model;
 
-import fi.pyramus.rest.model.Sex;
-import fi.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 
 public class MockStaffMember extends MockLoggable{

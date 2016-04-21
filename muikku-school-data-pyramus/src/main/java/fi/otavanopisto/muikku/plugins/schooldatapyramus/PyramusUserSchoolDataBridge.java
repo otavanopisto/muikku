@@ -34,25 +34,25 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
-import fi.pyramus.rest.model.Address;
-import fi.pyramus.rest.model.ContactType;
-import fi.pyramus.rest.model.CourseStaffMemberRole;
-import fi.pyramus.rest.model.Email;
-import fi.pyramus.rest.model.Language;
-import fi.pyramus.rest.model.Municipality;
-import fi.pyramus.rest.model.Nationality;
-import fi.pyramus.rest.model.Person;
-import fi.pyramus.rest.model.PhoneNumber;
-import fi.pyramus.rest.model.School;
-import fi.pyramus.rest.model.StaffMember;
-import fi.pyramus.rest.model.Student;
-import fi.pyramus.rest.model.StudentGroup;
-import fi.pyramus.rest.model.StudentGroupStudent;
-import fi.pyramus.rest.model.StudentGroupUser;
-import fi.pyramus.rest.model.StudyProgramme;
-import fi.pyramus.rest.model.UserCredentialReset;
-import fi.pyramus.rest.model.UserCredentials;
-import fi.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.Address;
+import fi.otavanopisto.pyramus.rest.model.ContactType;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
+import fi.otavanopisto.pyramus.rest.model.Email;
+import fi.otavanopisto.pyramus.rest.model.Language;
+import fi.otavanopisto.pyramus.rest.model.Municipality;
+import fi.otavanopisto.pyramus.rest.model.Nationality;
+import fi.otavanopisto.pyramus.rest.model.Person;
+import fi.otavanopisto.pyramus.rest.model.PhoneNumber;
+import fi.otavanopisto.pyramus.rest.model.School;
+import fi.otavanopisto.pyramus.rest.model.StaffMember;
+import fi.otavanopisto.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.StudentGroup;
+import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
+import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
+import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
+import fi.otavanopisto.pyramus.rest.model.UserCredentialReset;
+import fi.otavanopisto.pyramus.rest.model.UserCredentials;
+import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 @Dependent
 public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
@@ -241,7 +241,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     for (StaffMember staffMember : pyramusClient.get("/staff/members?email="
-        + email, fi.pyramus.rest.model.StaffMember[].class)) {
+        + email, fi.otavanopisto.pyramus.rest.model.StaffMember[].class)) {
       userMap.put(staffMember.getId(), entityFactory.createEntity(staffMember));
       personId = staffMember.getPersonId();
     }
@@ -267,7 +267,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     result.addAll(createStudentEntities(pyramusClient.get("/students/students",
         Student[].class)));
     result.addAll(entityFactory.createEntity(pyramusClient.get(
-        "/staff/members", fi.pyramus.rest.model.StaffMember[].class)));
+        "/staff/members", fi.otavanopisto.pyramus.rest.model.StaffMember[].class)));
 
     return result;
   }
@@ -462,8 +462,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     Long staffId = identifierMapper.getPyramusStaffId(userIdentifier);
     if (staffId != null) {
-      fi.pyramus.rest.model.StaffMember staffMember = pyramusClient.get(
-          "/staff/members/" + staffId, fi.pyramus.rest.model.StaffMember.class);
+      fi.otavanopisto.pyramus.rest.model.StaffMember staffMember = pyramusClient.get(
+          "/staff/members/" + staffId, fi.otavanopisto.pyramus.rest.model.StaffMember.class);
       return staffMember != null ? entityFactory.createEntity(staffMember
           .getRole()) : null;
     }
@@ -562,7 +562,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   private Person findPyramusPerson(Long personId) {
     Person person = pyramusClient.get("/persons/persons/" + personId,
-        fi.pyramus.rest.model.Person.class);
+        fi.otavanopisto.pyramus.rest.model.Person.class);
     return person;
   }
 
@@ -579,7 +579,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   private StaffMember findPyramusStaffMember(Long staffId) {
     return pyramusClient.get("/staff/members/" + staffId,
-        fi.pyramus.rest.model.StaffMember.class);
+        fi.otavanopisto.pyramus.rest.model.StaffMember.class);
   }
 
   private Student findPyramusStudent(Long studentId) {

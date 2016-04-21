@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fi.pyramus.webhooks.WebhookType;
+import fi.otavanopisto.pyramus.webhooks.WebhookType;
 
 @ApplicationScoped
 public class CacheConfigs {
