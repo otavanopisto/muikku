@@ -116,7 +116,9 @@
           'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
           'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/',
           'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/',
-          'muikku-image-details': CONTEXTPATH + '/scripts/ckplugins/muikku-image-details/'
+          'muikku-image-details': CONTEXTPATH + '/scripts/ckplugins/muikku-image-details/',
+          'muikku-word-definition': CONTEXTPATH + '/scripts/ckplugins/muikku-word-definition/'
+          'muikku-audio-defaults': CONTEXTPATH + '/scripts/ckplugins/muikku-audio-defaults/'
         },
         extraPlugins : [
                        'oembed',
@@ -133,6 +135,8 @@
                        'muikku-connectfield',
                        'muikku-embedded',
                        'muikku-image-details',
+                       'muikku-word-definition',
+                       'muikku-audio-defaults',
                        'mathjax',
                        'autogrow',
                        'uploadimage'],

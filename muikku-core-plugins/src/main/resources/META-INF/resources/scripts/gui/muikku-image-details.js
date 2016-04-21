@@ -28,6 +28,12 @@
           if (!figure.length) {
             var figure = $('<figure>')
               .addClass('image');
+            
+            var float = this.element.css('float');
+            if (float) {
+              this.element.css('float', 'none');
+              figure.css('float', float);
+            }
 
             var parentLink = this.element.parent('a');
             if (parentLink.length) {
@@ -41,7 +47,7 @@
           
           this._details = $('<div>')
             .addClass('image-details icon-copyright')
-            .insertAfter(this.element);
+            .appendTo(figure);
         
           this._detailsContainer = $('<div>')
             .append($('<span>').addClass('image-details-label').text(getLocaleText('plugin.workspace.materials.detailsSourceLabel')))
@@ -51,7 +57,10 @@
         
         if (url) {
           $('<a>')
-            .attr('href', url)
+            .attr({
+              href: url,
+              target: "_blank"
+            })
             .text(text||url)
             .appendTo(this._detailsContainer);
         } else {

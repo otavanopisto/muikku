@@ -388,6 +388,9 @@ public class CoursePickerRESTService extends PluginRESTService {
     List<UserEntity> teachers = new ArrayList<UserEntity>();
 
     String workspaceName = workspace.getName();
+    if (!StringUtils.isBlank(workspace.getNameExtension())) {
+      workspaceName += String.format(" (%s)", workspace.getNameExtension()); 
+    }
 
     String userName = user.getDisplayName();
 
@@ -402,7 +405,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
     caption = MessageFormat.format(caption, workspaceName);
 
-    String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspace.getName());
+    String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspaceName);
     
     SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
     

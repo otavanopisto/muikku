@@ -1,32 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets" 
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:c="http://java.sun.com/jsp/jstl/core">
+  xmlns:jsf="http://xmlns.jcp.org/jsf">
 
   <h:outputScript name="scripts/gui/communicator-quicklet.js" target="head" />
 
   <div class="widget wi-dock-static-navi-button-communicator" title="#{i18n.text['plugin.communicator.communicator']}">
-    <h:link styleClass="icon-envelope" outcome="/jsf/communicator/index.jsf">
+    <a class="icon-envelope" jsf:outcome="/jsf/communicator/index.jsf">
       <span style="display:none" class="wi-dock-notification"></span>
-    </h:link>
-<!-- 
-    <div class="dock-navi-tt-container-communicator" style="display: none;">
-      <div class="tt-communicator">
-        <h5>Viesti</h5>
-        <div class="tt-menu-communicator-toolbar ">
-          <div title="Uusi viesti" class="tt-menu-link-communicator-msg">Uusi viesti</div>
-          <div title="Uusi ohjauspyyntö" class="tt-menu-link-communicator-req">
-            Uusi ohjauspyyntö
-            <input type="hidden" name="newGuidanceRequestContext" value="ENVIRONMENT" />
-            <input type="hidden" name="newGuidanceRequestContextId" value="" />
-          </div>
-        </div>
-        <div class="tt-menu-communicator-content">
-          <p>Viestimestä voi lähettää ja hallinnoida kaikkia ympäristön viestejä</p>
-        </div>
-      </div>
-
-    </div>-->
+    </a>
   </div>
 
 

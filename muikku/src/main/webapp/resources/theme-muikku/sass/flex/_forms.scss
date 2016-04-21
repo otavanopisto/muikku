@@ -58,3 +58,35 @@ label {
   display:block;
   padding:5px 5px 5px 0;
 }
+
+/* Every main functionality's search has to be added here as 
+input elements does not allow use of :after nor :before pseudo classes */
+.cp-search-field {
+  position:relative;
+  
+  input.search {
+    padding:10px 10px 10px 40px !important;
+  }
+  
+  &:before {
+    display:inline-block;
+    content: "\e61c";
+    font-family: 'muikku' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size:26px;
+    height:26px;
+    width:26px;
+    color:#ddd;
+    position:absolute;
+    left:10px;
+    top:12px;
+  }
+  
+}

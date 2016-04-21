@@ -610,9 +610,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     
     Long personId = getPersonId(userIdentifier);
     
-    if (personId == null)
+    if (personId == null) {
       throw new SchoolDataBridgeRequestException("Malformed user identifier");
-
+    }
+    
     try {
       UserCredentials change = new UserCredentials(oldPassword, newUsername, newPassword);
       

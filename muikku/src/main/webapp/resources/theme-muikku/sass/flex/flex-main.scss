@@ -177,6 +177,7 @@ body {
       
       a {
         color:#569bca;
+        line-height:1;
         
         &:first-of-type {
           border-top-left-radius:5px;
@@ -208,7 +209,8 @@ body {
     font-weight:300;
     display:block;
     min-width:28px;
-    min-height:24px
+    min-height:24px;
+    line-height:1;
   }
     
 }
