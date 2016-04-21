@@ -86,6 +86,7 @@ $(document).ready(function() {
           $(select).empty();
 
           if (areas && (areas.length != 0)) {
+            $(".di-new-message-button").removeClass("disabled");
             var allAreas = $("<option value='all'>" + getLocaleText('plugin.discussion.browseareas.all', err) + "</option>");
             allAreas.appendTo(select);
             for (var i = 0; i < areas.length; i++) {
@@ -98,6 +99,7 @@ $(document).ready(function() {
               }
             }
           } else {
+            $(".di-new-message-button").addClass("disabled");            
             $("<option>" + getLocaleText('plugin.discussion.selectarea.empty') + "</option>").appendTo(select);
           }
 
@@ -570,8 +572,13 @@ $(document).ready(function() {
   });
 
   $(".di-new-message-button").click(function() {
+    var disabled = $(this).hasClass("disabled");
+    
+    if(disabled === true){
+      return false;
+    }
+      
     var selArea = $("#discussionAreaSelect").val();
-
     var createMessage = function(values) {
       var forumAreaId = null;
 

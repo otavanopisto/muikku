@@ -59,7 +59,7 @@ body {
 }
 
 .lu-picture {
-  @incude border(2px,#fff,solid);
+  border:2px solid #fff;
   box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
   height:48px;
   width:48px;      
@@ -71,6 +71,7 @@ body {
   background-size:100% auto;
   border:2px solid #fff;
   overflow:hidden;
+  background-image:url('/gfx/default-user-picture.jpg');
   float:right;
   
   &:hover {
@@ -91,6 +92,78 @@ body {
     
   }
 
+}
+
+/* Language */
+.language { 
+  float:right;
+  position:relative;
+  margin:0 10px 0 0;
+  background:#2e72a0;
+  height:48px;
+  width:48px;
+  box-sizing:border-box;
+  display:inline-block;
+  border-radius:100%;
+  z-index:15;
+  text-align:center;
+  padding:0;
+  overflow:hidden;
+  box-shadow:0 0 10px rgba(0, 0, 0, 0.05);
+  transition:border-radius 0.1s ease-in-out;
+  
+  &:hover,
+  &:focus,
+  &:active {
+    border-radius:5px;
+    box-shadow:none;
+    background:#fff;
+    overflow:visible;
+    
+    .language-container {
+      position:absolute;
+      background:#fff; 
+      border-radius:none;
+      border-radius:5px;
+      
+      a {
+        color:#569bca;
+        line-height:1;
+        
+        &:first-of-type {
+          border-top-left-radius:5px;
+          border-top-right-radius:5px;
+        }
+        
+        &:last-child {
+          border-bottom-left-radius:5px;
+          border-bottom-right-radius:5px;
+        }
+        
+        &:hover {
+          color:#fff;
+          background:#2e72a0;
+          text-decoration:none;
+        }
+        
+      }
+      
+    }
+
+  }
+
+  a {  
+    text-decoration:none; 
+    padding:12px 10px;  
+    color:#fff;   
+    font-size:22px;
+    font-weight:300;
+    display:block;
+    min-width:28px;
+    min-height:24px;
+    line-height:1;
+  }
+    
 }
   
 #footer {

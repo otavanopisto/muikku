@@ -11,9 +11,9 @@
         <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
           <div class="logged-user" id="loggedUser">
             <div class="lu-badge-container">
-              <div class="lu-picture" id="loggedUserPicture">
-                <a jsf:outcome="/jsf/profile/profile.jsf"></a> 
-              </div>
+              <a jsf:outcome="/jsf/profile/profile.jsf">
+                <span class="lu-picture" id="loggedUserPicture"/>
+              </a>
               <div class="lu-info-container">
                 <div class="lu-user-name">
                   <a jsf:outcome="/jsf/profile/profile.jsf">#{sessionBackingBean.loggedUserName}</a>

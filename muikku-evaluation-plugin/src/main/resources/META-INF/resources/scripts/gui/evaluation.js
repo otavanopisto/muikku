@@ -477,7 +477,14 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.evaluation = result;
-                    this.options.triggeringElement.element.addClass('assignment-evaluated');
+                    if (result.passed === true) {
+                      this.options.triggeringElement.element.removeClass('assignment-reviewed-non-passing');
+                      this.options.triggeringElement.element.addClass('assignment-evaluated');
+                    }
+                    else if (result.passed === false) {
+                      this.options.triggeringElement.element.removeClass('assignment-evaluated');
+                      this.options.triggeringElement.element.addClass('assignment-reviewed-non-passing');
+                    }
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
                       .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(result.evaluated)));
                     this._loader.remove();
@@ -502,7 +509,14 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
                     this.options.triggeringElement.options.evaluation = result;
-                    this.options.triggeringElement.element.addClass('assignment-evaluated');
+                    if (result.passed === true) {
+                      this.options.triggeringElement.element.removeClass('assignment-reviewed-non-passing');
+                      this.options.triggeringElement.element.addClass('assignment-evaluated');
+                    }
+                    else if (result.passed === false) {
+                      this.options.triggeringElement.element.removeClass('assignment-evaluated');
+                      this.options.triggeringElement.element.addClass('assignment-reviewed-non-passing');
+                    }
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
                       .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(result.evaluated)));
                     this._loader.remove();
