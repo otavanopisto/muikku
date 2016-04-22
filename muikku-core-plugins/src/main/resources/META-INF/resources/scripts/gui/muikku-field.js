@@ -389,6 +389,7 @@
 
       $(fields).each(function (index, field) {
         $(field).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+        $(field).find(".muikku-field-correct-answer-override").removeClass("muikku-field-correct-answer-override");
         if ($(field).muikkuField('canCheckAnswer')) {
           var correctAnswer = $(field).muikkuField('isCorrectAnswer');
           if (correctAnswer) {
@@ -418,11 +419,7 @@
               });
               $(field).after(exampleDetails);
               
-              if (requestAnswers === false) { 
-                $(elem).find(".muikku-field-correct-answer-override").removeClass("muikku-field-correct-answer-override");
-              } else {
-                recolorCheckboxFields(field);
-              }
+              recolorCheckboxFields(field);
             }
           }
         }
