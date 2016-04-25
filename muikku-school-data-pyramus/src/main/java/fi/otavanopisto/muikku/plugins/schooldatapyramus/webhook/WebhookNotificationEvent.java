@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.webhook;
 
-import fi.pyramus.webhooks.WebhookType;
+import fi.otavanopisto.pyramus.webhooks.WebhookType;
 
 public class WebhookNotificationEvent {
   

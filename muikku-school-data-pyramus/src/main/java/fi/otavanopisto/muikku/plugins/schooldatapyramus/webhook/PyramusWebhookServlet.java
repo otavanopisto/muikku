@@ -23,15 +23,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
-import fi.pyramus.webhooks.data.WebhookCourseData;
-import fi.pyramus.webhooks.data.WebhookCourseStaffMemberData;
-import fi.pyramus.webhooks.data.WebhookCourseStudentData;
-import fi.pyramus.webhooks.data.WebhookPersonData;
-import fi.pyramus.webhooks.data.WebhookStaffMemberData;
-import fi.pyramus.webhooks.data.WebhookStudentData;
-import fi.pyramus.webhooks.data.WebhookStudentGroupData;
-import fi.pyramus.webhooks.data.WebhookStudentGroupStaffMemberData;
-import fi.pyramus.webhooks.data.WebhookStudentGroupStudentData;
+import fi.otavanopisto.pyramus.webhooks.data.WebhookCourseData;
+import fi.otavanopisto.pyramus.webhooks.data.WebhookCourseStaffMemberData;
+import fi.otavanopisto.pyramus.webhooks.data.WebhookCourseStudentData;
+import fi.otavanopisto.pyramus.webhooks.data.WebhookPersonData;
+import fi.otavanopisto.pyramus.webhooks.data.WebhookStaffMemberData;
+import fi.otavanopisto.pyramus.webhooks.data.WebhookStudentData;
+import fi.otavanopisto.pyramus.webhooks.data.WebhookStudentGroupData;
+import fi.otavanopisto.pyramus.webhooks.data.WebhookStudentGroupStaffMemberData;
+import fi.otavanopisto.pyramus.webhooks.data.WebhookStudentGroupStudentData;
 
 @WebServlet (urlPatterns = "/pyramus/webhook")
 @Transactional

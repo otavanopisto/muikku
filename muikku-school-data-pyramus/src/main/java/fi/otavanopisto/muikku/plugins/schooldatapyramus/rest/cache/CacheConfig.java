@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.cache;
 
 import java.util.List;
 
-import fi.pyramus.webhooks.WebhookType;
+import fi.otavanopisto.pyramus.webhooks.WebhookType;
 
 public class CacheConfig {
 

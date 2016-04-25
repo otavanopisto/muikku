@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.10-SNAPSHOT</version>
+    <version>1.1.21-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -113,16 +113,16 @@
     </dependency>
 
     <dependency>
-      <groupId>fi.pyramus</groupId>
+      <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.40</version>
+      <version>0.7.43</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>fi.pyramus</groupId>
+      <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.40</version>
+      <version>0.7.43</version>
       <scope>test</scope>
     </dependency>
 

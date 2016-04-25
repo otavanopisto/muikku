@@ -27,7 +27,7 @@ if [[ $release = "true" ]]; then
   git pull
   git merge master
   mvn versions:use-latest-snapshots -Dincludes=fi.pyramus:* --settings ~/.m2/mySettings.xml
-  git push
+  git push --set-upstream origin devel
 fi;
 
 if [[ $deploy_snapshot == "true" ]]; then
