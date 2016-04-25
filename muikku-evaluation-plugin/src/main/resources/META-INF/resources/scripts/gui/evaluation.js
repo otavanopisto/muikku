@@ -155,6 +155,8 @@
               var assessorEntityId = $(this._dialog).find('select[name="assessor"]').val();
               var workspaceEntityId = this.options.workspaceEntityId;
               var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
+              CKEDITOR.instances.evaluateFormLiteralEvaluation.discardDraft();
+              
               this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
               if(this.options.assessmentId){
                 mApi({async: false}).workspace.workspaces.assessments.update(workspaceEntityId, this.options.assessmentId, {
