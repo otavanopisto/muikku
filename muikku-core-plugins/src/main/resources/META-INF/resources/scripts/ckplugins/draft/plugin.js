@@ -134,7 +134,13 @@
           }
           
           editor.on('contentChange', function (event) {
-            event.editor.storeDraft();
+            if (event.editor._draftStoreTimeout) {
+              clearTimeout(event.editor._draftStoreTimeout);
+            }
+            
+            event.editor._draftStoreTimeout = CKEDITOR.tools.setTimeout(function() {
+              this.storeDraft();
+            }, 1000, event.editor);
           }); 
         });
         
