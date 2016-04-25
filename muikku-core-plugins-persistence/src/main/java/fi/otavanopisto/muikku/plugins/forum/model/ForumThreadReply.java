@@ -20,4 +20,7 @@ public class ForumThreadReply extends ForumMessage implements ContextReference {
 
   @ManyToOne
   private ForumThread thread;
+  
+  @ManyToOne
+  private ForumThreadReply parentReply;
 }
