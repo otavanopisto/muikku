@@ -18,7 +18,7 @@
   function getContentHash(editor) {
     return getHash(getContent(editor));
   }
-
+  
   function compress(data, callback) {
     if (data) {
       new JSZip()
@@ -103,88 +103,107 @@
     requires: ['notification','change'],
     lang: 'fi,en',
     init: function (editor) {
-      if (window.localStorage) {
-        Confirm = CKEDITOR.tools.createClass({
-          base: CKEDITOR.plugins.notification,
-          
-          $ : function(editor, options) {
-            var message = options.text;
-            
-            if (options.links) {
-              for (var i = 0, l = options.links.length; i < l; i++) {
-                var link = options.links[i];
-                var clickRef = CKEDITOR.tools.addFunction(link.click);
-                var linkHtml = '<a href="javascript:CKEDITOR.tools.callFunction(' + clickRef + ')">' + link.text + '</a>';
-                message = message.replace('{' + link.id + '}', linkHtml);
-              }
-            }
-            
-            this.base(editor, {
-              duration: 60000,
-              message: message
-            });
-          }
-        });
-        
-        editor.on('instanceReady', function(event) {
-          event.editor._originalContentHash = getContentHash(event.editor);
-          var draftTime = event.editor.getDraftTime();
-          if (draftTime) {
-            enquireRestore(editor);
-          }
-          
-          editor.on('contentChange', function (event) {
-            if (event.editor._draftStoreTimeout) {
-              clearTimeout(event.editor._draftStoreTimeout);
-            }
-            
-            event.editor._draftStoreTimeout = CKEDITOR.tools.setTimeout(function() {
-              this.storeDraft();
-            }, 1000, event.editor);
-          }); 
-        });
-        
-        editor.getDraftTime = CKEDITOR.tools.bind(function () {
-          return localStorage.getItem(this.config.draftKey + '.time');
-        }, editor);
-        
-        editor.getDraftHash = CKEDITOR.tools.bind(function () {
-          return localStorage.getItem(this.config.draftKey + '.hash');
-        }, editor);
-        
-        editor.getDraftData = CKEDITOR.tools.bind(function () {
-          return localStorage.getItem(this.config.draftKey + '.data');
-        }, editor);
-        
-        editor.storeDraft = CKEDITOR.tools.bind(function () {
-          var contents = getContent(this);
-          var hash = getHash(contents);
-          if (this._originalContentHash != hash) {
-            compress(contents, CKEDITOR.tools.bind(function (err, compressed) {
-              if (err) {
-                if (window.console) {
-                  console.error(err);
-                } 
-              } else {
-                localStorage.setItem(this.config.draftKey + '.time', new Date().getTime());
-                localStorage.setItem(this.config.draftKey + '.hash', hash);
-                localStorage.setItem(this.config.draftKey + '.data', compressed);
-              }
-            }, this));
-          } else {
-            this.discardDraft();
-          }
-        }, editor);
-        
-        editor.discardDraft = CKEDITOR.tools.bind(function (resetHash) {
-          localStorage.removeItem(this.config.draftKey + '.time');
-          localStorage.removeItem(this.config.draftKey + '.hash');
-          localStorage.removeItem(this.config.draftKey + '.data');
-          if (resetHash) {
-            this._originalContentHash = getContentHash(this);
-          }
-        }, editor);
+      if (!window.localStorage) {
+        if (window.console) {
+          console.error("Could not initialize draft plugin, because localStorage is not supported");
+        } 
+        return;
       }
+
+      if (!window.jsSHA) {
+        if (window.console) {
+          console.error("Could not initialize draft plugin, because jsSHA is not loaded");
+        } 
+        return;
+      }
+
+      if (!window.JSZip) {
+        if (window.console) {
+          console.error("Could not initialize draft plugin, because JSZip is not loaded");
+        } 
+        return;
+      }
+
+      Confirm = CKEDITOR.tools.createClass({
+        base: CKEDITOR.plugins.notification,
+        
+        $ : function(editor, options) {
+          var message = options.text;
+          
+          if (options.links) {
+            for (var i = 0, l = options.links.length; i < l; i++) {
+              var link = options.links[i];
+              var clickRef = CKEDITOR.tools.addFunction(link.click);
+              var linkHtml = '<a href="javascript:CKEDITOR.tools.callFunction(' + clickRef + ')">' + link.text + '</a>';
+              message = message.replace('{' + link.id + '}', linkHtml);
+            }
+          }
+          
+          this.base(editor, {
+            duration: 60000,
+            message: message
+          });
+        }
+      });
+      
+      editor.on('instanceReady', function(event) {
+        event.editor._originalContentHash = getContentHash(event.editor);
+        var draftTime = event.editor.getDraftTime();
+        if (draftTime) {
+          enquireRestore(editor);
+        }
+        
+        editor.on('contentChange', function (event) {
+          if (event.editor._draftStoreTimeout) {
+            clearTimeout(event.editor._draftStoreTimeout);
+          }
+          
+          event.editor._draftStoreTimeout = CKEDITOR.tools.setTimeout(function() {
+            this.storeDraft();
+          }, 1000, event.editor);
+        }); 
+      });
+      
+      editor.getDraftTime = CKEDITOR.tools.bind(function () {
+        return localStorage.getItem(this.config.draftKey + '.time');
+      }, editor);
+      
+      editor.getDraftHash = CKEDITOR.tools.bind(function () {
+        return localStorage.getItem(this.config.draftKey + '.hash');
+      }, editor);
+      
+      editor.getDraftData = CKEDITOR.tools.bind(function () {
+        return localStorage.getItem(this.config.draftKey + '.data');
+      }, editor);
+      
+      editor.storeDraft = CKEDITOR.tools.bind(function () {
+        var contents = getContent(this);
+        var hash = getHash(contents);
+        if (this._originalContentHash != hash) {
+          compress(contents, CKEDITOR.tools.bind(function (err, compressed) {
+            if (err) {
+              if (window.console) {
+                console.error(err);
+              } 
+            } else {
+              localStorage.setItem(this.config.draftKey + '.time', new Date().getTime());
+              localStorage.setItem(this.config.draftKey + '.hash', hash);
+              localStorage.setItem(this.config.draftKey + '.data', compressed);
+            }
+          }, this));
+        } else {
+          this.discardDraft();
+        }
+      }, editor);
+      
+      editor.discardDraft = CKEDITOR.tools.bind(function (resetHash) {
+        localStorage.removeItem(this.config.draftKey + '.time');
+        localStorage.removeItem(this.config.draftKey + '.hash');
+        localStorage.removeItem(this.config.draftKey + '.data');
+        if (resetHash) {
+          this._originalContentHash = getContentHash(this);
+        }
+      }, editor);
     }
   });
   
