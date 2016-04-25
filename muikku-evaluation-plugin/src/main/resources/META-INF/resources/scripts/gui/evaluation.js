@@ -30,11 +30,11 @@
       studentAnswers: [],
       ckeditor: {
         baseFloatZIndex: 99999,
+        language: getLocale(),
         height : '200px',
         entities: false,
         entities_latin: false,
         entities_greek: false,
-        language: getLocale(),
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
@@ -111,7 +111,7 @@
             }
 
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], $.extend(this.options.ckeditor, {
-              draftKey: 'evaluation-draft-' + this.options.workspaceEntityId + '-' + this.options.studentEntityId
+              draftKey: ['workspace-evaluation-draft', this.options.workspaceEntityId, this.options.studentEntityId].join('-')
             }));
             
             var batchCalls = $.map(this.options.workspaceAssignments, $.proxy(function (workspaceAssignment) {
@@ -386,11 +386,12 @@
       materialId: null,
       triggeringElement: null,
       ckeditor: {
+        baseFloatZIndex: 99999,
+        language: getLocale(),
         height : '200px',
         entities: false,
         entities_latin: false,
         entities_greek: false,
-        language: getLocale(),
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
@@ -400,11 +401,25 @@
           { name: 'styles', items: [ 'Format' ] },
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
-        ]
+        ],
+        extraPlugins: {
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
+          'draft': CONTEXTPATH + '/scripts/ckplugins/draft/'
+        }
       }
     },
     
     _create: function () {
+      var extraPlugins = [];
+      
+      $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
+        CKEDITOR.plugins.addExternal(plugin, url);
+        extraPlugins.push(plugin);
+      }, this));
+      
+      this.options.ckeditor.extraPlugins = extraPlugins.join(',');
+      
       this._load($.proxy(function (text) {
         this._dialog = $(text);
         
@@ -453,7 +468,9 @@
               $(this._dialog).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
             }
             
-            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
+            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], $.extend(this.options.ckeditor, {
+              draftKey: ['material-evaluation-draft', this.options.workspaceMaterialId, this.options.workspaceEntityId, this.options.studentEntityId].join('-')
+            }));
             
             var fieldAnswers = {};
             
