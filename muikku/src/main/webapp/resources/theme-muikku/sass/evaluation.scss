@@ -1257,142 +1257,75 @@ body.evaluation {
 
       
       }
+      
     }
+    
+  }
+  
+  .cke_notification {
+  
+  } 
+  
+  .cke_notification_info {
+  
   }
   
-  /**
-  #ui-datepicker-div {
-    font-family:'Open Sans', Arial, sans-serif;
-    font-size:13px;
-    box-shadow:0 0 30px 5px rgba(0,0,0,0.3);
-    border:0;
-    width:20em;
-    padding:0;
+  p.cke_notification_message {
+  
+  
+    div.draft-restore {
+      font-family:"Open Sans", Arial, sans-serif;
+      padding:5px 0;
     
-    .ui-widget-header {
-      border:0;
-      background:#7391a7;
-      padding:4px 0px;
-
-      .ui-datepicker-prev {
-        color:#fff;
-        position:absolute;
-        height:24px;
-        top:0;
-        left:0;
-        padding:8px 4px;
-        
-        span {
-          display:none;
-        }
-        
-        &:hover {
-          background:transparent;
-          border:0px;
-        }
-      
-        &:before {
-          cursor:pointer;
-          content: "\e605";
-          color:#fff;
-          font-size:24px;
-          font-family: 'muikku';
-          speak: none;
-          font-style: normal;
-          text-decoration:none;
-          font-weight: normal;
-          font-variant: normal;
-          text-transform: none;
-          line-height: 1;
-          
-          Better Font Rendering ===========
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-      
-      }
-
-      .ui-datepicker-next {
-        color:#fff;
-        position:absolute;
-        height:24px;
-        top:0;
-        right:0;
-        padding:8px 4px;
-        
-        span {
-          display:none;
-        }
-        
-        &:hover {
-          background:transparent;
-          border:0px;
-        }
-        
-        &:before {
-          cursor:pointer;
-          content: "\e608";
-          color:#fff;
-          font-size:24px;
-          font-family: 'muikku';
-          speak: none;
-          font-style: normal;
-          text-decoration:none;
-          font-weight: normal;
-          font-variant: normal;
-          text-transform: none;
-          line-height: 1;
-          
-          Better Font Rendering ===========
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-        
-      }
-      
-      .ui-datepicker-title {
-        color:#fff;
+      span.draft-label {
         text-transform:uppercase;
+        font-size:14px;
+        font-weight:400;
+        display:block;
+        margin:0 0 5px 0;
+      }
+      
+      span.draft-text {
+        font-size:14px;
         font-weight:300;
-        font-size:18px;
       }
       
-    }
-    
-    table.ui-datepicker-calendar {
-      box-sizing:border-box;
-      border:2px solid #fff;
-      margin:0;
-    
-      td {
-      
-        a {
-          border:0;
-          padding:0 6px 2px 0;
-          background:#d4edff;
-          
-          &:hover {
-            background:#9cd5f8;
-          }
-          
-          &.ui-state-highlight {
-            background:#6991aa;
-            color:#fff;
-          }
-          
-          &.ui-state-active {
-            background:#3baae3;
-            color:#fff;
-          }
-          
-        }
-      
+      a {
+        display:inline-block;
+        padding:0 5px;
+        color:#fff;
+        font-weight:400;
       }
     
     }
     
+    div.draft-cancel {
+      font-family:"Open Sans", Arial, sans-serif;
+      padding:5px 0;
+    
+      span.draft-label {
+        text-transform:uppercase;
+        font-size:14px;
+        font-weight:400;
+        display:block;
+        margin:0 0 5px 0;
+      }
+      
+      span.draft-text {
+        font-size:14px;
+        font-weight:300;
+      }
+      
+      a {
+        display:inline-block;
+        padding:0 5px;
+        color:#fff;
+        font-weight:400;
+      }
+    
+    }
+  
   }
-  **/
   
 }
 
