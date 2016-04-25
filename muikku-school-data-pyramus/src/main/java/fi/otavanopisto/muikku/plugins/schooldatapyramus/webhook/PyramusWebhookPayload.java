@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.webhook;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import fi.pyramus.webhooks.WebhookType;
+import fi.otavanopisto.pyramus.webhooks.WebhookType;
 
 public class PyramusWebhookPayload {
   

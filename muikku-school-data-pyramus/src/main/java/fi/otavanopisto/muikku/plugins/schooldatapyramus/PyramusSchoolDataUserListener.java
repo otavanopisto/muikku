@@ -20,7 +20,7 @@ import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupUserUpdatedEv
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserUpdatedEvent;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
-import fi.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.Student;
 
 @ApplicationScoped
 public class PyramusSchoolDataUserListener {

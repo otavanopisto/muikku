@@ -17,10 +17,10 @@ import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
-import fi.pyramus.rest.model.CourseStaffMember;
-import fi.pyramus.rest.model.Sex;
-import fi.pyramus.rest.model.UserRole;
-import fi.pyramus.webhooks.WebhookStudentUpdatePayload;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.webhooks.WebhookStudentUpdatePayload;
 
 public class CourseUsersTestsBase extends AbstractUITest {
 

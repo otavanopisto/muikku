@@ -13,9 +13,9 @@ import org.joda.time.DateTime;
 import fi.otavanopisto.muikku.mock.model.MockCourse;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
-import fi.pyramus.rest.model.Course;
-import fi.pyramus.rest.model.CourseStudent;
-import fi.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseStudent;
+import fi.otavanopisto.pyramus.rest.model.Student;
 
 public class TestUtilities {
   

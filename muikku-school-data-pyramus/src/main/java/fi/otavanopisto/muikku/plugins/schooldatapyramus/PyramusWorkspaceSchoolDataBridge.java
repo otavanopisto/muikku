@@ -23,16 +23,16 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
-import fi.pyramus.rest.model.Course;
-import fi.pyramus.rest.model.CourseEducationSubtype;
-import fi.pyramus.rest.model.CourseEducationType;
-import fi.pyramus.rest.model.CourseOptionality;
-import fi.pyramus.rest.model.CourseParticipationType;
-import fi.pyramus.rest.model.CourseStaffMember;
-import fi.pyramus.rest.model.CourseStudent;
-import fi.pyramus.rest.model.EducationSubtype;
-import fi.pyramus.rest.model.EducationType;
-import fi.pyramus.rest.model.Subject;
+import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseEducationSubtype;
+import fi.otavanopisto.pyramus.rest.model.CourseEducationType;
+import fi.otavanopisto.pyramus.rest.model.CourseOptionality;
+import fi.otavanopisto.pyramus.rest.model.CourseParticipationType;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.CourseStudent;
+import fi.otavanopisto.pyramus.rest.model.EducationSubtype;
+import fi.otavanopisto.pyramus.rest.model.EducationType;
+import fi.otavanopisto.pyramus.rest.model.Subject;
 
 public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
   
@@ -144,7 +144,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     String subjectId = courseIdentifierIdentifier.substring(0, courseIdentifierIdentifier.indexOf("/"));
     String courseNumber = courseIdentifierIdentifier.substring(courseIdentifierIdentifier.indexOf("/") + 1);
     
-    Course[] courses = pyramusClient.get("/common/subjects/" + subjectId + "/courses", fi.pyramus.rest.model.Course[].class);
+    Course[] courses = pyramusClient.get("/common/subjects/" + subjectId + "/courses", fi.otavanopisto.pyramus.rest.model.Course[].class);
     List<Workspace> result = new ArrayList<Workspace>();
     
     for (Course course : courses) {
@@ -209,12 +209,12 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
     }
     
-    return entityFactory.createEntity(pyramusClient.get("/courses/courseTypes/" + identifier, fi.pyramus.rest.model.CourseType.class));
+    return entityFactory.createEntity(pyramusClient.get("/courses/courseTypes/" + identifier, fi.otavanopisto.pyramus.rest.model.CourseType.class));
   }
   
   @Override
   public List<WorkspaceType> listWorkspaceTypes() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    return entityFactory.createEntities(pyramusClient.get("/courses/courseTypes/", fi.pyramus.rest.model.CourseType[].class));
+    return entityFactory.createEntities(pyramusClient.get("/courses/courseTypes/", fi.otavanopisto.pyramus.rest.model.CourseType[].class));
   }
 
   @Override
@@ -285,7 +285,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     SchoolDataIdentifier educationTypeIdentifier = null;
    
     if (course.getSubjectId() != null) {
-      Subject subject = pyramusClient.get("/common/subjects/" + course.getSubjectId(), fi.pyramus.rest.model.Subject.class);
+      Subject subject = pyramusClient.get("/common/subjects/" + course.getSubjectId(), fi.otavanopisto.pyramus.rest.model.Subject.class);
       if (subject == null) {
         logger.severe(String.format("Subject with id %d not found", course.getSubjectId()));
       }

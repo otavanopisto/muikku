@@ -20,34 +20,34 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.otavanopisto.muikku.AbstractPyramusMocks;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
-import fi.pyramus.rest.model.CourseAssessment;
-import fi.pyramus.rest.model.Grade;
-import fi.pyramus.rest.model.GradingScale;
-import fi.pyramus.rest.model.ContactType;
-import fi.pyramus.rest.model.Course;
-import fi.pyramus.rest.model.CourseStaffMember;
-import fi.pyramus.rest.model.CourseStaffMemberRole;
-import fi.pyramus.rest.model.CourseStudent;
-import fi.pyramus.rest.model.CourseType;
-import fi.pyramus.rest.model.EducationType;
-import fi.pyramus.rest.model.EducationalTimeUnit;
-import fi.pyramus.rest.model.Email;
-import fi.pyramus.rest.model.Person;
-import fi.pyramus.rest.model.Sex;
-import fi.pyramus.rest.model.StaffMember;
-import fi.pyramus.rest.model.Student;
-import fi.pyramus.rest.model.StudentGroup;
-import fi.pyramus.rest.model.StudyProgramme;
-import fi.pyramus.rest.model.StudyProgrammeCategory;
-import fi.pyramus.rest.model.Subject;
-import fi.pyramus.rest.model.UserRole;
-import fi.pyramus.rest.model.WhoAmI;
-import fi.pyramus.webhooks.WebhookCourseCreatePayload;
-import fi.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
-import fi.pyramus.webhooks.WebhookCourseStudentCreatePayload;
-import fi.pyramus.webhooks.WebhookPersonCreatePayload;
-import fi.pyramus.webhooks.WebhookStaffMemberCreatePayload;
-import fi.pyramus.webhooks.WebhookStudentCreatePayload;
+import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
+import fi.otavanopisto.pyramus.rest.model.Grade;
+import fi.otavanopisto.pyramus.rest.model.GradingScale;
+import fi.otavanopisto.pyramus.rest.model.ContactType;
+import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
+import fi.otavanopisto.pyramus.rest.model.CourseStudent;
+import fi.otavanopisto.pyramus.rest.model.CourseType;
+import fi.otavanopisto.pyramus.rest.model.EducationType;
+import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
+import fi.otavanopisto.pyramus.rest.model.Email;
+import fi.otavanopisto.pyramus.rest.model.Person;
+import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.StaffMember;
+import fi.otavanopisto.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.StudentGroup;
+import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
+import fi.otavanopisto.pyramus.rest.model.StudyProgrammeCategory;
+import fi.otavanopisto.pyramus.rest.model.Subject;
+import fi.otavanopisto.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.WhoAmI;
+import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookCourseStudentCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookStaffMemberCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
 
 public class PyramusMocks extends AbstractPyramusMocks {
    
@@ -111,7 +111,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     List<String> tags = null;
     
     DateTime birthday = new DateTime(1990, 2, 2, 0, 0, 0, 0);
-    Person person = mockPerson(1l, birthday, "030545-3453", fi.pyramus.rest.model.Sex.MALE, 1l);
+    Person person = mockPerson(1l, birthday, "030545-3453", fi.otavanopisto.pyramus.rest.model.Sex.MALE, 1l);
     
     Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null,
       null, null, null, (long) 1, null, null,
@@ -146,7 +146,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     
     /* Student #2 for workspace #2*/
     DateTime birthday2 = new DateTime(1992, 2, 2, 0, 0, 0, 0);
-    Person person2 = mockPerson(5l, birthday2, "021092-2112", fi.pyramus.rest.model.Sex.MALE, 5l);
+    Person person2 = mockPerson(5l, birthday2, "021092-2112", fi.otavanopisto.pyramus.rest.model.Sex.MALE, 5l);
     
     Student student2 = new Student((long) 5, (long) 5, "Second", "User", null, null, null, null, null, null, null, null,
       null, null, null, (long) 1, null, null,
@@ -180,9 +180,9 @@ public class PyramusMocks extends AbstractPyramusMocks {
     
     /* Student #2 for workspace #2 */
 
-    Person staff1 = mockPerson(2l, birthday, "030545-3454", fi.pyramus.rest.model.Sex.MALE, 2l);    
-    Person staff2 = mockPerson(3l, birthday, "030545-3455", fi.pyramus.rest.model.Sex.MALE, 3l);
-    Person staff3 = mockPerson(4l, birthday, "030545-3456", fi.pyramus.rest.model.Sex.MALE, 4l);
+    Person staff1 = mockPerson(2l, birthday, "030545-3454", fi.otavanopisto.pyramus.rest.model.Sex.MALE, 2l);    
+    Person staff2 = mockPerson(3l, birthday, "030545-3455", fi.otavanopisto.pyramus.rest.model.Sex.MALE, 3l);
+    Person staff3 = mockPerson(4l, birthday, "030545-3456", fi.otavanopisto.pyramus.rest.model.Sex.MALE, 4l);
     
     Person[] personArray = {person, person2, staff1, staff2, staff3};
     String personArrayJson = objectMapper.writeValueAsString(personArray);
@@ -209,7 +209,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
 
     StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, null, "Test", "Staff1member", null, 
-      fi.pyramus.rest.model.UserRole.MANAGER, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables);
     
     String staffMemberJson = objectMapper.writeValueAsString(staffMember1);
     
@@ -229,7 +229,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
     StaffMember staffMember2 = new StaffMember((long) 3, (long) 3, null, "Test", "Staff2member", null, 
-      fi.pyramus.rest.model.UserRole.MANAGER, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables);
     
     staffMemberJson = objectMapper.writeValueAsString(staffMember2);
     stubFor(get(urlEqualTo("/1/staff/members/3"))
@@ -248,7 +248,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
     StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, null, "Test", "Administrator", null, 
-      fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
     
     staffMemberJson = objectMapper.writeValueAsString(staffMember3);
     
@@ -635,7 +635,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     
     DateTime birthday = new DateTime(1990, 2, 2, 0, 0, 0, 0);
     
-    Person staff3 = mockPerson((long) 4, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, (long) 4);
+    Person staff3 = mockPerson((long) 4, birthday, "345345-3453", fi.otavanopisto.pyramus.rest.model.Sex.MALE, (long) 4);
     
     Person[] personArray = {staff3};
     String personArrayJson = objectMapper.writeValueAsString(personArray);
@@ -653,7 +653,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
         
     StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, null, "Test", "Administrator", null, 
-      fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+      fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
     
     String staffMemberJson = objectMapper.writeValueAsString(staffMember3);
     
@@ -850,7 +850,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   public static void mockCourseTypes() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    fi.pyramus.rest.model.CourseType courseType = new fi.pyramus.rest.model.CourseType((long) 1, "Nonstop", false);
+    fi.otavanopisto.pyramus.rest.model.CourseType courseType = new fi.otavanopisto.pyramus.rest.model.CourseType((long) 1, "Nonstop", false);
     CourseType[] courseTypeArray = { courseType };
     String courseTypeJson = objectMapper.writeValueAsString(courseTypeArray);
     

@@ -83,8 +83,8 @@ import fi.otavanopisto.muikku.atests.WorkspaceDiscussionGroup;
 import fi.otavanopisto.muikku.atests.WorkspaceDiscussionThread;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
-import fi.pyramus.webhooks.WebhookPersonCreatePayload;
-import fi.pyramus.webhooks.WebhookStudentCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
 import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
