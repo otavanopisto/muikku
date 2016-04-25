@@ -34,6 +34,7 @@
         entities: false,
         entities_latin: false,
         entities_greek: false,
+        language: getLocale(),
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
@@ -384,6 +385,7 @@
         entities: false,
         entities_latin: false,
         entities_greek: false,
+        language: getLocale(),
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
