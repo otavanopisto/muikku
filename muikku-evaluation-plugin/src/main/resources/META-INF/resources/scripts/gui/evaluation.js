@@ -256,6 +256,11 @@
     },
     
     destroy: function () {
+      try {
+        CKEDITOR.instances.evaluateFormLiteralEvaluation.destroy();
+      } catch (e) {
+      }
+      
       this._dialog.remove();
     },
     
@@ -477,6 +482,7 @@
               var evaluationDate = $(this._dialog).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
               var assessorEntityId = $(this._dialog).find('select[name="assessor"]').val();
               var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
+              CKEDITOR.instances.evaluateFormLiteralEvaluation.discardDraft();
               var workspaceMaterialId = this.options.workspaceMaterialId;
               var workspaceEntityId = this.options.workspaceEntityId;
               this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
@@ -559,6 +565,11 @@
     },
     
     destroy: function () {
+      try {
+        CKEDITOR.instances.evaluateFormLiteralEvaluation.destroy();
+      } catch (e) {
+      }
+      
       this._dialog.remove();
     },
     
