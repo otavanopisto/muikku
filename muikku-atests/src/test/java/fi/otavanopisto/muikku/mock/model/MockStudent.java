@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.mock.model;
 
 import org.joda.time.DateTime;
 
-import fi.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.Sex;
 
 public class MockStudent extends MockLoggable{
 
@@ -71,10 +71,10 @@ public class MockStudent extends MockLoggable{
   public void setSocialSecurityNumber(String socialSecurityNumber) {
     this.socialSecurityNumber = socialSecurityNumber;
   }
-  public fi.pyramus.rest.model.Sex getSex() {
+  public fi.otavanopisto.pyramus.rest.model.Sex getSex() {
     return sex;
   }
-  public void setSex(fi.pyramus.rest.model.Sex sex) {
+  public void setSex(fi.otavanopisto.pyramus.rest.model.Sex sex) {
     this.sex = sex;
   }
   public DateTime getStudyStartDate() {
@@ -107,7 +107,7 @@ public class MockStudent extends MockLoggable{
   private Long studyProgrammeId;
   private DateTime birthday;
   private String socialSecurityNumber;
-  private fi.pyramus.rest.model.Sex sex;
+  private fi.otavanopisto.pyramus.rest.model.Sex sex;
   private DateTime studyStartDate;
   private DateTime studyEndTime;
 //  private List<Long> courses;

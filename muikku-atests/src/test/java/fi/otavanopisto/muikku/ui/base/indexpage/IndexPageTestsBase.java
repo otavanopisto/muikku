@@ -11,8 +11,8 @@ import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
-import fi.pyramus.rest.model.Sex;
-import fi.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class IndexPageTestsBase extends AbstractUITest {
 

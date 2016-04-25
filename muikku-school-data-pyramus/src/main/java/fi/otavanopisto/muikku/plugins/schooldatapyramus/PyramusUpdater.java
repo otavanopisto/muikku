@@ -63,20 +63,20 @@ import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceRoleEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
-import fi.pyramus.rest.model.ContactType;
-import fi.pyramus.rest.model.Course;
-import fi.pyramus.rest.model.CourseStaffMember;
-import fi.pyramus.rest.model.CourseStaffMemberRole;
-import fi.pyramus.rest.model.CourseStudent;
-import fi.pyramus.rest.model.Email;
-import fi.pyramus.rest.model.Person;
-import fi.pyramus.rest.model.StaffMember;
-import fi.pyramus.rest.model.Student;
-import fi.pyramus.rest.model.StudentGroup;
-import fi.pyramus.rest.model.StudentGroupStudent;
-import fi.pyramus.rest.model.StudentGroupUser;
-import fi.pyramus.rest.model.StudyProgramme;
-import fi.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.ContactType;
+import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
+import fi.otavanopisto.pyramus.rest.model.CourseStudent;
+import fi.otavanopisto.pyramus.rest.model.Email;
+import fi.otavanopisto.pyramus.rest.model.Person;
+import fi.otavanopisto.pyramus.rest.model.StaffMember;
+import fi.otavanopisto.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.StudentGroup;
+import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
+import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
+import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
+import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 @Stateless
 public class PyramusUpdater {
@@ -535,7 +535,7 @@ public class PyramusUpdater {
       removedIdentifiers.put(existingRoleIdentifier.getIdentifier(), existingRoleIdentifier);
     }
     
-    for (fi.pyramus.rest.model.UserRole userRole : fi.pyramus.rest.model.UserRole.values()) {
+    for (fi.otavanopisto.pyramus.rest.model.UserRole userRole : fi.otavanopisto.pyramus.rest.model.UserRole.values()) {
       String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(userRole);
       removedIdentifiers.remove(roleIdentifier);
       

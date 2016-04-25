@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class PyramusIdentifierMapper {
   

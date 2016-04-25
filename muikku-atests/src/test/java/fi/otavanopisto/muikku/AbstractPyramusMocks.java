@@ -15,8 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
-import fi.pyramus.rest.model.StaffMember;
-import fi.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.StaffMember;
+import fi.otavanopisto.pyramus.rest.model.Student;
 
 public class AbstractPyramusMocks {
 
