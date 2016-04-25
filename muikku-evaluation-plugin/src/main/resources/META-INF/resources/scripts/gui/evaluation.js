@@ -29,6 +29,7 @@
       triggeringElement: null,
       studentAnswers: [],
       ckeditor: {
+        baseFloatZIndex: 99999,
         height : '200px',
         entities: false,
         entities_latin: false,
@@ -45,7 +46,8 @@
         ],
         extraPlugins: {
           'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
-          'autosave': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autosave/0.13/'
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
+          'draft': CONTEXTPATH + '/scripts/ckplugins/draft/'
         }
       }
     },
@@ -107,7 +109,9 @@
               $(this._dialog).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
             }
 
-            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
+            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], $.extend(this.options.ckeditor, {
+              draftKey: 'evaluation-draft-' + this.options.workspaceEntityId + '-' + this.options.studentEntityId
+            }));
             
             var batchCalls = $.map(this.options.workspaceAssignments, $.proxy(function (workspaceAssignment) {
               return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {
