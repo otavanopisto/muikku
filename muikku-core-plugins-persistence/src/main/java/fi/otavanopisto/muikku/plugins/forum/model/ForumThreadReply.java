@@ -18,6 +18,14 @@ public class ForumThreadReply extends ForumMessage implements ContextReference {
     this.thread = thread;
   }
 
+  public ForumThreadReply getParentReply() {
+    return parentReply;
+  }
+
+  public void setParentReply(ForumThreadReply parentReply) {
+    this.parentReply = parentReply;
+  }
+
   @ManyToOne
   private ForumThread thread;
   

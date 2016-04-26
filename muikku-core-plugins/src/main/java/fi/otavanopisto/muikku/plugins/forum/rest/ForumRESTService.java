@@ -738,7 +738,11 @@ public class ForumRESTService extends PluginRESTService {
   }
   
   private ForumThreadReplyRESTModel createRestModel(ForumThreadReply entity) {
-    return new ForumThreadReplyRESTModel(entity.getId(), entity.getMessage(), entity.getCreator(), entity.getCreated(), entity.getForumArea().getId()); 
+    Long parentReplyId = null;
+    if (entity.getParentReply() != null) {
+      parentReplyId = entity.getParentReply().getId();
+    }
+    return new ForumThreadReplyRESTModel(entity.getId(), entity.getMessage(), entity.getCreator(), entity.getCreated(), entity.getForumArea().getId(), parentReplyId);
   }
   
   private List<ForumThreadReplyRESTModel> createRestModel(ForumThreadReply... entries) {
