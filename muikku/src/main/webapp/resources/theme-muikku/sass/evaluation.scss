@@ -374,7 +374,8 @@ body.evaluation {
         cursor:pointer;
         width:100%;
         box-sizing:border-box;
-        background:#fff;
+        background:#3a86bd;
+        color:#fff;
         border-radius:3px;
         font-size:16px;
         white-space:normal;
@@ -530,7 +531,7 @@ body.evaluation {
   .evaluation-evaluate-modal-wrapper {
     position:absolute;
     left:0;
-    top:69px;
+    top:56px;
     bottom:0;
     right:0;
     padding:0;
@@ -1099,10 +1100,26 @@ body.evaluation {
     left:0px;
     background:#fff;
     border-radius:0px;
-    border:5px solid #3d4f5c;
+    border:1px solid #fff;
     overflow:hidden;
     min-width:990px;
     text-transform:none;
+    
+    &.assignment-evaluation-dialog {
+    
+      .ui-dialog-titlebar {
+        background:#950589;
+      }
+    
+    }
+    
+    &.workspace-evaluation-dialog {
+    
+      .ui-dialog-titlebar {
+        background:#3a86bd;
+      }
+    
+    }
     
     .ui-dialog-titlebar {
       width:auto;
@@ -1111,11 +1128,12 @@ body.evaluation {
       color:#000;
       font-size:28px;
       text-transform:uppercase;
-      line-height:1.3em;
+      line-height:1.3;
       position:relative;
-      height:50px;
+      height:40px;
       border:0;
       background:#657e90;
+      white-space:nowrap;
       
       .ui-dialog-title {
         background-size:cover;
@@ -1159,12 +1177,12 @@ body.evaluation {
       .ui-dialog-titlebar-close {
         position:absolute;
         right:0px;
-        top:20px;
+        top:13px;
         border:0px;
         background:transparent;
         z-index:999;
-        width:50px;
-        height:50px;
+        width:56px;
+        height:56px;
         
         span {
           display:none;
