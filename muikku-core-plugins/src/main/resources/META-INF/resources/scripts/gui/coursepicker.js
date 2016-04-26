@@ -143,13 +143,13 @@
               }
               
               renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
+                // Test if it's a page load or something else                
                 if(hasPage === true){
+                  // Puts the results to the latest page-element created by _loadMore
                   $(".mf-page").last().html(text);    
                 }else{
                   this.element.find('#coursesList').html(text);            
                 }
-
-//                  this.element.find('#coursesList').html(text);
               }, this));
               
               if (hasMore) {
@@ -165,7 +165,7 @@
         window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
       }, 
       
-      _loadMore: function () {
+      _loadMore: function () {        
         var page = "<div class='mf-page'></div>";
         var container = this.element.find('#coursesList');
         $(container).append(page);
