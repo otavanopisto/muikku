@@ -181,6 +181,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     @include rounded(3px);
     max-width:100%;
     word-wrap:break-word;
+    vertical-align:middle;
     
     &[readonly="readonly"] {
       background: #fcfcfc !important;
@@ -204,6 +205,27 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       background:#fff;
       font-weight:300;
       padding:4px 8px;
+    }
+    
+  }
+  
+  /* Radio button and Check box wrapper Span */
+  span.radiobutton-horizontal,
+  span.checkbox-horizontal {
+  
+    > span {
+      display:inline-block;
+    }
+  
+  }
+  
+  span.radiobutton-vertical,
+  span.checkbox-vertical {
+    display:inline-block;
+    vertical-align:middle;
+    
+    > span {
+      display:block;
     }
     
   }

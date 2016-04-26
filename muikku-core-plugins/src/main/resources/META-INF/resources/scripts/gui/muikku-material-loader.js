@@ -653,6 +653,11 @@
         case 'radio-vertical':
           var idPrefix = [data.materialId, data.embedId, data.name].join(':');
           var container = $('<span>').addClass('muikku-select-field');
+          if (meta.listType == 'radio-horizontal') {
+            container.addClass('radiobutton-horizontal');
+          } else {
+            container.addClass('radiobutton-vertical');
+          }
           for (var i = 0, l = meta.options.length; i < l; i++){
             var label = $('<label>')
               .attr({
@@ -733,6 +738,11 @@
       var meta = data.meta;
       var idPrefix = [data.materialId, data.embedId, data.name].join(':');
       var container = $('<span>').addClass('muikku-checkbox-field');
+      if (meta.listType == 'checkbox-horizontal') {
+        container.addClass('checkbox-horizontal');
+      } else {
+        container.addClass('checkbox-vertical');
+      }
       for (var i = 0, l = meta.options.length; i < l; i++){
         var label = $('<label>')
           .attr({
