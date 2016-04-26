@@ -584,8 +584,6 @@
               name: data.name
             });
           
-          if(meta.size != 'null') input.attr('size', meta.size);
-          
           // Empty option to be able to clear an answer (unless such exists in options already)
           if (meta.listType == 'dropdown') {
             var hasEmpty = false;
@@ -596,6 +594,9 @@
             }
             if (!hasEmpty)
               input.append($('<option>'));
+          }
+          else {
+            input.attr('size', meta.options.length);
           }
           
           for(var i = 0, l = meta.options.length; i < l; i++){
@@ -651,7 +652,7 @@
         case 'radio-horizontal':
         case 'radio-vertical':
           var idPrefix = [data.materialId, data.embedId, data.name].join(':');
-          var container = $('<div>').addClass('muikku-select-field');
+          var container = $('<span>').addClass('muikku-select-field');
           for (var i = 0, l = meta.options.length; i < l; i++){
             var label = $('<label>')
               .attr({
@@ -670,13 +671,10 @@
                 checked: 'checked'
               });
             }
-            var target = container;
-            if (meta.listType == 'radio-vertical') {
-              target = $('<div>');
-              container.append(target);
-            }
-            target.append(radio);
-            target.append(label);
+            var optionContainer = $('<span>');
+            container.append(optionContainer);
+            optionContainer.append(radio);
+            optionContainer.append(label);
           }      
           container.muikkuField({
             fieldName: data.name,
@@ -734,8 +732,7 @@
 
       var meta = data.meta;
       var idPrefix = [data.materialId, data.embedId, data.name].join(':');
-      // TODO proper css for checkbox container
-      var container = $('<div>').addClass('muikku-checkbox-field');
+      var container = $('<span>').addClass('muikku-checkbox-field');
       for (var i = 0, l = meta.options.length; i < l; i++){
         var label = $('<label>')
           .attr({
@@ -755,13 +752,10 @@
             checked: 'checked'
           });
         }
-        var target = container;
-        if (meta.listType == 'checkbox-vertical') {
-          target = $('<div>');
-          container.append(target);
-        }
-        target.append(checkbox);
-        target.append(label);
+        var optionContainer = $('<span>');
+        container.append(optionContainer);
+        optionContainer.append(checkbox);
+        optionContainer.append(label);
       }      
       container.muikkuField({
         fieldName: data.name,
