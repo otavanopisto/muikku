@@ -29,8 +29,21 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
 
     return create(forumArea, thread, message, now, creator, now, creator, false);
   }
-  
+
   public ForumThreadReply create(ForumArea forumArea, ForumThread thread, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived) {
+    return create(forumArea, thread, message, created, creator, lastModified, lastModifier, archived, null);
+  }
+  
+  public ForumThreadReply create(
+      ForumArea forumArea,
+      ForumThread thread,
+      String message,
+      Date created,
+      UserEntity creator,
+      Date lastModified,
+      UserEntity lastModifier,
+      Boolean archived, 
+      ForumThreadReply parentReply) {
     ForumThreadReply reply = new ForumThreadReply();
     
     reply.setForumArea(forumArea);
@@ -41,6 +54,7 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     reply.setLastModified(lastModified);
     reply.setLastModifier(lastModifier.getId());
     reply.setArchived(archived);
+    reply.setParentReply(parentReply);
     
     getEntityManager().persist(reply);
     
