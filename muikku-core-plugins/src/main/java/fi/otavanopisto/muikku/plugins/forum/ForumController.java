@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.forum;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -220,10 +221,17 @@ public class ForumController {
   @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
   public void deleteThread(@PermitContext ForumThread thread) {
     List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
+    Iterator<ForumThreadReply> replyIterator = replies.iterator();
+    while(replyIterator.hasNext()){
+      ForumThreadReply reply = replyIterator.next();
+      if(reply.getParentReply() != null){
+        forumThreadReplyDAO.delete(reply);
+        replyIterator.remove();
+      }
+    }
     for (ForumThreadReply reply : replies) {
       forumThreadReplyDAO.delete(reply);
     }
-    
     forumThreadDAO.delete(thread);
   }
   
