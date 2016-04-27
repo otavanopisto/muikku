@@ -86,10 +86,10 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     
     criteria.orderBy(
     		criteriaBuilder.asc(
-				criteriaBuilder.coalesce(
-					root.get(ForumThreadReply_.parentReply),
-					root.get(ForumThreadReply_.id)
-				)
+  				criteriaBuilder.coalesce(
+  					root.get(ForumThreadReply_.parentReply),
+  					root.get(ForumThreadReply_.id)
+  				)
 			)
     );
     
