@@ -649,7 +649,13 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
       }
       if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES, forumThread)) {      
-        return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage()))).build();
+        ForumThreadReply parentReply = null;
+        
+        if (newReply.getParentReplyId() != null) {
+          parentReply = forumController.getForumThreadReply(newReply.getParentReplyId());
+        }
+        
+        return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply))).build();
       } else {
         return Response.status(Status.FORBIDDEN).build();
       }
