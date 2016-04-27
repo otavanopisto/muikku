@@ -368,6 +368,7 @@ $(document).ready(function() {
             replies.threadId = threadId;
             replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
             replies.nameLetter = user.firstName.substring(0,1);
+            replies.isReply = replies.parentReplyId ? true : false;
             repliesCallback();
           },this));          
         }, this));

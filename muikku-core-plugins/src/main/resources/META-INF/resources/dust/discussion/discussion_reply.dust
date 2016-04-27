@@ -1,4 +1,4 @@
-<div class="mf-subitem di-message di-reply open mf-category-{forumAreaId}-brd lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" id="{id}">
+<div class="mf-subitem {?isReply}di-reply-reply{/isReply} di-message di-reply open mf-category-{forumAreaId}-brd lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" id="{id}">
     <div class="di-message-topic mf-item-topic flex-row">    
       <div class="di-message-meta lg-flex-cell-13 md-flex-cell-13 sm-flex-cell-13">
         <input type="hidden" name="mf-person-id" value="{sender}"/>
