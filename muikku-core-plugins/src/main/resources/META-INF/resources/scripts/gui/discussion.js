@@ -30,13 +30,13 @@ $(document).ready(function() {
 
     init : function() {
       // todo: parse url
-
       this._refreshAreas();
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic > span', $.proxy(this._onMessageClick, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this._onBackClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-replies:not(.disabled)', $.proxy(this._onMoreRepliesClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this._replyMessage, this));
+      $(DiscImpl.msgContainer).on("click", '.di-reply-answer-link', $.proxy(this._replyToReply, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this._editMessage, this));      
       $(DiscImpl.msgContainer).on("click", '.di-reply-edit-link', $.proxy(this._editMessageReply, this));      
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
@@ -441,7 +441,43 @@ $(document).ready(function() {
         }
       }, this));
     },
-    
+    _replyToReply : function(event) {
+      var element = $(event.target);
+      element = element.parents(".di-message");
+      var parentId = $(element).attr("id");
+      var tId = $(element).find("input[name='threadId']").attr('value');
+      var aId = $(element).find("input[name='areaId']").attr('value');
+
+      var sendReply = function(values) {
+        
+        if (values.message.trim() === '') {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nomessage'));
+          return false;
+        } else {
+          values.parentReplyId = parentId;
+          mApi({async: false}).forum.areas.threads.replies.create(aId, tId, values).callback($.proxy(function(err, result) {
+            window.discussion._refreshThread(aId, tId);
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newreply'));
+          },this));
+        
+        }
+        
+      }
+  
+      mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {
+        mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+          thread.areaName = area.name;
+          thread.actionType = "reply"
+          threadCallback();
+        });
+      }, this)).callback($.proxy(function(err, thread) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
+        } else {
+          openInSN('/discussion/discussion_create_reply.dust', thread, sendReply);
+        }
+      }, this));
+    },
     _editMessage : function(event) {
       var element = $(event.target);
       element = element.parents(".di-message");
