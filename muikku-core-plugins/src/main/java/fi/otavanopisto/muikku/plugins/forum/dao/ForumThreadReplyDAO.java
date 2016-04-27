@@ -21,13 +21,18 @@ import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 
 
 public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
-  
-	private static final long serialVersionUID = 6996591519523286352L;
 
-	public ForumThreadReply create(ForumArea forumArea, ForumThread thread, String message, UserEntity creator) {
+  private static final long serialVersionUID = 6996591519523286352L;
+
+  public ForumThreadReply create(
+      ForumArea forumArea, 
+      ForumThread thread, 
+      String message, 
+      UserEntity creator,
+      ForumThreadReply parentReply) {
     Date now = new Date();
 
-    return create(forumArea, thread, message, now, creator, now, creator, false);
+    return create(forumArea, thread, message, now, creator, now, creator, false, parentReply);
   }
 
   public ForumThreadReply create(ForumArea forumArea, ForumThread thread, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived) {

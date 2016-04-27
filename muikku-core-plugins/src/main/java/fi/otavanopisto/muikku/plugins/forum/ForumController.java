@@ -233,7 +233,19 @@ public class ForumController {
       logger.severe("Tried to create a forum thread reply for locked thread");
       return null;
     } else {
-      ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity());
+      ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity(), null);
+      forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
+      return reply;
+    }
+  }
+
+  @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
+  public ForumThreadReply createForumThreadReply(@PermitContext ForumThread thread, String message, ForumThreadReply parentReply) {
+    if (thread.getLocked()) {
+      logger.severe("Tried to create a forum thread reply for locked thread");
+      return null;
+    } else {
+      ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity(), parentReply);
       forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
       return reply;
     }
