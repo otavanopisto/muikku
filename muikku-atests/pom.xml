@@ -333,7 +333,7 @@
               </dependenciesToScan>
 
               <includes>
-                <include>fi/muikku/ui/local/${it.package}/*IT.java</include>
+                <include>fi/otavanopisto/muikku/ui/local/${it.package}/*IT.java</include>
               </includes>
               <systemPropertyVariables>
                 <it.project.version>${project.version}</it.project.version>
@@ -663,7 +663,7 @@
               </dependenciesToScan>
 
               <includes>
-                <include>fi/muikku/ui/sauce/${it.package}/*IT.java</include>
+                <include>fi/otavanopisto/muikku/ui/sauce/${it.package}/*IT.java</include>
               </includes>
               <systemPropertyVariables>
                 <it.project.version>${project.version}</it.project.version>
@@ -1028,7 +1028,7 @@
               </dependenciesToScan>
 
               <includes>
-                <include>fi/muikku/ui/sauce/${it.package}/*IT.java</include>
+                <include>fi/otavanopisto/muikku/ui/sauce/${it.package}/*IT.java</include>
               </includes>
               <systemPropertyVariables>
                 <it.project.version>${project.version}</it.project.version>
@@ -1358,7 +1358,7 @@
               </dependenciesToScan>
 
               <includes>
-                <include>fi/muikku/rest/**/*IT.java</include>
+                <include>fi/otavanopisto/muikku/rest/**/*IT.java</include>
               </includes>
               <systemPropertyVariables>
                 <it.project.version>${project.version}</it.project.version>
