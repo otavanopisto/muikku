@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.forum.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -653,6 +654,14 @@ public class ForumRESTService extends PluginRESTService {
         
         if (newReply.getParentReplyId() != null) {
           parentReply = forumController.getForumThreadReply(newReply.getParentReplyId());
+          
+          if (parentReply == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Invalid parent reply id").build();
+          }
+        }
+        
+        if (!Objects.equals(parentReply.getThread().getId(), threadId)) {
+          return Response.status(Status.BAD_REQUEST).entity("Parent reply is in wrong thread").build();
         }
         
         return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply))).build();
