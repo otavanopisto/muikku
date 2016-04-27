@@ -84,6 +84,15 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
         )
     );
     
+    criteria.orderBy(
+    		criteriaBuilder.asc(
+				criteriaBuilder.coalesce(
+					root.get(ForumThreadReply_.parentReply),
+					root.get(ForumThreadReply_.id)
+				)
+			)
+    );
+    
     TypedQuery<ForumThreadReply> query = entityManager.createQuery(criteria);
     
     if (firstResult != null) {
