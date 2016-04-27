@@ -29,9 +29,10 @@
     <div class="flex-row">
       <div class="mf-item-content-tools di-message-content-tools lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
         <div class="di-message-content-tools-container mf-item-tools">
+          <div class="di-message-tool di-reply-answer-link mf-item-tool-btn"><span>Reply to message</span></div>
           {#canEdit}
             <div class="di-message-tool di-reply-edit-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
-          {/canEdit}                
+          {/canEdit}
         </div>
       </div>
     </div>   
