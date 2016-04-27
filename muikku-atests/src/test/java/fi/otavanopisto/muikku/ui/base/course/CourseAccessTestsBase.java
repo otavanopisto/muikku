@@ -18,7 +18,7 @@ import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
-public class CourseAccessTestBase extends AbstractUITest {
+public class CourseAccessTestsBase extends AbstractUITest {
   
   @Test
   public void nonLoggedInUserOpenCourseTest() throws Exception {
@@ -36,7 +36,6 @@ public class CourseAccessTestBase extends AbstractUITest {
         waitForPresentAndVisible("h2.workspace-management-generic-title");
         logout();
         mockBuilder.mockLogin(student);
-        login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), true);        
         assertNotPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
       }finally{
