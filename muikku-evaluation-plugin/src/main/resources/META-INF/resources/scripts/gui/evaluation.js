@@ -68,17 +68,7 @@
               .css({'z-index': 9999, 'position': 'relative'})
               .attr('type', 'text')
               .datepicker();
-            
-            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
-            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
+
             $(this._dialog).find('input[name="evaluationDate"]')
               .datepicker('setDate', this.options.evaluationDate||new Date());
             
@@ -124,6 +114,16 @@
             }, this));
             
             this._dialog.find(".evaluation-assignment-title-container").click($.proxy(this._onAssignmentTitleClick, this));
+            
+            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
+            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
             
           }, this),
           buttons: [{
@@ -401,17 +401,7 @@
               .css({'z-index': 9999, 'position': 'relative'})
               .attr('type', 'text')
               .datepicker();
-            
-            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
-            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
+
             $(this._dialog).find('input[name="evaluationDate"]')
               .datepicker('setDate', this.options.evaluationDate||new Date());
             
@@ -442,6 +432,17 @@
             $(document).muikkuMaterialLoader('loadMaterials', $(this._dialog).find('.evaluation-assignment'), fieldAnswers);
             
             this._adjustTextareaHeight($(this._dialog).find('.evaluation-assignment'));
+            
+            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
+            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
           }, this),
           buttons: [{
             'text': this._dialog.attr('data-button-save-text'),
@@ -574,6 +575,14 @@
           html: materialHtml,
           type: materialType,
           path: path
+        }], 
+        journalEntries: [{
+          id: 123,
+          workspaceEntityId: 234,
+          userEntityId: 456,
+          content: 'Tänään tapasin todellisen Muikún, Ex his fabulas periculis, cu possim persequeris eum. Purto tantas conclusionemque id his. Ei veri fierent sit, ne sea erroribus mediocritatem, fabulas detracto consequuntur sea ad. Mea ad ridens saperet quaestio, eum te viris semper legendos, mazim cotidieque vix at. Cu aliquip repudiandae sit, antiopam mediocritatem est id.',
+          title: 'Rakas päiväkirja',
+          created: new Date().getTime()
         }]
       }, callback);
     },

@@ -1,0 +1,5 @@
+<div class="evaluation-modal-workspace-single-journal-entry">
+  <div class="evaluation-journal-entry-title">{title}</div>
+  <div class="evaluation-journal-entry-date">{created}</div>
+  <div class="evaluation-journal-entry-content">{content}</div>
+</div>
