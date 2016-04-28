@@ -91,7 +91,7 @@
     },
     
     _confirmArchive: function(confirmCallback, userName) {
-      renderDustTemplate('workspace/workspace-users-archive-request-confirm.dust', {userName}, $.proxy(function(text) {
+      renderDustTemplate('workspace/workspace-users-archive-request-confirm.dust', { userName: userName }, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({
           modal : true,
@@ -120,7 +120,7 @@
     },
     
     _confirmUnarchive: function(confirmCallback, userName) {
-      renderDustTemplate('workspace/workspace-users-unarchive-request-confirm.dust', {userName}, $.proxy(function(text) {
+      renderDustTemplate('workspace/workspace-users-unarchive-request-confirm.dust', { userName: userName }, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({
           modal : true,
