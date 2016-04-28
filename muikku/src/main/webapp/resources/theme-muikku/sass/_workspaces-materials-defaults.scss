@@ -190,6 +190,15 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       border:3px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
     }
+    
+    &[disabled="disabled"] {
+    
+      &:hover {
+        border:3px solid #c9e0fb;
+        box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+      }
+    
+    }
   
     option {
       background:#fff;
@@ -236,6 +245,19 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     &:checked {
       box-shadow:0 0 1px 3px rgba(202,225,252,0.85);
     }
+    
+    &[disabled="disabled"] {
+  
+      &:hover {
+        box-shadow:0 0 1px 3px rgba(215,215,215,0.15);
+      }
+      
+      &:checked {
+        box-shadow:0 0 1px 3px rgba(202,225,252,0.85);
+      }
+    
+    }
+    
   }
   
   input[type="text"],
