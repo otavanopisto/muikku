@@ -579,7 +579,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       
       input[type="checkbox"],
       input[type="radio"] {
-        box-shadow:0 0 1px 3px rgba(255,0,0,0.6) !important;
+        box-shadow:0 0 1px 3px rgba(255,0,0,0.7) !important;
       }
       
       &:hover {
@@ -604,6 +604,19 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       .muikku-connect-field-counterpart.muikku-connect-field-correct-answer, 
       .muikku-connect-field-term.muikku-connect-field-correct-answer {
         background:#55fc70;
+      }
+      
+      input[type="checkbox"].muikku-field-correct-answer-override,
+      input[type="radio"].muikku-field-correct-answer-override {
+        box-shadow:0 0 1px 3px rgba(0,255,42,0.9) !important;
+        border:3px solid #00ff2a !important;
+        @include rounded(3px);
+        
+        &:hover {
+          box-shadow:0 0 1px 3px rgba(0,255,42,0.9) !important;
+          border:3px solid #00ff2a !important;
+        }
+      
       }
       
     }
