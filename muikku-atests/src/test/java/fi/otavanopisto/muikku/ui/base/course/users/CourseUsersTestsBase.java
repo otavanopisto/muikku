@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.ui.base.course.users;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
