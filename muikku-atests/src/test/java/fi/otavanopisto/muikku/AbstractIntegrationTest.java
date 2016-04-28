@@ -128,7 +128,7 @@ public abstract class AbstractIntegrationTest {
       ResultSet results = statement.getResultSet();
       long user_id = 0;
       while (results.next()) {              
-        user_id = results.getLong("user_id");
+        user_id = results.getLong("usdi.userEntity_id");
       }
       return user_id;
     } finally {
