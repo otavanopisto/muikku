@@ -74,11 +74,12 @@ input[type="text"] {
     background: #fcfcfc !important;
     border: 3px dotted #eaeaea !important;
     box-shadow: none !important;
-    color: #b0b0b0 !important;
+    color: #7c7c7c !important;
     
     &:hover {
       border: 3px dotted #eee;
       box-shadow:none;
+      color:#555555 !important;
     }
 
   }
@@ -148,11 +149,12 @@ textarea {
     background: #fcfcfc !important;
     border: 3px dotted #eaeaea !important;
     box-shadow: none !important;
-    color: #b0b0b0 !important;
+    color: #7c7c7c !important;
     
     &:hover {
       border: 3px dotted #eee !important;
       box-shadow:none !important;
+      color:#555555 !important;
     }
   }
   
@@ -178,18 +180,6 @@ select {
   max-width:100%;
   word-wrap:break-word;
   vertical-align:middle;
-  
-  &[readonly="readonly"] {
-    background: #fcfcfc !important;
-    border: 3px dotted #eaeaea !important;
-    box-shadow: none !important;
-    color: #b0b0b0 !important;
-    
-    &:hover {
-      border: 3px dotted #eee !important;
-      box-shadow:none !important;
-    }
-  }
   
   &:focus,
   &:hover {
@@ -236,14 +226,6 @@ input[type="checkbox"] {
   box-shadow:0 0 1px 3px rgba(215,215,215,0.15);
   @include rounded(3px);
   display:inline-block;
-  
-  &[readonly="readonly"] {
-    box-shadow:0 0 1px 3px rgba(234,234,234,1) !important;
-    
-    &:hover {
-      box-shadow:0 0 1px 3px rgba(234,234,234,1) !important;
-    }
-  }
   
   &:focus,
   &:hover,

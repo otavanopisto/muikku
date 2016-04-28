@@ -765,6 +765,33 @@ body.evaluation {
                       outline:none; 
                     }
                     
+                    /* Select and Option field overrides */
+                    select {
+                      background:#fff;
+                      border:3px solid #c9e0fb;
+                      transition:border,box-shadow 0.1s,0.2s ease-in-out;
+                      outline:none;
+                      color:#0061a2;
+                      display:inline-block;
+                      margin:4px;
+                      box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+                      @include rounded(3px);
+                      max-width:100%;
+                      word-wrap:break-word;
+                      vertical-align:middle;
+                    
+                      option {
+                        background:#fff;
+                        font-weight:300;
+                        padding:4px 8px;
+                      }
+                      
+                    }
+                    
+                    input[checked="checked"] {
+                      box-shadow:0 0 0 3px #7bb7fa;
+                    }
+
                     label {
                       display:inline;
                       font-weight:400;
@@ -891,6 +918,33 @@ body.evaluation {
                   display:inline-block;
                   margin:0 10px;
                   outline:none; 
+                }
+                
+                /* Select and Option field overrides */
+                select {
+                  background:#fff;
+                  border:3px solid #c9e0fb;
+                  transition:border,box-shadow 0.1s,0.2s ease-in-out;
+                  outline:none;
+                  color:#0061a2;
+                  display:inline-block;
+                  margin:4px;
+                  box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+                  @include rounded(3px);
+                  max-width:100%;
+                  word-wrap:break-word;
+                  vertical-align:middle;
+
+                  option {
+                    background:#fff;
+                    font-weight:300;
+                    padding:4px 8px;
+                  }
+                  
+                }
+                
+                input[checked="checked"] {
+                  box-shadow:0 0 0 3px #7bb7fa;
                 }
                 
                 label {
