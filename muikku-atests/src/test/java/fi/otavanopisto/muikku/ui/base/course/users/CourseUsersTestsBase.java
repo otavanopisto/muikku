@@ -118,8 +118,8 @@ public class CourseUsersTestsBase extends AbstractUITest {
       Long courseId = 1l;
       
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, workspace.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, workspace.getId(), admin.getId(), 7l);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
       mockBuilder
         .addStudent(student)
         .addCourseStaffMember(courseId, courseStaffMember)
