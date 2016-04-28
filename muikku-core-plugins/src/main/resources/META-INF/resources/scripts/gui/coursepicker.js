@@ -146,7 +146,7 @@
               // Test if it's a page load or something else                
               if(hasPage === true){
                 // Puts the results to the latest page-element created by _loadMore
-                $(".mf-page").last().html(text);    
+                this.element.find('#coursesList').append(text);
               }else{
                 this.element.find('#coursesList').html(text);            
               }
@@ -166,9 +166,6 @@
     }, 
     
     _loadMore: function () {        
-      var page = "<div class='mf-page'></div>";
-      var container = this.element.find('#coursesList');
-      $(container).append(page);
       this._firstResult += this._maxResults;
       hasPage = true;
       this._loadWorkspaces(hasPage);
