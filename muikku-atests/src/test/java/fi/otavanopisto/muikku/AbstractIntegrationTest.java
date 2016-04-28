@@ -119,7 +119,7 @@ public abstract class AbstractIntegrationTest {
       Statement statement = connection.createStatement();
       statement.execute(
           String.format(
-              "SELECT usdi.userEntity_id "
+              "SELECT usdi.userEntity_id AS result "
                   + "FROM UserEmailEntity uee "
                   + "INNER JOIN UserSchoolDataIdentifier usdi "
                   + "ON uee.userSchoolDataIdentifier_id = usdi.id "
@@ -128,7 +128,7 @@ public abstract class AbstractIntegrationTest {
       ResultSet results = statement.getResultSet();
       long user_id = 0;
       while (results.next()) {              
-        user_id = results.getLong("usdi.userEntity_id");
+        user_id = results.getLong("result");
       }
       return user_id;
     } finally {
