@@ -93,11 +93,13 @@
 }
 
 .muikku-connect-field-term {
-  justify-content:flex-end;  
+  justify-content:flex-end; 
+  text-align:right; 
 }
 
 .muikku-connect-field-counterpart {
-  justify-content:flex-start
+  justify-content:flex-start;
+  text-align:left;
 }
 
 .ui-sortable-placeholder {

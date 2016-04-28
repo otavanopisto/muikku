@@ -115,8 +115,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(".icon-cogs");
         hoverOverElement(".icon-cogs");
-        waitForPresentAndVisible(".icon-manage-materials");
-        assertPresent(".icon-manage-materials");
+        waitForPresentAndVisible(".icon-edit-materials");
+        assertPresent(".icon-edit-materials");
       } finally {
         deleteWorkspace(workspace.getId());
       }

@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.controller;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -17,9 +16,6 @@ import fi.otavanopisto.muikku.model.plugins.PluginUserSettingKey;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 
 public class PluginSettingsController {
-
-  @Inject
-  private Logger logger;
 
   @Inject
 	private PluginSettingDAO pluginSettingDAO;
@@ -59,7 +55,6 @@ public class PluginSettingsController {
 	}
 	
 	public String getPluginSetting(String plugin, String name) {
-	  logger.info(String.format("getPluginSetting %s.%s", plugin, name));
 	  PluginSettingKey key = findPluginSettingKey(plugin, name);
 		
 		if (key == null) {
