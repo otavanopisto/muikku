@@ -302,7 +302,7 @@ $(document).ready(function() {
               replies.nameLetter = user.firstName.substring(0,1);
               replies.isReply = replies.parentReplyId ? true : false;
               if(replies.isReply){
-                replies.replyParentTime = replyCreatedMap[replies.parentReplyId];
+                replies.replyParentTime = formatDate(replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(replyCreatedMap[replies.parentReplyId]);
               }
               repliesCallback();
             }, this));          
@@ -377,7 +377,7 @@ $(document).ready(function() {
             replies.nameLetter = user.firstName.substring(0,1);
             replies.isReply = replies.parentReplyId ? true : false;
             if(replies.isReply){
-              replies.replyParentTime = replyCreatedMap[replies.parentReplyId];
+              replies.replyParentTime = formatDate(replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(replyCreatedMap[replies.parentReplyId]);
             }
             repliesCallback();
           },this));          
