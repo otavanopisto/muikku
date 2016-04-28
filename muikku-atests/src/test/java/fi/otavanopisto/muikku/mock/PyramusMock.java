@@ -270,6 +270,15 @@ public class PyramusMock {
                 .withHeader("Content-Type", "application/json")
                 .withBody(pmock.objectMapper.writeValueAsString(cs))
                 .withStatus(200)));            
+            
+            CourseStudent[] courseStudentArray = {cs};
+            
+            stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students?studentId=%d", cs.getCourseId(), cs.getStudentId())))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(courseStudentArray))
+                .withStatus(200)));
+            
             pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookCourseStudentCreatePayload(cs.getId(), 
               cs.getCourseId(), cs.getStudentId())));
           }
