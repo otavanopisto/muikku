@@ -717,7 +717,7 @@
                   .find('input[type="radio"]').attr('disabled', 'disabled');
               } else {
                 $(this.element)
-                  .attr('data-disabled', 'true') 
+                  .removeAttr('data-disabled') 
                   .find('input[type="radio"]').removeAttr('disabled');
               }
             },
@@ -817,7 +817,7 @@
               .find('input[type="checkbox"]').attr('disabled', 'disabled');
           } else {
             $(this.element)
-              .attr('data-disabled', 'true') 
+              .removeAttr('data-disabled') 
               .find('input[type="checkbox"]').removeAttr('disabled');
           }
         },
