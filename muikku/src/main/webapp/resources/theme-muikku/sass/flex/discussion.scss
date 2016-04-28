@@ -235,11 +235,14 @@
               }
             }
           }
-          
-          .di-reply-decor-content{
-           &:before{
-            content: "-"
-           }
+          .di-reply-to-decor{
+            color:#108201;
+            font-size: 15px;
+            margin-left: 30px !important;
+            margin-right: 31px;           
+          }
+          .di-reply-to-decor-content{
+
           }
 
           .di-reply-to-title{}             
