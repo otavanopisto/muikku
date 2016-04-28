@@ -75,7 +75,7 @@
                     +'</span><span class="modal-title-workspace-name">'
                     +this.options.workspaceName
                     +'</span>',
-          dialogClass: "evaluation-evaluate-modal",
+          dialogClass: "evaluation-evaluate-modal workspace-evaluation-dialog",
           close: $.proxy(function () {
             this.element.remove();
           }, this),
@@ -433,7 +433,7 @@
                     +'</span><span class="modal-title-workspace-name">'
                     +this.options.workspaceName
                     +'</span>',
-          dialogClass: "evaluation-evaluate-modal",
+          dialogClass: "evaluation-evaluate-modal assignment-evaluation-dialog",
           close: $.proxy(function () {
             this.element.remove();
           }, this),
