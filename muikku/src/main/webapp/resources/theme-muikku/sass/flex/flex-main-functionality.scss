@@ -426,6 +426,25 @@
   
 }   
 
+.mf-item-tool-link {
+  cursor:pointer;
+  border-radius:2px;
+  padding:5px 10px;
+  display:inline-block;
+  color:#068feb;
+  text-transform:uppercase;
+  font-weight:400;
+  font-size:12px;
+  
+  &:not(:first-child) {
+   margin-left:10px;
+  }
+  
+  
+}
+
+
+
 .mf-item {
   box-shadow:$w-sc;
   background-color:#fff;
