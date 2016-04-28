@@ -404,6 +404,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.presenceOfElementLocated(locator));
   }
   
+  protected void waitForVisible(String selector) {
+    new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.visibilityOf(getWebDriver().findElement(By.cssSelector(selector))));    
+  }
+  
   protected void waitForUrlNotMatches(final String regex) {
     WebDriver driver = getWebDriver();
     new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
@@ -432,7 +436,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void waitForPresentAndVisible(String selector) {
-    waitForElementToBePresent(By.cssSelector(selector));
+    waitForPresent(selector);
     assertVisible(selector);
   }
    
@@ -475,11 +479,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void assertPresent(String selector) {
+    waitForPresent(selector);
     assertTrue(String.format("Could not find element %s", selector), getWebDriver().findElements(By.cssSelector(selector)).size() > 0);
   }
   
   protected void assertNotPresent(String selector) {
-    assertTrue(String.format("Unexpectedly found element %s", selector), getWebDriver().findElements(By.cssSelector(selector)).size() == 0);
+    int size = getWebDriver().findElements(By.cssSelector(selector)).size();
+    assertTrue(String.format("Unexpectedly found element %s", selector), size == 0);
   }
   
   protected void assertVisible(String selector) {
