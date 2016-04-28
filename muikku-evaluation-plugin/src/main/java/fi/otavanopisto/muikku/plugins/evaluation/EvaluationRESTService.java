@@ -141,11 +141,15 @@ public class EvaluationRESTService extends PluginRESTService {
     if (grade == null) {
       return Response.status(Status.BAD_REQUEST).entity("grade is invalid").build(); 
     }
+
+    if (evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, student) != null) {
+      return Response.status(Status.BAD_REQUEST).entity("material already evaluated").build(); 
+    }
     
     Date evaluated = payload.getEvaluated();
     
     return Response.ok(createRestModel(
-      evaluationController.createOrUpdateWorkspaceMaterialEvaluation(student, workspaceMaterial, gradingScale, grade, assessor, evaluated, payload.getVerbalAssessment())
+      evaluationController.createWorkspaceMaterialEvaluation(student, workspaceMaterial, gradingScale, grade, assessor, evaluated, payload.getVerbalAssessment())
     )).build();
   }
 
