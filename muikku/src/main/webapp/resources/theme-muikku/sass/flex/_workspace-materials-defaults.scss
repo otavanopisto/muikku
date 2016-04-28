@@ -177,6 +177,7 @@ select {
   @include rounded(3px);
   max-width:100%;
   word-wrap:break-word;
+  vertical-align:middle;
   
   &[readonly="readonly"] {
     background: #fcfcfc !important;
@@ -200,6 +201,27 @@ select {
     background:#fff;
     font-weight:300;
     padding:4px 8px;
+  }
+  
+}
+
+/* Radio button and Check box wrapper Span */
+span.radiobutton-horizontal,
+span.checkbox-horizontal {
+
+  > span {
+    display:inline-block;
+  }
+
+}
+
+span.radiobutton-vertical,
+span.checkbox-vertical {
+  display:inline-block;
+  vertical-align:middle;
+  
+  > span {
+    display:block;
   }
   
 }
@@ -701,7 +723,7 @@ sup {
     }
     
   }
-  
+
   /* For checkbox/radio/connectfields checks */
   div.muikku-field-correct-answer {
     box-shadow:none !important;
@@ -730,7 +752,7 @@ sup {
     
     input[type="checkbox"],
     input[type="radio"] {
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.6) !important;
+      box-shadow:0 0 1px 3px rgba(255,0,0,0.7) !important;
     }
     
     &:hover {
@@ -755,6 +777,19 @@ sup {
     .muikku-connect-field-counterpart.muikku-connect-field-correct-answer, 
     .muikku-connect-field-term.muikku-connect-field-correct-answer {
       background:#55fc70;
+    }
+    
+    input[type="checkbox"].muikku-field-correct-answer-override,
+    input[type="radio"].muikku-field-correct-answer-override {
+      box-shadow:0 0 1px 3px rgba(0,255,42,0.9) !important;
+      border:3px solid #00ff2a !important;
+      @include rounded(3px);
+      
+      &:hover {
+        box-shadow:0 0 1px 3px rgba(0,255,42,0.9) !important;
+        border:3px solid #00ff2a !important;
+      }
+    
     }
     
   }
