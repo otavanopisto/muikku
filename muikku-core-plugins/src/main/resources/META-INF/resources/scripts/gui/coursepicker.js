@@ -3,6 +3,7 @@
   $.widget("custom.coursePicker", {
 
     _create : function() {
+      this._typingTimer = null;
       this._firstResult = 0;
       this._maxResults = 25;
       this._hasEvaluationFees = true;
@@ -24,6 +25,7 @@
           
           this.element.on('change', ".cp-category-dropdown", $.proxy(this._onCategoryChange, this));
           this.element.on('keyup', "input[name='coursePickerSearch']", $.proxy(this._onSearchKeyUp, this));
+          this.element.on('keydown', "input[name='coursePickerSearch']", $.proxy(this._onSearchKeyDown, this));
           this.element.on("click", ".cp-page-link-load-more", $.proxy(this._onLoadMoreClick, this));
           this.element.on("click", ".cp-course-copy-button", $.proxy(this._onCopyCourseClick, this));
           this.element.on("click", ".cp-course-details", $.proxy(this._onDetailsClick, this));
@@ -99,7 +101,6 @@
         .addClass('loading')
         .appendTo($(this.element.find('#coursesList')));
       
-      this.element.find("input[name='coursePickerSearch']").prop('disabled', true);
       this.element.find('.cp-page-link-load-more').addClass('disabled');
     
       var params = {
@@ -133,7 +134,6 @@
         }, this))
         .callback($.proxy(function (err, workspaces) {
           $(loader).remove();
-          this.element.find("input[name='coursePickerSearch']").prop('disabled', false);
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
@@ -179,9 +179,20 @@
     },
     
     _onSearchKeyUp: function (event) {
-      this.search($(event.target).closest('.search').val());
+      if (this._typingTimer) {
+        clearTimeout(this._typingTimer);
+      }
+      this._typingTimer = setTimeout($.proxy(function() {
+        this.search($(event.target).closest('.search').val());
+      }, this), 100);
     },
-    
+
+    _onSearchKeyDown: function (event) {
+      if (this._typingTimer) {
+        clearTimeout(this._typingTimer);
+      }
+    },
+
     _onLoadMoreClick: function (event) {
       if (!$(event.target).closest('.cp-page-link-load-more').hasClass('disabled')) {
         this._loadMore();
