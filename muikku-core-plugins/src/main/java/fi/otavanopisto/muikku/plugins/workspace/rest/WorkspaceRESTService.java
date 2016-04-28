@@ -738,7 +738,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
     }
     
-    if (workspaceUsers.isEmpty()) {
+    if (workspaceUsers == null || workspaceUsers.isEmpty()) {
       return Response.noContent().build();
     }
 
