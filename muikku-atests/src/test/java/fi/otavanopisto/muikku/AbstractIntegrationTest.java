@@ -117,7 +117,14 @@ public abstract class AbstractIntegrationTest {
     Connection connection = getConnection();
     try {
       Statement statement = connection.createStatement();
-      statement.execute(String.format("SELECT user_id FROM useremailentity WHERE address = '%s'", email));
+      statement.execute(
+          String.format(
+              "SELECT usdi.userEntity_id "
+                  + "FROM UserEmailEntity uee "
+                  + "INNER JOIN UserSchoolDataIdentifier usdi "
+                  + "ON uee.userSchoolDataIdentifier_id = usdi.id "
+                  + "WHERE uee.address = '%s'",
+                  email));
       ResultSet results = statement.getResultSet();
       long user_id = 0;
       while (results.next()) {              
