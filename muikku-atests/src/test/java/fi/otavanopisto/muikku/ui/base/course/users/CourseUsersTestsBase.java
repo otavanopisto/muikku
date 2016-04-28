@@ -80,8 +80,8 @@ public class CourseUsersTestsBase extends AbstractUITest {
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
       mockBuilder
         .addStudent(student)
-        .addCourseStaffMember(NumberUtils.createLong(workspace.getIdentifier()), courseStaffMember)
-        .addCourseStudent(NumberUtils.createLong(workspace.getIdentifier()), courseStudent)
+        .addCourseStaffMember(courseId, courseStaffMember)
+        .addCourseStudent(courseId, courseStudent)
         .build();
       
       try {

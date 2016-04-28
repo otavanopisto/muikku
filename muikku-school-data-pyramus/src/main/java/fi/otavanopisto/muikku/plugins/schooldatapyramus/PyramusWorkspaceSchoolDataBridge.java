@@ -244,6 +244,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier.getIdentifier());
     Long userId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
     if (courseId != null && userId != null) {
+      System.out.println(String.format("/courses/courses/%d/students?studentId=%d", courseId, userId));
       List<WorkspaceUser> users = entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/students?studentId=%d", courseId, userId), CourseStudent[].class));
       if (users != null) {
         if (users.size() > 1) {
