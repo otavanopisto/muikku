@@ -35,6 +35,12 @@
   
 }
 .di-content-main {
+   .di-reply{
+    
+    } 
+    .di-reply-reply{
+      border-left:60px solid #fbfbfb;
+    } 
   .di-message {
     background:#fff;
 
@@ -128,10 +134,10 @@
         }
         
       }
- .di-message-time{
-   font-size:12px;
-   overflow:hidden;
- }      
+       .di-message-time{
+         font-size:12px;
+         overflow:hidden;
+       }      
       .di-message-replies span{
         background-color: #fff8c1;
         display: inline-block;
@@ -256,7 +262,9 @@
       
 
     }
-  
+ 
+
+
     .di-message-info {
       cursor:default;
     }
