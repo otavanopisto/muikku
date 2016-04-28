@@ -12,6 +12,8 @@
   <ui:param name="bodyClass" value="workspace-materials-management" />
   
   <ui:define name="viewScripts">
+    <!-- MathJax -->
+    <script defer="defer" type="text/javascript" src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
     <!-- TODO: plugins should be able to introduce new material editors -->
     
     <!-- magnific-popup -->
@@ -36,10 +38,7 @@
     <!-- File upload -->
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"/>
     <h:outputScript name="scripts/gui/muikku-file-field-component.js" target="head"/>
-    
-    <!-- MathJax -->
-    <script type="text/javascript" src='//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
-    
+
     <!--  View itself -->
     <h:outputScript name="scripts/gui/muikku-field.js"/> 
     <h:outputScript name="scripts/gui/muikku-material-loader.js"/> 
