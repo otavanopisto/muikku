@@ -223,16 +223,29 @@
       .di-message-details {
           font-size: 22px;
           font-weight: 300;
-          span{          
+          > span{          
             &:not(:first-child){
-              margin-left:5px;
+            margin-left:5px;            
+            }
+            &.di-reply-title-date{
               &:before{
                content: "-";
                margin-right:5px;
                color:#000;
               }
             }
-          }      
+          }
+          .di-reply-to-decor{
+            color:#108201;
+            font-size: 15px;
+            margin-left: 30px !important;
+            margin-right: 31px;           
+          }
+          .di-reply-to-decor-content{
+
+          }
+
+          .di-reply-to-title{}             
       }
 
       .di-message-title {
