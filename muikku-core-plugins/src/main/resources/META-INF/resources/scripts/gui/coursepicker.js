@@ -111,8 +111,9 @@
         includeUnpublished: this._categoryId == 'te',
         educationTypes: this._educationTypes
       };
-
+      
       mApi().coursepicker.workspaces
+        .cacheClear()
         .read($.extend(params, {
           firstResult: this._firstResult,
           maxResults: this._maxResults + 1
@@ -142,18 +143,14 @@
             if (workspaces && hasMore) {
               workspaces.pop();
             }
-            
             renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
               this.element.find('#coursesList').find('.cm-no-messages').remove();
               this.element.find('#coursesList').append(text);
-
+              if (hasMore) {
+                this.element.find('.cp-page-link-load-more').removeClass('disabled');
+              }
             }, this));
             
-            if (hasMore) {
-              this.element.find('.cp-page-link-load-more').removeClass('disabled');
-            } else {
-              this.element.find('.cp-page-link-load-more').addClass('disabled');
-            }
           }
         }, this));   
     },
