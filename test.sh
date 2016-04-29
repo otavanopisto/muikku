@@ -18,9 +18,9 @@ echo "-------------------------"
 pushd .
 cd muikku-atests
 if [ "$DEBUG" == "true" ] ; then 
-  mvn clean verify -Pui-it -Dit.test=$TEST -Dmaven.failsafe.debug
+  mvn clean verify -Pui-it -Dit.test=$TEST -Dmaven.failsafe.debug ${@:4}
 else
-  mvn clean verify -Pui-it -Dit.test=$TEST
+  mvn clean verify -Pui-it -Dit.test=$TEST ${@:4}
 fi;
 
 popd
