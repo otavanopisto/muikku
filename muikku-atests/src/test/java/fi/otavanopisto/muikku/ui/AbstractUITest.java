@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -22,13 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.rules.TestName;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -75,8 +72,6 @@ import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
-import fi.otavanopisto.muikku.atests.CommunicatorMessageRESTModel;
-import fi.otavanopisto.muikku.atests.CommunicatorNewMessageRESTModel;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceDiscussion;
 import fi.otavanopisto.muikku.atests.WorkspaceDiscussionGroup;
@@ -94,70 +89,68 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
     
-  protected void finished(Description description) {
-    try {
-      getWebDriver().quit();      
-    } catch (Exception e) {
-
-    }
-  }
-
   @Rule
   public TestWatcher testWatcher = new TestWatcher() {
-  
-  @Override
-  public Statement apply(Statement base, Description description) {
-    boolean browserSkip = false;
-    boolean resolutionSkip = false;
     
-    for (Annotation annotation : description.getAnnotations()) {
-      if (annotation instanceof TestEnvironments) {
-        TestEnvironments testEnvironments = (TestEnvironments) annotation;
-        if (testEnvironments.browsers().length > 0) {
-          if (getTestEnvBrowser() != null) {
-            browserSkip = true;
-          
-            for (TestEnvironments.Browser browser : testEnvironments.browsers()) {
-              if (getTestEnvBrowser().equals(browser)) {
-                browserSkip = false;
-                break;
-              } 
+    protected void finished(Description description) {
+      try {
+        getWebDriver().quit();      
+      } catch (Exception e) {
+      }
+    }
+  
+    @Override
+    public Statement apply(Statement base, Description description) {
+      boolean browserSkip = false;
+      boolean resolutionSkip = false;
+      
+      for (Annotation annotation : description.getAnnotations()) {
+        if (annotation instanceof TestEnvironments) {
+          TestEnvironments testEnvironments = (TestEnvironments) annotation;
+          if (testEnvironments.browsers().length > 0) {
+            if (getTestEnvBrowser() != null) {
+              browserSkip = true;
+            
+              for (TestEnvironments.Browser browser : testEnvironments.browsers()) {
+                if (getTestEnvBrowser().equals(browser)) {
+                  browserSkip = false;
+                  break;
+                } 
+              }
             }
           }
-        }
-        if(testEnvironments.screenSizes().length > 0) {
-          if (getScreenSize() != null) {
-            resolutionSkip = true;
-            for (TestEnvironments.ScreenSize screenSize : testEnvironments.screenSizes()) {
-              if (getScreenSize().equals(screenSize)) {
-                resolutionSkip = false;
-                break;
-              } 
-            }
-          } 
+          if(testEnvironments.screenSizes().length > 0) {
+            if (getScreenSize() != null) {
+              resolutionSkip = true;
+              for (TestEnvironments.ScreenSize screenSize : testEnvironments.screenSizes()) {
+                if (getScreenSize().equals(screenSize)) {
+                  resolutionSkip = false;
+                  break;
+                } 
+              }
+            } 
+          }
         }
       }
-    }
-    
-    if (!browserSkip && !resolutionSkip) {
-      return super.apply(base, description);
-    }
-    
-    return new Statement() {
-      @Override
-      public void evaluate() throws Throwable {
+      
+      if (!browserSkip && !resolutionSkip) {
+        return super.apply(base, description);
       }
-    };
-  }
-    
-  @Override
-  protected void failed(Throwable e, Description description) {
-//      try {
-//        Doesn't work
-//        takeScreenshot();
-//      } catch (IOException e1) {
-//        throw new RuntimeException(e);
-//      }
+      
+      return new Statement() {
+        @Override
+        public void evaluate() throws Throwable {
+        }
+      };
+    }
+      
+    @Override
+    protected void failed(Throwable e, Description description) {
+      try {
+        takeScreenshot();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
     }
     
   };
@@ -368,6 +361,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected WebDriver createPhantomJsDriver() {
     DesiredCapabilities desiredCapabilities = DesiredCapabilities.phantomjs();
     desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, ".phantomjs/bin/phantomjs");
+    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_CUSTOMHEADERS_PREFIX + "Accept-Language", "fi_FI");
     desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] { "--ignore-ssl-errors=true", "--webdriver-loglevel=NONE", "--load-images=false" } );
     PhantomJSDriver driver = new PhantomJSDriver(desiredCapabilities);
     driver.manage().window().setSize(new Dimension(1280, 1024));
@@ -445,12 +439,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void takeScreenshot(File file) throws WebDriverException, IOException {
-    FileOutputStream fileOuputStream = new FileOutputStream(file);
-    try {
-     fileOuputStream.write(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES));
-    } finally {
-      fileOuputStream.flush();
-      fileOuputStream.close();
+    if (webDriver instanceof TakesScreenshot) {
+      FileOutputStream fileOuputStream = new FileOutputStream(file);
+      try {
+       fileOuputStream.write(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES));
+      } finally {
+        fileOuputStream.flush();
+        fileOuputStream.close();
+      }
     }
   }
   

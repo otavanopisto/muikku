@@ -91,7 +91,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
         click(".workspace-journal-new-entry-button");
         addTextToCKEditor("content");
         sendKeys(".mf-textfield-subject", "title");
-        click("input[type='button'][value='Create']");
+        click("#socialNavigation.sn-container .jo-message-create .mf-toolbar input[name=\"send\"]");
         waitForPresent("#content");
         assertText(".workspace-journal-title", "title");
         assertText(".workspace-journal-content", "content");
