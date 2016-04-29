@@ -96,7 +96,7 @@
       this._loadWorkspaces();
     },
     
-    _loadWorkspaces: function (hasPage) {
+    _loadWorkspaces: function () {
       var loader = $('<div>') 
         .addClass('loading')
         .appendTo($(this.element.find('#coursesList')));
@@ -143,13 +143,9 @@
             }
             
             renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
-              // Test if it's a page load or something else                
-              if(hasPage === true){
-                // Puts the results to the latest page-element created by _loadMore
-                this.element.find('#coursesList').append(text);
-              }else{
-                this.element.find('#coursesList').html(text);            
-              }
+              this.element.find('#coursesList').find('.cm-no-messages').remove();
+              this.element.find('#coursesList').append(text);
+
             }, this));
             
             if (hasMore) {
@@ -167,8 +163,7 @@
     
     _loadMore: function () {        
       this._firstResult += this._maxResults;
-      hasPage = true;
-      this._loadWorkspaces(hasPage);
+      this._loadWorkspaces();
     },
     
     _onCategoryChange: function (event, data) {
