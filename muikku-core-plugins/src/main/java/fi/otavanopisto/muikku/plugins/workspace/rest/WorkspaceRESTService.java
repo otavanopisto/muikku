@@ -2256,6 +2256,9 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (workspaceUserEntity == null) {
         return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
       }
+      if (workspaceUserEntity.getWorkspaceEntity().getId() != workspaceEntity.getId()) {
+        return Response.status(Status.BAD_REQUEST).entity("WorkspaceStudent points to wrong workspace").build();
+      }
 
       WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
       SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
