@@ -21,16 +21,34 @@ import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 
 
 public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
-  
-	private static final long serialVersionUID = 6996591519523286352L;
 
-	public ForumThreadReply create(ForumArea forumArea, ForumThread thread, String message, UserEntity creator) {
+  private static final long serialVersionUID = 6996591519523286352L;
+
+  public ForumThreadReply create(
+      ForumArea forumArea, 
+      ForumThread thread, 
+      String message, 
+      UserEntity creator,
+      ForumThreadReply parentReply) {
     Date now = new Date();
 
-    return create(forumArea, thread, message, now, creator, now, creator, false);
+    return create(forumArea, thread, message, now, creator, now, creator, false, parentReply);
+  }
+
+  public ForumThreadReply create(ForumArea forumArea, ForumThread thread, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived) {
+    return create(forumArea, thread, message, created, creator, lastModified, lastModifier, archived, null);
   }
   
-  public ForumThreadReply create(ForumArea forumArea, ForumThread thread, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived) {
+  public ForumThreadReply create(
+      ForumArea forumArea,
+      ForumThread thread,
+      String message,
+      Date created,
+      UserEntity creator,
+      Date lastModified,
+      UserEntity lastModifier,
+      Boolean archived, 
+      ForumThreadReply parentReply) {
     ForumThreadReply reply = new ForumThreadReply();
     
     reply.setForumArea(forumArea);
@@ -41,6 +59,7 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     reply.setLastModified(lastModified);
     reply.setLastModifier(lastModifier.getId());
     reply.setArchived(archived);
+    reply.setParentReply(parentReply);
     
     getEntityManager().persist(reply);
     
@@ -63,6 +82,15 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
             criteriaBuilder.equal(root.get(ForumThreadReply_.thread), forumThread),
             criteriaBuilder.equal(root.get(ForumThreadReply_.archived), Boolean.FALSE)
         )
+    );
+    
+    criteria.orderBy(
+    		criteriaBuilder.asc(
+  				criteriaBuilder.coalesce(
+  					root.get(ForumThreadReply_.parentReply),
+  					root.get(ForumThreadReply_.id)
+  				)
+			)
     );
     
     TypedQuery<ForumThreadReply> query = entityManager.createQuery(criteria);

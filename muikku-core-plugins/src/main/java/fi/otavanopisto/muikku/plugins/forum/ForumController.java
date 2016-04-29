@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.forum;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -220,10 +221,17 @@ public class ForumController {
   @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
   public void deleteThread(@PermitContext ForumThread thread) {
     List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
+    Iterator<ForumThreadReply> replyIterator = replies.iterator();
+    while(replyIterator.hasNext()){
+      ForumThreadReply reply = replyIterator.next();
+      if(reply.getParentReply() != null){
+        forumThreadReplyDAO.delete(reply);
+        replyIterator.remove();
+      }
+    }
     for (ForumThreadReply reply : replies) {
       forumThreadReplyDAO.delete(reply);
     }
-    
     forumThreadDAO.delete(thread);
   }
   
@@ -233,7 +241,19 @@ public class ForumController {
       logger.severe("Tried to create a forum thread reply for locked thread");
       return null;
     } else {
-      ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity());
+      ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity(), null);
+      forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
+      return reply;
+    }
+  }
+
+  @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
+  public ForumThreadReply createForumThreadReply(@PermitContext ForumThread thread, String message, ForumThreadReply parentReply) {
+    if (thread.getLocked()) {
+      logger.severe("Tried to create a forum thread reply for locked thread");
+      return null;
+    } else {
+      ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity(), parentReply);
       forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
       return reply;
     }

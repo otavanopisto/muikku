@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.forum.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -649,7 +650,21 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
       }
       if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES, forumThread)) {      
-        return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage()))).build();
+        ForumThreadReply parentReply = null;
+        
+        if (newReply.getParentReplyId() != null) {
+          parentReply = forumController.getForumThreadReply(newReply.getParentReplyId());
+          
+          if (parentReply == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Invalid parent reply id").build();
+          }
+        }
+        
+        if (!Objects.equals(parentReply.getThread().getId(), threadId)) {
+          return Response.status(Status.BAD_REQUEST).entity("Parent reply is in wrong thread").build();
+        }
+        
+        return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply))).build();
       } else {
         return Response.status(Status.FORBIDDEN).build();
       }
@@ -738,7 +753,11 @@ public class ForumRESTService extends PluginRESTService {
   }
   
   private ForumThreadReplyRESTModel createRestModel(ForumThreadReply entity) {
-    return new ForumThreadReplyRESTModel(entity.getId(), entity.getMessage(), entity.getCreator(), entity.getCreated(), entity.getForumArea().getId()); 
+    Long parentReplyId = null;
+    if (entity.getParentReply() != null) {
+      parentReplyId = entity.getParentReply().getId();
+    }
+    return new ForumThreadReplyRESTModel(entity.getId(), entity.getMessage(), entity.getCreator(), entity.getCreated(), entity.getForumArea().getId(), parentReplyId);
   }
   
   private List<ForumThreadReplyRESTModel> createRestModel(ForumThreadReply... entries) {

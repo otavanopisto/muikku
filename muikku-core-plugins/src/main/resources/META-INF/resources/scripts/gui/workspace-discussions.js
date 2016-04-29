@@ -38,6 +38,7 @@ $(document).ready(function() {
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-replies:not(.disabled)', $.proxy(this._onMoreRepliesClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this._replyMessage, this));
+      $(DiscImpl.msgContainer).on("click", '.di-reply-answer-link', $.proxy(this._replyToReply, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this._editMessage, this));      
       $(DiscImpl.msgContainer).on("click", '.di-reply-edit-link', $.proxy(this._editMessageReply, this));      
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
@@ -275,6 +276,7 @@ $(document).ready(function() {
       var element = $(event.target);
       var areaId = element.attr("data-area-id");
       var threadId = element.attr("data-thread-id");
+      var replyCreatedMap = {};
       element = element.parents(".di-replies-paging");
       var pageElement = $(".di-replies-container");
       this._addLoading(pageElement);      
@@ -294,10 +296,15 @@ $(document).ready(function() {
           mApi({async: false}).user.users.basicinfo.read(replies.creator).callback($.proxy(function(err, user) {
               replies.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(replies.created);
+              replyCreatedMap[replies.id] = d;
               replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
               replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
               replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
-              replies.nameLetter = user.firstName.substring(0,1);         
+              replies.nameLetter = user.firstName.substring(0,1);
+              replies.isReply = replies.parentReplyId ? true : false;
+              if(replies.isReply){
+                replies.replyParentTime = formatDate(replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(replyCreatedMap[replies.parentReplyId]);
+              }
               repliesCallback();
             }, this));          
         },this));
@@ -352,7 +359,7 @@ $(document).ready(function() {
       }, this));
     },
     _loadThreadReplies : function(areaId, threadId) {
-
+      var replyCreatedMap = {};
       var pageNo = 1;
       this._clearReplies();
       this._addLoading(DiscImpl.msgContainer);
@@ -364,10 +371,15 @@ $(document).ready(function() {
             replies.creatorFullName = user.firstName + ' ' + user.lastName;
             replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             var d = new Date(replies.created);
+            replyCreatedMap[replies.id] = d;
             replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
             replies.threadId = threadId;
             replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
             replies.nameLetter = user.firstName.substring(0,1);
+            replies.isReply = replies.parentReplyId ? true : false;
+            if(replies.isReply){
+              replies.replyParentTime = formatDate(replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(replyCreatedMap[replies.parentReplyId]);
+            }
             repliesCallback();
           },this));          
         }, this));
@@ -427,6 +439,43 @@ $(document).ready(function() {
         
       }
 
+      mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {
+        mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+          thread.areaName = area.name;
+          thread.actionType = "reply"
+          threadCallback();
+        });
+      }, this)).callback($.proxy(function(err, thread) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
+        } else {
+          openInSN('/discussion/discussion_create_reply.dust', thread, sendReply);
+        }
+      }, this));
+    },
+    _replyToReply : function(event) {
+      var element = $(event.target);
+      element = element.parents(".di-message");
+      var parentId = $(element).attr("id");
+      var tId = $(element).find("input[name='threadId']").attr('value');
+      var aId = $(element).find("input[name='areaId']").attr('value');
+
+      var sendReply = function(values) {
+        
+        if (values.message.trim() === '') {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nomessage'));
+          return false;
+        } else {
+          values.parentReplyId = parentId;
+          mApi({async: false}).forum.areas.threads.replies.create(aId, tId, values).callback($.proxy(function(err, result) {
+            window.discussion._refreshThread(aId, tId);
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newreply'));
+          },this));
+        
+        }
+        
+      }
+  
       mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {
         mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
