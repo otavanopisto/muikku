@@ -146,12 +146,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       
     @Override
     protected void failed(Throwable e, Description description) {
-  //      try {
-  //        Doesn't work
-  //        takeScreenshot();
-  //      } catch (IOException e1) {
-  //        throw new RuntimeException(e);
-  //      }
+      try {
+        takeScreenshot();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
     }
     
   };
@@ -362,6 +361,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected WebDriver createPhantomJsDriver() {
     DesiredCapabilities desiredCapabilities = DesiredCapabilities.phantomjs();
     desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, ".phantomjs/bin/phantomjs");
+    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_CUSTOMHEADERS_PREFIX + "Accept-Language", "fi_FI");
     desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] { "--ignore-ssl-errors=true", "--webdriver-loglevel=NONE", "--load-images=false" } );
     PhantomJSDriver driver = new PhantomJSDriver(desiredCapabilities);
     driver.manage().window().setSize(new Dimension(1280, 1024));
@@ -435,12 +435,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void takeScreenshot(File file) throws WebDriverException, IOException {
-    FileOutputStream fileOuputStream = new FileOutputStream(file);
-    try {
-     fileOuputStream.write(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES));
-    } finally {
-      fileOuputStream.flush();
-      fileOuputStream.close();
+    if (webDriver instanceof TakesScreenshot) {
+      FileOutputStream fileOuputStream = new FileOutputStream(file);
+      try {
+       fileOuputStream.write(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES));
+      } finally {
+        fileOuputStream.flush();
+        fileOuputStream.close();
+      }
     }
   }
   
