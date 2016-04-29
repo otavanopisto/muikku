@@ -7,7 +7,7 @@
     <div class="di-message-meta lg-flex-cell-6 md-flex-cell-5 sm-flex-cell-9" >
       <div class="di-message-meta-topic flex-row"><span title="{#localize key="plugin.discussion.titleText.title"/}">{title}</span></div>
       <div class="di-message-meta-content flex-row"><span title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</span></div>
-      <div class="di-message-meta-creator flex-row"><span title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span></div>
+      <div class="di-message-meta-creator flex-row"><span title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName} - {prettyDate}</span></div>
     </div>
     <div class="di-message-area-name lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-1">
       <span class="mf-category-{forumAreaId}-brd mf-category-{forumAreaId}-font" title="{#localize key="plugin.discussion.titleText.area"/}">
