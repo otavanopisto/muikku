@@ -2250,13 +2250,24 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.UNAUTHORIZED).build();
     } else {
       SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceStudentId);
+      if (workspaceUserIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
+      }
+
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+      if (workspaceUserEntity == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
+      }
+      if (workspaceUserEntity.getWorkspaceEntity().getId() != workspaceEntity.getId()) {
+        return Response.status(Status.BAD_REQUEST).entity("WorkspaceStudent points to wrong workspace").build();
+      }
+
       WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
       SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
 
       if (userEntity == null) {
-        return Response.status(Status.BAD_REQUEST).entity("Invalid userEntityId").build();
+        return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
       }
       
       entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
