@@ -93,6 +93,7 @@
     
     _reloadWorkspaces: function () {
       this._firstResult = 0;
+      this.element.find('#coursesList').empty();
       this._loadWorkspaces();
     },
     
@@ -110,8 +111,9 @@
         includeUnpublished: this._categoryId == 'te',
         educationTypes: this._educationTypes
       };
-
+      
       mApi().coursepicker.workspaces
+        .cacheClear()
         .read($.extend(params, {
           firstResult: this._firstResult,
           maxResults: this._maxResults + 1
@@ -134,7 +136,6 @@
         }, this))
         .callback($.proxy(function (err, workspaces) {
           $(loader).remove();
-          
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
@@ -142,16 +143,14 @@
             if (workspaces && hasMore) {
               workspaces.pop();
             }
-            
             renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
-              this.element.find('#coursesList').html(text);
+              this.element.find('#coursesList').find('.cm-no-messages').remove();
+              this.element.find('#coursesList').append(text);
+              if (hasMore) {
+                this.element.find('.cp-page-link-load-more').removeClass('disabled');
+              }
             }, this));
             
-            if (hasMore) {
-              this.element.find('.cp-page-link-load-more').removeClass('disabled');
-            } else {
-              this.element.find('.cp-page-link-load-more').addClass('disabled');
-            }
           }
         }, this));   
     },
@@ -160,7 +159,7 @@
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
     }, 
     
-    _loadMore: function () {
+    _loadMore: function () {        
       this._firstResult += this._maxResults;
       this._loadWorkspaces();
     },
