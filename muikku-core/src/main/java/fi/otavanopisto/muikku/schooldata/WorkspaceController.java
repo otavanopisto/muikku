@@ -290,27 +290,15 @@ public class WorkspaceController {
         role.getIdentifier());
   }
 
-  @Deprecated
-  public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
-    return workspaceSchoolDataController.listWorkspaceUsers(workspace);
-  }
-
-  @Deprecated
-  public List<WorkspaceUser> listWorkspaceUsers(WorkspaceEntity workspaceEntity) {
-    Workspace workspace = findWorkspace(workspaceEntity);
-    if (workspace != null) {
-      return workspaceSchoolDataController.listWorkspaceUsers(workspace);
-    }
-
-    return null;
-  }
-  
   public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity) {
     Workspace workspace = findWorkspace(workspaceEntity);
     if (workspace != null) {
       return workspaceSchoolDataController.listWorkspaceStudents(workspace);      
     }
-    return null;
+    else {
+      logger.severe(String.format("Workspace not found for workspace entity %s", workspaceEntity == null ? "-" : workspaceEntity.getId()));
+    }
+    return Collections.emptyList();
   }
 
   public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity, boolean active) {
@@ -318,7 +306,10 @@ public class WorkspaceController {
     if (workspace != null) {
       return workspaceSchoolDataController.listWorkspaceStudents(workspace, active);      
     }
-    return null;
+    else {
+      logger.severe(String.format("Workspace not found for workspace entity %s", workspaceEntity == null ? "-" : workspaceEntity.getId()));
+    }
+    return Collections.emptyList();
   }
 
   public List<WorkspaceUser> listWorkspaceStaffMembers(WorkspaceEntity workspaceEntity) {
@@ -326,7 +317,10 @@ public class WorkspaceController {
     if (workspace != null) {
       return workspaceSchoolDataController.listWorkspaceStaffMembers(workspace);      
     }
-    return null;
+    else {
+      logger.severe(String.format("Workspace not found for workspace entity %s", workspaceEntity == null ? "-" : workspaceEntity.getId()));
+    }
+    return Collections.emptyList();
   }
   
   public WorkspaceUser findWorkspaceUserByWorkspaceAndUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier) {
@@ -344,11 +338,6 @@ public class WorkspaceController {
   
   public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier) {
     return workspaceSchoolDataController.findWorkspaceUser(workspaceIdentifier, workspaceUserIdentifier);
-  }
-  
-  public int countWorkspaceUsers(WorkspaceEntity workspaceEntity) {
-    // TODO Optimize
-    return listWorkspaceUsers(workspaceEntity).size();
   }
   
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByWorkspaceEntityAndRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype roleArchetype) {

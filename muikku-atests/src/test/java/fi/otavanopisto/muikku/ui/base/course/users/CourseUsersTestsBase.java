@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.ui.base.course.users;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
@@ -80,8 +79,8 @@ public class CourseUsersTestsBase extends AbstractUITest {
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
       mockBuilder
         .addStudent(student)
-        .addCourseStaffMember(NumberUtils.createLong(workspace.getIdentifier()), courseStaffMember)
-        .addCourseStudent(NumberUtils.createLong(workspace.getIdentifier()), courseStudent)
+        .addCourseStaffMember(courseId, courseStaffMember)
+        .addCourseStudent(courseId, courseStudent)
         .build();
       
       try {

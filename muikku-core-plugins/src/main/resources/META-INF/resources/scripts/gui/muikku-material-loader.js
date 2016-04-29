@@ -273,6 +273,16 @@
           meta: data.meta,
           readonly: data.readOnlyFields||false,
           trackChange: false,
+          isReadonly: function () {
+            return $(this.element).attr('disabled') == 'disabled' || $(this.element).attr('readonly') == 'readonly';
+          },
+          setReadonly: function (readonly) {
+            if (readonly) {
+              $(this.element).attr('readonly', 'readonly')
+            } else {
+              $(this.element).removeAttr('readonly');
+            } 
+          },
           hasExamples: function () {
             var meta = this.options.meta;
             if (meta.rightAnswers && meta.rightAnswers.length > 0) {
@@ -414,6 +424,16 @@
           readonly: data.readOnlyFields||false,
           trackChange: data.meta.richedit,
           trackKeyUp: !!!data.meta.richedit,
+          isReadonly: function () {
+            return $(this.element).attr('disabled') == 'disabled' || $(this.element).attr('readonly') == 'readonly';
+          },
+          setReadonly: function (readonly) {
+            if (readonly) {
+              $(this.element).attr('readonly', 'readonly')
+            } else {
+              $(this.element).removeAttr('readonly');
+            } 
+          },
           canCheckAnswer: function() {
             return false;
           },
@@ -584,8 +604,6 @@
               name: data.name
             });
           
-          if(meta.size != 'null') input.attr('size', meta.size);
-          
           // Empty option to be able to clear an answer (unless such exists in options already)
           if (meta.listType == 'dropdown') {
             var hasEmpty = false;
@@ -596,6 +614,9 @@
             }
             if (!hasEmpty)
               input.append($('<option>'));
+          }
+          else {
+            input.attr('size', meta.options.length);
           }
           
           for(var i = 0, l = meta.options.length; i < l; i++){
@@ -651,7 +672,12 @@
         case 'radio-horizontal':
         case 'radio-vertical':
           var idPrefix = [data.materialId, data.embedId, data.name].join(':');
-          var container = $('<div>').addClass('muikku-select-field');
+          var container = $('<span>').addClass('muikku-select-field');
+          if (meta.listType == 'radio-horizontal') {
+            container.addClass('radiobutton-horizontal');
+          } else {
+            container.addClass('radiobutton-vertical');
+          }
           for (var i = 0, l = meta.options.length; i < l; i++){
             var label = $('<label>')
               .attr({
@@ -670,13 +696,10 @@
                 checked: 'checked'
               });
             }
-            var target = container;
-            if (meta.listType == 'radio-vertical') {
-              target = $('<div>');
-              container.append(target);
-            }
-            target.append(radio);
-            target.append(label);
+            var optionContainer = $('<span>');
+            container.append(optionContainer);
+            optionContainer.append(radio);
+            optionContainer.append(label);
           }      
           container.muikkuField({
             fieldName: data.name,
@@ -684,6 +707,20 @@
             embedId: data.embedId,
             meta: meta,
             readonly: data.readOnlyFields||false,
+            isReadonly: function () {
+              return $(this.element).attr('data-disabled') == 'true';
+            },
+            setReadonly: function (readonly) {
+              if (readonly) {
+                $(this.element)
+                  .attr('data-disabled', 'true') 
+                  .find('input[type="radio"]').attr('disabled', 'disabled');
+              } else {
+                $(this.element)
+                  .removeAttr('data-disabled') 
+                  .find('input[type="radio"]').removeAttr('disabled');
+              }
+            },
             answer: function(val) {
               if (val) {
                 $(this.element).find('input').prop('checked', false);
@@ -734,8 +771,12 @@
 
       var meta = data.meta;
       var idPrefix = [data.materialId, data.embedId, data.name].join(':');
-      // TODO proper css for checkbox container
-      var container = $('<div>').addClass('muikku-checkbox-field');
+      var container = $('<span>').addClass('muikku-checkbox-field');
+      if (meta.listType == 'checkbox-horizontal') {
+        container.addClass('checkbox-horizontal');
+      } else {
+        container.addClass('checkbox-vertical');
+      }
       for (var i = 0, l = meta.options.length; i < l; i++){
         var label = $('<label>')
           .attr({
@@ -755,13 +796,10 @@
             checked: 'checked'
           });
         }
-        var target = container;
-        if (meta.listType == 'checkbox-vertical') {
-          target = $('<div>');
-          container.append(target);
-        }
-        target.append(checkbox);
-        target.append(label);
+        var optionContainer = $('<span>');
+        container.append(optionContainer);
+        optionContainer.append(checkbox);
+        optionContainer.append(label);
       }      
       container.muikkuField({
         fieldName: data.name,
@@ -769,6 +807,20 @@
         embedId: data.embedId,
         meta: meta,
         readonly: data.readOnlyFields||false,
+        isReadonly: function () {
+          return $(this.element).attr('data-disabled') == 'true';
+        },
+        setReadonly: function (readonly) {
+          if (readonly) {
+            $(this.element)
+              .attr('data-disabled', 'true') 
+              .find('input[type="checkbox"]').attr('disabled', 'disabled');
+          } else {
+            $(this.element)
+              .removeAttr('data-disabled') 
+              .find('input[type="checkbox"]').removeAttr('disabled');
+          }
+        },
         answer: function(val) {
           if (val) {
             $(this.element).find('input').prop('checked', false);

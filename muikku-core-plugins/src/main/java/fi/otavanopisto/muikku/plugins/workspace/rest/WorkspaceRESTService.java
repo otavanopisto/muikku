@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -738,7 +739,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
     }
     
-    if (workspaceUsers.isEmpty()) {
+    if (workspaceUsers == null || workspaceUsers.isEmpty()) {
       return Response.noContent().build();
     }
 
@@ -1957,6 +1958,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   private void sendAssessmentNotification(WorkspaceAssessment payload, UserEntity evaluator, UserEntity student,
       Workspace workspace) {
+    Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
     communicatorController.createMessage(
         communicatorController.createMessageId(),
@@ -1964,11 +1966,11 @@ public class WorkspaceRESTService extends PluginRESTService {
         Arrays.asList(student),
         category,
         localeController.getText(
-            sessionController.getLocale(),
+            locale,
             "plugin.workspace.assessment.notificationTitle",
             new Object[] {workspace.getName()}),
         localeController.getText(
-            sessionController.getLocale(),
+            locale,
             "plugin.workspace.assessment.notificationContent",
             new Object[] {payload.getVerbalAssessment()}),
         Collections.<Tag>emptySet());
