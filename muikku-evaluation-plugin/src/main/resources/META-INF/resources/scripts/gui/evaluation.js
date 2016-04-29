@@ -29,6 +29,8 @@
       triggeringElement: null,
       studentAnswers: [],
       ckeditor: {
+        baseFloatZIndex: 99999,
+        language: getLocale(),
         height : '200px',
         entities: false,
         entities_latin: false,
@@ -42,10 +44,24 @@
           { name: 'styles', items: [ 'Format' ] },
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
-        ]
+        ],
+        extraPlugins: {
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js'
+        }
       }
     },
     _create: function () {
+      var extraPlugins = [];
+      
+      $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
+        CKEDITOR.plugins.addExternal(plugin, url);
+        extraPlugins.push(plugin);
+      }, this));
+      
+      this.options.ckeditor.extraPlugins = extraPlugins.join(',');
+      
       this._load($.proxy(function (text) {
         this._dialog = $(text);
         
@@ -94,7 +110,9 @@
               $(this._dialog).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
             }
 
-            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
+            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], $.extend(this.options.ckeditor, {
+              draftKey: ['workspace-evaluation-draft', this.options.workspaceEntityId, this.options.studentEntityId].join('-')
+            }));
             
             var batchCalls = $.map(this.options.workspaceAssignments, $.proxy(function (workspaceAssignment) {
               return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {
@@ -138,6 +156,8 @@
               var assessorEntityId = $(this._dialog).find('select[name="assessor"]').val();
               var workspaceEntityId = this.options.workspaceEntityId;
               var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
+              CKEDITOR.instances.evaluateFormLiteralEvaluation.discardDraft();
+              
               this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
               if(this.options.assessmentId){
                 mApi({async: false}).workspace.workspaces.assessments.update(workspaceEntityId, this.options.assessmentId, {
@@ -236,6 +256,11 @@
     },
     
     destroy: function () {
+      try {
+        CKEDITOR.instances.evaluateFormLiteralEvaluation.destroy();
+      } catch (e) {
+      }
+      
       this._dialog.remove();
     },
     
@@ -361,6 +386,8 @@
       materialId: null,
       triggeringElement: null,
       ckeditor: {
+        baseFloatZIndex: 99999,
+        language: getLocale(),
         height : '200px',
         entities: false,
         entities_latin: false,
@@ -374,11 +401,25 @@
           { name: 'styles', items: [ 'Format' ] },
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
-        ]
+        ],
+        extraPlugins: {
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js'
+        }
       }
     },
     
     _create: function () {
+      var extraPlugins = [];
+      
+      $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
+        CKEDITOR.plugins.addExternal(plugin, url);
+        extraPlugins.push(plugin);
+      }, this));
+      
+      this.options.ckeditor.extraPlugins = extraPlugins.join(',');
+      
       this._load($.proxy(function (text) {
         this._dialog = $(text);
         
@@ -427,7 +468,9 @@
               $(this._dialog).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
             }
             
-            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
+            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], $.extend(this.options.ckeditor, {
+              draftKey: ['material-evaluation-draft', this.options.workspaceMaterialId, this.options.workspaceEntityId, this.options.studentEntityId].join('-')
+            }));
             
             var fieldAnswers = {};
             
@@ -456,6 +499,7 @@
               var evaluationDate = $(this._dialog).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
               var assessorEntityId = $(this._dialog).find('select[name="assessor"]').val();
               var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
+              CKEDITOR.instances.evaluateFormLiteralEvaluation.discardDraft();
               var workspaceMaterialId = this.options.workspaceMaterialId;
               var workspaceEntityId = this.options.workspaceEntityId;
               this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
@@ -538,6 +582,11 @@
     },
     
     destroy: function () {
+      try {
+        CKEDITOR.instances.evaluateFormLiteralEvaluation.destroy();
+      } catch (e) {
+      }
+      
       this._dialog.remove();
     },
     
