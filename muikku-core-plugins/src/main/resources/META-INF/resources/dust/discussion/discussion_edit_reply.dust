@@ -1,0 +1,21 @@
+<div class="mf-form di-newmessage-form-container flex-row">
+  <div class="di-message-create lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+    <form>
+      <div class="mf-form-header flex-row"><h3>{#localize key="plugin.discussion.reply.edit.topic"/}</h3></div>
+      <div class="mf-content flex-row">
+        <div class="di-message-new-body lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+          <div class="mf-form-row flex-row">
+            <div class="di-message-new-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+               <textarea id="textContent" name="message"></textarea>
+            </div>
+           </div> 
+          </div>
+        </div>
+      
+       <div class="mf-toolbar flex-row">
+        <input type="button" name="send" value='{#localize key="plugin.discussion.reply.edit.send"/}' {?.}{:else}disabled{/.}/>
+        <input type="button" name="cancel" value='{#localize key="plugin.discussion.reply.cancel"/}'/>
+      </div>   
+    </form>
+  </div>
+</div>
