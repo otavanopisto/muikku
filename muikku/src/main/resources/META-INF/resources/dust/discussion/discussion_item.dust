@@ -15,7 +15,7 @@
       </span>
     </div>
     <div class="di-message-time lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-3">
-      <span title="{#localize key="plugin.discussion.titleText.date"/}">{prettyDate}</span>
+      <span title="{#localize key="plugin.discussion.titleText.date"/}">{prettyDateUpdated}</span>
     </div>  
     <div class="di-message-replies lg-flex-cell-1 md-flex-cell-2 sm-flex-cell-3 flex-right">
      <span title="{#localize key="plugin.discussion.titleText.replies"/}" class="di-message-replies">{numReplies}</span>

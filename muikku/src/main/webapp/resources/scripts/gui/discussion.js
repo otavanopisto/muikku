@@ -55,7 +55,9 @@ $(document).ready(function() {
         mApi({async: false}).user.users.basicinfo.read(msgs.creator).callback($.proxy(function(err, user) {
           msgs.creatorFullName = user.firstName + ' ' + user.lastName;
           var d = new Date(msgs.created);
+          var ud = new Date(msgs.updated);          
           msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
+          msgs.prettyDateUpdated = formatDate(ud) + ' ' + formatTime(ud);
           msgs.userRandomNo = Math.floor(Math.random() * 6) + 1;
           msgs.nameLetter = user.firstName.substring(0,1);
           msgsCallback();
@@ -130,7 +132,9 @@ $(document).ready(function() {
           mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
             var d = new Date(thread.created);
+            var ud = new Date(thread.updated);          
             thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+            thread.prettyDateUpdated = formatDate(ud) + ' ' + formatTime(ud);
             thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             threadCallback();          
           }, this));
@@ -170,7 +174,9 @@ $(document).ready(function() {
             mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
               thread.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(thread.created);
+              var ud = new Date(thread.updated);          
               thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              thread.prettyDateUpdated = formatDate(ud) + ' ' + formatTime(ud);
               thread.userRandomNo = Math.floor(Math.random() * 6) + 1;
               thread.nameLetter = user.firstName.substring(0,1);              
               threadCallback();
@@ -230,7 +236,9 @@ $(document).ready(function() {
             mApi({async: false}).user.users.basicinfo.read(msgs.creator).callback($.proxy(function(err, user) {
               msgs.creatorFullName = user.firstName + ' ' + user.lastName;            
               var d = new Date(msgs.created);
+              var ud = new Date(msgs.updated);          
               msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              msgs.prettyDateUpdated = formatDate(ud) + ' ' + formatTime(ud);
               msgs.userRandomNo = Math.floor(Math.random() * 6) + 1;
               msgs.nameLetter = user.firstName.substring(0,1);              
               msgsCallback();
