@@ -570,6 +570,7 @@ table[cellpadding] td{
   table[cellpadding="#{$i}"] td {
     padding:#{$i}px;
   }
+  
 }
 
 td {
@@ -582,10 +583,6 @@ td {
 label {
   display:inline;
   font-weight:300;
-}
-
-a {
-  color:#4290ea; 
 }
 
 ul {

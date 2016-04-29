@@ -3,7 +3,6 @@
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 @import "_jquery.datepicker.scss";
-@import "_workspace-materials-defaults.scss";
 
 body.evaluation {
   background:none;
@@ -1019,6 +1018,82 @@ body.evaluation {
               
               .evaluation-journal-entry-content {
               
+                blockquote {
+                  font-family:'Open Sans', Arial, sans-serif;
+                  font-style:italic;
+                  padding:2px 0;
+                  border-style:solid;
+                  border-color:#eee;
+                  border-width:0;
+                  color:#777;
+                  font-size:22px;
+                  margin:0 40px 0 40px;
+                
+                  p {
+                    margin:10px 0 10px 0;
+                  }
+                
+                }
+                
+                img {
+                  max-width:100% !important;
+                  height:auto !important;
+                }
+                
+                a > img {
+                  cursor:-webkit-zoom-in;
+                  cursor:-moz-zoom-in;
+                }
+                
+                p {
+                  margin:15px 0 15px 0;
+                }
+                
+                a {
+                  color:$link;
+                }
+                
+                em, i {
+                  font-style:italic;
+                  font-weight:300;
+                }
+                
+                strong, b {
+                  font-weight:400;
+                  font-style:inherit;
+                }
+                
+                ul {
+                  list-style-type:disc;
+                  list-style-position:inside;
+                }
+                
+                ol {
+                  list-style-type:decimal;
+                  list-style-position:inside;
+                }
+                
+                ul, ol {
+                  margin:0 20px;
+                  padding:0;
+                
+                  li {
+                    margin:5px;
+                    padding:0;
+                  }
+                
+                }
+                
+                sub {
+                  vertical-align:sub;
+                  font-size:70%;
+                }
+                
+                sup {
+                  vertical-align:super;
+                  font-size:70%;
+                }
+
               }
             
             }
