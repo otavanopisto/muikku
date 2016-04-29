@@ -1,13 +1,14 @@
-@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
-@import "_workspaces-materials-defaults.scss";
+@import "_vars.scss";
+@import "_styles.scss";
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 @import "_jquery.datepicker.scss";
+@import "_workspace-materials-defaults.scss";
 
 body.evaluation {
   background:none;
   background-color:#f0f3f5;
-  @include background-image('/gfx/light-diagonal-strips.png');
+  background-image:url("/gfx/light-diagonal-strips.png");
   padding:0.01em; /* Prevent margin collapsing  */
   min-height:100%;
   line-height:1.7em;
@@ -24,7 +25,7 @@ body.evaluation {
     z-index:9999;
   
     &:before {
-      @include generic-loader(50px);
+      @include generic-loader(50px); 
       position:absolute;
       top:50%;
       left:50%;
@@ -32,7 +33,7 @@ body.evaluation {
   
   }
   
-  .evaluation-navigation-wrapper {
+  .evaluation-navigation-wrapper { 
     background:#7ed9ff;
     position:absolute;
     top:0;
@@ -364,7 +365,7 @@ body.evaluation {
         height:120px;
         margin:0 auto;  
         box-sizing:border-box;
-        @include background-image('gfx/default-user-picture.jpg');
+        background-image:url("gfx/default-user-picture.jpg");
         background-size:cover;
         border-radius:100%;
         background-position:center center;
@@ -1203,7 +1204,7 @@ body.evaluation {
           display:inline-block;
           margin:0 20px 0 0;
           padding:0 0 0 40px;
-          @include background-image('gfx/default-user-picture.jpg');
+          background-imageurl:("gfx/default-user-picture.jpg");
           background-repeat:no-repeat;
           background-position:left center;
           background-size:contain;
