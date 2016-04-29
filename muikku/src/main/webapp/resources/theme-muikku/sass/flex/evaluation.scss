@@ -1018,6 +1018,9 @@ body.evaluation {
               
               .evaluation-journal-entry-content {
               
+                /* TODO:
+                   This needs to be generalized so we would not have to include these content rules all over the place 
+                */
                 blockquote {
                   font-family:'Open Sans', Arial, sans-serif;
                   font-style:italic;
