@@ -143,6 +143,7 @@
             }
             
             renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
+              this.element.find('#coursesList').find('.cm-no-messages').remove();
               this.element.find('#coursesList').append(text);
 
             }, this));
