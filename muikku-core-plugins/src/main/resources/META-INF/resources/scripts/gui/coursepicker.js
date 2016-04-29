@@ -93,6 +93,7 @@
     
     _reloadWorkspaces: function () {
       this._firstResult = 0;
+      this.element.find('#coursesList').empty();
       this._loadWorkspaces();
     },
     
