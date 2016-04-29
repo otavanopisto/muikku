@@ -33,6 +33,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"ANYONE\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForNotVisible(".loading");
         waitForVisible(".workspace-management-name input");
         logout();
         mockBuilder.clearLoginMock();
@@ -59,6 +60,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"ANYONE\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForNotVisible(".loading");
         waitForVisible(".workspace-management-name input");
         logout();
         mockBuilder.mockLogin(student);
@@ -81,13 +83,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, workspace.getId(), student.getId());
+      Long courseId = 1l;
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"ANYONE\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForNotVisible(".loading");
         waitForVisible(".workspace-management-name input");
         logout();
         mockBuilder.mockLogin(student);
@@ -114,6 +118,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"LOGGED_IN\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForNotVisible(".loading");
         waitForVisible(".workspace-management-name input");
         logout();
         mockBuilder.clearLoginMock();
@@ -140,6 +145,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"LOGGED_IN\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForNotVisible(".loading");
         waitForVisible(".workspace-management-name input");
         logout();
         mockBuilder.mockLogin(student);
@@ -162,13 +168,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, workspace.getId(), student.getId());
+      Long courseId = 1l;
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"LOGGED_IN\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForNotVisible(".loading");
         waitForVisible(".workspace-management-name input");
         logout();
         mockBuilder.mockLogin(student);
@@ -195,6 +203,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForNotVisible(".loading");
         waitForVisible(".workspace-management-name input");
         logout();
         mockBuilder.clearLoginMock();
@@ -222,6 +231,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForVisible(".workspace-management-name input");
+        waitForNotVisible(".loading");
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -243,13 +253,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, workspace.getId(), student.getId());
+      Long courseId = 1l;
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForNotVisible(".loading");
         waitForVisible(".workspace-management-name input");
         logout();
         mockBuilder.mockLogin(student);
