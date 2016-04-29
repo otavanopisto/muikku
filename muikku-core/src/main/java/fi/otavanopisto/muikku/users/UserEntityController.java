@@ -13,6 +13,9 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.LocaleUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserEmailEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserEntityDAO;
@@ -145,6 +148,28 @@ public class UserEntityController implements Serializable {
 
   public List<UserEntity> listUserEntities() {
     return userEntityDAO.listAll();
+  }
+  
+  public Locale getLocale(UserEntity userEntity) {
+    Locale result = null;
+    try {
+      String locale = userEntity.getLocale();
+      if (StringUtils.isNotBlank(locale)) {
+        try {
+          result = LocaleUtils.toLocale(locale);
+        } catch (Exception e) {
+          logger.warning(String.format("UserEnity %d has invalid locale %s", userEntity.getId(), locale));
+        }
+      }
+    
+      if (result == null) {
+        result = new Locale("fi");
+      }
+    } catch (Exception e) {
+      result = Locale.getDefault();
+    }
+    
+    return result;
   }
   
   /**
