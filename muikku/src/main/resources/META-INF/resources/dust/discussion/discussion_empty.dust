@@ -1,6 +1,0 @@
-
-
-<div class="mf-content-empty di-no-messages flex-row">
-  <h3>{#localize key="plugin.discussion.empty.topic"/}</h3>
-</div>
-
