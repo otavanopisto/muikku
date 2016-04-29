@@ -85,8 +85,8 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
             waitAndClick(".di-message-reply-link");
             addTextToCKEditor("Test reply for test.");
             click("*[name='send']");
-            waitForPresent(".mf-subitem-content-text>p");
-            assertText(".mf-subitem-content-text>p", "Test reply for test.");
+            waitForPresent(".di-replies-container .mf-item-content-text p");
+            assertText(".di-replies-container .mf-item-content-text p", "Test reply for test.");
           } finally {
             deleteWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), thread.getId()); 
           }
