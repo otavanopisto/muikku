@@ -2227,6 +2227,54 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(entries).build();
   }
 
+  @GET
+  @Path("/workspaces/{WORKSPACEID}/journal")
+  @RESTPermitUnimplemented
+  public Response listJournalEntries(
+      @PathParam("WORKSPACEID") Long workspaceEntityId,
+      @QueryParam("workspaceStudentId") String workspaceStudentId) 
+  {
+    List<WorkspaceJournalEntry> entries = new ArrayList<>();
+    List<WorkspaceJournalEntryRESTModel> result = new ArrayList<>();
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    } else {
+      SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceStudentId);
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+      WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+      SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+
+      if (userEntity == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid userEntityId").build();
+      }
+      
+      entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    }
+    
+    for (WorkspaceJournalEntry entry : entries) {
+      result.add(new WorkspaceJournalEntryRESTModel(
+          entry.getId(),
+          entry.getWorkspaceEntityId(),
+          entry.getUserEntityId(),
+          entry.getHtml(),
+          entry.getTitle(),
+          entry.getCreated()
+      ));
+    }
+
+    return Response.ok(entries).build();
+  }
+
+
   @POST
   @Path("/workspaces/{WORKSPACEID}/journal")
   @RESTPermitUnimplemented

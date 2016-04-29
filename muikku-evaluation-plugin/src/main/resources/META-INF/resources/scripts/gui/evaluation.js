@@ -317,15 +317,22 @@
       },this)
     },
     _loadTemplate: function (assignments, callback) {
-      renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
-        studentDisplayName: this.options.studentDisplayName,
-        gradingScales: this.options.gradingScales,
-        assessors: this.options.assessors,
-        workspaceName: this.options.workspaceName,
-        studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-        assignments: assignments,
-        exercises: []
-      }, callback);
+      mApi().workspace.workspaces.journal.read(this.options.workspaceEntityId, {workspaceStudentId: this.options.workspaceStudentId}).callback(
+        $.proxy(function(err, journalEntries) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else 
+            renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
+              studentDisplayName: this.options.studentDisplayName,
+              gradingScales: this.options.gradingScales,
+              assessors: this.options.assessors,
+              workspaceName: this.options.workspaceName,
+              studentStudyProgrammeName: this.options.studentStudyProgrammeName,
+              assignments: assignments,
+              exercises: [],
+              journalEntries: journalEntries
+            }, callback);
+        }, this));
     },
     
     _onAssignmentTitleClick: function (event) {
@@ -562,29 +569,21 @@
     },
     
     _loadTemplate: function (workspaceMaterialId, materialId, materialType, materialTitle, materialHtml, path, callback) {
-      renderDustTemplate('evaluation/evaluation_evaluate_assignment_modal_view.dust', {
-        studentDisplayName: this.options.studentDisplayName,
-        gradingScales: this.options.gradingScales,
-        assessors: this.options.assessors,
-        workspaceName: this.options.workspaceName,
-        studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-        assignments: [{
-          workspaceMaterialId: workspaceMaterialId,
-          materialId: materialId,
-          title: materialTitle, 
-          html: materialHtml,
-          type: materialType,
-          path: path
-        }], 
-        journalEntries: [{
-          id: 123,
-          workspaceEntityId: 234,
-          userEntityId: 456,
-          content: 'Tänään tapasin todellisen Muikún, Ex his fabulas periculis, cu possim persequeris eum. Purto tantas conclusionemque id his. Ei veri fierent sit, ne sea erroribus mediocritatem, fabulas detracto consequuntur sea ad. Mea ad ridens saperet quaestio, eum te viris semper legendos, mazim cotidieque vix at. Cu aliquip repudiandae sit, antiopam mediocritatem est id.',
-          title: 'Rakas päiväkirja',
-          created: new Date().getTime()
-        }]
-      }, callback);
+        renderDustTemplate('evaluation/evaluation_evaluate_assignment_modal_view.dust', {
+          studentDisplayName: this.options.studentDisplayName,
+          gradingScales: this.options.gradingScales,
+          assessors: this.options.assessors,
+          workspaceName: this.options.workspaceName,
+          studentStudyProgrammeName: this.options.studentStudyProgrammeName,
+          assignments: [{
+            workspaceMaterialId: workspaceMaterialId,
+            materialId: materialId,
+            title: materialTitle, 
+            html: materialHtml,
+            type: materialType,
+            path: path
+          }], 
+        }, callback);
     },
     
     _adjustTextareaHeight: function(container) {

@@ -10,35 +10,9 @@
     <div class="evaluation-modal-workspace-journal-info">
       <div class="evaluation-modal-workspace-journal-entries-wrapper">
         <div class="evaluation-modal-workspace-journal-entries-title">{#localize key="plugin.evaluation.workspaceEvaluationDialog.jhournalEntries.title"/}</div>
-        <div class="evaluation-modal-workspace-single-journal-entry">
-          <div class="evaluation-journal-entry-title">Rakas päiväkirja</div>
-          <div class="evaluation-journal-entry-date">12.12.2016</div>
-          <div class="evaluation-journal-entry-content">Tänään tapasin todellisen Muikún, Ex his fabulas periculis, cu possim persequeris eum. Purto tantas conclusionemque id his. Ei veri fierent sit, ne sea erroribus mediocritatem, fabulas detracto consequuntur sea ad. Mea ad ridens saperet quaestio, eum te viris semper legendos, mazim cotidieque vix at. Cu aliquip repudiandae sit, antiopam mediocritatem est id.</div>
-        </div>
-        
-        <div class="evaluation-modal-workspace-single-journal-entry">
-          <div class="evaluation-journal-entry-title">Hieno päiväkirja</div>
-          <div class="evaluation-journal-entry-date">11.12.2016</div>
-          <div class="evaluation-journal-entry-content">Ei veri fierent sit, ne sea erroribus mediocritatem, fabulas detracto consequuntur sea ad. Mea ad ridens saperet quaestio, eum te viris semper legendos, mazim cotidieque vix at. Cu aliquip repudiandae sit, antiopam mediocritatem est id.</div>
-        </div>
-        
-        <div class="evaluation-modal-workspace-single-journal-entry">
-          <div class="evaluation-journal-entry-title">Ex his fabulas periculis, cu possim persequeris eum. Purto tantas </div>
-          <div class="evaluation-journal-entry-date">1.2.2016</div>
-          <div class="evaluation-journal-entry-content"> detracto consequuntur sea ad. Mea ad ridens saperet quaestio, eum te viris semper legendos, mazim cotidieque vix at. Cu aliquip repudiandae sit, antiopam mediocritatem est id. Tänään tapasin todellisen Muikún, Ex his fabulas periculis, cu possim persequeris eum. Purto tantas conclusionemque id his. Ei veri fierent sit, ne sea erroribus mediocritatem, fabulas detracto consequuntur sea ad. Mea ad ridens saperet quaestio, eum te viris semper legendos, mazim cotidieque vix at. Cu aliquip repudiandae sit, antiopam mediocritatem est id.</div>
-        </div>
-        
-        <div class="evaluation-modal-workspace-single-journal-entry">
-          <div class="evaluation-journal-entry-title">Xcu possim persequeris eum. Purto tantas </div>
-          <div class="evaluation-journal-entry-date">1.2.2016</div>
-          <div class="evaluation-journal-entry-content">EX detracto consequuntur sea ad. Mea ad ridens saperet quaestio, eum te viris semper legendos, mazim cotidieque vix at. Cu aliquip repudiandae sit, antiopam mediocritatem est id. EX detracto consequuntur sea ad. Mea ad ridens saperet quaestio, eum te viris semper legendos, mazim cotidieque vix at. Cu aliquip repudiandae sit, antiopam mediocritatem est id.</div>
-        </div>
-      
-      <!-- 
         {#journalEntries}
           {>"evaluation/evaluation_evaluate_workspace_single_journal_entry.dust"/}
         {/journalEntries}
-      -->
       </div>
     </div>
   </article>
