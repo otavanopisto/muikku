@@ -273,6 +273,16 @@
           meta: data.meta,
           readonly: data.readOnlyFields||false,
           trackChange: false,
+          isReadonly: function () {
+            return $(this.element).attr('disabled') == 'disabled' || $(this.element).attr('readonly') == 'readonly';
+          },
+          setReadonly: function (readonly) {
+            if (readonly) {
+              $(this.element).attr('readonly', 'readonly')
+            } else {
+              $(this.element).removeAttr('readonly');
+            } 
+          },
           hasExamples: function () {
             var meta = this.options.meta;
             if (meta.rightAnswers && meta.rightAnswers.length > 0) {
@@ -414,6 +424,16 @@
           readonly: data.readOnlyFields||false,
           trackChange: data.meta.richedit,
           trackKeyUp: !!!data.meta.richedit,
+          isReadonly: function () {
+            return $(this.element).attr('disabled') == 'disabled' || $(this.element).attr('readonly') == 'readonly';
+          },
+          setReadonly: function (readonly) {
+            if (readonly) {
+              $(this.element).attr('readonly', 'readonly')
+            } else {
+              $(this.element).removeAttr('readonly');
+            } 
+          },
           canCheckAnswer: function() {
             return false;
           },
@@ -687,6 +707,20 @@
             embedId: data.embedId,
             meta: meta,
             readonly: data.readOnlyFields||false,
+            isReadonly: function () {
+              return $(this.element).attr('data-disabled') == 'true';
+            },
+            setReadonly: function (readonly) {
+              if (readonly) {
+                $(this.element)
+                  .attr('data-disabled', 'true') 
+                  .find('input[type="radio"]').attr('disabled', 'disabled');
+              } else {
+                $(this.element)
+                  .removeAttr('data-disabled') 
+                  .find('input[type="radio"]').removeAttr('disabled');
+              }
+            },
             answer: function(val) {
               if (val) {
                 $(this.element).find('input').prop('checked', false);
@@ -773,6 +807,20 @@
         embedId: data.embedId,
         meta: meta,
         readonly: data.readOnlyFields||false,
+        isReadonly: function () {
+          return $(this.element).attr('data-disabled') == 'true';
+        },
+        setReadonly: function (readonly) {
+          if (readonly) {
+            $(this.element)
+              .attr('data-disabled', 'true') 
+              .find('input[type="checkbox"]').attr('disabled', 'disabled');
+          } else {
+            $(this.element)
+              .removeAttr('data-disabled') 
+              .find('input[type="checkbox"]').removeAttr('disabled');
+          }
+        },
         answer: function(val) {
           if (val) {
             $(this.element).find('input').prop('checked', false);
