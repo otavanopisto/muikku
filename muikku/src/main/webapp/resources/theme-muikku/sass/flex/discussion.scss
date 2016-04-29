@@ -223,6 +223,9 @@
       .di-message-details {
           font-size: 22px;
           font-weight: 300;
+          &.di-message-details-reply{
+            font-size:18px;
+          }
           > span{          
             &:not(:first-child){
             margin-left:10px;            
