@@ -16,7 +16,7 @@ if [[ $release = "true" ]]; then
   git pull
   pushd .
   echo Replacing SNAPSHOT versions to releases
-  mvn versions:force-releases -Dincludes=fi.pyramus:* --settings ~/.m2/mySettings.xml
+  mvn versions:force-releases -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
   git add .
   git commit -m "Updated dependency versions"
   echo Releasing

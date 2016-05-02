@@ -175,9 +175,10 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
         }
       }
 
-      if (locale != null) {
-        sessionController.setLocale(locale);
+      if (locale == null) {
+        locale = new Locale("fi");
       }
+      sessionController.setLocale(locale);
 
       SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(user.getSchoolDataSource());
       userEntityController.updateDefaultSchoolDataSource(userEntity, schoolDataSource);
