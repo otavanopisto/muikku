@@ -85,6 +85,10 @@ public class SessionBackingBean {
     return loggedUserRoleArchetype == EnvironmentRoleArchetype.TEACHER;
   }
 
+  public boolean getStudyProgrammeLeader() {
+    return loggedUserRoleArchetype == EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER;
+  }
+
   public boolean getManagerLoggedIn() {
     return loggedUserRoleArchetype == EnvironmentRoleArchetype.MANAGER;
   }
