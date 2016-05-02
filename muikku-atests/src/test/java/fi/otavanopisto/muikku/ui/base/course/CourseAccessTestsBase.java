@@ -1,14 +1,8 @@
 package fi.otavanopisto.muikku.ui.base.course;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertTrue;
-
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.openqa.selenium.By;
-
-import com.github.tomakehurst.wiremock.client.WireMock;
-
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
@@ -28,11 +22,13 @@ public class CourseAccessTestsBase extends AbstractUITest {
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
       login();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+      long courseId = 1l;
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"ANYONE\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+
         waitForNotVisible(".loading");
         waitForVisible(".workspace-management-name input");
         logout();
