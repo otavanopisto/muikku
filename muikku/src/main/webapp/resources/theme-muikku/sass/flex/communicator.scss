@@ -1,0 +1,376 @@
+@import "_vars.scss";
+@import "_styles.scss";
+
+.cm-message-create {
+  width:100%;
+}  
+
+.cm-message-create-body {
+  
+  .mf-textfield {
+    width:100%;
+  }
+
+  .cm-message-create-content, .cm-message-reply-content { 
+    width:100%;
+  }  
+
+  .cm-message-recipients {
+
+  }
+  
+  .cm-message-recipient {
+    float:left;
+    cursor:pointer;
+    margin-top:0 !important;
+        
+    &:not(:first-child) {
+      margin-left:10px;
+      margin-top:0 !important;
+    }
+    
+   .cm-message-tool {
+     padding:0 10px 0 10px;
+     border:1px solid $brd2;
+     color:#000;
+    }   
+
+  }
+  
+  .cm-message-recipient-name {
+    float:left;
+    margin-top:0 !important;
+    font-family:inherit;
+    margin-left: 10px;
+    padding: 9px 0;
+
+    &:before {
+      margin-right:5px;
+      font-family: 'muikku';      
+    }     
+
+
+    &.user {
+
+      &:before {
+        color:orange;
+      }     
+        
+    }
+    
+    &.usergroup {
+
+      &:before {
+        color:green;
+      }
+           
+    }
+      
+    &.workspace {
+
+      &:before {
+         color:blue;
+      }     
+    
+    }     
+    
+    &:hover {   
+      color:red;
+      
+      &:before {
+       color:red;
+      }
+      
+    } 
+            
+  }  
+   
+  .cm-message-recipient-remove {
+    float:right;    
+    background-color:$bgr2;
+    margin-top:0 !important;
+  }
+
+}
+
+.cm-content { 
+
+}
+
+.cm-messages-container {
+  padding:5px;
+}
+
+/* These are deprecated and are located in mainfunctions 
+ - should be removed and replaced in dust templates whenever YOU are working on the communicator the next time */
+
+.cm-messages-toolbar {
+  border:1px solid $brd2;
+  background-color: #fff;
+  padding:5px;
+  margin-bottom:5px;
+  
+  .cm-messages-tool {
+    padding:0 10px 0 10px;
+    border:1px solid $brd2;
+    background-color:$bgr1; 
+    font-size:1.5em;
+    float:left;
+    color:#000;
+    cursor:pointer;
+    
+    &:not(:first-child) {
+      margin-left:10px;
+    }    
+    
+  }
+  
+}
+
+.mf-item-details-container {
+    
+}
+
+.cm-message {
+
+   .cm-message-select {
+     margin-left: 5px;
+     margin-top: 5px;
+   }
+   
+   .cm-message-header-name {
+     width:90%;
+   }
+   
+   .cm-message-header-count {
+     width:10%;
+     
+     .cm-message-replies {
+       font-weight:600;
+      float:right;
+      width:25px;
+      background-color:$hlBgr;
+      text-align:center;
+      margin-left:10px;
+     }
+    
+   }
+   
+   .cm-message-header-content-primary {
+     float: left;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     white-space: nowrap;
+     max-width: 210px;
+     
+     span.cm-message-sender-name {
+       color:#000;
+     }
+     
+     span.cm-message-recipient-name {
+       margin-left:5px;
+       
+       &:after {
+          content: ",";
+        }
+               
+        &:last-child:after {
+          content: none;
+        }
+        
+      }
+      
+    }
+      
+   .cm-message-header-content-secondary {
+     white-space:nowrap;
+     text-overflow:ellipsis;
+     overflow:hidden;
+     padding-left:10px;
+   }
+
+    &.unread {
+      font-weight:700;
+
+      .mf-item-header-content-primary {
+        color:#fff;
+       }
+       
+    }
+  
+    .cm-message-header-count {
+      line-height:2.5em;
+   
+       span {
+         float:right;
+       }
+   
+    }   
+  
+  .cm-user-picture {
+    float:left;
+    height: 20px;
+    width: 20px;
+    margin: 6px 0 0 6px !important;
+
+    &.default {
+      background-image:url("/gfx/default-user-picture.jpg");
+      background-size:100%;
+      border: 2px solid #fff;
+      border-radius: 40px;
+      box-shadow: 0 0 0 2px #00deff;
+      margin: 2px;     
+    }
+     
+  }
+  
+  .cm-message-view {
+    border-radius:4px;  
+    margin-bottom:10px;
+    min-height:50px;
+    padding:5px;   
+  }
+ 
+  .cm-message-details {
+    max-height:35px;
+  }
+     
+  .cm-message-options-container {
+    display:inline-block;
+    box-sizing:border-box;
+    width:30px;
+    vertical-align:top;
+  } 
+   
+  .cm-message-details-container {
+    display:inline-block;
+    box-sizing:border-box;
+    background-color:#fff;
+    width:680px;
+  }
+   
+  .cm-message-content {
+    margin-left:70px;
+    margin-right:70px; 
+   
+    .cm-message-content-text {
+   
+      p {
+        margin:1em 0;
+      }
+   
+    }  
+    
+  }
+  
+  .cm-message-content-tools {
+    padding:10px 0;  
+  }
+  
+  .cm-message-tools, .cm-viewmessagethread-tools {
+    padding:0;
+    height:40px;
+  }
+  
+  .cm-message-tool {
+    padding:0 10px 0 10px;
+    border:1px solid $brd2;
+    background-color:$bgr1; 
+    font-size:1.5em;
+    float:left;
+    color:#000;
+    
+    &:not(:first-child) {
+      margin-left:10px;
+    }
+    
+    span {
+      font-size:0.75em; 
+    }
+    
+  }
+
+  .cm-message-reply {
+    padding:5px 5px 5px 10px;
+    background-color:#fff;    
+  }
+  
+  .cm-message-recipient {
+   
+     div {
+       float:left;
+     }
+  
+  }
+
+ .cm-message-selected-recipients {
+   padding:5px;
+   background-color:#fff;
+   
+   span {
+     display:inline-block;
+    
+     &:not(:first-child) {
+       margin-left:10px;
+     }
+    
+   }
+   
+ }
+
+/* When the message is open */  
+  
+  &.open {
+    border-left:5px solid orange;   
+    padding-left:10px;
+     
+    .cm-message-details {
+      max-height:none;
+    }
+     
+    &.owner {
+      border-left:5px solid $brd2; 
+       
+      h3 {
+        color:#dadada;
+      }
+       
+    }       
+    
+    .cm-user-picture {
+      float:left;
+      height:60px;
+      width:60px;
+     
+     
+      &.default {
+          background-imageurl:("/gfx/default-user-picture.jpg");
+          background-size:100%;
+          border: 2px solid #fff;
+          border-radius: 40px;
+          box-shadow: 0 0 0 2px #00deff;
+          margin: 2px;
+      }
+     
+      &.reply-recipient {
+        display:inline-block;
+        float:none;
+        height:20px;
+        width:20px;
+      }
+     
+    }   
+      
+    .cm-message-header-content-secondary {
+      float:right;
+      margin-right:60px;
+    }
+    
+    .cm-message-header-content-primary {
+      font-weight:700;
+      margin-left:10px;
+    }   
+   
+  }
+
+}

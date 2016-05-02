@@ -11,8 +11,9 @@
 
 
 
-.mf-primary-function{
-  .mf-primary-function-content{
+.mf-primary-function {
+  
+  .mf-primary-function-content {
     text-transform:uppercase;
     border-radius:3px;
     display:inline-block;
@@ -38,11 +39,11 @@
       display:inline-block;
       padding:12px;
       white-space:nowrap;
-    }       
+    }  
+         
   }
+  
 }
-
-
 
 .mf-dropdown-content {
   text-transform:uppercase;
@@ -75,6 +76,7 @@
     padding:4px 4px 3px 4px;
     font-size:2.45em;    
   } 
+  
 }
 
 .mf-dropdown {  
@@ -112,9 +114,13 @@
           text-decoration:none;
           color:#fff;
         }
+        
       }
+      
     }
+    
   }
+  
 }
 
 .mf-side-button-dropdown {
@@ -187,6 +193,7 @@
     list-style-type: none;
     padding:0;
     margin:0;
+    
     li {
       border-bottom: 1px solid $brd1;
       border-left: 5px solid #fff;
@@ -330,11 +337,14 @@
       font-size:23px;
       color:#fff;
     }
+    
   }
+  
 } 
 
-.mf-tools-mobile{
-  .mf-tools-mobile-activate{    
+.mf-tools-mobile {
+  
+  .mf-tools-mobile-activate {    
     background: #0099ff none repeat scroll 0 0;
     border-radius: 50%;
     bottom: 61px;
@@ -347,34 +357,39 @@
     text-align: center;
     width: 50px;
     z-index:99;
-    &:hover{
+    
+    &:hover {
       padding-bottom:39px;
       background-color:#0065cb;
-      .mf-tools-mobile-list{
+      
+      .mf-tools-mobile-list {
         display: block;
         margin-top: -215px;
         padding-bottom: 25px;
       }  
-      .mf-tools-mobile-activate{    
+      
+      .mf-tools-mobile-activate {    
         padding: 8px 0 40px;
-      }    
+      }   
+       
     }
+    
   }
   
-  .mf-tools-mobile-list{
+  .mf-tools-mobile-list {
     display:none;
   }
-  .mf-tool-container{
+  
+  .mf-tool-container {
     margin-top:15px;
     margin-left:0;
     padding: 0 1px 14px;
   }
 
-
 }
 
 
-.mf-content-main{
+.mf-content-main {
   background-color:$mainFuncContent; 
 }
   

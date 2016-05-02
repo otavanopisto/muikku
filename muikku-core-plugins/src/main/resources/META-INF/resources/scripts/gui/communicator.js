@@ -1,7 +1,6 @@
-
 $(document).ready(function(){
   
-  $(".bt-mainFunction").click(function(){
+  $(".cm-new-message-button").click(function(){
     var sendMessage = function(values){
     
       if (!values.recipientIds && !values.recipientGroupIds && !values.recipientStudentsWorkspaceIds && !values.recipientTeachersWorkspaceIds) {
@@ -333,11 +332,7 @@ $(document).ready(function(){
     var groups = this._searchGroups(searchTerm);
     var users = this._searchUsers(searchTerm);
     var recipients = users.concat(workspaces, groups);
-    
-    
- 
-    
-    
+
     return recipients;
   },      
 

@@ -1,22 +1,62 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"  
-  xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-  template="/jsf/communicator/templates/communicator_base.xhtml">
-
-
-  <ui:define name="viewScripts">
-    <script type="text/javascript" src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
-    <h:outputScript name="scripts/gui/communicator.js" />
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-functionality.xhtml">
+  
+  <ui:param name="activeTrail" value="coursepicker"/>
+  
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/mainfunctions.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.klass/0.1a/jquery.klass-0.1a.js"/>
+    <script defer="defer" type="text/javascript" src="/scripts/gui/socialnavigation.js"/>   
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/communicator.js"/>
   </ui:define>
+  
+  <ui:define name="main-functionality-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/communicator.css"/>
+  </ui:define>  
+  
+  <ui:define name="mf-content-master"> 
+    <div id="course-picker">
+      <ui:insert name="mf-content-functions">
+        <div class="mf-content-functions flex-row flex-align-items-center">
+          <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8 sm-flex-order-1 sm-flex-cell-first">
+            
+            <div class="mf-primary-function">
+              <div class="cm-new-message-button mf-primary-function-content">
+                <span class="mf-primary-function-text">#{i18n.text['plugin.communicator.newMessage']}</span>
+              </div>
+            </div>  
 
+          </div>
+          <div class="mf-controls-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-8 sm-flex-order-2">
 
-  <ui:define name="content.center.widget">
-    <m:widget name="communicator-content" size="18" rendered="#{sessionBackingBean.loggedIn}"/>  
+          </div>
+        </div>
+      </ui:insert>
+      <ui:insert name="mf-content-area">
+        <div class="mf-content-area flex-row">
+          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top">
+          <div class="cm-content-main flex-row">
+            <div class="lg-flex-cell-4 md-flex-cell-5 sm-flex-cell-full sm-flex-order-1 cm-categories no-margin-top">
+              <ul>
+                <li data-message-type="inbox"><a href="#inbox">#{i18n.text['plugin.communicator.category.title.inbox']}</a></li>
+                <li data-message-type="sent"><a href="#sent">#{i18n.text['plugin.communicator.category.title.sent']}</a></li>
+              </ul>
+            </div>
+            <div class="lg-flex-cell-12 md-flex-cell-11 sm-flex-cell-full sm-flex-order-2 cm-messages-container"></div>
+          </div>
+          </div>
+        </div>
+      </ui:insert>
+    </div>
   </ui:define>
-     
+  
 </ui:composition>
