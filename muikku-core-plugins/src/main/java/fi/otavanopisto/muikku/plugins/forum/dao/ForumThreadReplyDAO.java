@@ -179,6 +179,11 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     
     return reply;
   }
+  
+  public ForumThreadReply updateArchived(ForumThreadReply reply, Boolean archived){
+    reply.setArchived(archived);
+    return persist(reply);
+  }
 
   @Override
   public void delete(ForumThreadReply e) {

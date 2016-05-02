@@ -221,18 +221,10 @@ public class ForumController {
   @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
   public void deleteThread(@PermitContext ForumThread thread) {
     List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
-    Iterator<ForumThreadReply> replyIterator = replies.iterator();
-    while(replyIterator.hasNext()){
-      ForumThreadReply reply = replyIterator.next();
-      if(reply.getParentReply() != null){
-        forumThreadReplyDAO.delete(reply);
-        replyIterator.remove();
-      }
-    }
     for (ForumThreadReply reply : replies) {
-      forumThreadReplyDAO.delete(reply);
+      forumThreadReplyDAO.updateArchived(reply, true);
     }
-    forumThreadDAO.delete(thread);
+    forumThreadDAO.updateArchived(thread, true);
   }
   
   @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
@@ -261,7 +253,7 @@ public class ForumController {
 
   @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
   public void deleteReply(@PermitContext ForumThreadReply reply) {
-    forumThreadReplyDAO.delete(reply);
+    forumThreadReplyDAO.updateArchived(reply, true);
   }
   
   public List<EnvironmentForumArea> listEnvironmentForums() {
