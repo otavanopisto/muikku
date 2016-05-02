@@ -28,6 +28,8 @@ $(document).ready(function() {
 
   DiscImpl = $.klass({
 
+    replyCreatedMap : {},
+    
     init : function() {
       // todo: parse url
 
@@ -284,7 +286,6 @@ $(document).ready(function() {
       var element = $(event.target);
       var areaId = element.attr("data-area-id");
       var threadId = element.attr("data-thread-id");
-      var replyCreatedMap = {};
       element = element.parents(".di-replies-paging");
       var pageElement = $(".di-replies-container");
       this._addLoading(pageElement);      
@@ -304,8 +305,8 @@ $(document).ready(function() {
           mApi({async: false}).user.users.basicinfo.read(replies.creator).callback($.proxy(function(err, user) {
               replies.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(replies.created);
-              var ld = new Date(replies.lastModified);                    
-              replyCreatedMap[replies.id] = d;                  
+              var ld = new Date(replies.lastModified);
+              this.replyCreatedMap[replies.id] = d;
               replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
               replies.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);              
               replies.isEdited = replies.lastModified == replies.created ? false : true;
@@ -314,7 +315,7 @@ $(document).ready(function() {
               replies.nameLetter = user.firstName.substring(0,1);
               replies.isReply = replies.parentReplyId ? true : false;
               if(replies.isReply){
-                replies.replyParentTime = formatDate(replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(replyCreatedMap[replies.parentReplyId]);
+                replies.replyParentTime = formatDate(this.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(this.replyCreatedMap[replies.parentReplyId]);
               }
               repliesCallback();
             }, this));          
@@ -373,7 +374,6 @@ $(document).ready(function() {
       }, this));
     },
     _loadThreadReplies : function(areaId, threadId) {
-      var replyCreatedMap = {};
       var pageNo = 1;
       this._clearReplies();
       this._addLoading(DiscImpl.msgContainer);
@@ -386,8 +386,8 @@ $(document).ready(function() {
             replies.isEdited = replies.lastModified == replies.created ? false : true;            
             replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             var d = new Date(replies.created);
-            var ld = new Date(replies.lastModified);                    
-            replyCreatedMap[replies.id] = d;                  
+            var ld = new Date(replies.lastModified);
+            this.replyCreatedMap[replies.id] = d;
             replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
             replies.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);                    
             replies.threadId = threadId;
@@ -395,7 +395,7 @@ $(document).ready(function() {
             replies.nameLetter = user.firstName.substring(0,1);
             replies.isReply = replies.parentReplyId ? true : false;
             if(replies.isReply){
-              replies.replyParentTime = formatDate(replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(replyCreatedMap[replies.parentReplyId]);
+              replies.replyParentTime = formatDate(this.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(this.replyCreatedMap[replies.parentReplyId]);
             }
             repliesCallback();
           },this));          

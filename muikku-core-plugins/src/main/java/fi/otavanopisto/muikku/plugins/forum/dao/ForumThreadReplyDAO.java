@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply_;
@@ -76,6 +77,7 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<ForumThreadReply> criteria = criteriaBuilder.createQuery(ForumThreadReply.class);
     Root<ForumThreadReply> root = criteria.from(ForumThreadReply.class);
+    Join<ForumThreadReply, ForumThreadReply> parent = root.join(ForumThreadReply_.parentReply, JoinType.LEFT);
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
@@ -87,11 +89,11 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     criteria.orderBy(
     		criteriaBuilder.asc(
   				criteriaBuilder.coalesce(
-  					root.get(ForumThreadReply_.parentReply),
-  					root.get(ForumThreadReply_.id)
-  				)
-			)
-    );
+  				    parent.get(ForumThreadReply_.created),
+  					root.get(ForumThreadReply_.created)
+  				)),
+  		    criteriaBuilder.asc(
+  				root.get(ForumThreadReply_.created)));
     
     TypedQuery<ForumThreadReply> query = entityManager.createQuery(criteria);
     
@@ -176,6 +178,11 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     getEntityManager().persist(reply);
     
     return reply;
+  }
+  
+  public ForumThreadReply updateArchived(ForumThreadReply reply, Boolean archived){
+    reply.setArchived(archived);
+    return persist(reply);
   }
 
   @Override

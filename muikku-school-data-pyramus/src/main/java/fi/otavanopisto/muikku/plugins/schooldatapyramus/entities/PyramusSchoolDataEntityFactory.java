@@ -410,8 +410,10 @@ public class PyramusSchoolDataEntityFactory {
 
   public List<GroupUser> createEntities(StudentGroupStudent... studentGroupStudents) {
     List<GroupUser> results = new ArrayList<>();
-    for (StudentGroupStudent studentGroupStudent : studentGroupStudents) {
-      results.add(createEntity(studentGroupStudent));
+    if (studentGroupStudents != null) {
+      for (StudentGroupStudent studentGroupStudent : studentGroupStudents) {
+        results.add(createEntity(studentGroupStudent));
+      }
     }
     return results;
   }
@@ -419,8 +421,10 @@ public class PyramusSchoolDataEntityFactory {
   public List<WorkspaceType> createEntities(CourseType... courseTypes) {
     List<WorkspaceType> result = new ArrayList<>();
 
-    for (CourseType courseType : courseTypes) {
-      result.add(createEntity(courseType));
+    if (courseTypes != null) {
+      for (CourseType courseType : courseTypes) {
+        result.add(createEntity(courseType));
+      }
     }
 
     return result;
