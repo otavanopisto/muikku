@@ -28,6 +28,8 @@ $(document).ready(function() {
 
   DiscImpl = $.klass({
 
+    replyCreatedMap : {},
+    
     init : function() {
       // todo: parse url
 
@@ -295,14 +297,14 @@ $(document).ready(function() {
           mApi({async: false}).user.users.basicinfo.read(replies.creator).callback($.proxy(function(err, user) {
               replies.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(replies.created);
-              DiscImpl.replyCreatedMap[replies.id] = d;
+              this.replyCreatedMap[replies.id] = d;
               replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
               replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
               replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
               replies.nameLetter = user.firstName.substring(0,1);
               replies.isReply = replies.parentReplyId ? true : false;
               if(replies.isReply){
-                replies.replyParentTime = formatDate(DiscImpl.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(DiscImpl.replyCreatedMap[replies.parentReplyId]);
+                replies.replyParentTime = formatDate(this.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(this.replyCreatedMap[replies.parentReplyId]);
               }
               repliesCallback();
             }, this));          
@@ -369,14 +371,14 @@ $(document).ready(function() {
             replies.creatorFullName = user.firstName + ' ' + user.lastName;
             replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             var d = new Date(replies.created);
-            DiscImpl.replyCreatedMap[replies.id] = d;
+            this.replyCreatedMap[replies.id] = d;
             replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
             replies.threadId = threadId;
             replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
             replies.nameLetter = user.firstName.substring(0,1);
             replies.isReply = replies.parentReplyId ? true : false;
             if(replies.isReply){
-              replies.replyParentTime = formatDate(DiscImpl.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(DiscImpl.replyCreatedMap[replies.parentReplyId]);
+              replies.replyParentTime = formatDate(this.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(this.replyCreatedMap[replies.parentReplyId]);
             }
             repliesCallback();
           },this));          
@@ -601,8 +603,7 @@ $(document).ready(function() {
     _klass : {
       // Variables for the class
       msgContainer : ".di-content-main",
-      subContainer : ".di-submessages-container",
-      replyCreatedMap : {}
+      subContainer : ".di-submessages-container"
     }
 
   });
