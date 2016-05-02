@@ -34,12 +34,12 @@
   
   
 }
-.di-content-main {
+.di-content-main { 
    .di-reply{
     
     } 
     .di-reply-reply{
-      border-left:60px solid #fbfbfb;
+      border-left:30px solid #fbfbfb;
     } 
   .di-message {
     background:#fff;
@@ -223,9 +223,12 @@
       .di-message-details {
           font-size: 22px;
           font-weight: 300;
+          &.di-message-details-reply{
+            font-size:18px;
+          }
           > span{          
             &:not(:first-child){
-            margin-left:5px;            
+            margin-left:10px;            
             }
             &.di-reply-title-date{
               &:before{
@@ -258,9 +261,17 @@
 
      .di-message-content-text  {
           margin-left:10px;
+          margin-right:10px;
           font-weight:300;
+         
      }      
-
+    .di-message-content-info{
+      font-size:12px;
+      color:#a4a4a4;
+      font-weight:600;
+      text-align:center;
+      margin-right:10px;
+    }
       .di-message-content-tools {
         margin-left:10px;      
         .di-message-content-tools-container {
