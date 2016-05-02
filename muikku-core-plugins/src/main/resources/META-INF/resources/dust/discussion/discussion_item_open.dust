@@ -15,9 +15,6 @@
         </div>
       </div>        
       <div class="lg-flex-cell-3 md-flex-cell-3 sm-flex-cell-5 flex-right">
-        {#mayRemoveThread}
-          <a class="di-remove-thread-link">{#localize key="plugin.discussion.removeThread"/}</a>
-        {/mayRemoveThread}          
       </div>  
     </div>
     <div class="flex-row flex-align-items-center">
@@ -31,9 +28,9 @@
     <div class="flex-row">
       <div class="mf-item-content-tools di-message-content-tools lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
         <div class="di-message-content-tools-container mf-item-tools">
-          <div class="di-message-tool di-message-reply-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
+          <div class="di-message-tool di-message-reply-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
           {#canEdit}
-            <div class="di-message-tool di-message-edit-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
+            <div class="di-message-tool di-message-edit-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
           {/canEdit}                
         </div>
         <div class="di-message-content-tools-reply-container flex-row"></div>
