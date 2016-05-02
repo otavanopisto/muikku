@@ -276,7 +276,6 @@ $(document).ready(function() {
       var element = $(event.target);
       var areaId = element.attr("data-area-id");
       var threadId = element.attr("data-thread-id");
-      var replyCreatedMap = {};
       element = element.parents(".di-replies-paging");
       var pageElement = $(".di-replies-container");
       this._addLoading(pageElement);      
@@ -296,14 +295,14 @@ $(document).ready(function() {
           mApi({async: false}).user.users.basicinfo.read(replies.creator).callback($.proxy(function(err, user) {
               replies.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(replies.created);
-              replyCreatedMap[replies.id] = d;
+              DiscImpl.replyCreatedMap[replies.id] = d;
               replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
               replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
               replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
               replies.nameLetter = user.firstName.substring(0,1);
               replies.isReply = replies.parentReplyId ? true : false;
               if(replies.isReply){
-                replies.replyParentTime = formatDate(replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(replyCreatedMap[replies.parentReplyId]);
+                replies.replyParentTime = formatDate(DiscImpl.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(DiscImpl.replyCreatedMap[replies.parentReplyId]);
               }
               repliesCallback();
             }, this));          
@@ -359,7 +358,6 @@ $(document).ready(function() {
       }, this));
     },
     _loadThreadReplies : function(areaId, threadId) {
-      var replyCreatedMap = {};
       var pageNo = 1;
       this._clearReplies();
       this._addLoading(DiscImpl.msgContainer);
@@ -371,14 +369,14 @@ $(document).ready(function() {
             replies.creatorFullName = user.firstName + ' ' + user.lastName;
             replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             var d = new Date(replies.created);
-            replyCreatedMap[replies.id] = d;
+            DiscImpl.replyCreatedMap[replies.id] = d;
             replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
             replies.threadId = threadId;
             replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
             replies.nameLetter = user.firstName.substring(0,1);
             replies.isReply = replies.parentReplyId ? true : false;
             if(replies.isReply){
-              replies.replyParentTime = formatDate(replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(replyCreatedMap[replies.parentReplyId]);
+              replies.replyParentTime = formatDate(DiscImpl.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(DiscImpl.replyCreatedMap[replies.parentReplyId]);
             }
             repliesCallback();
           },this));          
@@ -603,7 +601,8 @@ $(document).ready(function() {
     _klass : {
       // Variables for the class
       msgContainer : ".di-content-main",
-      subContainer : ".di-submessages-container"
+      subContainer : ".di-submessages-container",
+      replyCreatedMap : {}
     }
 
   });
