@@ -658,10 +658,10 @@ public class ForumRESTService extends PluginRESTService {
           if (parentReply == null) {
             return Response.status(Status.BAD_REQUEST).entity("Invalid parent reply id").build();
           }
-        }
         
-        if (!Objects.equals(parentReply.getThread().getId(), threadId)) {
-          return Response.status(Status.BAD_REQUEST).entity("Parent reply is in wrong thread").build();
+          if (!Objects.equals(parentReply.getThread().getId(), threadId)) {
+            return Response.status(Status.BAD_REQUEST).entity("Parent reply is in wrong thread").build();
+          }
         }
         
         return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, newReply.getMessage(), parentReply))).build();
