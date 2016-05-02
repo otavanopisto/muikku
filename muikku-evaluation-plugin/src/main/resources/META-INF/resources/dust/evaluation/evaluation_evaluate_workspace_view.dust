@@ -7,5 +7,13 @@
         {/assignments}
       </div>
     </div>
+    <div class="evaluation-modal-workspace-journal-info">
+      <div class="evaluation-modal-workspace-journal-entries-wrapper">
+        <div class="evaluation-modal-workspace-journal-entries-title">{#localize key="plugin.evaluation.workspaceEvaluationDialog.jhournalEntries.title"/}</div>
+        {#journalEntries}
+          {>"evaluation/evaluation_evaluate_workspace_single_journal_entry.dust"/}
+        {/journalEntries}
+      </div>
+    </div>
   </article>
 </section>

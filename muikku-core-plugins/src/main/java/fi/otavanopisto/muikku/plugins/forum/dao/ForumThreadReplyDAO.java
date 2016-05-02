@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply_;
@@ -21,16 +22,34 @@ import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 
 
 public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
-  
-	private static final long serialVersionUID = 6996591519523286352L;
 
-	public ForumThreadReply create(ForumArea forumArea, ForumThread thread, String message, UserEntity creator) {
+  private static final long serialVersionUID = 6996591519523286352L;
+
+  public ForumThreadReply create(
+      ForumArea forumArea, 
+      ForumThread thread, 
+      String message, 
+      UserEntity creator,
+      ForumThreadReply parentReply) {
     Date now = new Date();
 
-    return create(forumArea, thread, message, now, creator, now, creator, false);
+    return create(forumArea, thread, message, now, creator, now, creator, false, parentReply);
+  }
+
+  public ForumThreadReply create(ForumArea forumArea, ForumThread thread, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived) {
+    return create(forumArea, thread, message, created, creator, lastModified, lastModifier, archived, null);
   }
   
-  public ForumThreadReply create(ForumArea forumArea, ForumThread thread, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived) {
+  public ForumThreadReply create(
+      ForumArea forumArea,
+      ForumThread thread,
+      String message,
+      Date created,
+      UserEntity creator,
+      Date lastModified,
+      UserEntity lastModifier,
+      Boolean archived, 
+      ForumThreadReply parentReply) {
     ForumThreadReply reply = new ForumThreadReply();
     
     reply.setForumArea(forumArea);
@@ -41,6 +60,7 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     reply.setLastModified(lastModified);
     reply.setLastModifier(lastModifier.getId());
     reply.setArchived(archived);
+    reply.setParentReply(parentReply);
     
     getEntityManager().persist(reply);
     
@@ -57,6 +77,7 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<ForumThreadReply> criteria = criteriaBuilder.createQuery(ForumThreadReply.class);
     Root<ForumThreadReply> root = criteria.from(ForumThreadReply.class);
+    Join<ForumThreadReply, ForumThreadReply> parent = root.join(ForumThreadReply_.parentReply, JoinType.LEFT);
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
@@ -64,6 +85,15 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
             criteriaBuilder.equal(root.get(ForumThreadReply_.archived), Boolean.FALSE)
         )
     );
+    
+    criteria.orderBy(
+    		criteriaBuilder.asc(
+  				criteriaBuilder.coalesce(
+  				    parent.get(ForumThreadReply_.created),
+  					root.get(ForumThreadReply_.created)
+  				)),
+  		    criteriaBuilder.asc(
+  				root.get(ForumThreadReply_.created)));
     
     TypedQuery<ForumThreadReply> query = entityManager.createQuery(criteria);
     
@@ -148,6 +178,11 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     getEntityManager().persist(reply);
     
     return reply;
+  }
+  
+  public ForumThreadReply updateArchived(ForumThreadReply reply, Boolean archived){
+    reply.setArchived(archived);
+    return persist(reply);
   }
 
   @Override

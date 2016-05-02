@@ -24,6 +24,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -87,6 +88,9 @@ public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
   private WorkspaceJournalController workspaceJournalController;
 
   @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
   @Named
   private WorkspaceBackingBean workspaceBackingBean;
 
@@ -114,24 +118,37 @@ public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceEntityId = workspaceEntity.getId();
-    posterCache = new HashMap<Long, String>();
+    posters = new HashMap<Long, String>();
     canListAllEntries = sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
     workspaceStudents = prepareWorkspaceStudents();
     journalEntries = prepareJournalEntries();
-
+    
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      for (WorkspaceJournalEntry journalEntry : journalEntries) {
+        if (!posters.containsKey(journalEntry.getUserEntityId())) {
+          UserEntity userEntity = userEntityController.findUserEntityById(journalEntry.getUserEntityId());
+          User user = userController.findUserByUserEntityDefaults(userEntity);
+          String fullName;
+          
+          if (user != null) {
+            fullName = user.getFirstName() + " " + user.getLastName();
+          } else {
+            fullName = "Anonymous";
+          }
+          
+          posters.put(journalEntry.getUserEntityId(), fullName);
+        }
+      }
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
     return null;
   }
 
   public String posterOf(WorkspaceJournalEntry entry) {
-    if (posterCache.containsKey(entry.getUserEntityId())) {
-      return posterCache.get(entry.getUserEntityId());
-    } else {
-      UserEntity userEntity = userEntityController.findUserEntityById(entry.getUserEntityId());
-      User user = userController.findUserByUserEntityDefaults(userEntity);
-      String fullName = user.getFirstName() + " " + user.getLastName();
-      posterCache.put(entry.getUserEntityId(), fullName);
-      return fullName;
-    }
+    return posters.get(entry.getUserEntityId());
   }
 
   public void addWorkspaceJournalEntry() {
@@ -276,5 +293,5 @@ public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
   private boolean canListAllEntries;
   private List<UserView> workspaceStudents;
   private List<WorkspaceJournalEntry> journalEntries;
-  private Map<Long, String> posterCache;
+  private Map<Long, String> posters;
 }

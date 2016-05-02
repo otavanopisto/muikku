@@ -10,8 +10,6 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.LocaleUtils;
-
 import fi.otavanopisto.muikku.dao.notifier.NotifierActionEntityDAO;
 import fi.otavanopisto.muikku.dao.notifier.NotifierMethodEntityDAO;
 import fi.otavanopisto.muikku.dao.notifier.NotifierUserActionDAO;
@@ -20,6 +18,7 @@ import fi.otavanopisto.muikku.model.notifier.NotifierMethodEntity;
 import fi.otavanopisto.muikku.model.notifier.NotifierUserAction;
 import fi.otavanopisto.muikku.model.notifier.NotifierUserActionAllowance;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Dependent
 @Stateful
@@ -33,6 +32,9 @@ public class NotifierController {
 
   @Inject
   private NotifierActionEntityDAO notifierActionEntityDAO;
+
+  @Inject
+  private UserEntityController userEntityController;
   
   @Inject
   @Any
@@ -50,7 +52,7 @@ public class NotifierController {
 
   public void sendNotification(NotifierAction action, UserEntity sender, List<UserEntity> recipients, Map<String, Object> params) {
     for (UserEntity recipient : recipients) {
-      params.put("locale", recipient.getLocale() == null ? LocaleUtils.toLocale("fi") : LocaleUtils.toLocale(recipient.getLocale()));
+      params.put("locale", userEntityController.getLocale(recipient));
       sendNotification(action, sender, recipient, params);
     }
   }

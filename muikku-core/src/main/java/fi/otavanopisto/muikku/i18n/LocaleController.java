@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 @ApplicationScoped
@@ -25,6 +25,13 @@ public class LocaleController {
 
 	@Inject
 	private Logger logger;
+	
+	@PostConstruct
+	public void init() {
+	  localeMaps = new HashMap<String, Map<String, String>>();
+	  jsLocaleMaps = new HashMap<String, Map<String, String>>();
+	  jsLastModified = new HashMap<String, Date>();
+	}
 	
   public void add(LocaleLocation location, List<ResourceBundle> bundles) {
     for (ResourceBundle bundle : bundles) {
@@ -63,19 +70,16 @@ public class LocaleController {
   }
 
   public String getCurrentDate(Locale locale) {
-    return DateFormatUtils.format(new Date(), localeMaps.get(locale.getLanguage()).get("datePattern"));
+    return DateFormatUtils.format(new Date(), localeMaps.get(resolveLocale(locale).getLanguage()).get("datePattern"));
   }
 
   public String getCurrentTime(Locale locale) {
-    return DateFormatUtils.format(new Date(), localeMaps.get(locale.getLanguage()).get("timePattern"));
+    return DateFormatUtils.format(new Date(), localeMaps.get(resolveLocale(locale).getLanguage()).get("timePattern"));
   }
 
   public Long getJsLastModified(Locale locale) {
-  	if (locale == null) {
-  		logger.warning("Tried to resolve last modified date of null locale");
-  		return null;
-  	}
-  	
+    locale = resolveLocale(locale);
+    
     Date date = jsLastModified.get(locale.getLanguage());
     if (date == null) {
       date = new Date((System.currentTimeMillis() / 1000) * 1000);
@@ -85,23 +89,31 @@ public class LocaleController {
     return date.getTime();
   }
 
-  public String getJsLocales(Locale locale) throws JsonGenerationException, JsonMappingException, IOException {
-    Map<String, String> entries = jsLocaleMaps.get(locale.getLanguage());
+  public String getJsLocales(Locale locale) {
+    locale = resolveLocale(locale);
+    
     StringBuffer sb = new StringBuffer();
-    if (entries != null) {
-      sb.append("(function() {")
-        .append("window._MUIKKU_LOCALE='")
-        .append(locale.getLanguage())
-        .append("';")
-        .append("window._MUIKKU_LOCALEMAP = ")
-        .append((new ObjectMapper()).writeValueAsString(entries))
-        .append("}).call(this);");
+
+    try {
+      Map<String, String> entries = jsLocaleMaps.get(locale.getLanguage());
+      if (entries != null) {
+        sb.append("(function() {")
+          .append("window._MUIKKU_LOCALE='")
+          .append(locale.getLanguage())
+          .append("';")
+          .append("window._MUIKKU_LOCALEMAP = ")
+          .append((new ObjectMapper()).writeValueAsString(entries))
+          .append("}).call(this);");
+      }
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, "Failed to serialize locale map", e);
     }
+    
     return sb.toString();
   }
 
   public Map<String, String> getText(Locale locale) {
-    return localeMaps.get(locale.getLanguage());
+    return localeMaps.get(resolveLocale(locale).getLanguage());
   }
   
   public String getText(Locale locale, String key) {
@@ -117,7 +129,18 @@ public class LocaleController {
     return new ArrayList<String>(localeMaps.keySet());
   }
 
-  private Map<String, Map<String, String>> localeMaps = new HashMap<String, Map<String, String>>();
-  private Map<String, Map<String, String>> jsLocaleMaps = new HashMap<String, Map<String, String>>();
-  private Map<String, Date> jsLastModified = new HashMap<String, Date>();
+  private Locale resolveLocale(Locale locale) {
+    try {
+      if (locale == null) {
+        locale = new Locale("fi");
+      }
+    } catch (Exception e) {
+      locale = Locale.getDefault();
+    }
+    return locale;
+  }
+  
+  private Map<String, Map<String, String>> localeMaps;
+  private Map<String, Map<String, String>> jsLocaleMaps;
+  private Map<String, Date> jsLastModified;
 }
