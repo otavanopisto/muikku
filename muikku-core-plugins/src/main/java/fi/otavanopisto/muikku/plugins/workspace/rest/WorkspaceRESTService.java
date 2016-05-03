@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -738,7 +739,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
     }
     
-    if (workspaceUsers.isEmpty()) {
+    if (workspaceUsers == null || workspaceUsers.isEmpty()) {
       return Response.noContent().build();
     }
 
@@ -1957,6 +1958,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   private void sendAssessmentNotification(WorkspaceAssessment payload, UserEntity evaluator, UserEntity student,
       Workspace workspace) {
+    Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
     communicatorController.createMessage(
         communicatorController.createMessageId(),
@@ -1964,11 +1966,11 @@ public class WorkspaceRESTService extends PluginRESTService {
         Arrays.asList(student),
         category,
         localeController.getText(
-            sessionController.getLocale(),
+            locale,
             "plugin.workspace.assessment.notificationTitle",
             new Object[] {workspace.getName()}),
         localeController.getText(
-            sessionController.getLocale(),
+            locale,
             "plugin.workspace.assessment.notificationContent",
             new Object[] {payload.getVerbalAssessment()}),
         Collections.<Tag>emptySet());
@@ -2195,7 +2197,10 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEID}/journal")
   @RESTPermitUnimplemented
-  public Response listJournalEntries(@PathParam("WORKSPACEID") Long workspaceEntityId) {
+  public Response listJournalEntries(
+      @PathParam("WORKSPACEID") Long workspaceEntityId,
+      @QueryParam("workspaceStudentId") String workspaceStudentId
+  ) {
     List<WorkspaceJournalEntry> entries = new ArrayList<>();
     List<WorkspaceJournalEntryRESTModel> result = new ArrayList<>();
     if (!sessionController.isLoggedIn()) {
@@ -2208,9 +2213,38 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
-      entries = workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
+      if (workspaceStudentId == null) {
+        entries = workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
+      } else {
+        return Response.status(Status.UNAUTHORIZED).entity("Only teachers may look at others' journal entries").build();
+      }
     } else {
-      entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+      if (workspaceStudentId == null) {
+        entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+      } else {
+        SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceStudentId);
+        if (workspaceUserIdentifier == null) {
+          return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
+        }
+
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+        if (workspaceUserEntity == null) {
+          return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
+        }
+        if (workspaceUserEntity.getWorkspaceEntity().getId() != workspaceEntity.getId()) {
+          return Response.status(Status.BAD_REQUEST).entity("WorkspaceStudent points to wrong workspace").build();
+        }
+
+        WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+        SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
+        userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+
+        if (userEntity == null) {
+          return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
+        }
+        
+        entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+      }
     }
     
     for (WorkspaceJournalEntry entry : entries) {
@@ -2224,7 +2258,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       ));
     }
 
-    return Response.ok(entries).build();
+    return Response.ok(result).build();
   }
 
   @POST

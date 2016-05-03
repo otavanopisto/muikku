@@ -21,7 +21,6 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
         WorkspaceDiscussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
         try {
           navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
-          waitForPresent(".workspace-discussions");
           waitAndClick(".di-new-message-button");
           waitAndClick(".mf-textfield-subcontainer input");
           sendKeys(".mf-textfield-subcontainer input", "Test title for discussion");
@@ -51,8 +50,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
         WorkspaceDiscussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
         try {
           navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
-          waitForPresent(".workspace-discussions");
-          waitAndClick(".di-new-area-button");
+          waitAndClick(".sm-flex-hide .di-new-area-button");
           waitAndSendKeys(".mf-textfield input", "Test area");
           click("*[name='send']");
           waitForPresent("#discussionAreaSelect option:nth-child(2)");
@@ -85,8 +83,8 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
             waitAndClick(".di-message-reply-link");
             addTextToCKEditor("Test reply for test.");
             click("*[name='send']");
-            waitForPresent(".mf-subitem-content-text>p");
-            assertText(".mf-subitem-content-text>p", "Test reply for test.");
+            waitForPresent(".di-replies-container .mf-item-content-text p");
+            assertText(".di-replies-container .mf-item-content-text p", "Test reply for test.");
           } finally {
             deleteWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), thread.getId()); 
           }

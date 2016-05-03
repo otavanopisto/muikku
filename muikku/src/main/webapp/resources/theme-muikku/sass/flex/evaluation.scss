@@ -1,5 +1,5 @@
-@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
-@import "_workspaces-materials-defaults.scss";
+@import "_vars.scss";
+@import "_styles.scss";
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 @import "_jquery.datepicker.scss";
@@ -7,7 +7,7 @@
 body.evaluation {
   background:none;
   background-color:#f0f3f5;
-  @include background-image('/gfx/light-diagonal-strips.png');
+  background-image:url("/gfx/light-diagonal-strips.png");
   padding:0.01em; /* Prevent margin collapsing  */
   min-height:100%;
   line-height:1.7em;
@@ -24,7 +24,7 @@ body.evaluation {
     z-index:9999;
   
     &:before {
-      @include generic-loader(50px);
+      @include generic-loader(50px); 
       position:absolute;
       top:50%;
       left:50%;
@@ -32,7 +32,7 @@ body.evaluation {
   
   }
   
-  .evaluation-navigation-wrapper {
+  .evaluation-navigation-wrapper { 
     background:#7ed9ff;
     position:absolute;
     top:0;
@@ -364,7 +364,7 @@ body.evaluation {
         height:120px;
         margin:0 auto;  
         box-sizing:border-box;
-        @include background-image('gfx/default-user-picture.jpg');
+        background-image:url("gfx/default-user-picture.jpg");
         background-size:cover;
         border-radius:100%;
         background-position:center center;
@@ -374,7 +374,8 @@ body.evaluation {
         cursor:pointer;
         width:100%;
         box-sizing:border-box;
-        background:#fff;
+        background:#3a86bd;
+        color:#fff;
         border-radius:3px;
         font-size:16px;
         white-space:normal;
@@ -530,7 +531,7 @@ body.evaluation {
   .evaluation-evaluate-modal-wrapper {
     position:absolute;
     left:0;
-    top:69px;
+    top:56px;
     bottom:0;
     right:0;
     padding:0;
@@ -585,7 +586,7 @@ body.evaluation {
           }
   
         }
-        
+
         .evaluation-modal-workspace-assignment-info,
         .evaluation-modal-assignment-info {
           
@@ -764,6 +765,33 @@ body.evaluation {
                       outline:none; 
                     }
                     
+                    /* Select and Option field overrides */
+                    select {
+                      background:#fff;
+                      border:3px solid #c9e0fb;
+                      transition:border,box-shadow 0.1s,0.2s ease-in-out;
+                      outline:none;
+                      color:#0061a2;
+                      display:inline-block;
+                      margin:4px;
+                      box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+                      @include rounded(3px);
+                      max-width:100%;
+                      word-wrap:break-word;
+                      vertical-align:middle;
+                    
+                      option {
+                        background:#fff;
+                        font-weight:300;
+                        padding:4px 8px;
+                      }
+                      
+                    }
+                    
+                    input[checked="checked"] {
+                      box-shadow:0 0 0 3px #7bb7fa;
+                    }
+
                     label {
                       display:inline;
                       font-weight:400;
@@ -892,6 +920,33 @@ body.evaluation {
                   outline:none; 
                 }
                 
+                /* Select and Option field overrides */
+                select {
+                  background:#fff;
+                  border:3px solid #c9e0fb;
+                  transition:border,box-shadow 0.1s,0.2s ease-in-out;
+                  outline:none;
+                  color:#0061a2;
+                  display:inline-block;
+                  margin:4px;
+                  box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+                  @include rounded(3px);
+                  max-width:100%;
+                  word-wrap:break-word;
+                  vertical-align:middle;
+
+                  option {
+                    background:#fff;
+                    font-weight:300;
+                    padding:4px 8px;
+                  }
+                  
+                }
+                
+                input[checked="checked"] {
+                  box-shadow:0 0 0 3px #7bb7fa;
+                }
+                
                 label {
                   display:inline;
                   font-weight:400;
@@ -923,6 +978,131 @@ body.evaluation {
           
           }
 
+        }
+        
+        .evaluation-modal-workspace-journal-info {
+        
+          .evaluation-modal-workspace-journal-entries-wrapper {
+          
+            .evaluation-modal-workspace-journal-entries-title {
+               border-left: 5px solid #016779;
+              color:#016779;
+              font-size:24px;
+              font-weight:300;
+              margin:20px 0;
+              padding:3px 0 3px 10px;
+              text-transform:uppercase;
+             }
+          
+            .evaluation-modal-workspace-single-journal-entry {
+              box-sizing:border-box;
+              padding:8px 12px 20px;
+              border-bottom:2px solid #f9f9f9;
+              line-height:1.5em;
+              margin:8px 0;
+              position:relative;
+            
+              .evaluation-journal-entry-title {
+                font-weight:400;
+                font-size:18px;
+                margin:0 0 10px 0;
+                color:#00515f;
+              }
+              
+              .evaluation-journal-entry-date {
+                position:absolute;
+                right:15px;
+                top:8px;
+                font-size:14px;
+              }
+              
+              .evaluation-journal-entry-content {
+              
+                /* TODO:
+                   This needs to be generalized so we would not have to include these content rules all over the place 
+                */
+                blockquote {
+                  font-family:'Open Sans', Arial, sans-serif;
+                  font-style:italic;
+                  padding:2px 0;
+                  border-style:solid;
+                  border-color:#eee;
+                  border-width:0;
+                  color:#777;
+                  font-size:22px;
+                  margin:0 40px 0 40px;
+                
+                  p {
+                    margin:10px 0 10px 0;
+                  }
+                
+                }
+                
+                img {
+                  max-width:100% !important;
+                  height:auto !important;
+                }
+                
+                a > img {
+                  cursor:-webkit-zoom-in;
+                  cursor:-moz-zoom-in;
+                }
+                
+                p {
+                  margin:15px 0 15px 0;
+                }
+                
+                a {
+                  color:$link;
+                }
+                
+                em, i {
+                  font-style:italic;
+                  font-weight:300;
+                }
+                
+                strong, b {
+                  font-weight:400;
+                  font-style:inherit;
+                }
+                
+                ul {
+                  list-style-type:disc;
+                  list-style-position:inside;
+                }
+                
+                ol {
+                  list-style-type:decimal;
+                  list-style-position:inside;
+                }
+                
+                ul, ol {
+                  margin:0 20px;
+                  padding:0;
+                
+                  li {
+                    margin:5px;
+                    padding:0;
+                  }
+                
+                }
+                
+                sub {
+                  vertical-align:sub;
+                  font-size:70%;
+                }
+                
+                sup {
+                  vertical-align:super;
+                  font-size:70%;
+                }
+
+              }
+            
+            }
+          
+          }
+        
         }
         
       }
@@ -1015,6 +1195,7 @@ body.evaluation {
           transition:border 0.15s ease-in-out;
           font-family:'Open Sans', Arial, sans-serif;
           font-weight:300;
+          width:auto;
           
           &:hover,
           &:focus,
@@ -1099,10 +1280,26 @@ body.evaluation {
     left:0px;
     background:#fff;
     border-radius:0px;
-    border:5px solid #3d4f5c;
+    border:1px solid #fff;
     overflow:hidden;
     min-width:990px;
     text-transform:none;
+    
+    &.assignment-evaluation-dialog {
+    
+      .ui-dialog-titlebar {
+        background:#950589;
+      }
+    
+    }
+    
+    &.workspace-evaluation-dialog {
+    
+      .ui-dialog-titlebar {
+        background:#3a86bd;
+      }
+    
+    }
     
     .ui-dialog-titlebar {
       width:auto;
@@ -1111,11 +1308,12 @@ body.evaluation {
       color:#000;
       font-size:28px;
       text-transform:uppercase;
-      line-height:1.3em;
+      line-height:1.3;
       position:relative;
-      height:50px;
+      height:40px;
       border:0;
       background:#657e90;
+      white-space:nowrap;
       
       .ui-dialog-title {
         background-size:cover;
@@ -1139,7 +1337,7 @@ body.evaluation {
           display:inline-block;
           margin:0 20px 0 0;
           padding:0 0 0 40px;
-          @include background-image('gfx/default-user-picture.jpg');
+          background-imageurl:("gfx/default-user-picture.jpg");
           background-repeat:no-repeat;
           background-position:left center;
           background-size:contain;
@@ -1159,12 +1357,12 @@ body.evaluation {
       .ui-dialog-titlebar-close {
         position:absolute;
         right:0px;
-        top:20px;
+        top:13px;
         border:0px;
         background:transparent;
         z-index:999;
-        width:50px;
-        height:50px;
+        width:56px;
+        height:56px;
         
         span {
           display:none;
@@ -1257,142 +1455,75 @@ body.evaluation {
 
       
       }
+      
     }
+    
+  }
+  
+  .cke_notification {
+  
+  } 
+  
+  .cke_notification_info {
+  
   }
   
-  /**
-  #ui-datepicker-div {
-    font-family:'Open Sans', Arial, sans-serif;
-    font-size:13px;
-    box-shadow:0 0 30px 5px rgba(0,0,0,0.3);
-    border:0;
-    width:20em;
-    padding:0;
+  p.cke_notification_message {
+  
+  
+    div.draft-restore {
+      font-family:"Open Sans", Arial, sans-serif;
+      padding:5px 0;
     
-    .ui-widget-header {
-      border:0;
-      background:#7391a7;
-      padding:4px 0px;
-
-      .ui-datepicker-prev {
-        color:#fff;
-        position:absolute;
-        height:24px;
-        top:0;
-        left:0;
-        padding:8px 4px;
-        
-        span {
-          display:none;
-        }
-        
-        &:hover {
-          background:transparent;
-          border:0px;
-        }
-      
-        &:before {
-          cursor:pointer;
-          content: "\e605";
-          color:#fff;
-          font-size:24px;
-          font-family: 'muikku';
-          speak: none;
-          font-style: normal;
-          text-decoration:none;
-          font-weight: normal;
-          font-variant: normal;
-          text-transform: none;
-          line-height: 1;
-          
-          Better Font Rendering ===========
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-      
-      }
-
-      .ui-datepicker-next {
-        color:#fff;
-        position:absolute;
-        height:24px;
-        top:0;
-        right:0;
-        padding:8px 4px;
-        
-        span {
-          display:none;
-        }
-        
-        &:hover {
-          background:transparent;
-          border:0px;
-        }
-        
-        &:before {
-          cursor:pointer;
-          content: "\e608";
-          color:#fff;
-          font-size:24px;
-          font-family: 'muikku';
-          speak: none;
-          font-style: normal;
-          text-decoration:none;
-          font-weight: normal;
-          font-variant: normal;
-          text-transform: none;
-          line-height: 1;
-          
-          Better Font Rendering ===========
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-        
-      }
-      
-      .ui-datepicker-title {
-        color:#fff;
+      span.draft-label {
         text-transform:uppercase;
+        font-size:14px;
+        font-weight:400;
+        display:block;
+        margin:0 0 5px 0;
+      }
+      
+      span.draft-text {
+        font-size:14px;
         font-weight:300;
-        font-size:18px;
       }
       
-    }
-    
-    table.ui-datepicker-calendar {
-      box-sizing:border-box;
-      border:2px solid #fff;
-      margin:0;
-    
-      td {
-      
-        a {
-          border:0;
-          padding:0 6px 2px 0;
-          background:#d4edff;
-          
-          &:hover {
-            background:#9cd5f8;
-          }
-          
-          &.ui-state-highlight {
-            background:#6991aa;
-            color:#fff;
-          }
-          
-          &.ui-state-active {
-            background:#3baae3;
-            color:#fff;
-          }
-          
-        }
-      
+      a {
+        display:inline-block;
+        padding:0 5px;
+        color:#fff;
+        font-weight:400;
       }
     
     }
     
+    div.draft-cancel {
+      font-family:"Open Sans", Arial, sans-serif;
+      padding:5px 0;
+    
+      span.draft-label {
+        text-transform:uppercase;
+        font-size:14px;
+        font-weight:400;
+        display:block;
+        margin:0 0 5px 0;
+      }
+      
+      span.draft-text {
+        font-size:14px;
+        font-weight:300;
+      }
+      
+      a {
+        display:inline-block;
+        padding:0 5px;
+        color:#fff;
+        font-weight:400;
+      }
+    
+    }
+  
   }
-  **/
   
 }
 

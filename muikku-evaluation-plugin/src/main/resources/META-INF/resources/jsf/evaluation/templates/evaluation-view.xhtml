@@ -13,11 +13,14 @@
   
   <ui:define name="viewScripts">
     <!-- Html editor specific -->
-    <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"></script>
+    <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.8/ckeditor.js"></script>
+    <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
+    <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js"></script>
     
     <!--  Materials -->
     <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.ui.swappable/0.9.5_custom/jquery.ui.swappable.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"/>
+    <h:outputScript name="scripts/gui/locales.js"/>
     <h:outputScript name="scripts/gui/muikku-file-field-component.js"/>
     <h:outputScript name="scripts/gui/muikku-connect-field-component.js"/>
     <h:outputScript name="scripts/gui/muikku-rich-memo-field-component.js"/>
@@ -36,7 +39,7 @@
   </ui:define>
   
   <ui:define name="viewCss">  
-    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/evaluation.css" />  
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/flex/evaluation.css" />  
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/muikku-file-field-component.css" /> 
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.css"/> 
   </ui:define>

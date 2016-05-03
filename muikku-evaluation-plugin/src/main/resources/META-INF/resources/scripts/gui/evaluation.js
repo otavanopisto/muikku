@@ -29,6 +29,8 @@
       triggeringElement: null,
       studentAnswers: [],
       ckeditor: {
+        baseFloatZIndex: 99999,
+        language: getLocale(),
         height : '200px',
         entities: false,
         entities_latin: false,
@@ -42,10 +44,24 @@
           { name: 'styles', items: [ 'Format' ] },
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
-        ]
+        ],
+        extraPlugins: {
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js'
+        }
       }
     },
     _create: function () {
+      var extraPlugins = [];
+      
+      $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
+        CKEDITOR.plugins.addExternal(plugin, url);
+        extraPlugins.push(plugin);
+      }, this));
+      
+      this.options.ckeditor.extraPlugins = extraPlugins.join(',');
+      
       this._load($.proxy(function (text) {
         this._dialog = $(text);
         
@@ -59,7 +75,7 @@
                     +'</span><span class="modal-title-workspace-name">'
                     +this.options.workspaceName
                     +'</span>',
-          dialogClass: "evaluation-evaluate-modal",
+          dialogClass: "evaluation-evaluate-modal workspace-evaluation-dialog",
           close: $.proxy(function () {
             this.element.remove();
           }, this),
@@ -68,17 +84,7 @@
               .css({'z-index': 9999, 'position': 'relative'})
               .attr('type', 'text')
               .datepicker();
-            
-            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
-            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
+
             $(this._dialog).find('input[name="evaluationDate"]')
               .datepicker('setDate', this.options.evaluationDate||new Date());
             
@@ -94,7 +100,9 @@
               $(this._dialog).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
             }
 
-            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
+            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], $.extend(this.options.ckeditor, {
+              draftKey: ['workspace-evaluation-draft', this.options.workspaceEntityId, this.options.studentEntityId].join('-')
+            }));
             
             var batchCalls = $.map(this.options.workspaceAssignments, $.proxy(function (workspaceAssignment) {
               return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {
@@ -125,6 +133,16 @@
             
             this._dialog.find(".evaluation-assignment-title-container").click($.proxy(this._onAssignmentTitleClick, this));
             
+            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
+            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
           }, this),
           buttons: [{
             'text': this._dialog.attr('data-button-save-text'),
@@ -138,6 +156,8 @@
               var assessorEntityId = $(this._dialog).find('select[name="assessor"]').val();
               var workspaceEntityId = this.options.workspaceEntityId;
               var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
+              CKEDITOR.instances.evaluateFormLiteralEvaluation.discardDraft();
+              
               this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
               if(this.options.assessmentId){
                 mApi({async: false}).workspace.workspaces.assessments.update(workspaceEntityId, this.options.assessmentId, {
@@ -236,6 +256,11 @@
     },
     
     destroy: function () {
+      try {
+        CKEDITOR.instances.evaluateFormLiteralEvaluation.destroy();
+      } catch (e) {
+      }
+      
       this._dialog.remove();
     },
     
@@ -317,15 +342,22 @@
       },this)
     },
     _loadTemplate: function (assignments, callback) {
-      renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
-        studentDisplayName: this.options.studentDisplayName,
-        gradingScales: this.options.gradingScales,
-        assessors: this.options.assessors,
-        workspaceName: this.options.workspaceName,
-        studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-        assignments: assignments,
-        exercises: []
-      }, callback);
+      mApi().workspace.workspaces.journal.read(this.options.workspaceEntityId, {workspaceStudentId: this.options.workspaceStudentId}).callback(
+        $.proxy(function(err, journalEntries) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else 
+            renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
+              studentDisplayName: this.options.studentDisplayName,
+              gradingScales: this.options.gradingScales,
+              assessors: this.options.assessors,
+              workspaceName: this.options.workspaceName,
+              studentStudyProgrammeName: this.options.studentStudyProgrammeName,
+              assignments: assignments,
+              exercises: [],
+              journalEntries: journalEntries
+            }, callback);
+        }, this));
     },
     
     _onAssignmentTitleClick: function (event) {
@@ -361,6 +393,8 @@
       materialId: null,
       triggeringElement: null,
       ckeditor: {
+        baseFloatZIndex: 99999,
+        language: getLocale(),
         height : '200px',
         entities: false,
         entities_latin: false,
@@ -374,11 +408,25 @@
           { name: 'styles', items: [ 'Format' ] },
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
-        ]
+        ],
+        extraPlugins: {
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js'
+        }
       }
     },
     
     _create: function () {
+      var extraPlugins = [];
+      
+      $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
+        CKEDITOR.plugins.addExternal(plugin, url);
+        extraPlugins.push(plugin);
+      }, this));
+      
+      this.options.ckeditor.extraPlugins = extraPlugins.join(',');
+      
       this._load($.proxy(function (text) {
         this._dialog = $(text);
         
@@ -392,7 +440,7 @@
                     +'</span><span class="modal-title-workspace-name">'
                     +this.options.workspaceName
                     +'</span>',
-          dialogClass: "evaluation-evaluate-modal",
+          dialogClass: "evaluation-evaluate-modal assignment-evaluation-dialog",
           close: $.proxy(function () {
             this.element.remove();
           }, this),
@@ -401,17 +449,7 @@
               .css({'z-index': 9999, 'position': 'relative'})
               .attr('type', 'text')
               .datepicker();
-            
-            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
-            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
+
             $(this._dialog).find('input[name="evaluationDate"]')
               .datepicker('setDate', this.options.evaluationDate||new Date());
             
@@ -427,7 +465,9 @@
               $(this._dialog).find('#evaluateFormLiteralEvaluation').val(this.options.verbalAssessment);
             }
             
-            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
+            CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], $.extend(this.options.ckeditor, {
+              draftKey: ['material-evaluation-draft', this.options.workspaceMaterialId, this.options.workspaceEntityId, this.options.studentEntityId].join('-')
+            }));
             
             var fieldAnswers = {};
             
@@ -442,6 +482,17 @@
             $(document).muikkuMaterialLoader('loadMaterials', $(this._dialog).find('.evaluation-assignment'), fieldAnswers);
             
             this._adjustTextareaHeight($(this._dialog).find('.evaluation-assignment'));
+            
+            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
+            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
           }, this),
           buttons: [{
             'text': this._dialog.attr('data-button-save-text'),
@@ -456,6 +507,7 @@
               var evaluationDate = $(this._dialog).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
               var assessorEntityId = $(this._dialog).find('select[name="assessor"]').val();
               var verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
+              CKEDITOR.instances.evaluateFormLiteralEvaluation.discardDraft();
               var workspaceMaterialId = this.options.workspaceMaterialId;
               var workspaceEntityId = this.options.workspaceEntityId;
               this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
@@ -538,6 +590,11 @@
     },
     
     destroy: function () {
+      try {
+        CKEDITOR.instances.evaluateFormLiteralEvaluation.destroy();
+      } catch (e) {
+      }
+      
       this._dialog.remove();
     },
     
@@ -561,21 +618,21 @@
     },
     
     _loadTemplate: function (workspaceMaterialId, materialId, materialType, materialTitle, materialHtml, path, callback) {
-      renderDustTemplate('evaluation/evaluation_evaluate_assignment_modal_view.dust', {
-        studentDisplayName: this.options.studentDisplayName,
-        gradingScales: this.options.gradingScales,
-        assessors: this.options.assessors,
-        workspaceName: this.options.workspaceName,
-        studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-        assignments: [{
-          workspaceMaterialId: workspaceMaterialId,
-          materialId: materialId,
-          title: materialTitle, 
-          html: materialHtml,
-          type: materialType,
-          path: path
-        }]
-      }, callback);
+        renderDustTemplate('evaluation/evaluation_evaluate_assignment_modal_view.dust', {
+          studentDisplayName: this.options.studentDisplayName,
+          gradingScales: this.options.gradingScales,
+          assessors: this.options.assessors,
+          workspaceName: this.options.workspaceName,
+          studentStudyProgrammeName: this.options.studentStudyProgrammeName,
+          assignments: [{
+            workspaceMaterialId: workspaceMaterialId,
+            materialId: materialId,
+            title: materialTitle, 
+            html: materialHtml,
+            type: materialType,
+            path: path
+          }], 
+        }, callback);
     },
     
     _adjustTextareaHeight: function(container) {
