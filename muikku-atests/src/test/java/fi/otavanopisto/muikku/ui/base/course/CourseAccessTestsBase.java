@@ -28,9 +28,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"ANYONE\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
-
         waitForNotVisible(".loading");
-        waitForVisible(".workspace-management-name input");
+        sleep(1000);
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
@@ -57,7 +56,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".additionalinfo-data div input[value=\"ANYONE\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForNotVisible(".loading");
-        waitForVisible(".workspace-management-name input");
+        sleep(1000);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -88,7 +87,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".additionalinfo-data div input[value=\"ANYONE\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForNotVisible(".loading");
-        waitForVisible(".workspace-management-name input");
+        sleep(1000);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -115,7 +114,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".additionalinfo-data div input[value=\"LOGGED_IN\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForNotVisible(".loading");
-        waitForVisible(".workspace-management-name input");
+        sleep(1000);
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
@@ -142,7 +141,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".additionalinfo-data div input[value=\"LOGGED_IN\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForNotVisible(".loading");
-        waitForVisible(".workspace-management-name input");
+        sleep(1000);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -173,7 +172,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".additionalinfo-data div input[value=\"LOGGED_IN\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForNotVisible(".loading");
-        waitForVisible(".workspace-management-name input");
+        sleep(1000);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -200,7 +199,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForNotVisible(".loading");
-        waitForVisible(".workspace-management-name input");
+        sleep(1000);
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), true);        
@@ -226,8 +225,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
-        waitForVisible(".workspace-management-name input");
         waitForNotVisible(".loading");
+        sleep(1000);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -258,7 +257,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForNotVisible(".loading");
-        waitForVisible(".workspace-management-name input");
+        sleep(1000);
         logout();
         mockBuilder.mockLogin(student);
         login();
