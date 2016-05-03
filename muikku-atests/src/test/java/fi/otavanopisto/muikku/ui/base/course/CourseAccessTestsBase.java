@@ -262,7 +262,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student);
         login();
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);        
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        waitForPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
         assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
