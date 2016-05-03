@@ -324,7 +324,7 @@ public class EvaluationTestsBase extends AbstractUITest {
 
           navigate(String.format("/evaluation"), true);
           waitAndClick("#filter-students-by-assessment-requested");
-          waitAndClick(".evaluation-student-loaded");
+          waitAndClick(".evaluation-student-name");
           waitAndClick(".cke_contents");
           getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
           clearElement("#evaluationDate");
@@ -344,7 +344,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           waitForPresentAndVisible(".evaluation-assignment-wrapper");
           assertClassPresent(".evaluation-student-wrapper", "workspace-evaluated");
           
-          waitAndClick(".evaluation-student-loaded");
+          waitAndClick(".evaluation-student-name");
           waitForPresent("#grade");
           assertValue("#grade", "1/PYRAMUS@1/PYRAMUS");
           waitForPresent("select[name='assessor']");
