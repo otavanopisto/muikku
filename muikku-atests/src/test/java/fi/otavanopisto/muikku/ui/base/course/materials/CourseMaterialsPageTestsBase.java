@@ -898,7 +898,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndClick(".muikku-file-input-field-file-remove");
         waitAndClick(".delete-button span");
         assertPresent(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()));
-        assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()), "Add a file by clicking here or by dragging it into this box");
+        reloadCurrentPage();
+        assertNotPresent(".muikku-file-input-field-file");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
@@ -949,7 +950,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClick(".muikku-file-input-field-file-remove");
           waitAndClick(".delete-button span");
           assertPresent(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()));
-          assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()), "lisää tiedosto klikkaamalla tästä tai raahaamalla se tähän laatikkoon");
+          reloadCurrentPage();
+          assertNotPresent(".muikku-file-input-field-file");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
