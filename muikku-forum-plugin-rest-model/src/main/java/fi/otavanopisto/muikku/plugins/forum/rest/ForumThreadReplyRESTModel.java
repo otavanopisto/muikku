@@ -9,8 +9,8 @@ public class ForumThreadReplyRESTModel extends ForumMessageRESTModel {
   public ForumThreadReplyRESTModel() {
   }
   
-  public ForumThreadReplyRESTModel(Long id, String message, Long creator, Date created, Long forumAreaId, Long parentReplyId) {
-    super(id, message, creator, created, forumAreaId);
+  public ForumThreadReplyRESTModel(Long id, String message, Long creator, Date created, Long forumAreaId, Long parentReplyId, Date lastModified) {
+    super(id, message, creator, created, forumAreaId, lastModified);
     this.parentReplyId = parentReplyId;
   }
 

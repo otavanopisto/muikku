@@ -176,7 +176,7 @@ public class ForumRESTService extends PluginRESTService {
     for (WorkspaceForumArea forum : workspaceForumAreas) {
       Long numThreads = forumController.getThreadCount(forum);
 
-      result.add(new WorkspaceForumAreaRESTModel(forum.getId(), forum.getWorkspace(), forum.getName(), 
+     result.add(new WorkspaceForumAreaRESTModel(forum.getId(), forum.getWorkspace(), forum.getName(), 
           forum.getGroup() != null ? forum.getGroup().getId() : null, numThreads));
     }
     
@@ -362,7 +362,7 @@ public class ForumRESTService extends PluginRESTService {
       
       for (ForumThread thread : threads) {
         long numReplies = forumController.getThreadReplyCount(thread);
-        result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies));
+        result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified()));
       }
       
       return Response.ok(
@@ -381,7 +381,7 @@ public class ForumRESTService extends PluginRESTService {
 
     if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_READMESSAGES, thread)) {
       long numReplies = forumController.getThreadReplyCount(thread);
-      ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies);
+      ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified());
       
       return Response.ok(
         result
@@ -425,7 +425,7 @@ public class ForumRESTService extends PluginRESTService {
       long numReplies = forumController.getThreadReplyCount(forumThread);
       ForumThreadRESTModel result = new ForumThreadRESTModel(forumThread.getId(), forumThread.getTitle(), 
           forumThread.getMessage(), forumThread.getCreator(), forumThread.getCreated(), forumThread.getForumArea().getId(), 
-          forumThread.getSticky(), forumThread.getLocked(), forumThread.getUpdated(), numReplies);
+          forumThread.getSticky(), forumThread.getLocked(), forumThread.getUpdated(), numReplies, forumThread.getLastModified());
       
       return Response.ok(
         result
@@ -464,7 +464,7 @@ public class ForumRESTService extends PluginRESTService {
           newThread.getSticky(), 
           newThread.getLocked());
   
-      ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), 1l);
+      ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), 1l, thread.getLastModified());
       
       return Response.ok(
         result
@@ -685,7 +685,7 @@ public class ForumRESTService extends PluginRESTService {
     
     for (ForumThread thread : threads) {
       long numReplies = forumController.getThreadReplyCount(thread);
-      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies));
+      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified()));
     }
     
     return Response.ok(
@@ -708,7 +708,7 @@ public class ForumRESTService extends PluginRESTService {
     
     for (ForumThread thread : threads) {
       long numReplies = forumController.getThreadReplyCount(thread);
-      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies));
+      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified()));
     }
     
     return Response.ok(
@@ -757,7 +757,7 @@ public class ForumRESTService extends PluginRESTService {
     if (entity.getParentReply() != null) {
       parentReplyId = entity.getParentReply().getId();
     }
-    return new ForumThreadReplyRESTModel(entity.getId(), entity.getMessage(), entity.getCreator(), entity.getCreated(), entity.getForumArea().getId(), parentReplyId);
+    return new ForumThreadReplyRESTModel(entity.getId(), entity.getMessage(), entity.getCreator(), entity.getCreated(), entity.getForumArea().getId(), parentReplyId, entity.getLastModified());
   }
   
   private List<ForumThreadReplyRESTModel> createRestModel(ForumThreadReply... entries) {

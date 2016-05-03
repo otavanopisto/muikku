@@ -57,7 +57,9 @@ $(document).ready(function() {
         mApi({async: false}).user.users.basicinfo.read(msgs.creator).callback($.proxy(function(err, user) {
           msgs.creatorFullName = user.firstName + ' ' + user.lastName;
           var d = new Date(msgs.created);
+          var ud = new Date(msgs.updated);          
           msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
+          msgs.prettyDateUpdated = formatDate(ud) + ' ' + formatTime(ud);
           msgs.userRandomNo = Math.floor(Math.random() * 6) + 1;
           msgs.nameLetter = user.firstName.substring(0,1);
           msgsCallback();
@@ -131,8 +133,11 @@ $(document).ready(function() {
           thread.fromView = fromView;
           mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
+            thread.isEdited = thread.lastModified == thread.created ? false : true;
             var d = new Date(thread.created);
+            var ld = new Date(thread.lastModified);          
             thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+            thread.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);
             thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             threadCallback();          
           }, this));
@@ -172,7 +177,9 @@ $(document).ready(function() {
             mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
               thread.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(thread.created);
+              var ud = new Date(thread.updated);          
               thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              thread.prettyDateUpdated = formatDate(ud) + ' ' + formatTime(ud);
               thread.userRandomNo = Math.floor(Math.random() * 6) + 1;
               thread.nameLetter = user.firstName.substring(0,1);              
               threadCallback();
@@ -232,7 +239,9 @@ $(document).ready(function() {
             mApi({async: false}).user.users.basicinfo.read(msgs.creator).callback($.proxy(function(err, user) {
               msgs.creatorFullName = user.firstName + ' ' + user.lastName;            
               var d = new Date(msgs.created);
+              var ud = new Date(msgs.updated);          
               msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              msgs.prettyDateUpdated = formatDate(ud) + ' ' + formatTime(ud);
               msgs.userRandomNo = Math.floor(Math.random() * 6) + 1;
               msgs.nameLetter = user.firstName.substring(0,1);              
               msgsCallback();
@@ -296,8 +305,11 @@ $(document).ready(function() {
           mApi({async: false}).user.users.basicinfo.read(replies.creator).callback($.proxy(function(err, user) {
               replies.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(replies.created);
+              var ld = new Date(replies.lastModified);                    
               this.replyCreatedMap[replies.id] = d;
               replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              replies.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);              
+              replies.isEdited = replies.lastModified == replies.created ? false : true;
               replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
               replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
               replies.nameLetter = user.firstName.substring(0,1);
@@ -333,9 +345,12 @@ $(document).ready(function() {
           thread.fromView = from;
           mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
-            thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
+            thread.isEdited = thread.lastModified == thread.created ? false : true;
             var d = new Date(thread.created);
+            var ld = new Date(thread.lastModified);          
             thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+            thread.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);
+            thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;            
             thread.userRandomNo = Math.floor(Math.random() * 6) + 1;
             thread.nameLetter = user.firstName.substring(0,1);
             threadCallback();
@@ -368,10 +383,13 @@ $(document).ready(function() {
           replies.areaName = area.name;
           mApi({async: false}).user.users.basicinfo.read(replies.creator).callback($.proxy(function(err, user) {
             replies.creatorFullName = user.firstName + ' ' + user.lastName;
+            replies.isEdited = replies.lastModified == replies.created ? false : true;            
             replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             var d = new Date(replies.created);
+            var ld = new Date(replies.lastModified);
             this.replyCreatedMap[replies.id] = d;
             replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
+            replies.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);                    
             replies.threadId = threadId;
             replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
             replies.nameLetter = user.firstName.substring(0,1);
