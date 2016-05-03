@@ -108,7 +108,6 @@ public class SessionBackingBean {
   }
   
   public boolean getIsStaffMember() {
-    System.out.println("GET IS STAFF MEMBER SAYS " + (sessionController.isLoggedIn() && !getStudentLoggedIn()));
     return sessionController.isLoggedIn() && !getStudentLoggedIn();
   }
 
