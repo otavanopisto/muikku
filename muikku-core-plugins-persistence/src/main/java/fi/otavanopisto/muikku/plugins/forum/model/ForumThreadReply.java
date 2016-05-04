@@ -32,10 +32,6 @@ public class ForumThreadReply extends ForumMessage implements ContextReference {
     return childReplyCount;
   }
 
-  public void setChildReplyCount(Long childReplyCount) {
-    this.childReplyCount = childReplyCount;
-  }
-
   @ManyToOne
   private ForumThread thread;
   
