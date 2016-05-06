@@ -1,5 +1,5 @@
-@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
-@import "_workspaces-materials-defaults.scss";
+@import "_vars.scss";
+@import "_styles.scss";
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 @import "_jquery.datepicker.scss";
@@ -7,7 +7,7 @@
 body.evaluation {
   background:none;
   background-color:#f0f3f5;
-  @include background-image('/gfx/light-diagonal-strips.png');
+  background-image:url("/gfx/light-diagonal-strips.png");
   padding:0.01em; /* Prevent margin collapsing  */
   min-height:100%;
   line-height:1.7em;
@@ -24,7 +24,7 @@ body.evaluation {
     z-index:9999;
   
     &:before {
-      @include generic-loader(50px);
+      @include generic-loader(50px); 
       position:absolute;
       top:50%;
       left:50%;
@@ -32,7 +32,7 @@ body.evaluation {
   
   }
   
-  .evaluation-navigation-wrapper {
+  .evaluation-navigation-wrapper { 
     background:#7ed9ff;
     position:absolute;
     top:0;
@@ -364,7 +364,7 @@ body.evaluation {
         height:120px;
         margin:0 auto;  
         box-sizing:border-box;
-        @include background-image('gfx/default-user-picture.jpg');
+        background-image:url("gfx/default-user-picture.jpg");
         background-size:cover;
         border-radius:100%;
         background-position:center center;
@@ -586,7 +586,7 @@ body.evaluation {
           }
   
         }
-        
+
         .evaluation-modal-workspace-assignment-info,
         .evaluation-modal-assignment-info {
           
@@ -980,6 +980,131 @@ body.evaluation {
 
         }
         
+        .evaluation-modal-workspace-journal-info {
+        
+          .evaluation-modal-workspace-journal-entries-wrapper {
+          
+            .evaluation-modal-workspace-journal-entries-title {
+               border-left: 5px solid #016779;
+              color:#016779;
+              font-size:24px;
+              font-weight:300;
+              margin:20px 0;
+              padding:3px 0 3px 10px;
+              text-transform:uppercase;
+             }
+          
+            .evaluation-modal-workspace-single-journal-entry {
+              box-sizing:border-box;
+              padding:8px 12px 20px;
+              border-bottom:2px solid #f9f9f9;
+              line-height:1.5em;
+              margin:8px 0;
+              position:relative;
+            
+              .evaluation-journal-entry-title {
+                font-weight:400;
+                font-size:18px;
+                margin:0 0 10px 0;
+                color:#00515f;
+              }
+              
+              .evaluation-journal-entry-date {
+                position:absolute;
+                right:15px;
+                top:8px;
+                font-size:14px;
+              }
+              
+              .evaluation-journal-entry-content {
+              
+                /* TODO:
+                   This needs to be generalized so we would not have to include these content rules all over the place 
+                */
+                blockquote {
+                  font-family:'Open Sans', Arial, sans-serif;
+                  font-style:italic;
+                  padding:2px 0;
+                  border-style:solid;
+                  border-color:#eee;
+                  border-width:0;
+                  color:#777;
+                  font-size:22px;
+                  margin:0 40px 0 40px;
+                
+                  p {
+                    margin:10px 0 10px 0;
+                  }
+                
+                }
+                
+                img {
+                  max-width:100% !important;
+                  height:auto !important;
+                }
+                
+                a > img {
+                  cursor:-webkit-zoom-in;
+                  cursor:-moz-zoom-in;
+                }
+                
+                p {
+                  margin:15px 0 15px 0;
+                }
+                
+                a {
+                  color:$link;
+                }
+                
+                em, i {
+                  font-style:italic;
+                  font-weight:300;
+                }
+                
+                strong, b {
+                  font-weight:400;
+                  font-style:inherit;
+                }
+                
+                ul {
+                  list-style-type:disc;
+                  list-style-position:inside;
+                }
+                
+                ol {
+                  list-style-type:decimal;
+                  list-style-position:inside;
+                }
+                
+                ul, ol {
+                  margin:0 20px;
+                  padding:0;
+                
+                  li {
+                    margin:5px;
+                    padding:0;
+                  }
+                
+                }
+                
+                sub {
+                  vertical-align:sub;
+                  font-size:70%;
+                }
+                
+                sup {
+                  vertical-align:super;
+                  font-size:70%;
+                }
+
+              }
+            
+            }
+          
+          }
+        
+        }
+        
       }
       
     }
@@ -1070,6 +1195,7 @@ body.evaluation {
           transition:border 0.15s ease-in-out;
           font-family:'Open Sans', Arial, sans-serif;
           font-weight:300;
+          width:auto;
           
           &:hover,
           &:focus,
@@ -1211,7 +1337,7 @@ body.evaluation {
           display:inline-block;
           margin:0 20px 0 0;
           padding:0 0 0 40px;
-          @include background-image('gfx/default-user-picture.jpg');
+          background-imageurl:("gfx/default-user-picture.jpg");
           background-repeat:no-repeat;
           background-position:left center;
           background-size:contain;

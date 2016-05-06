@@ -125,6 +125,11 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
 
     return thread;
   }
+  
+  public ForumThread updateArchived(ForumThread thread, Boolean archived){
+    thread.setArchived(archived);
+    return persist(thread);
+  }
 
   public List<ForumThread> listLatestOrdered(List<ForumArea> forumAreas, int firstResult, int maxResults) {
     EntityManager entityManager = getEntityManager(); 

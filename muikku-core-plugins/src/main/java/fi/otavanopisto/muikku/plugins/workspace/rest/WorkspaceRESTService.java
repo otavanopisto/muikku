@@ -2197,7 +2197,10 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEID}/journal")
   @RESTPermitUnimplemented
-  public Response listJournalEntries(@PathParam("WORKSPACEID") Long workspaceEntityId) {
+  public Response listJournalEntries(
+      @PathParam("WORKSPACEID") Long workspaceEntityId,
+      @QueryParam("workspaceStudentId") String workspaceStudentId
+  ) {
     List<WorkspaceJournalEntry> entries = new ArrayList<>();
     List<WorkspaceJournalEntryRESTModel> result = new ArrayList<>();
     if (!sessionController.isLoggedIn()) {
@@ -2210,9 +2213,38 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
-      entries = workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
+      if (workspaceStudentId == null) {
+        entries = workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
+      } else {
+        return Response.status(Status.UNAUTHORIZED).entity("Only teachers may look at others' journal entries").build();
+      }
     } else {
-      entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+      if (workspaceStudentId == null) {
+        entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+      } else {
+        SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceStudentId);
+        if (workspaceUserIdentifier == null) {
+          return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
+        }
+
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+        if (workspaceUserEntity == null) {
+          return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
+        }
+        if (workspaceUserEntity.getWorkspaceEntity().getId() != workspaceEntity.getId()) {
+          return Response.status(Status.BAD_REQUEST).entity("WorkspaceStudent points to wrong workspace").build();
+        }
+
+        WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+        SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
+        userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+
+        if (userEntity == null) {
+          return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
+        }
+        
+        entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+      }
     }
     
     for (WorkspaceJournalEntry entry : entries) {
@@ -2226,7 +2258,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       ));
     }
 
-    return Response.ok(entries).build();
+    return Response.ok(result).build();
   }
 
   @POST

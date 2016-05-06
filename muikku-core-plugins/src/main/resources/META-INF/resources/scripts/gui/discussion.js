@@ -28,15 +28,17 @@ $(document).ready(function() {
 
   DiscImpl = $.klass({
 
+    replyCreatedMap : {},
+    
     init : function() {
       // todo: parse url
-
       this._refreshAreas();
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic > span', $.proxy(this._onMessageClick, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this._onBackClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-replies:not(.disabled)', $.proxy(this._onMoreRepliesClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this._replyMessage, this));
+      $(DiscImpl.msgContainer).on("click", '.di-reply-answer-link', $.proxy(this._replyToReply, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this._editMessage, this));      
       $(DiscImpl.msgContainer).on("click", '.di-reply-edit-link', $.proxy(this._editMessageReply, this));      
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
@@ -55,7 +57,9 @@ $(document).ready(function() {
         mApi({async: false}).user.users.basicinfo.read(msgs.creator).callback($.proxy(function(err, user) {
           msgs.creatorFullName = user.firstName + ' ' + user.lastName;
           var d = new Date(msgs.created);
+          var ud = new Date(msgs.updated);          
           msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
+          msgs.prettyDateUpdated = formatDate(ud) + ' ' + formatTime(ud);
           msgs.userRandomNo = Math.floor(Math.random() * 6) + 1;
           msgs.nameLetter = user.firstName.substring(0,1);
           msgsCallback();
@@ -129,8 +133,11 @@ $(document).ready(function() {
           thread.fromView = fromView;
           mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
+            thread.isEdited = thread.lastModified == thread.created ? false : true;
             var d = new Date(thread.created);
+            var ld = new Date(thread.lastModified);          
             thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+            thread.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);
             thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             threadCallback();          
           }, this));
@@ -170,7 +177,9 @@ $(document).ready(function() {
             mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
               thread.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(thread.created);
+              var ud = new Date(thread.updated);          
               thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              thread.prettyDateUpdated = formatDate(ud) + ' ' + formatTime(ud);
               thread.userRandomNo = Math.floor(Math.random() * 6) + 1;
               thread.nameLetter = user.firstName.substring(0,1);              
               threadCallback();
@@ -230,7 +239,9 @@ $(document).ready(function() {
             mApi({async: false}).user.users.basicinfo.read(msgs.creator).callback($.proxy(function(err, user) {
               msgs.creatorFullName = user.firstName + ' ' + user.lastName;            
               var d = new Date(msgs.created);
+              var ud = new Date(msgs.updated);          
               msgs.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              msgs.prettyDateUpdated = formatDate(ud) + ' ' + formatTime(ud);
               msgs.userRandomNo = Math.floor(Math.random() * 6) + 1;
               msgs.nameLetter = user.firstName.substring(0,1);              
               msgsCallback();
@@ -294,11 +305,18 @@ $(document).ready(function() {
           mApi({async: false}).user.users.basicinfo.read(replies.creator).callback($.proxy(function(err, user) {
               replies.creatorFullName = user.firstName + ' ' + user.lastName;
               var d = new Date(replies.created);
+              var ld = new Date(replies.lastModified);                    
+              this.replyCreatedMap[replies.id] = d;
               replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
+              replies.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);              
+              replies.isEdited = replies.lastModified == replies.created ? false : true;
               replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
               replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
               replies.nameLetter = user.firstName.substring(0,1);
-              
+              replies.isReply = replies.parentReplyId ? true : false;
+              if(replies.isReply){
+                replies.replyParentTime = formatDate(this.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(this.replyCreatedMap[replies.parentReplyId]);
+              }
               repliesCallback();
             }, this));          
         },this));
@@ -327,9 +345,12 @@ $(document).ready(function() {
           thread.fromView = from;
           mApi({async: false}).user.users.basicinfo.read(thread.creator).callback($.proxy(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
-            thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;
+            thread.isEdited = thread.lastModified == thread.created ? false : true;
             var d = new Date(thread.created);
+            var ld = new Date(thread.lastModified);          
             thread.prettyDate = formatDate(d) + ' ' + formatTime(d);
+            thread.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);
+            thread.canEdit = thread.creator === MUIKKU_LOGGED_USER_ID ? true : false;            
             thread.userRandomNo = Math.floor(Math.random() * 6) + 1;
             thread.nameLetter = user.firstName.substring(0,1);
             threadCallback();
@@ -362,12 +383,20 @@ $(document).ready(function() {
           replies.areaName = area.name;
           mApi({async: false}).user.users.basicinfo.read(replies.creator).callback($.proxy(function(err, user) {
             replies.creatorFullName = user.firstName + ' ' + user.lastName;
+            replies.isEdited = replies.lastModified == replies.created ? false : true;            
             replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
             var d = new Date(replies.created);
+            var ld = new Date(replies.lastModified);
+            this.replyCreatedMap[replies.id] = d;
             replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
+            replies.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);                    
             replies.threadId = threadId;
             replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
             replies.nameLetter = user.firstName.substring(0,1);
+            replies.isReply = replies.parentReplyId ? true : false;
+            if(replies.isReply){
+              replies.replyParentTime = formatDate(this.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(this.replyCreatedMap[replies.parentReplyId]);
+            }
             repliesCallback();
           },this));          
         }, this));
@@ -440,7 +469,43 @@ $(document).ready(function() {
         }
       }, this));
     },
-    
+    _replyToReply : function(event) {
+      var element = $(event.target);
+      element = element.parents(".di-message");
+      var parentId = $(element).attr("id");
+      var tId = $(element).find("input[name='threadId']").attr('value');
+      var aId = $(element).find("input[name='areaId']").attr('value');
+
+      var sendReply = function(values) {
+        
+        if (values.message.trim() === '') {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nomessage'));
+          return false;
+        } else {
+          values.parentReplyId = parentId;
+          mApi({async: false}).forum.areas.threads.replies.create(aId, tId, values).callback($.proxy(function(err, result) {
+            window.discussion._refreshThread(aId, tId);
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newreply'));
+          },this));
+        
+        }
+        
+      }
+  
+      mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {
+        mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+          thread.areaName = area.name;
+          thread.actionType = "reply"
+          threadCallback();
+        });
+      }, this)).callback($.proxy(function(err, thread) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
+        } else {
+          openInSN('/discussion/discussion_create_reply.dust', thread, sendReply);
+        }
+      }, this));
+    },
     _editMessage : function(event) {
       var element = $(event.target);
       element = element.parents(".di-message");
@@ -503,7 +568,7 @@ $(document).ready(function() {
     
     
     _clearMessages : function() {
-      $(DiscImpl.msgContainer).empty();
+                  $(DiscImpl.msgContainer).empty();
     },
   
     _addLoading : function(parentEl){

@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.ui;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
@@ -602,6 +603,12 @@ public class PyramusMocks extends AbstractPyramusMocks {
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(courseArrayJson)
+        .withStatus(200)));
+    
+    stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", id)))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(courseJson)
         .withStatus(200)));
     
     mockStudyProgrammes();

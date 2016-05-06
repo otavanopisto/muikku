@@ -9,11 +9,12 @@ public class ForumMessageRESTModel {
     
   }
   
-  public ForumMessageRESTModel(Long id, String message, Long creator, Date created, Long forumAreaId) {
+  public ForumMessageRESTModel(Long id, String message, Long creator, Date created, Long forumAreaId, Date lastModified) {
     this.id = id;
     this.message = message;
     this.creator = creator;
     this.created = created;
+    this.lastModified = lastModified;
     this.setForumAreaId(forumAreaId);
   }
 
@@ -57,10 +58,19 @@ public class ForumMessageRESTModel {
     this.forumAreaId = forumAreaId;
   }
 
+  public Date getLastModified() {
+    return lastModified;
+  }
+
+  public void setLastModified(Date lastModified) {
+    this.lastModified = lastModified;
+  }
+
   private Long id;
   private String message;
   private Long creator;
   private Date created;
   private Long forumAreaId;
+  private Date lastModified;
 
 }

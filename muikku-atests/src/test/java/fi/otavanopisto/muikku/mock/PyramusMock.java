@@ -342,7 +342,7 @@ public class PyramusMock {
       }
       
       public Builder mockCourseTypes() throws JsonProcessingException {
-        stubFor(get(urlEqualTo("/1/courses/courseTypes"))
+        stubFor(get(urlEqualTo("/1/courses/courseTypes/"))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(pmock.courseTypes))
@@ -682,6 +682,38 @@ public class PyramusMock {
             .withHeader("Location", "http://dev.muikku.fi:8080/")));
         
         return this;
+      }
+      
+      public Builder clearLoginMock() throws JsonProcessingException  {
+        stubFor(get(urlEqualTo("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
+
+        stubFor(get(urlMatching("/users/authorize.*"))
+          .willReturn(aResponse()
+            .withStatus(302)
+            .withHeader("Location", "")));
+
+        stubFor(post(urlEqualTo("/1/oauth/token"))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody("")
+            .withStatus(200)));
+        
+//        List<String> emails = new ArrayList<String>();
+//        emails.add("");
+//        WhoAmI whoAmI = new WhoAmI(null, null, null, emails);
+
+        stubFor(get(urlEqualTo("/1/system/whoami"))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody("")
+            .withStatus(200)));
+        
+        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:8443"))
+          .willReturn(aResponse()
+            .withStatus(302)
+            .withHeader("Location", "http://dev.muikku.fi:8080/")));
+        
+        return this;        
       }
       
       public Builder build() throws Exception {
