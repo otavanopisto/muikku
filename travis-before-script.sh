@@ -17,8 +17,9 @@ if [[ $run_tests == "true" ]]; then
   if [[ $browser == "phantomjs" && $test_suite == "phantom" ]]; then
     if [[ ! -f muikku-atests/.phantomjs/bin/phantomjs ]]; then
       rm -fR muikku-atests/.phantomjs
-      curl -sSL "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2"|tar -xvjC muikku-atests/
-      mv muikku-atests/phantomjs-1.9.8-linux-x86_64 muikku-atests/.phantomjs
+      wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 & wait
+      tar -jxf phantomjs-1.9.8-linux-x86_64.tar.bz2 & wait
+      mv phantomjs-1.9.8-linux-x86_64 muikku-atests/.phantomjs
     fi;
   fi;
 fi;
