@@ -6,7 +6,7 @@
 
         <div class="cm-message-header no-margin-top no-margin-bottom">
            <div class="cm-message-select"><input type="checkbox"  name="messageSelect" value="{communicatorMessageId}" /></div>
-           <div class="cm-message-sender-name cm-message-header-content-primary">{senderFullName}</div>
+           <div class="cm-message-sender-name cm-message-header-content-primary" title="{senderFullName}">{senderFullName}</div>
            <div class="cm-message-caption cm-message-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</div>
         </div>
         <div class="cm-message-additional no-margin-top no-margin-bottom">

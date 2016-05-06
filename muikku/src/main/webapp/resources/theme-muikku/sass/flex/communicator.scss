@@ -149,6 +149,8 @@
 
 .cm-message {
   margin:0 0 5px 0;
+  min-width:300px;
+  box-sizing:border-box;
   
   .cm-message-details-container {
     background-color:#fff;
@@ -171,7 +173,7 @@
 
   .cm-message-select {
     display:inline-block;
-    margin:0 5px 0 0;
+    margin:0 0 0 5px;
   }
   
   .cm-message-latest {
@@ -199,13 +201,14 @@
     color:#000;
     display:inline-block;
     max-width:calc(100% - 170px);
-    margin:0 5px 0 0;
+    margin:0 0 0 5px;
     vertical-align:bottom;
     font-weight:400;
   }
       
   .cm-message-caption {
     padding:0 0 0 22px;
+    margin:0 0 0 5px;
   }
 
   &.unread {
@@ -226,8 +229,6 @@
   } 
    
   .cm-message-content {
-    margin-left:70px;
-    margin-right:70px; 
    
     .cm-message-content-text {
    
@@ -243,7 +244,8 @@
     padding:10px 0;  
   }
   
-  .cm-message-tools, .cm-viewmessagethread-tools {
+  .cm-message-tools, 
+  .cm-viewmessagethread-tools {
     padding:0;
     height:40px;
   }
@@ -252,15 +254,11 @@
     padding:0 10px 0 10px;
     border:1px solid $brd2;
     background-color:$bgr1; 
-    font-size:1.5em;
+    display:inline-block;
     color:#000;
     
     &:not(:first-child) {
       margin-left:10px;
-    }
-    
-    span {
-      font-size:0.75em; 
     }
     
   }
@@ -270,8 +268,16 @@
     background-color:#fff;    
   }
   
-  .cm-message-recipient {
-  
+  .cm-message-recipients {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:#000;
+    display:inline-block;
+    max-width:calc(100% - 170px);
+    margin:0 0 0 5px;
+    vertical-align:bottom;
+    font-weight:400;
   }
 
  .cm-message-selected-recipients {
@@ -325,16 +331,24 @@
         width:20px;
       }
      
-    }   
-      
-    .cm-message-header-content-secondary {
-
-    }
+    }  
     
-    .cm-message-header-content-primary {
-      font-weight:700;
-
-    }   
+    .cm-message-details-sender {
+      position:relative;
+    
+      .cm-message-header-content-secondary {
+        position:absolute;
+        right:10px;
+        top:0;
+      }
+      
+      .cm-message-header-content-primary {
+        font-weight:400;
+      } 
+    
+    } 
+      
+      
    
   }
 

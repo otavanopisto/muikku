@@ -1,6 +1,6 @@
 {?.}
-  <div class="cm-messages-toolbar mf-items-toolbar"> 
-     <div class="cm-messages-tool mf-items-tool icon-delete"></div>
+  <div class="mf-items-toolbar flex-row"> 
+     <div class="mf-items-tool icon-delete"></div>
   </div>
 {/.}
 

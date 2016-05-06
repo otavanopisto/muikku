@@ -268,9 +268,9 @@
   .cm-message {
   
     .cm-message-details {
-      min-width:300px;
     
-      .cm-message-latest {
+      .cm-message-latest,
+      .cm-message-header-content-secondary {
         font-size:13px;
       }
       
