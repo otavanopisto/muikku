@@ -84,17 +84,7 @@
               .css({'z-index': 9999, 'position': 'relative'})
               .attr('type', 'text')
               .datepicker();
-            
-            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
-            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
+
             $(this._dialog).find('input[name="evaluationDate"]')
               .datepicker('setDate', this.options.evaluationDate||new Date());
             
@@ -142,6 +132,16 @@
             }, this));
             
             this._dialog.find(".evaluation-assignment-title-container").click($.proxy(this._onAssignmentTitleClick, this));
+            
+            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
+            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
             
           }, this),
           buttons: [{
@@ -342,15 +342,22 @@
       },this)
     },
     _loadTemplate: function (assignments, callback) {
-      renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
-        studentDisplayName: this.options.studentDisplayName,
-        gradingScales: this.options.gradingScales,
-        assessors: this.options.assessors,
-        workspaceName: this.options.workspaceName,
-        studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-        assignments: assignments,
-        exercises: []
-      }, callback);
+      mApi().workspace.workspaces.journal.read(this.options.workspaceEntityId, {workspaceStudentId: this.options.workspaceStudentId}).callback(
+        $.proxy(function(err, journalEntries) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else 
+            renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
+              studentDisplayName: this.options.studentDisplayName,
+              gradingScales: this.options.gradingScales,
+              assessors: this.options.assessors,
+              workspaceName: this.options.workspaceName,
+              studentStudyProgrammeName: this.options.studentStudyProgrammeName,
+              assignments: assignments,
+              exercises: [],
+              journalEntries: journalEntries
+            }, callback);
+        }, this));
     },
     
     _onAssignmentTitleClick: function (event) {
@@ -442,17 +449,7 @@
               .css({'z-index': 9999, 'position': 'relative'})
               .attr('type', 'text')
               .datepicker();
-            
-            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
-            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
-              wheelSpeed:3,
-              swipePropagation:false
-            });
-            
+
             $(this._dialog).find('input[name="evaluationDate"]')
               .datepicker('setDate', this.options.evaluationDate||new Date());
             
@@ -485,6 +482,17 @@
             $(document).muikkuMaterialLoader('loadMaterials', $(this._dialog).find('.evaluation-assignment'), fieldAnswers);
             
             this._adjustTextareaHeight($(this._dialog).find('.evaluation-assignment'));
+            
+            $(this._dialog).find("#evaluationStudentAssignmentWrapper").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
+            $(this._dialog).find(".evaluation-modal-evaluateForm-content").perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+            
           }, this),
           buttons: [{
             'text': this._dialog.attr('data-button-save-text'),
@@ -610,21 +618,21 @@
     },
     
     _loadTemplate: function (workspaceMaterialId, materialId, materialType, materialTitle, materialHtml, path, callback) {
-      renderDustTemplate('evaluation/evaluation_evaluate_assignment_modal_view.dust', {
-        studentDisplayName: this.options.studentDisplayName,
-        gradingScales: this.options.gradingScales,
-        assessors: this.options.assessors,
-        workspaceName: this.options.workspaceName,
-        studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-        assignments: [{
-          workspaceMaterialId: workspaceMaterialId,
-          materialId: materialId,
-          title: materialTitle, 
-          html: materialHtml,
-          type: materialType,
-          path: path
-        }]
-      }, callback);
+        renderDustTemplate('evaluation/evaluation_evaluate_assignment_modal_view.dust', {
+          studentDisplayName: this.options.studentDisplayName,
+          gradingScales: this.options.gradingScales,
+          assessors: this.options.assessors,
+          workspaceName: this.options.workspaceName,
+          studentStudyProgrammeName: this.options.studentStudyProgrammeName,
+          assignments: [{
+            workspaceMaterialId: workspaceMaterialId,
+            materialId: materialId,
+            title: materialTitle, 
+            html: materialHtml,
+            type: materialType,
+            path: path
+          }], 
+        }, callback);
     },
     
     _adjustTextareaHeight: function(container) {

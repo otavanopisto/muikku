@@ -36,7 +36,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
 
     // Create thread
     
-    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l);
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
     
     response = asAdmin()
       .contentType("application/json")
@@ -48,7 +48,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
     // Create reply
     
     ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        creator, new Date(), forumAreaId);
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
     
     response = asAdmin()
       .contentType("application/json")
@@ -68,7 +68,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
   @Test
   public void testCreateThreadAdmin() throws NoSuchFieldException {
     ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
-        1l, new Date(), forumAreaId, false, false, new Date(), 1l);
+        1l, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
     
     Response response = asAdmin()
       .contentType("application/json")
@@ -84,7 +84,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
   @Test
   public void testCreateThreadManager() throws NoSuchFieldException {
     ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
-        1l, new Date(), forumAreaId, false, false, new Date(), 1l);
+        1l, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
     
     Response response = asManager()
       .contentType("application/json")
@@ -100,7 +100,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
   @Test
   public void testCreateThreadTeacher() throws NoSuchFieldException {
     ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
-        1l, new Date(), forumAreaId, false, false, new Date(), 1l);
+        1l, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
     
     Response response = asTeacher()
       .contentType("application/json")
@@ -116,7 +116,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
   @Test
   public void testCreateThreadStudent() throws NoSuchFieldException {
     ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
-        1l, new Date(), forumAreaId, false, false, new Date(), 1l);
+        1l, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
     
     Response response = asStudent()
       .contentType("application/json")
@@ -132,7 +132,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
   @Test
   public void testCreateReplyAdmin() throws NoSuchFieldException {
     ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId);
+        1l, new Date(), forumAreaId, null, new Date(), 0l);
     
     Response response = asAdmin()
       .contentType("application/json")
@@ -149,7 +149,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
   @Test
   public void testCreateReplyManager() throws NoSuchFieldException {
     ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId);
+        1l, new Date(), forumAreaId, null, new Date(), 0l);
     
     Response response = asManager()
       .contentType("application/json")
@@ -166,7 +166,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
   @Test
   public void testCreateReplyTeacher() throws NoSuchFieldException {
     ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId);
+        1l, new Date(), forumAreaId, null, new Date(), 0l);
     
     Response response = asTeacher()
       .contentType("application/json")
@@ -183,7 +183,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
   @Test
   public void testCreateReplyStudent() throws NoSuchFieldException {
     ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId);
+        1l, new Date(), forumAreaId, null, new Date(), 0l);
     
     Response response = asStudent()
       .contentType("application/json")
