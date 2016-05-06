@@ -9,8 +9,6 @@
   background-color:$mainFuncSb; 
 }
 
-
-
 .mf-primary-function {
   
   .mf-primary-function-content {
@@ -172,7 +170,6 @@
   font-weight:700;
   font-size:16px;
   padding:5px;
-  margin-top:5px;
   
   &.no-items {
     color:$dimmer;
@@ -573,14 +570,6 @@
     padding:5px;
     min-height:100px;
   }
-  
-  .mf-item-additionalInfo {
-    font-size:1em;
-    float:right;
-    width:20%;
-    line-height:2.5em;
-    text-align:center;
-  }
 
   .mf-item-details-teachers {
     padding:0 5px;
@@ -839,6 +828,7 @@
     
       select {        
         width:100%;
+        
         option {
           padding:8px;
         }

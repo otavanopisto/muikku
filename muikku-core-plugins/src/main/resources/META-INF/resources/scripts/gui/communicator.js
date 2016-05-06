@@ -467,7 +467,7 @@ $(document).ready(function(){
   },
   
   _setSelected : function(selected){
-    var container = $(".mf-list-container");
+    var container = $(".cm-categories");
     var categories = container.find("li");
     
     categories.removeClass("selected");
