@@ -60,12 +60,15 @@ import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
+import fi.otavanopisto.muikku.plugins.user.UserPendingPasswordChange;
+import fi.otavanopisto.muikku.plugins.user.UserPendingPasswordChangeDAO;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.otavanopisto.muikku.session.local.LocalSession;
@@ -116,6 +119,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Inject
   private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
 
+  @Inject
+  private UserPendingPasswordChangeDAO userPendingPasswordChangeDAO; 
+  
   @Inject
   private EvaluationController evaluationController;
   
@@ -593,6 +599,34 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
+  @POST
+  @Path("/passwordchange/{EMAIL}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createPasswordChangeEntry(@PathParam ("EMAIL") String email) {
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
+    logger.severe("RAAAAARAAARRAAAAAA");
+    if (userEntity == null)
+      return Response.status(Status.NOT_FOUND).build();
+     
+      String confirmationHash = "testtesttest";
+      UserPendingPasswordChange passwordChange = userPendingPasswordChangeDAO.create(userEntity, confirmationHash);
+      logger.severe("BABABABBAAAA" + passwordChange.getConfirmationHash());  
+      return Response.noContent().build();
+  }
+  
+  @DELETE
+  @Path("/passwordchange/{EMAIL}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deletePasswordChangeEntry(@PathParam ("EMAIL") String email) {
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email); 
+    if (userEntity == null)
+      return Response.status(Status.NOT_FOUND).build();
+    
+    UserPendingPasswordChange userPendingPasswordChange = userPendingPasswordChangeDAO.findByUserEntity(userEntity);    
+    userPendingPasswordChangeDAO.delete(userPendingPasswordChange);  
+    return Response.noContent().build();
+  }
+  
   @DELETE
   @Path("/userGroups/{USERGROUPID}/{USERID}")
   @RESTPermit (handling = Handling.UNSECURED)

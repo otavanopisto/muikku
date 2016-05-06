@@ -112,6 +112,22 @@ public abstract class AbstractIntegrationTest {
       throw new FileNotFoundException(file);
     }
   }
+  
+  protected void insertPendingPasswordChangeSql(long userEntityId) throws ClassNotFoundException, SQLException {
+    runSql("INSERT INTO userpendingpasswordchange (1, \"hsdjeryYUEbfdsadagf\","+ userEntityId +");");
+  }
+  
+  protected void cleanupPendingPasswordChange() throws ClassNotFoundException, SQLException {
+    runSql("DELETE FROM userpendingpasswordchange;");
+  }
+  
+  private void runSql(String sqlString) throws ClassNotFoundException, SQLException {
+    Connection connection = getConnection();
+    if (StringUtils.isNotBlank(sqlString)) {
+      Statement statement = connection.createStatement();
+      statement.execute(sqlString);
+    }
+  }
 
   public long getUserIdByEmail(String email) throws SQLException, ClassNotFoundException{
     Connection connection = getConnection();
