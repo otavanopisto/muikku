@@ -123,7 +123,7 @@
 				},
 
 				defaults: {
-					math: '`x = a^2 + b^2`'
+					math: '\\(a + b = c\\)'
 				},
 
 				init: function() {

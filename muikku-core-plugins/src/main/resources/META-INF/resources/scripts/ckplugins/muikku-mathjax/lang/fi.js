@@ -5,7 +5,7 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
 CKEDITOR.plugins.setLang( 'muikku-mathjax', 'fi', {
 	title: 'Matematiikkaa TeX:llä tai AsciiMathilla',
 	button: 'Matematiikka',
-	dialogInput: 'Kirjoita TeX:iä tähän',
+	dialogInput: 'Kirjoita matematiikkasyöte tähän',
 	docUrl: 'http://en.wikibooks.org/wiki/LaTeX/Mathematics',
 	docLabel: 'TeX dokumentaatio',
 	loading: 'lataa...',
