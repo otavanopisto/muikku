@@ -4,9 +4,9 @@
   $.widget("custom.imageDetails", {
     
     options: {
-      typePostfix: {
-        'source': '&nbsp;/&nbsp;',
-        'author': ',&nbsp;'
+      typePrefix: {
+        'author': '&nbsp;/&nbsp;',
+        'license': ',&nbsp;'
       }
     },
     
@@ -55,6 +55,12 @@
             .appendTo(this._details);
         }
         
+        if (this.options.typePrefix[type] && $(this._detailsContainer).children().length > 1) {
+          $('<span>')
+            .html(this.options.typePrefix[type])
+            .appendTo(this._detailsContainer);
+        }
+
         if (url) {
           $('<a>')
             .attr({
@@ -66,12 +72,6 @@
         } else {
           $('<span>')
             .text(text||url)
-            .appendTo(this._detailsContainer);
-        }
-        
-        if (this.options.typePostfix[type]) {
-          $('<span>')
-            .html(this.options.typePostfix[type])
             .appendTo(this._detailsContainer);
         }
       }

@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.session;
 
+import java.util.Locale;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -9,6 +11,7 @@ import javax.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
+import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -27,6 +30,9 @@ public class SessionBackingBean {
 
   @Inject
   private SessionController sessionController;
+
+  @Inject
+  private LocaleController localeController;
 
   @Inject
   private UserController userController;
@@ -85,6 +91,10 @@ public class SessionBackingBean {
     return loggedUserRoleArchetype == EnvironmentRoleArchetype.TEACHER;
   }
 
+  public boolean getStudyProgrammeLeaderLoggedIn() {
+    return loggedUserRoleArchetype == EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER;
+  }
+
   public boolean getManagerLoggedIn() {
     return loggedUserRoleArchetype == EnvironmentRoleArchetype.MANAGER;
   }
@@ -96,9 +106,31 @@ public class SessionBackingBean {
   public boolean getStudentLoggedIn() {
     return loggedUserRoleArchetype == EnvironmentRoleArchetype.STUDENT;
   }
+  
+  public boolean getIsStaffMember() {
+    return sessionController.isLoggedIn() && !getStudentLoggedIn();
+  }
 
   public String getLoggedUserName() {
     return loggedUserName;
+  }
+
+  public String getLoggedUserRole() {
+    Locale locale = localeController.resolveLocale(sessionController.getLocale());
+    switch (loggedUserRoleArchetype) {
+    case ADMINISTRATOR:
+      return localeController.getText(locale, "role.administrator");
+    case MANAGER:
+      return localeController.getText(locale, "role.manager");
+    case STUDENT:
+      return localeController.getText(locale, "role.student");
+    case STUDY_PROGRAMME_LEADER:
+      return localeController.getText(locale, "role.studyProgrammeLeader");
+    case TEACHER:
+      return localeController.getText(locale, "role.teacher");
+    default:
+      return localeController.getText(locale, "role.custom");
+    }
   }
   
   public String getCurrentCountry() {
@@ -124,4 +156,5 @@ public class SessionBackingBean {
   private boolean testsRunning;
   private String bugsnagApiKey;
   private boolean bugsnagEnabled;
+
 }

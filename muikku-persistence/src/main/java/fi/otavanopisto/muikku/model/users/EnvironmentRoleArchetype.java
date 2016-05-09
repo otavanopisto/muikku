@@ -10,6 +10,8 @@ public enum EnvironmentRoleArchetype {
   
   MANAGER,
   
+  STUDY_PROGRAMME_LEADER,
+  
   CUSTOM
   
 }

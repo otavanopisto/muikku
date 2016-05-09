@@ -46,13 +46,9 @@ public class EvaluationResourcePermissionCollection extends AbstractMuikkuPermis
   public static final String EVALUATION_UPDATEWORKSPACEMATERIALEVALUATION = "EVALUATION_UPDATEWORKSPACEMATERIALEVALUATION";
 
   /**
-   * Assessors and grading scales
+   * Grading scales
    */
   
-  @Scope (PermissionScope.WORKSPACE)
-  @DefaultWorkspacePermissionRoles({WorkspaceRoleArchetype.TEACHER})
-  public static final String EVALUATION_LISTASSESSORS = "EVALUATION_LISTASSESSORS";
-
   @Scope (PermissionScope.WORKSPACE)
   @DefaultWorkspacePermissionRoles({WorkspaceRoleArchetype.TEACHER})
   public static final String EVALUATION_LISTGRADINGSCALES = "EVALUATION_LISTGRADINGSCALES";

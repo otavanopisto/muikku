@@ -21,10 +21,6 @@ public class GuidanceRequestPermissions extends AbstractMuikkuPermissionCollecti
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.TEACHER })
   public static final String CREATE_GUIDANCEREQUEST = "CREATE_GUIDANCEREQUEST";
 
-  @Scope (PermissionScope.ENVIRONMENT)
-//  @DefaultPermissionRoles ({ there's really no role that could do this by default })
-  public static final String LIST_GUIDANCEREQUESTS = "LIST_GUIDANCEREQUESTS";
-  
   @Scope (PermissionScope.USERGROUP)
   @DefaultPermissionRoles ({ GROUP_TEACHER })
   public static final String RECEIVE_USERGROUP_GUIDANCEREQUESTS = "RECEIVE_USERGROUP_GUIDANCEREQUESTS";
