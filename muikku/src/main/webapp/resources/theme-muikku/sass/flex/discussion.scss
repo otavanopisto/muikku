@@ -34,7 +34,13 @@
   
   
 }
-.di-content-main {
+.di-content-main { 
+   .di-reply{
+    
+    } 
+    .di-reply-reply{
+      border-left:30px solid #fbfbfb;
+    } 
   .di-message {
     background:#fff;
 
@@ -128,10 +134,10 @@
         }
         
       }
- .di-message-time{
-   font-size:12px;
-   overflow:hidden;
- }      
+       .di-message-time{
+         font-size:12px;
+         overflow:hidden;
+       }      
       .di-message-replies span{
         background-color: #fff8c1;
         display: inline-block;
@@ -217,16 +223,32 @@
       .di-message-details {
           font-size: 22px;
           font-weight: 300;
-          span{          
+          &.di-message-details-reply{
+            font-size:18px;
+          }
+          > span{          
             &:not(:first-child){
-              margin-left:5px;
+            margin-left:10px;            
+            }
+            &.di-reply-title-date{
               &:before{
                content: "-";
                margin-right:5px;
                color:#000;
               }
             }
-          }      
+          }
+          .di-reply-to-decor{
+            color:#108201;
+            font-size: 15px;
+            margin-left: 30px !important;
+            margin-right: 31px;           
+          }
+          .di-reply-to-decor-content{
+
+          }
+
+          .di-reply-to-title{}             
       }
 
       .di-message-title {
@@ -239,9 +261,22 @@
 
      .di-message-content-text  {
           margin-left:10px;
+          margin-right:10px;
           font-weight:300;
+         
      }      
-
+    .di-message-content-info{
+      font-size:12px;
+      color:#a4a4a4;
+      font-weight:600;
+      text-align:center;
+      margin-right:10px;
+      > span{          
+        &:not(:first-child){
+          margin-left:10px;            
+        }
+      }
+    }
       .di-message-content-tools {
         margin-left:10px;      
         .di-message-content-tools-container {
@@ -256,7 +291,9 @@
       
 
     }
-  
+ 
+
+
     .di-message-info {
       cursor:default;
     }
