@@ -144,14 +144,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       };
     }
       
-    @Override
-    protected void failed(Throwable e, Description description) {
-      try {
-        takeScreenshot();
-      } catch (IOException e1) {
-        e1.printStackTrace();
-      }
-    }
+//    @Override
+//    protected void failed(Throwable e, Description description) {
+//      try {
+//        takeScreenshot();
+//      } catch (IOException e1) {
+//        e1.printStackTrace();
+//      }
+//    }
     
   };
   
