@@ -89,7 +89,11 @@
               .datepicker('setDate', this.options.evaluationDate||new Date());
             
             if (this.options.evaluationGradeId) {
-              $(this._dialog).find('select[name="grade"]').val(this.options.evaluationGradeId);
+              var gradeSelector = $(this._dialog).find('select[name="grade"]');
+              gradeSelector.val(this.options.evaluationGradeId);
+              gradeSelector.change($.proxy(function(){
+                $(this._dialog).find('input[name="evaluationDate"]').datepicker('setDate', new Date());
+              }, this));
             }
             
             if (this.options.assessorEntityId) {
@@ -454,7 +458,11 @@
               .datepicker('setDate', this.options.evaluationDate||new Date());
             
             if (this.options.evaluationGradeId) {
-              $(this._dialog).find('select[name="grade"]').val(this.options.evaluationGradeId);
+              var gradeSelector = $(this._dialog).find('select[name="grade"]');
+              gradeSelector.val(this.options.evaluationGradeId);
+              gradeSelector.change($.proxy(function(){
+                $(this._dialog).find('input[name="evaluationDate"]').datepicker('setDate', new Date());
+              }, this));
             }
             
             if (this.options.assessorEntityId) {
