@@ -6,7 +6,7 @@
 
 ( function() {
 
-  var cdn = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AMS_HTMLorMML';
+  var cdn = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML';
 
   CKEDITOR.dialog.add( 'muikku-mathjax', function( editor ) {
 
