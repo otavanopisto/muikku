@@ -6,7 +6,7 @@
 
 ( function() {
 
-  var cdn = 'http:\/\/cdn.mathjax.org\/mathjax\/2.2-latest\/MathJax.js?config=TeX-MML-AMS_HTMLorMML';
+  var cdn = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AMS_HTMLorMML';
 
   CKEDITOR.dialog.add( 'muikku-mathjax', function( editor ) {
 
@@ -52,7 +52,9 @@
                 if ( !( CKEDITOR.env.ie && CKEDITOR.env.version == 8 ) ) {
                   this.getInputElement().on( 'keyup', function() {
                     var value = that.getInputElement().getValue();
-                    var untrimmed = CKEDITOR.plugins.muikkuMathjax.untrim(widget.data.isAsciiMath, value);
+                    // isAsciiMath is not present in widget at this point
+                    var isAsciiMath = that.getDialog().getValueOf('info', 'isAsciiMath');
+                    var untrimmed = CKEDITOR.plugins.muikkuMathjax.untrim(isAsciiMath, value);
                     preview.setValue(untrimmed);
                   } );
                 }
@@ -278,14 +280,18 @@
     CKEDITOR.plugins.muikkuMathjax.trim = function( isAsciiMath, value ) {
       var begin, end;
       if (isAsciiMath) {
-      begin = value.indexOf( '`' ) + 1;
-      end = value.lastIndexOf( '`' );
-    } else {
-      begin = value.indexOf( '\\(' ) + 2;
-      end = value.lastIndexOf( '\\)' );
-    }
+        begin = value.indexOf( '`' ) + 1;
+        end = value.lastIndexOf( '`' );
+      } else {
+        begin = value.indexOf( '\\(' ) + 2;
+        end = value.lastIndexOf( '\\)' );
+      }
+      
+      if (begin === -1 || end === -1 || begin === end) {
+        return value;
+      }
 
-        return value.substring( begin, end );
+      return value.substring( begin, end );
     };
     
     CKEDITOR.plugins.muikkuMathjax.untrim = function(isAsciiMath, value) {
