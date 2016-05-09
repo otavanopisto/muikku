@@ -63,7 +63,7 @@ public class PyramusSchoolDataEntityFactory {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
-  
+
   @PostConstruct
   public void init() {
     pyramusHost = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "pyramusHost");
@@ -77,23 +77,8 @@ public class PyramusSchoolDataEntityFactory {
         WorkspaceRoleArchetype.STUDENT);
   }
 
-  @SuppressWarnings("incomplete-switch")
   public User createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember staffMember) {
     String displayName = staffMember.getFirstName() + " " + staffMember.getLastName();
-    switch (staffMember.getRole()) {
-      case ADMINISTRATOR:
-        displayName += " (Administrator)";
-      break;
-      case GUEST:
-        displayName += " (Guest)";
-      break;
-      case MANAGER:
-        displayName += " (Manager)";
-      break;
-      case USER:
-        displayName += " (User)";
-      break;
-    }
 
     boolean hidden = false;
     boolean startedStudies = false;
@@ -451,6 +436,8 @@ public class PyramusSchoolDataEntityFactory {
     case TEACHER:
     case STUDY_GUIDER:
       return EnvironmentRoleArchetype.TEACHER;
+    case STUDY_PROGRAMME_LEADER:
+      return EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER;
     default:
       return EnvironmentRoleArchetype.CUSTOM;
     }

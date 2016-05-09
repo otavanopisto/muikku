@@ -16,31 +16,31 @@ import fi.otavanopisto.security.Scope;
 public class AnnouncerPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String CREATE_ANNOUNCEMENT = "CREATE_ANNOUNCEMENT";
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String UPDATE_ANNOUNCEMENT = "UPDATE_ANNOUNCEMENT";
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String DELETE_ANNOUNCEMENT = "DELETE_ANNOUNCEMENT";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String LIST_ALL_ANNOUNCEMENTS = "LIST_ALL_ANNOUNCEMENTS";
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String LIST_UNARCHIVED_ANNOUNCEMENTS = "LIST_UNARCHIVED_ANNOUNCEMENTS";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String FIND_ANNOUNCEMENT = "FIND_ANNOUNCEMENT";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String ANNOUNCER_TOOL = "ANNOUNCER_TOOL";
   
   @Override

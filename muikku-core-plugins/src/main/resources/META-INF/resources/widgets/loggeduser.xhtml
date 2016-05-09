@@ -14,7 +14,7 @@
       <div class="lu-infoContainer">
         <div class="lu-user-name">
           <div class="lu-user-name-button">
-            <div class="lu-user-name-button-value"><h:link outcome="/jsf/profile/profile.jsf">#{sessionBackingBean.loggedUserName}</h:link></div>
+            <div class="lu-user-name-button-value"><h:link outcome="/jsf/profile/profile.jsf">#{sessionBackingBean.loggedUserName}<c:if test="#{sessionBackingBean.isStaffMember}"> (#{sessionBackingBean.loggedUserRole})</c:if></h:link></div>
           </div>     
         </div>
         <div class="lu-actions">

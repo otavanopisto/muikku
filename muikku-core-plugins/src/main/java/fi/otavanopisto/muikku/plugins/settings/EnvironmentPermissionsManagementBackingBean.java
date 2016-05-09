@@ -19,6 +19,7 @@ import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.SystemRoleEntity;
+import fi.otavanopisto.muikku.plugins.data.PermissionsPluginController;
 import fi.otavanopisto.muikku.schooldata.RoleController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.PermissionScope;
@@ -35,6 +36,9 @@ public class EnvironmentPermissionsManagementBackingBean {
   @Inject
   private PermissionController permissionController;
   
+  @Inject
+  private PermissionsPluginController permissionsPluginController;
+
   @Inject
   private RoleController roleController;
 
@@ -77,6 +81,10 @@ public class EnvironmentPermissionsManagementBackingBean {
     }
     
     return null;
+  }
+  
+  public void resetPermissions() {
+    permissionsPluginController.resetPermissions();
   }
 
   public List<Permission> getPermissions() {
