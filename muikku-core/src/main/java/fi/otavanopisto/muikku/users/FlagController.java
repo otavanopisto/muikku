@@ -34,6 +34,16 @@ public class FlagController {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
+  public Flag createFlag(SchoolDataIdentifier ownerIdentifier, String name, String color, String description) {
+    UserSchoolDataIdentifier ownerSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(ownerIdentifier);
+    if (ownerSchoolDataIdentifier == null) {
+      logger.severe(String.format("Could not find school data user by identifier %s", ownerIdentifier));
+      return null;
+    }
+
+    return flagDAO.create(ownerSchoolDataIdentifier, name, color, description, Boolean.FALSE);
+  }
+
   public Flag findFlagById(Long flagId) {
     return flagDAO.findById(flagId);
   }

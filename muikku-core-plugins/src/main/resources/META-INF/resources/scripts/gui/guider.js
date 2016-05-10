@@ -363,9 +363,11 @@
     _create : function() {
       this.element.addClass('gt-user-view-profile');
       
+      // this.element.on("click", ".gt-user-view-flags-select", $.proxy(this._onFlagSelectClick, this));
+      // this.element.on("click", ".gt-user-view-flag", $.proxy(this._onFlagClick, this));
       
-      this.element.on("click", ".gt-user-view-flags-select", $.proxy(this._onFlagSelectClick, this));
-      this.element.on("click", ".gt-user-view-flag", $.proxy(this._onFlagClick, this));
+      this.element.on("click", ".gu-add-flag", $.proxy(this._onAddFlagClick, this));
+      
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       $(document).on("mouseup", $.proxy(this._onDocumentMouseUp, this));
       
@@ -405,6 +407,50 @@
       }
     },
     
+    _onAddFlagClick: function (event) {
+      renderDustTemplate('guider/guider_add_flag.dust', { }, $.proxy(function(text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal : true,
+          minHeight : 200,
+          maxHeight : $(window).height() - 50,
+          resizable : false,
+          width : 560,
+          dialogClass : "workspace-user-confirm-dialog",
+          buttons : [ {
+            'text' : dialog.attr('data-button-create'),
+            'class' : 'create-button',
+            'click' : function(event) {
+              var payload = {
+                ownerIdentifier: MUIKKU_LOGGED_USER
+              };
+              
+              $.each(['name', 'color', 'description'], $.proxy(function (index, property) {
+                payload[property] = $(this).find('*[name="' + property + '"]').val();
+              }, this));
+              
+              mApi().user.flags
+                .create(payload)
+                .callback($.proxy(function (err) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  } else {
+                    $(this).dialog("destroy").remove();
+                  }
+                }, this));
+            }
+          }, {
+            'text' : dialog.attr('data-button-cancel'),
+            'class' : 'cancel-button',
+            'click' : function(event) {
+              $(this).dialog("destroy").remove();
+            }
+          } ]
+        });
+      }, this));
+    },
+    
+    /**
     _onFlagSelectClick: function (event) {
       var element = $(event.target);
       var container = element.closest('.gt-user-view-flags-container');
@@ -471,7 +517,7 @@
           }
         }, this));
     },
-    
+    **/
     _onDocumentMouseUp: function (event) {
       var flagsContainer = $(event.target).closest('.gt-user-view-flags-container');
       if (!flagsContainer.length) {
@@ -585,6 +631,7 @@
                   flag: flagMap[studentFlag.flagId]
                 });
               });
+              
               userCallback();
             }
           }, this));
