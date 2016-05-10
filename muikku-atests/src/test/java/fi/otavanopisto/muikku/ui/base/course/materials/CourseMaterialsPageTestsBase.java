@@ -897,8 +897,11 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-file .muikku-file-input-field-file-label a", htmlMaterial.getId()), testFile.getName());
         waitAndClick(".muikku-file-input-field-file-remove");
         waitAndClick(".delete-button span");
+        waitForPresent(String.format("#page-%d .muikku-field-saved", htmlMaterial.getId()));
         assertPresent(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()));
-        assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()), "Add a file by clicking here or by dragging it into this box");
+        reloadCurrentPage();
+        waitForPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
+        assertNotPresent(".muikku-file-input-field-file");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
@@ -948,8 +951,11 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-file .muikku-file-input-field-file-label a", htmlMaterial.getId()), testFile.getName());
           waitAndClick(".muikku-file-input-field-file-remove");
           waitAndClick(".delete-button span");
+          waitForPresent(String.format("#page-%d .muikku-field-saved", htmlMaterial.getId()));
           assertPresent(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()));
-          assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-description", htmlMaterial.getId()), "lisää tiedosto klikkaamalla tästä tai raahaamalla se tähän laatikkoon");
+          reloadCurrentPage();
+          waitForPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
+          assertNotPresent(".muikku-file-input-field-file");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }

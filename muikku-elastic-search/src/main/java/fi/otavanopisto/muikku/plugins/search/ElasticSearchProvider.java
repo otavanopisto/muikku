@@ -160,7 +160,7 @@ public class ElasticSearchProvider implements SearchProvider {
          * 
          * Active user is:
          * 
-         * StaffMember (TEACHER, MANAGER, ADMINISTRATOR) or
+         * StaffMember (TEACHER, MANAGER, ADMINISTRATOR, STUDY PROGRAMME LEADER) or
          * Student that has
          *   active flag true or
          *     has not started nor finished studies (ie. in study programme that never expires) and
@@ -176,7 +176,7 @@ public class ElasticSearchProvider implements SearchProvider {
         
         filters.add(
           FilterBuilders.orFilter(
-            FilterBuilders.inFilter("archetype", EnvironmentRoleArchetype.TEACHER.name().toLowerCase(), EnvironmentRoleArchetype.MANAGER.name().toLowerCase(), EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()),
+            FilterBuilders.inFilter("archetype", EnvironmentRoleArchetype.TEACHER.name().toLowerCase(), EnvironmentRoleArchetype.MANAGER.name().toLowerCase(), EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.name().toLowerCase(), EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()),
             FilterBuilders.andFilter(
               FilterBuilders.termsFilter("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()),
               FilterBuilders.termFilter("startedStudies", true),
@@ -347,12 +347,27 @@ public class ElasticSearchProvider implements SearchProvider {
       }
   
       if (StringUtils.isNotBlank(freeText)) {
-        FilterBuilder[] fieldFilters = {
+        String[] words = freeText.split(" ");
+        if (words.length == 1) {
+          FilterBuilder[] fieldFilters = {
             FilterBuilders.prefixFilter("name", freeText),
             FilterBuilders.prefixFilter("description", freeText)
-        };
-
-        filters.add(FilterBuilders.orFilter(fieldFilters));
+          };
+          filters.add(FilterBuilders.orFilter(fieldFilters));
+        }
+        else {
+          List<FilterBuilder> nameFilters = new ArrayList<FilterBuilder>();
+          List<FilterBuilder> descFilters = new ArrayList<FilterBuilder>();
+          for (int i = 0; i < words.length; i++) {
+            nameFilters.add(FilterBuilders.prefixFilter("name", words[i]));
+            descFilters.add(FilterBuilders.prefixFilter("description", words[i]));
+          }
+          FilterBuilder[] fieldFilters = {
+            FilterBuilders.andFilter(nameFilters.toArray(new FilterBuilder[0])),
+            FilterBuilders.andFilter(descFilters.toArray(new FilterBuilder[0]))
+          };
+          filters.add(FilterBuilders.orFilter(fieldFilters));
+        }
       }
       
       FilterBuilder filter;

@@ -34,6 +34,7 @@ public class EvaluationWidgetBackingBean {
           case TEACHER:
           case ADMINISTRATOR:
           case MANAGER:
+          case STUDY_PROGRAMME_LEADER:
             visible = true;
           break;
           default:
