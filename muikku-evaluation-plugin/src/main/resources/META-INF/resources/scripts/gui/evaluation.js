@@ -704,7 +704,7 @@
               
               callback(null, htmlMaterial);
               
-              $.each(this._materialHtml[materialId].pending, function (pendingCallback) {
+              $.each(this._materialHtml[materialId].pending, function (index, pendingCallback) {
                 pendingCallback(null, htmlMaterial);
               });
               
