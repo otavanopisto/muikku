@@ -5,7 +5,7 @@
       
       <a href="javascript:void(null)" class="gu-add-flag">Add</a>
       {#studentFlags}
-        <div data-id="{id}" data-data-id="{flag.id}" class="gu-flag" style="color: {flag.color}">
+        <div data-id="{id}" data-flag-id="{flag.id}" class="gu-flag" style="color: {flag.color}">
           <label>{flag.name}</label>
           <div>
             <a class="gu-remove-flag" href="javascript:void(null)">Remove</a>
