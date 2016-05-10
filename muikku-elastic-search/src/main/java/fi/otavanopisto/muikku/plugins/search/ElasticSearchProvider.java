@@ -160,7 +160,7 @@ public class ElasticSearchProvider implements SearchProvider {
          * 
          * Active user is:
          * 
-         * StaffMember (TEACHER, MANAGER, ADMINISTRATOR) or
+         * StaffMember (TEACHER, MANAGER, ADMINISTRATOR, STUDY PROGRAMME LEADER) or
          * Student that has
          *   active flag true or
          *     has not started nor finished studies (ie. in study programme that never expires) and
@@ -176,7 +176,7 @@ public class ElasticSearchProvider implements SearchProvider {
         
         filters.add(
           FilterBuilders.orFilter(
-            FilterBuilders.inFilter("archetype", EnvironmentRoleArchetype.TEACHER.name().toLowerCase(), EnvironmentRoleArchetype.MANAGER.name().toLowerCase(), EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()),
+            FilterBuilders.inFilter("archetype", EnvironmentRoleArchetype.TEACHER.name().toLowerCase(), EnvironmentRoleArchetype.MANAGER.name().toLowerCase(), EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.name().toLowerCase(), EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()),
             FilterBuilders.andFilter(
               FilterBuilders.termsFilter("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()),
               FilterBuilders.termFilter("startedStudies", true),

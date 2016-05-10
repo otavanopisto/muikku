@@ -129,7 +129,7 @@ public class LocaleController {
     return new ArrayList<String>(localeMaps.keySet());
   }
 
-  private Locale resolveLocale(Locale locale) {
+  public Locale resolveLocale(Locale locale) {
     try {
       if (locale == null) {
         locale = new Locale("fi");

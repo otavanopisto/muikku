@@ -170,6 +170,8 @@ public class UserRolePermissionObserver {
         return EnvironmentRoleArchetype.TEACHER;
       case STUDENT:
         return EnvironmentRoleArchetype.STUDENT;
+      case STUDY_PROGRAMME_LEADER:
+        return EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER;
       default:
         return EnvironmentRoleArchetype.CUSTOM;
     }
