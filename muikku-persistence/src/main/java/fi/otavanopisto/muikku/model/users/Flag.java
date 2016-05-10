@@ -61,7 +61,7 @@ public class Flag {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne (optional = false)
   private UserSchoolDataIdentifier ownerIdentifier;
   
 	@Column (nullable = false)

@@ -22,7 +22,6 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -37,13 +36,12 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.Flag;
-import fi.otavanopisto.muikku.model.users.StudentFlag;
+import fi.otavanopisto.muikku.model.users.FlagStudent;
 import fi.otavanopisto.muikku.model.users.StudentFlagType;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -139,7 +137,7 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userEntityId") Long userEntityId,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
-      @QueryParam("studentFlagTypes") String flagTypes) {
+      @QueryParam("flags") Long[] flagIds) {
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
@@ -153,17 +151,20 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    List<StudentFlagType> studentFlagTypes = null;
-    
-    if (StringUtils.isNotBlank(flagTypes)) {
-      studentFlagTypes = new ArrayList<>();
-      for (String flagType : StringUtils.split(flagTypes, ",")) {
-        StudentFlagType studentFlag = EnumUtils.getEnum(StudentFlagType.class, flagType);
-        if (studentFlag == null) {
-          return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid student flag: %s", flagType)).build();
+    List<Flag> flags = null;
+    if (flagIds != null && flagIds.length > 0) {
+      flags = new ArrayList<>(flagIds.length);
+      for (Long flagId : flagIds) {
+        Flag flag = flagController.findFlagById(flagId);
+        if (flag == null) {
+          return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid flag id %d", flagId)).build();
         }
         
-        studentFlagTypes.add(studentFlag);
+        if (!flagController.hasFlagPermission(flag, sessionController.getLoggedUser())) {
+          return Response.status(Status.FORBIDDEN).entity(String.format("You don't have permission to use flag %d", flagId)).build();
+        }
+        
+        flags.add(flag);
       }
     }
     
@@ -191,12 +192,12 @@ public class UserRESTService extends AbstractRESTService {
     }
     
     List<SchoolDataIdentifier> userIdentifiers = null;    
-    if (studentFlagTypes != null) {
+    if (flags != null) {
       if (userIdentifiers == null) {
         userIdentifiers = new ArrayList<>();
       }
       
-      userIdentifiers.addAll(studentFlagController.listOwnerFlaggedUserIdentifiersByTypes(sessionController.getLoggedUser(), studentFlagTypes));
+      userIdentifiers.addAll(flagController.getFlaggedStudents(flags));
     }
     
     if (Boolean.TRUE.equals(includeInactiveStudents)) {
@@ -390,9 +391,8 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    List<StudentFlag> studentFlags = studentFlagController.listStudentFlagsByOwner(studentIdentifier, ownerIdentifier);
-    
-    return Response.ok(createRestModel(studentFlags.toArray(new StudentFlag[0]))).build();
+    List<FlagStudent> flags = flagController.listByOwnedAndSharedStudentFlags(studentIdentifier, ownerIdentifier);
+    return Response.ok(createRestModel(flags.toArray(new FlagStudent[0]))).build();
   }
   
   @POST
@@ -408,67 +408,20 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
     }
     
-    if ((payload.getOwnerIdentifier() != null) && (!payload.getOwnerIdentifier().equals(sessionController.getLoggedUser().toId()))) {
-      return Response.status(Response.Status.NOT_IMPLEMENTED).entity("Creating flags for other users is not implemented yet").build();
-    }
-    
-    if (StringUtils.isBlank(payload.getType())) {
-      return Response.status(Response.Status.BAD_REQUEST).entity("Missing type").build();
+    if (payload.getFlagId() == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Missing flagId").build();
     }
      
-    StudentFlagType flagType = EnumUtils.getEnum(StudentFlagType.class, payload.getType());
-    if (flagType == null) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid type %s", payload.getType())).build();
+    Flag flag = flagController.findFlagById(payload.getFlagId());
+    if (flag == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag #%d not found", payload.getFlagId())).build();
     }
     
-    StudentFlag studentFlag = studentFlagController.createStudentFlag(sessionController.getLoggedUser(), studentIdentifier, flagType);
-    
-    return Response.ok(createRestModel(studentFlag)).build();
-  }
-  
-  @PUT
-  @Path("/students/{STUDENTID}/flags/{ID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateStudentFlag(@Context Request request, @PathParam("STUDENTID") String studentId, @PathParam("ID") Long id, fi.otavanopisto.muikku.rest.model.StudentFlag payload) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
+    if (!flagController.hasFlagPermission(flag, sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity(String.format("You do not have permission to flag students to flag %d", payload.getFlagId())).build();
     }
     
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
-    if (studentIdentifier == null) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", studentId)).build();
-    }
-    
-    if (payload.getOwnerIdentifier() == null) {
-      return Response.status(Response.Status.BAD_REQUEST).entity("Missing owner identifier").build();
-    }
-    
-    if (StringUtils.isBlank(payload.getType())) {
-      return Response.status(Response.Status.BAD_REQUEST).entity("Missing type").build();
-    }
-    
-    if (!payload.getOwnerIdentifier().equals(sessionController.getLoggedUser().toId())) {
-      return Response.status(Response.Status.FORBIDDEN).entity("It is forbidden to change the owner of the flag").build();
-    }
-     
-    StudentFlagType flagType = EnumUtils.getEnum(StudentFlagType.class, payload.getType());
-    if (flagType == null) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid type %s", payload.getType())).build();
-    }
-    
-    StudentFlag studentFlag = studentFlagController.findStudentFlagById(id);
-    if (studentFlag == null) {
-      return Response.status(Response.Status.NOT_FOUND).entity(String.format("Flag not found %d", id)).build();
-    }
-    
-    SchoolDataIdentifier flagOwnerIdentifier = new SchoolDataIdentifier(studentFlag.getOwnerIdentifier().getIdentifier(), studentFlag.getOwnerIdentifier().getDataSource().getIdentifier());
-    if (!flagOwnerIdentifier.toId().equals(payload.getOwnerIdentifier())) {
-      return Response.status(Response.Status.FORBIDDEN).entity("It is forbidden to update someone else's flags").build();
-    }
-    
-    studentFlagController.updateStudentFlag(studentFlag, flagType);
-    
-    return Response.noContent().build();
+    return Response.ok(createRestModel(flagController.flagStudent(flag, studentIdentifier))).build();
   }
   
   @DELETE
@@ -484,17 +437,16 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", studentId)).build();
     }
     
-    StudentFlag studentFlag = studentFlagController.findStudentFlagById(id);
-    if (studentFlag == null) {
+    FlagStudent flagStudent = flagController.findFlagStudentById(id);
+    if (flagStudent == null) {
       return Response.status(Response.Status.NOT_FOUND).entity(String.format("Flag not found %d", id)).build();
     }
-
-    SchoolDataIdentifier flagOwnerIdentifier = new SchoolDataIdentifier(studentFlag.getOwnerIdentifier().getIdentifier(), studentFlag.getOwnerIdentifier().getDataSource().getIdentifier());
-    if (!flagOwnerIdentifier.equals(sessionController.getLoggedUser())) {
-      return Response.status(Response.Status.FORBIDDEN).entity("It is forbidden to remove someone else's flags").build();
-    }
     
-    studentFlagController.deleteStudentFlag(studentFlag);
+    if (!flagController.hasFlagPermission(flagStudent.getFlag(), sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity(String.format("You do not have permission to remove student flag %d", flagStudent.getId())).build();
+    }
+
+    flagController.unflagStudent(flagStudent);
     
     return Response.noContent().build();
   }
@@ -649,6 +601,8 @@ public class UserRESTService extends AbstractRESTService {
       if (!ownerIdentifier.equals(sessionController.getLoggedUser())) {
         return Response.status(Status.FORBIDDEN).build();
       }
+    } else {
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     List<Flag> flags = flagController.listByOwnedAndSharedFlags(ownerIdentifier);
@@ -906,17 +860,16 @@ public class UserRESTService extends AbstractRESTService {
 				startDate, endDate);
 	}
 
-  private fi.otavanopisto.muikku.rest.model.StudentFlag createRestModel(StudentFlag studentFlag) {
-    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(studentFlag.getStudentIdentifier().getIdentifier(), studentFlag.getStudentIdentifier().getDataSource().getIdentifier());
-    SchoolDataIdentifier ownerIdentifier = new SchoolDataIdentifier(studentFlag.getOwnerIdentifier().getIdentifier(), studentFlag.getOwnerIdentifier().getDataSource().getIdentifier());
-    return new fi.otavanopisto.muikku.rest.model.StudentFlag(studentFlag.getId(), studentIdentifier.toId(), ownerIdentifier.toId(), studentFlag.getType().name());
+  private fi.otavanopisto.muikku.rest.model.StudentFlag createRestModel(FlagStudent flagStudent) {
+    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(flagStudent.getStudentIdentifier().getIdentifier(), flagStudent.getStudentIdentifier().getDataSource().getIdentifier());
+    return new fi.otavanopisto.muikku.rest.model.StudentFlag(flagStudent.getId(), flagStudent.getFlag().getId(), studentIdentifier.toId());
   }
 
-  private List<fi.otavanopisto.muikku.rest.model.StudentFlag> createRestModel(StudentFlag[] studentFlags) {
+  private List<fi.otavanopisto.muikku.rest.model.StudentFlag> createRestModel(FlagStudent[] flagStudents) {
     List<fi.otavanopisto.muikku.rest.model.StudentFlag> result = new ArrayList<>();
     
-    for (StudentFlag studentFlag : studentFlags) {
-      result.add(createRestModel(studentFlag));
+    for (FlagStudent flagStudent : flagStudents) {
+      result.add(createRestModel(flagStudent));
     }
     
     return result;
