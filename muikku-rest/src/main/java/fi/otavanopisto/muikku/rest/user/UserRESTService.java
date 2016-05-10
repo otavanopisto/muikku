@@ -42,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.StudentFlag;
 import fi.otavanopisto.muikku.model.users.StudentFlagType;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -67,6 +68,7 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.FlagController;
 import fi.otavanopisto.muikku.users.StudentFlagController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -110,6 +112,9 @@ public class UserRESTService extends AbstractRESTService {
   
   @Inject
   private StudentFlagController studentFlagController;
+
+  @Inject
+  private FlagController flagController;
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -626,6 +631,33 @@ public class UserRESTService extends AbstractRESTService {
     List<TransferCredit> transferCredits = gradingController.listStudentTransferCredits(studentIdentifier);
     
     return Response.ok(createRestModel(transferCredits.toArray(new TransferCredit[0]))).build();
+  }
+  
+  @GET
+  @Path("/flags/")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listFlags(@QueryParam("ownerIdentifier") String ownerId) {
+    SchoolDataIdentifier ownerIdentifier = null;
+
+    if (StringUtils.isNotBlank(ownerId)) {
+      ownerIdentifier = SchoolDataIdentifier.fromId(ownerId);
+      if (ownerIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity("ownerIdentifier is malformed").build();
+      }
+
+      // TODO: Add permission to list flags owned by others
+      if (!ownerIdentifier.equals(sessionController.getLoggedUser())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    List<Flag> flags = flagController.listByOwnedAndSharedFlags(ownerIdentifier);
+    List<fi.otavanopisto.muikku.rest.model.Flag> response = new ArrayList<>();
+    for (Flag flag : flags) {
+      response.add(new fi.otavanopisto.muikku.rest.model.Flag(flag.getId(), flag.getName(), flag.getColor(), flag.getDescription(), ownerIdentifier.toId()));
+    }
+    
+    return Response.ok(response).build();
   }
 
   @GET

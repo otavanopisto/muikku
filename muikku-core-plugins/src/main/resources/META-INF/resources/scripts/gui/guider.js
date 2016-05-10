@@ -95,19 +95,20 @@
     },
     
     _loadFlags: function (callback) {
-      mApi().user.studentFlagTypes
+      mApi().user.flags
         .read({ ownerIdentifier: MUIKKU_LOGGED_USER })
-        .callback(function (err, studentFlagTypes) {
+        .callback(function (err, flags) {
           if (err) {
             callback(err);
           } else {
             callback(null, {
-              title: getLocaleText('plugin.guider.filters.studentFlagTypes'),
-              type: 'studentFlagType',
-              data: $.map(studentFlagTypes, function (studentFlagType) {
+              title: getLocaleText('plugin.guider.filters.flags'), // TODO: remove old locale
+              type: 'flag',
+              data: $.map(flags, function (flag) {
                 return {
-                  'id': studentFlagType.type,
-                  'name': getLocaleText('plugin.guider.studentFlags.' + studentFlagType.type),
+                  'id': flag.id,
+                  'name': flag.name, // getLocaleText('plugin.guider.studentFlags.' + studentFlagType.type),
+                  'color': flag.color,
                   'iconClass': 'icon-flag'
                 };
               })
@@ -143,8 +144,7 @@
     options: {
       studentsPerPage: 25,
       openStudentProfile: null,
-      workspaceIds: null,
-      studentFlagTypes: null
+      workspaceIds: null
     },
     
     _create : function() {
@@ -153,7 +153,6 @@
       this._searchString = '';
       this._userGroupIds = null;
       this._workspaceIds = this.options.workspaceIds;
-      this._studentFlagTypes = this.options.studentFlagTypes;
       this._loading = false;
       this._loadPending = false;
       
@@ -182,7 +181,6 @@
     applyFilters: function (filters) {
       this._page = 0;
       this._workspaceIds = null;
-      this._studentFlagTypes = null;
       
       if (filters) {
         $.each(filters, $.proxy(function (index, filter) {
@@ -194,11 +192,11 @@
                 this._workspaceIds.push(filter.id);
               }
             break;
-            case 'studentFlagType':
-              if (!this._studentFlagTypes) {
-                this._studentFlagTypes = [filter.id];
+            case 'flag':
+              if (!this._flags) {
+                this._flags = [filter.id];
               } else {
-                this._studentFlagTypes.push(filter.id);
+                this._flags.push(filter.id);
               }
             break;
             default:
@@ -214,14 +212,14 @@
     workspaces: function (workspaceIds) {
       this._page = 0;
       this._workspaceIds = workspaceIds;
-      this._studentFlagTypes = null;
+      this._flags = null;
       this._reloadStudents();
     },
     
-    studentFlagTypes: function (studentFlagTypes) {
+    flags: function (flags) {
       this._page = 0;
       this._workspaceIds = null;
-      this._studentFlagTypes = studentFlagTypes;
+      this._flags = flags;
       this._reloadStudents();
     },
     
@@ -257,8 +255,8 @@
         options['workspaceIds'] = this._workspaceIds;
       }
       
-      if (this._studentFlagTypes) {
-        options['studentFlagTypes'] = this._studentFlagTypes;
+      if (this._flags) {
+        options['flags'] = this._flags;
       }
 
       mApi()
@@ -370,26 +368,26 @@
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       $(document).on("mouseup", $.proxy(this._onDocumentMouseUp, this));
       
-      this._loadFlags($.proxy(function (err, studentFlagTypes) {
+      this._loadFlags($.proxy(function (err, flags) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          this._loadUser(studentFlagTypes);
+          this._loadUser(flags);
         }
       }, this));
     },
 
     _loadFlags: function (callback) {
-      mApi().user.studentFlagTypes
+      mApi().user.flags
         .read()
-        .callback($.proxy(function (err, studentFlagTypes) {
+        .callback($.proxy(function (err, flags) {
           if (err) {
             callback(err);
           } else {
-            callback(err, $.map([{type: 'NONE'}].concat(studentFlagTypes), function (studentFlagType) {
+            callback(err, $.map([{id: ''}].concat(flags), function (flag) {
               return {
-                type: studentFlagType.type,
-                name: getLocaleText('plugin.guider.studentFlags.' + studentFlagType.type)
+                id: flag.id,
+                name: flag.name
               }
             }));
           }
@@ -557,7 +555,7 @@
       }, this);
     },
     
-    _loadUser: function (studentFlagTypes) {
+    _loadUser: function (flags) {
       this.element.addClass('loading');
       
       mApi().user.students
@@ -618,7 +616,7 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
           } else {
-            renderDustTemplate('guider/guider_view_profile.dust', { student: user, studentFlagTypes: studentFlagTypes }, $.proxy(function(text) {    
+            renderDustTemplate('guider/guider_view_profile.dust', { student: user, flags: flags }, $.proxy(function(text) {    
               this.element
                 .removeClass('loading')
                 .html(text);
@@ -655,7 +653,7 @@
 
   $(document).ready(function() {
     var workspaceIds = null;
-    var studentFlagTypes = null;
+    var flags = null;
     var openStudentProfile = null;
     var selectedFilters = null;
     try {
@@ -672,8 +670,8 @@
                     case 'workspace':
                       workspaceIds = [setting[2]];
                     break;
-                    case 'studentFlagType':
-                      studentFlagTypes = [setting[2]];
+                    case 'flag':
+                      flags = [setting[2]];
                     break;
                     default:
                       console.warn('Could not understand filter ' + setting[1]);
@@ -705,10 +703,10 @@
         }
       }
       
-      if (studentFlagTypes) {
-        selectedFilters = (selectedFilters||[]).concat($.map(studentFlagTypes, function (id) {
+      if (flags) {
+        selectedFilters = (selectedFilters||[]).concat($.map(flags, function (id) {
           return {
-            type:"studentFlagType",
+            type:"flag",
             id: id
           };
         }));
@@ -733,7 +731,7 @@
     $('.gt-search').guiderSearch();
     $('.gt-students-view-container').guiderStudents({
       workspaceIds: workspaceIds,
-      studentFlagTypes: studentFlagTypes,
+      flags: flags,
       openStudentProfile: openStudentProfile
     });
    

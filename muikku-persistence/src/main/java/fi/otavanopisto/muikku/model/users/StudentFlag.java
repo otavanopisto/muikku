@@ -63,3 +63,25 @@ public class StudentFlag {
   @Enumerated (EnumType.STRING)
   private StudentFlagType type;
 }
+
+/*
+ * select 
+  id,
+  ownerIdentifier_id,
+  case type 
+    when 'RED' then '#FF0000' 
+    when 'BLUE' then '#0000FF' 
+    when 'GREEN' then '#008000' 
+    when 'ORANGE' then '#FFA500' 
+    when 'PURPLE' then '#800080' 
+    when 'SILVER' then '#C0C0C0' 
+    when 'YELLOW' then '#FFFF00'
+  end as color,
+  type as name
+from 
+  StudentFlag;
+
+* 
+* 
+ */
+
