@@ -430,7 +430,7 @@
               }, this));
               
               mApi().user.flags
-                .create({}, payload)
+                .create(payload)
                 .callback($.proxy(function (err) {
                   if (err) {
                     $('.notification-queue').notificationQueue('notification', 'error', err);
