@@ -613,6 +613,34 @@ public class UserRESTService extends AbstractRESTService {
     
     return Response.ok(response).build();
   }
+  
+  @POST
+  @Path("/flags/")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createFlag(fi.otavanopisto.muikku.rest.model.Flag payload) {
+    // TODO: Security
+    
+    if (StringUtils.isBlank(payload.getOwnerIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("ownerIdentifier is missing").build();
+    }
+    
+    if (StringUtils.isBlank(payload.getColor())) {
+      return Response.status(Status.BAD_REQUEST).entity("color is missing").build();
+    }
+
+    if (StringUtils.isBlank(payload.getName())) {
+      return Response.status(Status.BAD_REQUEST).entity("name is missing").build();
+    }
+    
+    SchoolDataIdentifier ownerIdentifier = SchoolDataIdentifier.fromId(payload.getOwnerIdentifier());
+    if (ownerIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("ownerIdentifier is malformed").build();
+    }
+
+    Flag flag = flagController.createFlag(ownerIdentifier, payload.getName(), payload.getColor(), payload.getDescription());
+    
+    return Response.ok(new fi.otavanopisto.muikku.rest.model.Flag(flag.getId(), flag.getName(), flag.getColor(), flag.getDescription(), ownerIdentifier.toId())).build();
+  }
 
   @GET
   @Path("/studentFlagTypes")
