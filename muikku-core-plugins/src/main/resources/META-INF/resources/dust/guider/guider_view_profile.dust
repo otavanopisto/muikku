@@ -1,16 +1,26 @@
 {#student}
   <div class="gt-user-view-headline mf-widget">
     <h1>{firstName} {lastName}</h1>
-    <div class="gt-user-view-flags-container">
+    <div class="gu-user-view-flags-container">
       
-      <a href="javascript:void(null)" class="gu-add-flag">Add</a>
+      <div class="gu-add-flag-widget icon-add">
+        <span class="gu-add-flag-widget-label">Add flag</span>
+        <div class="gu-add-flags-container">
+          <a class="gu-new-flag icon-add" href="javascript:void(null)"><span class="gu-flag-label">New flag</span></a>
+          <div class="gu-flags-separator"></div>
+          {#flags}
+            <a class="gu-previous-flag icon-flag" style="color:{color}" href="javascript:void(null)" data-flag-id="{id}"><span class="gu-flag-label">{name}</span></a>
+          {/flags}
+        </div>
+      </div>
+      
       {#studentFlags}
-        <div data-id="{id}" data-flag-id="{flag.id}" class="gu-flag" style="color: {flag.color}">
-          <label>{flag.name}</label>
-          <div>
-            <a class="gu-remove-flag" href="javascript:void(null)">Remove</a>
-            <a class="gu-edit-flag" href="javascript:void(null)">Edit</a>
-            <a class="gu-share-flag" href="javascript:void(null)">Share</a>
+        <div data-id="{id}" data-flag-id="{flag.id}" class="gu-flag icon-flag" style="color: {flag.color}">
+          <span class="gu-flag-label">{flag.name}</span>
+          <div class="gu-flag-actions">
+            <a class="gu-remove-flag icon-delete" href="javascript:void(null)">Remove</a>
+            <a class="gu-edit-flag icon-edit" href="javascript:void(null)">Edit</a>
+            <a class="gu-share-flag icon-share" href="javascript:void(null)">Share</a>
           </div>          
         </div>
       {/studentFlags}
