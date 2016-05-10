@@ -704,7 +704,7 @@
               
               callback(null, htmlMaterial);
               
-              $.each(this._materialHtml[materialId].pending, function (pendingCallback) {
+              $.each(this._materialHtml[materialId].pending, function (index, pendingCallback) {
                 pendingCallback(null, htmlMaterial);
               });
               
@@ -840,7 +840,7 @@
         }
       }
       mApi().workspace.workspaces.students
-        .read(this.options.workspaceEntityId,  $.extend({ archived: false }, appliedFilters))
+        .read(this.options.workspaceEntityId,  $.extend({ archived: false, orderBy: 'name' }, appliedFilters))
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
