@@ -1,8 +1,11 @@
-<div class="mf-items-toolbar"> 
-   <div class="mf-items-tool icon-goback" data-from-view="{threads.fromView}"></div>
-   <div class="clear"></div>
+<div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+  <div class="mf-items-toolbar flex-row"> 
+     <div class="mf-items-tool icon-goback" data-from-view="{threads.fromView}"></div>
+     {#mayRemoveThread}
+       <div class="mf-items-tool di-remove-thread-link mf-item-tool icon-delete" title="{#localize key="plugin.discussion.removeThread"/}"></div>
+     {/mayRemoveThread}
+  </div>
+  {#.}
+      {>"discussion/discussion_item_open.dust"/}  
+  {/.}
 </div>
-{#.}
-    {>"discussion/discussion_item_open.dust"/}  
-{/.}
-
