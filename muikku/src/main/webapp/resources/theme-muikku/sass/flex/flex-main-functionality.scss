@@ -828,7 +828,7 @@
         }
         
         &.mf-textfield-subject {        
-          width:750px;
+/*           width:750px; */
           
           &:focus {
             background-color:#eee;         
@@ -893,6 +893,17 @@
 .ui-autocomplete {
   font-size:12px;
   font-weight:300;
+  position:fixed;
+  max-height:200px;
+  overflow:auto;
+  padding:5px;
+  background:#f2f5f7;
+  list-style-type:none;
+  z-index:1000;
+  box-sizing:border-box;
+  border:1px solid #dddddd;
+  
+  
   
   .ui-autocomplete-category {
     text-transform:uppercase;
@@ -900,14 +911,13 @@
   }
   
   .ui-menu-item {
-    padding-left:10px;
+    padding:2px 5px;
      
     &.ui-state-focus {
       background-color:$bgr3;
       border:none;
       width:auto;
       color:$contextualLinkHover;
-      font-weight:normal;
     }
     
   }

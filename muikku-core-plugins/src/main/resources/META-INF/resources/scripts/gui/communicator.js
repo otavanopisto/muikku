@@ -34,7 +34,7 @@ $(document).ready(function(){
   });
   CommunicatorImpl = $.klass({
     init: function () {
-      $(CommunicatorImpl.msgContainer).on('click','.cm-message:not(.open) .cm-message-details-container', $.proxy(this._onMessageClick, this));
+      $(CommunicatorImpl.msgContainer).on('click','.cm-message:not(.open) .cm-message-header-container', $.proxy(this._onMessageClick, this));
       $(CommunicatorImpl.msgContainer).on('click','.icon-goback', $.proxy(this._onMessageBackClick, this));
       $(CommunicatorImpl.msgContainer).on('click','.icon-delete', $.proxy(this._onMessageDeleteClick, this));
       $(CommunicatorImpl.msgContainer).on('click','.cm-message-reply-link', $.proxy(this._replyMessage, this));
