@@ -272,8 +272,11 @@ $(document).ready(function(){
 
     _onRecipientFocus:function(event){
       $(event.target).autocomplete({
-        create: function(event, ui){
-          $('.ui-autocomplete').perfectScrollbar(); 
+        open: function(event, ui){
+          $('.ui-autocomplete').perfectScrollbar({
+            wheelSpeed:3,
+            swipePropagation:false
+          }); 
         },  
         source: function (request, response) {
           response(mCommunicator._doSearch(request.term));

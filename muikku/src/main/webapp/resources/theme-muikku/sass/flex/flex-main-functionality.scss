@@ -901,10 +901,11 @@
   list-style-type:none;
   z-index:1000;
   box-sizing:border-box;
-  border:1px solid #dddddd;
-  
-  
-  
+  border:1px solid #fff;
+  width:auto !important;
+  right:17px;
+  box-shadow:0 5px 15px rgba(0, 0, 0, 0.25);
+
   .ui-autocomplete-category {
     text-transform:uppercase;
     padding:5px;

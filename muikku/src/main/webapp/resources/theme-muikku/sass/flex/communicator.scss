@@ -24,6 +24,7 @@
      padding:0 10px 0 10px;
      border:1px solid $brd2;
      color:#000;
+     cursor:pointer;
     }   
 
   }
@@ -263,6 +264,7 @@
     background-color:$bgr1; 
     display:inline-block;
     color:#000;
+    cursor:pointer;
     
     &:not(:first-child) {
       margin-left:10px;
