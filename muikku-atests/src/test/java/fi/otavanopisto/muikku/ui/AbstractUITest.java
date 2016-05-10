@@ -94,7 +94,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
     protected void finished(Description description) {
       try {
-        getWebDriver().quit();      
+        getWebDriver().quit();
       } catch (Exception e) {
       }
     }
