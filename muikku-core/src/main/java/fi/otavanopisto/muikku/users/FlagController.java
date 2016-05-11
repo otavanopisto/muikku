@@ -64,6 +64,13 @@ public class FlagController {
     return flags;
   }
 
+  public Flag updateFlag(Flag flag, String name, String color, String description) {
+    flag = flagDAO.updateName(flag, name);
+    flag = flagDAO.updateColor(flag, color);
+    flag = flagDAO.updateDescription(flag, description);
+    return flag;
+  }
+
   public boolean hasFlagPermission(Flag flag, SchoolDataIdentifier userIdentifier) {
     UserSchoolDataIdentifier owner = flag.getOwnerIdentifier();
     SchoolDataIdentifier ownerIdentfier = toIdentifier(owner);

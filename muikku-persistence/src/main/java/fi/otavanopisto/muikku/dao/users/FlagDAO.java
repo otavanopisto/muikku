@@ -41,6 +41,21 @@ public class FlagDAO extends CoreDAO<Flag> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public Flag updateName(Flag flag, String name) {
+    flag.setName(name);
+    return persist(flag);
+  }
+
+  public Flag updateDescription(Flag flag, String description) {
+    flag.setDescription(description);
+    return persist(flag);
+  }
+
+  public Flag updateColor(Flag flag, String color) {
+    flag.setColor(color);
+    return persist(flag);
+  }
+
   @Override
   public void delete(Flag e) {
     super.delete(e);
