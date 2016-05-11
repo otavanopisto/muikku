@@ -1,7 +1,7 @@
 {#student}
   <div class="gt-user-view-headline mf-widget">
     <h1>{firstName} {lastName}</h1>
-    <div class="gu-user-view-flags-container">
+    <div class="gu-user-view-flags-container flex-row flex-align-items-center">
       
       <div class="gu-add-flag-widget icon-add">
         <span class="gu-add-flag-widget-label">{#localize key="plugin.guider.flags.addFlag.label"/}</span>
@@ -9,15 +9,15 @@
           <a class="gu-new-flag icon-add" href="javascript:void(null)"><span class="gu-flag-label">{#localize key="plugin.guider.flags.newFlag.label"/}</span></a>
           <div class="gu-flags-separator"></div>
           {#flags}
-            <a class="gu-previous-flag icon-flag" style="color:{color}" href="javascript:void(null)" data-flag-id="{id}"><span class="gu-flag-label">{name}</span></a>
+            <a class="gu-existing-flag icon-flag" style="color:{color}" href="javascript:void(null)" data-flag-id="{id}"><span class="gu-flag-label">{name}</span></a>
           {/flags}
         </div>
       </div>
       
       {#studentFlags}
-        <div data-id="{id}" data-flag-id="{flag.id}" class="gu-flag icon-flag" style="color: {flag.color}">
+        <div data-id="{id}" data-flag-id="{flag.id}" data-flag-color="{flag.color}" class="gu-flag icon-flag" style="color: {flag.color}">
           <span class="gu-flag-label">{flag.name}</span>
-          <div class="gu-flag-actions">
+          <div class="gu-flag-action-container">
             <a class="gu-remove-flag icon-delete" href="javascript:void(null)">{#localize key="plugin.guider.flags.removeFlag.label"/}</a>
             <a class="gu-edit-flag icon-edit" href="javascript:void(null)">{#localize key="plugin.guider.flags.editFlag.label"/}</a>
             <a class="gu-share-flag icon-share" href="javascript:void(null)">{#localize key="plugin.guider.flags.shareFlag.label"/}</a>
