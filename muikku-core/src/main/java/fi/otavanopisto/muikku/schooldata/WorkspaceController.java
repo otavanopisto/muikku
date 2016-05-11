@@ -199,7 +199,11 @@ public class WorkspaceController {
   public List<WorkspaceEntity> listWorkspaceEntities() {
     return workspaceEntityDAO.listAll();
   }
-
+  
+  public List<WorkspaceEntity> listPublishedWorkspaceEntities() {
+    return workspaceEntityDAO.listByPublished(Boolean.TRUE);
+  }
+  
   public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity) {
     return listWorkspaceEntitiesByUser(userEntity, false);
   }

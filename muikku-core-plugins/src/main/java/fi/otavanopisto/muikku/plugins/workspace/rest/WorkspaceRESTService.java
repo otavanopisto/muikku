@@ -323,15 +323,22 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
       UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
       workspaceEntities = workspaceVisitController.listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(loggedUserEntity, minVisits);
-    } else {
+    }
+    else {
       if (userIdentifier != null) {
         if (includeArchivedWorkspaceUsers) {
           workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifierIncludeArchived(userIdentifier);
         } else {
           workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
         }
-      } else if (userEntity != null) {
+      }
+      else if (userEntity != null) {
         workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+      }
+      else {
+        workspaceEntities = Boolean.TRUE.equals(includeUnpublished)
+          ? workspaceController.listWorkspaceEntities()
+          : workspaceController.listPublishedWorkspaceEntities();
       }
     }
 
