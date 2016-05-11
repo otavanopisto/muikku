@@ -367,6 +367,7 @@
       // this.element.on("click", ".gt-user-view-flag", $.proxy(this._onFlagClick, this));
       
       this.element.on("click", ".gu-add-flag", $.proxy(this._onAddFlagClick, this));
+      this.element.on("click", ".gu-edit-flag", $.proxy(this._onEditFlagClick, this));
       
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       $(document).on("mouseup", $.proxy(this._onDocumentMouseUp, this));
@@ -387,13 +388,19 @@
           if (err) {
             callback(err);
           } else {
-            callback(err, $.map([{id: 'NONE', name: getLocaleText('plugin.guider.flagNone') }].concat(flags), function (flag) {
-              return {
-                'id': flag.id,
-                'name': flag.name,
-                'color': flag.color
-              }
-            }));
+            callback(err, flags);
+          }
+        }, this));
+    },
+    
+    _loadFlag: function (id, callback) {
+      mApi().user.flags
+        .read(id)
+        .callback($.proxy(function (err, flag) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(err, flag);
           }
         }, this));
     },
@@ -416,7 +423,7 @@
           maxHeight : $(window).height() - 50,
           resizable : false,
           width : 560,
-          dialogClass : "workspace-user-confirm-dialog",
+          dialogClass : "guider-add-flag-dialog",
           buttons : [ {
             'text' : dialog.attr('data-button-create'),
             'class' : 'create-button',
@@ -447,6 +454,55 @@
             }
           } ]
         });
+      }, this));
+    },
+    
+    _onEditFlagClick: function (event) {
+      var flagElement = $(event.target).closest('.gu-flag');
+      var flagId = flagElement.attr('data-flag-id');
+      
+      this._loadFlag(flagId, $.proxy(function (err, flag) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          renderDustTemplate('guider/guider_edit_flag.dust', { flag: flag }, $.proxy(function(text) {
+            var dialog = $(text);
+            $(text).dialog({
+              modal : true,
+              minHeight : 200,
+              maxHeight : $(window).height() - 50,
+              resizable : false,
+              width : 560,
+              dialogClass : "guider-edit-flag-dialog",
+              buttons : [ {
+                'text' : dialog.attr('data-button-save'),
+                'class' : 'save-button',
+                'click' : function(event) {
+                  $.each(['name', 'color', 'description'], $.proxy(function (index, property) {
+                    flag[property] = $(this).find('*[name="' + property + '"]').val();
+                  }, this));
+                  
+                  mApi().user.flags
+                    .update(flagId, flag)
+                    .callback($.proxy(function (err) {
+                      if (err) {
+                        $('.notification-queue').notificationQueue('notification', 'error', err);
+                      } else {
+                        $(this).dialog("destroy").remove();
+                        window.location.reload(true);
+                      }
+                    }, this));
+                }
+              }, {
+                'text' : dialog.attr('data-button-cancel'),
+                'class' : 'cancel-button',
+                'click' : function(event) {
+                  $(this).dialog("destroy").remove();
+                }
+              } ]
+            });
+          }, this));
+        }
       }, this));
     },
     

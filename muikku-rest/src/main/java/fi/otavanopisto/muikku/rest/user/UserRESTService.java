@@ -22,6 +22,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -584,6 +585,32 @@ public class UserRESTService extends AbstractRESTService {
     
     return Response.ok(createRestModel(transferCredits.toArray(new TransferCredit[0]))).build();
   }
+
+  @POST
+  @Path("/flags/")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createFlag(fi.otavanopisto.muikku.rest.model.Flag payload) {
+    if (StringUtils.isBlank(payload.getOwnerIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("ownerIdentifier is missing").build();
+    }
+    
+    if (StringUtils.isBlank(payload.getColor())) {
+      return Response.status(Status.BAD_REQUEST).entity("color is missing").build();
+    }
+
+    if (StringUtils.isBlank(payload.getName())) {
+      return Response.status(Status.BAD_REQUEST).entity("name is missing").build();
+    }
+    
+    SchoolDataIdentifier ownerIdentifier = SchoolDataIdentifier.fromId(payload.getOwnerIdentifier());
+    if (ownerIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("ownerIdentifier is malformed").build();
+    }
+
+    Flag flag = flagController.createFlag(ownerIdentifier, payload.getName(), payload.getColor(), payload.getDescription());
+    
+    return Response.ok(createRestModel(flag)).build();
+  }
   
   @GET
   @Path("/flags/")
@@ -606,22 +633,52 @@ public class UserRESTService extends AbstractRESTService {
     }
     
     List<Flag> flags = flagController.listByOwnedAndSharedFlags(ownerIdentifier);
-    List<fi.otavanopisto.muikku.rest.model.Flag> response = new ArrayList<>();
-    for (Flag flag : flags) {
-      response.add(new fi.otavanopisto.muikku.rest.model.Flag(flag.getId(), flag.getName(), flag.getColor(), flag.getDescription(), ownerIdentifier.toId()));
-    }
-    
-    return Response.ok(response).build();
+    return Response.ok(createRestModel(flags.toArray(new Flag[0]))).build();
   }
   
-  @POST
-  @Path("/flags/")
+  @GET
+  @Path("/flags/{ID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createFlag(fi.otavanopisto.muikku.rest.model.Flag payload) {
-    // TODO: Security
+  public Response listFlags(@PathParam ("ID") Long id) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
     
-    if (StringUtils.isBlank(payload.getOwnerIdentifier())) {
-      return Response.status(Status.BAD_REQUEST).entity("ownerIdentifier is missing").build();
+    Flag flag = flagController.findFlagById(id);
+    if (flag == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag#%d not found", id)).build();
+    }
+    
+    if (flag.getArchived()) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag#%d not found", id)).build();
+    }
+    
+    if (!flagController.hasFlagPermission(flag, sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity(String.format("You do not have permission to flag#%d", flag.getId())).build();
+    }
+    
+    return Response.ok(createRestModel(flag)).build();
+  }
+  
+  @PUT
+  @Path("/flags/{ID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createFlag(@PathParam ("ID") Long id, fi.otavanopisto.muikku.rest.model.Flag payload) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    Flag flag = flagController.findFlagById(id);
+    if (flag == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag#%d not found", id)).build();
+    }
+    
+    if (flag.getArchived()) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag#%d not found", id)).build();
+    }
+    
+    if (!flagController.hasFlagPermission(flag, sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity(String.format("You do not have permission to flag#%d", flag.getId())).build();
     }
     
     if (StringUtils.isBlank(payload.getColor())) {
@@ -631,17 +688,10 @@ public class UserRESTService extends AbstractRESTService {
     if (StringUtils.isBlank(payload.getName())) {
       return Response.status(Status.BAD_REQUEST).entity("name is missing").build();
     }
-    
-    SchoolDataIdentifier ownerIdentifier = SchoolDataIdentifier.fromId(payload.getOwnerIdentifier());
-    if (ownerIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).entity("ownerIdentifier is malformed").build();
-    }
 
-    Flag flag = flagController.createFlag(ownerIdentifier, payload.getName(), payload.getColor(), payload.getDescription());
-    
-    return Response.ok(new fi.otavanopisto.muikku.rest.model.Flag(flag.getId(), flag.getName(), flag.getColor(), flag.getDescription(), ownerIdentifier.toId())).build();
+    return Response.ok(createRestModel(flagController.updateFlag(flag, payload.getName(), payload.getColor(), payload.getDescription()))).build();
   }
-
+  
   @GET
   @Path("/studentFlagTypes")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -986,6 +1036,21 @@ public class UserRESTService extends AbstractRESTService {
       );
     }
 
+    return result;
+  }
+
+  private fi.otavanopisto.muikku.rest.model.Flag createRestModel(Flag flag) {
+    SchoolDataIdentifier ownerIdentifier = new SchoolDataIdentifier(flag.getOwnerIdentifier().getIdentifier(), flag.getOwnerIdentifier().getDataSource().getIdentifier());
+    return new fi.otavanopisto.muikku.rest.model.Flag(flag.getId(), flag.getName(), flag.getColor(), flag.getDescription(), ownerIdentifier.toId());
+  }
+  
+  private List<fi.otavanopisto.muikku.rest.model.Flag> createRestModel(Flag... flags) {
+    List<fi.otavanopisto.muikku.rest.model.Flag> result = new ArrayList<>(flags.length);
+    
+    for (Flag flag : flags) {
+      result.add(createRestModel(flag));
+    }
+    
     return result;
   }
 }
