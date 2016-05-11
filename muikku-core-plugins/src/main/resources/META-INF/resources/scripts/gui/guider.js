@@ -363,11 +363,9 @@
     _create : function() {
       this.element.addClass('gt-user-view-profile');
       
-      // this.element.on("click", ".gt-user-view-flags-select", $.proxy(this._onFlagSelectClick, this));
-      // this.element.on("click", ".gt-user-view-flag", $.proxy(this._onFlagClick, this));
-      
       this.element.on("click", ".gu-new-flag", $.proxy(this._onNewFlagClick, this));
       this.element.on("click", ".gu-edit-flag", $.proxy(this._onEditFlagClick, this));
+      this.element.on("click", ".gu-previous-flag", $.proxy(this._onPreviousFlagClick, this));
       
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       $(document).on("mouseup", $.proxy(this._onDocumentMouseUp, this));
@@ -405,6 +403,15 @@
         }, this));
     },
     
+    _flagStudent: function (flagId, callback) {
+      mApi().user.students.flags
+        .create(this.options.userIdentifier, {
+          flagId: flagId,
+          studentIdentifier: this.options.userIdentifier
+        })
+        .callback(callback);
+    },
+    
     _onNameClick: function (event) {
       var element = $(event.target).closest('.gt-course');
       if (element.hasClass('open')) {
@@ -417,7 +424,8 @@
     _onNewFlagClick: function (event) {
       renderDustTemplate('guider/guider_new_flag.dust', { }, $.proxy(function(text) {
         var dialog = $(text);
-        $(text).dialog({
+        
+        $(dialog).dialog({
           modal : true,
           minHeight : 200,
           maxHeight : $(window).height() - 50,
@@ -427,25 +435,33 @@
           buttons : [ {
             'text' : dialog.attr('data-button-create'),
             'class' : 'create-button',
-            'click' : function(event) {
+            'click' : $.proxy(function(event) {
               var payload = {
                 ownerIdentifier: MUIKKU_LOGGED_USER
               };
               
               $.each(['name', 'color', 'description'], $.proxy(function (index, property) {
+                console.log($(this).find('*[name="' + property + '"]'));
                 payload[property] = $(this).find('*[name="' + property + '"]').val();
-              }, this));
+              }, dialog));
               
               mApi().user.flags
                 .create(payload)
-                .callback($.proxy(function (err) {
+                .callback($.proxy(function (err, flag) {
                   if (err) {
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   } else {
-                    $(this).dialog("destroy").remove();
+                    this._flagStudent(flag.id, function (flagErr, studentFlag) {
+                      if (flagErr) {
+                        $('.notification-queue').notificationQueue('notification', 'error', flagErr);
+                      } else {
+                        $(dialog).dialog("destroy").remove();
+                        window.location.reload();
+                      }                      
+                    });
                   }
                 }, this));
-            }
+            }, this)
           }, {
             'text' : dialog.attr('data-button-cancel'),
             'class' : 'cancel-button',
@@ -467,7 +483,7 @@
         } else {
           renderDustTemplate('guider/guider_edit_flag.dust', { flag: flag }, $.proxy(function(text) {
             var dialog = $(text);
-            $(text).dialog({
+            $(dialog).dialog({
               modal : true,
               minHeight : 200,
               maxHeight : $(window).height() - 50,
@@ -506,74 +522,14 @@
       }, this));
     },
     
-    /**
-    _onFlagSelectClick: function (event) {
-      var element = $(event.target);
-      var container = element.closest('.gt-user-view-flags-container');
-      container.find('.gt-user-view-flags-dropdown-container').show();
+    _onPreviousFlagClick: function (event) {
+      var flagElement = $(event.target).closest('.gu-previous-flag');
+      var flagId = $(flagElement).attr('data-flag-id');
+      this._flagStudent(flagId, function () {
+        window.location.reload(true);
+      });
     },
     
-    _onFlagClick: function (event) {
-      var element = $(event.target).closest('.gt-user-view-flag');
-      var flagId = $(element).attr("data-id");
-      
-      mApi().user.students.flags
-        .read(this.options.userIdentifier, {ownerIdentifier: MUIKKU_LOGGED_USER })
-        .callback($.proxy(function(err, flags) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            if (flags && flags.length) {
-              if (flagId == 'NONE') {
-                mApi().user.students.flags
-                  .del(this.options.userIdentifier, flags[0].id)
-                  .callback($.proxy(function(deleteErr, flags) {
-                    if (deleteErr) {
-                      $('.notification-queue').notificationQueue('notification', 'error', deleteErr);
-                    } else {
-                      window.location.reload();
-                    }
-                  }, this))
-              } else {
-                mApi().user.students.flags
-                  .del(this.options.userIdentifier, flags[0].id)
-                  .callback($.proxy(function(deleteErr, flags) {
-                    if (deleteErr) {
-                      $('.notification-queue').notificationQueue('notification', 'error', deleteErr);
-                    } else {
-                      mApi().user.students.flags
-                        .create(this.options.userIdentifier, {
-                          studentIdentifier: this.options.userIdentifier,
-                          flagId: flagId
-                        })
-                        .callback($.proxy(function(createErr, flags) {
-                          if (createErr) {
-                            $('.notification-queue').notificationQueue('notification', 'error', createErr);
-                          } else {
-                            window.location.reload();
-                          }
-                        }, this))
-                    }
-                  }, this))
-              }
-            } else {
-              mApi().user.students.flags
-                .create(this.options.userIdentifier, {
-                  studentIdentifier: this.options.userIdentifier,
-                  flagId: flagId
-                })
-                .callback($.proxy(function(createErr, flags) {
-                  if (createErr) {
-                    $('.notification-queue').notificationQueue('notification', 'error', createErr);
-                  } else {
-                    window.location.reload();
-                  }
-                }, this))
-            }
-          }
-        }, this));
-    },
-    **/
     _onDocumentMouseUp: function (event) {
       var flagsContainer = $(event.target).closest('.gt-user-view-flags-container');
       if (!flagsContainer.length) {
@@ -589,8 +545,6 @@
             if (flagErr) {
               $('.notification-queue').notificationQueue('notification', 'error', flagErr);
             } else {
-//              var studentFlagType = (flags && flags.length ? flags[0].type : 'NONE')||'NONE';
-//              var studentFlagName = getLocaleText('plugin.guider.studentFlags.' + studentFlagType);
               callback(null, flags);
             }
           }, this));
