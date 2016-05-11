@@ -62,13 +62,16 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
 
   @Override
   public boolean hasPermission(String permission, ContextReference contextReference, User user) {
+    System.out.println("Has access to " + permission);
     Permission permissionEntity = permissionDAO.findByName(permission);
     UserEntity userEntity = getUserEntity(user);
     // Workspace access
     if (permissionEntity.getScope().equals(PermissionScope.WORKSPACE) && contextReference != null) {
+      System.out.println("Let's check workspace level");
       WorkspaceEntity workspaceEntity = resolveWorkspace(contextReference);
       if (workspaceEntity != null) {
         if (hasWorkspaceAccess(workspaceEntity, userEntity, permissionEntity)) {
+          System.out.println("Has workspace level access!");
           return true;
         }
       }
@@ -101,10 +104,17 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
     // Environment access as an individual
     EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
     if (environmentUser != null) {
+      System.out.println("Checking environment access with role " + environmentUser.getRole().getName());
       if (rolePermissionDAO.findByUserRoleAndPermission(environmentUser.getRole(), permission) != null) {
         // TODO Override rules for environment users
         return true;
       }
+      else {
+        System.out.println("Well no, we can't find it");
+      }
+    }
+    else {
+      System.out.println("User is not an environment user at all o.O;");
     }
     // Environment access as a group member
     List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);

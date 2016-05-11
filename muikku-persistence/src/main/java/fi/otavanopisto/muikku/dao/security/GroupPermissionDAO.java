@@ -1,19 +1,15 @@
 package fi.otavanopisto.muikku.dao.security;
 
-import fi.otavanopisto.muikku.model.security.EnvironmentRolePermission_;
-import fi.otavanopisto.muikku.dao.CoreDAO;
-import fi.otavanopisto.muikku.model.security.GroupPermission;
-import fi.otavanopisto.muikku.model.security.GroupPermission_;
-import fi.otavanopisto.muikku.model.security.Permission;
-import fi.otavanopisto.muikku.model.security.RolePermission;
-import fi.otavanopisto.muikku.model.security.RolePermission_;
-import fi.otavanopisto.muikku.model.users.RoleEntity;
-import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
+import fi.otavanopisto.muikku.dao.CoreDAO;
+import fi.otavanopisto.muikku.model.security.GroupPermission;
+import fi.otavanopisto.muikku.model.security.GroupPermission_;
+import fi.otavanopisto.muikku.model.security.Permission;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 
 public class GroupPermissionDAO extends CoreDAO<GroupPermission> {
 

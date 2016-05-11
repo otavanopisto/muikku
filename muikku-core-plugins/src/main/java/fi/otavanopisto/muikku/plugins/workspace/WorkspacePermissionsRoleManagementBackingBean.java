@@ -151,10 +151,9 @@ public class WorkspacePermissionsRoleManagementBackingBean extends AbstractWorks
     return roleEntities;
   }
   
-  public boolean hasWorkspaceRolePermission(RoleEntity role, Permission permission) {
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(getWorkspaceEntityId());
-
-    return permissionController.hasWorkspacePermission(workspaceEntity, role, permission);
+  public boolean hasRolePermission(RoleEntity role, Permission permission) {
+    // TODO Override support
+    return permissionController.hasPermission(role, permission);
   }
   
   private String workspaceName;
