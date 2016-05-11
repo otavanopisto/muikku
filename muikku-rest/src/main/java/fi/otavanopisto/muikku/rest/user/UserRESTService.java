@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.rest.user;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -43,7 +42,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
-import fi.otavanopisto.muikku.model.users.StudentFlagType;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -68,7 +66,6 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.FlagController;
-import fi.otavanopisto.muikku.users.StudentFlagController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -107,10 +104,7 @@ public class UserRESTService extends AbstractRESTService {
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 	
   @Inject
-  private WorkspaceUserEntityController workspaceUserEntityController; 
-  
-  @Inject
-  private StudentFlagController studentFlagController;
+  private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
   private FlagController flagController;
@@ -690,39 +684,6 @@ public class UserRESTService extends AbstractRESTService {
     }
 
     return Response.ok(createRestModel(flagController.updateFlag(flag, payload.getName(), payload.getColor(), payload.getDescription()))).build();
-  }
-  
-  @GET
-  @Path("/studentFlagTypes")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listStudentFlags(@QueryParam("ownerIdentifier") String ownerId) {
-    SchoolDataIdentifier ownerIdentifier = null;
-
-    if (StringUtils.isNotBlank(ownerId)) {
-      ownerIdentifier = SchoolDataIdentifier.fromId(ownerId);
-      if (ownerIdentifier == null) {
-        return Response.status(Status.BAD_REQUEST).entity("ownerIdentifier is malformed").build();
-      }
-
-      if (!ownerIdentifier.equals(sessionController.getLoggedUser())) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-    
-    List<StudentFlagType> studentFlagTypes = null;
-    
-    if (ownerIdentifier != null) {
-      studentFlagTypes = studentFlagController.listOwnerFlagTypes(ownerIdentifier);
-    } else {
-      studentFlagTypes = Arrays.asList(StudentFlagType.values());
-    }
-    
-    List<fi.otavanopisto.muikku.rest.model.StudentFlagType> response = new ArrayList<>();
-    for (StudentFlagType studentFlagType : studentFlagTypes) {
-      response.add(new fi.otavanopisto.muikku.rest.model.StudentFlagType(studentFlagType.name()));
-    }
-    
-    return Response.ok(response).build();
   }
   
 	@GET

@@ -96,5 +96,7 @@
     alter table FlagStudent 
         add constraint UK_5ijg5cu7cr3ialc0mq8pol7gu  unique (flag_id, studentIdentifier_id)
   </sql>
-  
+  <sql>
+    drop table StudentFlag
+  </sql>
 </update>
