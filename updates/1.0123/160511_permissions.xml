@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>drop table environmentrolepermission</sql>
+
+  <sql>alter table workspacerolepermission drop foreign key FK_4jwi8h21rfe8ndc1w8u2buy8f</sql>
+  <sql>delete from rolepermission where id in (select id from workspacerolepermission)</sql>
+  <sql>drop table workspacerolepermission</sql>
+
+  <sql>alter table workspacesettingstemplaterolepermission drop foreign key FK_lik6iwga1unje09cgdhjir7bl</sql>
+  <sql>delete from rolepermission where id in (select id from workspacesettingstemplaterolepermission)</sql>
+  <sql>drop table workspacesettingstemplaterolepermission</sql>
+
+  <sql>drop table workspacesettingstemplate</sql>
+
+</update>
