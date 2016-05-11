@@ -427,9 +427,20 @@
     margin:0;
     padding:5px;
     font-size:12px;
+    border-radius:20px;
+    position:relative;
     
     &.icon-flag:before {
+      background:#fff none repeat scroll 0 0;
       border-radius:100%;
+      display:inline-block;
+      height:15px;
+      padding:5px;
+      text-align:center;
+      width:15px;
+      border-style:solid;
+      border-width:1px;
+      border-color: attr(data-flag-color color);
     }
     
     .gu-flag-label {
@@ -439,8 +450,52 @@
       padding:0 5px;
     }
     
-    .gu-flag-actions {
-/*       display:none; */
+    .gu-flag-action-container {
+      display:none;
+      float:none;
+      position:absolute;
+      padding:3px;
+      background:#fff;
+      position:absolute;
+      left:0;
+      margin:0;
+      border-radius:5px;
+      box-shadow:0 7px 15px rgba(0,0,0,0.3);
+      white-space:nowrap;
+      
+      a {
+        display:block;
+        padding:10px;
+        margin:0;
+        color:#000;
+        
+        &.icon-delete:before,        
+        &.icon-edit:before,
+        &.icon-share:before {
+          font-size:14px;
+        }
+        
+        .gu-flag-action-label {
+          font-family:'Open Sans', Arial, sans-serif;
+          color:#000;
+          padding:0 0 0 8px;
+          vertical-align:top;
+        }
+        
+        &:hover {
+          background:#d5f4ff;
+        }
+        
+      }
+      
+    }
+    
+    &:hover {
+    
+      .gu-flag-action-container {
+        display:block;
+      }
+    
     }
     
   }
@@ -453,7 +508,7 @@
     display:inline-block;
     cursor:pointer;
     position:relative;
-    margin:0 10px 10px 0;
+    margin:0 10px 0 0;
     font-size:12px;
 
     .gu-add-flag-widget-label {
@@ -463,57 +518,53 @@
       text-transform:uppercase;
     }
     
+    .gu-add-flags-container {
+      display:none;
+      padding:3px;
+      background:#fff;
+      position:absolute;
+      left:0;
+      margin:6px 0 0 0;
+      border-radius:5px;
+      box-shadow:0 7px 15px rgba(0,0,0,0.3);
+      white-space:nowrap;
+      
+      .gu-flags-separator {
+        margin:1px 0;
+        height:1px;
+        background:#eee;
+      }
+      
+      a {
+        display:block;
+        padding:10px;
+        margin:0;
+        
+        &.gu-new-flag {
+          color:#000;
+        }
+        
+        .gu-flag-label {
+          font-family:'Open Sans', Arial, sans-serif;
+          color:#000;
+          padding:0 0 0 8px;
+        }
+        
+        &:hover {
+          background:#d5f4ff;
+        }
+        
+      }
+      
+    }
+    
     &:hover {
       background:#3a98f0;
     
       .gu-add-flags-container {
         display:block;
-        padding:3px;
-        background:#fff;
-        position:absolute;
-        left:0;
-        margin:6px 0 0 0;
-        border-radius:5px;
-        box-shadow:0 7px 15px rgba(0,0,0,0.3);
-        white-space:nowrap;
       }
     
-    }
-    
-  }
-  
-  .gu-add-flags-container {
-    display:none;
-    
-    .gu-flags-separator {
-      margin:1px 0;
-      height:1px;
-      background:#eee;
-    }
-    
-    a {
-      display:block;
-      padding:10px;
-      margin:0;
-      
-      &.gu-new-flag {
-        color:#000;
-      }
-
-      &[data-flag-id="NONE"] {
-        display:none;
-      }
-      
-      .gu-flag-label {
-        font-family:'Open Sans', Arial, sans-serif;
-        color:#000;
-        padding:0 0 0 8px;
-      }
-      
-      &:hover {
-        background:#d5f4ff;
-      }
-      
     }
     
   }
