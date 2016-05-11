@@ -28,6 +28,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -1218,7 +1219,15 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error occurred while retrieving field answers: " + e.getMessage()).build();
     }
     
-    return Response.ok(result).build();
+    CacheControl cacheControl = new CacheControl();
+    cacheControl.setMustRevalidate(true);
+    cacheControl.setNoCache(true);
+    cacheControl.setProxyRevalidate(true);
+
+    return Response
+        .ok(result)
+        .cacheControl(cacheControl)
+        .build();
   }
 
   @GET

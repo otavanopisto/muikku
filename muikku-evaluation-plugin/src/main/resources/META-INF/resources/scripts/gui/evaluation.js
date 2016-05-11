@@ -704,7 +704,7 @@
               
               callback(null, htmlMaterial);
               
-              $.each(this._materialHtml[materialId].pending, function (pendingCallback) {
+              $.each(this._materialHtml[materialId].pending, function (index, pendingCallback) {
                 pendingCallback(null, htmlMaterial);
               });
               
@@ -882,7 +882,7 @@
         }
       }
       mApi().workspace.workspaces.students
-        .read(this.options.workspaceEntityId,  $.extend({ archived: false }, appliedFilters))
+        .read(this.options.workspaceEntityId,  $.extend({ archived: false, orderBy: 'name' }, appliedFilters))
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -1184,6 +1184,12 @@
     },
     
     _onWorkspaceMaterialReplyAndEvaluationLoaded: function (reply, evaluation) {
+      if (evaluation && evaluation.evaluated) {
+        this.options.evaluation = evaluation;
+        this.element.find('.evaluation-assignment-evaluated-date')
+          .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
+      }          
+
       switch (reply.state) {
         case 'UNANSWERED':
           this.element.addClass('assignment-unaswered');
@@ -1209,11 +1215,6 @@
             this.element.find('.evaluation-assignment-submitted-date')
               .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
           }
-          if (evaluation && evaluation.evaluated) {
-            this.options.evaluation = evaluation;
-            this.element.find('.evaluation-assignment-evaluated-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
-          }          
         break;
         case 'PASSED':
           this.element.on("click", $.proxy(this._onClick, this));
@@ -1221,11 +1222,6 @@
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
               .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
-          }
-          if (evaluation && evaluation.evaluated) {
-            this.options.evaluation = evaluation;
-            this.element.find('.evaluation-assignment-evaluated-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(evaluation.evaluated)));   
           }
         break;
       }
