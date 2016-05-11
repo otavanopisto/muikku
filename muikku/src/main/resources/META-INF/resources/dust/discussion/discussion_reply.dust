@@ -44,7 +44,7 @@
           {^isReply}
             <div class="di-message-tool di-reply-answer-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
           {/isReply}
-          <div class="di-message-tool di-message-reply-link mf-item-tool-link"><span>{#localize key="plugin.discussion.quote.message"/}</span></div>
+          <div class="di-message-tool di-message-reply-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.quote"/}</span></div>
           {#canEdit}
             <div class="di-message-tool di-reply-edit-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
           {/canEdit}

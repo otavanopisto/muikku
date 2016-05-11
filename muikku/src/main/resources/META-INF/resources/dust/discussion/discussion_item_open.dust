@@ -32,7 +32,7 @@
       <div class="mf-item-content-tools di-message-content-tools lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
         <div class="di-message-content-tools-container mf-item-tools">
           <div class="di-message-tool di-message-reply-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
-          <div class="di-message-tool di-message-reply-link mf-item-tool-link"><span>{#localize key="plugin.discussion.quote.message"/}</span></div>
+          <div class="di-message-tool di-message-reply-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.quote"/}</span></div>
           {#canEdit}
             <div class="di-message-tool di-message-edit-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
           {/canEdit}                
