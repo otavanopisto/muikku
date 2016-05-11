@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.openqa.selenium.By;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import fi.otavanopisto.muikku.TestUtilities;

@@ -5,18 +5,11 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
-import fi.otavanopisto.muikku.SqlAfter;
-import fi.otavanopisto.muikku.SqlBefore;
-import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.muikku.ui.PyramusMocks;
-import fi.otavanopisto.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 
 public class CoursePickerTestsBase extends AbstractUITest {
   
