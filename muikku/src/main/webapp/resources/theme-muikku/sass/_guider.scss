@@ -426,7 +426,7 @@
     white-space:nowrap;
     margin:0;
     padding:5px;
-    font-size:12px;
+    font-size:14px;
     border-radius:20px;
     position:relative;
     
@@ -468,12 +468,7 @@
         padding:10px;
         margin:0;
         color:#000;
-        
-        &.icon-delete:before,        
-        &.icon-edit:before,
-        &.icon-share:before {
-          font-size:14px;
-        }
+        font-size:14px;
         
         .gu-flag-action-label {
           font-family:'Open Sans', Arial, sans-serif;
@@ -509,12 +504,11 @@
     cursor:pointer;
     position:relative;
     margin:0 10px 0 0;
-    font-size:12px;
+    font-size:14px;
 
     .gu-add-flag-widget-label {
       font-family:'Open Sans', Arial, sans-serif;
       vertical-align:top;
-      font-size:12px;
       text-transform:uppercase;
     }
     
@@ -539,6 +533,7 @@
         display:block;
         padding:10px;
         margin:0;
+        font-size:14px;
         
         &.gu-new-flag {
           color:#000;
