@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.workspace.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -40,6 +41,7 @@ import org.joda.time.DateTime;
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.Tag;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
@@ -703,14 +705,16 @@ public class WorkspaceRESTService extends PluginRESTService {
       @QueryParam("requestedAssessment") Boolean requestedAssessment,
       @QueryParam("assessed") Boolean assessed,
       @QueryParam("studentIdentifier") String studentId,
+      @QueryParam("search") String searchString,
       @QueryParam("orderBy") String orderBy) {
     
-    SchoolDataIdentifier studentIdentifier = null;
+    List<SchoolDataIdentifier> studentIdentifiers = null;
     if (StringUtils.isNotBlank(studentId)) {    
-      studentIdentifier = SchoolDataIdentifier.fromId(studentId);
+      SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
       if (studentIdentifier == null) {
         return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed student identifier %s", studentId)).build();
       }
+      studentIdentifiers = Collections.singletonList(studentIdentifier);
     }
     
     // Workspace
@@ -721,19 +725,69 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Access check
     if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
-      if (studentIdentifier == null || !studentIdentifier.equals(sessionController.getLoggedUser())) {
+      if (studentIdentifiers == null
+          || studentIdentifiers.size() != 1
+          || !studentIdentifiers.get(0).equals(sessionController.getLoggedUser())) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
     
     List<fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser> workspaceUsers = null;
     
-    if (studentIdentifier != null) {
+    if (searchString != null) {
+      studentIdentifiers = new ArrayList<>();
+
+      Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+      if (!searchProviderIterator.hasNext()) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("No search provider found").build();
+      }
+      SearchProvider elasticSearchProvider = searchProviderIterator.next();
+
+      if (elasticSearchProvider != null) {
+        String[] fields = new String[] { "firstName", "lastName" };
+
+        SearchResult result = elasticSearchProvider.searchUsers(
+            searchString,
+            fields,
+            EnvironmentRoleArchetype.STUDENT,
+            (Collection<Long>)null,
+            Arrays.asList(workspaceEntityId),
+            (Collection<SchoolDataIdentifier>)null,
+            Boolean.FALSE,
+            0,
+            Integer.MAX_VALUE);
+        
+        List<Map<String, Object>> results = result.getResults();
+
+        if (results != null && !results.isEmpty()) {
+          for (Map<String, Object> o : results) {
+            String foundStudentId = (String) o.get("id");
+            if (StringUtils.isBlank(studentId)) {
+              logger.severe("Could not process user found from search index because it had a null id");
+              continue;
+            }
+            
+            String[] studentIdParts = foundStudentId.split("/", 2);
+            SchoolDataIdentifier foundStudentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
+            if (foundStudentIdentifier == null) {
+              logger.severe(String.format("Could not process user found from search index with id %s", studentId));
+              continue;
+            }
+            
+            studentIdentifiers.add(foundStudentIdentifier);
+          }
+        }
+      }
+    }
+    
+    if (studentIdentifiers != null) {
       workspaceUsers = new ArrayList<>();
       
-      WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, studentIdentifier);
-      if (workspaceUser != null) {
-        workspaceUsers.add(workspaceUser);
+      for (SchoolDataIdentifier studentIdentifier : studentIdentifiers) { // TODO: do in database
+        WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, studentIdentifier);
+        if (workspaceUser != null) {
+          workspaceUsers.add(workspaceUser);
+        }
       }
     } else {
       // Students via WorkspaceSchoolDataBridge
