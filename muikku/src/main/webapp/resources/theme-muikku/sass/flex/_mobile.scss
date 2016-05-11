@@ -263,4 +263,34 @@
     
   }
   
+  /* Communicator */
+  
+  .cm-message {
+  
+    .cm-message-details {
+    
+      .cm-message-latest,
+      .cm-message-header-content-secondary {
+        font-size:13px;
+      }
+      
+      .cm-message-header-count {
+        margin:0 5px 0 0;
+        display:inline-block;
+        
+        .cm-message-replies {
+          font-weight:400;
+          width:100%;
+          background-color:$hlBgr;
+          text-align:center;
+          padding:2px;
+          font-size:13px;
+        }
+        
+      }
+  
+    }
+      
+  }
+  
 }

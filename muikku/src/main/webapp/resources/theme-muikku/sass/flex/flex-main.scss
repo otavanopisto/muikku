@@ -81,6 +81,7 @@ body {
   opacity:0.98;
   box-shadow:-5px 0 5px rgba(0, 0, 0, 0.2);
   z-index:999;
+  min-width:320px;
   
   .footer-custom-bg {
     background:#485c64;
@@ -292,6 +293,7 @@ body {
 /* Navigation */
 #staticNavigationWrapper {
   height:76px;
+  min-width:320px;
   z-index:12;
   position:relative;
   background: -moz-linear-gradient(top, rgba(36,108,162,0.15) 0%, rgba(255,255,255,0) 66%);

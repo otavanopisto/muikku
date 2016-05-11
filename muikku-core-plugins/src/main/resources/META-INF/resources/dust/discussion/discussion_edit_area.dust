@@ -19,7 +19,7 @@
             <div class="mf-textfield  lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-full">
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-4">{#localize key="plugin.discussion.editarea.newname"/}</span>
-                <input class="mf-textfield-content lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-12" type="text" value="" name="name" maxlength="105"></input>                
+                <input class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-12" type="text" value="" name="name" maxlength="105"></input>                
               </div>
             </div>  
           </div>
