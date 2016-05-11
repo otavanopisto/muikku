@@ -366,7 +366,7 @@
       // this.element.on("click", ".gt-user-view-flags-select", $.proxy(this._onFlagSelectClick, this));
       // this.element.on("click", ".gt-user-view-flag", $.proxy(this._onFlagClick, this));
       
-      this.element.on("click", ".gu-add-flag", $.proxy(this._onAddFlagClick, this));
+      this.element.on("click", ".gu-new-flag", $.proxy(this._onNewFlagClick, this));
       this.element.on("click", ".gu-edit-flag", $.proxy(this._onEditFlagClick, this));
       
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
@@ -414,8 +414,8 @@
       }
     },
     
-    _onAddFlagClick: function (event) {
-      renderDustTemplate('guider/guider_add_flag.dust', { }, $.proxy(function(text) {
+    _onNewFlagClick: function (event) {
+      renderDustTemplate('guider/guider_new_flag.dust', { }, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({
           modal : true,
