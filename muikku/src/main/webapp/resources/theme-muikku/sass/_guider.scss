@@ -284,12 +284,13 @@
   @include padding(10px);
   
 }
-.gt-user-view-headline{
-  h1{
+.gt-user-view-headline {
+  
+  h1 {
     margin-bottom: 10px;
     margin-top: 10px;
-    margin-left:10px;
   }
+  
 }
 
 .gt-user-view-profile {
@@ -417,22 +418,107 @@
   padding:5px;
 }
 
-.gt-user-view-flags-container{
-  margin-top: -34px;
-  float:right;
-  .gt-user-view-flags-select{
-    border: 1px solid #ededed;
-    padding: 5px;
+.gu-user-view-flags-container {
+  margin:20px 0 0 0;
+  
+  .gu-flag {
     display:inline-block;
-
-    span{
-     padding:5px;
+    white-space:nowrap;
+    margin:0;
+    padding:5px;
+    font-size:12px;
+    
+    &.icon-flag:before {
+      border-radius:100%;
     }
-
-    .gt-user-view-flags-dropdown-arrow{
-      padding:2px;
+    
+    .gu-flag-label {
+      font-family:'Open Sans', Arial, sans-serif;
+      color:#000;
+      display:inline-block;
+      padding:0 5px;
+      text-transform:uppercase;
     }
-  }    
+    
+    .gu-flag-actions {
+      display:none;
+    }
+    
+  }
+  
+  .gu-add-flag-widget {
+    background:#4faaff;
+    color:#fff;
+    border-radius:5px;
+    padding:6px 8px 6px 6px;
+    display:inline-block;
+    cursor:pointer;
+    position:relative;
+    margin:0 20px 10px 0;
+    font-size:12px;
+
+    .gu-add-flag-widget-label {
+      font-family:'Open Sans', Arial, sans-serif;
+      vertical-align:top;
+      font-size:12px;
+      text-transform:uppercase;
+    }
+    
+    &:hover {
+    
+      .gu-add-flags-container {
+        display:block;
+        padding:3px;
+        background:#fff;
+        position:absolute;
+        left:0;
+        margin:6px 0 0 0;
+        border-radius:5px;
+        box-shadow:0 5px 15px rgba(0,0,0,0.2);
+        white-space:nowrap;
+      }
+    
+    }
+    
+  }
+  
+  .gu-add-flags-container {
+    display:none;
+    
+    .gu-flags-separator {
+      margin:1px 0;
+      height:1px;
+      background:#eee;
+    }
+    
+    a {
+      display:block;
+      padding:10px;
+      margin:0;
+      text-transform:uppercase;
+      
+      &.gu-new-flag {
+        color:#000;
+      }
+
+      &[data-flag-id="NONE"] {
+        display:none;
+      }
+      
+      .gu-flag-label {
+        font-family:'Open Sans', Arial, sans-serif;
+        color:#000;
+        padding:0 0 0 8px;
+      }
+      
+      &:hover {
+        background:#d5f4ff;
+      }
+      
+    }
+    
+  }
+  
 }
 
 /* This is an unneccessary override, needs to be similar with the rest of the mainfunctions - in the future */
