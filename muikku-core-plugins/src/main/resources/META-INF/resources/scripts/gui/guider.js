@@ -365,7 +365,8 @@
       
       this.element.on("click", ".gu-new-flag", $.proxy(this._onNewFlagClick, this));
       this.element.on("click", ".gu-edit-flag", $.proxy(this._onEditFlagClick, this));
-      this.element.on("click", ".gu-previous-flag", $.proxy(this._onPreviousFlagClick, this));
+      this.element.on("click", ".gu-remove-flag", $.proxy(this._onRemoveFlagClick, this));
+      this.element.on("click", ".gu-existing-flag", $.proxy(this._onExistingFlagClick, this));
       
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       $(document).on("mouseup", $.proxy(this._onDocumentMouseUp, this));
@@ -409,6 +410,12 @@
           flagId: flagId,
           studentIdentifier: this.options.userIdentifier
         })
+        .callback(callback);
+    },
+    
+    _unflagStudent: function (id, callback) {
+      mApi().user.students.flags
+        .del(this.options.userIdentifier, id)
         .callback(callback);
     },
     
@@ -522,10 +529,20 @@
       }, this));
     },
     
-    _onPreviousFlagClick: function (event) {
-      var flagElement = $(event.target).closest('.gu-previous-flag');
+    _onExistingFlagClick: function (event) {
+      var flagElement = $(event.target).closest('.gu-existing-flag');
       var flagId = $(flagElement).attr('data-flag-id');
       this._flagStudent(flagId, function () {
+        window.location.reload(true);
+      });
+    },
+    
+    _onRemoveFlagClick: function (event) {
+      var flagElement = $(event.target).closest('.gu-flag');
+      var id = $(flagElement).attr('data-id');
+      console.log(id);
+      
+      this._unflagStudent(id, function () {
         window.location.reload(true);
       });
     },
