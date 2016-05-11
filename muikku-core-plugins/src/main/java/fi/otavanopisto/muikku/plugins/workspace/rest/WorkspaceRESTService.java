@@ -751,7 +751,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             fields,
             EnvironmentRoleArchetype.STUDENT,
             (Collection<Long>)null,
-            Arrays.asList(workspaceEntityId),
+            Collections.singletonList(workspaceEntityId),
             (Collection<SchoolDataIdentifier>)null,
             Boolean.FALSE,
             0,
@@ -762,7 +762,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (results != null && !results.isEmpty()) {
           for (Map<String, Object> o : results) {
             String foundStudentId = (String) o.get("id");
-            if (StringUtils.isBlank(studentId)) {
+            if (StringUtils.isBlank(foundStudentId)) {
               logger.severe("Could not process user found from search index because it had a null id");
               continue;
             }
@@ -784,10 +784,21 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceUsers = new ArrayList<>();
       
       for (SchoolDataIdentifier studentIdentifier : studentIdentifiers) { // TODO: do in database
-        WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, studentIdentifier);
-        if (workspaceUser != null) {
-          workspaceUsers.add(workspaceUser);
+        WorkspaceUserEntity wue = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
+        if (wue == null) {
+          continue;
         }
+
+        if (!archived && wue.getArchived()) {
+          continue;
+        }
+
+        WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(wue);
+        if (workspaceUser == null) {
+          continue;
+        }
+
+        workspaceUsers.add(workspaceUser);
       }
     } else {
       // Students via WorkspaceSchoolDataBridge
@@ -833,10 +844,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         
         if (user != null) {
           UserEntity userEntity = null;
-          Long workspaceUserId = null;
 
           if (workspaceUserEntity != null) {
-            workspaceUserId = workspaceUserEntity.getId();
             userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
           } else {
             userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());  
@@ -848,7 +857,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           DateTime enrolmentTime = workspaceUser.getEnrolmentTime();
           
           result.add(new WorkspaceStudent(workspaceUserIdentifier.toId(), 
-            workspaceUserId, 
+            workspaceEntityId, 
             userEntity != null ? userEntity.getId() : null, 
             firstName, 
             lastName, 
