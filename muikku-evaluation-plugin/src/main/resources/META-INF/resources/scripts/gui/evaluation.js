@@ -745,7 +745,8 @@
       filters: {
         requestedAssessment: null,
         assessed: null
-      }
+      },
+      searchString: null
     },
     
     _create : function() {
@@ -754,6 +755,7 @@
       this._viewOffsetX = 0;
       this._viewOffsetY = 0;
       this._filters = this.options.filters;
+      this._searchString = this.options.searchString || null;
       
       $('<button>')
         .addClass('prevPage icon-arrow-left')
@@ -818,6 +820,11 @@
       }
     },
     
+    search: function (searchString) {
+      this._searchString = searchString;
+      this._reloadStudents();
+    },
+    
     _clearStudentsView: function () {
       this.element.find('.evaluation-student-wrapper').remove();
       this.element.find('.evaluation-assignments').empty();
@@ -839,8 +846,12 @@
             }
         }
       }
+      var options = { archived: false, orderBy: 'name' };
+      if (this._searchString !== null && this._searchString !== "")  {
+        options.search = this._searchString;
+      }
       mApi().workspace.workspaces.students
-        .read(this.options.workspaceEntityId,  $.extend({ archived: false, orderBy: 'name' }, appliedFilters))
+        .read(this.options.workspaceEntityId,  $.extend(options, appliedFilters))
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
