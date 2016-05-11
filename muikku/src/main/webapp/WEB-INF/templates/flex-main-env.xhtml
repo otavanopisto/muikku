@@ -85,7 +85,7 @@
           </div>
         </ui:fragment>
         <!-- GUIDER -->
-        <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
           <div class="dock-static-navi-button-guider #{activeTrail eq 'guider' ? 'active-trail' : ''}" title="#{i18n.text['plugin.guider.guider']}">
             <a jsf:outcome="/jsf/guider/index.jsf" class="icon-members">
               <span style="display:none" class="dock-notification"></span>
@@ -109,7 +109,7 @@
           </div>
         </ui:fragment>
         <!-- ANNOUNCER -->
-        <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
           <div class="dock-static-navi-button-announcer sm-flex-hide #{activeTrail eq 'announcer' ? 'active-trail' : ''}" title="#{i18n.text['plugin.announcer.announcer']}">
             <a jsf:outcome="/jsf/announcer/index.jsf" class="icon-announcer">
               <span style="display:none" class="dock-notification"></span>
