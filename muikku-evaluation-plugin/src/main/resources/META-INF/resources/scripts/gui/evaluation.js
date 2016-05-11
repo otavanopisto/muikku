@@ -746,7 +746,7 @@
 
       var workspaceItem = $('.evaluation-workspace-item[data-workspace-entity-id="' + workspaceEntityId + '"]');
       
-      $('.evaluation-current-workspace').attr($(workspaceItem).attr('data-workspace-entity-id'));
+      $('.evaluation-current-workspace').attr('data-workspace-entity-id', workspaceEntityId);
       $('.evaluation-current-workspace').text($(workspaceItem).attr('data-workspace-name'));
       
       var workspaceEntityId = $(workspaceItem).attr('data-workspace-entity-id');
