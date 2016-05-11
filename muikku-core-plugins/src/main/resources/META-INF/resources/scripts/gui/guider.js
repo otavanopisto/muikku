@@ -365,6 +365,7 @@
       
       this.element.on("click", ".gu-new-flag", $.proxy(this._onNewFlagClick, this));
       this.element.on("click", ".gu-edit-flag", $.proxy(this._onEditFlagClick, this));
+      this.element.on("click", ".gu-share-flag", $.proxy(this._onShareFlagClick, this));
       this.element.on("click", ".gu-remove-flag", $.proxy(this._onRemoveFlagClick, this));
       this.element.on("click", ".gu-existing-flag", $.proxy(this._onExistingFlagClick, this));
       
@@ -515,6 +516,103 @@
                         window.location.reload(true);
                       }
                     }, this));
+                }
+              }, {
+                'text' : dialog.attr('data-button-cancel'),
+                'class' : 'cancel-button',
+                'click' : function(event) {
+                  $(this).dialog("destroy").remove();
+                }
+              } ]
+            });
+          }, this));
+        }
+      }, this));
+    },
+    
+    _createStaffMemberSearch: function (term) {
+      return $.proxy(function (callback) {
+        mApi().user.students.read({ 'searchString' : term }).callback(function (err, staffMembers) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, $.map(staffMembers, function (staffMember) {
+              var label = (staffMember.firstName + " " + staffMember.lastName)||'';
+              if (staffMember.email) {
+                label += (label ? ' ' : '') + '<' + staffMember.email + '>';
+              }
+              
+              return {
+                type: 'USER',
+                label: label,
+                id: staffMember.id
+              }
+              
+            }));
+          }
+        });
+      }, this);
+    },
+    
+    _onShareFlagClick: function (event) {
+      var flagElement = $(event.target).closest('.gu-flag');
+      var flagId = flagElement.attr('data-flag-id');
+      var id = flagElement.attr('data-id');
+      
+      this._loadFlag(flagId, $.proxy(function (err, flag) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          renderDustTemplate('guider/guider_share_flag.dust', { flag: flag }, $.proxy(function(text) {
+            var dialog = $(text);
+            $(dialog).dialog({
+              modal : true,
+              minHeight : 200,
+              maxHeight : $(window).height() - 50,
+              resizable : false,
+              width : 560,
+              dialogClass : "guider-share-flag-dialog",
+              open: $.proxy(function( event, ui ) {
+                $(dialog).find('.add-user')
+                  .autocomplete({
+                    create: function(event, ui){
+                      $(this).perfectScrollbar(); 
+                    },  
+                    source: $.proxy(function (request, response) {
+                      var searches = [this._createStaffMemberSearch(request.term)];
+                      async.parallel(searches, function (searchErr, results) {
+                        if (searchErr) {
+                          $('.notification-queue').notificationQueue('notification', 'error', err);
+                        } else {
+                          response(_.flatten(results));  
+                        }
+                      });
+                    }, this),
+                    select: function (event, ui) {
+                      var item = ui.item;
+                      
+                      var removeLink = $('<a>')
+                        .attr('href', 'javascript:void(null)')
+                        .text('Remove');
+                      
+                      $('<div>')
+                        .attr({
+                          'data-share-id': item.id,
+                          'data-share-type': item.type 
+                        })
+                        .append($('<label>').text(item.label))
+                        .append(removeLink)
+                        .appendTo($(dialog).find('.shares'));
+                      
+                      $(this).val("");
+                      return false;
+                    }
+                  });
+              }, this),
+              buttons : [ {
+                'text' : dialog.attr('data-button-save'),
+                'class' : 'save-button',
+                'click' : function(event) {
                 }
               }, {
                 'text' : dialog.attr('data-button-cancel'),
