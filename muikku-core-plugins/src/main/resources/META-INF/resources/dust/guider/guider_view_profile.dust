@@ -18,9 +18,11 @@
         <div data-id="{id}" data-flag-id="{flag.id}" data-flag-color="{flag.color}" class="gu-flag icon-flag" style="color: {flag.color}">
           <span class="gu-flag-label">{flag.name}</span>
           <div class="gu-flag-action-container">
-            <a class="gu-remove-flag icon-delete" href="javascript:void(null)">{#localize key="plugin.guider.flags.removeFlag.label"/}</a>
-            <a class="gu-edit-flag icon-edit" href="javascript:void(null)">{#localize key="plugin.guider.flags.editFlag.label"/}</a>
-            <a class="gu-share-flag icon-share" href="javascript:void(null)">{#localize key="plugin.guider.flags.shareFlag.label"/}</a>
+            <a class="gu-remove-flag icon-remove" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.unFlag.label"/}</span></a>
+            <div class="gu-flag-actions-separator"></div>
+            <a class="gu-remove-flag icon-delete" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.removeFlag.label"/}</span></a>
+            <a class="gu-edit-flag icon-edit" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.editFlag.label"/}</span></a>
+            <a class="gu-share-flag icon-share" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.shareFlag.label"/}</span></a>
           </div>          
         </div>
       {/studentFlags}
