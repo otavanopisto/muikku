@@ -11,9 +11,6 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.Actions;
-
 import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.otavanopisto.muikku.TestEnvironments;

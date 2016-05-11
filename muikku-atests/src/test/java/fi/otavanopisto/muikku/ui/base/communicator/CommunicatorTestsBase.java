@@ -5,9 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;

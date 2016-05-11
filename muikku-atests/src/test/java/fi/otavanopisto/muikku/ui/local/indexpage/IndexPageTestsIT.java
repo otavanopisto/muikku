@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.ui.local.indexpage;
 
-import org.junit.After;
 import org.junit.Before;
 
 import fi.otavanopisto.muikku.ui.base.indexpage.IndexPageTestsBase;
