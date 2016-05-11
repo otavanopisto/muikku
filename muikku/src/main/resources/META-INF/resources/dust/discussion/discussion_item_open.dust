@@ -9,7 +9,7 @@
             <div class="di-user-picture default usr-{userRandomNo}">{nameLetter}</div>
           </div>  
           <div class="di-message-details lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-16">
-            <span title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span>
+            <span class="di-message-creator" title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span>
             <span class="mf-category-{forumAreaId}-font" title="{#localize key="plugin.discussion.titleText.area"/}">{areaName}</span>
           </div> 
         </div>
@@ -32,7 +32,7 @@
       <div class="mf-item-content-tools di-message-content-tools lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
         <div class="di-message-content-tools-container mf-item-tools">
           <div class="di-message-tool di-message-reply-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
-          <div class="di-message-tool di-message-reply-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.quote"/}</span></div>
+          <div class="di-message-tool di-message-quote-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.quote"/}</span></div>
           {#canEdit}
             <div class="di-message-tool di-message-edit-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
           {/canEdit}                
