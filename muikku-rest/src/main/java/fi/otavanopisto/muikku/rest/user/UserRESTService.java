@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.rest.user;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -244,7 +245,7 @@ public class UserRESTService extends AbstractRESTService {
     if (elasticSearchProvider != null) {
       String[] fields = new String[] { "firstName", "lastName" };
 
-      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, EnvironmentRoleArchetype.STUDENT, userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, firstResult, maxResults);
+      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
       boolean hasImage = false;
@@ -751,7 +752,15 @@ public class UserRESTService extends AbstractRESTService {
 		if (elasticSearchProvider != null) {
 			String[] fields = new String[] { "firstName", "lastName" };
 
-			SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, roleArchetype, userGroupFilters, workspaceFilters, null, firstResult, maxResults);
+			SearchResult result = elasticSearchProvider.searchUsers(searchString, 
+			    fields, 
+			    Arrays.asList(roleArchetype), 
+			    userGroupFilters, 
+			    workspaceFilters, 
+			    null, 
+			    false,
+			    firstResult, 
+			    maxResults);
 			
 			List<Map<String, Object>> results = result.getResults();
 			boolean hasImage = false;
@@ -882,6 +891,70 @@ public class UserRESTService extends AbstractRESTService {
     }
   }
 
+  @GET
+  @Path("/students")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response searchStudents(
+      @QueryParam("searchString") String searchString,
+      @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
+      @QueryParam("maxResults") @DefaultValue("10") Integer maxResults) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    List<fi.otavanopisto.muikku.rest.model.StaffMember> staffMembers = new ArrayList<>();
+    Set<Long> userGroupFilters = null;
+    Set<Long> workspaceFilters = null;
+    List<SchoolDataIdentifier> userIdentifiers = null; 
+
+    SearchProvider elasticSearchProvider = getProvider("elastic-search");
+    if (elasticSearchProvider != null) {
+      String[] fields = new String[] { "firstName", "lastName" };
+      List<EnvironmentRoleArchetype> nonStudentArchetypes = new ArrayList<>(Arrays.asList(EnvironmentRoleArchetype.values()));
+      nonStudentArchetypes.remove(EnvironmentRoleArchetype.TEACHER);
+
+      SearchResult result = elasticSearchProvider.searchUsers(searchString, 
+          fields, 
+          nonStudentArchetypes, 
+          userGroupFilters, 
+          workspaceFilters, 
+          userIdentifiers, 
+          false, 
+          firstResult, 
+          maxResults);
+      
+      List<Map<String, Object>> results = result.getResults();
+
+      if (results != null && !results.isEmpty()) {
+        for (Map<String, Object> o : results) {
+          String studentId = (String) o.get("id");
+          if (StringUtils.isBlank(studentId)) {
+            logger.severe("Could not process user found from search index because it had a null id");
+            continue;
+          }
+          
+          String[] studentIdParts = studentId.split("/", 2);
+          SchoolDataIdentifier studentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
+          if (studentIdentifier == null) {
+            logger.severe(String.format("Could not process user found from search index with id %s", studentId));
+            continue;
+          }
+          
+          String email = userEmailEntityController.getUserDefaultEmailAddress(studentIdentifier, false);
+          
+          staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
+            studentIdentifier.toId(), 
+            (String) o.get("firstName"),
+            (String) o.get("lastName"), 
+            email));
+        }
+      }
+    }
+
+    return Response.ok(staffMembers).build();
+  }
+  
   private fi.otavanopisto.muikku.rest.model.User createRestModel(UserEntity userEntity,
 			User user) {
 		// TODO: User Image
