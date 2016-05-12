@@ -784,7 +784,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (studentIdentifiers != null) {
       workspaceUsers = new ArrayList<>();
       
-      for (SchoolDataIdentifier studentIdentifier : studentIdentifiers) { // TODO: do in database
+      for (SchoolDataIdentifier studentIdentifier : studentIdentifiers) {
         WorkspaceUserEntity wue = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
         if (wue == null) {
           continue;
