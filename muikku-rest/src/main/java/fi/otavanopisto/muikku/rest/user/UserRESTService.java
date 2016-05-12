@@ -892,9 +892,9 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   @GET
-  @Path("/students")
+  @Path("/staffMembers")
   @RESTPermit (handling = Handling.INLINE)
-  public Response searchStudents(
+  public Response searchStaffMembers(
       @QueryParam("searchString") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults) {
@@ -912,7 +912,7 @@ public class UserRESTService extends AbstractRESTService {
     if (elasticSearchProvider != null) {
       String[] fields = new String[] { "firstName", "lastName" };
       List<EnvironmentRoleArchetype> nonStudentArchetypes = new ArrayList<>(Arrays.asList(EnvironmentRoleArchetype.values()));
-      nonStudentArchetypes.remove(EnvironmentRoleArchetype.TEACHER);
+      nonStudentArchetypes.remove(EnvironmentRoleArchetype.STUDENT);
 
       SearchResult result = elasticSearchProvider.searchUsers(searchString, 
           fields, 

@@ -532,7 +532,7 @@
     
     _createStaffMemberSearch: function (term) {
       return $.proxy(function (callback) {
-        mApi().user.students.read({ 'searchString' : term }).callback(function (err, staffMembers) {
+        mApi().user.staffMembers.read({ 'searchString' : term }).callback(function (err, staffMembers) {
           if (err) {
             callback(err);
           } else {
@@ -613,6 +613,8 @@
                 'text' : dialog.attr('data-button-save'),
                 'class' : 'save-button',
                 'click' : function(event) {
+                  
+                  
                 }
               }, {
                 'text' : dialog.attr('data-button-cancel'),
