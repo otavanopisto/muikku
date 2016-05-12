@@ -576,8 +576,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
 
   protected void assertTextIgnoreCase(String selector, String text) {
-    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
-    assertEquals(StringUtils.lowerCase(text), StringUtils.lowerCase(element.getText()));
+    assertEquals(StringUtils.lowerCase(text), StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText()));
   }
   
   protected void sendKeys(String selector, String keysToSend) {
@@ -909,7 +908,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .then()
       .statusCode(204);
   }
-    
+
+  protected void createPasswordChange(String email) throws Exception {
+    asAdmin()
+      .post("/test/passwordchange/{EMAIL}", email)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void deletePasswordChange(String email) {
+    asAdmin()
+      .delete("/test/passwordchange/{EMAIL}", email)
+      .then()
+      .statusCode(204);
+  }
+  
   protected String getAttributeValue(String selector, String attribute){
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     return element.getAttribute(attribute);

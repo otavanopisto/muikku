@@ -1,7 +1,6 @@
-
 $(document).ready(function(){
   
-  $(".bt-mainFunction").click(function(){
+  $(".cm-new-message-button").click(function(){
     var sendMessage = function(values){
     
       if (!values.recipientIds && !values.recipientGroupIds && !values.recipientStudentsWorkspaceIds && !values.recipientTeachersWorkspaceIds) {
@@ -35,7 +34,7 @@ $(document).ready(function(){
   });
   CommunicatorImpl = $.klass({
     init: function () {
-      $(CommunicatorImpl.msgContainer).on('click','.cm-message:not(.open) .cm-message-details-container', $.proxy(this._onMessageClick, this));
+      $(CommunicatorImpl.msgContainer).on('click','.cm-message:not(.open) .cm-message-header-container', $.proxy(this._onMessageClick, this));
       $(CommunicatorImpl.msgContainer).on('click','.icon-goback', $.proxy(this._onMessageBackClick, this));
       $(CommunicatorImpl.msgContainer).on('click','.icon-delete', $.proxy(this._onMessageDeleteClick, this));
       $(CommunicatorImpl.msgContainer).on('click','.cm-message-reply-link', $.proxy(this._replyMessage, this));
@@ -273,8 +272,11 @@ $(document).ready(function(){
 
     _onRecipientFocus:function(event){
       $(event.target).autocomplete({
-        create: function(event, ui){
-          $('.ui-autocomplete').perfectScrollbar(); 
+        open: function(event, ui){
+          $('.ui-autocomplete').perfectScrollbar({
+            wheelSpeed:3,
+            swipePropagation:false
+          }); 
         },  
         source: function (request, response) {
           response(mCommunicator._doSearch(request.term));
@@ -333,11 +335,7 @@ $(document).ready(function(){
     var groups = this._searchGroups(searchTerm);
     var users = this._searchUsers(searchTerm);
     var recipients = users.concat(workspaces, groups);
-    
-    
- 
-    
-    
+
     return recipients;
   },      
 
@@ -472,7 +470,7 @@ $(document).ready(function(){
   },
   
   _setSelected : function(selected){
-    var container = $(".mf-list-container");
+    var container = $(".cm-categories");
     var categories = container.find("li");
     
     categories.removeClass("selected");

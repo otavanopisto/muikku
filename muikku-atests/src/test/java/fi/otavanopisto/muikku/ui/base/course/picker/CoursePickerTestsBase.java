@@ -1,22 +1,20 @@
 package fi.otavanopisto.muikku.ui.base.course.picker;
 
+import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
-import fi.otavanopisto.muikku.SqlAfter;
-import fi.otavanopisto.muikku.SqlBefore;
-import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
+import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
+import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.muikku.ui.PyramusMocks;
-import fi.otavanopisto.pyramus.webhooks.WebhookStaffMemberCreatePayload;
+import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class CoursePickerTestsBase extends AbstractUITest {
   
@@ -35,5 +33,32 @@ public class CoursePickerTestsBase extends AbstractUITest {
       deleteWorkspace(workspace.getId());
     }
   }
- 
+
+  @Test
+  public void coursePickerSearchTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      login();
+      Workspace workspace1 = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+      Workspace workspace2 = createWorkspace("wiener course", "wiener course for testing", "2", Boolean.TRUE);
+      Workspace workspace3 = createWorkspace("potato course", "potato course for testing", "3", Boolean.TRUE);
+      try {
+        getWebDriver().get(getAppUrl(true) + "/coursepicker");
+        waitForPresent("#coursesList");
+        waitAndSendKeys(".cp-search-field input.search", "potato");
+
+        waitForPresent(".cp-course-long-name");
+        assertTextIgnoreCase(".cp-course-long-name", "potato course");
+      } finally {
+        deleteWorkspace(workspace1.getId());
+        deleteWorkspace(workspace2.getId());
+        deleteWorkspace(workspace3.getId());
+      }
+    }finally{
+      mockBuilder.wiremockReset();
+    }
+  }
+  
 }

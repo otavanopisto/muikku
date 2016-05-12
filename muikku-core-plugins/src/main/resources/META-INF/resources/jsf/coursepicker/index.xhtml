@@ -8,17 +8,17 @@
   
   <ui:define name="scripts">
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
-    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
-    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>
-    <script defer="defer" jsf:name="/scripts/gui/mainfunctions.js"/>
-    <script defer="defer" jsf:name="/scripts/gui/workspace-signup-dialog.js"/>
-    <script defer="defer" jsf:name="/scripts/gui/coursepicker.js"/>
-    <script defer="defer" jsf:name="/scripts/gui/workspace-copy-wizard.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/mainfunctions.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-signup-dialog.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/coursepicker.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-copy-wizard.js"/>
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-      <script defer="defer" jsf:name="/scripts/gui/login.js"/>
+      <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/login.js"/>
     </ui:fragment>    
   </ui:define>
   
@@ -70,10 +70,10 @@
       </ui:insert>
       <ui:insert name="mf-content-area">
         <div class="mf-content-area flex-row">
-          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top">
+          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
           <div class="cp-content-main flex-row">
-            <div class="lg-flex-cell-4 md-flex-cell-5 sm-flex-cell-full sm-flex-order-1 cp-filters no-margin-top"></div>
-            <div id="coursesList" class="lg-flex-cell-12 md-flex-cell-11 sm-flex-cell-full sm-flex-order-2"></div>
+            <div class="lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-full sm-flex-order-1 cp-filters"></div>
+            <div id="coursesList" class="lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-full sm-flex-order-2"></div>
             <div class="mf-items-paging lg-flex-cell-full md-flex-cell-full sm-flex-cell-full sm-flex-order-3">
               <div class="mf-paging-toolbar">
                 <div class="mf-paging-tool mf-page-link-load-more cp-page-link-load-more">#{i18n.text['plugin.coursepicker.more']}</div>
