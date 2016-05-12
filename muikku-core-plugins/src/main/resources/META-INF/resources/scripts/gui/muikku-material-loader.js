@@ -1013,6 +1013,10 @@
     if ((typeof autosize) == 'function') {
       autosize($('textarea'));
     }
+    
+    if ((typeof MathJax) != 'undefined') {
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub,$(data.pageElement)[0]]);
+    }
 
     var maxFileSize = null;
     if ($("input[name='max-file-size']").length) {
