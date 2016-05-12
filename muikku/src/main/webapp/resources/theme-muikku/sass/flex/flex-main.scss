@@ -498,5 +498,9 @@ sup {
   font-size:70%;
 }
 
+blockquote{
+  border-left:5px solid #ccc;
+  padding-left:20px;  
+}
 @import "_mobile.scss";
 @import "_tablet.scss";

@@ -486,7 +486,8 @@ $(document).ready(function() {
       var element = $(event.target);
       var quote = element.parent().hasClass("di-reply-quote-link") ? true : false;      
       element = element.parents(".di-message");
-      var parentId = $(element).attr("id");
+      // If reply is a reply to reply's reply we use "data-parent-id" which is set to the original reply id  
+      var parentId = $(element).attr("data-parent-id") ? $(element).attr("data-parent-id") : $(element).attr("id");
       var tId = $(element).find("input[name='threadId']").attr('value');
       var aId = $(element).find("input[name='areaId']").attr('value');
 
@@ -507,8 +508,13 @@ $(document).ready(function() {
       }
 
       if (quote == true){
+        // qm = quote message, qa = quote author  
+        
         var qm = element.find(".di-message-content-text").html();
         var qa = element.find(".di-reply-title-creator").html();
+        
+        // This will be passed as an object to "social navigation" 
+        
         var quoteMessage = {
           quote : true,
           quoteAuthor : qa,
