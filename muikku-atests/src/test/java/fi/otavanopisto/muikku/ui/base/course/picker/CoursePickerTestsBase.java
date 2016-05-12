@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 
@@ -48,6 +49,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
         getWebDriver().get(getAppUrl(true) + "/coursepicker");
         waitForPresent("#coursesList");
         waitAndSendKeys(".cp-search-field input.search", "potato");
+
         waitForPresent(".cp-course-long-name");
         assertTextIgnoreCase(".cp-course-long-name", "potato course");
       } finally {
