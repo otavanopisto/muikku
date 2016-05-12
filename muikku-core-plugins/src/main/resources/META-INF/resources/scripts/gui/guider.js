@@ -370,9 +370,6 @@
         } else {
           var flag = results[0];
           var shares = results[1];
-          
-          console.log(shares);
-          
           renderDustTemplate('guider/guider_share_flag.dust', { flag: flag, shares: shares }, $.proxy(function(text) {
             this._dialog = $(text);
             $(this._dialog).dialog({
@@ -452,7 +449,7 @@
         }, this));
     },
     
-    _createStaffMemberSearch: function (term) {
+    _createStaffMemberSearch: function (term, existingIds) {
       return $.proxy(function (callback) {
         mApi().user.staffMembers.read({ 'searchString' : term }).callback(function (err, staffMembers) {
           if (err) {
@@ -467,7 +464,8 @@
               return {
                 type: 'USER',
                 label: label,
-                id: staffMember.id
+                id: staffMember.id,
+                existing: existingIds && existingIds.indexOf(staffMember.id) != -1
               }
               
             }));
@@ -508,8 +506,18 @@
       this.element.remove();
     },
     
+    _getExistingStaffMemberIds: function () {
+      return _.compact($.map(this._dialog.find('.shares .share'), function (share) {
+        if ($(share).attr('data-share-type') == 'USER') {
+          return $(share).attr('data-share-target-id');
+        }
+        
+        return null;
+      }));
+    },
+    
     _search: function (request, response) {
-      var searches = [this._createStaffMemberSearch(request.term)];
+      var searches = [this._createStaffMemberSearch(request.term, this._getExistingStaffMemberIds())];
       async.parallel(searches, function (searchErr, results) {
         if (searchErr) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -551,6 +559,17 @@
           create: function(event, ui){
             $(this).perfectScrollbar(); 
           },  
+          _renderItem: function (ul, item) {
+            var item = $("<li>")
+              .append( item.label )
+              .appendTo(ul);
+            
+            if (item.existing) {
+              item.attr("data-existing", "true")
+            }
+            
+            return item;
+          },
           source: $.proxy(this._search, this),
           select: $.proxy(this._onAddUserSelect, this)
         });
@@ -558,8 +577,11 @@
     
     _onAddUserSelect: function (event, ui) {
       var item = ui.item;
-      this._appendNewShare(item.id, item.type, item.label);
-      $(this._dialog).find('.add-user').val('');
+      if (!item.existing) {
+        this._appendNewShare(item.id, item.type, item.label);
+        $(this._dialog).find('.add-user').val('');
+      }
+      
       return false;
     },
     
@@ -692,7 +714,6 @@
               };
               
               $.each(['name', 'color', 'description'], $.proxy(function (index, property) {
-                console.log($(this).find('*[name="' + property + '"]'));
                 payload[property] = $(this).find('*[name="' + property + '"]').val();
               }, dialog));
               
@@ -793,7 +814,6 @@
     _onRemoveFlagClick: function (event) {
       var flagElement = $(event.target).closest('.gu-flag');
       var id = $(flagElement).attr('data-id');
-      console.log(id);
       
       this._unflagStudent(id, function () {
         window.location.reload(true);
