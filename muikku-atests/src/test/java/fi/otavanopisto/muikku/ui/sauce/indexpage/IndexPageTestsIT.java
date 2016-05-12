@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.ui.sauce.indexpage;
 
 import java.net.MalformedURLException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 

@@ -1,20 +1,31 @@
 {#student}
   <div class="gt-user-view-headline mf-widget">
     <h1>{firstName} {lastName}</h1>
-    <div class="gt-user-view-flags-container">
-      <div class="gt-user-view-flags-select mf-dropdown-select">
-        <span class="mf-dropdown-selected-name" data-type="{studentFlagType}"><span class="icon-flag"></span><span>{studentFlagName}</span></span><span class="mf-dropdown-selected-decoration icon-arrow-down gt-user-view-flags-dropdown-arrow"></span>
+    <div class="gu-user-view-flags-container flex-row flex-align-items-center">
+      
+      <div class="gu-add-flag-widget icon-add">
+        <span class="gu-add-flag-widget-label">{#localize key="plugin.guider.flags.addFlag.label"/}</span>
+        <div class="gu-add-flags-container">
+          <a class="gu-new-flag icon-add" href="javascript:void(null)"><span class="gu-flag-label">{#localize key="plugin.guider.flags.newFlag.label"/}</span></a>
+          <div class="gu-flags-separator"></div>
+          {#flags}
+            <a class="gu-existing-flag icon-flag" style="color:{color}" href="javascript:void(null)" data-flag-id="{id}"><span class="gu-flag-label">{name}</span></a>
+          {/flags}
+        </div>
       </div>
-      <div class="gt-user-view-flags-dropdown-container mf-dropdown-list-container"> 
-        <ul class="gt-user-view-flags mf-dropdown-list-items">
-          {#studentFlagTypes} 
-            <li data-type="{type}" class="gt-user-view-flag mf-dropdown-list-item">
-              <span class="icon-flag"></span>
-              <span>{name}</span>
-            </li>
-          {/studentFlagTypes}
-        </ul>
-      </div>
+      
+      {#studentFlags}
+        <div data-id="{id}" data-flag-id="{flag.id}" data-flag-color="{flag.color}" class="gu-flag icon-flag" style="color: {flag.color}">
+          <span class="gu-flag-label">{flag.name}</span>
+          <div class="gu-flag-action-container">
+            <a class="gu-remove-flag icon-remove" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.unFlag.label"/}</span></a>
+            <div class="gu-flag-actions-separator"></div>
+            <!-- <a class="gu-remove-flag icon-delete" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.removeFlag.label"/}</span></a> -->
+            <a class="gu-edit-flag icon-edit" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.editFlag.label"/}</span></a>
+            <a class="gu-share-flag icon-share" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.shareFlag.label"/}</span></a>
+          </div>          
+        </div>
+      {/studentFlags}
     </div>  
   </div>
   <div class="gt-user-view-profile-info mf-widget">

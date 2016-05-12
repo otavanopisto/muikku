@@ -13,9 +13,8 @@
   text-transform:uppercase;
   border:none;
   z-index:9999;
-  max-width:460px;
+  max-width:100%;
   min-width:320px;
-  width:auto !important;
   
   &.ui-corner-all {
     border-radius:0px;
@@ -151,6 +150,8 @@
       
       button.publish-button,
       button.send-button,
+      button.save-button,
+      button.create-button,
       button.save-evaluation-button,
       button.unarchive-button {
         background:#27b91c; /* GREEN */

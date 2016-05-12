@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  <sql>
+    create table Flag (
+        id bigint not null auto_increment,
+        archived bit not null,
+        color varchar(255) not null,
+        description varchar(255),
+        name varchar(255) not null,
+        ownerIdentifier_id bigint,
+        primary key (id)
+    )
+  </sql>
+  <sql>
+    create table FlagShare (
+        id bigint not null auto_increment,
+        flag_id bigint,
+        userIdentifier_id bigint,
+        primary key (id)
+    )
+  </sql>
+  <sql>
+    create table FlagStudent (
+        id bigint not null auto_increment,
+        created datetime not null,
+        flag_id bigint,
+        studentIdentifier_id bigint,
+        primary key (id)
+    )
+  </sql>
+  <sql>
+    alter table Flag 
+        add constraint FK_ejrve8jn8fek3jqspecuvl2bc 
+        foreign key (ownerIdentifier_id) 
+        references UserSchoolDataIdentifier (id)
+  </sql>
+  <sql>
+    alter table FlagShare 
+        add constraint FK_bgvl8ddabd2mt8p48xu6xjlu9 
+        foreign key (flag_id) 
+        references Flag (id)
+  </sql>
+  <sql>
+    alter table FlagShare 
+        add constraint FK_9a5rj8dmv89on57karf5sh1ls 
+        foreign key (userIdentifier_id) 
+        references UserSchoolDataIdentifier (id)
+  </sql>
+  <sql>
+    alter table FlagStudent 
+        add constraint FK_bl4mehwqpds96ne2humc6rj6q 
+        foreign key (flag_id) 
+        references Flag (id)
+  </sql>
+  <sql>
+    alter table FlagStudent 
+        add constraint FK_cebboosgar23mjbrn1nn8h7gr 
+        foreign key (studentIdentifier_id) 
+        references UserSchoolDataIdentifier (id)
+  </sql>
+  <sql>
+  insert into 
+    Flag (id, ownerIdentifier_id, color, name, archived)
+  select 
+    id,
+    ownerIdentifier_id,
+    case type 
+      when 'RED' then '#FF0000' 
+      when 'BLUE' then '#0000FF' 
+      when 'GREEN' then '#008000' 
+      when 'ORANGE' then '#FFA500' 
+      when 'PURPLE' then '#800080' 
+      when 'SILVER' then '#C0C0C0' 
+      when 'YELLOW' then '#FFFF00'
+    end as color,
+    type as name,
+    false
+  from 
+    StudentFlag
+  </sql>
+  <sql>
+  insert into 
+    FlagStudent (studentIdentifier_id, flag_id, created)
+  select 
+    studentIdentifier_id,
+    id,
+    now()
+  from 
+    StudentFlag
+  </sql>
+  <sql>
+    alter table FlagShare 
+        add constraint UK_b2c56vnamibob98crbcbil03k  unique (flag_id, userIdentifier_id)
+  </sql>
+  <sql>
+    alter table FlagStudent 
+        add constraint UK_5ijg5cu7cr3ialc0mq8pol7gu  unique (flag_id, studentIdentifier_id)
+  </sql>
+  <sql>
+    drop table StudentFlag
+  </sql>
+</update>
