@@ -822,6 +822,7 @@
     
     search: function (searchString) {
       this._searchString = searchString;
+      mApi().workspace.abortAll();
       this._reloadStudents();
     },
     
@@ -849,6 +850,7 @@
       var options = { archived: false, orderBy: 'name' };
       if (this._searchString !== null && this._searchString !== "")  {
         options.search = this._searchString;
+        options.maxResults = 10;
       }
       mApi().workspace.workspaces.students
         .read(this.options.workspaceEntityId,  $.extend(options, appliedFilters))
@@ -1307,6 +1309,8 @@
   $(document).ready(function () {
     var workspaceEntityId = $('#evaluation').attr('data-workspace-entity-id');
     var materialsBaseUrl = $('#evaluation').attr('data-materials-base-url');
+    var searchFieldTimer = null;
+    var keyupDelay = 700;
     $(document).muikkuMaterialLoader({
       prependTitle : false,
       readOnlyFields: true,
@@ -1328,6 +1332,16 @@
     
     $('#filter-students-by-not-assessed').on("click", function () {
       $('#evaluation').evaluation('filter', 'assessed', $(this).prop('checked') ? false : null);
+    });
+
+    $('#student-search-field').on('keyup', function () {
+      if (searchFieldTimer !== null) {
+        clearTimeout(searchFieldTimer);
+      }
+      
+      searchFieldTimer = setTimeout($.proxy(function() {
+        $('#evaluation').evaluation('search', $(this).val());
+      }, this), 300);
     });
     
     $('.evaluation-available-workspaces').perfectScrollbar({

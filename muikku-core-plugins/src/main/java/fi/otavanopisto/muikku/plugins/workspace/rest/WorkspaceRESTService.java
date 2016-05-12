@@ -706,6 +706,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       @QueryParam("assessed") Boolean assessed,
       @QueryParam("studentIdentifier") String studentId,
       @QueryParam("search") String searchString,
+      @QueryParam("maxResults") Integer maxResults,
       @QueryParam("orderBy") String orderBy) {
     
     List<SchoolDataIdentifier> studentIdentifiers = null;
@@ -755,7 +756,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             (Collection<SchoolDataIdentifier>)null,
             Boolean.FALSE,
             0,
-            Integer.MAX_VALUE);
+            maxResults != null ? maxResults : Integer.MAX_VALUE);
         
         List<Map<String, Object>> results = result.getResults();
 
@@ -817,6 +818,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
       workspaceUserEntityMap.put(new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier()).toId(), 
           workspaceUserEntity);
+    }
+
+    if (maxResults != null && workspaceUsers.size() > maxResults) {
+      workspaceUsers.subList(maxResults, workspaceUsers.size() - 1).clear();
     }
   
     for (fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser : workspaceUsers) {
@@ -2380,7 +2385,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @DELETE
   @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateJournalEntry(@PathParam("JOURNALENTRYID") Long journalEntryId) {
+  public Response updateJournalEntry(@PathParam("WORKSPACEID") Integer workspaceId, @PathParam("JOURNALENTRYID") Long journalEntryId) {
     WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
     if (workspaceJournalEntry == null) {
       return Response.status(Status.NOT_FOUND).build();
