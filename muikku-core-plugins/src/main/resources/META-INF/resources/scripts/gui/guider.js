@@ -559,20 +559,23 @@
           create: function(event, ui){
             $(this).perfectScrollbar(); 
           },  
-          _renderItem: function (ul, item) {
-            var item = $("<li>")
-              .append( item.label )
-              .appendTo(ul);
-            
-            if (item.existing) {
-              item.attr("data-existing", "true")
-            }
-            
-            return item;
-          },
           source: $.proxy(this._search, this),
           select: $.proxy(this._onAddUserSelect, this)
         });
+      
+      var autocompleteData = $(this._dialog).find('.add-user').data("ui-autocomplete");
+      
+      autocompleteData._renderItem = function (ul, item) {
+        var li = $("<li>")
+          .text(item.label)
+          .appendTo(ul);
+        
+        if (item.existing) {
+          li.attr("data-existing", "true");
+        }
+      
+        return li;
+      };
     },
     
     _onAddUserSelect: function (event, ui) {
