@@ -620,13 +620,18 @@
   
   .ui-autocomplete {
     text-transform:none;
+    font-family:'Open Sans', Arial, sans-serif;
     
     .ui-menu-item {
       font-size:14px;
+      font-weight:300;
+      cursor:pointer;
+      color:#000;
       
-      &[data-exiisting="true"] {
-        color:#eee;
+      &[data-existing="true"] {
+        color:#aaa;
         font-style:italic;
+        cursor:default;
       }
     
       &:hover {

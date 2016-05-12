@@ -844,10 +844,6 @@
     
     _createStudentLoginsLoad: function () {
       return $.proxy(function (callback) {
-        callback(null, {lastLogin: null});
-      }, this);
-      
-      return $.proxy(function (callback) {
         mApi().user.students.logins
           .read(this.options.userIdentifier, { maxResults: 1 })
           .callback($.proxy(function(err, loginDetails) {
