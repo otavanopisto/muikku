@@ -38,7 +38,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
   }
 
   @Test
-  public void coursePickerLoadMoreTest() throws Exception {
+  public void coursePickerSearchTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try{
