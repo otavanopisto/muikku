@@ -40,6 +40,20 @@ public class FlagShareDAO extends CoreDAO<FlagShare> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
+  public List<FlagShare> listByFlag(Flag flag) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<FlagShare> criteria = criteriaBuilder.createQuery(FlagShare.class);
+    Root<FlagShare> root = criteria.from(FlagShare.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(FlagShare_.flag), flag)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public List<FlagShare> listByUserIdentifier(UserSchoolDataIdentifier userIdentifier) {
     EntityManager entityManager = getEntityManager(); 
     

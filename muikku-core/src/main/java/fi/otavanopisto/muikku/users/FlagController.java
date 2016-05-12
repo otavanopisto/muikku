@@ -160,6 +160,32 @@ public class FlagController {
     flagStudentDAO.delete(flagStudent);
   }
 
+  public List<FlagShare> listShares(Flag flag) {
+    return flagShareDAO.listByFlag(flag);
+  }
+
+  public FlagShare findFlagShare(Long id) {
+    return flagShareDAO.findById(id);
+  }
+
+  public FlagShare createFlagShare(Flag flag, SchoolDataIdentifier userIdentifier) {
+    UserSchoolDataIdentifier studentSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+    if (studentSchoolDataIdentifier == null) {
+      logger.severe(String.format("Could not find school data user by identifier %s", userIdentifier));
+      return null;
+    }
+    
+    return createFlagShare(flag, studentSchoolDataIdentifier);
+  }
+
+  private FlagShare createFlagShare(Flag flag, UserSchoolDataIdentifier studentSchoolDataIdentifier) {
+    return flagShareDAO.create(flag, studentSchoolDataIdentifier);
+  }
+  
+  public void deleteFlagShare(FlagShare flagShare) {
+    flagShareDAO.delete(flagShare);
+  }
+  
   private List<SchoolDataIdentifier> toIdentifiers(List<UserSchoolDataIdentifier> userSchoolDataIdentifiers) {
     List<SchoolDataIdentifier> result = new ArrayList<>(userSchoolDataIdentifiers.size());
     

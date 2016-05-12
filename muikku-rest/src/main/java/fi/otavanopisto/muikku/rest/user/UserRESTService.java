@@ -42,6 +42,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.Flag;
+import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -687,6 +688,90 @@ public class UserRESTService extends AbstractRESTService {
     return Response.ok(createRestModel(flagController.updateFlag(flag, payload.getName(), payload.getColor(), payload.getDescription()))).build();
   }
   
+  @POST
+  @Path("/flags/{ID}/shares")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createFlagShare(@PathParam ("ID") Long id, fi.otavanopisto.muikku.rest.model.FlagShare payload) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    Flag flag = flagController.findFlagById(id);
+    if (flag == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag#%d not found", id)).build();
+    }
+    
+    if (flag.getArchived()) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag#%d not found", id)).build();
+    }
+    
+    if (!flagController.hasFlagPermission(flag, sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity(String.format("You do not have permission to flag#%d", flag.getId())).build();
+    }
+    
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(payload.getUserIdentifier());
+    if (userIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("userIdentifier is malformed").build();
+    }
+    
+    return Response.ok(createRestModel(flagController.createFlagShare(flag, userIdentifier))).build();
+  }
+  
+  @GET
+  @Path("/flags/{ID}/shares")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listFlagShares(@PathParam ("ID") Long id) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    Flag flag = flagController.findFlagById(id);
+    if (flag == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag#%d not found", id)).build();
+    }
+    
+    if (flag.getArchived()) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag#%d not found", id)).build();
+    }
+    
+    if (!flagController.hasFlagPermission(flag, sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity(String.format("You do not have permission to flag#%d", flag.getId())).build();
+    }
+    
+    return Response.ok(createRestModel(flagController.listShares(flag).toArray(new FlagShare[0]))).build();
+  }
+  
+  @DELETE
+  @Path("/flags/{FLAGID}/shares/{ID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createFlagShare(@PathParam ("FLAGID") Long flagId, @PathParam ("ID") Long id) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    Flag flag = flagController.findFlagById(flagId);
+    if (flag == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag#%d not found", id)).build();
+    }
+    
+    if (flag.getArchived()) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag#%d not found", id)).build();
+    }
+    
+    if (!flagController.hasFlagPermission(flag, sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity(String.format("You do not have permission to flag#%d", flag.getId())).build();
+    }
+    
+    FlagShare flagShare = flagController.findFlagShare(id);
+    if (flagShare == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Could not find flag share %d", id)).build();
+    }
+    
+    flagController.deleteFlagShare(flagShare);
+    
+    return Response.noContent().build();
+  }
+  
 	@GET
 	@Path("/users")
 	@RESTPermitUnimplemented
@@ -982,6 +1067,21 @@ public class UserRESTService extends AbstractRESTService {
     
     for (FlagStudent flagStudent : flagStudents) {
       result.add(createRestModel(flagStudent));
+    }
+    
+    return result;
+  }
+  
+  private fi.otavanopisto.muikku.rest.model.FlagShare createRestModel(FlagShare flagShare) {
+    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(flagShare.getUserIdentifier().getIdentifier(), flagShare.getUserIdentifier().getDataSource().getIdentifier());
+    return new fi.otavanopisto.muikku.rest.model.FlagShare(flagShare.getId(), flagShare.getFlag().getId(), studentIdentifier.toId());
+  }
+
+  private List<fi.otavanopisto.muikku.rest.model.FlagShare> createRestModel(FlagShare[] flagShares) {
+    List<fi.otavanopisto.muikku.rest.model.FlagShare> result = new ArrayList<>();
+    
+    for (FlagShare flagShare : flagShares) {
+      result.add(createRestModel(flagShare));
     }
     
     return result;

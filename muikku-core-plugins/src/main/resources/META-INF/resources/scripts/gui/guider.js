@@ -354,6 +354,249 @@
     },  
     
   });
+  
+  $.widget("custom.guiderFlagShareDialog", {
+    
+    options: {
+      flagId: null
+    },
+  
+    _create : function() {
+      this._dialog = null;
+      
+      async.parallel([this._createFlagLoad(), this._createSharesLoad()], $.proxy(function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var flag = results[0];
+          var shares = results[1];
+          
+          console.log(shares);
+          
+          renderDustTemplate('guider/guider_share_flag.dust', { flag: flag, shares: shares }, $.proxy(function(text) {
+            this._dialog = $(text);
+            $(this._dialog).dialog({
+              modal : true,
+              minHeight : 200,
+              maxHeight : $(window).height() - 50,
+              resizable : false,
+              width : 560,
+              dialogClass : "guider-share-flag-dialog",
+              open: $.proxy(this._onDialogOpen, this),
+              buttons : [ {
+                'text' : this._dialog.attr('data-button-save'),
+                'class' : 'save-button',
+                'click' : $.proxy(this._onDialogSaveClick, this)
+              }, {
+                'text' : this._dialog.attr('data-button-cancel'),
+                'class' : 'cancel-button',
+                'click' : $.proxy(this._onDialogCancelClick, this)
+              } ]
+            });
+          }, this));
+        }
+      }, this));
+    },
+        
+    _createFlagLoad: function () {
+      return $.proxy(function (callback) {
+        return this._loadFlag(callback);
+      }, this);
+    },
+    
+    _createSharesLoad: function () {
+      return $.proxy(function (callback) {
+        return this._loadShares(callback);
+      }, this);
+    },
+    
+    _loadFlag: function (callback) {
+      mApi().user.flags
+        .read(this.options.flagId)
+        .callback($.proxy(function (err, flag) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(err, flag);
+          }
+        }, this));
+    },
+    
+    _loadShares: function (callback) {
+      mApi().user.flags.shares
+        .read(this.options.flagId)
+        .callback($.proxy(function (err, shares) {
+          if (err) {
+            callback(err);
+          } else {
+            var userLoads = $.map(shares, function (share) {
+              return function (callback) {
+                mApi().user.users.basicinfo
+                  .read(share.userIdentifier)
+                  .callback(callback)
+              }
+            });
+            
+            async.parallel(userLoads, function (userErr, users) {
+              if (userErr) {
+                callback(userErr);
+              } else {
+                for (var i = 0, l = users.length; i < l; i++) {
+                  shares[i].name = users[i].firstName + ' ' + users[i].lastName;
+                }  
+                
+                callback(err, shares);
+              }
+            });
+          }
+        }, this));
+    },
+    
+    _createStaffMemberSearch: function (term) {
+      return $.proxy(function (callback) {
+        mApi().user.staffMembers.read({ 'searchString' : term }).callback(function (err, staffMembers) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, $.map(staffMembers, function (staffMember) {
+              var label = (staffMember.firstName + " " + staffMember.lastName)||'';
+              if (staffMember.email) {
+                label += (label ? ' ' : '') + '<' + staffMember.email + '>';
+              }
+              
+              return {
+                type: 'USER',
+                label: label,
+                id: staffMember.id
+              }
+              
+            }));
+          }
+        });
+      }, this);
+    },
+    
+    _appendNewShare: function (targetId, type, name) {
+      var removeLink = $('<a>')
+        .addClass('remove')
+        .attr('href', 'javascript:void(null)')
+        .text(getLocaleText('plugin.guider.flags.shareFlagDialog.removeShare'));
+      
+      $('<div>')
+        .addClass('share')
+        .attr({
+          'data-share-target-id': targetId,
+          'data-share-status': 'NEW',
+          'data-share-type': type 
+        })
+        .append($('<label>').text(name))
+        .append(removeLink)
+        .appendTo($(this._dialog).find('.shares'));
+    },
+    
+    _onShareRemoveClick: function (event) {
+      var shareElement = $(event.target).closest('.share');
+      if (shareElement.attr('data-share-status') == 'NEW') {
+        shareElement.remove(); 
+      } else {
+        shareElement.attr('data-share-status', 'REMOVED');
+      }
+    },
+    
+    _closeDialog: function () {
+      this._dialog.dialog("destroy").remove();
+      this.element.remove();
+    },
+    
+    _search: function (request, response) {
+      var searches = [this._createStaffMemberSearch(request.term)];
+      async.parallel(searches, function (searchErr, results) {
+        if (searchErr) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          response(_.flatten(results));  
+        }
+      });
+    },
+    
+    _createNewShare: function (userIdentifier) {
+      return $.proxy(function (callback) {
+        mApi().user.flags.shares
+          .create(this.options.flagId, {
+            flagId: this.options.flagId,
+            userIdentifier: userIdentifier
+          })
+          .callback($.proxy(function (err, flagShare) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(err, flagShare);
+            }
+        }, this));
+      }, this);
+    },
+    
+    _createRemoveShare: function (id) {
+      return $.proxy(function (callback) {
+        mApi().user.flags.shares
+          .del(this.options.flagId, id)
+          .callback(callback);
+      }, this);
+    },
+    
+    _onDialogOpen: function (event, ui) {
+      $(this._dialog).on("click", ".shares .remove", $.proxy(this._onShareRemoveClick, this));
+      $(this._dialog).find('.add-user')
+        .autocomplete({
+          create: function(event, ui){
+            $(this).perfectScrollbar(); 
+          },  
+          source: $.proxy(this._search, this),
+          select: $.proxy(this._onAddUserSelect, this)
+        });
+    },
+    
+    _onAddUserSelect: function (event, ui) {
+      var item = ui.item;
+      this._appendNewShare(item.id, item.type, item.label);
+      $(this._dialog).find('.add-user').val('');
+      return false;
+    },
+    
+    _onDialogSaveClick: function (event) {
+      var actions = $.map(this._dialog.find('.shares .share'), $.proxy(function (shareElement) {
+        var shareType = $(shareElement).attr('data-share-type');
+        var shareStatus = $(shareElement).attr('data-share-status');
+        var shareTargetId = $(shareElement).attr('data-share-target-id');
+        var shareId = $(shareElement).attr('data-share-id');
+        
+        switch (shareType) {
+          case 'USER':
+            if (shareStatus == 'NEW') {
+              return this._createNewShare(shareTargetId);
+            } else if (shareStatus == 'REMOVED') {
+              return this._createRemoveShare(shareId);
+            }
+          break;
+        }
+      }, this));
+
+      async.series(_.compact(actions), $.proxy(function (err) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._closeDialog();
+          window.location.reload(true);
+        }
+      }, this));
+      
+    },
+    
+    _onDialogCancelClick: function (event) {
+      this._closeDialog();
+    }
+  });
+  
 
   $.widget("custom.guiderProfile", {
     options: {
@@ -530,103 +773,13 @@
       }, this));
     },
     
-    _createStaffMemberSearch: function (term) {
-      return $.proxy(function (callback) {
-        mApi().user.staffMembers.read({ 'searchString' : term }).callback(function (err, staffMembers) {
-          if (err) {
-            callback(err);
-          } else {
-            callback(null, $.map(staffMembers, function (staffMember) {
-              var label = (staffMember.firstName + " " + staffMember.lastName)||'';
-              if (staffMember.email) {
-                label += (label ? ' ' : '') + '<' + staffMember.email + '>';
-              }
-              
-              return {
-                type: 'USER',
-                label: label,
-                id: staffMember.id
-              }
-              
-            }));
-          }
-        });
-      }, this);
-    },
-    
     _onShareFlagClick: function (event) {
       var flagElement = $(event.target).closest('.gu-flag');
       var flagId = flagElement.attr('data-flag-id');
-      var id = flagElement.attr('data-id');
       
-      this._loadFlag(flagId, $.proxy(function (err, flag) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        } else {
-          renderDustTemplate('guider/guider_share_flag.dust', { flag: flag }, $.proxy(function(text) {
-            var dialog = $(text);
-            $(dialog).dialog({
-              modal : true,
-              minHeight : 200,
-              maxHeight : $(window).height() - 50,
-              resizable : false,
-              width : 560,
-              dialogClass : "guider-share-flag-dialog",
-              open: $.proxy(function( event, ui ) {
-                $(dialog).find('.add-user')
-                  .autocomplete({
-                    create: function(event, ui){
-                      $(this).perfectScrollbar(); 
-                    },  
-                    source: $.proxy(function (request, response) {
-                      var searches = [this._createStaffMemberSearch(request.term)];
-                      async.parallel(searches, function (searchErr, results) {
-                        if (searchErr) {
-                          $('.notification-queue').notificationQueue('notification', 'error', err);
-                        } else {
-                          response(_.flatten(results));  
-                        }
-                      });
-                    }, this),
-                    select: function (event, ui) {
-                      var item = ui.item;
-                      
-                      var removeLink = $('<a>')
-                        .attr('href', 'javascript:void(null)')
-                        .text('Remove');
-                      
-                      $('<div>')
-                        .attr({
-                          'data-share-id': item.id,
-                          'data-share-type': item.type 
-                        })
-                        .append($('<label>').text(item.label))
-                        .append(removeLink)
-                        .appendTo($(dialog).find('.shares'));
-                      
-                      $(this).val("");
-                      return false;
-                    }
-                  });
-              }, this),
-              buttons : [ {
-                'text' : dialog.attr('data-button-save'),
-                'class' : 'save-button',
-                'click' : function(event) {
-                  
-                  
-                }
-              }, {
-                'text' : dialog.attr('data-button-cancel'),
-                'class' : 'cancel-button',
-                'click' : function(event) {
-                  $(this).dialog("destroy").remove();
-                }
-              } ]
-            });
-          }, this));
-        }
-      }, this));
+      $('<div>').guiderFlagShareDialog({
+        flagId: flagId   
+      });
     },
     
     _onExistingFlagClick: function (event) {
@@ -670,21 +823,9 @@
     
     _createStudentLoginsLoad: function () {
       return $.proxy(function (callback) {
-        mApi().user.students.logins
-          .read(this.options.userIdentifier, { maxResults: 1 })
-          .callback($.proxy(function(err, loginDetails) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              callback(null, {
-                lastLogin: loginDetails && loginDetails.length ? loginDetails[0].time : null
-              });
-            }
-          }, this));
+        callback(null, {lastLogin: null});
       }, this);
-    },
-    
-    _createStudentLoginsLoad: function () {
+      
       return $.proxy(function (callback) {
         mApi().user.students.logins
           .read(this.options.userIdentifier, { maxResults: 1 })
