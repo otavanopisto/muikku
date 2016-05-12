@@ -12,7 +12,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import fi.otavanopisto.muikku.controller.ResourceRightsController;
 import fi.otavanopisto.muikku.events.CourseEntityEvent;
@@ -24,7 +23,6 @@ import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.otavanopisto.muikku.plugins.forum.dao.ForumThreadDAO;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
@@ -50,7 +48,6 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @Dependent
-@Named("Wall")
 public class WallController {
   
   @Inject
@@ -104,9 +101,6 @@ public class WallController {
   
   @Inject
   private ResourceRightsController resourceRightsController_TEMP;
-  
-  @Inject
-  private AssessmentRequestController assessmentRequestController;
   
   public void TEST_DATA() {
     Random R = new Random();

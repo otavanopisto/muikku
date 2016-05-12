@@ -15,7 +15,7 @@ import fi.otavanopisto.muikku.users.EnvironmentUserController;
 @Stateful
 @RequestScoped
 public class EvaluationWidgetBackingBean {
-  
+
   @Inject
   private SessionController sessionController;
   

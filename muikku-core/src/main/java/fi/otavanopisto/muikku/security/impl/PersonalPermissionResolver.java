@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.security.impl;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.security.PermissionDAO;
@@ -12,7 +12,7 @@ import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
 import fi.otavanopisto.security.User;
 
-@RequestScoped
+@Dependent
 public class PersonalPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
   
   @Inject
