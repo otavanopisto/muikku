@@ -604,13 +604,11 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response createPasswordChangeEntry(@PathParam ("EMAIL") String email) {
     UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
-    logger.severe("RAAAAARAAARRAAAAAA");
     if (userEntity == null)
       return Response.status(Status.NOT_FOUND).build();
      
       String confirmationHash = "testtesttest";
-      UserPendingPasswordChange passwordChange = userPendingPasswordChangeDAO.create(userEntity, confirmationHash);
-      logger.severe("BABABABBAAAA" + passwordChange.getConfirmationHash());  
+      userPendingPasswordChangeDAO.create(userEntity, confirmationHash);
       return Response.noContent().build();
   }
   
