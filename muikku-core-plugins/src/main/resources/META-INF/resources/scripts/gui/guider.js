@@ -371,14 +371,11 @@
           var flag = results[0];
           var shares = results[1];
           
-          console.log(shares);
-          
           renderDustTemplate('guider/guider_share_flag.dust', { flag: flag, shares: shares }, $.proxy(function(text) {
             this._dialog = $(text);
             $(this._dialog).dialog({
               modal : true,
               minHeight : 200,
-              maxHeight : $(window).height() - 50,
               resizable : false,
               width : 560,
               dialogClass : "guider-share-flag-dialog",
@@ -679,7 +676,6 @@
         $(dialog).dialog({
           modal : true,
           minHeight : 200,
-          maxHeight : $(window).height() - 50,
           resizable : false,
           width : 560,
           dialogClass : "guider-add-flag-dialog",
@@ -737,7 +733,6 @@
             $(dialog).dialog({
               modal : true,
               minHeight : 200,
-              maxHeight : $(window).height() - 50,
               resizable : false,
               width : 560,
               dialogClass : "guider-edit-flag-dialog",

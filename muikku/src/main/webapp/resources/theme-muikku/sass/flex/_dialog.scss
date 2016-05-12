@@ -13,9 +13,8 @@
   text-transform:uppercase;
   border:none;
   z-index:9999;
-  max-width:460px;
+  max-width:100%;
   min-width:320px;
-  width:auto !important;
   
   &.ui-corner-all {
     border-radius:0px;

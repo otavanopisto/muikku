@@ -20,7 +20,7 @@
           <div class="gu-flag-action-container">
             <a class="gu-remove-flag icon-remove" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.unFlag.label"/}</span></a>
             <div class="gu-flag-actions-separator"></div>
-            <a class="gu-remove-flag icon-delete" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.removeFlag.label"/}</span></a>
+            <!-- <a class="gu-remove-flag icon-delete" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.removeFlag.label"/}</span></a> -->
             <a class="gu-edit-flag icon-edit" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.editFlag.label"/}</span></a>
             <a class="gu-share-flag icon-share" href="javascript:void(null)"><span class="gu-flag-action-label">{#localize key="plugin.guider.flags.shareFlag.label"/}</span></a>
           </div>          
