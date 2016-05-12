@@ -1345,8 +1345,10 @@
     });
 
     $('#student-search-field').on('keypress', function (event) {
-      if (event.charCode === 13) {
-        $(".evaluation-search-container").hide();
+      if (event.charCode === 13 || event.keyCode === 13) {
+        $(".evaluation-search-container")
+         .hide()
+         .attr('data-hidden', '1');
       }
     });
     
