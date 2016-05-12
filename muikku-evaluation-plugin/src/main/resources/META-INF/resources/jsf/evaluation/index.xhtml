@@ -41,7 +41,15 @@
         </div>        
       </div>
       
-      <div class="evaluation-filters">
+      <div class="evaluation-filters flex-row">
+      
+        <div class="evaluation-filter">
+          <div class="evaluation-search icon-search"></div>
+          <div class="evaluation-search-container" data-hidden="1">
+            <input type="text" id="student-search-field" />
+          </div>
+        </div>
+      
         <div class="evaluation-filter">
           <label for="filter-students-by-assessment-requested" class="filter-title">#{i18n.text['plugin.evaluation.evaluationFilters.assessmentRequested']}</label>
           <input type="checkbox" id="filter-students-by-assessment-requested" checked="checked"/>
@@ -52,7 +60,6 @@
           <input type="checkbox" id="filter-students-by-not-assessed"/>  
         </div>
         
-        <input type="text" id="student-search-field" />
       </div>
     </div>
   </ui:define>
