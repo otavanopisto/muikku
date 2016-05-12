@@ -1409,8 +1409,6 @@
 
   });
   
-  // Search
-  
   $(document).on('click', '.evaluation-search', function (event, data) {
     
     var elementHidden = $('.evaluation-search-container').attr('data-hidden');
@@ -1427,7 +1425,5 @@
     }
 
   });
-  
-  
 
 }).call(this);
