@@ -1402,5 +1402,26 @@
     }
 
   });
+  
+  // Search
+  
+  $(document).on('click', '.evaluation-search', function (event, data) {
+    
+    var elementHidden = $('.evaluation-search-container').attr('data-hidden');
+    
+    if (elementHidden > 0) {
+      $('.evaluation-search-container')
+        .show()
+        .attr('data-hidden', '0');
+      $('.evaluation-search-container').find("#student-search-field").focus();
+    } else {
+      $('.evaluation-search-container')
+        .hide()
+        .attr('data-hidden', '1');
+    }
+
+  });
+  
+  
 
 }).call(this);
