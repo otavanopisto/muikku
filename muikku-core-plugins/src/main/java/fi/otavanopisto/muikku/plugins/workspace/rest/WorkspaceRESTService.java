@@ -881,10 +881,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Staff via WorkspaceSchoolDataBridge
     List<fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser> schoolDataUsers = workspaceController.listWorkspaceStaffMembers(workspaceEntity);
-    if (schoolDataUsers.isEmpty()) {
-      return Response.noContent().build();
-    }
-
     List<WorkspaceStaffMember> workspaceStaffMembers = new ArrayList<>();
     
     for (fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser : schoolDataUsers) {
