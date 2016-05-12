@@ -1343,6 +1343,11 @@
         $('#evaluation').evaluation('search', $(this).val());
       }, this), keyupDelay);
     });
+
+    $('#student-search-field').on('keypress', function (event) {
+      if (event.charCode === '\n') {
+      }
+    });
     
     $('.evaluation-available-workspaces').perfectScrollbar({
       wheelSpeed:3,
