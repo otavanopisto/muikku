@@ -1346,6 +1346,7 @@
 
     $('#student-search-field').on('keypress', function (event) {
       if (event.charCode === '\n') {
+        $("#evaluation-search-container").hide();
       }
     });
     
