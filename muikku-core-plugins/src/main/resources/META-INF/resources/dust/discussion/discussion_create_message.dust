@@ -10,7 +10,7 @@
             <div class="mf-textfield lg-flex-cell-9 md-flex-cell-9 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2">{#localize key="plugin.discussion.createmessage.title"/}</span>
-                <input type="text" value="" class="mf-textfield-content lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14" name="title" maxlength="255"></input>
+                <input type="text" value="" class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14" name="title" maxlength="255"></input>
               </div>
             </div>    
             <div id="areaSelect" class="mf-select lg-flex-cell-7 md-flex-cell-7 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
@@ -32,10 +32,8 @@
         </div>
       
        <div class="mf-toolbar flex-row">
-         <div class="di-message-new-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-           <input type="button" name="send" value='{#localize key="plugin.discussion.createmessage.send"/}' {?.}{:else}disabled{/.}/>
-           <input type="button" name="cancel" value='{#localize key="plugin.discussion.createmessage.cancel"/}'/>
-         </div>
+         <input type="button" name="send" value='{#localize key="plugin.discussion.createmessage.send"/}' {?.}{:else}disabled{/.}/>
+         <input type="button" name="cancel" value='{#localize key="plugin.discussion.createmessage.cancel"/}'/>
       </div>   
     </form>
   </div>
