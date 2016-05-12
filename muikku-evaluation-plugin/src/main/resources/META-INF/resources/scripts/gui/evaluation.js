@@ -1310,7 +1310,7 @@
     var workspaceEntityId = $('#evaluation').attr('data-workspace-entity-id');
     var materialsBaseUrl = $('#evaluation').attr('data-materials-base-url');
     var searchFieldTimer = null;
-    var keyupDelay = 700;
+    var keyupDelay = 500;
     $(document).muikkuMaterialLoader({
       prependTitle : false,
       readOnlyFields: true,
@@ -1341,7 +1341,7 @@
       
       searchFieldTimer = setTimeout($.proxy(function() {
         $('#evaluation').evaluation('search', $(this).val());
-      }, this), 300);
+      }, this), keyupDelay);
     });
     
     $('.evaluation-available-workspaces').perfectScrollbar({
