@@ -623,6 +623,11 @@
     
     .ui-menu-item {
       font-size:14px;
+      
+      &[data-exiisting="true"] {
+        color:#eee;
+        font-style:italic;
+      }
     
       &:hover {
         font-weight:300;
