@@ -102,12 +102,12 @@
             callback(err);
           } else {
             callback(null, {
-              title: getLocaleText('plugin.guider.filters.flags'), // TODO: remove old locale
+              title: getLocaleText('plugin.guider.filters.flags'),
               type: 'flag',
               data: $.map(flags, function (flag) {
                 return {
                   'id': flag.id,
-                  'name': flag.name, // getLocaleText('plugin.guider.studentFlags.' + studentFlagType.type),
+                  'name': flag.name,
                   'color': flag.color,
                   'iconClass': 'icon-flag'
                 };
