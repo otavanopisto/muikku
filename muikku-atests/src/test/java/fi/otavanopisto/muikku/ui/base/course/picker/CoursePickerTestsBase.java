@@ -3,12 +3,8 @@ package fi.otavanopisto.muikku.ui.base.course.picker;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 
@@ -19,10 +15,6 @@ import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.muikku.ui.PyramusMocks;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
-<<<<<<< HEAD
-import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-=======
->>>>>>> devel
 
 public class CoursePickerTestsBase extends AbstractUITest {
   
