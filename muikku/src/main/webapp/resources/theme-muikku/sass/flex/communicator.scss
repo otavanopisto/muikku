@@ -1,0 +1,367 @@
+@import "_vars.scss";
+@import "_styles.scss";
+
+.cm-message-create {
+  width:100%;
+}  
+
+.cm-message-create-body {
+  
+  .cm-message-recipients {
+
+  }
+  
+  .cm-message-recipient {
+    cursor:pointer;
+    margin-top:0 !important;
+    display:inline-block;
+        
+    &:not(:first-child) {
+      margin-top:0 !important;
+    }
+    
+   .cm-message-tool {
+     padding:0 10px 0 10px;
+     border:1px solid $brd2;
+     color:#000;
+     cursor:pointer;
+    }   
+
+  }
+  
+  .cm-message-recipient-name {
+    margin-top:0 !important;
+    font-family:inherit;
+    margin-left: 10px;
+    padding: 9px 0;
+
+    &:before {
+      margin-right:5px;
+      font-family: 'muikku';      
+    }     
+
+
+    &.user {
+
+      &:before {
+        color:orange;
+      }     
+        
+    }
+    
+    &.usergroup {
+
+      &:before {
+        color:green;
+      }
+           
+    }
+      
+    &.workspace {
+
+      &:before {
+         color:blue;
+      }     
+    
+    }     
+    
+    &:hover {   
+      color:red;
+      
+      &:before {
+       color:red;
+      }
+      
+    } 
+            
+  }  
+   
+  .cm-message-recipient-remove {
+    background-color:$bgr2;
+    margin-top:0 !important;
+  }
+
+}
+
+.cm-categories {
+  background-color:#fff;
+   
+  ul {
+    list-style-type: none;
+    padding:0;
+    margin:0;
+     
+    li {
+      border-bottom: 1px solid $brd1;
+      border-left: 5px solid #fff;
+       
+      a {
+        font-weight:300;
+        text-decoration:none;
+        color:#000;
+        display:inline-block;
+        box-sizing:border-box;
+        width:100%;
+        padding-top:5px;
+        padding-bottom:5px;
+        padding-left:10px;             
+      }
+            
+      &:hover {
+        border-left:5px solid $brd1;     
+        cursor:pointer;   
+      } 
+      
+      &.selected {
+        background-color:$bgr3;
+        border-left:5px solid $brd2;
+        
+        a {
+          font-weight:normal;
+        }
+        
+      }
+       
+    }
+  
+  }
+  
+} 
+
+.cm-content { 
+
+}
+
+.cm-messages-container {
+
+}
+
+.cm-message {
+  margin:0 0 5px 0;
+  min-width:300px;
+  box-sizing:border-box;
+  
+  .cm-message-details {
+    cursor:default; /* Override mf-item-details */
+  }
+  
+  .cm-message-details-container {
+    background-color:#fff;
+    position:relative;
+    
+    .cm-message-header {
+      box-sizing:border-box;
+    
+      .cm-message-select {
+        display:inline-block;
+        margin:0 0 0 5px;
+        position:relative;
+      }
+      
+      .cm-message-header-container {
+        position:relative;
+        width:calc(100% - 25px);
+        box-sizing:border-box;
+        display:inline-block;
+        cursor:pointer;
+      
+        .cm-message-sender-name {
+          overflow:hidden;
+          text-overflow:ellipsis;
+          white-space:nowrap;
+          color:#000;
+          max-width:calc(100% - 135px);
+          margin:0 0 0 5px;
+          vertical-align:bottom;
+          font-weight:400;
+          height:1.5em;
+          box-sizing:border-box;
+        }
+            
+        .cm-message-caption {
+          margin:0 0 0 5px;
+        }
+      
+      }
+    
+    }
+    
+    .cm-message-additional {
+      position:absolute;
+      right:5px;
+      top:5px;
+      width:130px;
+      text-align:right;
+      background:#fff;
+      
+      .cm-message-latest {
+        display:inline-block;
+      }
+       
+      .cm-message-header-count {
+        margin:0 5px 0 0;
+        display:inline-block;
+        
+        .cm-message-replies {
+          font-weight:600;
+          width:100%;
+          background-color:$hlBgr;
+          text-align:center;
+          padding:5px;
+        }
+        
+      }
+      
+    }
+    
+    
+    
+  }
+
+  &.unread {
+    font-weight:600;
+  }
+  
+  .cm-message-view {
+    border-radius:4px;  
+    margin-bottom:10px;
+    min-height:50px;
+    padding:5px;   
+  }
+ 
+  .cm-message-options-container {
+    display:inline-block;
+    box-sizing:border-box;
+    vertical-align:top;
+  } 
+   
+  .cm-message-content {
+   
+    .cm-message-content-text {
+   
+      p {
+        margin:1em 0;
+      }
+   
+    }  
+    
+  }
+  
+  .cm-message-content-tools {
+    padding:10px 0;  
+  }
+  
+  .cm-message-tools, 
+  .cm-viewmessagethread-tools {
+    padding:0;
+    height:40px;
+  }
+  
+  .cm-message-tool {
+    padding:0 10px 0 10px;
+    border:1px solid $brd2;
+    background-color:$bgr1; 
+    display:inline-block;
+    color:#000;
+    cursor:pointer;
+    
+    &:not(:first-child) {
+      margin-left:10px;
+    }
+    
+  }
+
+  .cm-message-reply {
+    padding:5px 5px 5px 10px;
+    background-color:#fff;    
+  }
+  
+  .cm-message-recipients {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:#000;
+    display:inline-block;
+    max-width:calc(100% - 170px);
+    margin:0 0 0 5px;
+    vertical-align:bottom;
+    font-weight:400;
+    
+    .cm-message-recipient-name {
+      padding:0 5px;
+    }
+  }
+
+ .cm-message-selected-recipients {
+   padding:5px;
+   background-color:#fff;
+   
+   span {
+     display:inline-block;
+    
+     &:not(:first-child) {
+       margin-left:10px;
+     }
+    
+   }
+   
+ }
+
+/* When the message is open */  
+  
+  &.open {
+    border-left:5px solid orange;   
+    padding-left:10px;
+     
+    .cm-message-details {
+      max-height:none;
+    }
+     
+    &.owner {
+      border-left:5px solid $brd2; 
+       
+      h3 {
+        color:#dadada;
+      }
+       
+    }       
+    
+    .cm-user-picture {
+
+      &.default {
+          background-imageurl:("/gfx/default-user-picture.jpg");
+          background-size:100%;
+          border: 2px solid #fff;
+          border-radius: 40px;
+          box-shadow: 0 0 0 2px #00deff;
+          margin: 2px;
+      }
+     
+      &.reply-recipient {
+        display:inline-block;
+        height:20px;
+        width:20px;
+      }
+     
+    }  
+    
+    .cm-message-details-sender {
+      position:relative;
+    
+      .cm-message-header-content-secondary {
+        position:absolute;
+        right:10px;
+        top:0;
+      }
+      
+      .cm-message-header-content-primary {
+        font-weight:400;
+      } 
+    
+    } 
+      
+      
+   
+  }
+
+}
