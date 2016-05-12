@@ -455,7 +455,7 @@
       display:none;
       float:none;
       position:absolute;
-      padding:3px;
+      padding:0;
       background:#fff;
       position:absolute;
       left:0;
@@ -501,10 +501,11 @@
       
       a {
         display:block;
-        padding:10px;
+        padding:13px;
         margin:0;
         color:#000;
         font-size:14px;
+        border-radius:3px;
         
         .gu-flag-action-label {
           font-family:'Open Sans', Arial, sans-serif;
@@ -551,7 +552,7 @@
     
     .gu-add-flags-container {
       display:none;
-      padding:3px;
+      padding:0;
       background:#fff;
       position:absolute;
       left:0;
@@ -596,9 +597,10 @@
       
       a {
         display:block;
-        padding:10px;
+        padding:13px;
         margin:0;
         font-size:14px;
+        border-radius:3px;
         
         &.gu-new-flag {
           color:#000;
