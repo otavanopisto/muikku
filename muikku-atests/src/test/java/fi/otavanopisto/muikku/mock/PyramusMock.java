@@ -49,6 +49,7 @@ import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.StudyProgrammeCategory;
 import fi.otavanopisto.pyramus.rest.model.Subject;
+import fi.otavanopisto.pyramus.rest.model.UserCredentials;
 import fi.otavanopisto.pyramus.rest.model.WhoAmI;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStudentCreatePayload;
@@ -514,6 +515,15 @@ public class PyramusMock {
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(person))
               .withStatus(200)));
+          
+          UserCredentials userCredentials = new UserCredentials(null, "test", null);
+          
+          stubFor(get(urlEqualTo(String.format("/1/persons/persons/%d/credentials", person.getId())))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(userCredentials))
+              .withStatus(200)));
+          
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookPersonCreatePayload(person.getId())));
         }
         
