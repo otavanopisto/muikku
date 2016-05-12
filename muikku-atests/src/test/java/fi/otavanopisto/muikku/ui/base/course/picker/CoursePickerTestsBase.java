@@ -2,9 +2,6 @@ package fi.otavanopisto.muikku.ui.base.course.picker;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 
