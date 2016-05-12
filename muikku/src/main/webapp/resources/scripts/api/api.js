@@ -149,6 +149,7 @@
       for (var i=0; i<this._xhrs.length; i++) {
         this._xhrs[i].abort();
       }
+      this._xhrs = [];
     }
    });
   
