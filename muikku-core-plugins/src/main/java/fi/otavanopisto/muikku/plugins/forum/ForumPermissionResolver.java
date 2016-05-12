@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.forum;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.ResourceRightsController;
@@ -25,7 +25,7 @@ import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
 import fi.otavanopisto.security.User;
 
-@RequestScoped
+@Dependent
 public class ForumPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
 
   @Inject

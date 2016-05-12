@@ -1,17 +1,12 @@
 package fi.otavanopisto.muikku.security.impl;
 
 import java.util.List;
+import java.util.logging.Logger;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import fi.otavanopisto.muikku.dao.security.GroupPermissionDAO;
-import fi.otavanopisto.muikku.dao.security.PermissionDAO;
-import fi.otavanopisto.muikku.dao.security.RolePermissionDAO;
-import fi.otavanopisto.muikku.dao.security.WorkspaceGroupPermissionDAO;
-import fi.otavanopisto.muikku.dao.users.EnvironmentUserDAO;
+import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
@@ -21,49 +16,51 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.security.AbstractPermissionResolver;
 import fi.otavanopisto.muikku.security.PermissionScope;
+import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
 import fi.otavanopisto.security.User;
 
-@RequestScoped
+@Dependent
 public class DefaultPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
 
   @Inject
-  private PermissionDAO permissionDAO;
+  private Logger logger;
   
+  @Inject
+  private EnvironmentUserController environmentUserController;
+
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
-  private RolePermissionDAO rolePermissionDAO;
-  
-  @Inject
-  private GroupPermissionDAO groupPermissionDAO;
-
-  @Inject
-  private WorkspaceGroupPermissionDAO workspaceGroupPermissionDAO; 
-  
-  @Inject
-  private EnvironmentUserDAO environmentUserDAO;
+  private PermissionController permissionController;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
   
   @Override
   public boolean handlesPermission(String permission) {
-    Permission perm = permissionDAO.findByName(permission);
+    Permission perm = permissionController.findByName(permission);
     if (perm != null) {
-      return ArrayUtils.contains(new String[] { PermissionScope.ENVIRONMENT, PermissionScope.WORKSPACE }, perm.getScope());
+      return PermissionScope.ENVIRONMENT.equals(perm.getScope()) || PermissionScope.WORKSPACE.equals(perm.getScope()); 
     }
     return false;
   }
 
   @Override
   public boolean hasPermission(String permission, ContextReference contextReference, User user) {
-    Permission permissionEntity = permissionDAO.findByName(permission);
+    Permission permissionEntity = permissionController.findByName(permission);
+    if (permissionEntity == null) {
+      logger.severe(String.format("Reference to missing permission %s", permission));
+      return false;
+    }
     UserEntity userEntity = getUserEntity(user);
+    if (userEntity == null) {
+      return hasEveryonePermission(permission, contextReference);
+    }
     // Workspace access
     if (permissionEntity.getScope().equals(PermissionScope.WORKSPACE) && contextReference != null) {
       WorkspaceEntity workspaceEntity = resolveWorkspace(contextReference);
@@ -81,7 +78,7 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
     // Workspace access as an individual
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
     if (workspaceUserEntity != null) {
-      if (rolePermissionDAO.findByUserRoleAndPermission(workspaceUserEntity.getWorkspaceUserRole(), permission) != null) {
+      if (permissionController.hasPermission(workspaceUserEntity.getWorkspaceUserRole(), permission)) {
         // TODO Override rules for workspace users
         return true;
       }
@@ -90,7 +87,7 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
     List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
     for (UserGroupEntity userGroup : userGroups) {
       // TODO Override rules for user groups
-      if (workspaceGroupPermissionDAO.hasWorkspacePermissionAccess(workspaceEntity, userGroup, permission)) {
+      if (permissionController.hasPermission(workspaceEntity, userGroup, permission)) {
         return true;
       }
     }
@@ -99,9 +96,9 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
 
   private boolean hasEnvironmentAccess(UserEntity userEntity, Permission permission) {
     // Environment access as an individual
-    EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
+    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity); 
     if (environmentUser != null) {
-      if (rolePermissionDAO.findByUserRoleAndPermission(environmentUser.getRole(), permission) != null) {
+      if (permissionController.hasPermission(environmentUser.getRole(), permission)) {
         // TODO Override rules for environment users
         return true;
       }
@@ -110,7 +107,7 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
     List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
     for (UserGroupEntity userGroup : userGroups) {
       // TODO Override rules for user groups
-      if (groupPermissionDAO.findByUserGroupAndPermission(userGroup, permission) != null) {
+      if (permissionController.hasPermission(userGroup, permission)) {
         return true;
       }
     }
@@ -120,8 +117,8 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
   @Override
   public boolean hasEveryonePermission(String permission, ContextReference contextReference) {
     RoleEntity everyoneRole = getEveryoneRole();
-    Permission permissionEntity = permissionDAO.findByName(permission);
-    return permissionEntity != null && rolePermissionDAO.findByUserRoleAndPermission(everyoneRole, permissionEntity) != null;
+    Permission permissionEntity = permissionController.findByName(permission);
+    return permissionEntity != null && permissionController.hasPermission(everyoneRole,  permissionEntity); 
   }
 
 }

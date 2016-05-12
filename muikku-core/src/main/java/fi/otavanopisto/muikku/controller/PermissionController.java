@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.dao.security.GroupPermissionDAO;
 import fi.otavanopisto.muikku.dao.security.PermissionDAO;
 import fi.otavanopisto.muikku.dao.security.RolePermissionDAO;
 import fi.otavanopisto.muikku.dao.security.WorkspaceGroupPermissionDAO;
@@ -18,6 +19,9 @@ public class PermissionController {
 
   @Inject
   private PermissionDAO permissionDAO;
+
+  @Inject
+  private GroupPermissionDAO groupPermissionDAO;
 
   @Inject
   private RolePermissionDAO rolePermissionDAO;
@@ -35,6 +39,14 @@ public class PermissionController {
   
   public boolean hasPermission(RoleEntity role, Permission permission) {
     return rolePermissionDAO.findByUserRoleAndPermission(role, permission) != null;
+  }
+
+  public boolean hasPermission(UserGroupEntity userGroupEntity, Permission permission) {
+    return groupPermissionDAO.findByUserGroupAndPermission(userGroupEntity, permission) != null;
+  }
+
+  public boolean hasPermission(WorkspaceEntity workspaceEntity, UserGroupEntity userGroupEntity, Permission permission) {
+    return workspaceGroupPermissionDAO.findByGroupAndPermission(workspaceEntity, userGroupEntity, permission) != null;
   }
   
   public boolean hasWorkspaceGroupPermission(WorkspaceEntity workspaceEntity, UserGroupEntity userGroupEntity, Permission permission) {

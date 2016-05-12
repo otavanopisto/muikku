@@ -13,7 +13,7 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 
 public class GroupPermissionDAO extends CoreDAO<GroupPermission> {
 
-  private static final long serialVersionUID = -5450007023015652417L;
+  private static final long serialVersionUID = 3311632802170895309L;
 
   public GroupPermission findByUserGroupAndPermission(UserGroupEntity userGroupEntity, Permission permission) {
 		EntityManager entityManager = getEntityManager();

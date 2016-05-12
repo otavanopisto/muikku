@@ -15,17 +15,15 @@ import fi.otavanopisto.muikku.model.users.RoleEntity;
 
 public class RolePermissionDAO extends CoreDAO<RolePermission> {
 
-  private static final long serialVersionUID = -5450007023015652417L;
-  
+  private static final long serialVersionUID = -136392285487330299L;
+
   public RolePermission create(RoleEntity role, Permission permission) {
     RolePermission rolePermission = new RolePermission();
 
     rolePermission.setRole(role);
     rolePermission.setPermission(permission);
 
-    getEntityManager().persist(rolePermission);
-
-    return rolePermission;
+    return persist(rolePermission);
   }
 
   public RolePermission findByUserRoleAndPermission(RoleEntity role, Permission permission) {

@@ -281,7 +281,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE)
   public Response listWorkspaces(
         @QueryParam("userId") Long userEntityId,
         @QueryParam("userIdentifier") String userId,
@@ -337,6 +337,9 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
       }
       else {
+        if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
         workspaceEntities = Boolean.TRUE.equals(includeUnpublished)
           ? workspaceController.listWorkspaceEntities()
           : workspaceController.listPublishedWorkspaceEntities();

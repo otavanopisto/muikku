@@ -741,9 +741,11 @@
   
   $.widget("custom.evaluationView", {
     loadWorkspace: function(workspaceEntityId) {
-      var newUrl = this._updateQueryStringParameter(window.location.href, 'workspaceEntityId', workspaceEntityId);
-      window.history.pushState({path:newUrl}, '', newUrl);
-
+      try {
+        var newUrl = this._updateQueryStringParameter(window.location.href, 'workspaceEntityId', workspaceEntityId);
+        window.history.pushState({path:newUrl}, '', newUrl);
+      }
+      catch (err) {}
       var workspaceItem = $('.evaluation-workspace-item[data-workspace-entity-id="' + workspaceEntityId + '"]');
       
       $('.evaluation-current-workspace').attr('data-workspace-entity-id', workspaceEntityId);
@@ -753,20 +755,12 @@
       var workspaceName = $(workspaceItem).attr('data-workspace-name');
       var materialsBaseUrl = '/workspace/' + $(workspaceItem).attr('data-workspace-url-name') + '/materials';
       $(document).muikkuMaterialLoader('option', 'baseUrl', materialsBaseUrl);
-
-      var newEvaluationWidget = $('<div>').addClass('evaluation-content-wrapper').attr('id', 'evaluation');
-      $('#evaluation').replaceWith(newEvaluationWidget);
       
-      $('#evaluation').evaluationLoader();
-      $('#evaluation').evaluation({
-        workspaceEntityId: workspaceEntityId,
-        workspaceName: workspaceName,
-        filters: {
-          requestedAssessment: $('#filter-students-by-assessment-requested').prop('checked') ? true : null,
-          assessed: $('#filter-students-by-not-assessed').prop('checked') ? false : null
-        }
-      }); 
-      
+      $('#evaluation').evaluation('option', 'workspaceEntityId', workspaceEntityId);
+      $('#evaluation').evaluation('option', 'workspaceName', workspaceName);
+      $('#evaluation').evaluation('filter', 'requestedAssessment', $('#filter-students-by-assessment-requested').prop('checked') ? true : null, true); 
+      $('#evaluation').evaluation('filter', 'assessed', $('#filter-students-by-not-assessed').prop('checked') ? false : null, true);
+      $('#evaluation').evaluation('loadStudents');
     },
     _updateQueryStringParameter: function(uri, key, value) {
       var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
@@ -817,8 +811,6 @@
 
       this.element.on("studentsLoaded", $.proxy(this._onStudentsLoaded, this));
       this.element.on("materialsLoaded", $.proxy(this._onMaterialsLoaded, this));
-      
-      this._loadStudents();
     },
     
     workspaceName: function () {
@@ -851,12 +843,14 @@
       });
     },
     
-    filter: function (filter, value) {
+    filter: function (filter, value, skipReload) {
       if (value === undefined) {
         return this._filters[filter];
       } else {
         this._filters[filter] = value;
-        this._reloadStudents();      
+        if (!skipReload) {
+          this._reloadStudents();
+        }
       }
     },
     
@@ -868,10 +862,10 @@
     
     _reloadStudents: function () {
       this._clearStudentsView();
-      this._loadStudents();
+      this.loadStudents();
     },
     
-    _loadStudents: function () {
+    loadStudents: function () {
       this.element.addClass('loading');
       var appliedFilters = {};
       for (var filter in this._filters) {
@@ -1341,6 +1335,8 @@
       prependTitle: false,
       readOnlyFields: true
     }).evaluationView();
+
+    $('#evaluation').evaluationLoader().evaluation();
     
     var currentWorkspaceSet = false;
     var currentWorkspaceEntityId = $('.evaluation-current-workspace').attr('data-workspace-entity-id');
@@ -1351,7 +1347,11 @@
     if ($('.evaluation-available-workspaces').attr('data-list-all-workspaces') !== 'true') {
       params['userIdentifier'] = MUIKKU_LOGGED_USER;
     }
+    
+    $('.evaluation-workspacelisting-wrapper').hide();
+    $('#evaluation').addClass('loading');
     mApi().workspace.workspaces.read(params).callback(function (err, workspaces) {
+      $('#evaluation').removeClass('loading');
       if (err) {
         callback(err);
       }
@@ -1387,6 +1387,7 @@
           $(document).evaluationView("loadWorkspace", $('.evaluation-current-workspace').attr('data-workspace-entity-id'));
         }
       }
+      $('.evaluation-workspacelisting-wrapper').show();
     });
 
     $('.evaluation-available-workspaces').perfectScrollbar({
@@ -1405,7 +1406,7 @@
   });
   
   $(document).on('click', '.evaluation-workspace-item', function (event) {
-    var workspaceItem = event.target;
+    var workspaceItem = $(event.target).closest('.evaluation-workspace-item');
     $(document).evaluationView('loadWorkspace', $(workspaceItem).attr('data-workspace-entity-id'));
   });
   
