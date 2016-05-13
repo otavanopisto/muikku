@@ -622,6 +622,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
   
+  protected boolean waitUntilElementCount(final String selector, final int count) {
+    WebDriver driver = getWebDriver();
+    return new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        int elementCount = countElements(selector);
+        if (elementCount == count) {
+          return true;
+        }
+        return false;
+      }
+    });
+  }
+  
   protected int countElements(String selector) {
     List<WebElement> elements = getWebDriver().findElements(By.cssSelector(selector));
     return elements.size();

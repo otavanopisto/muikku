@@ -48,7 +48,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
       for(Long i = (long) 0; i < 30; i++)
         workspaces.add(createWorkspace("testcourse", "test course for testing " + i.toString(), i.toString(), Boolean.TRUE));
       try {
-        getWebDriver().get(getAppUrl(true) + "/coursepicker");
+        navigate("/coursepicker", true);
         waitForPresent("#coursesList");
         assertCount(".cp-course", 25);
         waitAndClick(".mf-paging-tool");
@@ -58,6 +58,32 @@ public class CoursePickerTestsBase extends AbstractUITest {
         for(Workspace w : workspaces) {
           deleteWorkspace(w.getId());        
         }
+      }
+    }finally{
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void coursePickerSearchTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      login();
+      Workspace workspace1 = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+      Workspace workspace2 = createWorkspace("wiener course", "wiener course for testing", "2", Boolean.TRUE);
+      Workspace workspace3 = createWorkspace("potato course", "potato course for testing", "3", Boolean.TRUE);
+      try {
+        navigate("/coursepicker", true);
+        waitForPresent("#coursesList");
+        waitAndSendKeys(".cp-search-field input.search", "potato");
+        waitUntilElementCount(".cp-course-long-name", 1);
+        assertTextIgnoreCase(".cp-course-long-name", "potato course");
+      } finally {
+        deleteWorkspace(workspace1.getId());
+        deleteWorkspace(workspace2.getId());
+        deleteWorkspace(workspace3.getId());
       }
     }finally{
       mockBuilder.wiremockReset();
