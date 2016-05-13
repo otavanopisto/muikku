@@ -8,7 +8,7 @@ if [ "$BUILD" == "true" ] ; then
   echo "-------------------------"
   echo "Building war"
   echo "-------------------------"
-  mvn clean install -Pmongo-log-plugin,jndi-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
+  mvn clean install -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
 fi;
 
 echo "-------------------------"

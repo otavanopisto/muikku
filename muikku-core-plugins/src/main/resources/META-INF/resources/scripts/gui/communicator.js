@@ -32,7 +32,8 @@ $(document).ready(function(){
     }   
     openInSN('/communicator/communicator_create_message.dust', null, sendMessage);    
   });
-  CommunicatorImpl = $.klass({
+  
+  var CommunicatorImpl = $.klass({
     init: function () {
       $(CommunicatorImpl.msgContainer).on('click','.cm-message:not(.open) .cm-message-header-container', $.proxy(this._onMessageClick, this));
       $(CommunicatorImpl.msgContainer).on('click','.icon-goback', $.proxy(this._onMessageBackClick, this));
@@ -209,65 +210,70 @@ $(document).ready(function(){
       return false;
     },
     _onMessageDeleteClick : function(event) {
-      
-      var element = $(event.target);
-      var parent = element.parents(".cm-messages-container");
-      
-      openElement = parent.find(".open");
-     
-      if(openElement.length > 0){
-        var id = [openElement.attr("data-thread-id")];       
-        this._deleteMessages(id, false);
-        this._onMessageBackClick();
-        window.location.reload(true);        
-      }else{
-        var inputs = $(CommunicatorImpl.msgContainer).find("input:checked");    
-        var deleteQ = [];
-        for (var i = 0; i < inputs.length; i++){
-          var msgId = $(inputs[i]).attr("value");
-          deleteQ.push(msgId);
-        }         
-        if(deleteQ.length != 0){
-          this._deleteMessages(deleteQ)
+      try {
+        var element = $(event.target);
+        var parent = element.parents(".cm-messages-container");
+        var openElement = parent.find(".open");
+        if (openElement.length > 0) {
+          var id = [openElement.attr("data-thread-id")];
+          this._deleteMessages(id, false);
+          this._onMessageBackClick();
+          window.location.reload(true);
+        }else{
+          var inputs = $(CommunicatorImpl.msgContainer).find("input:checked");    
+          var deleteQ = [];
+          
+          for (var i = 0; i < inputs.length; i++){
+            var msgId = $(inputs[i]).attr("value");
+            deleteQ.push(msgId);
+          }  
+
+          if(deleteQ.length != 0){
+            this._deleteMessages(deleteQ)
+          }
         }
+      } catch (e) {
+        $('.notification-queue').notificationQueue('notification', 'error', e);
       }
     },    
     
     _deleteMessages : function(ids, reload){
-      var messages = ids.length;
-      var endpoint = mApi({async: false}).communicator.items;
-      var hash = window.location.hash;
-      if (hash != '') {
-        var slashIndex = window.location.hash.indexOf("/");
-        hash = slashIndex == -1 ? hash.substring(1) : hash.substring(1, slashIndex);
-      }
-      else {
-        hash = "none";
-      }
-      var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
-      reload = (reload == undefined) ?  true : reload;
-      
-      if (hash == "sent") {
-        endpoint = mApi({async: false}).communicator.sentitems;
-      }
-
-      var batch = $.map(ids, function(id){
-        return endpoint.del(id);
-        
-      });
-      
-      mApi({async: false}).batch(batch).callback($.proxy(function(err){
-        $('.notification-queue').notificationQueue('remove', loadNotification);
-        
-        if (err) {
-         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
-        } else {
-          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
-          if(reload === true){
-           window.location.reload(true);
-          }
+      try {
+        var messages = ids.length;
+        var hash = window.location.hash;
+  
+        if (!hash && hash.length > 1) {
+          var slashIndex = hash.indexOf("/");
+          hash = slashIndex == -1 ? hash.substring(1) : hash.substring(1, slashIndex);
         }
-      }, this));
+  
+        if (!hash) {
+          hash = "none";
+        }
+  
+        var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText('plugin.communicator.infomessage.delete.deleting', messages));
+        var batch = $.map(ids, function(id) {
+          if (hash == "sent") {
+            return mApi({async: false}).communicator.sentitems.del(id);
+          } else {
+            return mApi({async: false}).communicator.items.del(id);
+          }
+        });
+  
+        mApi({async: false}).batch(batch).callback($.proxy(function(err){
+          $('.notification-queue').notificationQueue('remove', loadNotification);
+          if (err) {
+           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.delete.error'));
+          } else {
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.delete.success'));
+            if (reload !== false) {
+              window.location.reload(true);
+            }
+          }
+        }, this));
+      } catch (e) {
+        $('.notification-queue').notificationQueue('notification', 'error', e);
+      } 
     },
 
     _onRecipientFocus:function(event){

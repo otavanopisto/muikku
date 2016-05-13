@@ -781,7 +781,8 @@
       filters: {
         requestedAssessment: null,
         assessed: null
-      }
+      },
+      searchString: null
     },
     
     _create : function() {
@@ -790,6 +791,7 @@
       this._viewOffsetX = 0;
       this._viewOffsetY = 0;
       this._filters = this.options.filters;
+      this._searchString = this.options.searchString || null;
       
       $('<button>')
         .addClass('prevPage icon-arrow-left')
@@ -854,6 +856,12 @@
       }
     },
     
+    search: function (searchString) {
+      this._searchString = searchString;
+      mApi().workspace.abortAll();
+      this._reloadStudents();
+    },
+    
     _clearStudentsView: function () {
       this.element.find('.evaluation-student-wrapper').remove();
       this.element.find('.evaluation-assignments').empty();
@@ -875,8 +883,13 @@
             }
         }
       }
+      var options = { archived: false, orderBy: 'name' };
+      if (this._searchString !== null && this._searchString !== "")  {
+        options.search = this._searchString;
+        options.maxResults = 10;
+      }
       mApi().workspace.workspaces.students
-        .read(this.options.workspaceEntityId,  $.extend({ archived: false, orderBy: 'name' }, appliedFilters))
+        .read(this.options.workspaceEntityId,  $.extend(options, appliedFilters))
         .callback($.proxy(function (err, workspaceUsers) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -1330,6 +1343,10 @@
   });
 
   $(document).ready(function () {
+    var workspaceEntityId = $('#evaluation').attr('data-workspace-entity-id');
+    var materialsBaseUrl = $('#evaluation').attr('data-materials-base-url');
+    var searchFieldTimer = null;
+    var keyupDelay = 500;
 
     $(document).muikkuMaterialLoader({
       prependTitle: false,
@@ -1402,6 +1419,24 @@
     $('#filter-students-by-not-assessed').on("click", function () {
       $('#evaluation').evaluation('filter', 'assessed', $(this).prop('checked') ? false : null);
     });
+
+    $('#student-search-field').on('keyup', function () {
+      if (searchFieldTimer !== null) {
+        clearTimeout(searchFieldTimer);
+      }
+      
+      searchFieldTimer = setTimeout($.proxy(function() {
+        $('#evaluation').evaluation('search', $(this).val());
+      }, this), keyupDelay);
+    });
+
+    $('#student-search-field').on('keypress', function (event) {
+      if (event.charCode === 13 || event.keyCode === 13) {
+        $(".evaluation-search-container")
+         .hide()
+         .attr('data-hidden', '1');
+      }
+    });
     
   });
   
@@ -1458,6 +1493,23 @@
           $('.evaluation-available-workspaces').perfectScrollbar('update');
         }
       });
+    }
+
+  });
+  
+  $(document).on('click', '.evaluation-search', function (event, data) {
+    
+    var elementHidden = $('.evaluation-search-container').attr('data-hidden');
+    
+    if (elementHidden > 0) {
+      $('.evaluation-search-container')
+        .show()
+        .attr('data-hidden', '0');
+      $('.evaluation-search-container').find("#student-search-field").focus();
+    } else {
+      $('.evaluation-search-container')
+        .hide()
+        .attr('data-hidden', '1');
     }
 
   });
