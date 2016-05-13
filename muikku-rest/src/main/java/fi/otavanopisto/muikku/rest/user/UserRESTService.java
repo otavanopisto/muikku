@@ -839,7 +839,7 @@ public class UserRESTService extends AbstractRESTService {
 
 			SearchResult result = elasticSearchProvider.searchUsers(searchString, 
 			    fields, 
-			    Arrays.asList(roleArchetype), 
+			    roleArchetype != null ? Arrays.asList(roleArchetype) : null, 
 			    userGroupFilters, 
 			    workspaceFilters, 
 			    null, 

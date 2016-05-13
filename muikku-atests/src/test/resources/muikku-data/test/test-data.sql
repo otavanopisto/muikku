@@ -1,9 +1,6 @@
 insert into PluginSettingKey(name, plugin) select 'roles.workspace.TEACHER', 'school-data-pyramus' from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'roles.workspace.TEACHER' having count(*) = 0;
 insert into PluginSetting (value, key_id) select '1', (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'roles.workspace.TEACHER') from PluginSetting having count(*) = 0;
 
-insert into WorkspaceSettingsTemplate (defaultWorkspaceUserRole_id) values ((select id from RoleEntity where name = 'Workspace Student'));
-insert into WorkspaceSettings (workspaceEntity_id, defaultWorkspaceUserRole_id) (select id, (select id from RoleEntity where name = 'Workspace Student') from WorkspaceEntity);
-
 insert into EnvironmentDefaults (id, httpPort, httpsPort) values (1, 8080, 8443);
 
 update PluginSetting set value = 'http://dev.muikku.fi:8089/1' where key_id = (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.url');
@@ -39,13 +36,4 @@ insert into PluginSetting (value, key_id) select '11111111-1111-1111-1111-111111
 insert into PluginSetting (value, key_id) select '11111111111111111111111111111111111111111111111111111111111111111111111111111111', (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.clientSecret') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.clientSecret') having count(*) = 0;
 insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi:8089/oauth2ClientTest/success', (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.redirectUrl') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.redirectUrl') having count(*) = 0;
 
---insert into PluginSettingKey(name, plugin) select 'service.url', 'deus-nex-machina' from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'service.url' having count(*) = 0;
---insert into PluginSettingKey(name, plugin) select 'service.secret', 'deus-nex-machina' from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'service.secret' having count(*) = 0;
---insert into PluginSettingKey(name, plugin) select 'import-nos', 'deus-nex-machina' from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'import-nos' having count(*) = 0;
 insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi:8089/dnm', (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'service.url') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'service.url') having count(*) = 0;
---insert into PluginSetting (value, key_id) select 'faketest', (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'service.secret') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'service.secret') having count(*) = 0;
---insert into PluginSetting (value, key_id) select '', (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'import-nos') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'import-nos') having count(*) = 0;
---insert into PluginSettingKey(name, plugin) select '[_DEUS_NEX_MACHINA_LOOKUP_]', 'deus-nex-machina' from PluginSettingKey where plugin = 'deus-nex-machina' and name = '[_DEUS_NEX_MACHINA_LOOKUP_]' having count(*) = 0;
---insert into PluginSettingKey(name, plugin) select '[_DEUS_NEX_MACHINA_IDS_]', 'deus-nex-machina' from PluginSettingKey where plugin = 'deus-nex-machina' and name = '[_DEUS_NEX_MACHINA_IDS_]' having count(*) = 0;
---insert into PluginSetting (value, key_id) select null, (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = '[_DEUS_NEX_MACHINA_LOOKUP_]') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = '[_DEUS_NEX_MACHINA_LOOKUP_]') having count(*) = 0;
---insert into PluginSetting (value, key_id) select null, (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = '[_DEUS_NEX_MACHINA_IDS_]') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = '[_DEUS_NEX_MACHINA_IDS_]') having count(*) = 0;

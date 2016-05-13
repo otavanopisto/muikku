@@ -42,15 +42,6 @@ public class WorkspaceEntityController {
     }
     
     WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, WorkspaceAccess.LOGGED_IN, Boolean.FALSE, Boolean.FALSE);
-
-//  TODO: Re-enable workspace settings template
-//    WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l);
-//    workspaceSettingsDAO.create(workspaceEntity, workspaceSettingsTemplate.getDefaultWorkspaceUserRole());
-//    
-//    List<WorkspaceSettingsTemplateRolePermission> permissionTemplates = workspaceSettingsTemplateRolePermissionDAO.listByTemplate(workspaceSettingsTemplate);
-//    for (WorkspaceSettingsTemplateRolePermission permissionTemplate : permissionTemplates) {
-//      workspaceRolePermissionDAO.create(workspaceEntity, permissionTemplate.getRole(), permissionTemplate.getPermission());
-//    }
     
     return workspaceEntity;
   }
