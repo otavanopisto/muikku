@@ -739,9 +739,45 @@
     }
   });
   
+  $.widget("custom.evaluationView", {
+    loadWorkspace: function(workspaceEntityId) {
+      try {
+        var newUrl = this._updateQueryStringParameter(window.location.href, 'workspaceEntityId', workspaceEntityId);
+        window.history.pushState({path:newUrl}, '', newUrl);
+      }
+      catch (err) {}
+      var workspaceItem = $('.evaluation-workspace-item[data-workspace-entity-id="' + workspaceEntityId + '"]');
+      
+      $('.evaluation-current-workspace').attr('data-workspace-entity-id', workspaceEntityId);
+      $('.evaluation-current-workspace').text($(workspaceItem).attr('data-workspace-name'));
+      
+      var workspaceEntityId = $(workspaceItem).attr('data-workspace-entity-id');
+      var workspaceName = $(workspaceItem).attr('data-workspace-name');
+      var materialsBaseUrl = '/workspace/' + $(workspaceItem).attr('data-workspace-url-name') + '/materials';
+      $(document).muikkuMaterialLoader('option', 'baseUrl', materialsBaseUrl);
+      
+      $('#evaluation').evaluation('option', 'workspaceEntityId', workspaceEntityId);
+      $('#evaluation').evaluation('option', 'workspaceName', workspaceName);
+      $('#evaluation').evaluation('filter', 'requestedAssessment', $('#filter-students-by-assessment-requested').prop('checked') ? true : null, true); 
+      $('#evaluation').evaluation('filter', 'assessed', $('#filter-students-by-not-assessed').prop('checked') ? false : null, true);
+      $('#evaluation').evaluation('loadStudents');
+    },
+    _updateQueryStringParameter: function(uri, key, value) {
+      var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+      var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+      if (uri.match(re)) {
+        return uri.replace(re, '$1' + key + "=" + value + '$2');
+      }
+      else {
+        return uri + separator + key + "=" + value;
+      }
+    }
+  });
+  
   $.widget("custom.evaluation", {
     options: {
       workspaceEntityId: null,
+      workspaceName: null,
       filters: {
         requestedAssessment: null,
         assessed: null
@@ -775,12 +811,10 @@
 
       this.element.on("studentsLoaded", $.proxy(this._onStudentsLoaded, this));
       this.element.on("materialsLoaded", $.proxy(this._onMaterialsLoaded, this));
-      
-      this._loadStudents();
     },
     
     workspaceName: function () {
-      return this.element.attr('data-workspace-name');
+      return this.options.workspaceName;
     },
     
     workspaceEntityId: function () {
@@ -809,12 +843,14 @@
       });
     },
     
-    filter: function (filter, value) {
+    filter: function (filter, value, skipReload) {
       if (value === undefined) {
         return this._filters[filter];
       } else {
         this._filters[filter] = value;
-        this._reloadStudents();      
+        if (!skipReload) {
+          this._reloadStudents();
+        }
       }
     },
     
@@ -826,10 +862,10 @@
     
     _reloadStudents: function () {
       this._clearStudentsView();
-      this._loadStudents();
+      this.loadStudents();
     },
     
-    _loadStudents: function () {
+    loadStudents: function () {
       this.element.addClass('loading');
       var appliedFilters = {};
       for (var filter in this._filters) {
@@ -1294,23 +1330,71 @@
   });
 
   $(document).ready(function () {
-    var workspaceEntityId = $('#evaluation').attr('data-workspace-entity-id');
-    var materialsBaseUrl = $('#evaluation').attr('data-materials-base-url');
+
     $(document).muikkuMaterialLoader({
-      prependTitle : false,
-      readOnlyFields: true,
-      baseUrl: materialsBaseUrl
-    });
+      prependTitle: false,
+      readOnlyFields: true
+    }).evaluationView();
+
+    $('#evaluation').evaluationLoader().evaluation();
     
-    $('#evaluation').evaluationLoader();
-    $('#evaluation').evaluation({
-      workspaceEntityId: workspaceEntityId,
-      filters: {
-        requestedAssessment: $('#filter-students-by-assessment-requested').prop('checked') ? true : null,
-        assessed: $('#filter-students-by-not-assessed').prop('checked') ? false : null
+    var currentWorkspaceSet = false;
+    var currentWorkspaceEntityId = $('.evaluation-current-workspace').attr('data-workspace-entity-id');
+    var params = {
+      maxResults: 500,
+      orderBy: ['alphabet']
+    };
+    if ($('.evaluation-available-workspaces').attr('data-list-all-workspaces') !== 'true') {
+      params['userIdentifier'] = MUIKKU_LOGGED_USER;
+    }
+    
+    $('.evaluation-workspacelisting-wrapper').hide();
+    $('#evaluation').addClass('loading');
+    mApi().workspace.workspaces.read(params).callback(function (err, workspaces) {
+      $('#evaluation').removeClass('loading');
+      if (err) {
+        callback(err);
       }
-    }); 
-    
+      else {
+        if (workspaces.length == 0) {
+          $('.evaluation-current-workspace').text(getLocaleText('plugin.evaluation.noWorkspaces'));
+        }
+        else {
+          var workspacesContainer = $('.evaluation-available-workspaces'); 
+          for (var i = 0; i < workspaces.length; i++) {
+            var workspaceName = workspaces[i].name;
+            if (workspaces[i].nameExtension) {
+              workspaceName += ' (' + workspaces[i].nameExtension + ')';
+            }
+            if (currentWorkspaceEntityId == workspaces[i].id) {
+              $('.evaluation-current-workspace').text(workspaces[i].name);
+              $('.evaluation-current-workspace').attr('data-workspace-entity-id', workspaces[i].id);
+              currentWorkspaceSet = true;
+            }
+            var workspaceElement = $('<div>');
+            workspaceElement.addClass('evaluation-workspace-item');
+            workspaceElement.attr('data-workspace-entity-id', workspaces[i].id);
+            workspaceElement.attr('data-workspace-name', workspaces[i].name);
+            workspaceElement.attr('data-workspace-url-name', workspaces[i].urlName);
+            workspaceElement.text(workspaceName);
+            $(workspacesContainer).append(workspaceElement);
+          }
+          if (!currentWorkspaceSet) {
+            $('.evaluation-current-workspace').text(workspaces[0].name);
+            $('.evaluation-current-workspace').attr('data-workspace-entity-id', workspaces[0].id);
+            currentWorkspaceSet = true;
+          }
+          $(document).evaluationView("loadWorkspace", $('.evaluation-current-workspace').attr('data-workspace-entity-id'));
+        }
+      }
+      $('.evaluation-workspacelisting-wrapper').show();
+    });
+
+    $('.evaluation-available-workspaces').perfectScrollbar({
+      wheelSpeed:3,
+      swipePropagation:false
+    });
+
     $('#filter-students-by-assessment-requested').on("click", function () {
       $('#evaluation').evaluation('filter', 'requestedAssessment', $(this).prop('checked') ? true : null);
     });
@@ -1319,11 +1403,11 @@
       $('#evaluation').evaluation('filter', 'assessed', $(this).prop('checked') ? false : null);
     });
     
-    $('.evaluation-available-workspaces').perfectScrollbar({
-      wheelSpeed:3,
-      swipePropagation:false
-    });
-    
+  });
+  
+  $(document).on('click', '.evaluation-workspace-item', function (event) {
+    var workspaceItem = $(event.target).closest('.evaluation-workspace-item');
+    $(document).evaluationView('loadWorkspace', $(workspaceItem).attr('data-workspace-entity-id'));
   });
   
   $(document).on('click', '.evaluation-workspacelisting-wrapper', function (event, data) {

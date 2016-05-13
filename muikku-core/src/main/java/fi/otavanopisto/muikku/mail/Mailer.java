@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.controller.EnvironmentSettingsController;
+import fi.otavanopisto.muikku.controller.SystemSettingsController;
 
 
 public class Mailer {
@@ -14,22 +14,22 @@ public class Mailer {
   private MailBridge bridge;
   
   @Inject
-  private EnvironmentSettingsController environmentSettingsController;
+  private SystemSettingsController systemSettingsController;
 
   public void sendMail(MailType mailType, String from, List<String> to, List<String> cc, List<String> bcc, String subject, String content, List<MailAttachment> attachments) {
     bridge.sendMail(mailType, from, to, cc, bcc, subject, content, attachments);
   }
 
   public void sendMail(String to, String subject, String content) {
-    sendMail(environmentSettingsController.getSystemEmailSenderAddress(), to, subject, content);
+    sendMail(systemSettingsController.getSystemEmailSenderAddress(), to, subject, content);
   }
   
   public void sendMail(List<String> to, String subject, String content) {
-    sendMail(environmentSettingsController.getSystemEmailSenderAddress(), to, subject, content);
+    sendMail(systemSettingsController.getSystemEmailSenderAddress(), to, subject, content);
   }
   
   public void sendMail(MailType mailType, List<String> to, String subject, String content) {
-    this.sendMail(mailType, environmentSettingsController.getSystemEmailSenderAddress(), to, new ArrayList<String>(), new ArrayList<String>(), subject, content, new ArrayList<MailAttachment>());
+    this.sendMail(mailType, systemSettingsController.getSystemEmailSenderAddress(), to, new ArrayList<String>(), new ArrayList<String>(), subject, content, new ArrayList<MailAttachment>());
   }
 
   public void sendMail(MailType mailType, String from, List<String> to, String subject, String content) {

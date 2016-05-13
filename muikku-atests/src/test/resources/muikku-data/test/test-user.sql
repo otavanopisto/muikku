@@ -18,7 +18,6 @@ insert into EnvironmentRoleEntity (id, archetype) values
   (7, 'STUDENT'),
   (10, 'CUSTOM');
 
---insert into SchoolDataSource (id, identifier) values (1, 'LOCAL'), (2, 'PYRAMUS');
 insert into WorkspaceRoleEntity (id, archetype) values (8, 'TEACHER'), (9, 'STUDENT'); 
 
 -- User 4 - ADMINISTRATOR

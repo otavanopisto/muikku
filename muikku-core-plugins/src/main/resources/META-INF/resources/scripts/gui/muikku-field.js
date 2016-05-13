@@ -357,23 +357,38 @@
     },
     
     _saveWorkspaceMaterialReply: function (state, callback) {
-      this._findWorkspaceMaterialReply($.proxy(function (reply) {
-        if (reply) {
-          this._updateWorkspaceMaterialReply(reply.id, state, function () {
-            if ($.isFunction(callback)) {
-              callback(reply);
-            }
-          });
-        } else {
-          this._createWorkspaceMaterialReply(state, function (createdReply) {
-            if ($.isFunction(callback)) {
-              callback(createdReply);
-            }
-          });
-        }
+      this._waitFieldsSaved($.proxy(function() {
+        this._findWorkspaceMaterialReply($.proxy(function (reply) {
+          if (reply) {
+            this._updateWorkspaceMaterialReply(reply.id, state, function () {
+              if ($.isFunction(callback)) {
+                callback(reply);
+              }
+            });
+          } else {
+            this._createWorkspaceMaterialReply(state, function (createdReply) {
+              if ($.isFunction(callback)) {
+                callback(createdReply);
+              }
+            });
+          }
+        }, this));
       }, this));
-      
     },
+    
+    _waitFieldsSaved: function (callback) {
+      if (this.element.find('.muikku-field-unsaved').length === 0) {
+        callback();
+      } else {
+        if (this._savedWaitTimeout) {
+          clearTimeout(this._savedWaitTimeout);
+        }
+        
+        this._savedWaitTimeout = setTimeout($.proxy(function () {
+          this._waitFieldsSaved(callback);
+        }, this), 10);
+      }
+    },    
     
     _checkExercises: function (requestAnswers) {
       var correctAnswersDisplay = this.correctAnswers();

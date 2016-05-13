@@ -96,7 +96,7 @@ public class EnvironmentPermissionsManagementBackingBean {
   }
   
   public boolean hasRolePermission(RoleEntity role, Permission permission) {
-    return permissionController.hasEnvironmentPermission(role, permission);
+    return permissionController.hasPermission(role, permission);
   }
   
   private List<RoleEntity> roleEntities;
