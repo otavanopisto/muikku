@@ -114,12 +114,20 @@
         cache: 30,
         cachableMethods: ["GET"]
       });
+      this._xhrs = [];
       // "temporary workaround": $.RestClient has a shared `async' object in options
       this._client.opts.ajax = {
         dataType: 'json', 
         async: async,
         traditional: true,
-        contentType: 'application/json' // http://stackoverflow.com/a/17660503
+        contentType: 'application/json', // http://stackoverflow.com/a/17660503
+        beforeSend: $.proxy(function (xhr, settings) {
+          this._xhrs.push(xhr);
+        }, this),
+        complete: $.proxy(function (xhr, settings) {
+          var pos = this._xhrs.indexOf(xhr);
+          this._xhrs.splice(pos, 1);
+        }, this),
       };
     },
     add: function (resources) {
@@ -136,8 +144,14 @@
     cacheClear: function () {
       this._client.cache.clear();
       return this;
+    },
+    abortAll: function () {
+      for (var i=0; i<this._xhrs.length; i++) {
+        this._xhrs[i].abort();
+      }
+      this._xhrs = [];
     }
-  });
+   });
   
   AbstractRequest = createClass({
     init: function () {
@@ -375,6 +389,26 @@
     
     return resources;
   }
+  
+  $(window).unload(function () {
+    $.each(window.muikkuApi, function (name, service) {
+      try {
+        if (service && service.abortAll) {
+          service.abortAll();
+        }
+      } catch (e) {
+      }
+    });
+    
+    $.each(window.asyncMuikkuApi, function (name, service) {
+      try {
+        if (service && service.abortAll) {
+          service.abortAll();
+        }
+      } catch (e) {
+      }
+    });
+  });
   
   function getApi(options) {
     options = options || { async: true };

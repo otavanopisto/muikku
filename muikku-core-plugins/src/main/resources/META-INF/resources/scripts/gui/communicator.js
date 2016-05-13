@@ -32,7 +32,8 @@ $(document).ready(function(){
     }   
     openInSN('/communicator/communicator_create_message.dust', null, sendMessage);    
   });
-  CommunicatorImpl = $.klass({
+  
+  var CommunicatorImpl = $.klass({
     init: function () {
       $(CommunicatorImpl.msgContainer).on('click','.cm-message:not(.open) .cm-message-header-container', $.proxy(this._onMessageClick, this));
       $(CommunicatorImpl.msgContainer).on('click','.icon-goback', $.proxy(this._onMessageBackClick, this));
@@ -212,8 +213,7 @@ $(document).ready(function(){
       
       var element = $(event.target);
       var parent = element.parents(".cm-messages-container");
-      
-      openElement = parent.find(".open");
+      var openElement = parent.find(".open");
      
       if(openElement.length > 0){
         var id = [openElement.attr("data-thread-id")];       

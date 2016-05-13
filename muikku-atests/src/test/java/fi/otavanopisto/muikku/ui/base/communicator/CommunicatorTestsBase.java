@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
+
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
@@ -12,7 +13,6 @@ import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
-
 
 public class CommunicatorTestsBase extends AbstractUITest {
   
@@ -34,7 +34,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         sendKeys(".mf-textfield-subject", "Test");    
         waitAndClick("#cke_1_contents");
         addTextToCKEditor("Communicator test");
-        click("*[name='send']");
+        waitAndClick("*[name='send']");
         waitForPresent(".mf-content-master");
         navigate("/communicator#sent", true);
         waitForPresent(".cm-message-header-content-secondary");
@@ -65,7 +65,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         sendKeys(".mf-textfield-subject", "Test");    
         waitAndClick("#cke_1_contents");
         addTextToCKEditor("Communicator test");
-        click("*[name='send']");
+        waitAndClick("*[name='send']");
         waitForPresent(".mf-content-master");
         navigate("/communicator#sent", true);
         waitForPresent(".cm-message-header-content-secondary");
@@ -174,10 +174,12 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long recipient = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         navigate("/communicator#sent", true);
-        waitAndClick("div.cm-message-select input[type=\"checkbox\"]");
-        waitAndClick("div.icon-delete");
-        // waitForPresentVisible(".notification-queue-item-success");
+        waitForPresent(".cm-message-select input[name=\"messageSelect\"]");
+        click(".cm-message-select input[name=\"messageSelect\"]");
+        waitForPresent(".icon-delete");
+        click(".icon-delete");
         waitForPresent(".cm-messages-container");
+        waitForPresent(".content");
         String currentUrl = getWebDriver().getCurrentUrl();
         assertTrue("Communicator does not stay in sent messages box.", currentUrl.equals("https://dev.muikku.fi:8443/communicator#sent"));
         assertTrue("Element found even though it shouldn't be there", isElementPresent("div.cm-message-select input[type=\"checkbox\"]") == false);
