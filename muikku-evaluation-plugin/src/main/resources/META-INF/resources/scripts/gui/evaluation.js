@@ -1046,12 +1046,7 @@
     
     _onMaterialsLoaded: function (event, data) {
       this._workspaceAssignments = data.workspaceAssignments;
-      $(".evaluation-assignments").perfectScrollbar({
-        wheelSpeed:3,
-        swipePropagation:false,
-        suppressScrollX:true
-      });
-      
+
       $.each(data.evaluableAssignments, $.proxy(function (materialIndex, evaluableAssignment) {
         var materialRow = $('<div>')
           .addClass('evaluation-student-assignment-listing-row')
@@ -1074,6 +1069,13 @@
       }, this));
       
       this.element.trigger("viewInitialized");
+      
+      $(".evaluation-assignments").perfectScrollbar({
+        wheelSpeed:3,
+        swipePropagation:false,
+        suppressScrollX:true
+      });
+      
     }
     
   });
@@ -1436,6 +1438,10 @@
          .hide()
          .attr('data-hidden', '1');
       }
+    });
+    
+    $(window).resize(function() {
+      $(".evaluation-assignments").perfectScrollbar('update');
     });
     
   });
