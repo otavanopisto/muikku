@@ -96,13 +96,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   @Override
-  public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, 
-      Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, int start, int maxResults) {
-    return searchUsers(text, textFields, archetype, groups, workspaces, userIdentifiers, false, start, maxResults);
-  }
-  
-  @Override
-  public SearchResult searchUsers(String text, String[] textFields, EnvironmentRoleArchetype archetype, 
+  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, int start, int maxResults) {
     try {
@@ -134,8 +128,13 @@ public class ElasticSearchProvider implements SearchProvider {
         }
       }
       
-      if (archetype != null) {
-        filters.add(FilterBuilders.termsFilter("archetype", archetype.name().toLowerCase())); 
+      if (archetypes != null) {
+        List<String> archetypeNames = new ArrayList<>(archetypes.size());
+        for (EnvironmentRoleArchetype archetype : archetypes) {
+          archetypeNames.add(archetype.name().toLowerCase());
+        }
+        
+        filters.add(FilterBuilders.inFilter("archetype", archetypeNames.toArray(new String[0]))); 
       }
       
       if (!isEmptyCollection(groups)) {

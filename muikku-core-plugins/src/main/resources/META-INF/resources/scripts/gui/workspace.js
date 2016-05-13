@@ -93,7 +93,6 @@
           $(text).dialog({
             modal: true, 
             minHeight: 200,
-            maxHeight: $(window).height() - 50,
             resizable: false,
             width: 560,
             dialogClass: "workspace-evaluation-confirm-dialog",
@@ -155,7 +154,6 @@
       $(text).dialog({
         modal: true, 
         minHeight: 200,
-        maxHeight: $(window).height() - 50,
         resizable: false,
         width: 560,
         dialogClass: "workspace-evaluation-confirm-dialog",

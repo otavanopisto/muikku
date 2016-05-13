@@ -5,20 +5,11 @@ public class StudentFlag {
   public StudentFlag() {
   }
 
-  public StudentFlag(Long id, String studentIdentifier, String ownerIdentifier, String type) {
+  public StudentFlag(Long id, Long flagId, String studentIdentifier) {
     super();
     this.id = id;
     this.studentIdentifier = studentIdentifier;
-    this.ownerIdentifier = ownerIdentifier;
-    this.type = type;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
+    this.flagId = flagId;
   }
 
   public Long getId() {
@@ -27,6 +18,14 @@ public class StudentFlag {
 
   public void setId(Long id) {
     this.id = id;
+  }
+  
+  public Long getFlagId() {
+    return flagId;
+  }
+  
+  public void setFlagId(Long flagId) {
+    this.flagId = flagId;
   }
 
   public String getStudentIdentifier() {
@@ -37,16 +36,7 @@ public class StudentFlag {
     this.studentIdentifier = studentIdentifier;
   }
 
-  public String getOwnerIdentifier() {
-    return ownerIdentifier;
-  }
-
-  public void setOwnerIdentifier(String ownerIdentifier) {
-    this.ownerIdentifier = ownerIdentifier;
-  }
-
   private Long id;
+  private Long flagId;
   private String studentIdentifier;
-  private String ownerIdentifier;
-  private String type;
 }

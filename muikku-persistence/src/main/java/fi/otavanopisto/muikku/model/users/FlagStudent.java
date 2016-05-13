@@ -1,37 +1,38 @@
 package fi.otavanopisto.muikku.model.users;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(
+@Table (
   uniqueConstraints = {
-    @UniqueConstraint (columnNames = { "ownerIdentifier_id", "studentIdentifier_id" })
-  }    
+    @UniqueConstraint (columnNames = { "flag_id", "studentIdentifier_id" })
+  }
 )
-public class StudentFlag {
+public class FlagStudent {
 
 	public Long getId() {
 		return id;
 	}
+	
+	public Flag getFlag() {
+    return flag;
+  }
+	
+	public void setFlag(Flag flag) {
+    this.flag = flag;
+  }
 
-	public UserSchoolDataIdentifier getOwnerIdentifier() {
-    return ownerIdentifier;
-  }
-	
-	public void setOwnerIdentifier(UserSchoolDataIdentifier ownerIdentifier) {
-    this.ownerIdentifier = ownerIdentifier;
-  }
-	
 	public UserSchoolDataIdentifier getStudentIdentifier() {
     return studentIdentifier;
   }
@@ -40,26 +41,25 @@ public class StudentFlag {
     this.studentIdentifier = studentIdentifier;
   }
 	
-	public StudentFlagType getType() {
-    return type;
+	public Date getCreated() {
+    return created;
   }
 	
-	public void setType(StudentFlagType type) {
-    this.type = type;
+	public void setCreated(Date created) {
+    this.created = created;
   }
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+  
+  @ManyToOne
+  private Flag flag;
 
 	@ManyToOne
-  private UserSchoolDataIdentifier ownerIdentifier;
-	
-  @ManyToOne
   private UserSchoolDataIdentifier studentIdentifier;
   
-  @NotNull
-  @Column(nullable = false)
-  @Enumerated (EnumType.STRING)
-  private StudentFlagType type;
+  @Temporal (TemporalType.TIMESTAMP)
+  @Column (nullable = false)
+  private Date created;
 }

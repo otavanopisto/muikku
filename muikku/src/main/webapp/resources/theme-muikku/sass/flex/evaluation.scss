@@ -158,6 +158,79 @@ body.evaluation {
           border-left:none;
         }
         
+        .evaluation-search {
+          
+          &.icon-search:before {
+            color:#fff;
+            display:inline-block;
+            font-size:30px;
+            margin:0 5px;
+            padding:5px;
+          }
+
+        }
+        
+        .evaluation-search-container {
+          display:none;
+          position:absolute;
+          left:-270px;
+          top:48px;
+          width:310px;
+          box-shadow:0 7px 15px rgba(0,0,0,0.3);
+          background:#fff;
+          border:1px solid #fff;
+          border-radius:5px;
+          
+          &:after, 
+          &:before {
+            bottom:100%;
+            left:292px;
+            border:solid transparent;
+            content:" ";
+            height:0;
+            width:0;
+            position:absolute;
+            pointer-events:none;
+          }
+          
+          &:after {
+            border-color:rgba(255, 255, 255, 0);
+            border-bottom-color:#fff;
+            border-width:8px;
+            margin-left:-8px;
+          }
+          
+          &:before {
+            border-color:rgba(0, 222, 255, 0);
+            border-bottom-color:#ffff;
+            border-width:8px;
+            margin-left:-8px;
+          }
+          
+          
+          input[type="text"] {
+            border:0;
+            font-size:22px;
+            font-weight:300;
+            color:#252525;
+            padding:10px;
+            margin:0;
+            outline:none;
+            box-shadow:none;
+            cursor:text;
+            font-family:'Open Sans', Arial, sans-serif;
+            
+            &:focus,
+            &:active,
+            &:hover {
+              border:0;
+              box-shadow:none;
+            }
+            
+          }
+          
+        }
+        
         label {
           display:inline-block;
           margin:0 0 0 15px;
