@@ -5,7 +5,11 @@
       {#data}
         <li id="{type}-{id}">
           <a class="gt-filter-link" data-type="{type}" data-id="{id}">
-            <span class="{iconClass}"></span>
+            {?color}
+              <span class="{iconClass}" style="color: {color}"></span>
+            {:else}
+              <span class="{iconClass}"></span>
+            {/color}
             <span>{name}{?nameExtension} ({nameExtension}){/nameExtension}</span>
           </a></li>    
         </li>    
