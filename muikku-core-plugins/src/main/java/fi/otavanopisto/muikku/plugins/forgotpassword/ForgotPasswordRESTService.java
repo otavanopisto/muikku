@@ -10,7 +10,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import fi.otavanopisto.muikku.controller.EnvironmentSettingsController;
+import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
@@ -53,7 +53,7 @@ public class ForgotPasswordRESTService extends PluginRESTService {
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @Inject
-  private EnvironmentSettingsController environmentSettingsController;
+  private SystemSettingsController systemSettingsController;
   
   @Inject
   private Mailer mailer;
@@ -89,7 +89,7 @@ public class ForgotPasswordRESTService extends PluginRESTService {
         String mailContent = localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.mailContent", new String[] { resetLink });
   
         // TODO System sender address needs to be configurable
-        mailer.sendMail(environmentSettingsController.getSystemEmailSenderAddress(), email, mailSubject, mailContent);
+        mailer.sendMail(systemSettingsController.getSystemEmailSenderAddress(), email, mailSubject, mailContent);
       } finally {
         schoolDataBridgeSessionController.endSystemSession();
       }

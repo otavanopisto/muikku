@@ -281,7 +281,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE)
   public Response listWorkspaces(
         @QueryParam("userId") Long userEntityId,
         @QueryParam("userIdentifier") String userId,
@@ -324,15 +324,25 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
       UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
       workspaceEntities = workspaceVisitController.listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(loggedUserEntity, minVisits);
-    } else {
+    }
+    else {
       if (userIdentifier != null) {
         if (includeArchivedWorkspaceUsers) {
           workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifierIncludeArchived(userIdentifier);
         } else {
           workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
         }
-      } else if (userEntity != null) {
+      }
+      else if (userEntity != null) {
         workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+      }
+      else {
+        if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
+        workspaceEntities = Boolean.TRUE.equals(includeUnpublished)
+          ? workspaceController.listWorkspaceEntities()
+          : workspaceController.listPublishedWorkspaceEntities();
       }
     }
 
@@ -871,10 +881,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Staff via WorkspaceSchoolDataBridge
     List<fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser> schoolDataUsers = workspaceController.listWorkspaceStaffMembers(workspaceEntity);
-    if (schoolDataUsers.isEmpty()) {
-      return Response.noContent().build();
-    }
-
     List<WorkspaceStaffMember> workspaceStaffMembers = new ArrayList<>();
     
     for (fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser : schoolDataUsers) {

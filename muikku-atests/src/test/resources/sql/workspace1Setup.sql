@@ -9,10 +9,4 @@ insert into workspacenode (id, hidden, orderNumber, urlName, parent_id, title) v
 insert into workspacerootfolder (workspaceEntityId, id) values 
   (1, 1);
   
---insert into workspacewall (id, workspace_id) values 
---  (1, 1);
---
---insert into workspacesettingstemplate (id, defaultWorkspaceUserRole_id) values 
---  (2, null);
-  
 SET REFERENTIAL_INTEGRITY TRUE;
