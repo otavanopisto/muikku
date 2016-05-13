@@ -15,11 +15,14 @@ if [[ $run_tests == "true" ]]; then
     done;
   fi;
   if [[ $browser == "phantomjs" && $test_suite == "phantom" ]]; then
-    if [[ ! -f /home/travis/build/otavanopisto/muikku/muikku-atests/.phantomjs/bin/phantomjs ]]; then
+    if [[ ! -f muikku-atests/.phantomjs/bin/phantomjs ]]; then
+      echo "PhantomJS not found. Downloading..."
       rm -fR muikku-atests/.phantomjs
       wget -O phantomjs-1.9.8-linux-x86_64.tar.bz2 https://www.dropbox.com/s/u4roar334nu8n4c/phantomjs-1.9.8-linux-x86_64.tar.bz2?dl=1 & wait
       tar -jxf phantomjs-1.9.8-linux-x86_64.tar.bz2 & wait
       mv phantomjs-1.9.8-linux-x86_64 muikku-atests/.phantomjs
+    else
+      echo "Found PhantomJS"
     fi;
   fi;
 fi;

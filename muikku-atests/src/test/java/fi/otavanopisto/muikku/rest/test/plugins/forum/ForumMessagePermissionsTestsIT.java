@@ -2,8 +2,6 @@ package fi.otavanopisto.muikku.rest.test.plugins.forum;
 
 import java.util.Date;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.jayway.restassured.response.Response;
@@ -13,14 +11,13 @@ import fi.otavanopisto.muikku.plugins.forum.rest.ForumAreaRESTModel;
 import fi.otavanopisto.muikku.plugins.forum.rest.ForumThreadRESTModel;
 import fi.otavanopisto.muikku.plugins.forum.rest.ForumThreadReplyRESTModel;
 
-public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
-
-  private Long forumAreaId = null;
-  private Long threadId = null;
-  private Long replyId = null;
-
-  @Before
-  public void before() {
+public class ForumMessagePermissionsTestsIT extends AbstractRESTTest { 
+  @Test
+  public void testCreateThreadAdmin() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
     Long creator = 1l;
     
     // Create forum
@@ -56,21 +53,11 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
       .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
 
     replyId = new Long(response.body().jsonPath().getInt("id"));
-  }
-  
-  @After
-  public void after() {
-    asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
-    asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
-    asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
-  }
-  
-  @Test
-  public void testCreateThreadAdmin() throws NoSuchFieldException {
-    ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
+    try{
+      ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
         1l, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
     
-    Response response = asAdmin()
+    response = asAdmin()
       .contentType("application/json")
       .body(areaGroup)
       .post("/forum/areas/{ID}/threads", forumAreaId);
@@ -79,250 +66,1291 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
       .statusCode(200);
     
     asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testCreateThreadManager() throws NoSuchFieldException {
-    ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
-        1l, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
     
-    Response response = asManager()
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
       .contentType("application/json")
-      .body(areaGroup)
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
       .post("/forum/areas/{ID}/threads", forumAreaId);
     
-    response.then()
-      .statusCode(200);
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
     
-    asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
+      ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
+          1l, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+      
+      response = asManager()
+        .contentType("application/json")
+        .body(areaGroup)
+        .post("/forum/areas/{ID}/threads", forumAreaId);
+      
+      response.then()
+        .statusCode(200);
+      
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testCreateThreadTeacher() throws NoSuchFieldException {
-    ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
-        1l, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
     
-    Response response = asTeacher()
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
       .contentType("application/json")
-      .body(areaGroup)
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
       .post("/forum/areas/{ID}/threads", forumAreaId);
     
-    response.then()
-      .statusCode(200);
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
     
-    asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
+      ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
+          1l, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+      
+      response = asTeacher()
+        .contentType("application/json")
+        .body(areaGroup)
+        .post("/forum/areas/{ID}/threads", forumAreaId);
+      
+      response.then()
+        .statusCode(200);
+      
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testCreateThreadStudent() throws NoSuchFieldException {
-    ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
-        1l, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
     
-    Response response = asStudent()
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
       .contentType("application/json")
-      .body(areaGroup)
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
       .post("/forum/areas/{ID}/threads", forumAreaId);
     
-    response.then()
-      .statusCode(200);
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
     
-    asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
+      ForumThreadRESTModel areaGroup = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", 
+          1l, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+      
+      response = asStudent()
+        .contentType("application/json")
+        .body(areaGroup)
+        .post("/forum/areas/{ID}/threads", forumAreaId);
+      
+      response.then()
+        .statusCode(200);
+      
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testCreateReplyAdmin() throws NoSuchFieldException {
-    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId, null, new Date(), 0l);
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
     
     Response response = asAdmin()
       .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
       .body(reply)
       .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
-    
-    response.then()
-      .statusCode(200);
-    
-    asAdmin()
-      .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
+      ForumThreadReplyRESTModel reply2 = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+          1l, new Date(), forumAreaId, null, new Date(), 0l);
+      
+      response = asAdmin()
+        .contentType("application/json")
+        .body(reply2)
+        .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+      
+      response.then()
+        .statusCode(200);
+      
+      asAdmin()
+        .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
 
   @Test
   public void testCreateReplyManager() throws NoSuchFieldException {
-    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId, null, new Date(), 0l);
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
     
-    Response response = asManager()
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
       .contentType("application/json")
       .body(reply)
       .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
-    
-    response.then()
-      .statusCode(200);
-    
-    asAdmin()
-      .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
+      ForumThreadReplyRESTModel reply2 = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+          1l, new Date(), forumAreaId, null, new Date(), 0l);
+      
+      response = asManager()
+        .contentType("application/json")
+        .body(reply2)
+        .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+      
+      response.then()
+        .statusCode(200);
+      
+      asAdmin()
+        .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
 
   @Test
   public void testCreateReplyTeacher() throws NoSuchFieldException {
-    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId, null, new Date(), 0l);
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
     
-    Response response = asTeacher()
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
       .contentType("application/json")
       .body(reply)
       .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
-    
-    response.then()
-      .statusCode(200);
-    
-    asAdmin()
-      .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
+      ForumThreadReplyRESTModel reply2 = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+          1l, new Date(), forumAreaId, null, new Date(), 0l);
+      
+      response = asTeacher()
+        .contentType("application/json")
+        .body(reply2)
+        .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+      
+      response.then()
+        .statusCode(200);
+      
+      asAdmin()
+        .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
+
   }
 
   @Test
   public void testCreateReplyStudent() throws NoSuchFieldException {
-    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId, null, new Date(), 0l);
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
     
-    Response response = asStudent()
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
       .contentType("application/json")
       .body(reply)
       .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
-    
-    response.then()
-      .statusCode(200);
-    
-    asAdmin()
-      .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
+      ForumThreadReplyRESTModel reply2 = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+          1l, new Date(), forumAreaId, null, new Date(), 0l);
+      
+      response = asStudent()
+        .contentType("application/json")
+        .body(reply2)
+        .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+      
+      response.then()
+        .statusCode(200);
+      
+      asAdmin()
+        .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testListThreadsAdmin() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asAdmin()
       .get("/forum/areas/{ID}/threads", forumAreaId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testListThreadsManager() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asManager()
       .get("/forum/areas/{ID}/threads", forumAreaId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testListThreadsTeacher() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asTeacher()
       .get("/forum/areas/{ID}/threads", forumAreaId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testListThreadsStudent() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asStudent()
       .get("/forum/areas/{ID}/threads", forumAreaId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testListRepliesAdmin() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asAdmin()
       .get("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testListRepliesManager() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asManager()
       .get("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testListRepliesTeacher() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asTeacher()
       .get("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testListRepliesStudent() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asStudent()
       .get("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testFindThreadAdmin() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asAdmin()
       .get("/forum/areas/{ID}/threads/{ID2}", forumAreaId, threadId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testFindThreadManager() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asManager()
       .get("/forum/areas/{ID}/threads/{ID2}", forumAreaId, threadId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testFindThreadTeacher() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asTeacher()
       .get("/forum/areas/{ID}/threads/{ID2}", forumAreaId, threadId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
 
   @Test
   public void testFindThreadStudent() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asStudent()
       .get("/forum/areas/{ID}/threads/{ID2}", forumAreaId, threadId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testFindReplyAdmin() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asAdmin()
       .get("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}", forumAreaId, threadId, replyId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testFindReplyManager() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asManager()
       .get("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}", forumAreaId, threadId, replyId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testFindReplyTeacher() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asTeacher()
       .get("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}", forumAreaId, threadId, replyId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
   
   @Test
   public void testFindReplyStudent() throws NoSuchFieldException {
+    Long forumAreaId = null;
+    Long threadId = null;
+    Long replyId = null;
+    
+    Long creator = 1l;
+    
+    // Create forum
+    
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    forumAreaId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create thread
+    
+    ForumThreadRESTModel thread = new ForumThreadRESTModel(null, "TestCreateThread", "TestCreateThread", creator, new Date(), forumAreaId, false, false, new Date(), 1l, new Date());
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(thread)
+      .post("/forum/areas/{ID}/threads", forumAreaId);
+    
+    threadId = new Long(response.body().jsonPath().getInt("id"));
+
+    // Create reply
+    
+    ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
+        creator, new Date(), forumAreaId, null, new Date(), 0l);
+    
+    response = asAdmin()
+      .contentType("application/json")
+      .body(reply)
+      .post("/forum/areas/{ID}/threads/{ID2}/replies", forumAreaId, threadId);
+
+    replyId = new Long(response.body().jsonPath().getInt("id"));
+    try{
     asStudent()
       .get("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}", forumAreaId, threadId, replyId)
       .then()
       .statusCode(200);
+    }finally{
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
+      asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    }
   }
 
 ////  @Test
