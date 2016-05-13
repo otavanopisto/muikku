@@ -2,6 +2,8 @@
   
   $(document).ready(function() {
     $(document).on("click", ".workspaceRolePermissionsCheckbox", function (event) {
+      alert('TOOD Implement workspace role permission override');
+      /*
       var element = $(event.target);
       var cell = element.closest("td");
       
@@ -25,6 +27,7 @@
             $('.notification-queue').notificationQueue('notification', 'error', 'Error occured while doing the operation. You may not have the necessary rights to change the permissions.');
           }
         });
+      */
     });
   });
 

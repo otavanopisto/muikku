@@ -4,14 +4,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.dao.security.EnvironmentRolePermissionDAO;
+import fi.otavanopisto.muikku.dao.security.GroupPermissionDAO;
 import fi.otavanopisto.muikku.dao.security.PermissionDAO;
+import fi.otavanopisto.muikku.dao.security.RolePermissionDAO;
 import fi.otavanopisto.muikku.dao.security.WorkspaceGroupPermissionDAO;
-import fi.otavanopisto.muikku.dao.security.WorkspaceRolePermissionDAO;
-import fi.otavanopisto.muikku.model.security.EnvironmentRolePermission;
 import fi.otavanopisto.muikku.model.security.Permission;
+import fi.otavanopisto.muikku.model.security.RolePermission;
 import fi.otavanopisto.muikku.model.security.WorkspaceGroupPermission;
-import fi.otavanopisto.muikku.model.security.WorkspaceRolePermission;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -22,10 +21,10 @@ public class PermissionController {
   private PermissionDAO permissionDAO;
 
   @Inject
-  private EnvironmentRolePermissionDAO environmentRolePermissionDAO;
+  private GroupPermissionDAO groupPermissionDAO;
 
   @Inject
-  private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
+  private RolePermissionDAO rolePermissionDAO;
   
   @Inject
   private WorkspaceGroupPermissionDAO workspaceGroupPermissionDAO;
@@ -38,46 +37,26 @@ public class PermissionController {
     return permissionDAO.listByScope(scope);
   }
   
-  public boolean hasEnvironmentPermission(RoleEntity role, Permission permission) {
-    return environmentRolePermissionDAO.hasEnvironmentPermissionAccess(role, permission);
+  public boolean hasPermission(RoleEntity role, Permission permission) {
+    return rolePermissionDAO.findByUserRoleAndPermission(role, permission) != null;
   }
 
-  public boolean hasWorkspacePermission(WorkspaceEntity workspaceEntity, RoleEntity role, Permission permission) {
-    return workspaceRolePermissionDAO.hasWorkspacePermissionAccess(workspaceEntity, role, permission);
+  public boolean hasPermission(UserGroupEntity userGroupEntity, Permission permission) {
+    return groupPermissionDAO.findByUserGroupAndPermission(userGroupEntity, permission) != null;
   }
 
+  public boolean hasPermission(WorkspaceEntity workspaceEntity, UserGroupEntity userGroupEntity, Permission permission) {
+    return workspaceGroupPermissionDAO.findByGroupAndPermission(workspaceEntity, userGroupEntity, permission) != null;
+  }
+  
   public boolean hasWorkspaceGroupPermission(WorkspaceEntity workspaceEntity, UserGroupEntity userGroupEntity, Permission permission) {
     return workspaceGroupPermissionDAO.hasWorkspacePermissionAccess(workspaceEntity, userGroupEntity, permission);
   }
 
-  public EnvironmentRolePermission findEnvironmentRolePermission(RoleEntity roleEntity,
-      Permission permission) {
-    return environmentRolePermissionDAO.findByUserRoleAndPermission(roleEntity, permission);
+  public RolePermission findRolePermission(RoleEntity roleEntity, Permission permission) {
+    return rolePermissionDAO.findByUserRoleAndPermission(roleEntity, permission);
   }
   
-  public EnvironmentRolePermission addEnvironmentRolePermission(RoleEntity roleEntity,
-      Permission permission) {
-    return environmentRolePermissionDAO.create(roleEntity, permission);
-  }
-
-  public void removeEnvironmentRolePermission(EnvironmentRolePermission environmentRolePermission) {
-    environmentRolePermissionDAO.delete(environmentRolePermission);
-  }
-
-  public WorkspaceRolePermission findWorkspaceRolePermission(WorkspaceEntity workspaceEntity, RoleEntity roleEntity,
-      Permission permission) {
-    return workspaceRolePermissionDAO.findByRoleAndPermission(workspaceEntity, roleEntity, permission);
-  }
-  
-  public WorkspaceRolePermission addWorkspaceRolePermission(WorkspaceEntity workspaceEntity, RoleEntity roleEntity,
-      Permission permission) {
-    return workspaceRolePermissionDAO.create(workspaceEntity, roleEntity, permission);
-  }
-
-  public void removeWorkspaceRolePermission(WorkspaceRolePermission workspaceRolePermission) {
-    workspaceRolePermissionDAO.delete(workspaceRolePermission);
-  }
-
   public WorkspaceGroupPermission findWorkspaceGroupPermission(WorkspaceEntity workspaceEntity, UserGroupEntity userGroupEntity,
       Permission permission) {
     return workspaceGroupPermissionDAO.findByGroupAndPermission(workspaceEntity, userGroupEntity, permission);
@@ -88,8 +67,8 @@ public class PermissionController {
     return workspaceGroupPermissionDAO.create(workspaceEntity, userGroupEntity, permission);
   }
 
-  public void removeWorkspaceGroupPermission(WorkspaceGroupPermission workspaceRolePermission) {
-    workspaceGroupPermissionDAO.delete(workspaceRolePermission);
+  public void removeWorkspaceGroupPermission(WorkspaceGroupPermission workspaceGroupPermission) {
+    workspaceGroupPermissionDAO.delete(workspaceGroupPermission);
   }
 
 }

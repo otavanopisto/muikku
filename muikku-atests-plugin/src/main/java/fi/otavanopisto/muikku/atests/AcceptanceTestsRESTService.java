@@ -27,9 +27,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.TagController;
-import fi.otavanopisto.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.otavanopisto.muikku.model.base.Tag;
-import fi.otavanopisto.muikku.model.security.WorkspaceRolePermission;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
@@ -115,9 +113,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController; 
-
-  @Inject
-  private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
 
   @Inject
   private UserPendingPasswordChangeDAO userPendingPasswordChangeDAO; 
@@ -347,11 +342,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(404).entity("Not found").build();
-    }
-    
-    List<WorkspaceRolePermission> permissions = workspaceRolePermissionDAO.listByWorkspaceEntity(workspaceEntity);
-    for (WorkspaceRolePermission permission : permissions) {
-      workspaceRolePermissionDAO.delete(permission);
     }
     
     try {
