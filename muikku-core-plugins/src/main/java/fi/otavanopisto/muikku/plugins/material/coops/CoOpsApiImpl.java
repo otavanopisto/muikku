@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -40,7 +39,6 @@ import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.session.SessionController;
 
 @Dependent
-@Stateless
 public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
 
   private final static String COOPS_PROTOCOL_VERSION = "1.0.0";

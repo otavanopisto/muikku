@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -11,7 +10,6 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
-@Stateless
 public class WorkspaceMaterialDeleteListener {
 
   @Inject

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -20,7 +19,6 @@ import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectField;
 import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryTextField;
 
-@Stateless
 @Dependent
 public class QueryFieldController {
 

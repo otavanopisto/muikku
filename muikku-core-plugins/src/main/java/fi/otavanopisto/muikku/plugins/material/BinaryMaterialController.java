@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.material;
 
-import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -11,7 +10,6 @@ import fi.otavanopisto.muikku.plugins.material.events.BinaryMaterialUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
 
 @Dependent
-@Stateless
 public class BinaryMaterialController {
 
 	@Inject
