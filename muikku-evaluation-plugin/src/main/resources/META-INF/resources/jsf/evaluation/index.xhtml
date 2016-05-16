@@ -16,32 +16,25 @@
       -->
       
       <div class="evaluation-workspacelisting-wrapper">
-        <div class="evaluation-current-workspace">
-          <span>#{evaluationIndexBackingBean.workspaceName}</span>
+        <div class="evaluation-current-workspace" data-workspace-entity-id="#{evaluationIndexBackingBean.workspaceEntityId}">
         </div>
         <div class="evaluation-select-workspace">
           <span class="icon-arrow-down w-tooltip" title="#{i18n.text['plugin.evaluation.workspacelist.selectWorkspace.tooltip']}"></span>
         </div>
         
-        <div class="evaluation-available-workspaces" data-hidden="1">
-        <ui:repeat var="myWorkspace" value="#{evaluationIndexBackingBean.myWorkspaces}">
-          <div class="evaluation-workspace-item">
-          <ui:fragment rendered="#{empty myWorkspace.workspace.nameExtension}">
-	          <h:link value="#{myWorkspace.workspace.name}">
-	            <f:param name="workspaceEntityId" value="#{myWorkspace.workspaceEntity.id}" />
-	          </h:link>
-          </ui:fragment>
-          <ui:fragment rendered="#{not empty myWorkspace.workspace.nameExtension}">
-            <h:link value="#{myWorkspace.workspace.name} (#{myWorkspace.workspace.nameExtension})">
-              <f:param name="workspaceEntityId" value="#{myWorkspace.workspaceEntity.id}" />
-            </h:link>
-          </ui:fragment>
-          </div>
-        </ui:repeat>
+        <div class="evaluation-available-workspaces" data-hidden="1" data-list-all-workspaces="#{evaluationIndexBackingBean.listAllWorkspaces}">
         </div>        
       </div>
       
-      <div class="evaluation-filters">
+      <div class="evaluation-filters flex-row">
+      
+        <div class="evaluation-filter">
+          <div class="evaluation-search icon-search"></div>
+          <div class="evaluation-search-container" data-hidden="1">
+            <input type="text" id="student-search-field" />
+          </div>
+        </div>
+      
         <div class="evaluation-filter">
           <label for="filter-students-by-assessment-requested" class="filter-title">#{i18n.text['plugin.evaluation.evaluationFilters.assessmentRequested']}</label>
           <input type="checkbox" id="filter-students-by-assessment-requested" checked="checked"/>
@@ -57,7 +50,7 @@
   </ui:define>
   
   <ui:define name="evaluation.content.studentAssignmentListing">
-    <div class="evaluation-content-wrapper" id="evaluation" data-workspace-entity-id="#{evaluationIndexBackingBean.workspaceEntityId}" data-workspace-name="#{evaluationIndexBackingBean.workspaceName}" data-materials-base-url="#{evaluationIndexBackingBean.materialsBaseUrl}"></div>
+    <div class="evaluation-content-wrapper" id="evaluation"></div>
   </ui:define>
   
 </ui:composition>

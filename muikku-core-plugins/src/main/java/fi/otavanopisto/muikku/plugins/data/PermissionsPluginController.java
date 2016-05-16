@@ -10,31 +10,23 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.otavanopisto.muikku.dao.security.PermissionDAO;
+import fi.otavanopisto.muikku.dao.security.RolePermissionDAO;
 import fi.otavanopisto.muikku.dao.security.UserGroupRolePermissionDAO;
-import fi.otavanopisto.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.otavanopisto.muikku.dao.users.EnvironmentRoleEntityDAO;
 import fi.otavanopisto.muikku.dao.users.RoleEntityDAO;
 import fi.otavanopisto.muikku.dao.users.SystemRoleEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserGroupEntityDAO;
-import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceRoleEntityDAO;
-import fi.otavanopisto.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
-import fi.otavanopisto.muikku.dao.workspace.WorkspaceSettingsTemplateRolePermissionDAO;
-import fi.otavanopisto.muikku.model.security.EnvironmentRolePermission;
 import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.security.RolePermission;
-import fi.otavanopisto.muikku.model.security.WorkspaceRolePermission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.SystemRoleType;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceSettingsTemplate;
 import fi.otavanopisto.muikku.security.MuikkuPermissionCollection;
 import fi.otavanopisto.muikku.security.PermissionScope;
 
@@ -47,7 +39,7 @@ public class PermissionsPluginController {
 	private PermissionDAO permissionDAO;
 	
 	@Inject
-	private EnvironmentRolePermissionDAO environmentRolePermissionDAO;
+	private RolePermissionDAO rolePermissionDAO;
 
 	@Inject
 	private RoleEntityDAO roleEntityDAO;
@@ -58,18 +50,6 @@ public class PermissionsPluginController {
   @Inject
   private WorkspaceRoleEntityDAO workspaceRoleEntityDAO; 
   
-  @Inject
-  private WorkspaceEntityDAO workspaceEntityDAO;
-	
-	@Inject
-	private WorkspaceSettingsTemplateRolePermissionDAO workspaceSettingsTemplateRolePermissionDAO; 
-
-	@Inject
-	private WorkspaceSettingsTemplateDAO workspaceSettingsTemplateDAO;
-	
-	@Inject
-	private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
-
 	@Inject
 	private UserGroupEntityDAO userGroupDAO;
 	
@@ -128,53 +108,21 @@ public class PermissionsPluginController {
                 
                 logger.info(String.format("Permission %s applies to %d roles", permissionName, currentRoles.size()));
                 
-                if (PermissionScope.ENVIRONMENT.equals(permissionScope)) {
-                  List<EnvironmentRolePermission> databasePermissions = environmentRolePermissionDAO.listByPermission(permission);
-                  for (EnvironmentRolePermission databasePermission : databasePermissions) {
+                if (PermissionScope.ENVIRONMENT.equals(permissionScope) || PermissionScope.WORKSPACE.equals(permissionScope)) {
+                  List<RolePermission> databasePermissions = rolePermissionDAO.listByPermission(permission);
+                  for (RolePermission databasePermission : databasePermissions) {
                     int index = indexOfRoleEntity(currentRoles, databasePermission);
                     if (index >= 0) {
                       currentRoles.remove(index);
                     }
                     else {
                       logger.info(String.format("Removing %s from %s", databasePermission.getRole().getName(), permission.getName()));
-                      environmentRolePermissionDAO.delete(databasePermission);
+                      rolePermissionDAO.delete(databasePermission);
                     }
                   }
                   for (RoleEntity currentRole : currentRoles) {
                     logger.info(String.format("Adding environment role %s for %s", currentRole.getName(), permission.getName()));
-                    environmentRolePermissionDAO.create(currentRole, permission);
-                  }
-                }
-                else if (PermissionScope.WORKSPACE.equals(permissionScope)) {
-                  List<WorkspaceEntity> workspaces = workspaceEntityDAO.listAll();
-                  List<WorkspaceRolePermission> databasePermissions = workspaceRolePermissionDAO.listByPermission(permission);
-                  List<RoleEntity> newRoles = new ArrayList<RoleEntity>();
-                  for (int i = 0; i < currentRoles.size(); i++) {
-                    boolean roleFound = false;
-                    for (int j = databasePermissions.size() - 1; j >= 0; j--) {
-                      roleFound = databasePermissions.get(j).getRole().getId().equals(currentRoles.get(i).getId());
-                      if (roleFound) {
-                        break;
-                      }
-                    }
-                    if (!roleFound) {
-                      newRoles.add(currentRoles.get(i));
-                    }
-                  }
-                  for (int j = databasePermissions.size() - 1; j >= 0; j--) {
-                    WorkspaceRolePermission workspaceRolePermission = databasePermissions.get(j);
-                    int index = indexOfRoleEntity(currentRoles, workspaceRolePermission);
-                    if (index == -1) {
-                      logger.info(String.format("Removing %s from %s in %s", workspaceRolePermission.getRole().getName(), permission.getName(), workspaceRolePermission.getWorkspace().getUrlName()));
-                      workspaceRolePermissionDAO.delete(workspaceRolePermission);
-                      databasePermissions.remove(j);
-                    }
-                  }
-                  for (RoleEntity newRole : newRoles) {
-                    for (WorkspaceEntity workspace: workspaces) {                    
-                      logger.info(String.format("Adding workspace role %s for %s in %s", newRole.getName(), permission.getName(), workspace.getUrlName()));
-                      workspaceRolePermissionDAO.create(workspace, newRole, permission);
-                    }
+                    rolePermissionDAO.create(currentRole, permission);
                   }
                 }
                 
@@ -259,24 +207,9 @@ public class PermissionsPluginController {
                 
                 switch (permissionScope) {
                   case PermissionScope.ENVIRONMENT:
-                    for (RoleEntity role : roles) {
-                      environmentRolePermissionDAO.create(role, permission);
-                    }
-                  break;
-                  
                   case PermissionScope.WORKSPACE:
-                    List<WorkspaceEntity> workspaces = workspaceEntityDAO.listAll();
-                    WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l); 
-                    
                     for (RoleEntity role : roles) {
-                      workspaceSettingsTemplateRolePermissionDAO.create(workspaceSettingsTemplate, role, permission);
-  
-                      // TODO Workspace creation & templates - is this necessary and bulletproof?
-                      for (WorkspaceEntity workspace: workspaces) {
-                        logger.log(Level.INFO, "Adding workspace role permission for workspace " + workspace.getId() + " role: " + role.getName());
-                        
-                        workspaceRolePermissionDAO.create(workspace, role, permission);
-                      }
+                      rolePermissionDAO.create(role, permission);
                     }
                   break;
                   

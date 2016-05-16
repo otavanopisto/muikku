@@ -438,6 +438,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     takeScreenshot(new File("target", testName.getMethodName() + ".png"));
   }
   
+  protected void takeScreenshot(String name) throws WebDriverException, IOException {
+    takeScreenshot(new File("target", name));
+  }
+  
   protected void takeScreenshot(File file) throws WebDriverException, IOException {
     if (webDriver instanceof TakesScreenshot) {
       FileOutputStream fileOuputStream = new FileOutputStream(file);
@@ -538,16 +542,24 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.cssSelector(selector)).click();
   }
 
-  protected void waitForClickable(String selector){
-    waitForPresent(selector);
+  protected void waitForClickable(final String selector) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElements(selector);
+          if (elements.size() > 0) {
+            return ExpectedConditions.elementToBeClickable(elements.get(0)).apply(driver) != null;
+          }
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
   }
-  
   protected void waitAndClick(String selector) {
-    waitForPresent(selector);
-    if(getWebDriver().findElement(By.cssSelector(selector)).isEnabled()){
-      new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
-      click(selector);
-    }
+    waitForClickable(selector);
+    click(selector);
   }
   
   protected void waitScrollAndClick(String selector) {
@@ -576,8 +588,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
 
   protected void assertTextIgnoreCase(String selector, String text) {
-    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
-    assertEquals(StringUtils.lowerCase(text), StringUtils.lowerCase(element.getText()));
+    assertEquals(StringUtils.lowerCase(text), StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText()));
   }
   
   protected void sendKeys(String selector, String keysToSend) {
@@ -615,6 +626,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       public Boolean apply(WebDriver driver) {
         int elementCount = countElements(selector);
         if (elementCount > size) {
+          return true;
+        }
+        return false;
+      }
+    });
+  }
+  
+  protected boolean waitUntilElementCount(final String selector, final int count) {
+    WebDriver driver = getWebDriver();
+    return new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        int elementCount = countElements(selector);
+        if (elementCount == count) {
           return true;
         }
         return false;
@@ -909,7 +933,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .then()
       .statusCode(204);
   }
-    
+
+  protected void createPasswordChange(String email) throws Exception {
+    asAdmin()
+      .post("/test/passwordchange/{EMAIL}", email)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void deletePasswordChange(String email) {
+    asAdmin()
+      .delete("/test/passwordchange/{EMAIL}", email)
+      .then()
+      .statusCode(204);
+  }
+  
   protected String getAttributeValue(String selector, String attribute){
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     return element.getAttribute(attribute);
@@ -944,6 +982,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void addTextToCKEditor(String text) {
     waitForPresent(".cke_wysiwyg_frame");
     if (StringUtils.equals(getBrowser(), "phantomjs") ) {
+      waitForCKReady("textContent");
       ((JavascriptExecutor) getWebDriver()).executeScript("CKEDITOR.instances.textContent.setData('"+ text +"');");
     } else {
       waitAndClick("#cke_1_contents");
@@ -951,6 +990,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
   }
   
+  private void waitForCKReady(final String instanceName) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          return ((JavascriptExecutor) driver)
+              .executeScript(String.format("return CKEDITOR.instances['%s'] ? CKEDITOR.instances['%s'].status : 'null'", instanceName, instanceName))
+              .equals("ready");
+        } catch (Exception e) {
+          return false;
+        }
+      }
+    });
+  }
+
   protected WebElement findElement(String selection) {
     return getWebDriver().findElement(By.cssSelector(selection));
   }

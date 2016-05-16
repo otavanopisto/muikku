@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -10,7 +10,7 @@ import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 
-@Stateless
+@ApplicationScoped
 public class WorkspaceHtmlMaterialDeleteListener {
   
   @Inject

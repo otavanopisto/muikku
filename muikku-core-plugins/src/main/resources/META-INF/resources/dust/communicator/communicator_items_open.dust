@@ -1,9 +1,8 @@
 
 
-<div class="cm-messages-toolbar mf-item-tools"> 
-   <div class="cm-messages-tool mf-item-tool icon-goback"></div>
-   <div class="cm-messages-tool mf-item-tool icon-delete"></div>   
-   <div class="clear"></div>
+<div class="mf-items-toolbar flex-row"> 
+   <div class="mf-items-tool icon-goback"></div>
+   <div class="mf-items-tool icon-delete"></div>   
 </div>
 {#.}
     {>"communicator/communicator_item_open.dust"/}  

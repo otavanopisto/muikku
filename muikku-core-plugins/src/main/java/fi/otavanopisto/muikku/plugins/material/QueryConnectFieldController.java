@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.material;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -16,7 +15,6 @@ import fi.otavanopisto.muikku.plugins.material.model.QueryConnectField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldTerm;
 
-@Stateless
 @Dependent
 public class QueryConnectFieldController {
 

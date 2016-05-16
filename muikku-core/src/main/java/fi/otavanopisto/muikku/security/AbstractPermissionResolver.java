@@ -24,7 +24,7 @@ public class AbstractPermissionResolver {
   
   @Inject
   @Any
-  private Instance<WorkspaceContextResolver> courseContextResolvers;
+  private Instance<WorkspaceContextResolver> workspaceContextResolvers;
   
   @Inject
   @Any
@@ -40,9 +40,9 @@ public class AbstractPermissionResolver {
    * @return course if found, else null
    */
   protected WorkspaceEntity resolveWorkspace(ContextReference contextReference) {
-    for (WorkspaceContextResolver resolver : courseContextResolvers) {
-      if (resolver.handlesContextReference(contextReference)) {
-        WorkspaceEntity workspaceEntity = resolver.resolveWorkspace(contextReference);
+    for (WorkspaceContextResolver workspaceContextResolver : workspaceContextResolvers) {
+      if (workspaceContextResolver.handlesContextReference(contextReference)) {
+        WorkspaceEntity workspaceEntity = workspaceContextResolver.resolveWorkspace(contextReference);
         
         if (workspaceEntity != null)
           return workspaceEntity;

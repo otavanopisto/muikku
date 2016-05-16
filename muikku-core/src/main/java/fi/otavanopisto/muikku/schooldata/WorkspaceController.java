@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
-import fi.otavanopisto.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.otavanopisto.muikku.dao.users.RoleSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceMaterialProducerDAO;
@@ -18,7 +17,6 @@ import fi.otavanopisto.muikku.dao.workspace.WorkspaceSettingsDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserSignupDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
-import fi.otavanopisto.muikku.model.security.WorkspaceRolePermission;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -76,9 +74,6 @@ public class WorkspaceController {
 
   @Inject
   private WorkspaceUserSignupDAO workspaceUserSignupDAO;
-
-  @Inject
-  private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
 
   @Inject
   private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
@@ -199,7 +194,11 @@ public class WorkspaceController {
   public List<WorkspaceEntity> listWorkspaceEntities() {
     return workspaceEntityDAO.listAll();
   }
-
+  
+  public List<WorkspaceEntity> listPublishedWorkspaceEntities() {
+    return workspaceEntityDAO.listByPublished(Boolean.TRUE);
+  }
+  
   public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity) {
     return listWorkspaceEntitiesByUser(userEntity, false);
   }
@@ -258,13 +257,6 @@ public class WorkspaceController {
   }
 
   private void deleteWorkspaceEntity(WorkspaceEntity workspaceEntity) {
-    // Delete role permissions
-
-    List<WorkspaceRolePermission> workspaceRolePermissions = workspaceRolePermissionDAO
-        .listByWorkspaceEntity(workspaceEntity);
-    for (WorkspaceRolePermission workspaceRolePermission : workspaceRolePermissions) {
-      workspaceRolePermissionDAO.delete(workspaceRolePermission);
-    }
 
     // Delete settings
 

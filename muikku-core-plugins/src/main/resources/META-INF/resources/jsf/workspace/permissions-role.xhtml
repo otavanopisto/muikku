@@ -35,7 +35,7 @@
                 <input type="hidden" name="permissionId" value="#{permission.id}"/>
                 <input type="hidden" name="roleId" value="#{role.id}"/>
                 <c:choose>
-                  <c:when test="#{workspacePermissionsRoleManagementBackingBean.hasWorkspaceRolePermission(role, permission)}">
+                  <c:when test="#{workspacePermissionsRoleManagementBackingBean.hasRolePermission(role, permission)}">
                     <input type="checkbox" class="workspaceRolePermissionsCheckbox" name="workspaceRolePermission.#{role.id}.#{permission.id}" checked="checked"/>
                   </c:when>
                   <c:otherwise>

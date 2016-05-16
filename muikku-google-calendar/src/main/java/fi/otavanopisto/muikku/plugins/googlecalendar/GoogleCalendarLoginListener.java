@@ -13,7 +13,6 @@ import fi.otavanopisto.muikku.plugins.calendar.CalendarController;
 import fi.otavanopisto.muikku.plugins.calendar.model.UserCalendar;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
 public class GoogleCalendarLoginListener {
   

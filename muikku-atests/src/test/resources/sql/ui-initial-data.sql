@@ -1,5 +1,3 @@
---INSERT INTO UserGroup VALUES (1,'Opiskelijat'),(2,'Opettajat'),(3,'Pikkupoppoo');
-
 insert into PluginSettingKey(name, plugin) select 'roles.workspace.TEACHER', 'school-data-pyramus' from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'roles.workspace.TEACHER' having count(*) = 0;
 insert into PluginSetting (value, key_id) select '1', (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'roles.workspace.TEACHER') from PluginSetting having count(*) = 0;
 
@@ -7,9 +5,6 @@ INSERT INTO WorkspaceTypeEntity (id, name) values (1, 'Course');
 INSERT INTO WorkspaceTypeEntity (id, name) values (2, 'Group work');
 INSERT INTO WorkspaceTypeEntity (id, name) values (3, 'Game');
 INSERT INTO WorkspaceTypeEntity (id, name) values (4, 'Pool');
-
-insert into WorkspaceSettingsTemplate (defaultWorkspaceUserRole_id) values ((select id from RoleEntity where name = 'Workspace Student'));
-insert into WorkspaceSettings (workspaceEntity_id, defaultWorkspaceUserRole_id) (select id, (select id from RoleEntity where name = 'Workspace Student') from WorkspaceEntity);
 
 insert into EnvironmentDefaults (id, httpPort, httpsPort) values (1, 8080, 8443);
 update PluginSetting set value = 'http://0.0.0.0:8089/1' where key_id = (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.url');

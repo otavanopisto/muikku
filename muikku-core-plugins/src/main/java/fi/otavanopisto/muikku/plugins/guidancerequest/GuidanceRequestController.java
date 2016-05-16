@@ -20,12 +20,9 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.notifier.NotifierController;
-import fi.otavanopisto.muikku.plugins.guidancerequest.GuidanceRequest;
-import fi.otavanopisto.muikku.plugins.guidancerequest.WorkspaceGuidanceRequest;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
-import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.security.PermissionResolver;
 import fi.otavanopisto.security.Permit;
 import fi.otavanopisto.security.PermitContext;
@@ -42,9 +39,6 @@ public class GuidanceRequestController {
   @Inject
   private UserController userController;
 
-  @Inject
-  private UserGroupController userGroupController;
-  
   @Inject
   private SessionController sessionController;
   
@@ -86,7 +80,7 @@ public class GuidanceRequestController {
     // TODO: Make this cleaner, it smells like fish.
     List<UserEntity> recipients = new ArrayList<UserEntity>();
     
-    PermissionResolver per = getPermissionResolver(GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS);
+    getPermissionResolver(GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS);
     /*
     
     List<UserGroup> studentsGroups = userGroupController.listUserGroupsByUser(student);
@@ -158,7 +152,7 @@ public class GuidanceRequestController {
   }
 
   public List<GuidanceRequest> listGuidanceRequestsByManager(UserEntity manager) {
-    PermissionResolver per = getPermissionResolver(GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS);
+    getPermissionResolver(GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS);
     /*
     
     List<UserGroup> managedGroups = userGroupController.listUserGroupsByUser(manager);

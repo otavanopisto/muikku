@@ -205,9 +205,6 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   
   private HtmlRestMaterial createRestModel(HtmlMaterial htmlMaterial) {
     Long currentRevision = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
-    if (currentRevision == null) {
-      currentRevision = 0l;
-    }
     
     return new HtmlRestMaterial(htmlMaterial.getId(),
                                 htmlMaterial.getTitle(),
