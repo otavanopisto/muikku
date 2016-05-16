@@ -158,10 +158,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     HtmlMaterial htmlMaterial = findFile(fileId);
     
     Long maxRevision = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
-    if (maxRevision == null) {
-      maxRevision = 0l;
-    }
-
+    
     if (!maxRevision.equals(revisionNumber)) {
       throw new CoOpsConflictException();
     }
