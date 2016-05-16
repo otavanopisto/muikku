@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.material;
 import java.io.IOException;
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -21,7 +20,6 @@ import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
 import fi.otavanopisto.muikku.plugins.material.model.QuerySelectFieldOption;
 
-@Stateless
 @Dependent
 public class QuerySelectFieldController {
 

@@ -5,7 +5,6 @@ import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -20,7 +19,6 @@ import fi.otavanopisto.muikku.plugins.material.model.MaterialMetaKey;
 import fi.otavanopisto.muikku.plugins.material.operations.MaterialCloneOperation;
 
 @Dependent
-@Stateless
 public class MaterialController {
   
   @Inject

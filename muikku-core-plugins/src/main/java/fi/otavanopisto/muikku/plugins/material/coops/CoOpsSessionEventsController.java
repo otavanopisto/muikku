@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.material.coops;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +14,7 @@ import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
-@Stateless
+@Dependent
 public class CoOpsSessionEventsController {
   
   @Inject
