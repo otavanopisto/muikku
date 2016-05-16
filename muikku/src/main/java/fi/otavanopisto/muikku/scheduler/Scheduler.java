@@ -1,21 +1,13 @@
 package fi.otavanopisto.muikku.scheduler;
 
-import java.util.logging.Logger;
-
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.scheduler.Scheduled;
-import fi.otavanopisto.muikku.scheduler.ScheduledEvent;
-
 @Singleton
 public class Scheduler {
 	
-	@Inject
-	private Logger logger;
-
 	@Inject
 	@Scheduled (schedule = fi.otavanopisto.muikku.scheduler.Schedule.MONTHLY)
 	private Event<ScheduledEvent> monthlyEvent;

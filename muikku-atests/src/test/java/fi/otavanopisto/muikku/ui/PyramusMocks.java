@@ -494,6 +494,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     
   }
   
+  @SuppressWarnings("unused")
   private static StaffMember mockStaffMember(Long personId, Long staffMemberId, String firstName, String lastName, String email, UserRole role, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 

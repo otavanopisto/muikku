@@ -45,7 +45,6 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.plugins.communicator.model.InboxCommunicatorMessage;
-import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -104,9 +103,6 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
   
-  @Inject
-  private WebSocketMessenger webSocketMessenger;
-
   @GET
   @Path ("/items")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)

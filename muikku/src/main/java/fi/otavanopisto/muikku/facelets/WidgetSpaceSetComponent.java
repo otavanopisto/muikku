@@ -10,7 +10,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import javax.faces.view.facelets.TagAttribute;
 
 import fi.otavanopisto.muikku.widgets.WidgetSpaceSizingStrategy;
 
@@ -119,6 +118,4 @@ public class WidgetSpaceSetComponent extends UIComponentBase {
 		return getClass().getPackage().toString();
 	}
 	
-	private TagAttribute styleClassAttribute;
-	private TagAttribute parentStyleClassAttribute;
 }
