@@ -98,7 +98,7 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, int start, int maxResults) {
+      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults) {
     try {
       text = sanitizeSearchString(text);
 
@@ -106,7 +106,9 @@ public class ElasticSearchProvider implements SearchProvider {
 
       List<FilterBuilder> filters = new ArrayList<FilterBuilder>();
       
-      filters.add(FilterBuilders.notFilter(FilterBuilders.termFilter("hidden", true)));
+      if (!Boolean.TRUE.equals(includeHidden)) {
+        filters.add(FilterBuilders.notFilter(FilterBuilders.termFilter("hidden", true)));
+      }
       
       if (StringUtils.isNotBlank(text)) {
         StringTokenizer tokenizer = new StringTokenizer(text, " ");
