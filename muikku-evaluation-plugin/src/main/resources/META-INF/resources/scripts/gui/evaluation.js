@@ -1422,15 +1422,15 @@
       $('#evaluation').evaluation('filter', 'assessed', $(this).prop('checked') ? false : null);
     });
 
-    $(document).on('click', '.evaluation-flag-filter', function (event) {
-      var filter = $(event.target).closest('.evaluation-flag-filter');
+    $(document).on('click', '.evaluation-flag', function (event) {
+      var filter = $(event.target).closest('.evaluation-flag');
       if (filter.hasClass('active')) {
         filter.removeClass('active');
       } else {
         filter.addClass('active');
       }
       
-      var activeIds = $.map($('.evaluation-flag-filter.active'), function (active) {
+      var activeIds = $.map($('.evaluation-flag.active'), function (active) {
         return $(active).attr('data-flag-id');
       });
       
@@ -1459,8 +1459,8 @@
       $(".evaluation-assignments").perfectScrollbar('update');
     });
     
-    $('.evaluation-flags-filter').click(function () {
-      $('.evaluation-flags-filter-container').toggle();
+    $('.evaluation-flags').click(function () {
+      $('.evaluation-flags-container').toggle();
     });
     
     mApi().user.flags
@@ -1470,15 +1470,19 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           $.each(flags, function (index, flag) {
-            $('<a>')
+            $('<div>')
+              .addClass("evaluation-flag icon-flag")
               .attr({
-                'href': 'javascript:void(null)',
-                'data-flag-id': flag.id,
-                'data-flag-color': flag.color
+                'data-flag-color': flag.color,
+                'data-flag-id': flag.id
               })
-              .addClass('evaluation-flag-filter')
-              .text(flag.name)
-              .appendTo($('.evaluation-flags-filter-container'));
+              .css({
+                'color': flag.color
+              })
+              .append(
+                $('<span>')
+                  .text(flag.name))
+              .appendTo($('.evaluation-flags-container'));
           });
         }
       });
