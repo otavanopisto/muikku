@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.material;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -16,7 +16,7 @@ import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 
-@Stateless
+@ApplicationScoped
 public class HtmlMaterialChangeListener {
   
   @Inject

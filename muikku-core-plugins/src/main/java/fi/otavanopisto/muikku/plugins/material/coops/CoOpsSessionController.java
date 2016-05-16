@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.material.coops;
 import java.util.Date;
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -17,7 +16,6 @@ import fi.otavanopisto.muikku.plugins.material.coops.model.CoOpsSessionType;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 
 @Dependent
-@Stateless
 public class CoOpsSessionController {
   
   private static final long SESSION_TIMEOUT = 10 * 1000;
