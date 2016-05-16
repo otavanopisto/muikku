@@ -1422,6 +1422,21 @@
       $('#evaluation').evaluation('filter', 'assessed', $(this).prop('checked') ? false : null);
     });
 
+    $(document).on('click', '.evaluation-flag-filter', function (event) {
+      var filter = $(event.target).closest('.evaluation-flag-filter');
+      if (filter.hasClass('active')) {
+        filter.removeClass('active');
+      } else {
+        filter.addClass('active');
+      }
+      
+      var activeIds = $.map($('.evaluation-flag-filter.active'), function (active) {
+        return $(active).attr('data-flag-id');
+      });
+      
+      $('#evaluation').evaluation('filter', 'flags', activeIds.length ? activeIds : null);
+    });
+
     $('#student-search-field').on('keyup', function () {
       if (searchFieldTimer !== null) {
         clearTimeout(searchFieldTimer);
@@ -1444,6 +1459,29 @@
       $(".evaluation-assignments").perfectScrollbar('update');
     });
     
+    $('.evaluation-flags-filter').click(function () {
+      $('.evaluation-flags-filter-container').toggle();
+    });
+    
+    mApi().user.flags
+      .read({ ownerIdentifier: MUIKKU_LOGGED_USER })
+      .callback(function (err, flags) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          $.each(flags, function (index, flag) {
+            $('<a>')
+              .attr({
+                'href': 'javascript:void(null)',
+                'data-flag-id': flag.id,
+                'data-flag-color': flag.color
+              })
+              .addClass('evaluation-flag-filter')
+              .text(flag.name)
+              .appendTo($('.evaluation-flags-filter-container'));
+          });
+        }
+      });
   });
   
   $(document).on('click', '.evaluation-workspace-item', function (event) {
