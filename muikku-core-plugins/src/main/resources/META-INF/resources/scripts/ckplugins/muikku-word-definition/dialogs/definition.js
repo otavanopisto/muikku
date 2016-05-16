@@ -15,40 +15,43 @@ CKEDITOR.dialog.add('muikkuWordDefinitionDialog', function (editor) {
         setup: function(editor) {
           var text = null;
           
-          var selectionNode = editor.getSelection().getCommonAncestor();
-          while (selectionNode.type != CKEDITOR.NODE_ELEMENT) {
-            selectionNode = selectionNode.getParent();
-            if ((selectionNode == null) || ("body" == selectionNode.getName())) {
-              selectionNode = null;
+          var ranges = editor.getSelection().getRanges();
+          while (ranges.length > 0) {
+            var range = ranges.pop();
+            if (range) {
+              try {
+                var tempDiv = new CKEDITOR.dom.element('div');
+                range.cloneContents().clone( 1, 1 ).appendTo(tempDiv);
+                
+                var marks = tempDiv.getElementsByTag('mark');
+                for (var i = 0, l = marks.count(); i < l; i++) {
+                  var mark = marks.getItem(i);
+                  text = mark.getAttribute('data-muikku-word-definition');
+                  if (text) {
+                    break;
+                  }
+                }
+              } catch (e) {
+                
+              }
+            }
+            
+            if (text) {
               break;
             }
           }
           
-          if (selectionNode) {
-            while ("mark" == selectionNode.getName()) {
-              selectionNode = selectionNode.getParent();
-              if ((selectionNode == null) || ("body" == selectionNode.getName())) {
-                selectionNode = null;
-                break;
+          if (!text) {
+            var ancestor = editor.getSelection().getCommonAncestor();
+            if (ancestor) {
+              var mark = ancestor.getAscendant('mark');
+              text = mark.getAttribute('data-muikku-word-definition');
+              if (text) {
+                editor.getSelection().selectElement(mark);
               }
             }
           }
-      
-          if (selectionNode) {
-            var mark = null;
-            if ("mark" == selectionNode.getName()) {
-              mark = selectionNode;
-            }
 
-            if (mark) {
-              text = mark.getAttribute('data-muikku-word-definition');
-            }
-           
-            if (text) {
-              editor.getSelection().selectElement(mark);
-            }
-          }
-          
           this.setValue(text);
         },
         commit: function(editor) {
