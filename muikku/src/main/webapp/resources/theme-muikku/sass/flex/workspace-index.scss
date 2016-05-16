@@ -44,7 +44,7 @@
       background:#31acf6;
       color:#fff;
       padding:6px 10px;
-      min-width:50px;
+      min-width:30px;
       z-index:13;
       font-size:18px;
       text-transform:uppercase;
@@ -151,6 +151,59 @@
     
     }
 
+  }
+  
+}
+
+h1.workspace-block-title {
+  font-weight:300;
+  margin:0 0 20px 0;
+  padding:0;
+  font-size:26px;
+}
+
+.workspace-frontpage-teachers {
+  background:#fff;
+  padding:20px;
+  margin-top:10px; 
+}
+
+.workspace-frontpage-announcements {
+  background:#fff;
+  padding:20px;
+  margin-top:10px;
+  
+  .workspace-announcements-container {
+  
+    .workspace-single-announcement {
+      position:relative;
+      cursor:pointer;
+      
+      &:hover {
+        
+        .workspace-announcement-title {
+          border-left:4px solid #30b4b3;
+        }
+
+      }
+    
+      .workspace-announcement-title {
+        border-left:4px solid #82eceb;
+        line-height:1.3em;
+        padding:5px 55px 5px 10px;
+        transition:border-left 0.15s ease-in-out;
+      }
+      
+      .workspace-announcement-date {
+        position:absolute;
+        top:0;
+        right:5px;
+        width:50px;
+        text-align:right;
+      }
+    
+    }
+  
   }
   
 }
