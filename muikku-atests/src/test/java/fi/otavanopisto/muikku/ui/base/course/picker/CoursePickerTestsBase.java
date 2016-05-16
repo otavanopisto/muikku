@@ -50,7 +50,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
         workspaces.add(createWorkspace("testcourse", "test course for testing " + i.toString(), i.toString(), Boolean.TRUE));
       try {
         getWebDriver().get(getAppUrl(true) + "/coursepicker");
-        waitForPresent("#coursesList");
+        waitForMoreThanSize(".cp-course", 24);
         assertCount(".cp-course", 25);
         waitAndClick(".mf-paging-tool");
         waitForMoreThanSize(".cp-course", 25);
