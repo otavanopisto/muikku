@@ -192,6 +192,11 @@ h1.workspace-block-title {
         line-height:1.3em;
         padding:5px 55px 5px 10px;
         transition:border-left 0.15s ease-in-out;
+        
+        &.unread {
+          font-weight:400;
+        }
+        
       }
       
       .workspace-announcement-date {
