@@ -157,7 +157,7 @@
 
 h1.workspace-block-title {
   font-weight:300;
-  margin:0 0 20px 0;
+  margin:0 0 10px 0;
   padding:0;
   font-size:26px;
 }
@@ -175,23 +175,38 @@ h1.workspace-block-title {
   
   .workspace-announcements-container {
   
+    .workspace-announcements-empty {
+      padding:20px;
+      text-align:center;
+      font-style:italic;
+      font-size:20px;
+      font-weight:300;
+    }
+  
     .workspace-single-announcement {
       position:relative;
       cursor:pointer;
+      padding:5px 0;
       
       &:hover {
         
+        .workspace-announcement-date {
+          background:#ea6ef5;
+          color:#fff;
+          font-weight:600;
+        }
+        
         .workspace-announcement-title {
-          border-left:4px solid #30b4b3;
+          background:#f8f1f9;
         }
 
       }
     
       .workspace-announcement-title {
-        border-left:4px solid #82eceb;
-        line-height:1.3em;
-        padding:5px 55px 5px 10px;
-        transition:border-left 0.15s ease-in-out;
+        line-height:20px;
+        padding:5px 10px 5px 10px;
+        margin:0 0 0 50px;
+        transition:background 0.3s ease-in-out;
         
         &.unread {
           font-weight:400;
@@ -200,11 +215,18 @@ h1.workspace-block-title {
       }
       
       .workspace-announcement-date {
+        border-right:3px solid #e163ed;
+        transition:background 0.15s ease-in-out;
+        bottom:5px;
+        color:#000;
+        font-weight:400;
+        left:0;
         position:absolute;
-        top:0;
-        right:5px;
+        text-align:center;
+        top:5px;
         width:50px;
-        text-align:right;
+        box-sizing:border-box;
+        padding:2px 0;
       }
     
     }
