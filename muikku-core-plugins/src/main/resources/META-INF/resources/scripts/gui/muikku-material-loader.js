@@ -590,6 +590,52 @@
       // TODO: data.meta.help, data.meta.hint
     }
   });
+
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.organizer') {
+      var meta = data.meta;
+      var organizerField = $('<div>').addClass('muikku-organizer-field');
+      var terms = $('<div>').addClass('muikku-terms-container');
+      var termsTitle = $('<div>').addClass('muikku-terms-title').append(meta.termTitle);
+      var termsData = $('<div>').addClass('muikku-terms-data');
+      var termObjects = meta.terms;
+      for (var i = 0; i < termObjects.length; i++) {
+        var term = $('<div>').addClass('muikku-term').append(termObjects[i].name).attr('data-term-id', termObjects[i].id);
+        termsData.append(term);
+      }
+      organizerField.append(terms);
+      terms.append(termsTitle).append(termsData);
+      var categoryObjects = meta.categories;
+      for (var i = 0; i < categoryObjects.length; i++) {
+        var categoryContainer = $('<div>').addClass('muikku-category-container');
+        var categoryTitle = $('<div>').addClass('muikku-category-title').append(categoryObjects[i].name);
+        var category = $('<div>').addClass('muikku-category').attr('data-category-id', categoryObjects[i].id);
+        categoryContainer.append(categoryTitle).append(category);
+        organizerField.append(categoryContainer);
+      }
+      organizerField.muikkuField({
+        fieldName: data.name,
+        materialId: data.materialId,
+        embedId: data.embedId,
+        meta: meta,
+        readonly: data.readOnlyFields||false,
+        hasDisplayableAnswers: function() {
+          return false;
+        },
+        canCheckAnswer: function() {
+          return false;
+        },
+        isCorrectAnswer: function() {
+          return false;
+        },
+        getCorrectAnswers: function() {
+          return false;
+        }
+      });
+      $(object).replaceWith(organizerField);
+    }
+  });
   
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
