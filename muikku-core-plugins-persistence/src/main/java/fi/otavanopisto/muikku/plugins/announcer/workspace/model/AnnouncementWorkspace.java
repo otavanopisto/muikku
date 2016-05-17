@@ -32,6 +32,14 @@ public class AnnouncementWorkspace {
   public void setAnnouncement(Announcement announcement) {
     this.announcement = announcement;
   }
+  
+  public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+
+  public void setWorkspaceEntityId(Long workspaceEntityId) {
+    this.workspaceEntityId = workspaceEntityId;
+  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -43,7 +51,7 @@ public class AnnouncementWorkspace {
   @Column (nullable=false)
   @NotNull
   private Long workspaceEntityId;
-  
+
   @ManyToOne(optional=false)
   @NotNull
   private Announcement announcement;
