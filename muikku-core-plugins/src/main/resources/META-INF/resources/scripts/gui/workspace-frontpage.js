@@ -22,6 +22,24 @@
           }, this));
         }
       });
+    
+    mApi()
+    .announcer
+    .announcements
+    .read({onlyActive: "true", onlyMine: "true"})
+    .callback($.proxy(function(err, result) {
+        if (err) {
+          $(".notification-queue").notificationQueue('notification','error', err);
+        } else {
+          renderDustTemplate('workspace/workspace_frontpage_announcements.dust', result, $.proxy(function (text) {
+            var element = $(text);
+            $('.workspace-announcements-container').append(element);
+            $('.workspace-announcements-container').perfectScrollbar({"suppressScrollY" : true});
+          }, this));
+        }
+    }, this));
+    
+    
   });
 
 }).call(this);
