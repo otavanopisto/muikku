@@ -4,7 +4,7 @@
  */
 
 (function() {
-
+  
   function isEmpty(obj) {
     for (var prop in obj) {
       if (obj.hasOwnProperty(prop)) {
@@ -29,9 +29,9 @@
   }
 
   var organizerFieldElement = function(dialog, elementDefinition, htmlList) {
-    this.selectedTerm = null;
+    this.termIds = [];
+    this.categoryIds = [];
     this.terms = {}; // name=id|count
-    this.termCategories = {};
     CKEDITOR.ui.dialog.uiElement.call(this, dialog, elementDefinition, htmlList, 'div');
   };
 
@@ -45,9 +45,9 @@
       while (uiElement.getFirst()) {
         uiElement.getFirst().remove();
       }
-      this.selectedTerm = null;
+      this.termIds = [];
+      this.categoryIds = [];
       this.terms = {};
-      this.termCategories = {};
       
       // Term title container
       
@@ -69,101 +69,14 @@
       categoriesContainer.addClass('organizer-categories-container');
       uiElement.append(categoriesContainer);
       
+      var _this = this;
       var addCategoryLink = new CKEDITOR.dom.element('a');
       addCategoryLink.addClass('icon-add');
       addCategoryLink.on('click', function() {
         _this.addCategory();
       });
       uiElement.append(addCategoryLink);
-
-//      // Terms and categories container
-//      
-//      var termsAndCategoriesContainer = new CKEDITOR.dom.element('div');
-//      termsAndCategoriesContainer.addClass('organizer-terms-and-categories-container');
-//      uiElement.append(termsAndCategoriesContainer);
-//      
-//      // Terms container
-//      
-//      var termsContainer = new CKEDITOR.dom.element('div');
-//      termsContainer.addClass('organizer-terms-container');
-//      termsAndCategoriesContainer.append(termsContainer);
-//      
-//      // Terms header
-//      
-//      var termsHeaderContainer = new CKEDITOR.dom.element('div');
-//      termsHeaderContainer.addClass('organizer-terms-header');
-//      termsContainer.append(termsHeaderContainer);
-//
-//      var termsHeaderTitle = new CKEDITOR.dom.element('span');
-//      termsHeaderTitle.setText(editor.lang['muikku-organizerfield'].propertiesDialogTermsTitle);
-//      termsHeaderContainer.append(termsHeaderTitle);
-//      
-//      var _this = this;
-//      var termsHeaderAddTermLink = new CKEDITOR.dom.element('a');
-//      termsHeaderAddTermLink.addClass('icon-add');
-//      termsHeaderAddTermLink.on('click', function() {
-//        _this.addTerm();
-//      });
-//      termsHeaderContainer.append(termsHeaderAddTermLink);
-//      
-//      // Categories container
-//      
-//      var categoriesContainer = new CKEDITOR.dom.element('div');
-//      categoriesContainer.addClass('organizer-categories-container');
-//      termsAndCategoriesContainer.append(categoriesContainer);
-//
-//      // Categories header
-//      
-//      var categoriesHeaderContainer = new CKEDITOR.dom.element('div');
-//      categoriesHeaderContainer.addClass('organizer-categories-header');
-//      categoriesContainer.append(categoriesHeaderContainer);
-//
-//      var categoriesHeaderTitle = new CKEDITOR.dom.element('span');
-//      categoriesHeaderTitle.setText(editor.lang['muikku-organizerfield'].propertiesDialogCategoriesTitle);
-//      categoriesHeaderContainer.append(categoriesHeaderTitle);
-//      
-//      var _this = this;
-//      var categoriesHeaderAddCategoryLink = new CKEDITOR.dom.element('a');
-//      categoriesHeaderAddCategoryLink.addClass('icon-add');
-//      categoriesHeaderAddCategoryLink.on('click', function() {
-//        _this.addCategory();
-//      });
-//      categoriesHeaderContainer.append(categoriesHeaderAddCategoryLink);
     },
-//    addTerm: function(name, categoryId) {
-//      var _this = this;
-//      // Term container
-//      var termContainer = new CKEDITOR.dom.element('div');
-//      termContainer.addClass('organizer-term');
-//      termContainer.setAttribute('id', id||this._generateTermId());
-//      termContainer.on('click', function() {
-//        _this._setSelectedTerm(this);
-//      });
-//      // Term field
-//      var termField = new CKEDITOR.dom.element('input');
-//      termField.addClass('organizer-term-name');
-//      termField.setAttribute('type', 'text');
-//      termField.setAttribute('style', 'border:1px solid rgb(0,0,0);');
-//      if (name) {
-//        termField.setAttribute('value', name);
-//      }
-//      termContainer.append(termField);
-//      // Delete term button
-//      var deleteTermLink = new CKEDITOR.dom.element('a');
-//      deleteTermLink.addClass('icon-remove');
-//      termContainer.append(deleteTermLink);
-//      deleteTermLink.on('click', function() {
-//        var term = this;
-//        while (!term.hasClass('organizer-term')) {
-//          term = term.getParent();
-//        }
-//        delete _this.terms[term.getAttribute('id')];
-//        term.remove();
-//      });
-//      // Add
-//      var termsContainer = this.getElement().findOne('.organizer-terms-container');
-//      termsContainer.append(termContainer);
-//    },
     addCategory: function(id, name) {
       var _this = this;
       // Category container
@@ -183,16 +96,21 @@
       deleteCategoryLink.addClass('icon-remove');
       categoryContainer.append(deleteCategoryLink);
       deleteCategoryLink.on('click', function() {
-        var category = this;
-        while (!category.hasClass('organizer-category')) {
-          category = category.getParent();
+        var categoryContainer = this.getParent();
+        var category = categoryContainer.findOne('.organizer-category');
+        var terms = category.find('.organizer-term');
+        for (var i = 0; i < terms.count(); i++) {
+          _this.removeTerm(terms.getItem(i).getAttribute('data-term-id'));
         }
-        category.remove();
+        var categoryId = category.getAttribute('data-category-id');
+        var index = _this.categoryIds.indexOf(categoryId);
+        _this.categoryIds.splice(index, 1);
+        categoryContainer.remove();
       });
       // Category itself
       var category = new CKEDITOR.dom.element('div');
       category.addClass('organizer-category');
-      category.setAttribute('id', id||this._generateCategoryId());
+      category.setAttribute('data-category-id', id||this._generateCategoryId());
       categoryContainer.append(category);
       // New term field
       var termField = new CKEDITOR.dom.element('input');
@@ -200,107 +118,148 @@
       termField.setAttribute('type', 'text');
       termField.setAttribute('style', 'border:1px solid rgb(0,0,0);');
       category.append(termField);
-      termField.$.on('keypress', function(evt) {
-        var field = evt.target;
-        if (e.keyCode == 13 && field.value !== '') {
-          var termid = _this._createTerm(field.value);
+      termField.on('keydown', function(evt) {
+        var field = this;
+        if (evt.data.getKeystroke() == 13) {
+          evt.data.preventDefault();
+          evt.data.stopPropagation();
+          evt.stop();
+          if (field.$.value !== '') {
+            var category = field;
+            while (!category.hasClass('organizer-category')) {
+              category = category.getParent();
+            }
+            _this.addTermToCategory(field.$.value, category.getAttribute('data-category-id'));
+            field.$.value = '';
+          }
+          return false;
         }
       });
       // Add
       var categoriesContainer = this.getElement().findOne('.organizer-categories-container');
       categoriesContainer.append(categoryContainer);
     },
+    addTerm: function(id, name) {
+      this.terms[name] = {
+        'id': id,
+        'count': 0
+      };
+      this.termIds.push(id);
+      return this.terms[name];
+    },
     getTermTitle: function() {
       return this.getElement().findOne('input[name="termTitle"]').$.value;
     },
     getTerms: function() {
       var result = [];
-      var terms = this.getElement().find('.organizer-term');
-      for (var i = 0; i < terms.count(); i++) {
+      var keys = Object.keys(this.terms);
+      for (var i = 0; i < keys.length; i++) {
         result.push({
-          'id': terms.getItem(i).getAttribute('id'),
-          'name': terms.getItem(i).findOne('.organizer-term-name').$.value
-        })
+          'id': this.terms[keys[i]].id,
+          'name': keys[i]
+        });
       }
       return result;
+    },
+    removeTerm(termId) {
+      var termName = this.getTermName(termId);
+      var termObject = this.terms[termName];
+      if (termObject.count > 1) {
+        termObject.count--;
+      }
+      else {
+        delete this.terms[termName];
+        var index = this.termIds.indexOf(termId);
+        this.termIds.splice(index, 1);
+      }
     },
     getCategories: function() {
       var result = [];
       var categories = this.getElement().find('.organizer-category');
       for (var i = 0; i < categories.count(); i++) {
         result.push({
-          'id': categories.getItem(i).getAttribute('id'),
-          'name': categories.getItem(i).findOne('.organizer-category-name').$.value
+          'id': categories.getItem(i).getAttribute('data-category-id'),
+          'name': categories.getItem(i).getParent().findOne('.organizer-category-name').$.value
         })
       }
       return result;
     },
-    getTermCategories: function() {
+    getCategoryTerms: function() {
       var result = [];
-      var keys = Object.keys(this.termCategories);
-      for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
+      var categories = this.getElement().find('.organizer-category');
+      for (var i = 0; i < categories.count(); i++) {
+        var category = categories.getItem(i);
+        var terms = category.find('.organizer-term');
+        var termArray = [];
+        for (var j = 0; j < terms.count(); j++) {
+          termArray.push(terms.getItem(j).getAttribute('data-term-id'));
+        }
         result.push({
-          'term': key,
-          'categories': this.termCategories[key]
-        })
+          'category': category.getAttribute('data-category-id'),
+          'terms': termArray
+        });
       }
       return result;
     },
-    _addTerm: function(term, categoryId) {
-      var termObject = this.terms[terms];
-      var term = new CKEDITOR.dom.element('div');
-      term.addClass('organizer-term');
-      term.setAttribute('data-term-id', this.terms[terms].id);
-      term.setText(term);
-      var category = document.getElementById(categoryId);
-      category.append(term);
-    },
-    _createTerm: function(id, term) {
-      var termObject = this.terms[term];
-      if (this.terms[term]) {
-        this.terms[term].count++;
-      }
-      else {
-        this.terms[term] = {
-          'id': id||_generateTermId(),
-          'count': 1;
+    addTermToCategory: function(termName, categoryId) {
+      var _this = this;
+      var termObject = this.terms[termName];
+      if (termObject) {
+        var category = this.getElement().findOne('.organizer-category[data-category-id="' + categoryId + '"]');
+        var term = category.findOne('.organizer-term[data-term-id="' + termObject.id + '"]');
+        if (term != null) {
+          return;
         }
       }
-      return this.terms[term];
+      else {
+        termObject = this.addTerm(this._generateTermId(), termName);
+      }
+      termObject.count++;
+      var termContainer = new CKEDITOR.dom.element('div');
+      termContainer.addClass('organizer-term-container');
+      var term = new CKEDITOR.dom.element('div');
+      term.addClass('organizer-term');
+      term.setAttribute('data-term-id', termObject.id);
+      term.setText(termName);
+      termContainer.append(term);
+      
+      var deleteTermLink = new CKEDITOR.dom.element('a');
+      deleteTermLink.addClass('icon-remove');
+      termContainer.append(deleteTermLink);
+      deleteTermLink.on('click', function() {
+        var termContainer = this.getParent();
+        var term = termContainer.findOne('.organizer-term');
+        _this.removeTerm(term.getAttribute('data-term-id'));
+        termContainer.remove();
+      });
+
+      var category = this.getElement().findOne('.organizer-category[data-category-id="' + categoryId + '"]');
+      category.append(termContainer);
+    },
+    getTermName: function(termId) {
+      var keys = Object.keys(this.terms);
+      for (var i = 0; i < keys.length; i++) {
+        if (this.terms[keys[i]].id == termId) {
+          return keys[i];
+        }
+      }
+      return null;
     },
     _generateTermId: function() {
       var i = 1;
-      while (document.getElementById('t' + i) != null) {
+      while (this.termIds.indexOf('t' + i) >= 0) {
         i++;
       }
+      this.termIds.push('t' + i);
       return 't' + i;
     },
     _generateCategoryId: function() {
       var i = 1;
-      while (document.getElementById('c' + i) != null) {
+      while (this.categoryIds.indexOf('c' + i) >= 0) {
         i++;
       }
+      this.categoryIds.push('c' + i);
       return 'c' + i;
-    },
-    _setSelectedCategory: function(categoryId, selected) {
-      if (this.selectedTerm != null) {
-        var termId = this.selectedTerm.getAttribute('id');
-        var termCategories = this.termCategories[termId];
-        if (!termCategories) {
-          termCategories = [];
-        }
-        if (selected) {
-          termCategories.push(categoryId);
-        }
-        else {
-          var index = termCategories.indexOf(categoryId);
-          if (index != -1) {
-            termCategories.splice(index, 1);
-          }
-        }
-        this.termCategories[termId] = termCategories;
-      }
     }
   });
 
@@ -318,6 +277,14 @@
       onShow : function() {
         var contentJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
         this.setupContent(contentJson);
+        this._.element.on('keydown', function(evt) {
+          if (evt.data.getKeystroke() == 13) {
+            evt.data.preventDefault();
+            evt.data.stopPropagation();
+            evt.stop();
+            return false;
+          }
+        }, this, null, 0);
       },
       onOk : function(event) {
         var oldJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
@@ -327,7 +294,7 @@
           'termTitle': this.getContentElement('info', 'organizer').getTermTitle(),
           'terms': this.getContentElement('info', 'organizer').getTerms(),
           'categories': this.getContentElement('info', 'organizer').getCategories(),
-          'termCategories': this.getContentElement('info', 'organizer').getTermCategories()
+          'categoryTerms': this.getContentElement('info', 'organizer').getCategoryTerms()
         };
         var object = new CKEDITOR.dom.element('object');
         object.setAttribute('type', 'application/vnd.muikku.field.organizer');
@@ -368,9 +335,13 @@
               this.addCategory(categories[i].id, categories[i].name);
             }
             
-            var termCategories = json.termCategories;
-            for (var i = 0; i < termCategories.length; i++) {
-              this.termCategories[termCategories[i].term] = termCategories[i].categories;
+            var categoryTerms = json.categoryTerms;
+            for (var i = 0; i < categoryTerms.length; i++) {
+              var category = categoryTerms[i].category;
+              var terms = categoryTerms[i].terms;
+              for (var j = 0; j < terms.length; j++) {
+                this.addTermToCategory(this.getTermName(terms[j]), category);
+              }
             }
           }
         }]
