@@ -127,7 +127,8 @@ public class AnnouncerRESTService extends PluginRESTService {
   @RESTPermit(handling=Handling.INLINE)
   public Response listAnnouncements(
       @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive,
-      @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine
+      @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
+      @QueryParam("workspaceEntityId") Integer workspaceEntityId
   ) {
     if (!onlyActive) {
       if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
@@ -136,15 +137,19 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
     
     List<Announcement> announcements = null;
-    if (onlyActive) {
-      if (onlyMine) {
-        UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
-        announcements = announcementController.listActiveByTargetedUserEntity(currentUserEntity);
+    if (workspaceEntityId == null) {
+      if (onlyActive) {
+        if (onlyMine) {
+          UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
+          announcements = announcementController.listActiveByTargetedUserEntity(currentUserEntity);
+        } else {
+          announcements = announcementController.listActiveEnvironmentAnnouncements();
+        }
       } else {
-        announcements = announcementController.listActive();
+        announcements = announcementController.listUnarchivedEnvironmentAnnouncements();
       }
     } else {
-      announcements = announcementController.listUnarchived();
+      
     }
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();

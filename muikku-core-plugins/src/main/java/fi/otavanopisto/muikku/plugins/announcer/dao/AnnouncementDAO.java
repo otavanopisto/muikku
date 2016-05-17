@@ -16,6 +16,8 @@ import fi.otavanopisto.muikku.plugins.announcer.model.Announcement_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
+import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
+import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace_;
 
 public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
 	
@@ -51,15 +53,37 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     }
   }
   
-  public List<Announcement> listByArchived(boolean archived){
+  public List<Announcement> listByArchivedWithNoWorkspaces(boolean archived){
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
     Root<Announcement> root = criteria.from(Announcement.class);
+    Root<AnnouncementWorkspace> announcementWorkspaces = criteria.from(AnnouncementWorkspace.class);
     criteria.select(root);
-    criteria.where(criteriaBuilder.equal(root.get(Announcement_.archived), archived));
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(Announcement_.archived), archived)),
+            criteriaBuilder.not(
+                root.in(announcementWorkspaces.get(AnnouncementWorkspace_.announcement))));
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<Announcement> listByArchivedAndWorkspaceEntityId(boolean archived, int workspaceEntityId){
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+    Root<AnnouncementWorkspace> root = criteria.from(AnnouncementWorkspace.class);
+    Join<AnnouncementWorkspace, Announcement> announcement = root.join(AnnouncementWorkspace_.announcement);
+    criteria.select(announcement);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(announcement.get(Announcement_.archived), archived)),
+            criteriaBuilder.equal(root.get(AnnouncementWorkspace_.workspaceEntityId), workspaceEntityId));
+    criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
   }
@@ -106,7 +130,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return currentDate;
   }
   
-  public List<Announcement> listActive() {
+  public List<Announcement> listActiveWithNoWorkspaces() {
     EntityManager entityManager = getEntityManager(); 
     Date currentDate = new Date();
     currentDate = onlyDateFields(currentDate);
@@ -114,18 +138,21 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
     Root<Announcement> root = criteria.from(Announcement.class);
+    Root<AnnouncementWorkspace> announcementWorkspaces = criteria.from(AnnouncementWorkspace.class);
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
-        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)
+        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate),
+        criteriaBuilder.not(
+           root.in(announcementWorkspaces.get(AnnouncementWorkspace_.announcement)))
       )
     );
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<Announcement> listByArchivedAndDateAndPubliclyVisible(
+  public List<Announcement> listByArchivedAndDateAndPubliclyVisibleWithNoWorkspaces(
       boolean archived,
       Date currentDate,
       boolean publiclyVisible
@@ -136,31 +163,38 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
     Root<Announcement> root = criteria.from(Announcement.class);
+    Root<AnnouncementWorkspace> announcementWorkspaces = criteria.from(AnnouncementWorkspace.class);
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
           criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
           criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate),
           criteriaBuilder.equal(root.get(Announcement_.archived), archived),
-          criteriaBuilder.equal(root.get(Announcement_.publiclyVisible), publiclyVisible)));
+          criteriaBuilder.equal(root.get(Announcement_.publiclyVisible), publiclyVisible),
+          criteriaBuilder.not(
+             root.in(announcementWorkspaces.get(AnnouncementWorkspace_.announcement)))));
+          
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<Announcement> listByArchivedAndDate(boolean archived, Date currentDate) {
+  public List<Announcement> listByArchivedAndDateWithNoWorkspaces(boolean archived, Date currentDate) {
     EntityManager entityManager = getEntityManager(); 
     currentDate = onlyDateFields(currentDate);
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
     Root<Announcement> root = criteria.from(Announcement.class);
+    Root<AnnouncementWorkspace> announcementWorkspaces = criteria.from(AnnouncementWorkspace.class);
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(Announcement_.archived), false),
         criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
-        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)));
+        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)),
+        criteriaBuilder.not(
+           root.in(announcementWorkspaces.get(AnnouncementWorkspace_.announcement))));
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     return entityManager.createQuery(criteria).getResultList();
   }

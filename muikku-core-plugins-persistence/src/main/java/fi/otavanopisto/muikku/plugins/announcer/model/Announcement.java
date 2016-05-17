@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.plugins.announcer.model;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,11 +10,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
+
+import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
 
 @Entity
 public class Announcement {

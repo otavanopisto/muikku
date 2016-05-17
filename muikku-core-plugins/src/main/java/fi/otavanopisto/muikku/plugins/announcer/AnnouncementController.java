@@ -63,16 +63,16 @@ public class AnnouncementController {
     return announcement;
   }
   
-  public List<Announcement> listUnarchived() {
-    return announcementDAO.listByArchived(false);
+  public List<Announcement> listUnarchivedEnvironmentAnnouncements() {
+    return announcementDAO.listByArchivedWithNoWorkspaces(false);
   }
   
   public List<Announcement> listAll() {
     return announcementDAO.listAll();
   }
   
-  public List<Announcement> listActive() {
-    return announcementDAO.listByArchivedAndDate(false, new Date());
+  public List<Announcement> listActiveEnvironmentAnnouncements() {
+    return announcementDAO.listByArchivedAndDateWithNoWorkspaces(false, new Date());
   }
   
   public Announcement findById(Long id) {
@@ -129,7 +129,7 @@ public class AnnouncementController {
         currentDate,
         userGroupEntityIds,
         false));
-    result.addAll(announcementDAO.listByArchivedAndDateAndPubliclyVisible(
+    result.addAll(announcementDAO.listByArchivedAndDateAndPubliclyVisibleWithNoWorkspaces(
         false,
         currentDate,
         true));
