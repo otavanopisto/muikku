@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup_;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement_;
@@ -58,14 +59,18 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+
+    Subquery<Announcement> subquery = criteria.subquery(Announcement.class);
+    Root<AnnouncementWorkspace> announcementWorkspaces = subquery.from(AnnouncementWorkspace.class);
+    subquery.select(announcementWorkspaces.get(AnnouncementWorkspace_.announcement));
+
     Root<Announcement> root = criteria.from(Announcement.class);
-    Root<AnnouncementWorkspace> announcementWorkspaces = criteria.from(AnnouncementWorkspace.class);
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(Announcement_.archived), archived)),
             criteriaBuilder.not(
-                root.in(announcementWorkspaces.get(AnnouncementWorkspace_.announcement))));
+                criteriaBuilder.in(root).value(subquery)));
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
@@ -161,15 +166,19 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+
+    Subquery<Announcement> subquery = criteria.subquery(Announcement.class);
+    Root<AnnouncementWorkspace> announcementWorkspaces = subquery.from(AnnouncementWorkspace.class);
+    subquery.select(announcementWorkspaces.get(AnnouncementWorkspace_.announcement));
+
     Root<Announcement> root = criteria.from(Announcement.class);
-    Root<AnnouncementWorkspace> announcementWorkspaces = criteria.from(AnnouncementWorkspace.class);
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
         criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate),
         criteriaBuilder.not(
-           root.in(announcementWorkspaces.get(AnnouncementWorkspace_.announcement)))
+            criteriaBuilder.in(root).value(subquery))
       )
     );
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
@@ -186,8 +195,12 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+
+    Subquery<Announcement> subquery = criteria.subquery(Announcement.class);
+    Root<AnnouncementWorkspace> announcementWorkspaces = subquery.from(AnnouncementWorkspace.class);
+    subquery.select(announcementWorkspaces.get(AnnouncementWorkspace_.announcement));
+
     Root<Announcement> root = criteria.from(Announcement.class);
-    Root<AnnouncementWorkspace> announcementWorkspaces = criteria.from(AnnouncementWorkspace.class);
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
@@ -196,7 +209,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
           criteriaBuilder.equal(root.get(Announcement_.archived), archived),
           criteriaBuilder.equal(root.get(Announcement_.publiclyVisible), publiclyVisible),
           criteriaBuilder.not(
-             root.in(announcementWorkspaces.get(AnnouncementWorkspace_.announcement)))));
+            criteriaBuilder.in(root).value(subquery))));
           
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     
@@ -209,8 +222,12 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+
+    Subquery<Announcement> subquery = criteria.subquery(Announcement.class);
+    Root<AnnouncementWorkspace> announcementWorkspaces = subquery.from(AnnouncementWorkspace.class);
+    subquery.select(announcementWorkspaces.get(AnnouncementWorkspace_.announcement));
+
     Root<Announcement> root = criteria.from(Announcement.class);
-    Root<AnnouncementWorkspace> announcementWorkspaces = criteria.from(AnnouncementWorkspace.class);
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
@@ -218,7 +235,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
         criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
         criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)),
         criteriaBuilder.not(
-           root.in(announcementWorkspaces.get(AnnouncementWorkspace_.announcement))));
+          criteriaBuilder.in(root).value(subquery)));
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     return entityManager.createQuery(criteria).getResultList();
   }

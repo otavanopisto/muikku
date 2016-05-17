@@ -8,11 +8,11 @@
       announcement_id bigint not null,
       primary key (id),
       constraint
-        AnnouncementUserGroup_fk_announcement_id
+        AnnouncementWorkspace_fk_announcement_id
       foreign key
         (announcement_id)
       references
         Announcement (id)
     )
   </sql>
-</update
+</update>
