@@ -118,7 +118,8 @@
           'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/',
           'muikku-image-details': CONTEXTPATH + '/scripts/ckplugins/muikku-image-details/',
           'muikku-word-definition': CONTEXTPATH + '/scripts/ckplugins/muikku-word-definition/',
-          'muikku-audio-defaults': CONTEXTPATH + '/scripts/ckplugins/muikku-audio-defaults/'
+          'muikku-audio-defaults': CONTEXTPATH + '/scripts/ckplugins/muikku-audio-defaults/',
+          'muikku-image-target': CONTEXTPATH + '/scripts/ckplugins/muikku-image-target/'
         },
         extraPlugins : [
                        'oembed',
@@ -137,6 +138,7 @@
                        'muikku-image-details',
                        'muikku-word-definition',
                        'muikku-audio-defaults',
+                       'muikku-image-target',
                        'muikku-mathjax',
                        'autogrow',
                        'uploadimage'],
@@ -146,6 +148,7 @@
           autoGrowOnStartup : true,
           autoGrow_maxHeight: $( window ).height() - $('span.cke_top').height() - 240,
           autoGrow_minHeight: 400, 
+          linkShowTargetTab: true,
           allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
           entities: false,
           entities_latin: false,
