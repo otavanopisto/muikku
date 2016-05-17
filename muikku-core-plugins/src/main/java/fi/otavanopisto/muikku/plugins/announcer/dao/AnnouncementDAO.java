@@ -71,7 +71,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<Announcement> listByArchivedAndWorkspaceEntityId(boolean archived, int workspaceEntityId){
+  public List<Announcement> listByArchivedAndWorkspaceEntityId(boolean archived, long workspaceEntityId){
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -81,6 +81,30 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     criteria.select(announcement);
     criteria.where(
         criteriaBuilder.and(
+            criteriaBuilder.equal(announcement.get(Announcement_.archived), archived)),
+            criteriaBuilder.equal(root.get(AnnouncementWorkspace_.workspaceEntityId), workspaceEntityId));
+    criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<Announcement> listByArchivedAndDateAndWorkspaceEntityId(
+      boolean archived,
+      Date date,
+      long workspaceEntityId
+  ){
+    EntityManager entityManager = getEntityManager();
+    date = onlyDateFields(date);
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+    Root<AnnouncementWorkspace> root = criteria.from(AnnouncementWorkspace.class);
+    Join<AnnouncementWorkspace, Announcement> announcement = root.join(AnnouncementWorkspace_.announcement);
+    criteria.select(announcement);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.lessThanOrEqualTo(announcement.get(Announcement_.startDate), date),
+            criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), date),
             criteriaBuilder.equal(announcement.get(Announcement_.archived), archived)),
             criteriaBuilder.equal(root.get(AnnouncementWorkspace_.workspaceEntityId), workspaceEntityId));
     criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));

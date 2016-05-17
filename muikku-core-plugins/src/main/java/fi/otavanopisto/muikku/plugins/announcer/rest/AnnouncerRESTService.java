@@ -22,11 +22,13 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.announcer.AnnouncementController;
 import fi.otavanopisto.muikku.plugins.announcer.AnnouncerPermissions;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
@@ -50,6 +52,9 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
 
   private Date currentDate() {
     Calendar cal = Calendar.getInstance();
@@ -128,7 +133,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   public Response listAnnouncements(
       @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive,
       @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
-      @QueryParam("workspaceEntityId") Integer workspaceEntityId
+      @QueryParam("workspaceEntityId") Long workspaceEntityId
   ) {
     if (!onlyActive) {
       if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
@@ -149,7 +154,16 @@ public class AnnouncerRESTService extends PluginRESTService {
         announcements = announcementController.listUnarchivedEnvironmentAnnouncements();
       }
     } else {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      if (workspaceEntity == null) {
+        return Response.status(Status.NOT_FOUND).entity("Workspace entity with given ID not found").build();
+      }
       
+      if (onlyActive) {
+        announcements = announcementController.listActiveByWorkspaceEntity(workspaceEntity);
+      } else {
+        announcements = announcementController.listUnarchivedByWorkspaceEntity(workspaceEntity);
+      }
     }
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();

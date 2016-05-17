@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementUserGroupDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
@@ -65,6 +66,14 @@ public class AnnouncementController {
   
   public List<Announcement> listUnarchivedEnvironmentAnnouncements() {
     return announcementDAO.listByArchivedWithNoWorkspaces(false);
+  }
+  
+  public List<Announcement> listUnarchivedByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    return announcementDAO.listByArchivedAndWorkspaceEntityId(false, workspaceEntity.getId());
+  }
+
+  public List<Announcement> listActiveByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    return announcementDAO.listByArchivedAndDateAndWorkspaceEntityId(false, new Date(), workspaceEntity.getId());
   }
   
   public List<Announcement> listAll() {
