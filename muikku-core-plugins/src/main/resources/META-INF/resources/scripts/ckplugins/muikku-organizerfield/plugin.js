@@ -30,6 +30,7 @@
 
   var organizerFieldElement = function(dialog, elementDefinition, htmlList) {
     this.selectedTerm = null;
+    this.terms = {}; // name=id|count
     this.termCategories = {};
     CKEDITOR.ui.dialog.uiElement.call(this, dialog, elementDefinition, htmlList, 'div');
   };
@@ -45,6 +46,7 @@
         uiElement.getFirst().remove();
       }
       this.selectedTerm = null;
+      this.terms = {};
       this.termCategories = {};
       
       // Term title container
@@ -62,114 +64,112 @@
       termTitleField.setAttribute('style', 'border:1px solid rgb(0,0,0);');
       termTitleField.setAttribute('name', 'termTitle');
       termTitleContainer.append(termTitleField);
-
-      // Terms and categories container
-      
-      var termsAndCategoriesContainer = new CKEDITOR.dom.element('div');
-      termsAndCategoriesContainer.addClass('organizer-terms-and-categories-container');
-      uiElement.append(termsAndCategoriesContainer);
-      
-      // Terms container
-      
-      var termsContainer = new CKEDITOR.dom.element('div');
-      termsContainer.addClass('organizer-terms-container');
-      termsAndCategoriesContainer.append(termsContainer);
-      
-      // Terms header
-      
-      var termsHeaderContainer = new CKEDITOR.dom.element('div');
-      termsHeaderContainer.addClass('organizer-terms-header');
-      termsContainer.append(termsHeaderContainer);
-
-      var termsHeaderTitle = new CKEDITOR.dom.element('span');
-      termsHeaderTitle.setText(editor.lang['muikku-organizerfield'].propertiesDialogTermsTitle);
-      termsHeaderContainer.append(termsHeaderTitle);
-      
-      var _this = this;
-      var termsHeaderAddTermLink = new CKEDITOR.dom.element('a');
-      termsHeaderAddTermLink.addClass('icon-add');
-      termsHeaderAddTermLink.on('click', function() {
-        _this.addTerm();
-      });
-      termsHeaderContainer.append(termsHeaderAddTermLink);
-      
-      // Categories container
       
       var categoriesContainer = new CKEDITOR.dom.element('div');
       categoriesContainer.addClass('organizer-categories-container');
-      termsAndCategoriesContainer.append(categoriesContainer);
-
-      // Categories header
+      uiElement.append(categoriesContainer);
       
-      var categoriesHeaderContainer = new CKEDITOR.dom.element('div');
-      categoriesHeaderContainer.addClass('organizer-categories-header');
-      categoriesContainer.append(categoriesHeaderContainer);
-
-      var categoriesHeaderTitle = new CKEDITOR.dom.element('span');
-      categoriesHeaderTitle.setText(editor.lang['muikku-organizerfield'].propertiesDialogCategoriesTitle);
-      categoriesHeaderContainer.append(categoriesHeaderTitle);
-      
-      var _this = this;
-      var categoriesHeaderAddCategoryLink = new CKEDITOR.dom.element('a');
-      categoriesHeaderAddCategoryLink.addClass('icon-add');
-      categoriesHeaderAddCategoryLink.on('click', function() {
+      var addCategoryLink = new CKEDITOR.dom.element('a');
+      addCategoryLink.addClass('icon-add');
+      addCategoryLink.on('click', function() {
         _this.addCategory();
       });
-      categoriesHeaderContainer.append(categoriesHeaderAddCategoryLink);
+      uiElement.append(addCategoryLink);
+
+//      // Terms and categories container
+//      
+//      var termsAndCategoriesContainer = new CKEDITOR.dom.element('div');
+//      termsAndCategoriesContainer.addClass('organizer-terms-and-categories-container');
+//      uiElement.append(termsAndCategoriesContainer);
+//      
+//      // Terms container
+//      
+//      var termsContainer = new CKEDITOR.dom.element('div');
+//      termsContainer.addClass('organizer-terms-container');
+//      termsAndCategoriesContainer.append(termsContainer);
+//      
+//      // Terms header
+//      
+//      var termsHeaderContainer = new CKEDITOR.dom.element('div');
+//      termsHeaderContainer.addClass('organizer-terms-header');
+//      termsContainer.append(termsHeaderContainer);
+//
+//      var termsHeaderTitle = new CKEDITOR.dom.element('span');
+//      termsHeaderTitle.setText(editor.lang['muikku-organizerfield'].propertiesDialogTermsTitle);
+//      termsHeaderContainer.append(termsHeaderTitle);
+//      
+//      var _this = this;
+//      var termsHeaderAddTermLink = new CKEDITOR.dom.element('a');
+//      termsHeaderAddTermLink.addClass('icon-add');
+//      termsHeaderAddTermLink.on('click', function() {
+//        _this.addTerm();
+//      });
+//      termsHeaderContainer.append(termsHeaderAddTermLink);
+//      
+//      // Categories container
+//      
+//      var categoriesContainer = new CKEDITOR.dom.element('div');
+//      categoriesContainer.addClass('organizer-categories-container');
+//      termsAndCategoriesContainer.append(categoriesContainer);
+//
+//      // Categories header
+//      
+//      var categoriesHeaderContainer = new CKEDITOR.dom.element('div');
+//      categoriesHeaderContainer.addClass('organizer-categories-header');
+//      categoriesContainer.append(categoriesHeaderContainer);
+//
+//      var categoriesHeaderTitle = new CKEDITOR.dom.element('span');
+//      categoriesHeaderTitle.setText(editor.lang['muikku-organizerfield'].propertiesDialogCategoriesTitle);
+//      categoriesHeaderContainer.append(categoriesHeaderTitle);
+//      
+//      var _this = this;
+//      var categoriesHeaderAddCategoryLink = new CKEDITOR.dom.element('a');
+//      categoriesHeaderAddCategoryLink.addClass('icon-add');
+//      categoriesHeaderAddCategoryLink.on('click', function() {
+//        _this.addCategory();
+//      });
+//      categoriesHeaderContainer.append(categoriesHeaderAddCategoryLink);
     },
-    addTerm: function(id, name) {
-      var _this = this;
-      // Term container
-      var termContainer = new CKEDITOR.dom.element('div');
-      termContainer.addClass('organizer-term');
-      termContainer.setAttribute('id', id||this._generateTermId());
-      termContainer.on('click', function() {
-        _this._setSelectedTerm(this);
-      });
-      // Term field
-      var termField = new CKEDITOR.dom.element('input');
-      termField.addClass('organizer-term-name');
-      termField.setAttribute('type', 'text');
-      termField.setAttribute('style', 'border:1px solid rgb(0,0,0);');
-      if (name) {
-        termField.setAttribute('value', name);
-      }
-      termContainer.append(termField);
-      // Delete term button
-      var deleteTermLink = new CKEDITOR.dom.element('a');
-      deleteTermLink.addClass('icon-remove');
-      termContainer.append(deleteTermLink);
-      deleteTermLink.on('click', function() {
-        var term = this;
-        while (!term.hasClass('organizer-term')) {
-          term = term.getParent();
-        }
-        delete _this.terms[term.getAttribute('id')];
-        term.remove();
-      });
-      // Add
-      var termsContainer = this.getElement().findOne('.organizer-terms-container');
-      termsContainer.append(termContainer);
-    },
+//    addTerm: function(name, categoryId) {
+//      var _this = this;
+//      // Term container
+//      var termContainer = new CKEDITOR.dom.element('div');
+//      termContainer.addClass('organizer-term');
+//      termContainer.setAttribute('id', id||this._generateTermId());
+//      termContainer.on('click', function() {
+//        _this._setSelectedTerm(this);
+//      });
+//      // Term field
+//      var termField = new CKEDITOR.dom.element('input');
+//      termField.addClass('organizer-term-name');
+//      termField.setAttribute('type', 'text');
+//      termField.setAttribute('style', 'border:1px solid rgb(0,0,0);');
+//      if (name) {
+//        termField.setAttribute('value', name);
+//      }
+//      termContainer.append(termField);
+//      // Delete term button
+//      var deleteTermLink = new CKEDITOR.dom.element('a');
+//      deleteTermLink.addClass('icon-remove');
+//      termContainer.append(deleteTermLink);
+//      deleteTermLink.on('click', function() {
+//        var term = this;
+//        while (!term.hasClass('organizer-term')) {
+//          term = term.getParent();
+//        }
+//        delete _this.terms[term.getAttribute('id')];
+//        term.remove();
+//      });
+//      // Add
+//      var termsContainer = this.getElement().findOne('.organizer-terms-container');
+//      termsContainer.append(termContainer);
+//    },
     addCategory: function(id, name) {
       var _this = this;
       // Category container
       var categoryContainer = new CKEDITOR.dom.element('div');
-      categoryContainer.addClass('organizer-category');
-      categoryContainer.setAttribute('id', id||this._generateCategoryId());
-      // Category checkbox
-      var categoryCheckbox = new CKEDITOR.dom.element('input');
-      categoryCheckbox.setAttribute('name', 'categorySelected');
-      categoryCheckbox.setAttribute('type', 'checkbox');
-      categoryContainer.append(categoryCheckbox);
-      categoryCheckbox.on('click', function() {
-        var category = this;
-        while (!category.hasClass('organizer-category')) {
-          category = category.getParent();
-        }
-        _this._setSelectedCategory(category.getAttribute('id'), this.$.checked);
-      });
-      // Category field
+      categoryContainer.addClass('organizer-category-container');
+      // Category name
       var categoryField = new CKEDITOR.dom.element('input');
       categoryField.addClass('organizer-category-name');
       categoryField.setAttribute('type', 'text');
@@ -188,6 +188,23 @@
           category = category.getParent();
         }
         category.remove();
+      });
+      // Category itself
+      var category = new CKEDITOR.dom.element('div');
+      category.addClass('organizer-category');
+      category.setAttribute('id', id||this._generateCategoryId());
+      categoryContainer.append(category);
+      // New term field
+      var termField = new CKEDITOR.dom.element('input');
+      termField.addClass('organizer-term-name');
+      termField.setAttribute('type', 'text');
+      termField.setAttribute('style', 'border:1px solid rgb(0,0,0);');
+      category.append(termField);
+      termField.$.on('keypress', function(evt) {
+        var field = evt.target;
+        if (e.keyCode == 13 && field.value !== '') {
+          var termid = _this._createTerm(field.value);
+        }
       });
       // Add
       var categoriesContainer = this.getElement().findOne('.organizer-categories-container');
@@ -230,6 +247,28 @@
       }
       return result;
     },
+    _addTerm: function(term, categoryId) {
+      var termObject = this.terms[terms];
+      var term = new CKEDITOR.dom.element('div');
+      term.addClass('organizer-term');
+      term.setAttribute('data-term-id', this.terms[terms].id);
+      term.setText(term);
+      var category = document.getElementById(categoryId);
+      category.append(term);
+    },
+    _createTerm: function(id, term) {
+      var termObject = this.terms[term];
+      if (this.terms[term]) {
+        this.terms[term].count++;
+      }
+      else {
+        this.terms[term] = {
+          'id': id||_generateTermId(),
+          'count': 1;
+        }
+      }
+      return this.terms[term];
+    },
     _generateTermId: function() {
       var i = 1;
       while (document.getElementById('t' + i) != null) {
@@ -243,22 +282,6 @@
         i++;
       }
       return 'c' + i;
-    },
-    _setSelectedTerm: function (term) {
-      if (this.selectedTerm != null) {
-        this.selectedTerm.removeAttribute('style');
-      }
-      this.selectedTerm = term;
-      term.setAttribute('style', 'background-color:lightblue;')
-      var termId = term.getAttribute('id');
-      var termCategories = this.termCategories[termId];
-      var categories = this.getElement().find('.organizer-category');
-      for (var i = 0; i < categories.count(); i++) {
-        var categoryId = categories.getItem(i).getAttribute('id');
-        var categorySelected = termId in this.termCategories && termCategories.indexOf(categoryId) != -1;
-        var categoryCheckbox = categories.getItem(i).findOne('input[name="categorySelected"]');
-        categoryCheckbox.$.checked = categorySelected;
-      }
     },
     _setSelectedCategory: function(categoryId, selected) {
       if (this.selectedTerm != null) {
