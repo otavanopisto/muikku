@@ -669,16 +669,22 @@
             var keys = Object.keys(answer);
             for (var i = 0; i < keys.length; i++) {
               var categoryId = keys[i];
-              var category = $(this.element).find('.muikku-category[data-category-id="' + categoryId + '"]')[0];
-              var termIds = answer[keys[i]];
-              for (var j = 0; j < termIds.length; j++) {
-                var term = $(this.element).find('.muikku-term[data-term-id="' + termIds[j] + '"]')[0];
-                var categoryTerm = $(term).clone();
-                var removeLink = $('<a>').append('-').on('click', function(event) {
-                  $(event.target).closest('.muikku-term').remove();
-                });
-                $(categoryTerm).append(removeLink);
-                $(category).append(categoryTerm);
+              var categories = $(this.element).find('.muikku-category[data-category-id="' + categoryId + '"]');
+              var category = categories.length == 0 ? null : categories[0];
+              if (category != null) {
+                var termIds = answer[keys[i]];
+                for (var j = 0; j < termIds.length; j++) {
+                  var terms = $(this.element).find('.muikku-term[data-term-id="' + termIds[j] + '"]'); 
+                  var term = terms.length == 0 ? null : terms[0];
+                  if (term != null) {
+                    var categoryTerm = $(term).clone();
+                    var removeLink = $('<a>').append('-').on('click', function(event) {
+                      $(event.target).closest('.muikku-term').remove();
+                    });
+                    $(categoryTerm).append(removeLink);
+                    $(category).append(categoryTerm);
+                  }
+                }
               }
             }
           }
