@@ -4,6 +4,7 @@ CKEDITOR.plugins.setLang('muikku-organizerfield', 'en', {
   propertiesMenu: 'Grouping Field Properties',
   propertiesDialogTitle: 'Grouping Field Properties',
   propertiesDialogTermTitle: 'Terms Title',
-  propertiesDialogTermsTitle: 'Terms',
-  propertiesDialogCategoriesTitle: 'Groups'
+  propertiesDialogCategoriesTitle: 'Groups',
+  propertiesDialogCategoryName: 'Group name',
+  propertiesDialogNewTerm: 'New term'
 });

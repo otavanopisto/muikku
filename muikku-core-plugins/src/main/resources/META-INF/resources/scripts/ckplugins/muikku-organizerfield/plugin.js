@@ -38,6 +38,7 @@
   organizerFieldElement.prototype = new CKEDITOR.ui.dialog.uiElement;
   CKEDITOR.tools.extend(organizerFieldElement.prototype, {
     buildUi: function(editor) {
+      this._lang = editor.lang['muikku-organizerfield'];
       var uiElement = this.getElement();
       
       // Clear previous UI
@@ -56,7 +57,7 @@
       uiElement.append(termTitleContainer);
       
       termTitleLabel = new CKEDITOR.dom.element('label');
-      termTitleLabel.setText(editor.lang['muikku-organizerfield'].propertiesDialogTermTitle);
+      termTitleLabel.setText(this._lang.propertiesDialogTermTitle);
       termTitleContainer.append(termTitleLabel);
       
       termTitleFieldContainer = new CKEDITOR.dom.element('div');
@@ -68,6 +69,10 @@
       termTitleField.setAttribute('name', 'termTitle');
       termTitleFieldContainer.append(termTitleField);
       
+      categoriesTitleLabel = new CKEDITOR.dom.element('label');
+      categoriesTitleLabel.setText(this._lang.propertiesDialogCategoriesTitle);
+      uiElement.append(termTitleLabel);
+
       var categoriesContainer = new CKEDITOR.dom.element('div');
       categoriesContainer.addClass('organizer-categories-container');
       uiElement.append(categoriesContainer);
@@ -90,13 +95,14 @@
       var categoryField = new CKEDITOR.dom.element('input');
       categoryField.addClass('organizer-category-name');
       categoryField.setAttribute('type', 'text');
+      categoryField.setAttribute('placeholder', this._lang.propertiesDialogCategoryName);
       if (name) {
         categoryField.setAttribute('value', name);
       }
       categoryContainer.append(categoryField);
       // Delete category button
       var deleteCategoryLink = new CKEDITOR.dom.element('a');
-      deleteCategoryLink.addClass('icon-detele');
+      deleteCategoryLink.addClass('icon-delete');
       categoryContainer.append(deleteCategoryLink);
       deleteCategoryLink.on('click', function() {
         var categoryContainer = this.getParent();
@@ -119,6 +125,7 @@
       var termField = new CKEDITOR.dom.element('input');
       termField.addClass('organizer-term-name');
       termField.setAttribute('type', 'text');
+      termField.setAttribute('placeholder', this._lang.propertiesDialogNewTerm);
       category.append(termField);
       termField.on('keydown', function(evt) {
         var field = this;
@@ -137,12 +144,7 @@
           return false;
         }
       });
-      // Add
-      //var categoriesContainer = this.getElement().findOne('.organizer-categories-container');
-      var addLink = this.getElement().findOne('.organizer-add-category-container');
-      categoryContainer.insertBefore(addLink);
-      
-      //categoriesContainer.append(categoryContainer);
+      categoryContainer.insertBefore(this.getElement().findOne('.organizer-add-category-container'));
     },
     addTerm: function(id, name) {
       this.terms[name] = {

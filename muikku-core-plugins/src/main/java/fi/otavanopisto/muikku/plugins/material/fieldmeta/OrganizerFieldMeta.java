@@ -54,6 +54,26 @@ public class OrganizerFieldMeta extends FieldMeta {
   public void setCategoryTerms(List<OrganizerFieldCategoryTermsMeta> categoryTerms) {
     this.categoryTerms = categoryTerms;
   }
+  
+  @JsonIgnore
+  public boolean hasCategoryWithId(String categoryId) {
+    for (OrganizerFieldCategoryMeta category : categories) {
+      if (categoryId.equals(category.getId())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @JsonIgnore
+  public boolean hasTermWithId(String termId) {
+    for (OrganizerFieldTermMeta term : terms) {
+      if (termId.equals(term.getId())) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   private String termTitle;
   private List<OrganizerFieldTermMeta> terms;
