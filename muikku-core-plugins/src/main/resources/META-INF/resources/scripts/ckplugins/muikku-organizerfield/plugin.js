@@ -69,13 +69,13 @@
       termTitleField.setAttribute('name', 'termTitle');
       termTitleFieldContainer.append(termTitleField);
       
-      categoriesTitleLabel = new CKEDITOR.dom.element('label');
-      categoriesTitleLabel.setText(this._lang.propertiesDialogCategoriesTitle);
-      uiElement.append(termTitleLabel);
-
       var categoriesContainer = new CKEDITOR.dom.element('div');
       categoriesContainer.addClass('organizer-categories-container');
       uiElement.append(categoriesContainer);
+
+      categoriesTitleLabel = new CKEDITOR.dom.element('label');
+      categoriesTitleLabel.setText(this._lang.propertiesDialogCategoriesTitle);
+      categoriesContainer.append(categoriesTitleLabel);
       
       var _this = this;
       var addCategoryLink = new CKEDITOR.dom.element('div');
