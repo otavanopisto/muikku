@@ -121,6 +121,7 @@
       category.addClass('organizer-category');
       category.setAttribute('data-category-id', id||this._generateCategoryId());
       categoryContainer.append(category);
+      this.categoryIds.push(category.getAttribute('data-category-id'));
       // New term field
       var termField = new CKEDITOR.dom.element('input');
       termField.addClass('organizer-term-name');
