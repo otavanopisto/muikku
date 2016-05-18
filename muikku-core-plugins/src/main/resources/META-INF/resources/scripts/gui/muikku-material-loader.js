@@ -631,6 +631,8 @@
           $(this).trigger("change");
         }
       }
+      var categoriesContainer = $('<div>').addClass('muikku-categories-container');
+      organizerField.append(categoriesContainer);
       var categoryObjects = meta.categories;
       for (var i = 0; i < categoryObjects.length; i++) {
         var categoryContainer = $('<div>').addClass('muikku-category-container');
@@ -640,7 +642,7 @@
           drop: handleDropEvent
         });
         categoryContainer.append(categoryTitle).append(category);
-        organizerField.append(categoryContainer);
+        categoriesContainer.append(categoryContainer);
       }
       organizerField.muikkuField({
         fieldName: data.name,
