@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -40,6 +42,18 @@ public class WorkspaceMaterialOrganizerFieldAnswerDAO extends CorePluginsDAO<Wor
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public List<WorkspaceMaterialOrganizerFieldAnswer> listByWorkspaceMaterialField(WorkspaceMaterialField field) {
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterialOrganizerFieldAnswer> criteria = criteriaBuilder.createQuery(WorkspaceMaterialOrganizerFieldAnswer.class);
+    Root<WorkspaceMaterialOrganizerFieldAnswer> root = criteria.from(WorkspaceMaterialOrganizerFieldAnswer.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceMaterialOrganizerFieldAnswer_.field), field)
+    );
+    return entityManager.createQuery(criteria).getResultList();
   }
   
   public WorkspaceMaterialOrganizerFieldAnswer updateValue(WorkspaceMaterialOrganizerFieldAnswer workspaceMaterialOrganizerFieldAnswer, String value) {

@@ -4,6 +4,7 @@ CKEDITOR.plugins.setLang('muikku-organizerfield', 'fi', {
   propertiesMenu: 'Ryhmittelykentän asetukset',
   propertiesDialogTitle: 'Ryhmittelykentän asetukset',
   propertiesDialogTermTitle: 'Termien otsikko',
-  propertiesDialogTermsTitle: 'Termit',
-  propertiesDialogCategoriesTitle: 'Ryhmät'
+  propertiesDialogCategoriesTitle: 'Ryhmät',
+  propertiesDialogCategoryName: 'Ryhmän nimi',
+  propertiesDialogNewTerm: 'Uusi termi'
 });

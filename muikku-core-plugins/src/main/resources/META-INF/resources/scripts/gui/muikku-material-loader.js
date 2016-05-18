@@ -622,10 +622,10 @@
         var existingTerm = $(this).find('.muikku-term[data-term-id="' + termId + '"]');
         if (existingTerm.length == 0) {
           var categoryTerm = $(ui.draggable).clone();
-          var removeLink = $('<a>').append('-').on('click', function(event) {
+          var removeLink = $('<a>').append('-').on('click', $.proxy(function(event) {
             $(event.target).closest('.muikku-term').remove();
             $(this).trigger("change");
-          });
+          }, this));
           categoryTerm.append(removeLink);
           $(this).append(categoryTerm);
           $(this).trigger("change");
