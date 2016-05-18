@@ -702,6 +702,10 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
   }
   
+  .clear {
+    clear:both;
+  }
+  
 }
 
 /* Different reading view's overrides */
@@ -732,6 +736,10 @@ body.workspace-materials #contentWorkspaceMaterials {
     font-size: 12px;
   }
   
+  .clear {
+    clear:both;
+  }
+  
 }
 
 body.workspace-materials-reading #contentWorkspaceMaterialsReading {
@@ -758,6 +766,10 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
   /* Assigment type indicators under reading view */
   .muikku-page-assignment-type {
     font-size: 14px;
+  }
+  
+  .clear {
+    clear:both;
   }
   
 }
