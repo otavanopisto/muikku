@@ -55,15 +55,18 @@
       termTitleContainer.addClass('organizer-term-title-container');
       uiElement.append(termTitleContainer);
       
-      termTitleLabel = new CKEDITOR.dom.element('span');
+      termTitleLabel = new CKEDITOR.dom.element('label');
       termTitleLabel.setText(editor.lang['muikku-organizerfield'].propertiesDialogTermTitle);
       termTitleContainer.append(termTitleLabel);
       
+      termTitleFieldContainer = new CKEDITOR.dom.element('div');
+      termTitleFieldContainer.addClass('term-title-field-container');
+      termTitleContainer.append(termTitleFieldContainer);
+      
       termTitleField = new CKEDITOR.dom.element('input');
       termTitleField.setAttribute('type', 'text');
-      termTitleField.setAttribute('style', 'border:1px solid rgb(0,0,0);');
       termTitleField.setAttribute('name', 'termTitle');
-      termTitleContainer.append(termTitleField);
+      termTitleFieldContainer.append(termTitleField);
       
       var categoriesContainer = new CKEDITOR.dom.element('div');
       categoriesContainer.addClass('organizer-categories-container');
@@ -86,7 +89,6 @@
       var categoryField = new CKEDITOR.dom.element('input');
       categoryField.addClass('organizer-category-name');
       categoryField.setAttribute('type', 'text');
-      categoryField.setAttribute('style', 'border:1px solid rgb(0,0,0);');
       if (name) {
         categoryField.setAttribute('value', name);
       }
@@ -116,7 +118,6 @@
       var termField = new CKEDITOR.dom.element('input');
       termField.addClass('organizer-term-name');
       termField.setAttribute('type', 'text');
-      termField.setAttribute('style', 'border:1px solid rgb(0,0,0);');
       category.append(termField);
       termField.on('keydown', function(evt) {
         var field = this;

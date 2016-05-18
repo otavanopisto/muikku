@@ -181,6 +181,7 @@ div.cke_reset_all {
               label {
                 margin-right:10px;
               }
+              
             }
             
             .connectfield-elements-container .connectfield-element-container {
@@ -228,7 +229,33 @@ div.cke_reset_all {
                 
               }
 
+            }
             
+            .organizer-categories-container {
+              width:100%;
+              box-sizing:border-box;
+              
+              display:-webkit-box;
+              display:-moz-box;
+              display:-ms-flexbox;
+              display:-webkit-flex;
+              display:flex; 
+              
+              
+              .organizer-category-container {
+                max-height:300px;
+                overflow-y:auto;
+                overflow-x:hidden;
+                width:310px;
+                box-sizing:border-box;
+                border:3px solid #e1f7fc;
+                border-radius:3px;
+                min-height:100px;
+                padding:3px;
+                display:inline-block;
+                margin:5px;
+              }
+              
             }
 
           }
