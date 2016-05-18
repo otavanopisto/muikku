@@ -277,7 +277,7 @@
   CKEDITOR.dialog.add('muikkuorganizerfield', function(editor) {
     return {
       title : editor.lang['muikku-organizerfield'].propertiesDialogTitle,
-      minWidth : 510,
+      minWidth : 765,
       minHeight : 480,
       rezisable: 0,
       onShow : function() {
