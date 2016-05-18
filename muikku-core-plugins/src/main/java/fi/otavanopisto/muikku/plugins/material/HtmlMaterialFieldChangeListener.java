@@ -19,6 +19,7 @@ import fi.otavanopisto.muikku.plugins.material.fieldmeta.FileFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MultiSelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MultiSelectFieldOptionMeta;
+import fi.otavanopisto.muikku.plugins.material.fieldmeta.OrganizerFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.TextFieldMeta;
@@ -38,6 +39,9 @@ public class HtmlMaterialFieldChangeListener {
 
   @Inject
   private QueryTextFieldController queryTextFieldController;
+
+  @Inject
+  private QueryOrganizerFieldController queryOrganizerFieldController;
   
   @Inject
   private QueryMemoFieldController queryMemoFieldController;
@@ -70,6 +74,26 @@ public class HtmlMaterialFieldChangeListener {
       QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), textFieldMeta.getName());
       if (queryField == null) {
         queryTextFieldController.createQueryTextField(event.getMaterial(), textFieldMeta.getName());
+      } else {
+        throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
+      }
+    }
+  }
+  
+  // Organizer field
+  public void onHtmlMaterialOrganizerFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.organizer")) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      OrganizerFieldMeta organizerFieldMeta;
+      try {
+        organizerFieldMeta = objectMapper.readValue(event.getField().getContent(), OrganizerFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse text field meta", e);
+      }
+      
+      QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), organizerFieldMeta.getName());
+      if (queryField == null) {
+        queryOrganizerFieldController.createQueryOrganizerField(event.getMaterial(), organizerFieldMeta.getName());
       } else {
         throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
       }
