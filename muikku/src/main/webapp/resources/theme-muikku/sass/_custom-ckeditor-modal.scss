@@ -249,9 +249,13 @@ div.cke_reset_all {
             }
             
             .organizer-categories-container {
-              width:770px;
+              max-width:780px;
               box-sizing:border-box;
               margin:10px 0;
+              
+              > label {
+                display:block;
+              }
               
               .organizer-category-container {
                 width:250px;
@@ -263,16 +267,15 @@ div.cke_reset_all {
                 display:inline-block;
                 margin:5px;
                 
-                &:nth-child(1),
-                &:nth-child(4),
-                &:nth-child(7) {
-                  margin:5px 5px 5px 0;
-                }
-                
-                &:nth-child(3),
-                &:nth-child(6),
-                &:nth-child(9) {
-                  margin:5px 0 5px 5px;
+                .icon-delete {
+                  position:absolute;
+                  right:2px;
+                  top:8px;
+                  
+                  &:before {
+                    padding:5px;
+                  }
+                  
                 }
                 
                 input.organizer-category-name {
@@ -281,7 +284,7 @@ div.cke_reset_all {
                   border:0;
                   border-bottom:1px solid #ddd;
                   box-shadow:none;
-                  padding:6px 8px;
+                  padding:6px 28px 6px 8px;
                   width:100%;
                   margin:0;
                   box-sizing:border-box;
@@ -341,7 +344,7 @@ div.cke_reset_all {
               }
               
               .organizer-add-category-container {
-                width:240px;
+                width:250px;
                 box-sizing:border-box;
                 border-radius:3px;
                 height:250px;
