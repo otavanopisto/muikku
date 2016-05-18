@@ -73,12 +73,13 @@
       uiElement.append(categoriesContainer);
       
       var _this = this;
-      var addCategoryLink = new CKEDITOR.dom.element('a');
+      var addCategoryLink = new CKEDITOR.dom.element('div');
       addCategoryLink.addClass('icon-add');
+      addCategoryLink.addClass('organizer-add-category-container');
       addCategoryLink.on('click', function() {
         _this.addCategory();
       });
-      uiElement.append(addCategoryLink);
+      categoriesContainer.append(addCategoryLink);
     },
     addCategory: function(id, name) {
       var _this = this;
@@ -95,7 +96,7 @@
       categoryContainer.append(categoryField);
       // Delete category button
       var deleteCategoryLink = new CKEDITOR.dom.element('a');
-      deleteCategoryLink.addClass('icon-remove');
+      deleteCategoryLink.addClass('icon-detele');
       categoryContainer.append(deleteCategoryLink);
       deleteCategoryLink.on('click', function() {
         var categoryContainer = this.getParent();
@@ -137,8 +138,11 @@
         }
       });
       // Add
-      var categoriesContainer = this.getElement().findOne('.organizer-categories-container');
-      categoriesContainer.append(categoryContainer);
+      //var categoriesContainer = this.getElement().findOne('.organizer-categories-container');
+      var addLink = this.getElement().findOne('.organizer-add-category-container');
+      categoryContainer.insertBefore(addLink);
+      
+      //categoriesContainer.append(categoryContainer);
     },
     addTerm: function(id, name) {
       this.terms[name] = {
@@ -225,7 +229,7 @@
       termContainer.append(term);
       
       var deleteTermLink = new CKEDITOR.dom.element('a');
-      deleteTermLink.addClass('icon-remove');
+      deleteTermLink.addClass('icon-delete');
       termContainer.append(deleteTermLink);
       deleteTermLink.on('click', function() {
         var termContainer = this.getParent();
@@ -273,8 +277,9 @@
   CKEDITOR.dialog.add('muikkuorganizerfield', function(editor) {
     return {
       title : editor.lang['muikku-organizerfield'].propertiesDialogTitle,
-      minWidth : 640,
+      minWidth : 510,
       minHeight : 480,
+      rezisable: 0,
       onShow : function() {
         var contentJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
         this.setupContent(contentJson);

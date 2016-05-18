@@ -11,6 +11,10 @@ div.cke_reset_all * {
 
 div.cke_reset_all {
   
+  & * {
+    white-space:normal;
+  }
+  
   /* Because reset_all above we need to re-apply the icon font */
   [class^="icon-"], [class*=" icon-"] { 
     font-family: 'muikku';
@@ -77,6 +81,10 @@ div.cke_reset_all {
           
           .cke_dialog_ui_vbox_child {
             padding:0 0 10px;
+            
+            .cke_dialog_ui_muikkuOrganizerFieldElement {
+              white-space:normal;
+            }
             
             /* Add new row */
             .icon-add {
@@ -231,29 +239,130 @@ div.cke_reset_all {
 
             }
             
+            .organizer-term-title-container {
+            
+              input {
+                width:100%;
+                box-sizing:border-box;
+              }
+            
+            }
+            
             .organizer-categories-container {
-              width:100%;
+              width:510px;
               box-sizing:border-box;
-              
-              display:-webkit-box;
-              display:-moz-box;
-              display:-ms-flexbox;
-              display:-webkit-flex;
-              display:flex; 
-              
+              margin:10px 0;
               
               .organizer-category-container {
-                max-height:300px;
-                overflow-y:auto;
-                overflow-x:hidden;
-                width:310px;
+                width:250px;
                 box-sizing:border-box;
                 border:3px solid #e1f7fc;
                 border-radius:3px;
-                min-height:100px;
-                padding:3px;
+                height:250px;
+                position:relative;
+                
                 display:inline-block;
-                margin:5px;
+                
+                &:nth-child(odd) {
+                  margin:5px 5px 5px 0;
+                }
+                
+                &:nth-child(even) {
+                  margin:5px 0 5px 5px;
+                }
+                
+                input.organizer-category-name {
+                  background:#f8f8f8;
+                  border-radius:0;
+                  border:0;
+                  border-bottom:1px solid #ddd;
+                  box-shadow:none;
+                  padding:6px 8px;
+                  width:100%;
+                  margin:0;
+                  box-sizing:border-box;
+                  font-weight:400;
+                }
+                
+                .organizer-category {
+                  margin:0;
+                  padding:3px;overflow-y:auto;
+                  overflow-x:hidden;
+                  position:absolute;
+                  left:0;
+                  right:0;
+                  bottom:0;
+                  top:35px;
+                  
+                  input.organizer-term-name {
+                    box-shadow:none;
+                    width:100%;
+                    box-sizing:border-box;
+                    margin:2px 0 4px 0;
+                  }
+                  
+                  .organizer-term-container {
+                    position:relative;
+                    
+                    .organizer-term {
+                      background:#e1f7fc;
+                      border-radius:3px;
+                      box-sizing:border-box;
+                      font-size:14px;
+                      margin:0 0 4px 0;
+                      padding:5px 24px 5px 5px;
+                      position:relative;
+                      line-height:1;
+                    }
+                    
+                    .icon-delete {
+                      position:absolute;
+                      right:0px;
+                      top:0;
+                      width:24px;
+                      height:24px;
+                      border-radius:100%;
+                      
+                      &:before {
+                        padding:4px 5px;
+                        display:block;
+                      }
+                      
+                    }
+                    
+                  }
+                  
+                }
+                
+              }
+              
+              .organizer-add-category-container {
+                width:250px;
+                box-sizing:border-box;
+                border-radius:3px;
+                height:250px;
+                position:relative;
+                
+                &.icon-add:before {
+                  font-size:30px;
+                  color:#fff;
+                  border-radius:100%;
+                  background:#5fbfff;
+                  font-weight:400;
+                  padding:10px;
+                  cursor:pointer;
+                  left:calc(50% - 30px);
+                  top:calc(50% - 30px);
+                  position:relative;
+                  height:30px;
+                  width:30px;
+                  
+                  &:hover {
+                    background:#0099ff;
+                  }
+                  
+                }
+                
               }
               
             }
@@ -423,11 +532,9 @@ div.cke_reset_all {
         }
       
       }
+      
     }
    
-   
-    
   }
   
 }
-
