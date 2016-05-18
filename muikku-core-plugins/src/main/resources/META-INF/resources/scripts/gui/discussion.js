@@ -38,7 +38,9 @@ $(document).ready(function() {
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-replies:not(.disabled)', $.proxy(this._onMoreRepliesClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this._replyMessage, this));
+      $(DiscImpl.msgContainer).on("click", '.di-message-quote-link', $.proxy(this._replyMessage, this));
       $(DiscImpl.msgContainer).on("click", '.di-reply-answer-link', $.proxy(this._replyToReply, this));
+      $(DiscImpl.msgContainer).on("click", '.di-reply-quote-link', $.proxy(this._replyToReply, this));      
       $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this._editMessage, this));      
       $(DiscImpl.msgContainer).on("click", '.di-reply-edit-link', $.proxy(this._editMessageReply, this));      
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
@@ -298,44 +300,44 @@ $(document).ready(function() {
       var msgsCount = msgs.length;   
       var fRes = msgsCount - 1;
       
-    mApi({async: false}).forum.areas.threads.replies.read(areaId, threadId, {'firstResult' : fRes}).on('$', $.proxy(function(replies, repliesCallback) {
-        mApi({async: false}).forum.areas.read(replies.forumAreaId).callback($.proxy(function(err, area) {
-          replies.areaName = area.name;
-
-          mApi({async: false}).user.users.basicinfo.read(replies.creator).callback($.proxy(function(err, user) {
-              replies.creatorFullName = user.firstName + ' ' + user.lastName;
-              var d = new Date(replies.created);
-              var ld = new Date(replies.lastModified);                    
-              this.replyCreatedMap[replies.id] = d;
-              replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
-              replies.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);              
-              replies.isEdited = replies.lastModified == replies.created ? false : true;
-              replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
-              replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
-              replies.nameLetter = user.firstName.substring(0,1);
-              replies.isReply = replies.parentReplyId ? true : false;
-              if(replies.isReply){
-                replies.replyParentTime = formatDate(this.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(this.replyCreatedMap[replies.parentReplyId]);
-              }
-              repliesCallback();
-            }, this));          
-        },this));
-      }, this)).callback($.proxy(function(err, replies) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
-        } else {
-          this._clearLoading();
-          if(replies){
-            replies.pageNo = newPg;
-            replies.areaId = areaId;
-            replies.threadId = threadId;
-            renderDustTemplate('/discussion/discussion_replies_page.dust', replies, function(text) {
-              $(".di-replies-container").append($.parseHTML(text));
-            });
+      mApi({async: false}).forum.areas.threads.replies.read(areaId, threadId, {'firstResult' : fRes}).on('$', $.proxy(function(replies, repliesCallback) {
+          mApi({async: false}).forum.areas.read(replies.forumAreaId).callback($.proxy(function(err, area) {
+            replies.areaName = area.name;
+  
+            mApi({async: false}).user.users.basicinfo.read(replies.creator).callback($.proxy(function(err, user) {
+                replies.creatorFullName = user.firstName + ' ' + user.lastName;
+                var d = new Date(replies.created);
+                var ld = new Date(replies.lastModified);                    
+                this.replyCreatedMap[replies.id] = d;
+                replies.prettyDate = formatDate(d) + ' ' + formatTime(d);
+                replies.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);              
+                replies.isEdited = replies.lastModified == replies.created ? false : true;
+                replies.canEdit = replies.creator === MUIKKU_LOGGED_USER_ID ? true : false;
+                replies.userRandomNo = Math.floor(Math.random() * 6) + 1;
+                replies.nameLetter = user.firstName.substring(0,1);
+                replies.isReply = replies.parentReplyId ? true : false;
+                if(replies.isReply){
+                  replies.replyParentTime = formatDate(this.replyCreatedMap[replies.parentReplyId]) + ' ' + formatTime(this.replyCreatedMap[replies.parentReplyId]);
+                }
+                repliesCallback();
+              }, this));          
+          },this));
+        }, this)).callback($.proxy(function(err, replies) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
+          } else {
+            this._clearLoading();
+            if(replies){
+              replies.pageNo = newPg;
+              replies.areaId = areaId;
+              replies.threadId = threadId;
+              renderDustTemplate('/discussion/discussion_replies_page.dust', replies, function(text) {
+                $(".di-replies-container").append($.parseHTML(text));
+              });
+            }
+  
           }
-
-        }
-      }, this));
+        }, this));
     },       
     _loadThread : function(aId, tId, from) {
       mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {
@@ -435,10 +437,11 @@ $(document).ready(function() {
 
     _replyMessage : function(event) {
       var element = $(event.target);
+      var quote = element.parent().hasClass("di-message-quote-link") ? true : false;
       element = element.parents(".di-message");
       var tId = $(element).attr("id");
       var aId = $(element).find("input[name='areaId']").attr('value');
-
+      
       var sendReply = function(values) {
         
         if (values.message.trim() === '') {
@@ -454,7 +457,17 @@ $(document).ready(function() {
         }
         
       }
-  
+      
+      if (quote == true){
+        var qm = element.find(".di-message-content-text").html();
+        var qa = element.find(".di-message-creator").html();
+        var quoteMessage = {
+          quote : true,
+          quoteAuthor : qa,
+          quoteContent : qm
+        }
+      }
+      
       mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {
         mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
@@ -465,14 +478,16 @@ $(document).ready(function() {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
-          openInSN('/discussion/discussion_create_reply.dust', thread, sendReply);
+          openInSN('/discussion/discussion_create_reply.dust', thread, sendReply, quoteMessage);
         }
       }, this));
     },
     _replyToReply : function(event) {
       var element = $(event.target);
+      var quote = element.parent().hasClass("di-reply-quote-link") ? true : false;      
       element = element.parents(".di-message");
-      var parentId = $(element).attr("id");
+      // If reply is a reply to reply's reply we use "data-parent-id" which is set to the original reply id  
+      var parentId = $(element).attr("data-parent-id") ? $(element).attr("data-parent-id") : $(element).attr("id");
       var tId = $(element).find("input[name='threadId']").attr('value');
       var aId = $(element).find("input[name='areaId']").attr('value');
 
@@ -491,7 +506,22 @@ $(document).ready(function() {
         }
         
       }
-  
+
+      if (quote == true){
+        // qm = quote message, qa = quote author  
+        
+        var qm = element.find(".di-message-content-text").html();
+        var qa = element.find(".di-reply-title-creator").html();
+        
+        // This will be passed as an object to "social navigation" 
+        
+        var quoteMessage = {
+          quote : true,
+          quoteAuthor : qa,
+          quoteContent : qm
+        }
+      }      
+      
       mApi({async: false}).forum.areas.threads.read(aId, tId).on('$', $.proxy(function(thread, threadCallback) {
         mApi({async: false}).forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
@@ -502,7 +532,7 @@ $(document).ready(function() {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
-          openInSN('/discussion/discussion_create_reply.dust', thread, sendReply);
+          openInSN('/discussion/discussion_create_reply.dust', thread, sendReply, quoteMessage);
         }
       }, this));
     },
