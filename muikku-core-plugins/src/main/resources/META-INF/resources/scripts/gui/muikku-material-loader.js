@@ -596,21 +596,49 @@
     if ($(object).attr('type') == 'application/vnd.muikku.field.organizer') {
       var meta = data.meta;
       var organizerField = $('<div>').addClass('muikku-organizer-field');
+      organizerField.attr('id', data.name);
       var terms = $('<div>').addClass('muikku-terms-container');
       var termsTitle = $('<div>').addClass('muikku-terms-title').append(meta.termTitle);
       var termsData = $('<div>').addClass('muikku-terms-data');
       var termObjects = meta.terms;
+      var j, x, i;
+      for (i = termObjects.length; i; i -= 1) {
+        j = Math.floor(Math.random() * i);
+        x = termObjects[i - 1];
+        termObjects[i - 1] = termObjects[j];
+        termObjects[j] = x;
+      }
       for (var i = 0; i < termObjects.length; i++) {
-        var term = $('<div>').addClass('muikku-term').append(termObjects[i].name).attr('data-term-id', termObjects[i].id);
+        var term = $('<div>').addClass('muikku-term').append(termObjects[i].name).attr('data-term-id', termObjects[i].id).draggable({
+          containment: '#' + data.name,
+          helper: 'clone'
+        });
         termsData.append(term);
       }
       organizerField.append(terms);
       terms.append(termsTitle).append(termsData);
+      var handleDropEvent = function(event, ui) {
+        var termId = $(ui.draggable).attr('data-term-id');
+        var existingTerm = $(this).find('.muikku-term[data-term-id="' + termId + '"]');
+        if (existingTerm.length == 0) {
+          var categoryTerm = $(ui.draggable).clone();
+          var removeLink = $('<a>').append('-').on('click', function(event) {
+            $(event.target).closest('.muikku-term').remove();
+            $(this).trigger("change");
+          });
+          categoryTerm.append(removeLink);
+          $(this).append(categoryTerm);
+          $(this).trigger("change");
+        }
+      }
       var categoryObjects = meta.categories;
       for (var i = 0; i < categoryObjects.length; i++) {
         var categoryContainer = $('<div>').addClass('muikku-category-container');
         var categoryTitle = $('<div>').addClass('muikku-category-title').append(categoryObjects[i].name);
-        var category = $('<div>').addClass('muikku-category').attr('data-category-id', categoryObjects[i].id);
+        var category = $('<div>').addClass('muikku-category').attr('data-category-id', categoryObjects[i].id).droppable({
+          accept: '.muikku-term',
+          drop: handleDropEvent
+        });
         categoryContainer.append(categoryTitle).append(category);
         organizerField.append(categoryContainer);
       }
@@ -620,6 +648,39 @@
         embedId: data.embedId,
         meta: meta,
         readonly: data.readOnlyFields||false,
+        answer: function(val) {
+          if (val === undefined) {
+            var answer = {};
+            var categories = $(this.element).find('.muikku-category');
+            for (var i = 0; i < categories.length; i++) {
+              var categoryId = $(categories[i]).attr('data-category-id'); 
+              answer[categoryId] = [];
+              var terms = $(categories[i]).find('.muikku-term');
+              for (var j = 0; j < terms.length; j++) {
+                answer[categoryId].push($(terms[j]).attr('data-term-id'));
+              }
+            }
+            return JSON.stringify(answer);
+          }
+          else {
+            var answer = $.parseJSON(val);
+            var keys = Object.keys(answer);
+            for (var i = 0; i < keys.length; i++) {
+              var categoryId = keys[i];
+              var category = $(this.element).find('.muikku-category[data-category-id="' + categoryId + '"]')[0];
+              var termIds = answer[keys[i]];
+              for (var j = 0; j < termIds.length; j++) {
+                var term = $(this.element).find('.muikku-term[data-term-id="' + termIds[j] + '"]')[0];
+                var categoryTerm = $(term).clone();
+                var removeLink = $('<a>').append('-').on('click', function(event) {
+                  $(event.target).closest('.muikku-term').remove();
+                });
+                $(categoryTerm).append(removeLink);
+                $(category).append(categoryTerm);
+              }
+            }
+          }
+        },
         hasDisplayableAnswers: function() {
           return false;
         },
@@ -633,6 +694,9 @@
           return false;
         }
       });
+      if (data.value) {
+        organizerField.muikkuField('answer', data.value);
+      }
       $(object).replaceWith(organizerField);
     }
   });
