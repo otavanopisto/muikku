@@ -3,7 +3,7 @@
 }
 
 .muikku-terms-container {
-  margin:10px 5px;
+  margin:10px 0;
   
   .muikku-terms-title {
     font-weight:400;
@@ -41,8 +41,15 @@
   box-sizing:border-box;
   display:inline-block;
   margin:5px;
-  width:calc(50% - 10px);
+  width:calc(50% - 5px);
   
+  &:nth-child(odd) {
+    margin:5px 5px 5px 0;
+  }
+  
+  &:nth-child(even) {
+    margin:5px 0 5px 5px;
+  }
   
   .muikku-category-title {
     font-weight:400;
