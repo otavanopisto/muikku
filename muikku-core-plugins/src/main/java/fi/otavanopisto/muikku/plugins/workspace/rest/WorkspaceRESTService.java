@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
@@ -100,6 +101,7 @@ import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.FlagController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -187,7 +189,10 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private CopiedWorkspaceEntityFinder copiedWorkspaceEntityFinder;
-  
+
+  @Inject
+  private FlagController flagController;
+
   @GET
   @Path("/workspaceTypes")
   @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
@@ -716,6 +721,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       @QueryParam("assessed") Boolean assessed,
       @QueryParam("studentIdentifier") String studentId,
       @QueryParam("search") String searchString,
+      @QueryParam("flags") Long[] flagIds,
       @QueryParam("maxResults") Integer maxResults,
       @QueryParam("orderBy") String orderBy) {
     
@@ -788,6 +794,32 @@ public class WorkspaceRESTService extends PluginRESTService {
             studentIdentifiers.add(foundStudentIdentifier);
           }
         }
+      }
+    }
+    
+    List<Flag> flags = null;
+    if (flagIds != null && flagIds.length > 0) {
+      flags = new ArrayList<>(flagIds.length);
+      for (Long flagId : flagIds) {
+        Flag flag = flagController.findFlagById(flagId);
+        if (flag == null) {
+          return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid flag id %d", flagId)).build();
+        }
+        
+        if (!flagController.hasFlagPermission(flag, sessionController.getLoggedUser())) {
+          return Response.status(Status.FORBIDDEN).entity(String.format("You don't have permission to use flag %d", flagId)).build();
+        }
+        
+        flags.add(flag);
+      }
+    }
+    
+    if (flags != null) {
+      List<SchoolDataIdentifier> flaggedStudents = flagController.getFlaggedStudents(flags);
+      if (studentIdentifiers != null) {
+        studentIdentifiers.retainAll(flaggedStudents);
+      } else {
+        studentIdentifiers = flaggedStudents;
       }
     }
     
