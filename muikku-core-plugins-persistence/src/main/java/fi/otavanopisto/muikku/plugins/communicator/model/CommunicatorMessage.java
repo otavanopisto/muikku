@@ -11,8 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -26,7 +24,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import fi.otavanopisto.security.ContextReference;
 
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
 public class CommunicatorMessage implements ContextReference {
 
   public Long getId() {
