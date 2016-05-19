@@ -17,6 +17,7 @@
 
   <ui:define name="content.center.widget">
     <input type="hidden" id="workspaceEntityId" value="#{workspaceAnnouncerBackingBean.workspaceEntityId}" />
+    <h3>#{workspaceAnnouncerBackingBean.workspaceName}</h3>
     <m:widget name="announcer-content" size="24" rendered="#{sessionBackingBean.loggedIn}"/>  
   </ui:define>
      

@@ -67,7 +67,7 @@
         <!-- ANNOUNCER -->
         <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
           <div class="dock-static-navi-button-announcer sm-flex-hide #{activeTrail eq 'announcer' ? 'active-trail' : ''}" title="#{i18n.text['plugin.announcer.announcer']}">
-            <a jsf:outcome="/jsf/announcer/index.jsf" class="icon-announcer">
+            <a jsf:outcome="/jsf/announcer/workspace_announcer.jsf?workspaceEntityId=#{workspaceBackingBean.workspaceId}" class="icon-announcer">
               <span style="display:none" class="dock-notification"></span>
             </a>
           </div>

@@ -12,6 +12,10 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.session.SessionController;
 
 @Named
@@ -26,6 +30,12 @@ public class WorkspaceAnnouncerBackingBean {
   
   @Inject
   private SessionController sessionController;
+
+  @Inject
+  private WorkspaceController workspaceController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
   
   @RequestAction
   public String init() {
@@ -39,6 +49,18 @@ public class WorkspaceAnnouncerBackingBean {
     if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.ANNOUNCER_TOOL)) {
       return NavigationRules.ACCESS_DENIED;
     }
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return NavigationRules.NOT_FOUND;
+    }
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    
+    workspaceName = workspace.getName();
+    if (workspace.getNameExtension() != null) {
+      workspaceName += " (" + workspace.getNameExtension() + ")";
+    }
 
     return null;
   }
@@ -50,5 +72,15 @@ public class WorkspaceAnnouncerBackingBean {
   public void setWorkspaceEntityId(Long workspaceEntityId) {
     this.workspaceEntityId = workspaceEntityId;
   }
+  
+  public String getWorkspaceName() {
+    return workspaceName;
+  }
+
+  public void setWorkspaceName(String workspaceName) {
+    this.workspaceName = workspaceName;
+  }
+
+  private String workspaceName;
 
 }
