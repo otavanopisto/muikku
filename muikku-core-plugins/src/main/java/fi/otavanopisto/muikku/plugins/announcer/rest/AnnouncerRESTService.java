@@ -166,6 +166,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   public Response listAnnouncements(
       @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive,
       @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
+      @QueryParam("hideWorkspaceAnnouncements") @DefaultValue("true") boolean hideWorkspaceAnnouncements, // TODO false
       @QueryParam("workspaceEntityId") Long workspaceEntityId
   ) {
     if (!onlyActive) {
@@ -175,7 +176,8 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
     
     List<Announcement> announcements = null;
-    if (workspaceEntityId == null) {
+
+    if (workspaceEntityId == null && hideWorkspaceAnnouncements) {
       if (onlyActive) {
         if (onlyMine) {
           UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
@@ -186,7 +188,14 @@ public class AnnouncerRESTService extends PluginRESTService {
       } else {
         announcements = announcementController.listUnarchivedEnvironmentAnnouncements();
       }
-    } else {
+    }
+    
+    if (workspaceEntityId == null && !hideWorkspaceAnnouncements) {
+      // TODO: unimplemented
+      return Response.status(Status.NOT_IMPLEMENTED).build();
+    }
+
+    if (workspaceEntityId != null) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
       if (workspaceEntity == null) {
         return Response.status(Status.BAD_REQUEST).entity("Workspace entity with given ID not found").build();
