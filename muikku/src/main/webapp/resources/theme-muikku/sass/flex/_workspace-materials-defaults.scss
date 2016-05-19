@@ -781,6 +781,18 @@ sup {
       
     }
     
+    .muikku-category.muikku-field-semi-correct-answer {
+      box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
+      border:3px solid #dab33d;
+      @include rounded(3px);
+      
+      &:hover {
+        box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
+        border:3px solid #dab33d;
+      }
+      
+    }
+    
     .muikku-category.muikku-field-incorrect-answer {
       border:3px solid #f64e4e;
       box-shadow:0 0 1px 3px rgba(255,0,0,0.3);

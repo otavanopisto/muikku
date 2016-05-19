@@ -622,7 +622,7 @@
         var existingTerm = $(this).find('.muikku-term[data-term-id="' + termId + '"]');
         if (existingTerm.length == 0) {
           var categoryTerm = $(ui.draggable).clone();
-          var removeLink = $('<a>').append('-').on('click', $.proxy(function(event) {
+          var removeLink = $('<span>').addClass('icon-delete').on('click', $.proxy(function(event) {
             $(event.target).closest('.muikku-term').remove();
             $(this).trigger("change");
           }, this));
@@ -678,7 +678,7 @@
                   var term = terms.length == 0 ? null : terms[0];
                   if (term != null) {
                     var categoryTerm = $(term).clone();
-                    var removeLink = $('<a>').append('-').on('click', $.proxy(function(event) {
+                    var removeLink = $('<span>').addClass('icon-delete').on('click', $.proxy(function(event) {
                       $(event.target).closest('.muikku-term').remove();
                       $(this.element).trigger("change");
                     }, this));
