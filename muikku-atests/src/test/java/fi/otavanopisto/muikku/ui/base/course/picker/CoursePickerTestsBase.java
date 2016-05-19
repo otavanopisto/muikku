@@ -52,6 +52,8 @@ public class CoursePickerTestsBase extends AbstractUITest {
         getWebDriver().get(getAppUrl(true) + "/coursepicker");
         waitForMoreThanSize(".cp-course", 24);
         assertCount(".cp-course", 25);
+        waitForPresent(".mf-paging-tool");
+        scrollIntoView(".mf-paging-tool");
         waitAndClick(".mf-paging-tool");
         waitForMoreThanSize(".cp-course", 25);
         assertCount(".cp-course", 30);
@@ -78,7 +80,8 @@ public class CoursePickerTestsBase extends AbstractUITest {
       try {
         navigate("/coursepicker", true);
         waitForPresent("#coursesList");
-        waitAndSendKeys(".cp-search-field input.search", "potato");
+        waitAndSendKeys(".cp-search-field input.search", "pot");
+        waitAndSendKeys(".cp-search-field input.search", "ato");
         waitUntilElementCount(".cp-course-long-name", 1);
         assertTextIgnoreCase(".cp-course-long-name", "potato course");
       } finally {
