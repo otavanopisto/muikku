@@ -36,30 +36,19 @@
         background:transparent;
         border-radius:3px;
         text-align:left;
-        border:2px solid #fff;
         box-shadow:0 3px 5px rgba(0,0,0,0.3);
         
-        &:after,
-        &:before {
+        &:after {
           right:100%;
           top:26px;
-          border: solid transparent;
+          border:solid transparent;
           content:" ";
           height:0;
           width:0;
           position:absolute;
           pointer-events:none;
-        }
-        
-        &:after {
           border-color:rgba(76, 102, 105, 0);
           border-right-color:#4c6669;
-          border-width:5px;
-          margin-top:-5px;
-        }
-        &:before {
-          border-color:rgba(255, 255, 255, 0);
-          border-right-color:#fff;
           border-width:8px;
           margin-top:-8px;
         }
