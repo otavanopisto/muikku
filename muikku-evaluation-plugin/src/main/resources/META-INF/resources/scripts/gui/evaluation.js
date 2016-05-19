@@ -1451,6 +1451,21 @@
       $('#evaluation').evaluation('filter', 'assessed', $(this).prop('checked') ? false : null);
     });
 
+    $(document).on('click', '.evaluation-flag', function (event) {
+      var filter = $(event.target).closest('.evaluation-flag');
+      if (filter.hasClass('active')) {
+        filter.removeClass('active');
+      } else {
+        filter.addClass('active');
+      }
+      
+      var activeIds = $.map($('.evaluation-flag.active'), function (active) {
+        return $(active).attr('data-flag-id');
+      });
+      
+      $('#evaluation').evaluation('filter', 'flags', activeIds.length ? activeIds : null);
+    });
+
     $('#student-search-field').on('keyup', function () {
       if (searchFieldTimer !== null) {
         clearTimeout(searchFieldTimer);
@@ -1473,6 +1488,33 @@
       $(".evaluation-assignments").perfectScrollbar('update');
     });
     
+    $('.evaluation-flags').click(function () {
+      $('.evaluation-flags-container').toggle();
+    });
+    
+    mApi().user.flags
+      .read({ ownerIdentifier: MUIKKU_LOGGED_USER })
+      .callback(function (err, flags) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          $.each(flags, function (index, flag) {
+            $('<div>')
+              .addClass("evaluation-flag icon-flag")
+              .attr({
+                'data-flag-color': flag.color,
+                'data-flag-id': flag.id
+              })
+              .css({
+                'color': flag.color
+              })
+              .append(
+                $('<span>')
+                  .text(flag.name))
+              .appendTo($('.evaluation-flags-container'));
+          });
+        }
+      });
   });
   
   $(document).on('click', '.evaluation-workspace-item', function (event) {
