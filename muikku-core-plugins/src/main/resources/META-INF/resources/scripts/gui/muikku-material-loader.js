@@ -690,16 +690,75 @@
           }
         },
         hasDisplayableAnswers: function() {
-          return false;
+          return true;
+        },
+        checksOwnAnswer: function() {
+          return true;
+        },
+        checkAnswer: function(showCorrectAnswers) {
+          var result = {
+            'correctAnswers': 0,
+            'wrongAnswers': 0
+          }
+          var meta = this.options.meta;
+          var correctTermsByUser = 0;
+          var wrongTermsByUser = 0;
+          var totalCorrectAnswers = 0; 
+          for (var i = 0; i < meta.categoryTerms.length; i++) {
+            var categoryId = meta.categoryTerms[i].category;
+            var userCorrectTermsInCategory = 0;
+            var userWrongTermsInCategory = 0;
+            var correctTermsInCategory = meta.categoryTerms[i].terms.length;
+            totalCorrectAnswers += correctTermsInCategory;
+            var userCategory = $(this.element).find('.muikku-category[data-category-id="' + categoryId + '"]')[0];
+            var userTerms = $(userCategory).find('.muikku-term');
+            for (var j = 0; j < userTerms.length; j++) {
+              var userTerm = $(userTerms[j]).attr('data-term-id');
+              if (userTerm in meta.categoryTerms[i].terms) {
+                userCorrectTermsInCategory++;
+              }
+              else {
+                userWrongTermsInCategory++;
+              }
+            }
+            if (userCorrectTermsInCategory == correctTermsInCategory && userWrongTermsInCategory == 0) {
+              $(userCategory).addClass('muikku-field-correct-answer');
+            }
+            else if (userCorrectTermsInCategory == 0) {
+              $(userCategory).addClass('muikku-field-incorrect-answer');
+            }
+            else {
+              $(userCategory).addClass('muikku-field-semi-correct-answer');
+            }
+            correctTermsByUser += userCorrectTermsInCategory;
+            wrongTermsByUser += userWrongTermsInCategory;
+          }
+          if (showCorrectAnswers) {
+            var field = $(this.element);
+            var exampleDetails = $('<span>').addClass('muikku-field-examples').attr('data-for-field', $(field).attr('name'));
+            exampleDetails.append( 
+              $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
+            );
+            var categoryIds = Object.keys(meta.categories);
+            for (var i = 0; i < categoryIds.length; i++) {
+            }
+            $(field).after(exampleDetails);
+          }
+          result.correctAnswers = correctTermsByUser - wrongTermsByUser;
+          if (result.correctAnswers < 0) {
+            result.correctAnswers = 0;
+          }
+          result.incorrectAnswers = totalCorrectAnswers - result.correctAnswers;
+          return result;
         },
         canCheckAnswer: function() {
-          return false;
+          return true;
         },
         isCorrectAnswer: function() {
-          return false;
+          return false; // irrelevant (checks own answer)
         },
         getCorrectAnswers: function() {
-          return false;
+          return false; // irrelevant (checks own answer)
         }
       });
       if (data.value) {
