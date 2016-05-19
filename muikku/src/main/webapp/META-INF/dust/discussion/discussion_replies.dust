@@ -1,3 +1,0 @@
-<div class="di-replies-container mf-subitem-container">
-   {>"discussion/discussion_replies_page.dust"/}      
-</div>
