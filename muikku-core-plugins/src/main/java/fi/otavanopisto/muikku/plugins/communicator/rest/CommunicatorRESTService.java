@@ -22,6 +22,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -325,6 +327,10 @@ public class CommunicatorRESTService extends PluginRESTService {
       } else
         return Response.status(Status.BAD_REQUEST).build();
     }      
+    
+    if (StringUtils.isBlank(newMessage.getCategoryName())) {
+      return Response.status(Status.BAD_REQUEST).entity("CategoryName missing").build();
+    }
     
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());

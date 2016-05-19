@@ -1,4 +1,4 @@
-<div class="mf-item cm-message {?unreadMessagesInThread}unread{/unreadMessagesInThread} flex-row" id="{id}">
+<div class="mf-item cm-message {?unreadMessagesInThread}unread{/unreadMessagesInThread} flex-row" data-folder-id={folderId} data-id="{id}" data-thread-id="{communicatorMessageId}">
   <div class="mf-item-details cm-message-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
   
     <div class="flex-row cm-message-details-container">

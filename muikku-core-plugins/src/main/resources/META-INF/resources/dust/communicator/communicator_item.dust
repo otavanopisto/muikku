@@ -1,11 +1,11 @@
-<div class="mf-item cm-message {?unreadMessagesInThread}unread{/unreadMessagesInThread} flex-row" id="{id}">
+<div class="mf-item cm-message {?unreadMessagesInThread}unread{/unreadMessagesInThread} flex-row" data-folder-id={folderId} data-id="{id}" data-thread-id="{communicatorMessageId}">
   <div class="mf-item-details cm-message-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
   
     <div class="flex-row cm-message-details-container">
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
 
         <div class="cm-message-header flex-row no-margin-top no-margin-bottom">
-           <div class="cm-message-select"><input type="checkbox"  name="messageSelect" value="{communicatorMessageId}" /></div>
+           <div class="cm-message-select"><input type="checkbox" name="messageSelect" value="{communicatorMessageId}" /></div>
            <div class="cm-message-header-container">
              <div class="cm-message-sender-name cm-message-header-content-primary" title="{senderFullName}">{senderFullName}</div>
              <div class="cm-message-caption cm-message-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</div>
