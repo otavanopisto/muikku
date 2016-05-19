@@ -678,9 +678,10 @@
                   var term = terms.length == 0 ? null : terms[0];
                   if (term != null) {
                     var categoryTerm = $(term).clone();
-                    var removeLink = $('<a>').append('-').on('click', function(event) {
+                    var removeLink = $('<a>').append('-').on('click', $.proxy(function(event) {
                       $(event.target).closest('.muikku-term').remove();
-                    });
+                      $(this.element).trigger("change");
+                    }, this));
                     $(categoryTerm).append(removeLink);
                     $(category).append(categoryTerm);
                   }
@@ -696,6 +697,7 @@
           return true;
         },
         checkAnswer: function(showCorrectAnswers) {
+          $(this.element).find('.muikku-field-examples').remove();
           var result = {
             'correctAnswers': 0,
             'wrongAnswers': 0
@@ -711,10 +713,11 @@
             var correctTermsInCategory = meta.categoryTerms[i].terms.length;
             totalCorrectAnswers += correctTermsInCategory;
             var userCategory = $(this.element).find('.muikku-category[data-category-id="' + categoryId + '"]')[0];
+            $(userCategory).removeClass('muikku-field-correct-answer muikku-field-semi-correct-answer muikku-field-incorrect-answer');
             var userTerms = $(userCategory).find('.muikku-term');
             for (var j = 0; j < userTerms.length; j++) {
               var userTerm = $(userTerms[j]).attr('data-term-id');
-              if (userTerm in meta.categoryTerms[i].terms) {
+              if ($.inArray(userTerm, meta.categoryTerms[i].terms) >= 0) {
                 userCorrectTermsInCategory++;
               }
               else {
@@ -723,32 +726,43 @@
             }
             if (userCorrectTermsInCategory == correctTermsInCategory && userWrongTermsInCategory == 0) {
               $(userCategory).addClass('muikku-field-correct-answer');
+              result.correctAnswers++;
             }
             else if (userCorrectTermsInCategory == 0) {
               $(userCategory).addClass('muikku-field-incorrect-answer');
+              result.wrongAnswers++;
             }
             else {
               $(userCategory).addClass('muikku-field-semi-correct-answer');
+              result.wrongAnswers++;
             }
-            correctTermsByUser += userCorrectTermsInCategory;
-            wrongTermsByUser += userWrongTermsInCategory;
           }
           if (showCorrectAnswers) {
+            var termNames = {};
+            for (var i = 0; i < meta.terms.length; i++) {
+              termNames[meta.terms[i].id] = meta.terms[i].name;
+            };
             var field = $(this.element);
             var exampleDetails = $('<span>').addClass('muikku-field-examples').attr('data-for-field', $(field).attr('name'));
             exampleDetails.append( 
               $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
             );
-            var categoryIds = Object.keys(meta.categories);
-            for (var i = 0; i < categoryIds.length; i++) {
+            for (var i = 0; i < meta.categories.length; i++) {
+              var correctString = meta.categories[i].name + ': ';
+              var terms = meta.categoryTerms;
+              for (var j = 0; j < meta.categoryTerms.length; j++) {
+                if (meta.categoryTerms[j].category == meta.categories[i].id) {
+                  var terms = meta.categoryTerms[j].terms;
+                  for (var k = 0; k < terms.length; k++) {
+                    correctString += k == 0 ? termNames[terms[k]] : ', ' + termNames[terms[k]]; 
+                  }
+                  break;
+                }
+              }
+              exampleDetails.append($('<span>').addClass('muikku-field-example').text(correctString));
             }
             $(field).after(exampleDetails);
           }
-          result.correctAnswers = correctTermsByUser - wrongTermsByUser;
-          if (result.correctAnswers < 0) {
-            result.correctAnswers = 0;
-          }
-          result.incorrectAnswers = totalCorrectAnswers - result.correctAnswers;
           return result;
         },
         canCheckAnswer: function() {
