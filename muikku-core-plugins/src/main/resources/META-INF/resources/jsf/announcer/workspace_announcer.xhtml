@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"  
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  template="/jsf/announcer/templates/announcer_base.xhtml">
+
+
+  <ui:define name="viewScripts">
+    <script type="text/javascript" src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
+    <h:outputScript name="scripts/gui/announcer.js" />
+  </ui:define>
+
+
+  <ui:define name="content.center.widget">
+    <input type="hidden" id="workspaceEntityId" value="#{workspaceAnnouncerBackingBean.workspaceEntityId}" />
+    <m:widget name="announcer-content" size="24" rendered="#{sessionBackingBean.loggedIn}"/>  
+  </ui:define>
+     
+</ui:composition>

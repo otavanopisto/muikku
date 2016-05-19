@@ -6,6 +6,12 @@
     
     _create : function() {
       
+      if ($("#workspaceEntityId").val() != null) {
+        this._workspaceEntityId = Number($("#workspaceEntityId").val());
+      } else {
+        this._workspaceEntityId = null;
+      }
+      
       var mainfunction = ".mf-content-master";
       
      $(mainfunction).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
@@ -56,7 +62,7 @@
 
       }
       
-      var createAnnouncement = function(values){
+      var createAnnouncement = $.proxy(function(values){
         values.startDate = moment(values.startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
         values.endDate = moment(values.endDate, "DD.MM.YYYY").format("YYYY-MM-DD");
         values.userGroupEntityIds = $.map($("input[name='userGroupEntityIds']"), function(element) {
@@ -69,6 +75,9 @@
           values.publiclyVisible = true;
         }
         
+        if (this._workspaceEntityId != null) {
+          values.workspaceEntityIds = [this._workspaceEntityId];
+        }
 
         mApi().announcer.announcements.create(values).callback($.proxy(function(err, result) {
           if (err) {
@@ -79,7 +88,7 @@
           }
         }, this));
 
-      }   
+      }, this);   
       openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement, formFunctions);
     },
     
@@ -160,7 +169,7 @@
         }, this));
       }
       
-      var editAnnouncement = function(values){
+      var editAnnouncement = $.proxy(function(values){
         values.startDate = moment(values.startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
         values.endDate = moment(values.endDate, "DD.MM.YYYY").format("YYYY-MM-DD");
         values.userGroupEntityIds = $.map($("input[name='userGroupEntityIds']"), function(element) {
@@ -172,6 +181,10 @@
         } else {
           values.publiclyVisible = true;
         }
+
+        if (this._workspaceEntityId != null) {
+          values.workspaceEntityIds = [this._workspaceEntityId];
+        }
         
         mApi().announcer.announcements.update(id, values).callback($.proxy(function(err, result) {
           if (err) {
@@ -181,12 +194,18 @@
             window.location.reload(true);      
           }
         }, this));
-      }   
+      }, this);   
       openInSN('/announcer/announcer_edit_announcement.dust', null, editAnnouncement, formFunctions);
     },    
     
     _loadAnnouncements: function () {
-        mApi().announcer.announcements.read().callback($.proxy(function(err, result) {
+        var options = {};
+      
+        if (this._workspaceEntityId != null) {
+          options.workspaceEntityId = this._workspaceEntityId;
+        }
+      
+        mApi().announcer.announcements.read(options).callback($.proxy(function(err, result) {
           if (err) {
             $(".notification-queue").notificationQueue('notification','error', err);
           } else {
