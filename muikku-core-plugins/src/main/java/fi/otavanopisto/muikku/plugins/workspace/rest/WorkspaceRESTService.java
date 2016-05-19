@@ -771,6 +771,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             Collections.singletonList(workspaceEntityId),
             (Collection<SchoolDataIdentifier>) null,
             Boolean.FALSE,
+            Boolean.FALSE,
             0,
             maxResults != null ? maxResults : Integer.MAX_VALUE);
         
