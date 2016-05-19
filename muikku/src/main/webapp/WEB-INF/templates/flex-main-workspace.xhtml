@@ -329,6 +329,18 @@
                     <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.workspace-edit']}</span>
                   </a>
                 </div>  
+                <!-- EDIT ANNOUNCEMENTS -->
+                <div class="workspace-management-item">
+                  <a class="icon-announcer" title="#{i18n.text['plugin.workspace.dock.workspace-announcements']}" jsf:outcome="/jsf/workspace/helppage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span>#{i18n.text['plugin.workspace.dock.workspace-announcements']}</span>
+                  </a>
+                </div>
+                <!-- EDIT PERMISSIONS -->
+                <div class="workspace-management-item">
+                  <a class="icon-permissions" title="#{i18n.text['plugin.workspace.dock.workspace-permissions']}" jsf:outcome="/jsf/workspace/permissions.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span>#{i18n.text['plugin.workspace.dock.workspace-permissions']}</span>
+                  </a>
+                </div>
                 <ui:fragment rendered="#{workspaceBackingBean.mayManageMaterials}">
                   <!-- EDIT MATERIALS -->
                   <div class="workspace-management-item">
