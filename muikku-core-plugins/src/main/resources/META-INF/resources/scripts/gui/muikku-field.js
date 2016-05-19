@@ -233,7 +233,9 @@
       
       if (assignmentType == 'EXERCISE') {
         this.element.find('.muikku-field-examples').remove();
-        this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+        this.element.find('.muikku-field-correct-answer').removeClass('muikku-field-correct-answer');
+        this.element.find('.muikku-field-incorrect-answer').removeClass('muikku-field-incorrect-answer');
+        this.element.find('.muikku-field-semi-correct-answer').removeClass('muikku-field-semi-correct-answer');
         this.element.find('.correct-answers-count-container').empty();
       }
       
