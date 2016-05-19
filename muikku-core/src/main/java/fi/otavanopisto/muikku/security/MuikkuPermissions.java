@@ -61,6 +61,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String LIST_INACTIVE_STUDENTS = "LIST_INACTIVE_STUDENTS";
 
   @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
+  public static final String LIST_HIDDEN_STUDENTS = "LIST_HIDDEN_STUDENTS";
+
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR })
   public static final String ACCESS_MEMBERS_ONLY_WORKSPACE = "ACCESS_MEMBERS_ONLY_WORKSPACE";
 

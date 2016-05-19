@@ -47,7 +47,7 @@
                   <li data-value="my">
                     <span data-id="my" class="mf-dropdown-item">#{i18n.text['plugin.coursepicker.owncourses']}</span>
                   </li>
-                  <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">
+                  <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">
                     <li data-value="te">
                       <span class="mf-dropdown-item">#{i18n.text['plugin.coursepicker.teachercourses']}</span>
                     </li>

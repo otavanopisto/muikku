@@ -103,12 +103,14 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
         return true;
       }
     }
-    // Environment access as a group member
-    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
-    for (UserGroupEntity userGroup : userGroups) {
-      // TODO Override rules for user groups
-      if (permissionController.hasPermission(userGroup, permission)) {
-        return true;
+    if (permission.getScope().equals(PermissionScope.ENVIRONMENT)) {
+      // Environment access as a group member
+      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
+      for (UserGroupEntity userGroup : userGroups) {
+        // TODO Override rules for user groups
+        if (permissionController.hasPermission(userGroup, permission)) {
+          return true;
+        }
       }
     }
     return false;

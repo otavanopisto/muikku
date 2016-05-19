@@ -144,7 +144,8 @@
     options: {
       studentsPerPage: 25,
       openStudentProfile: null,
-      workspaceIds: null
+      workspaceIds: null,
+      canListHiddenStudents: false
     },
     
     _create : function() {
@@ -258,6 +259,10 @@
       
       if (this._flags) {
         options['flags'] = this._flags;
+      }
+      
+      if (this.options.canListHiddenStudents) {
+        options['includeHidden'] = true;
       }
 
       mApi()
@@ -1077,7 +1082,8 @@
     $('.gt-students-view-container').guiderStudents({
       workspaceIds: workspaceIds,
       flags: flags,
-      openStudentProfile: openStudentProfile
+      openStudentProfile: openStudentProfile,
+      canListHiddenStudents: $('input[name="canListHiddenStudents"]').val() == 'true'
     });
    
   });
