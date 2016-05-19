@@ -726,15 +726,16 @@
             }
             if (userCorrectTermsInCategory == correctTermsInCategory && userWrongTermsInCategory == 0) {
               $(userCategory).addClass('muikku-field-correct-answer');
+              result.correctAnswers++;
             }
             else if (userCorrectTermsInCategory == 0) {
               $(userCategory).addClass('muikku-field-incorrect-answer');
+              result.wrongAnswers++;
             }
             else {
               $(userCategory).addClass('muikku-field-semi-correct-answer');
+              result.wrongAnswers++;
             }
-            correctTermsByUser += userCorrectTermsInCategory;
-            wrongTermsByUser += userWrongTermsInCategory;
           }
           if (showCorrectAnswers) {
             var termNames = {};
@@ -762,11 +763,6 @@
             }
             $(field).after(exampleDetails);
           }
-          result.correctAnswers = correctTermsByUser - wrongTermsByUser;
-          if (result.correctAnswers < 0) {
-            result.correctAnswers = 0;
-          }
-          result.wrongAnswers = totalCorrectAnswers - result.correctAnswers;
           return result;
         },
         canCheckAnswer: function() {
