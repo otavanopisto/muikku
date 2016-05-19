@@ -631,7 +631,7 @@
           $(this).trigger("change");
         }
       }
-      var categoriesContainer = $('<div>').addClass('muikku-categories-container');
+      var categoriesContainer = $('<div>').addClass('muikku-categories-container flex-row');
       organizerField.append(categoriesContainer);
       var categoryObjects = meta.categories;
       for (var i = 0; i < categoryObjects.length; i++) {
