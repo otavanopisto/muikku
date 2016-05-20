@@ -618,16 +618,40 @@
       organizerField.append(terms);
       terms.append(termsTitle).append(termsData);
       var handleDropEvent = function(event, ui) {
+        var muikkuField = $(this).closest('.muikku-organizer-field');
         var termId = $(ui.draggable).attr('data-term-id');
         var existingTerm = $(this).find('.muikku-term[data-term-id="' + termId + '"]');
         if (existingTerm.length == 0) {
           var categoryTerm = $(ui.draggable).clone();
           var removeLink = $('<span>').addClass('icon-delete').on('click', $.proxy(function(event) {
-            $(event.target).closest('.muikku-term').remove();
+            var term = $(event.target).closest('.muikku-term');
+            var termId = $(term).attr('data-term-id'); 
+            $(term).remove();
+            var originalTermObject = $(muikkuField).find('.muikku-term[data-term-id="' + termId + '"]')[0];
+            var useCount = $(originalTermObject).attr('data-use-count');
+            useCount--;
+            if (useCount == 0) {
+              $(originalTermObject).removeAttr('data-use-count');
+              $(originalTermObject).removeClass('term-in-use');
+            }
+            else {
+              $(originalTermObject).attr('data-use-count', useCount);
+            }
             $(this).trigger("change");
           }, this));
           categoryTerm.append(removeLink);
           $(this).append(categoryTerm);
+          var originalTermObject = $(muikkuField).find('.muikku-term[data-term-id="' + termId + '"]')[0];
+          var useCountAttr = $(originalTermObject).attr('data-use-count'); 
+          if (typeof useCountAttr !== typeof undefined && useCountAttr !== false) {
+            var useCount = $(originalTermObject).attr('data-use-count');
+            useCount++;
+            $(originalTermObject).attr('data-use-count', useCount);
+          }
+          else {
+            $(originalTermObject).addClass('term-in-use');
+            $(originalTermObject).attr('data-use-count', 1);
+          }
           $(this).trigger("change");
         }
       }
@@ -679,11 +703,33 @@
                   if (term != null) {
                     var categoryTerm = $(term).clone();
                     var removeLink = $('<span>').addClass('icon-delete').on('click', $.proxy(function(event) {
-                      $(event.target).closest('.muikku-term').remove();
-                      $(this.element).trigger("change");
+                      var term = $(event.target).closest('.muikku-term');
+                      var termId = $(term).attr('data-term-id'); 
+                      $(term).remove();
+                      var originalTermObject = $(this.element).find('.muikku-term[data-term-id="' + termId + '"]')[0];
+                      var useCount = $(originalTermObject).attr('data-use-count');
+                      useCount--;
+                      if (useCount == 0) {
+                        $(originalTermObject).removeAttr('data-use-count');
+                        $(originalTermObject).removeClass('term-in-use');
+                      }
+                      else {
+                        $(originalTermObject).attr('data-use-count', useCount);
+                      }
+                      $(this).trigger("change");
                     }, this));
                     $(categoryTerm).append(removeLink);
                     $(category).append(categoryTerm);
+                    var useCountAttr = $(term).attr('data-use-count'); 
+                    if (typeof useCountAttr !== typeof undefined && useCountAttr !== false) {
+                      var useCount = $(term).attr('data-use-count');
+                      useCount++;
+                      $(term).attr('data-use-count', useCount);
+                    }
+                    else {
+                      $(term).addClass('term-in-use');
+                      $(term).attr('data-use-count', 1);
+                    }
                   }
                 }
               }
