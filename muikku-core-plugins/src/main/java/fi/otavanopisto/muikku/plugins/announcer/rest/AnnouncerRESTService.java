@@ -69,9 +69,25 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @POST
   @Path("/announcements")
-  @RESTPermit(AnnouncerPermissions.CREATE_ANNOUNCEMENT)
+  @RESTPermit(handling = Handling.INLINE)
   public Response createAnnouncement(AnnouncementRESTModel restModel) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
+
+    if (restModel.getWorkspaceEntityIds().isEmpty() && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.CREATE_ANNOUNCEMENT)) {
+      return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create environment announcements").build();
+    }
+
+    for (Long id : restModel.getWorkspaceEntityIds()) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(id);
+
+      if (workspaceEntity == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceEntityId").build();
+      }
+
+      if (!sessionController.hasCoursePermission(AnnouncerPermissions.CREATE_WORKSPACE_ANNOUNCEMENT, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create workspace announcement").build();
+      }
+    }
     
     Announcement announcement = announcementController.create(
         userEntity,
@@ -106,11 +122,27 @@ public class AnnouncerRESTService extends PluginRESTService {
 
   @PUT
   @Path("/announcements/{ID}")
-  @RESTPermit(AnnouncerPermissions.UPDATE_ANNOUNCEMENT)
+  @RESTPermit(handling = Handling.INLINE)
   public Response updateAnnouncement(
       @PathParam("ID") Long announcementId,
       AnnouncementRESTModel restModel
   ) {
+
+    if (restModel.getWorkspaceEntityIds().isEmpty() && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.UPDATE_ANNOUNCEMENT)) {
+      return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update environment announcements").build();
+    }
+
+    for (Long id : restModel.getWorkspaceEntityIds()) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(id);
+
+      if (workspaceEntity == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceEntityId").build();
+      }
+
+      if (!sessionController.hasCoursePermission(AnnouncerPermissions.UPDATE_WORKSPACE_ANNOUNCEMENT, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update workspace announcement").build();
+      }
+    }
 
     if (announcementId == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -171,7 +203,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   ) {
     if (!onlyActive) {
       if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
-        return Response.status(Status.FORBIDDEN).entity("You're not allowed to list all announcements").build();
+        return Response.status(Status.FORBIDDEN).entity("You're not allowed to list unarchived announcements").build();
       }
     }
     
@@ -199,6 +231,10 @@ public class AnnouncerRESTService extends PluginRESTService {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
       if (workspaceEntity == null) {
         return Response.status(Status.BAD_REQUEST).entity("Workspace entity with given ID not found").build();
+      }
+
+      if (!sessionController.hasCoursePermission(AnnouncerPermissions.LIST_WORKSPACE_ANNOUNCEMENTS, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).entity("You don't have the permission to list workspace announcements").build();
       }
       
       if (onlyActive) {
@@ -277,12 +313,31 @@ public class AnnouncerRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/announcements/{ID}")
-  @RESTPermit(AnnouncerPermissions.DELETE_ANNOUNCEMENT)
+  @RESTPermit(handling = Handling.INLINE)
   public Response deleteAnnouncement(@PathParam("ID") Long announcementId) {
     Announcement announcement = announcementController.findById(announcementId);
     if (announcement == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listWorkspaces(announcement);
+
+    if (announcementWorkspaces.isEmpty() && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.DELETE_ANNOUNCEMENT)) {
+      return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update environment announcements").build();
+    }
+
+    for (AnnouncementWorkspace announcementWorkspace : announcementWorkspaces) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(announcementWorkspace.getWorkspaceEntityId());
+
+      if (workspaceEntity == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceEntityId").build();
+      }
+
+      if (!sessionController.hasCoursePermission(AnnouncerPermissions.DELETE_WORKSPACE_ANNOUNCEMENT, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update workspace announcement").build();
+      }
+    }
+
     announcementController.archive(announcement);
     return Response.noContent().build();
   }

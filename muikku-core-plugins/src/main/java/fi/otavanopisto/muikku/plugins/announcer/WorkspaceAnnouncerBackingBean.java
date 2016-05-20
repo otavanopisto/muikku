@@ -46,13 +46,13 @@ public class WorkspaceAnnouncerBackingBean {
       return NavigationRules.ACCESS_DENIED;
     }
     
-    if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.ANNOUNCER_TOOL)) {
-      return NavigationRules.ACCESS_DENIED;
-    }
-    
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
+    }
+
+    if (!sessionController.hasCoursePermission(AnnouncerPermissions.WORKSPACE_ANNOUNCER_TOOL, workspaceEntity)) {
+      return NavigationRules.ACCESS_DENIED;
     }
     
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);

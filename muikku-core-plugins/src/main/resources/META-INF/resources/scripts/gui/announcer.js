@@ -77,6 +77,8 @@
         
         if (this._workspaceEntityId != null) {
           values.workspaceEntityIds = [this._workspaceEntityId];
+          values.userGroupEntityIds = [];
+          values.publiclyVisible = true;
         }
 
         mApi().announcer.announcements.create(values).callback($.proxy(function(err, result) {
@@ -89,7 +91,13 @@
         }, this));
 
       }, this);   
-      openInSN('/announcer/announcer_create_announcement.dust', null, createAnnouncement, formFunctions);
+      
+      var dustFile = '/announcer/announcer_create_announcement.dust';
+      if (this._workspaceEntityId != null) {
+        dustFile = '/announcer/workspace_announcer_create_announcement.dust';
+      }
+      
+      openInSN(dustFile, null, createAnnouncement, formFunctions);
     },
     
     _onEditAnnouncementClick: function (event) {
@@ -184,6 +192,8 @@
 
         if (this._workspaceEntityId != null) {
           values.workspaceEntityIds = [this._workspaceEntityId];
+          values.userGroupEntityIds = [];
+          values.publiclyVisible = true;
         }
         
         mApi().announcer.announcements.update(id, values).callback($.proxy(function(err, result) {
@@ -195,7 +205,13 @@
           }
         }, this));
       }, this);   
-      openInSN('/announcer/announcer_edit_announcement.dust', null, editAnnouncement, formFunctions);
+
+      var dustFile = '/announcer/announcer_edit_announcement.dust';
+      if (this._workspaceEntityId != null) {
+        dustFile = '/announcer/workspace_announcer_edit_announcement.dust';
+      }
+      
+      openInSN(dustFile, null, editAnnouncement, formFunctions);
     },    
     
     _loadAnnouncements: function () {
