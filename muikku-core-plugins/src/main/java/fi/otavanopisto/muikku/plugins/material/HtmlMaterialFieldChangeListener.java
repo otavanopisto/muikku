@@ -88,7 +88,7 @@ public class HtmlMaterialFieldChangeListener {
       try {
         organizerFieldMeta = objectMapper.readValue(event.getField().getContent(), OrganizerFieldMeta.class);
       } catch (IOException e) {
-        throw new MaterialFieldMetaParsingExeption("Could not parse text field meta", e);
+        throw new MaterialFieldMetaParsingExeption("Could not parse organizer field meta", e);
       }
       
       QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), organizerFieldMeta.getName());

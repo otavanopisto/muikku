@@ -77,17 +77,15 @@
       categoriesTitleLabel.setText(this._lang.propertiesDialogCategoriesTitle);
       categoriesContainer.append(categoriesTitleLabel);
       
-      var _this = this;
       var addCategoryLink = new CKEDITOR.dom.element('div');
       addCategoryLink.addClass('icon-add');
       addCategoryLink.addClass('organizer-add-category-container');
-      addCategoryLink.on('click', function() {
-        _this.addCategory();
-      });
+      addCategoryLink.on('click', CKEDITOR.tools.bind(function() {
+        this.addCategory();
+      }, this));
       categoriesContainer.append(addCategoryLink);
     },
     addCategory: function(id, name) {
-      var _this = this;
       // Category container
       var categoryContainer = new CKEDITOR.dom.element('div');
       categoryContainer.addClass('organizer-category-container');
@@ -104,18 +102,18 @@
       var deleteCategoryLink = new CKEDITOR.dom.element('a');
       deleteCategoryLink.addClass('icon-delete');
       categoryContainer.append(deleteCategoryLink);
-      deleteCategoryLink.on('click', function() {
-        var categoryContainer = this.getParent();
+      deleteCategoryLink.on('click', CKEDITOR.tools.bind(function(evt) {
+        var categoryContainer = evt.sender.getParent();
         var category = categoryContainer.findOne('.organizer-category');
         var terms = category.find('.organizer-term');
         for (var i = 0; i < terms.count(); i++) {
-          _this.removeTerm(terms.getItem(i).getAttribute('data-term-id'));
+          this.removeTerm(terms.getItem(i).getAttribute('data-term-id'));
         }
         var categoryId = category.getAttribute('data-category-id');
-        var index = _this.categoryIds.indexOf(categoryId);
-        _this.categoryIds.splice(index, 1);
+        var index = this.categoryIds.indexOf(categoryId);
+        this.categoryIds.splice(index, 1);
         categoryContainer.remove();
-      });
+      }, this));
       // Category itself
       var category = new CKEDITOR.dom.element('div');
       category.addClass('organizer-category');
@@ -128,23 +126,23 @@
       termField.setAttribute('type', 'text');
       termField.setAttribute('placeholder', this._lang.propertiesDialogNewTerm);
       category.append(termField);
-      termField.on('keydown', function(evt) {
-        var field = this;
+      termField.on('keydown', CKEDITOR.tools.bind(function(evt) {
+        var field = evt.sender;
         if (evt.data.getKeystroke() == 13) {
           evt.data.preventDefault();
           evt.data.stopPropagation();
           evt.stop();
-          if (field.$.value !== '') {
+          if (field.getValue() !== '') {
             var category = field;
             while (!category.hasClass('organizer-category')) {
               category = category.getParent();
             }
-            _this.addTermToCategory(field.$.value, category.getAttribute('data-category-id'));
-            field.$.value = '';
+            this.addTermToCategory(field.getValue(), category.getAttribute('data-category-id'));
+            field.setValue('');
           }
           return false;
         }
-      });
+      }, this));
       categoryContainer.insertBefore(this.getElement().findOne('.organizer-add-category-container'));
     },
     addTerm: function(id, name) {
@@ -210,7 +208,6 @@
       return result;
     },
     addTermToCategory: function(termName, categoryId) {
-      var _this = this;
       var termObject = this.terms[termName];
       if (termObject) {
         var category = this.getElement().findOne('.organizer-category[data-category-id="' + categoryId + '"]');
@@ -234,12 +231,12 @@
       var deleteTermLink = new CKEDITOR.dom.element('a');
       deleteTermLink.addClass('icon-delete');
       termContainer.append(deleteTermLink);
-      deleteTermLink.on('click', function() {
-        var termContainer = this.getParent();
+      deleteTermLink.on('click', CKEDITOR.tools.bind(function(evt) {
+        var termContainer = evt.sender.getParent();
         var term = termContainer.findOne('.organizer-term');
-        _this.removeTerm(term.getAttribute('data-term-id'));
+        this.removeTerm(term.getAttribute('data-term-id'));
         termContainer.remove();
-      });
+      }, this));
 
       var category = this.getElement().findOne('.organizer-category[data-category-id="' + categoryId + '"]');
       category.append(termContainer);
