@@ -25,6 +25,11 @@
       line-height:1;
       cursor:move;
       
+      &.term-in-use {
+        background:#6cd2fc; 
+        color:#fff;
+      }
+      
       &.ui-draggable-dragging {
         z-index:99;
       }
@@ -79,6 +84,11 @@
       padding:6px 28px 6px 8px;
       position:relative;
       line-height:1;
+      
+      &.term-in-use {
+        background:#6cd2fc; 
+        color:#fff;
+      }
       
       .icon-delete {
         position:absolute;

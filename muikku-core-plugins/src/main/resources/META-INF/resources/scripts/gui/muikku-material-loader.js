@@ -623,6 +623,7 @@
         var existingTerm = $(this).find('.muikku-term[data-term-id="' + termId + '"]');
         if (existingTerm.length == 0) {
           var categoryTerm = $(ui.draggable).clone();
+          categoryTerm.addClass('term-in-use');
           var removeLink = $('<span>').addClass('icon-delete').on('click', $.proxy(function(event) {
             var term = $(event.target).closest('.muikku-term');
             var termId = $(term).attr('data-term-id'); 
