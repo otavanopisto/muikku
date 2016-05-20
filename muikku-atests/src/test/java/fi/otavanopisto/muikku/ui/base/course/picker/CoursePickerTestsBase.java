@@ -83,6 +83,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
         waitAndSendKeys(".cp-search-field input.search", "pot");
         waitAndSendKeys(".cp-search-field input.search", "ato");
         waitUntilElementCount(".cp-course-long-name", 1);
+        waitForPresentAndVisible(".cp-course-long-name");
         assertTextIgnoreCase(".cp-course-long-name", "potato course");
       } finally {
         deleteWorkspace(workspace1.getId());
