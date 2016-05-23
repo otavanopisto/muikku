@@ -1,7 +1,7 @@
 /* Material loading */
 .workspace-material-queued-html,
 .workspace-material-loading {
-  background-image:url("gfx/workspace-material-loading.gif"); 
+  background-image:url("gfx/workspace-material-loading.gif");  
   background-repeat: no-repeat;
   background-position: center;
   min-height: 500px;
@@ -57,7 +57,7 @@ input[type="text"] {
   width:auto;
   height:auto;
   border:3px solid #c9e0fb;
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   padding:4px 8px;
   transition:border,box-shadow 0.2s,0.2s ease-in-out;
@@ -129,7 +129,7 @@ input[type="text"] {
 textarea {
   height:auto;
   border:3px solid #c9e0fb;
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   padding:4px 8px;
   transition:border,box-shadow 0.1s,0.2s ease-in-out;
@@ -175,7 +175,7 @@ select {
   display:inline-block;
   margin:4px;
   box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
-  @include rounded(3px);
+  border-radius:3px;
   max-width:100%;
   word-wrap:break-word;
   vertical-align:middle;
@@ -232,7 +232,7 @@ input[type="checkbox"] {
   outline:none;
   display:inline-block;
   box-shadow:0 0 1px 3px rgba(215,215,215,0.15);
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   
   &:focus,
@@ -703,7 +703,7 @@ sup {
   .muikku-field-correct-answer {
     box-shadow:0 0 1px 3px rgba(0,255,42,0.3) !important;
     border:3px solid #00ff2a !important;
-    @include rounded(3px);
+    border-radius:3px;
     
     &:hover {
       box-shadow:0 0 2px 3px rgba(0,255,42,0.3) !important;
@@ -715,7 +715,7 @@ sup {
   .muikku-field-incorrect-answer {
     border:3px solid #f64e4e !important;
     box-shadow:0 0 1px 3px rgba(255,0,0,0.3) !important;
-    @include rounded(3px);
+    border-radius:3px;
     
     &:hover {
       border:3px solid #f64e4e !important;
@@ -783,7 +783,7 @@ sup {
     input[type="radio"].muikku-field-correct-answer-override {
       box-shadow:0 0 1px 3px rgba(0,255,42,0.9) !important;
       border:3px solid #00ff2a !important;
-      @include rounded(3px);
+      border-radius:3px;
       
       &:hover {
         box-shadow:0 0 1px 3px rgba(0,255,42,0.9) !important;

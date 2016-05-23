@@ -1,0 +1,53 @@
+@import "_vars.scss";
+@import "_styles.scss";
+@import "_workspace-materials-defaults.scss";  
+
+h1.workspace-generic-view-title {
+  background:#fff;
+  padding:20px;
+  margin:0;
+}
+
+.workspace-announcer-content-wrapper {
+  padding:20px;
+  background:#fff;
+}
+
+.an-announcements {
+  padding:25px;
+  
+  .an-announcement {
+    box-sizing: border-box;
+    display: inline-block;
+    margin-bottom: 25px;
+    margin-right: 25px;
+    max-height: 330px;
+    overflow: hidden;
+    vertical-align: top;
+    width: 286px;
+
+    &:nth-child(3n+3) {
+      margin-right:0;
+    }
+    
+    &.ACTIVE {
+      
+    }
+    
+    &.ENDED {
+      opacity:0.5;
+    }
+    
+    &.UPCOMING {
+    
+      .an-announcement-dates {
+        background:#69cff9;
+        color:#fff;
+        font-weight:600;
+      }
+      
+    }
+    
+  }
+  
+}
