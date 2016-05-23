@@ -696,44 +696,39 @@ sup {
     
   }
 
-  .muikku-field-correct-answer {
-    box-shadow:0 0 1px 3px rgba(0,255,42,0.3) !important;
-    border:3px solid #00ff2a !important;
+  /* For textfields/memofields/selections checks */
+  input[type="text"].muikku-field-correct-answer,
+  textarea.muikku-field-correct-answer,
+  select.muikku-field-correct-answer {
+    box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
+    border:3px solid #00ff2a;
     @include rounded(3px);
     
     &:hover {
-      box-shadow:0 0 2px 3px rgba(0,255,42,0.3) !important;
-      border:3px solid #00ff2a !important;
+      box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
+      border:3px solid #00ff2a;
     }
     
   }
   
-  .muikku-field-incorrect-answer {
-    border:3px solid #f64e4e !important;
-    box-shadow:0 0 1px 3px rgba(255,0,0,0.3) !important;
+  input[type="text"].muikku-field-incorrect-answer,
+  textarea.muikku-field-incorrect-answer,
+  select.muikku-field-incorrect-answer {
+    border:3px solid #f64e4e;
+    box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
     @include rounded(3px);
     
     &:hover {
-      border:3px solid #f64e4e !important;
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.3) !important;
+      border:3px solid #f64e4e;
+      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
     }
     
   }
 
-  /* For checkbox/radio/connectfields checks */
-  div.muikku-field-correct-answer {
-    box-shadow:none !important;
-    border:none !important;
-    
-    input[type="checkbox"],
-    input[type="radio"] {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.9) !important;
-    }
-    
-    &:hover {
-      box-shadow:none !important;
-      border:none !important;  
-    }
+  /* For connectfields checks */
+  div.muikku-connect-field.muikku-field-correct-answer {
+    box-shadow:none;
+    border:none;
     
     .muikku-connect-field-counterpart.muikku-connect-field-correct-answer, 
     .muikku-connect-field-term.muikku-connect-field-correct-answer {
@@ -742,19 +737,9 @@ sup {
     
   }
   
-  div.muikku-field-incorrect-answer {
-    box-shadow:none !important;
-    border:none !important;
-    
-    input[type="checkbox"],
-    input[type="radio"] {
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.7) !important;
-    }
-    
-    &:hover {
-      box-shadow:none !important;
-      border:none !important;  
-    }
+  div.muikku-connect-field.muikku-field-incorrect-answer {
+    box-shadow:none;
+    border:none;
     
     .muikku-connect-field-counterpart.muikku-connect-field-wrong-answer, 
     .muikku-connect-field-term.muikku-connect-field-wrong-answer {
@@ -775,15 +760,89 @@ sup {
       background:#55fc70;
     }
     
-    input[type="checkbox"].muikku-field-correct-answer-override,
-    input[type="radio"].muikku-field-correct-answer-override {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.9) !important;
-      border:3px solid #00ff2a !important;
+  }
+  
+  /* For organizerfields checks */
+  div.muikku-organizer-field {
+    
+    .muikku-category.muikku-field-correct-answer {
+      box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
+      border:3px solid #00ff2a;
       @include rounded(3px);
       
       &:hover {
-        box-shadow:0 0 1px 3px rgba(0,255,42,0.9) !important;
-        border:3px solid #00ff2a !important;
+        box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
+        border:3px solid #00ff2a;
+      }
+      
+    }
+    
+    .muikku-category.muikku-field-semi-correct-answer {
+      box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
+      border:3px solid #dab33d;
+      @include rounded(3px);
+      
+      &:hover {
+        box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
+        border:3px solid #dab33d;
+      }
+      
+    }
+    
+    .muikku-category.muikku-field-incorrect-answer {
+      border:3px solid #f64e4e;
+      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
+      @include rounded(3px);
+      
+      &:hover {
+        border:3px solid #f64e4e;
+        box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
+      }
+
+    }
+    
+  }
+  
+  /* For checkboxes/radiobuttons checks */
+  span.muikku-field-correct-answer {
+    box-shadow:none;
+    border:none;
+    
+    input[type="checkbox"],
+    input[type="radio"] {
+      box-shadow:0 0 1px 3px rgba(0,255,42,0.9);
+    }
+    
+    &:hover {
+      box-shadow:none;
+      border:none;  
+    }
+    
+  }
+  
+  span.muikku-field-incorrect-answer {
+    box-shadow:none;
+    border:none;
+    
+    input[type="checkbox"],
+    input[type="radio"] {
+      box-shadow:0 0 1px 3px rgba(255,0,0,0.7);
+    }
+    
+    &:hover {
+      box-shadow:none;
+      border:none;  
+    }
+    
+    input[type="checkbox"].muikku-field-correct-answer-override,
+    input[type="radio"].muikku-field-correct-answer-override {
+      box-shadow:0 0 1px 3px rgba(0,255,42,0.9);
+      border:3px solid #00ff2a;
+      @include rounded(3px);
+      
+      &:hover {
+        box-shadow:0 0 1px 3px rgba(0,255,42,0.9);
+        border:3px solid #00ff2a;
       }
     
     }
