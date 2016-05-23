@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.plugins.wall.WallController;
 import fi.otavanopisto.muikku.plugins.wall.WallEntryProvider;
 import fi.otavanopisto.muikku.plugins.wall.WallFeedItem;
 import fi.otavanopisto.muikku.plugins.wall.WallPermissions;
@@ -42,9 +41,6 @@ public class DefaultWallEntryProvider implements WallEntryProvider {
 
   @Inject
   private WorkspaceWallDAO courseWallDAO;
-
-  @Inject
-  private WallController wallController;
   
   @Override
   public List<WallFeedItem> listWallEntryItems(Wall wall) {

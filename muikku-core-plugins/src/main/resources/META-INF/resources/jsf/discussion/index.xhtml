@@ -42,7 +42,7 @@
                 <select id="discussionAreaSelect" name="areas"> 
                 </select>
               </div>
-              <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">
+              <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">
                 <div class="di-admin-tools lg-flex-hide md-flex-hide flex-left">
                   <div class="mf-tools-mobile">
                     <div class="mf-tools-mobile-activate icon-navicon">

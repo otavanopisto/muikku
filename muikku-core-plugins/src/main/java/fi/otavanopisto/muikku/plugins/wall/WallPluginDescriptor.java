@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.LocaleUtils;
 
 import fi.otavanopisto.muikku.i18n.LocaleBundle;
@@ -13,19 +11,8 @@ import fi.otavanopisto.muikku.i18n.LocaleLocation;
 import fi.otavanopisto.muikku.plugin.LocalizedPluginDescriptor;
 import fi.otavanopisto.muikku.plugin.PluginDescriptor;
 import fi.otavanopisto.muikku.plugin.PrioritizedPluginDescriptor;
-import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.users.UserController;
 
 public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor, PrioritizedPluginDescriptor {
-
-  @Inject
-  private WorkspaceController workspaceController;
-
-  @Inject
-  private WallController wallController;
-
-  @Inject
-  private UserController userController;
   
   @Override
   public void init() {

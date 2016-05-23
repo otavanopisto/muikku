@@ -80,7 +80,13 @@ function openInSN(template, result, formSendFunction, formContentFunction, cke) 
     // Form functions a done here, so all the form content is loaded this allows us to use CKEDITOR.setdata from the mainfunction
     
     if (formContentFunction != undefined){
-      formContentFunction();
+      if($.isFunction(formContentFunction)){
+         formContentFunction();
+      }else{
+        if(formContentFunction.quote == true){
+           CKEDITOR.instances.textContent.setData('<blockquote>' + '<p><strong>' + formContentFunction.quoteAuthor + '</strong></p>' +formContentFunction.quoteContent + '</blockquote><p> </p>');         
+        }       
+      }
     }
     
     cancelBtn.on("click", cancelBtn, function() {

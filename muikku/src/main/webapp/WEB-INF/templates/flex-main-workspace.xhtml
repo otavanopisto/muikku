@@ -104,7 +104,7 @@
                   </div>
                 </ui:fragment>
                 <!-- ANNOUNCER -->
-                <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+                <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">
                   <div class="dock-static-navi-button-announcer lg-flex-hide md-flex-hide">
                     <a jsf:outcome="/jsf/announcer/index.jsf" class="icon-announcer"><span>#{i18n.text['plugin.announcer.announcer']}</span></a>
                   </div>
@@ -171,7 +171,7 @@
           </nav>
         </ui:fragment>
         
-        <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">
           <!-- WORKSPACE MANAGEMENT NAVIGATION -->
           <nav id="workspaceEditDockWrapper">
             <div id="workspaceEditDock">
@@ -321,7 +321,7 @@
               </div>
             </ui:fragment>
           
-            <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">   
+            <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">   
               <div class="navmore-management-links">
                 <!-- EDIT WORKSPACE -->
                 <div class="workspace-management-item">

@@ -2,14 +2,12 @@ package fi.otavanopisto.muikku.ui.sauce.user;
 
 import java.net.MalformedURLException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.junit.SauceOnDemandTestWatcher;
 
-import fi.otavanopisto.muikku.ui.base.indexpage.IndexPageTestsBase;
 import fi.otavanopisto.muikku.ui.base.user.UserTestsBase;
 
 public class UserTestsIT extends UserTestsBase {

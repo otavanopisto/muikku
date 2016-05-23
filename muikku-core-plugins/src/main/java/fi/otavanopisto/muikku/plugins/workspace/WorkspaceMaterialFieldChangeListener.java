@@ -2,26 +2,34 @@ package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 import fi.otavanopisto.muikku.plugins.material.MaterialFieldMetaParsingExeption;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryMultiSelectFieldOptionDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MultiSelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MultiSelectFieldOptionMeta;
+import fi.otavanopisto.muikku.plugins.material.fieldmeta.OrganizerFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectFieldOption;
 import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
 import fi.otavanopisto.muikku.plugins.material.model.QuerySelectFieldOption;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialMultiSelectFieldAnswerDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialOrganizerFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldUpdateEvent;
@@ -31,10 +39,14 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileField
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialOrganizerFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 
 public class WorkspaceMaterialFieldChangeListener {
   
+  @Inject
+  private WorkspaceMaterialFieldDAO workspaceMaterialFieldDAO;
+
   @Inject
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
   
@@ -49,10 +61,75 @@ public class WorkspaceMaterialFieldChangeListener {
 
   @Inject
   private WorkspaceMaterialMultiSelectFieldAnswerDAO workspaceMaterialMultiSelectFieldAnswerDAO;
+
+  @Inject
+  private WorkspaceMaterialOrganizerFieldAnswerDAO workspaceMaterialOrganizerFieldAnswerDAO;
   
   // Create
   
   // Update
+  
+  // Organizer field
+  public void onWorkspaceMaterialOrganizerFieldUpdate(@Observes WorkspaceMaterialFieldUpdateEvent event) throws MaterialFieldMetaParsingExeption, WorkspaceMaterialContainsAnswersExeption {
+    if (event.getMaterialField().getType().equals("application/vnd.muikku.field.organizer")) {
+      
+      ObjectMapper objectMapper = new ObjectMapper();
+      OrganizerFieldMeta organizerFieldMeta;
+      try {
+        organizerFieldMeta = objectMapper.readValue(event.getMaterialField().getContent(), OrganizerFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse organizer field meta", e);
+      }
+      
+      List<WorkspaceMaterialField> fields = workspaceMaterialFieldDAO.listByQueryField(event.getWorkspaceMaterialField().getQueryField());
+      for (WorkspaceMaterialField field : fields) {
+        List<WorkspaceMaterialOrganizerFieldAnswer> answers = workspaceMaterialOrganizerFieldAnswerDAO.listByWorkspaceMaterialField(field);
+        for (WorkspaceMaterialOrganizerFieldAnswer answer : answers) {
+          try {
+            boolean answerModified = false;
+            HashMap<String, Set<String>> answerObject = objectMapper.readValue(answer.getValue(), new TypeReference<HashMap<String, Set<String>>>() {});
+            Set<String> terms = new HashSet<String>();
+            Set<String> categories = answerObject.keySet();
+            for (String category : categories) {
+              terms.addAll(answerObject.get(category));
+              if (!organizerFieldMeta.hasCategoryWithId(category)) {
+                if (!event.getRemoveAnswers()) {
+                  throw new WorkspaceMaterialContainsAnswersExeption("Could not update organizer field because it contains answers");
+                }
+                else {
+                  answerObject.remove(category);
+                  answerModified = true;
+                }
+              }
+            }
+            for (String term : terms) {
+              if (!organizerFieldMeta.hasTermWithId(term)) {
+                if (!event.getRemoveAnswers()) {
+                  throw new WorkspaceMaterialContainsAnswersExeption("Could not update organizer field because it contains answers");
+                }
+                else {
+                  Iterator<String> categoryIterator = answerObject.keySet().iterator();
+                  while (categoryIterator.hasNext()) {
+                    Set<String> categoryTerms = answerObject.get(categoryIterator.next());
+                    if (categoryTerms.contains(term)) {
+                      categoryTerms.remove(term);
+                      answerModified = true;
+                    }
+                  }
+                }
+              }
+            }
+            if (answerModified) {
+              workspaceMaterialOrganizerFieldAnswerDAO.updateValue(answer, objectMapper.writeValueAsString(answerObject));
+            }
+          }
+          catch (IOException e) {
+            throw new MaterialFieldMetaParsingExeption("Could not parse organizer field answer meta", e);
+          }
+        }
+      }
+    }
+  }
   
   // Select field
   public void onWorkspaceMaterialSelectFieldUpdate(@Observes WorkspaceMaterialFieldUpdateEvent event) throws MaterialFieldMetaParsingExeption, WorkspaceMaterialContainsAnswersExeption {
