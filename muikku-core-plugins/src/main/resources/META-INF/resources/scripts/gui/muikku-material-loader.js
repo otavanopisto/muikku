@@ -988,6 +988,11 @@
       $(data.pageElement).find('img')
         .imageDetails();
     }
+    
+    if (jQuery().wordDefinition) {
+      $(data.pageElement).find('mark[data-muikku-word-definition]')
+        .wordDefinition();
+    }
         
     $(data.pageElement).find('.js-lazyyt').lazyYT();
     

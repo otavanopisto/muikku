@@ -489,7 +489,9 @@
               $(event.target).val("");
             }
             return false;
-          }, this)
+          }, this),
+          
+          appendTo: '#msgRecipientsContainer'
         });
         
         autocomplete.data("ui-autocomplete")._renderItem = function (ul, item) {
