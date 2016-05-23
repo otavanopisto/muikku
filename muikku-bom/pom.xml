@@ -34,7 +34,7 @@
 
 		<!-- Neko -->
 
-		<nekohtml.version>1.9.6.2</nekohtml.version>
+		<nekohtml.version>1.9.22</nekohtml.version>
 
 		<!-- Muikku -->
 
@@ -134,9 +134,9 @@
 			</dependency>
 
 			<!-- Neko -->
-
+      
 			<dependency>
-				<groupId>nekohtml</groupId>
+				<groupId>net.sourceforge.nekohtml</groupId>
 				<artifactId>nekohtml</artifactId>
 				<version>${nekohtml.version}</version>
 			</dependency>
