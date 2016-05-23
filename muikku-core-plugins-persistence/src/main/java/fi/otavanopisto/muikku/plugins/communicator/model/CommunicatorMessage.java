@@ -117,7 +117,7 @@ public class CommunicatorMessage implements ContextReference {
   @ManyToOne
   private CommunicatorMessageId communicatorMessageId;
 
-  @Column (name = "sender_id")
+  @Column (nullable = false, name = "sender_id")
   private Long sender;
   
   @ManyToOne
