@@ -466,7 +466,7 @@
           }
         }));
         
-        var autocomplete = $('input[name="recipient"]').autocomplete({
+        var autocomplete = this.element.find('input[name="recipient"]').autocomplete({
           open: function(event, ui) {
             $(event.target).perfectScrollbar({
               wheelSpeed:3,
