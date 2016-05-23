@@ -154,7 +154,7 @@
       return this.terms[name];
     },
     getTermTitle: function() {
-      return this.getElement().findOne('input[name="termTitle"]').$.value;
+      return this.getElement().findOne('input[name="termTitle"]').getValue();
     },
     getTerms: function() {
       var result = [];
@@ -185,7 +185,7 @@
       for (var i = 0; i < categories.count(); i++) {
         result.push({
           'id': categories.getItem(i).getAttribute('data-category-id'),
-          'name': categories.getItem(i).getParent().findOne('.organizer-category-name').$.value
+          'name': categories.getItem(i).getParent().findOne('.organizer-category-name').getValue()
         })
       }
       return result;
@@ -329,7 +329,7 @@
             }
             
             var termTitleField = this.getElement().findOne('input[name="termTitle"]');
-            termTitleField.$.value = json.termTitle;
+            termTitleField.setValue(json.termTitle);
             
             var terms = json.terms;
             for (var i = 0; i < terms.length; i++) {
