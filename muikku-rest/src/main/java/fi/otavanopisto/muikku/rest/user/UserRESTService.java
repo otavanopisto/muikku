@@ -134,6 +134,7 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userEntityId") Long userEntityId,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
+      @DefaultValue ("false") @QueryParam("includeHidden") Boolean includeHidden,
       @QueryParam("flags") Long[] flagIds) {
     
     if (!sessionController.isLoggedIn()) {
@@ -209,6 +210,18 @@ public class UserRESTService extends AbstractRESTService {
       }
     } 
     
+    if (Boolean.TRUE.equals(includeHidden)) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
+        if (userEntityId == null) {
+          return Response.status(Status.FORBIDDEN).build();
+        } else {
+          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
+            return Response.status(Status.FORBIDDEN).build();
+          }
+        }
+      }
+    }
+    
     if (userEntityId != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
        
@@ -246,7 +259,8 @@ public class UserRESTService extends AbstractRESTService {
     if (elasticSearchProvider != null) {
       String[] fields = new String[] { "firstName", "lastName" };
 
-      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, firstResult, maxResults);
+      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
+          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
       boolean hasImage = false;
@@ -844,6 +858,7 @@ public class UserRESTService extends AbstractRESTService {
 			    workspaceFilters, 
 			    null, 
 			    false,
+			    false,
 			    firstResult, 
 			    maxResults);
 			
@@ -1006,6 +1021,7 @@ public class UserRESTService extends AbstractRESTService {
           workspaceFilters, 
           userIdentifiers, 
           false, 
+          false,
           firstResult, 
           maxResults);
       

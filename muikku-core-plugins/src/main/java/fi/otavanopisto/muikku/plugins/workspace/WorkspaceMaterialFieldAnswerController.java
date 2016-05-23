@@ -18,6 +18,7 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAn
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerFileDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialMultiSelectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialMultiSelectFieldAnswerOptionDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialOrganizerFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
@@ -27,6 +28,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileField
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialOrganizerFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
@@ -38,6 +40,9 @@ public class WorkspaceMaterialFieldAnswerController {
 
   @Inject
   private WorkspaceMaterialTextFieldAnswerDAO workspaceMaterialTextFieldAnswerDAO;
+
+  @Inject
+  private WorkspaceMaterialOrganizerFieldAnswerDAO workspaceMaterialOrganizerFieldAnswerDAO;
 
   @Inject
   private WorkspaceMaterialSelectFieldAnswerDAO workspaceMaterialSelectFieldAnswerDAO;
@@ -86,6 +91,21 @@ public class WorkspaceMaterialFieldAnswerController {
   public WorkspaceMaterialTextFieldAnswer updateWorkspaceMaterialTextFieldAnswerValue(WorkspaceMaterialTextFieldAnswer workspaceMaterialTextFieldAnswer,
       String value) {
     return workspaceMaterialTextFieldAnswerDAO.updateValue(workspaceMaterialTextFieldAnswer, value);
+  }
+  
+  /* Organizer field */
+
+  public WorkspaceMaterialOrganizerFieldAnswer createWorkspaceMaterialOrganizerFieldAnswer(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) {
+    return workspaceMaterialOrganizerFieldAnswerDAO.create(field, reply, value);
+  }
+
+  public WorkspaceMaterialOrganizerFieldAnswer findWorkspaceMaterialOrganizerFieldAnswerByFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+    return workspaceMaterialOrganizerFieldAnswerDAO.findByFieldAndReply(field, reply);
+  }
+
+  public WorkspaceMaterialOrganizerFieldAnswer updateWorkspaceMaterialOrganizerFieldAnswerValue(WorkspaceMaterialOrganizerFieldAnswer workspaceMaterialOrganizerFieldAnswer,
+      String value) {
+    return workspaceMaterialOrganizerFieldAnswerDAO.updateValue(workspaceMaterialOrganizerFieldAnswer, value);
   }
 
   /* SelectField */

@@ -104,7 +104,7 @@
                   </div>
                 </ui:fragment>
                 <!-- ANNOUNCER -->
-                <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+                <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">
                   <div class="dock-static-navi-button-announcer lg-flex-hide md-flex-hide">
                     <a jsf:outcome="/jsf/announcer/index.jsf" class="icon-announcer"><span>#{i18n.text['plugin.announcer.announcer']}</span></a>
                   </div>
@@ -171,7 +171,7 @@
           </nav>
         </ui:fragment>
         
-        <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">
           <!-- WORKSPACE MANAGEMENT NAVIGATION -->
           <nav id="workspaceEditDockWrapper">
             <div id="workspaceEditDock">
@@ -186,7 +186,7 @@
                     </div>
                     <!-- EDIT ANNOUNCEMENTS -->
                     <div class="workspace-management-item">
-                      <a class="icon-announcer" title="#{i18n.text['plugin.workspace.dock.workspace-announcements']}" jsf:outcome="/jsf/announcer/workspace_announcer.jsf?workspaceEntityId=#{workspaceBackingBean.workspaceId}">
+                      <a class="icon-announcer" title="#{i18n.text['plugin.workspace.dock.workspace-announcements']}" jsf:outcome="/jsf/workspace/workspace_announcer.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
                         <span>#{i18n.text['plugin.workspace.dock.workspace-announcements']}</span>
                       </a>
                     </div>
@@ -321,7 +321,7 @@
               </div>
             </ui:fragment>
           
-            <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">   
+            <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">   
               <div class="navmore-management-links">
                 <!-- EDIT WORKSPACE -->
                 <div class="workspace-management-item">
@@ -329,6 +329,18 @@
                     <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.workspace-edit']}</span>
                   </a>
                 </div>  
+                <!-- EDIT ANNOUNCEMENTS -->
+                <div class="workspace-management-item">
+                  <a class="icon-announcer" title="#{i18n.text['plugin.workspace.dock.workspace-announcements']}" jsf:outcome="/jsf/workspace/workspace_announcer.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span>#{i18n.text['plugin.workspace.dock.workspace-announcements']}</span>
+                  </a>
+                </div>
+                <!-- EDIT PERMISSIONS -->
+                <div class="workspace-management-item">
+                  <a class="icon-permissions" title="#{i18n.text['plugin.workspace.dock.workspace-permissions']}" jsf:outcome="/jsf/workspace/permissions.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                    <span>#{i18n.text['plugin.workspace.dock.workspace-permissions']}</span>
+                  </a>
+                </div>
                 <ui:fragment rendered="#{workspaceBackingBean.mayManageMaterials}">
                   <!-- EDIT MATERIALS -->
                   <div class="workspace-management-item">

@@ -23,8 +23,8 @@ public interface SearchProvider {
   public SearchResult searchWorkspaces(String searchTerm, int start, int maxResults);
 
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
-      Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, int start,
-      int maxResults);
+      Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden, 
+      int start, int maxResults);
 
   public class Sort {
     

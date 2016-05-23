@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-workspace.xhtml">
+
+
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/announcer.js" />
+  </ui:define>
+  
+  <ui:define name="workspace-view-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-announcer.css"/>  
+  </ui:define>
+
+  <ui:define name="grid-content">
+    <div class="flex-row">
+      <h1 class="workspace-generic-view-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.announcer.pageTitle']}</h1>
+    </div>
+    <section class="flex-row workspace-announcer-content-wrapper">
+      <article class="lg-flex-cell-11 md-flex-cell-11 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first no-margin-top">
+        <input type="hidden" id="workspaceEntityId" value="#{workspaceAnnouncerBackingBean.workspaceEntityId}" />
+        <div class="mf-content-main an-announcements-view-container">
+        
+        </div>
+      </article>
+    </section>
+  </ui:define>
+     
+</ui:composition>

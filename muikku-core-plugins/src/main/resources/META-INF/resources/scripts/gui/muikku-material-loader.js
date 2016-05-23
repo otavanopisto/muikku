@@ -590,6 +590,246 @@
       // TODO: data.meta.help, data.meta.hint
     }
   });
+
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.organizer') {
+      var meta = data.meta;
+      var organizerField = $('<div>').addClass('muikku-organizer-field');
+      organizerField.attr('id', data.name);
+      var terms = $('<div>').addClass('muikku-terms-container');
+      var termsTitle = $('<div>').addClass('muikku-terms-title').append(meta.termTitle);
+      var termsData = $('<div>').addClass('muikku-terms-data');
+      var termObjects = meta.terms;
+      var j, x, i;
+      for (i = termObjects.length; i; i -= 1) {
+        j = Math.floor(Math.random() * i);
+        x = termObjects[i - 1];
+        termObjects[i - 1] = termObjects[j];
+        termObjects[j] = x;
+      }
+      for (var i = 0; i < termObjects.length; i++) {
+        var term = $('<div>').addClass('muikku-term').append(termObjects[i].name).attr('data-term-id', termObjects[i].id).draggable({
+          containment: '#' + data.name,
+          helper: 'clone'
+        });
+        termsData.append(term);
+      }
+      organizerField.append(terms);
+      terms.append(termsTitle).append(termsData);
+      var handleDropEvent = function(event, ui) {
+        var muikkuField = $(this).closest('.muikku-organizer-field');
+        var termId = $(ui.draggable).attr('data-term-id');
+        var existingTerm = $(this).find('.muikku-term[data-term-id="' + termId + '"]');
+        if (existingTerm.length == 0) {
+          var categoryTerm = $(ui.draggable).clone();
+          categoryTerm.addClass('term-in-use');
+          var removeLink = $('<span>').addClass('icon-delete').on('click', $.proxy(function(event) {
+            var term = $(event.target).closest('.muikku-term');
+            var termId = $(term).attr('data-term-id'); 
+            $(term).remove();
+            var originalTermObject = $(muikkuField).find('.muikku-term[data-term-id="' + termId + '"]')[0];
+            var useCount = $(originalTermObject).attr('data-use-count');
+            useCount--;
+            if (useCount == 0) {
+              $(originalTermObject).removeAttr('data-use-count');
+              $(originalTermObject).removeClass('term-in-use');
+            }
+            else {
+              $(originalTermObject).attr('data-use-count', useCount);
+            }
+            $(this).trigger("change");
+          }, this));
+          categoryTerm.append(removeLink);
+          $(this).append(categoryTerm);
+          var originalTermObject = $(muikkuField).find('.muikku-term[data-term-id="' + termId + '"]')[0];
+          var useCountAttr = $(originalTermObject).attr('data-use-count'); 
+          if (typeof useCountAttr !== typeof undefined && useCountAttr !== false) {
+            var useCount = $(originalTermObject).attr('data-use-count');
+            useCount++;
+            $(originalTermObject).attr('data-use-count', useCount);
+          }
+          else {
+            $(originalTermObject).addClass('term-in-use');
+            $(originalTermObject).attr('data-use-count', 1);
+          }
+          $(this).trigger("change");
+        }
+      }
+      var categoriesContainer = $('<div>').addClass('muikku-categories-container flex-row');
+      organizerField.append(categoriesContainer);
+      var categoryObjects = meta.categories;
+      for (var i = 0; i < categoryObjects.length; i++) {
+        var categoryContainer = $('<div>').addClass('muikku-category-container');
+        var categoryTitle = $('<div>').addClass('muikku-category-title').append(categoryObjects[i].name);
+        var category = $('<div>').addClass('muikku-category').attr('data-category-id', categoryObjects[i].id).droppable({
+          accept: '.muikku-term',
+          drop: handleDropEvent
+        });
+        categoryContainer.append(categoryTitle).append(category);
+        categoriesContainer.append(categoryContainer);
+      }
+      organizerField.muikkuField({
+        fieldName: data.name,
+        materialId: data.materialId,
+        embedId: data.embedId,
+        meta: meta,
+        readonly: data.readOnlyFields||false,
+        answer: function(val) {
+          if (val === undefined) {
+            var answer = {};
+            var categories = $(this.element).find('.muikku-category');
+            for (var i = 0; i < categories.length; i++) {
+              var categoryId = $(categories[i]).attr('data-category-id'); 
+              answer[categoryId] = [];
+              var terms = $(categories[i]).find('.muikku-term');
+              for (var j = 0; j < terms.length; j++) {
+                answer[categoryId].push($(terms[j]).attr('data-term-id'));
+              }
+            }
+            return JSON.stringify(answer);
+          }
+          else {
+            var answer = $.parseJSON(val);
+            var keys = Object.keys(answer);
+            for (var i = 0; i < keys.length; i++) {
+              var categoryId = keys[i];
+              var categories = $(this.element).find('.muikku-category[data-category-id="' + categoryId + '"]');
+              var category = categories.length == 0 ? null : categories[0];
+              if (category != null) {
+                var termIds = answer[keys[i]];
+                for (var j = 0; j < termIds.length; j++) {
+                  var terms = $(this.element).find('.muikku-term[data-term-id="' + termIds[j] + '"]'); 
+                  var term = terms.length == 0 ? null : terms[0];
+                  if (term != null) {
+                    var categoryTerm = $(term).clone();
+                    $(categoryTerm).addClass('term-in-use');
+                    var removeLink = $('<span>').addClass('icon-delete').on('click', $.proxy(function(event) {
+                      var term = $(event.target).closest('.muikku-term');
+                      var category = $(term).closest('.muikku-category');
+                      var termId = $(term).attr('data-term-id'); 
+                      $(term).remove();
+                      var originalTermObject = $(this.element).find('.muikku-term[data-term-id="' + termId + '"]')[0];
+                      var useCount = $(originalTermObject).attr('data-use-count');
+                      useCount--;
+                      if (useCount == 0) {
+                        $(originalTermObject).removeAttr('data-use-count');
+                        $(originalTermObject).removeClass('term-in-use');
+                      }
+                      else {
+                        $(originalTermObject).attr('data-use-count', useCount);
+                      }
+                      $(category).trigger("change");
+                    }, this));
+                    $(categoryTerm).append(removeLink);
+                    $(category).append(categoryTerm);
+                    var useCountAttr = $(term).attr('data-use-count'); 
+                    if (typeof useCountAttr !== typeof undefined && useCountAttr !== false) {
+                      var useCount = $(term).attr('data-use-count');
+                      useCount++;
+                      $(term).attr('data-use-count', useCount);
+                    }
+                    else {
+                      $(term).addClass('term-in-use');
+                      $(term).attr('data-use-count', 1);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        hasDisplayableAnswers: function() {
+          return true;
+        },
+        checksOwnAnswer: function() {
+          return true;
+        },
+        checkAnswer: function(showCorrectAnswers) {
+          $(this.element).find('.muikku-field-examples').remove();
+          var result = {
+            'correctAnswers': 0,
+            'wrongAnswers': 0
+          }
+          var meta = this.options.meta;
+          var correctTermsByUser = 0;
+          var wrongTermsByUser = 0;
+          var totalCorrectAnswers = 0; 
+          for (var i = 0; i < meta.categoryTerms.length; i++) {
+            var categoryId = meta.categoryTerms[i].category;
+            var userCorrectTermsInCategory = 0;
+            var userWrongTermsInCategory = 0;
+            var correctTermsInCategory = meta.categoryTerms[i].terms.length;
+            totalCorrectAnswers += correctTermsInCategory;
+            var userCategory = $(this.element).find('.muikku-category[data-category-id="' + categoryId + '"]')[0];
+            $(userCategory).removeClass('muikku-field-correct-answer muikku-field-semi-correct-answer muikku-field-incorrect-answer');
+            var userTerms = $(userCategory).find('.muikku-term');
+            for (var j = 0; j < userTerms.length; j++) {
+              var userTerm = $(userTerms[j]).attr('data-term-id');
+              if ($.inArray(userTerm, meta.categoryTerms[i].terms) >= 0) {
+                userCorrectTermsInCategory++;
+              }
+              else {
+                userWrongTermsInCategory++;
+              }
+            }
+            if (userCorrectTermsInCategory == correctTermsInCategory && userWrongTermsInCategory == 0) {
+              $(userCategory).addClass('muikku-field-correct-answer');
+              result.correctAnswers++;
+            }
+            else if (userCorrectTermsInCategory == 0) {
+              $(userCategory).addClass('muikku-field-incorrect-answer');
+              result.wrongAnswers++;
+            }
+            else {
+              $(userCategory).addClass('muikku-field-semi-correct-answer');
+              result.wrongAnswers++;
+            }
+          }
+          if (showCorrectAnswers) {
+            var termNames = {};
+            for (var i = 0; i < meta.terms.length; i++) {
+              termNames[meta.terms[i].id] = meta.terms[i].name;
+            };
+            var field = $(this.element);
+            var exampleDetails = $('<span>').addClass('muikku-field-examples').attr('data-for-field', $(field).attr('name'));
+            exampleDetails.append( 
+              $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
+            );
+            for (var i = 0; i < meta.categories.length; i++) {
+              var correctString = meta.categories[i].name + ': ';
+              var terms = meta.categoryTerms;
+              for (var j = 0; j < meta.categoryTerms.length; j++) {
+                if (meta.categoryTerms[j].category == meta.categories[i].id) {
+                  var terms = meta.categoryTerms[j].terms;
+                  for (var k = 0; k < terms.length; k++) {
+                    correctString += k == 0 ? termNames[terms[k]] : ', ' + termNames[terms[k]]; 
+                  }
+                  break;
+                }
+              }
+              exampleDetails.append($('<span>').addClass('muikku-field-example').text(correctString));
+            }
+            $(field).after(exampleDetails);
+          }
+          return result;
+        },
+        canCheckAnswer: function() {
+          return true;
+        },
+        isCorrectAnswer: function() {
+          return false; // irrelevant (checks own answer)
+        },
+        getCorrectAnswers: function() {
+          return false; // irrelevant (checks own answer)
+        }
+      });
+      if (data.value) {
+        organizerField.muikkuField('answer', data.value);
+      }
+      $(object).replaceWith(organizerField);
+    }
+  });
   
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
@@ -987,6 +1227,11 @@
     if (jQuery().imageDetails) {
       $(data.pageElement).find('img')
         .imageDetails();
+    }
+    
+    if (jQuery().wordDefinition) {
+      $(data.pageElement).find('mark[data-muikku-word-definition]')
+        .wordDefinition();
     }
         
     $(data.pageElement).find('.js-lazyyt').lazyYT();

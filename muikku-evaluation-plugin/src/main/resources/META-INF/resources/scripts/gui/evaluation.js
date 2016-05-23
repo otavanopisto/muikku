@@ -105,7 +105,10 @@
             }
 
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], $.extend(this.options.ckeditor, {
-              draftKey: ['workspace-evaluation-draft', this.options.workspaceEntityId, this.options.studentEntityId].join('-')
+              draftKey: ['workspace-evaluation-draft', this.options.workspaceEntityId, this.options.studentEntityId].join('-'),
+              on: {
+                instanceReady: $.proxy(this._onLiteralEvaluationEditorReady, this)
+              }
             }));
             
             var batchCalls = $.map(this.options.workspaceAssignments, $.proxy(function (workspaceAssignment) {
@@ -151,6 +154,7 @@
           buttons: [{
             'text': this._dialog.attr('data-button-save-text'),
             'class': 'save-evaluation-button',
+            'disabled': true,
             'click': $.proxy(function(event) {
               var gradeString = $(this._dialog).find('select[name="grade"]').val();
               var gradeValue = gradeString.split('@', 2);
@@ -379,7 +383,18 @@
           height: (textarea.scrollHeight)+"px"
         });
       }); 
+    },
+    
+    _onLiteralEvaluationEditorReady: function (e) {
+      var buttons = $.map(this._dialog.dialog('option', 'buttons'), function (button) {
+        return $.extend(button, {
+          disabled: false
+        });
+      });
+      
+      this._dialog.dialog('option', 'buttons', buttons)
     }
+    
   });
   
   $.widget( "custom.evaluateAssignmentDialog", {
@@ -474,7 +489,10 @@
             }
             
             CKEDITOR.replace(this._dialog.find("#evaluateFormLiteralEvaluation")[0], $.extend(this.options.ckeditor, {
-              draftKey: ['material-evaluation-draft', this.options.workspaceMaterialId, this.options.workspaceEntityId, this.options.studentEntityId].join('-')
+              draftKey: ['material-evaluation-draft', this.options.workspaceMaterialId, this.options.workspaceEntityId, this.options.studentEntityId].join('-'),
+              on: {
+                instanceReady: $.proxy(this._onLiteralEvaluationEditorReady, this)
+              }
             }));
             
             var fieldAnswers = {};
@@ -505,6 +523,7 @@
           buttons: [{
             'text': this._dialog.attr('data-button-save-text'),
             'class': 'save-evaluation-button',
+            'disabled': true,
             'click': $.proxy(function(event) {
               var gradeValue = $(this._dialog).find('select[name="grade"]')
                 .val()
@@ -650,6 +669,16 @@
           height: (textarea.scrollHeight)+"px"
         });
       }); 
+    },
+    
+    _onLiteralEvaluationEditorReady: function (e) {
+      var buttons = $.map(this._dialog.dialog('option', 'buttons'), function (button) {
+        return $.extend(button, {
+          disabled: false
+        });
+      });
+      
+      this._dialog.dialog('option', 'buttons', buttons)
     }
   });
   
@@ -1422,6 +1451,21 @@
       $('#evaluation').evaluation('filter', 'assessed', $(this).prop('checked') ? false : null);
     });
 
+    $(document).on('click', '.evaluation-flag', function (event) {
+      var filter = $(event.target).closest('.evaluation-flag');
+      if (filter.hasClass('active')) {
+        filter.removeClass('active');
+      } else {
+        filter.addClass('active');
+      }
+      
+      var activeIds = $.map($('.evaluation-flag.active'), function (active) {
+        return $(active).attr('data-flag-id');
+      });
+      
+      $('#evaluation').evaluation('filter', 'flags', activeIds.length ? activeIds : null);
+    });
+
     $('#student-search-field').on('keyup', function () {
       if (searchFieldTimer !== null) {
         clearTimeout(searchFieldTimer);
@@ -1444,6 +1488,33 @@
       $(".evaluation-assignments").perfectScrollbar('update');
     });
     
+    $('.evaluation-flags').click(function () {
+      $('.evaluation-flags-container').toggle();
+    });
+    
+    mApi().user.flags
+      .read({ ownerIdentifier: MUIKKU_LOGGED_USER })
+      .callback(function (err, flags) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          $.each(flags, function (index, flag) {
+            $('<div>')
+              .addClass("evaluation-flag icon-flag")
+              .attr({
+                'data-flag-color': flag.color,
+                'data-flag-id': flag.id
+              })
+              .css({
+                'color': flag.color
+              })
+              .append(
+                $('<span>')
+                  .text(flag.name))
+              .appendTo($('.evaluation-flags-container'));
+          });
+        }
+      });
   });
   
   $(document).on('click', '.evaluation-workspace-item', function (event) {
