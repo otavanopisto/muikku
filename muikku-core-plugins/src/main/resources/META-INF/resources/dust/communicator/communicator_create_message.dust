@@ -22,7 +22,11 @@
             <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2">{#localize key="plugin.communicator.createmessage.title.subject"/}</span>
-                <input class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14" type="text" name="caption" maxlength="255" required="required"></input>
+                {?replyMessage}
+                  <input class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14" type="text" name="caption" maxlength="255" required="required" value="{#localize key="plugin.communicator.createmessage.title.replySubject" arg0=replyMessage.caption/}"></input>
+                {:else}
+                  <input class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14" type="text" name="caption" maxlength="255" required="required"></input>
+                {/replyMessage}
               </div>  
             </div>      
           </div>
