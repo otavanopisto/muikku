@@ -1,18 +1,12 @@
 (function() {
   
   $.widget("custom.announcer", {
-//    options: {    
-//    },
+     options: {
+       workspaceEntityId: null
+     },
     
     _create : function() {
-      
-      if ($("#workspaceEntityId").val() != null) {
-        this._workspaceEntityId = Number($("#workspaceEntityId").val());
-      } else {
-        this._workspaceEntityId = null;
-      }
-      
-      var mainfunction = ".mf-content-master";
+     var mainfunction = ".mf-content-master";
       
      $(mainfunction).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
      $('.an-announcements-view-container').on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
@@ -75,8 +69,8 @@
           values.publiclyVisible = true;
         }
         
-        if (this._workspaceEntityId != null) {
-          values.workspaceEntityIds = [this._workspaceEntityId];
+        if (this.options.workspaceEntityId != null) {
+          values.workspaceEntityIds = [this.options.workspaceEntityId];
           values.userGroupEntityIds = [];
           values.publiclyVisible = true;
         }
@@ -93,7 +87,7 @@
       }, this);   
       
       var dustFile = '/announcer/announcer_create_announcement.dust';
-      if (this._workspaceEntityId != null) {
+      if (this.options.workspaceEntityId != null) {
         dustFile = '/announcer/workspace_announcer_create_announcement.dust';
       }
       
@@ -190,8 +184,8 @@
           values.publiclyVisible = true;
         }
 
-        if (this._workspaceEntityId != null) {
-          values.workspaceEntityIds = [this._workspaceEntityId];
+        if (this.options.workspaceEntityId != null) {
+          values.workspaceEntityIds = [this.options.workspaceEntityId];
           values.userGroupEntityIds = [];
           values.publiclyVisible = true;
         }
@@ -207,7 +201,7 @@
       }, this);   
 
       var dustFile = '/announcer/announcer_edit_announcement.dust';
-      if (this._workspaceEntityId != null) {
+      if (this.options.workspaceEntityId != null) {
         dustFile = '/announcer/workspace_announcer_edit_announcement.dust';
       }
       
@@ -217,8 +211,8 @@
     _loadAnnouncements: function () {
         var options = {};
       
-        if (this._workspaceEntityId != null) {
-          options.workspaceEntityId = this._workspaceEntityId;
+        if (this.options.workspaceEntityId != null) {
+          options.workspaceEntityId = this.options.workspaceEntityId;
         }
       
         mApi().announcer.announcements.read(options).callback($.proxy(function(err, result) {
@@ -350,7 +344,12 @@
   
   
   $(document).ready(function(){
-    $('.an-announcements-view-container').announcer();
+    var options = {};
+    if ($("#workspaceEntityId").val() != null) {
+      options.workspaceEntityId = Number($("#workspaceEntityId").val());
+    }
+    
+    $('.an-announcements-view-container').announcer(options);
 
   });
   
