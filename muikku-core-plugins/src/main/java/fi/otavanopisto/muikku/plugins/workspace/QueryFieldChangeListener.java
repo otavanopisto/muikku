@@ -15,6 +15,16 @@ public class QueryFieldChangeListener {
   @Inject
   private WorkspaceMaterialFieldController workspaceMaterialFieldController;
   
+  public void onQueryOrganizerFieldUpdate(@Observes QueryFieldUpdateEvent event) {
+    if (event.getMaterialField().getType().equals("application/vnd.muikku.field.organizer")) {
+      QueryField queryField = event.getQueryField();
+      List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByQueryField(queryField);
+      for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {
+        workspaceMaterialFieldController.updateWorkspaceMaterialField(workspaceMaterialField, event.getMaterialField(), event.getRemoveAnswers());
+      }
+    }
+  }
+
   public void onQuerySelectFieldUpdate(@Observes QueryFieldUpdateEvent event) {
     if (event.getMaterialField().getType().equals("application/vnd.muikku.field.select")) {
       QueryField queryField = event.getQueryField();
