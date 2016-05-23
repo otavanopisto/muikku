@@ -478,7 +478,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Group not found").build();
     }
     
-    forumController.deleteAreaGroup(group);;
+    forumController.deleteAreaGroup(group);
     
     return Response.noContent().build();
   }  
@@ -522,7 +522,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     if (forumArea == null) {
       return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
     }
-    
+//    forumController.list
     List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE);
     for (ForumThread thread : threads) {
       List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE);
