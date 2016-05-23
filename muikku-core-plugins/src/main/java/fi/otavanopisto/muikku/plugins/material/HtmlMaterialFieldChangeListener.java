@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.plugins.material.fieldmeta.MultiSelectFieldOptionM
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.OrganizerFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
+import fi.otavanopisto.muikku.plugins.material.fieldmeta.SorterFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.TextFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectField;
@@ -39,6 +40,9 @@ public class HtmlMaterialFieldChangeListener {
 
   @Inject
   private QueryTextFieldController queryTextFieldController;
+
+  @Inject
+  private QuerySorterFieldController querySorterFieldController;
 
   @Inject
   private QueryOrganizerFieldController queryOrganizerFieldController;
@@ -94,6 +98,26 @@ public class HtmlMaterialFieldChangeListener {
       QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), organizerFieldMeta.getName());
       if (queryField == null) {
         queryOrganizerFieldController.createQueryOrganizerField(event.getMaterial(), organizerFieldMeta.getName());
+      } else {
+        throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
+      }
+    }
+  }
+
+  // Sorterr field
+  public void onHtmlMaterialSorterFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.sorter")) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      SorterFieldMeta sorterFieldMeta;
+      try {
+        sorterFieldMeta = objectMapper.readValue(event.getField().getContent(), SorterFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse sorter field meta", e);
+      }
+      
+      QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), sorterFieldMeta.getName());
+      if (queryField == null) {
+        querySorterFieldController.createQuerySorterField(event.getMaterial(), sorterFieldMeta.getName());
       } else {
         throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
       }
@@ -227,6 +251,14 @@ public class HtmlMaterialFieldChangeListener {
       queryOrganizerFieldController.updateQueryOrganizerField(event.getMaterial(), event.getField(), event.getRemoveAnswers());
     }
   }
+
+  // Sorter field
+  public void onHtmlMaterialSorterFieldUpdated(@Observes HtmlMaterialFieldUpdateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.sorter")) {
+      querySorterFieldController.updateQuerySorterField(event.getMaterial(), event.getField(), event.getRemoveAnswers());
+    }
+  }
+
   // Select field
   public void onHtmlMaterialSelectFieldUpdated(@Observes HtmlMaterialFieldUpdateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.select")) {
