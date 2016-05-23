@@ -40,9 +40,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitForNotVisible("#ui-datepicker-div");
         addTextToCKEditor("Announcer test announcement");
         waitAndClick(".mf-toolbar input[name='send']");
-        sleep(1000);
-        reloadCurrentPage();
-        waitForPresent(".an-announcement");
+        waitForPresent(".an-announcement-topic");
         assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
         assertTextIgnoreCase(".an-announcement-content>p", "Announcer test announcement"); 
       }finally{
@@ -73,10 +71,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitForPresent("#ui-datepicker-div");
         addTextToCKEditor("Announcer test announcement");
         waitAndClick(".mf-toolbar input[name='send']");
-        sleep(1000);
-        reloadCurrentPage();
         waitForPresent(".an-announcement-topic");
-        assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
         waitAndClick(".an-announcement-select input");
         waitAndClick(".mf-items-toolbar .icon-delete");
         waitAndClick(".mf-toolbar input[name='send']");
