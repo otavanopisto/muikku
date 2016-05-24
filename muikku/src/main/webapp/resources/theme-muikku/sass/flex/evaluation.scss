@@ -153,9 +153,101 @@ body.evaluation {
         border-radius:3px;
         border-left:1px solid #cfeefb;
         cursor:pointer;
+        position:relative;
         
         &:first-child {
           border-left:none;
+        }
+        
+        .evaluation-flags {
+          
+          &.icon-flag:before {
+            color:#fff;
+            display:inline-block;
+            font-size:30px;
+            margin:0 5px;
+            padding:5px;
+          }
+
+        }
+        
+        .evaluation-flags-container {
+          display:none;
+          position:absolute;
+          right:0px;
+          top:42px;
+          width:250px;
+          box-shadow:0 7px 15px rgba(0,0,0,0.3);
+          background:#fff;
+          border:1px solid #fff;
+          border-radius:5px;
+          
+          .evaluation-flag {
+            padding:6px 8px;
+            margin:1px 0;
+            border-radius:3px;
+            
+            &.active {
+              background:#a9e6ff;
+              
+              span {
+                color:#000;
+              }
+              
+            }
+            
+            &.icon-flag:before {
+              background:#fff none repeat scroll 0 0;
+              border-radius:100%;
+              display:inline-block;
+              height:15px;
+              padding:5px;
+              text-align:center;
+              width:15px;
+              border-style:solid;
+              border-width:1px;
+              border-color: attr(data-flag-color color);
+            }
+          
+            span {
+              padding:5px;
+              font-family:'Open Sans', Arial, sans-serif;
+              color:#000;
+              font-size:14px;
+              font-weight:300;
+              vertical-align:top;
+              display:inline-block;
+              width:calc(100% - 37px);
+            }
+          
+          }
+
+          &:after, 
+          &:before {
+            bottom:100%;
+            left:230px;
+            border:solid transparent;
+            content:" ";
+            height:0;
+            width:0;
+            position:absolute;
+            pointer-events:none;
+          }
+          
+          &:after {
+            border-color:rgba(255, 255, 255, 0);
+            border-bottom-color:#fff;
+            border-width:8px;
+            margin-left:-8px;
+          }
+          
+          &:before {
+            border-color:rgba(0, 222, 255, 0);
+            border-bottom-color:#ffff;
+            border-width:8px;
+            margin-left:-8px;
+          }
+          
         }
         
         .evaluation-search {
@@ -173,8 +265,8 @@ body.evaluation {
         .evaluation-search-container {
           display:none;
           position:absolute;
-          left:-270px;
-          top:48px;
+          right:0px;
+          top:42px;
           width:310px;
           box-shadow:0 7px 15px rgba(0,0,0,0.3);
           background:#fff;
@@ -206,8 +298,7 @@ body.evaluation {
             border-width:8px;
             margin-left:-8px;
           }
-          
-          
+
           input[type="text"] {
             border:0;
             font-size:22px;

@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.communicator;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -16,6 +17,9 @@ import fi.otavanopisto.security.User;
 @Dependent
 public class CommunicatorPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private CommunicatorController communicatorController;
   
@@ -41,6 +45,21 @@ public class CommunicatorPermissionResolver extends AbstractPermissionResolver i
   public boolean hasPermission(String permission, ContextReference contextReference, User user) {
     UserEntity userEntity = (UserEntity) user;
     CommunicatorMessage message = resolveMessage(contextReference);
+    
+    if (message == null) {
+      logger.severe(String.format("Trying to resolve permission for null message"));
+      return false;
+    }
+    
+    if (message.getSender() == null) {
+      logger.severe(String.format("Trying to resolve permission for message %d with null sender", message.getId()));
+      return false;
+    }
+    
+    if (userEntity == null) {
+      logger.severe(String.format("Trying to resolve permission for null userEntity"));
+      return false;
+    }
     
     if (message.getSender().equals(userEntity.getId())) {
       // Sender has access to the message

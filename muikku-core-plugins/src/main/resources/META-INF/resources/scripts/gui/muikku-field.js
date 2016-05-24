@@ -233,7 +233,9 @@
       
       if (assignmentType == 'EXERCISE') {
         this.element.find('.muikku-field-examples').remove();
-        this.element.find('.muikku-field').removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+        this.element.find('.muikku-field-correct-answer').removeClass('muikku-field-correct-answer');
+        this.element.find('.muikku-field-incorrect-answer').removeClass('muikku-field-incorrect-answer');
+        this.element.find('.muikku-field-semi-correct-answer').removeClass('muikku-field-semi-correct-answer');
         this.element.find('.correct-answers-count-container').empty();
       }
       
@@ -406,35 +408,42 @@
         $(field).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
         $(field).find(".muikku-field-correct-answer-override").removeClass("muikku-field-correct-answer-override");
         if ($(field).muikkuField('canCheckAnswer')) {
-          var correctAnswer = $(field).muikkuField('isCorrectAnswer');
-          if (correctAnswer) {
-            correctAnswerCount++;
-          } else  {
-            wrongAnswerCount++;
+          if ($(field).muikkuField('checksOwnAnswer')) {
+            var answerCounts = $(field).muikkuField('checkAnswer', (correctAnswersDisplay == 'ALWAYS' || (correctAnswersDisplay == 'ON_REQUEST' && requestAnswers)));
+            correctAnswerCount += answerCounts.correctAnswers;
+            wrongAnswerCount += answerCounts.wrongAnswers;
           }
-          $(field).addClass(correctAnswer ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
-          // TODO classes are not examples but correct answers?
-          if (!correctAnswer && (correctAnswersDisplay == 'ALWAYS' || (correctAnswersDisplay == 'ON_REQUEST' && requestAnswers))) {
-            var correctAnswers = $(field).muikkuField('getCorrectAnswers');
-            if (correctAnswers.length > 0) {
-              var exampleDetails = $('<span>')
-                .addClass('muikku-field-examples')
-                .attr('data-for-field', $(field).attr('name'));
-              exampleDetails.append( 
-                $('<span>')
-                  .addClass('muikku-field-examples-title')
-                  .text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
-              );
-              $.each(correctAnswers, function (index, example) {
-                exampleDetails.append(
-                  $('<span>') 
-                    .addClass('muikku-field-example')
-                    .html(example.replace(/\n/g, '<br/>'))    
+          else {
+            var correctAnswer = $(field).muikkuField('isCorrectAnswer');
+            if (correctAnswer) {
+              correctAnswerCount++;
+            } else  {
+              wrongAnswerCount++;
+            }
+            $(field).addClass(correctAnswer ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
+            // TODO classes are not examples but correct answers?
+            if (!correctAnswer && (correctAnswersDisplay == 'ALWAYS' || (correctAnswersDisplay == 'ON_REQUEST' && requestAnswers))) {
+              var correctAnswers = $(field).muikkuField('getCorrectAnswers');
+              if (correctAnswers.length > 0) {
+                var exampleDetails = $('<span>')
+                  .addClass('muikku-field-examples')
+                  .attr('data-for-field', $(field).attr('name'));
+                exampleDetails.append( 
+                  $('<span>')
+                    .addClass('muikku-field-examples-title')
+                    .text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
                 );
-              });
-              $(field).after(exampleDetails);
-              
-              recolorCheckboxFields(field);
+                $.each(correctAnswers, function (index, example) {
+                  exampleDetails.append(
+                    $('<span>') 
+                      .addClass('muikku-field-example')
+                      .html(example.replace(/\n/g, '<br/>'))    
+                  );
+                });
+                $(field).after(exampleDetails);
+                
+                recolorCheckboxFields(field);
+              }
             }
           }
         }
@@ -529,6 +538,15 @@
       canCheckAnswer: function () {
         return false;
       },
+      checksOwnAnswer: function() {
+        return false;
+      },
+      checkAnswer: function(showCorrectAnswers) {
+        return {
+          'correctAnswers': 0,
+          'wrongAnswers': 0
+        }
+      },
       isCorrectAnswer: function () {
         return false;
       },
@@ -595,6 +613,12 @@
     },
     canCheckAnswer: function() {
       return this.options.canCheckAnswer.call(this)||false;
+    },
+    checksOwnAnswer: function() {
+      return this.options.checksOwnAnswer.call(this)||false;
+    },
+    checkAnswer: function(showCorrectAnswers) {
+      return this.options.checkAnswer.call(this, showCorrectAnswers)||{'correctAnswers':0,'wrongAnswers':0};
     },
     isCorrectAnswer: function() {
       return this.options.isCorrectAnswer.call(this)||false;

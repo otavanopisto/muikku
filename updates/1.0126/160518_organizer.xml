@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table QueryOrganizerField (
+        id bigint not null,
+        primary key (id)
+    )
+  </sql>
+
+  <sql>
+    alter table QueryOrganizerField 
+        add constraint FK_61pfwtd354vddlagqe8lta4r1 
+        foreign key (id) 
+        references QueryField (id)
+  </sql>
+
+  <sql>
+    create table WorkspaceMaterialOrganizerFieldAnswer (
+        value longtext,
+        id bigint not null,
+        primary key (id)
+    )
+  </sql>
+
+  <sql>
+    alter table WorkspaceMaterialOrganizerFieldAnswer 
+        add constraint FK_b38xsanqblxkrrei9vdu9h3k4 
+        foreign key (id) 
+        references WorkspaceMaterialFieldAnswer (id)
+  </sql>
+
+</update>

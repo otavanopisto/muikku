@@ -115,10 +115,12 @@
           'muikku-memofield': CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
           'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
           'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/',
+          'muikku-organizerfield': CONTEXTPATH + '/scripts/ckplugins/muikku-organizerfield/',
           'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/',
           'muikku-image-details': CONTEXTPATH + '/scripts/ckplugins/muikku-image-details/',
           'muikku-word-definition': CONTEXTPATH + '/scripts/ckplugins/muikku-word-definition/',
-          'muikku-audio-defaults': CONTEXTPATH + '/scripts/ckplugins/muikku-audio-defaults/'
+          'muikku-audio-defaults': CONTEXTPATH + '/scripts/ckplugins/muikku-audio-defaults/',
+          'muikku-image-target': CONTEXTPATH + '/scripts/ckplugins/muikku-image-target/'
         },
         extraPlugins : [
                        'oembed',
@@ -133,10 +135,12 @@
                        'muikku-filefield', 
                        'muikku-selection',
                        'muikku-connectfield',
+                       'muikku-organizerfield',
                        'muikku-embedded',
                        'muikku-image-details',
                        'muikku-word-definition',
                        'muikku-audio-defaults',
+                       'muikku-image-target',
                        'muikku-mathjax',
                        'autogrow',
                        'uploadimage'],
@@ -146,6 +150,7 @@
           autoGrowOnStartup : true,
           autoGrow_maxHeight: $( window ).height() - $('span.cke_top').height() - 240,
           autoGrow_minHeight: 400, 
+          linkShowTargetTab: true,
           allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
           entities: false,
           entities_latin: false,
@@ -169,7 +174,7 @@
             { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
             { name: 'colors', items : [ 'TextColor','BGColor' ] },
             '/',
-            { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']},
+            { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield', 'muikku-organizerfield']},
             { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },          
             { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] }
           ],

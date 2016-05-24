@@ -1,5 +1,4 @@
-#!/bin/sh
-
+#!/bin/bash
 BUILD=$1
 TEST=$2
 DEBUG=$3
