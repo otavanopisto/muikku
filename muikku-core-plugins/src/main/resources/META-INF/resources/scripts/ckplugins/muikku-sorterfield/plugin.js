@@ -132,7 +132,7 @@
       CKEDITOR.dialog.addUIElement('muikkuSorterFieldItems', {
         build : function(dialog, elementDefinition, output) {
           return new itemsElement(dialog, elementDefinition, output);
-        },
+        }
       });
     },
     afterInit: function(editor) {
