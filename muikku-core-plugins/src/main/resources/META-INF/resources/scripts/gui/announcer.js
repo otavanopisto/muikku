@@ -294,7 +294,8 @@
           this._selectRecipient(event, ui.item);
           $(event.target).val("");
           return false;
-        }, this)
+        }, this),
+        appendTo: '#msgTargetGroupsContainer'
       });
     }, 
 
