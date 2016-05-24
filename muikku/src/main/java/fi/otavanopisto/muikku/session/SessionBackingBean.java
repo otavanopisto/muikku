@@ -19,7 +19,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceBackingBean;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
 
@@ -71,7 +70,11 @@ public class SessionBackingBean {
 
         User user = userController.findUserByDataSourceAndIdentifier(activeSchoolDataSource, activeUserIdentifier);
         if (user != null) {
-          loggedUserName = user.getDisplayName();
+          if (!loggedUserRoleArchetype.equals(EnvironmentRoleArchetype.STUDENT)) {
+            loggedUserName = String.format("%s (%s)", user.getDisplayName(), resolveLoggedUserRoleText());
+          } else {
+            loggedUserName = user.getDisplayName();
+          }
         }
       }
 
@@ -135,50 +138,8 @@ public class SessionBackingBean {
     return sessionController.hasWorkspacePermission(permission, workspaceEntity);
   }
 
-  public boolean getTeacherLoggedIn() {
-    return loggedUserRoleArchetype == EnvironmentRoleArchetype.TEACHER;
-  }
-
-  public boolean getStudyProgrammeLeaderLoggedIn() {
-    return loggedUserRoleArchetype == EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER;
-  }
-
-  public boolean getManagerLoggedIn() {
-    return loggedUserRoleArchetype == EnvironmentRoleArchetype.MANAGER;
-  }
-
-  public boolean getAdministratorLoggedIn() {
-    return loggedUserRoleArchetype == EnvironmentRoleArchetype.ADMINISTRATOR;
-  }
-
-  public boolean getStudentLoggedIn() {
-    return loggedUserRoleArchetype == EnvironmentRoleArchetype.STUDENT;
-  }
-  
-  public boolean getIsStaffMember() {
-    return sessionController.isLoggedIn() && !getStudentLoggedIn();
-  }
-
   public String getLoggedUserName() {
     return loggedUserName;
-  }
-
-  public String getLoggedUserRole() {
-    Locale locale = localeController.resolveLocale(sessionController.getLocale());
-    switch (loggedUserRoleArchetype) {
-    case ADMINISTRATOR:
-      return localeController.getText(locale, "role.administrator");
-    case MANAGER:
-      return localeController.getText(locale, "role.manager");
-    case STUDENT:
-      return localeController.getText(locale, "role.student");
-    case STUDY_PROGRAMME_LEADER:
-      return localeController.getText(locale, "role.studyProgrammeLeader");
-    case TEACHER:
-      return localeController.getText(locale, "role.teacher");
-    default:
-      return localeController.getText(locale, "role.custom");
-    }
   }
 
   public Locale getLocale() {
@@ -199,6 +160,24 @@ public class SessionBackingBean {
   
   public boolean getBugsnagEnabled() {
     return bugsnagEnabled;
+  }
+
+  private String resolveLoggedUserRoleText() {
+    Locale locale = localeController.resolveLocale(sessionController.getLocale());
+    switch (loggedUserRoleArchetype) {
+    case ADMINISTRATOR:
+      return localeController.getText(locale, "role.administrator");
+    case MANAGER:
+      return localeController.getText(locale, "role.manager");
+    case STUDENT:
+      return localeController.getText(locale, "role.student");
+    case STUDY_PROGRAMME_LEADER:
+      return localeController.getText(locale, "role.studyProgrammeLeader");
+    case TEACHER:
+      return localeController.getText(locale, "role.teacher");
+    default:
+      return localeController.getText(locale, "role.custom");
+    }
   }
   
   private String loggedUser;

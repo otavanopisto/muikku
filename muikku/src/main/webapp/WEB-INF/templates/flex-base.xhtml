@@ -18,13 +18,6 @@
           var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
           var MUIKKU_LOGGED_USER = '#{sessionBackingBean.loggedUser}'||null;
           var MUIKKU_LOGGEDIN = #{sessionBackingBean.loggedIn};
-          var MUIKKU_LOGGEDINROLES = {
-            teacher: #{sessionBackingBean.teacherLoggedIn},
-            manager: #{sessionBackingBean.managerLoggedIn},
-            studyProgrammeLeader: #{sessionBackingBean.studyProgrammeLeaderLoggedIn},
-            admin: #{sessionBackingBean.administratorLoggedIn},
-            student: #{sessionBackingBean.studentLoggedIn}
-          };
       </script>
       
       <ui:fragment rendered="#{sessionBackingBean.bugsnagEnabled}">
