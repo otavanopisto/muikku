@@ -88,7 +88,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitForPresent(".workspace-students-listing-wrapper .workspace-users-name");
         waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-archive");
         waitAndClick(".archive-button");
-        waitForClickable(".workspace-students-list");
+        waitForPresentAndVisible(".workspace-students-listing-wrapper");
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         String payload = objectMapper.writeValueAsString(new WebhookStudentUpdatePayload(2l));
         TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
@@ -129,11 +129,11 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitForPresent(".workspace-students-listing-wrapper .workspace-users-name");
         waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-archive");
         waitAndClick(".archive-button");
-        waitForClickable(".workspace-students-list");
+        waitForClickable(".workspace-students-inactive");
         waitAndClick(".workspace-students-inactive");
         waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-unarchive");
         waitAndClick(".unarchive-button");
-        waitForClickable(".workspace-students-list");
+        waitForPresentAndVisible(".workspace-students-listing-wrapper");
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         String payload = objectMapper.writeValueAsString(new WebhookStudentUpdatePayload(2l));
         TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
