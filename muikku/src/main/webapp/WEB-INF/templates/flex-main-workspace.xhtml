@@ -171,26 +171,32 @@
           </nav>
         </ui:fragment>
         
-        <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE,WORKSPACE_MANAGE_PERMISSIONS,MANAGE_WORKSPACE_MATERIALS,MANAGE_WORKSPACE_FRONTPAGE,MANAGE_WORKSPACE_HELP')}">
           <!-- WORKSPACE MANAGEMENT NAVIGATION -->
           <nav id="workspaceEditDockWrapper">
             <div id="workspaceEditDock">
               <div class="workspace-dock-navi-button-workspace-management">
                 <div class="icon-cogs">
-                  <div class="navmore-container">          
-                    <!-- EDIT WORKSPACE -->
-                    <div class="workspace-management-item">
-                      <a class="icon-settings" title="#{i18n.text['plugin.workspace.dock.workspace-edit']}" jsf:outcome="/jsf/workspace/workspace-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
-                        <span>#{i18n.text['plugin.workspace.dock.workspace-edit']}</span>
-                      </a>
-                    </div>
-                    <!-- EDIT PERMISSIONS -->
-                    <div class="workspace-management-item">
-                      <a class="icon-permissions" title="#{i18n.text['plugin.workspace.dock.workspace-permissions']}" jsf:outcome="/jsf/workspace/permissions.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
-                        <span>#{i18n.text['plugin.workspace.dock.workspace-permissions']}</span>
-                      </a>
-                    </div>
-                    <ui:fragment rendered="#{workspaceBackingBean.mayManageMaterials}">
+                  <div class="navmore-container">
+                    <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE')}">          
+                      <!-- EDIT WORKSPACE -->
+                      <div class="workspace-management-item">
+                        <a class="icon-settings" title="#{i18n.text['plugin.workspace.dock.workspace-edit']}" jsf:outcome="/jsf/workspace/workspace-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                          <span>#{i18n.text['plugin.workspace.dock.workspace-edit']}</span>
+                        </a>
+                      </div>
+                    </ui:fragment>
+                    
+                    <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('WORKSPACE_MANAGE_PERMISSIONS')}">          
+                      <!-- EDIT PERMISSIONS -->
+                      <div class="workspace-management-item">
+                        <a class="icon-permissions" title="#{i18n.text['plugin.workspace.dock.workspace-permissions']}" jsf:outcome="/jsf/workspace/permissions.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                          <span>#{i18n.text['plugin.workspace.dock.workspace-permissions']}</span>
+                        </a>
+                      </div>
+                    </ui:fragment>
+                    
+                    <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_MATERIALS')}">
                       <!-- EDIT MATERIALS -->
                       <div class="workspace-management-item">
                         <a class="icon-edit-materials" title="#{i18n.text['plugin.workspace.dock.material-management']}" jsf:outcome="/jsf/workspace/materials-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
@@ -198,18 +204,23 @@
                         </a>
                       </div>  
                     </ui:fragment>
-                    <!-- EDIT FRONTPAGE -->
-                    <div class="workspace-management-item">
-                      <a class="icon-edit" title="#{i18n.text['plugin.workspace.dock.home']}" jsf:outcome="/jsf/workspace/frontpage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
-                        <span>#{i18n.text['plugin.workspace.dock.editIndex']}</span>
-                      </a>
-                    </div>
+                    
+                    <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_FRONTPAGE')}">
+                      <!-- EDIT FRONTPAGE -->
+                      <div class="workspace-management-item">
+                        <a class="icon-edit" title="#{i18n.text['plugin.workspace.dock.home']}" jsf:outcome="/jsf/workspace/frontpage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                          <span>#{i18n.text['plugin.workspace.dock.editIndex']}</span>
+                        </a>
+                      </div>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_HELP')}">
                     <!-- EDIT HELPPAGE -->
-                    <div class="workspace-management-item">
-                      <a class="icon-edit" title="#{i18n.text['plugin.workspace.dock.editHelp']}" jsf:outcome="/jsf/workspace/helppage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
-                        <span>#{i18n.text['plugin.workspace.dock.editHelp']}</span>
-                      </a>
-                    </div>
+                      <div class="workspace-management-item">
+                        <a class="icon-edit" title="#{i18n.text['plugin.workspace.dock.editHelp']}" jsf:outcome="/jsf/workspace/helppage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                          <span>#{i18n.text['plugin.workspace.dock.editHelp']}</span>
+                        </a>
+                      </div>
+                    </ui:fragment>
                   </div>
                 </div>
               </div>  
@@ -314,16 +325,20 @@
                 </div>
               </div>
             </ui:fragment>
-          
-            <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">   
+  
+            <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE')}">
               <div class="navmore-management-links">
-                <!-- EDIT WORKSPACE -->
-                <div class="workspace-management-item">
-                  <a class="icon-manage-materials" title="#{i18n.text['plugin.workspace.dock.workspace-edit']}" jsf:outcome="/jsf/workspace/workspace-edit.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
-                    <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.workspace-edit']}</span>
-                  </a>
-                </div>  
-                <ui:fragment rendered="#{workspaceBackingBean.mayManageMaterials}">
+              
+                <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE,MANAGE_WORKSPACE_MATERIALS,MANAGE_WORKSPACE_FRONTPAGE,MANAGE_WORKSPACE_HELP')}">          
+                  <!-- EDIT WORKSPACE -->
+                  <div class="workspace-management-item">
+                    <a class="icon-manage-materials" title="#{i18n.text['plugin.workspace.dock.workspace-edit']}" jsf:outcome="/jsf/workspace/workspace-edit.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                      <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.workspace-edit']}</span>
+                    </a>
+                  </div>  
+                </ui:fragment>
+                
+                <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_MATERIALS')}">
                   <!-- EDIT MATERIALS -->
                   <div class="workspace-management-item">
                     <a class="icon-manage-materials" title="#{i18n.text['plugin.workspace.dock.material-management']}" jsf:outcome="/jsf/workspace/materials-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
@@ -331,21 +346,26 @@
                     </a>
                   </div>  
                 </ui:fragment>
-                <!-- EDIT FRONTPAGE -->
-                <div class="workspace-management-item">
-                  <a class="icon-edit-index" title="#{i18n.text['plugin.workspace.dock.home']}" jsf:outcome="/jsf/workspace/frontpage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
-                    <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.editIndex']}</span>
-                  </a>
-                </div>
-                <!-- EDIT HELPPAGE -->
-                <div class="workspace-management-item">
-                  <a class="icon-edit-help" title="#{i18n.text['plugin.workspace.dock.editHelp']}" jsf:outcome="/jsf/workspace/helppage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
-                    <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.editHelp']}</span>
-                  </a>
-                </div>
+                
+                <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_FRONTPAGE')}">
+                  <!-- EDIT FRONTPAGE -->
+                  <div class="workspace-management-item">
+                    <a class="icon-edit-index" title="#{i18n.text['plugin.workspace.dock.home']}" jsf:outcome="/jsf/workspace/frontpage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                      <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.editIndex']}</span>
+                    </a>
+                  </div>
+                </ui:fragment>
+                
+                <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_HELP')}">                
+                  <!-- EDIT HELPPAGE -->
+                  <div class="workspace-management-item">
+                    <a class="icon-edit-help" title="#{i18n.text['plugin.workspace.dock.editHelp']}" jsf:outcome="/jsf/workspace/helppage-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                      <span class="workspace-management-item-label">#{i18n.text['plugin.workspace.dock.editHelp']}</span>
+                    </a>
+                  </div>
+                </ui:fragment>
               </div>
             </ui:fragment>
-            
             
             <ui:fragment rendered="#{workspaceBackingBean.materialsVisible}">
               <ui:insert name="materials-fullscreen-bublelink"></ui:insert>

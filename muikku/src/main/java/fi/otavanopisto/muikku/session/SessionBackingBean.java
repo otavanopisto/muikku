@@ -95,17 +95,43 @@ public class SessionBackingBean {
   public String getResourceLibrary() {
     return "theme-muikku";
   }
-
-  public boolean hasEnvironmentPermission(String permission) {
-    return sessionController.hasEnvironmentPermission(permission);
+  
+  public boolean hasEnvironmentPermission(String permissions) {
+    if (StringUtils.isBlank(permissions)) {
+      return false;
+    }
+    
+    for (String permission : StringUtils.split(permissions, ',')) {
+      if (sessionController.hasEnvironmentPermission(permission)) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 
-  public boolean hasWorkspacePermission(String permission) {
-    return sessionController.hasWorkspacePermission(permission, workspaceBackingBean.getWorkspaceEntity());
+  public boolean hasWorkspacePermission(String permissions) {
+    if (StringUtils.isBlank(permissions)) {
+      return false;
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceBackingBean.getWorkspaceEntity();
+    
+    for (String permission : StringUtils.split(permissions, ',')) {
+      if (hasWorkspacePermission(permission, workspaceEntity)) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 
   public boolean hasWorkspacePermission(String permission, Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceEntityId != null ? workspaceEntityController.findWorkspaceEntityById(workspaceEntityId) : null;
+    return hasWorkspacePermission(permission, workspaceEntity);
+  }
+
+  private boolean hasWorkspacePermission(String permission, WorkspaceEntity workspaceEntity) {
     return sessionController.hasWorkspacePermission(permission, workspaceEntity);
   }
 

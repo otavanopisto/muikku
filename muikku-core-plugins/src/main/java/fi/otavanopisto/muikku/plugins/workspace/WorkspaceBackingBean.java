@@ -80,7 +80,6 @@ public class WorkspaceBackingBean {
       this.workspaceUrlName = workspaceEntity.getUrlName();
     }
     
-    mayManageMaterials = sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity);
     homeVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "home");
     guidesVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "guides");
     materialsVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "materials");
@@ -131,10 +130,6 @@ public class WorkspaceBackingBean {
       return null;
   }
 
-  public Boolean getMayManageMaterials() {
-    return mayManageMaterials;
-  }
-
   public boolean getHomeVisible() {
     return homeVisible;
   }
@@ -159,7 +154,6 @@ public class WorkspaceBackingBean {
     return journalVisible;
   }
 
-  private Boolean mayManageMaterials;
   private Long workspaceEntityId;
   private String workspaceUrlName;
   private boolean homeVisible;
