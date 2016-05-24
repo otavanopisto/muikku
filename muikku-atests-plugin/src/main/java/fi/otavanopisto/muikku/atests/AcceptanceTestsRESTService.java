@@ -44,7 +44,6 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNo
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
-import fi.otavanopisto.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
@@ -226,8 +225,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     for (CommunicatorMessageRecipient x : communicatorController.listAllRecipients())
       communicatorController.delete(x);
 
-    for (InboxCommunicatorMessage message : communicatorController.listAllInboxMessages())
+    for (fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage message : communicatorController.listAllMessages()) {
       communicatorController.delete(message);
+    }
     
     for (CommunicatorMessageId x : communicatorController.listAllMessageIds())
       communicatorController.delete(x);

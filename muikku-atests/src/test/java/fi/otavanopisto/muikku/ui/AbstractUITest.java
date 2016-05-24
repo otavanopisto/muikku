@@ -520,8 +520,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().manage().window().maximize();
   }
   
-  protected void waitForPresent(String selector) {
-    waitForElementToBePresent(By.cssSelector(selector));
+  protected void waitForPresent(final String selector) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElements(selector);
+          return !elements.isEmpty();
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
   }
 
   protected void waitForNotVisible(String selector) {
