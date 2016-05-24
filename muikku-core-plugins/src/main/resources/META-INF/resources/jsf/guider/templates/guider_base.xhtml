@@ -18,7 +18,7 @@
 
   <ui:define name="hiddenFields">
     <input type="hidden" name="userId" value="#{sessionBackingBean.loggedUserId}"/>
-    <input type="hidden" name="canListHiddenStudents" value="#{muikkuSession.hasEnvironmentPermission('LIST_HIDDEN_STUDENTS')}"/>
+    <input type="hidden" name="canListHiddenStudents" value="#{sessionBackingBean.hasEnvironmentPermission('LIST_HIDDEN_STUDENTS')}"/>
   </ui:define>
 
   <ui:define name="content.tools.left"> 

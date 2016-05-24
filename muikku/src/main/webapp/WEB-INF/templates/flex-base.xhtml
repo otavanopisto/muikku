@@ -5,7 +5,7 @@
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   xmlns:ui="http://java.sun.com/jsf/facelets">
 
-  <f:view locale="#{muikkuSession.locale}">
+  <f:view locale="#{sessionBackingBean.locale}">
   
     <head>
       <ui:insert name="title"></ui:insert>
@@ -17,7 +17,7 @@
           var CONTEXTPATH = "#{request.contextPath}";
           var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
           var MUIKKU_LOGGED_USER = '#{sessionBackingBean.loggedUser}'||null;
-          var MUIKKU_LOGGEDIN = #{muikkuSession.loggedIn};
+          var MUIKKU_LOGGEDIN = #{sessionBackingBean.loggedIn};
           var MUIKKU_LOGGEDINROLES = {
             teacher: #{sessionBackingBean.teacherLoggedIn},
             manager: #{sessionBackingBean.managerLoggedIn},

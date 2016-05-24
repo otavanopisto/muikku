@@ -43,7 +43,7 @@
                 <li data-value="all">
                   <span class="mf-dropdown-item">#{i18n.text['plugin.coursepicker.allcourses']}</span>
                 </li>
-                <ui:fragment rendered="#{muikkuSession.loggedIn}">
+                <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
                   <li data-value="my">
                     <span data-id="my" class="mf-dropdown-item">#{i18n.text['plugin.coursepicker.owncourses']}</span>
                   </li>

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.util.ResourceEntity;
@@ -14,7 +13,6 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.security.ContextReference;
 
 @RequestScoped 
-@Named ("muikkuSession")
 public class SessionControllerDelegateImpl implements SessionControllerDelegate {
 
   @Override
