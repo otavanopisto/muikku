@@ -6,9 +6,9 @@
     
     _create : function() {
       
-      var mainfunction = ".mf-content-master";
+     var mainfunction = ".mf-content-master";
       
-     $(mainfunction).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
+     $(mainfunction).on('click', '.an-new-announcement', $.proxy(this._onCreateAnnouncementClick, this));
      $('.an-announcements-view-container').on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
      $(mainfunction).on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
      

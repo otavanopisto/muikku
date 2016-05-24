@@ -1,22 +1,57 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"  
-  xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-  template="/jsf/announcer/templates/announcer_base.xhtml">
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-functionality.xhtml">
 
+//cdn.muikkuverkko.fi/libs/moment/2.10.6/moment-with-locales.min.js
+  
+  <ui:param name="activeTrail" value="announcer"/>
+  
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/moment/2.10.6/moment-with-locales.min.js"/>
 
-  <ui:define name="viewScripts">
-    <script type="text/javascript" src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
-    <h:outputScript name="scripts/gui/announcer.js" />
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/mainfunctions.js"/>
+    <script defer="defer" type="text/javascript" src="/scripts/gui/socialnavigation.js"/>   
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/announcer.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
   </ui:define>
-
-
-  <ui:define name="content.center.widget">
-    <m:widget name="announcer-content" size="24" rendered="#{sessionBackingBean.loggedIn}"/>  
+  <ui:define name="main-functionality-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/announcer.css"/>
+    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
+  </ui:define>  
+  
+  <ui:define name="mf-content-master"> 
+    <div id="announcer">
+      <ui:insert name="mf-content-functions">
+        <div class="mf-content-functions flex-row flex-align-items-center">
+          <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8 sm-flex-order-1 sm-flex-cell-first">            
+            <div class="mf-primary-function">
+              <div class="an-new-announcement mf-primary-function-content">
+                <span class="mf-primary-function-text">#{i18n.text['plugin.announcer.button.create']}</span>
+              </div>
+            </div>  
+          </div>
+          <div class="mf-controls-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-8 sm-flex-order-2">
+          </div>
+        </div>
+      </ui:insert>
+      <ui:insert name="mf-content-area">
+        <div class="mf-content-area flex-row">
+          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+            <div class="flex-row">
+              <div class="lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-full an-announcements-view-container"></div>
+            </div>
+          </div>
+        </div>
+      </ui:insert>
+    </div>
   </ui:define>
      
 </ui:composition>
