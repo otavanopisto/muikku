@@ -95,8 +95,14 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
   
   @Override
+  @Deprecated
   public boolean hasCoursePermission(String permission, WorkspaceEntity course) {
     return hasCoursePermissionImpl(permission, course);
+  }
+  
+  @Override
+  public boolean hasWorkspacePermission(String permission, WorkspaceEntity workspaceEntity) {
+    return hasCoursePermission(permission, workspaceEntity);
   }
   
   /**
