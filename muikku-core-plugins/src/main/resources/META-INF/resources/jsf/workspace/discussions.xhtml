@@ -25,7 +25,7 @@
 
  
   <ui:define name="grid-content">
-    <input type="hidden" name="userEntityId" value="#{muikkuSession.loggedUserEntity.id}"/>
+    <input type="hidden" name="userEntityId" value="#{sessionBackingBean.loggedUserId}"/>
     <input type="hidden" name="workspaceEntityId" value="#{workspaceDiscussionsBackingBean.workspaceEntityId}"/>
     <input type="hidden" name="areaPermissions" value="#{workspaceDiscussionsBackingBean.areaPermissions}"/>
     <main id="content">

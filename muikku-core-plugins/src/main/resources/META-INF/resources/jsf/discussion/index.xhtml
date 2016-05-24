@@ -24,7 +24,7 @@
   </ui:define>  
   
   <ui:define name="mf-content-master"> 
-    <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
+    <input type="hidden" name="userId" value="#{sessionBackingBean.loggedUserId}"/>
     <input type="hidden" name="areaPermissions" value="#{forumBackingBean.areaPermissions}"/>  
     <div id="discussion">
       <ui:insert name="mf-content-functions">
