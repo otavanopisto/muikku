@@ -319,7 +319,7 @@
      },
     
     _create : function() {
-     $(this.options.outerContainer).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
+     $(this.options.outerContainer).on('click', '.an-new-announcement', $.proxy(this._onCreateAnnouncementClick, this));
      this.element.on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
      this.element.on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
      
