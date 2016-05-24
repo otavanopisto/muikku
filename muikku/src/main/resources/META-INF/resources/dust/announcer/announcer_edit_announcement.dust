@@ -45,8 +45,5 @@
         <input type="button" name="cancel" value='{#localize key="plugin.announcer.editannouncement.button.cancel"/}'/>
       </div>   
     </form>
-  
-  
   </div>
-  
 </div>
