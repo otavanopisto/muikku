@@ -26,6 +26,7 @@
               </div>                      
             </div>                     
           </div>            
+          {#showTargetGroups}
           <div class="mf-form-row flex-row">
             <div class="mf-textfield">
               <div class="mf-textfield-subcontainer">
@@ -33,6 +34,7 @@
               </div> 
             </div>                                      
           </div>          
+          {/showTargetGroups}
           <div class="mf-form-row flex-row">
             <div class="mf-textarea an-announcement-create-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
              <textarea id="textContent" name="content"></textarea>
