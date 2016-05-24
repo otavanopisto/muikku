@@ -779,13 +779,14 @@
     }
     
     .mf-textfield-date {
-     width:80px;
+      font-size: 14px;
+      width: 95px;
     }
     
     .mf-textfield {
       position:relative;
       top:0;
-      
+     
       
       .mf-textfield-subcontainer {
         border:2px solid #fff;
@@ -815,6 +816,8 @@
         padding-top:5px;
         padding-bottom:5px;
         padding-left:5px;
+        margin-left:5px;
+        font-size:14px;
         &:focus {
           background-color:#eee;     
           border:0;
@@ -828,7 +831,7 @@
         }
         
         &.mf-textfield-subject {        
-/*           width:750px; */
+
           
           &:focus {
             background-color:#eee;         
