@@ -114,7 +114,7 @@
           var _this = this;
           deleteLink.addClass('icon-delete');
           deleteLink.on('click', function() {
-            // WUT?!
+            this.getParent().remove();
           });
           var deleteTooltip = new CKEDITOR.dom.element('span');
           deleteTooltip.setText(editor.lang['muikku-sorterfield'].propertiesDialogDeleteItemLink);
