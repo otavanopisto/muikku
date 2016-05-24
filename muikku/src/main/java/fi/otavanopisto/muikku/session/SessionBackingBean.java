@@ -15,6 +15,9 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceBackingBean;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
@@ -38,7 +41,13 @@ public class SessionBackingBean {
   private UserController userController;
   
   @Inject
+  private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject
   private SystemSettingsController systemSettingsController;
+  
+  @Inject
+  private WorkspaceBackingBean workspaceBackingBean;
 
   @PostConstruct
   public void init() {
@@ -85,6 +94,19 @@ public class SessionBackingBean {
 
   public String getResourceLibrary() {
     return "theme-muikku";
+  }
+
+  public boolean hasEnvironmentPermission(String permission) {
+    return sessionController.hasEnvironmentPermission(permission);
+  }
+
+  public boolean hasWorkspacePermission(String permission) {
+    return sessionController.hasWorkspacePermission(permission, workspaceBackingBean.getWorkspaceEntity());
+  }
+
+  public boolean hasWorkspacePermission(String permission, Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceEntityId != null ? workspaceEntityController.findWorkspaceEntityById(workspaceEntityId) : null;
+    return sessionController.hasWorkspacePermission(permission, workspaceEntity);
   }
 
   public boolean getTeacherLoggedIn() {
