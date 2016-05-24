@@ -30,7 +30,7 @@
   </ui:define>  
   
   <ui:define name="mf-content-master"> 
-    <div class="communicator" data-group-messaging-permission="#{muikkuSession.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')}">
+    <div class="communicator" data-group-messaging-permission="#{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')}">
       <ui:insert name="mf-content-functions">
         <div class="mf-content-functions flex-row flex-align-items-center">
           <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8 sm-flex-order-1 sm-flex-cell-first">
