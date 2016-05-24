@@ -122,11 +122,11 @@
       itemsContainer.append(itemContainer);
     },
     generateItemId: function() {
-      var i = 1;
-      while (this.getElement().findOne('.sorter-item[data-item-id="' + i + '"]') != null) {
-        i++;
+      var id = '';
+      while (id == '' || this.getElement().findOne('.sorter-item[data-item-id="' + id + '"]') != null) {
+        id = Math.random().toString(36).substr(2, 5);
       }
-      return i;
+      return id;
     }
   });
 
