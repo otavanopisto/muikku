@@ -6,5 +6,5 @@
       </div>
     {/.}
   {:else}
-    <div class="workspace-announcements-empty lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">{#localize key="plugin.workspace.index.announcementsEmpty"/}</div>
+    <div class="workspace-announcements-empty lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">{#localize key="plugin.workspace.index.announcementsEmpty"/}</div>
 {/.}
