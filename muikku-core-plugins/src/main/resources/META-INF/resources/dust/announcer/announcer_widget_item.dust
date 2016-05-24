@@ -1,0 +1,3 @@
+<li title="{startDate|formatDate}-{endDate|formatDate}">
+ <a href="{@contextPath/}/announcements?announcementId={id}">{caption}</span>
+</li>

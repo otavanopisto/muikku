@@ -1,0 +1,49 @@
+<div class="mf-form an-create-announcement-form-container flex-row">
+  <div class="an-announcement-create lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+    <form>
+      <div class="mf-form-header flex-row"><h3>{#localize key="plugin.announcer.createannouncement.topic"/} {firstName} {lastName}</h3></div>
+      <div class="mf-content flex-row">
+        <div class="an-announcement-create-body lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+          <div class="mf-form-row flex-row">
+            <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+              <div class="mf-textfield-subcontainer flex-row">
+                <div class="mf-textfield-subelement an-date-field lg-flex-cell-3 md-flex-cell-4 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
+                  <span class="mf-textfield-title">{#localize key="plugin.announcer.createannouncement.startdate.label"/}</span>
+                  <input id="startDate" class="mf-textfield-date" type="text" name="startDate"></input>
+                </div>
+                <div class="mf-textfield-subelement an-date-field lg-flex-cell-4 md-flex-cell-5 sm-flex-cell-full">
+                  <span class="mf-textfield-title">{#localize key="plugin.announcer.createannouncement.enddate.label"/}</span>
+                  <input id="endDate" class="mf-textfield-date" type="text" name="endDate"></input>
+                </div>
+               <div class="lg-flex-cell-9 md-flex-cell-7 sm-flex-cell-hide"></div>
+              </div>
+            </div>
+          </div>            
+          <div class="mf-form-row flex-row">
+            <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+             <div class="mf-textfield-subcontainer">
+               <input class="mf-textfield-subject" type="text" name="caption" placeholder="{#localize key="plugin.announcer.createannouncement.title.label"/}" maxlength="255"></input>
+              </div>                      
+            </div>                     
+          </div>            
+          <div class="mf-form-row flex-row">
+            <div class="mf-textfield">
+              <div class="mf-textfield-subcontainer">
+                <div class="an-announcement-targetgroups" id="msgTargetGroupsContainer"><input id="targetGroupContent" placeholder="{#localize key="plugin.announcer.createannouncement.target.label"/}" type="text"></input></div>
+              </div> 
+            </div>                                      
+          </div>          
+          <div class="mf-form-row flex-row">
+            <div class="mf-textarea an-announcement-create-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+             <textarea id="textContent" name="content"></textarea>
+            </div>
+          </div> 
+        </div>
+      </div>
+      <div class="mf-toolbar flex-row">
+        <input type="button" name="send" value='{#localize key="plugin.announcer.createannouncement.button.send"/}'/>
+        <input type="button" name="cancel" value='{#localize key="plugin.announcer.createannouncement.button.cancel"/}'/>
+      </div>   
+    </form>
+  </div>
+</div>
