@@ -26,24 +26,19 @@
         this.element.attr('id', meta.name);
         
         var itemsContainer = $('<div>').addClass('muikku-sorter-items-container');
-        if (meta.title) {
-          itemsContainer.append($('<div>').addClass('muikku-sorter-items-title').append(meta.title));
-        }
-        var itemsData = $('<div>').addClass('muikku-sorter-items-data');
-        itemsContainer.append(itemsData);
         
         var items = meta.items;
         for (var i = 0; i < items.length; i++) {
           var item = $('<div>').addClass('muikku-sorter-item');
           item.attr('data-item-id', items[i].id);
           item.text(items[i].name);
-          itemsData.append(item);
+          itemsContainer.append(item);
         }
-        var itemObjects = itemsData.children();
+        var itemObjects = itemsContainer.children();
         while (itemObjects.length) {
-          itemsData.append(itemObjects.splice(Math.floor(Math.random() * itemObjects.length), 1)[0]);
+          itemsContainer.append(itemObjects.splice(Math.floor(Math.random() * itemObjects.length), 1)[0]);
         }
-        $(itemsData).sortable({
+        $(itemsContainer).sortable({
           update: $.proxy(function (event, ui) {
             $(this.element).trigger("change");
           }, this)
@@ -66,7 +61,7 @@
           items.sort(function(a, b) {
             return answer.indexOf($(a).attr('data-item-id')) - answer.indexOf($(b).attr('data-item-id'));
           });
-          items.detach().appendTo($(this.element).find('.muikku-sorter-items-data')[0]);
+          items.detach().appendTo($(this.element).find('.muikku-sorter-items-container')[0]);
         }
       },
       hasDisplayableAnswers: function() {
@@ -82,7 +77,7 @@
         }
         var userAnswer = $.parseJSON(this.answer());
         var correctItems = this.options.meta.items;
-        var itemsData = $(this.element).find('.muikku-sorter-items-data')[0];
+        var itemsContainer = $(this.element).find('.muikku-sorter-items-container')[0];
         for (var i = 0; i < correctItems.length; i++) {
           var correctId = correctItems[i].id;
           var userId = userAnswer[i];
@@ -102,13 +97,13 @@
         }
         if (!showCorrectAnswers) {
           if (result.wrongAnswers == 0) {
-            $(itemsData).addClass('muikku-field-correct-answer');
+            $(itemsContainer).addClass('muikku-field-correct-answer');
           }
           else if (result.correctAnswers == 0) {
-            $(itemsData).addClass('muikku-field-incorrect-answer');
+            $(itemsContainer).addClass('muikku-field-incorrect-answer');
           }
           else {
-            $(itemsData).addClass('muikku-field-semi-correct-answer');
+            $(itemsContainer).addClass('muikku-field-semi-correct-answer');
           }
         }
         return result;
