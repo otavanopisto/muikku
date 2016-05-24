@@ -1,4 +1,42 @@
 (function() {
+  
+  $.widget("custom.announcementArchiveDialog", {
+    options: {
+      items: []
+    },
+    _create : function() {
+      this._show();
+    },
+    _show : function() {
+      var items = this.options.items;
+      
+      renderDustTemplate('announcer/announcer_archive_announcement.dust', {items: items}, $.proxy(function (text) {
+        
+        this.element.html(text);
+
+        var calls=$.map(items, function(item){
+          return mApi().announcer.announcements.del(item.id);
+        });
+        
+        this.element.find("input[name='send']").on('click', function () {
+          mApi().batch(calls).callback(function(err, results){
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.announcer.archiveannouncement.error'));
+            } else {
+              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.announcer.archiveannouncement.success'));
+              window.location.reload(true);             
+            }
+          });         
+        });
+
+        this.element.find("input[name='cancel']").on('click', $.proxy(function (event) {
+          event.preventDefault();
+          this.element.remove();
+        }, this));
+      }, this));
+    }
+  });
+  
   $.widget("custom.announcementCreateEditDialog", {
     
     options: {
@@ -34,7 +72,7 @@
       
       this.element.on('click', 'input[name="send"]', $.proxy(this._onSendClick, this));
       this.element.on('click', 'input[name="cancel"]', $.proxy(this._onCancelClick, this));
-      this.element.on('click', '.an-announcement-targetgroup-search', $.proxy(this._onTargetGroupClick, this));
+      this.element.on('click', '.an-announcement-targetgroup', $.proxy(this._onTargetGroupClick, this));
       
       this._load($.proxy(function () {
         this._contentsEditor = CKEDITOR.replace(this.element.find('textarea[name="content"]')[0], $.extend(this.options.ckeditor, {
@@ -112,7 +150,7 @@
           this._setEndDate(data.announcement.endDate);
           
           if (data.showTargetGroups) {
-            for (var i=0; i<data.announcement.userGroupEntityIds; i++) {
+            for (var i=0; i<data.announcement.userGroupEntityIds.length; i++) {
               var userGroupEntityId = data.announcement.userGroupEntityIds[i];
               this._addTargetGroupWithId(userGroupEntityId);
             }
@@ -134,6 +172,10 @@
           callback();
         }
       }, this));
+    },
+    
+    _onTargetGroupClick: function (event) {
+      $(event.target).closest('.an-announcement-targetgroup').remove();
     },
     
     _setCaption: function (caption) {
@@ -170,8 +212,14 @@
       }).datepicker('setDate', endDate);
     },
     
+    _getTargetGroupIds: function () {
+      return $.map(this.element.find('input[name="userGroupEntityIds"]'), function (elem) {
+        return Number($(elem).val());
+      });
+    },
+    
     _addTargetGroupWithId: function (id) {
-      mApi().usergroup.groups.read(id).callback($.proxy(function (err, results) {
+      mApi().usergroup.groups.read(id).callback($.proxy(function (err, result) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
@@ -185,6 +233,11 @@
         id: id,
         name: label
       };
+
+      var targetGroupIds = this._getTargetGroupIds();
+      if (targetGroupIds.indexOf(id) !== -1) {
+        return;
+      }
 
       renderDustTemplate('announcer/announcer_targetgroup.dust', parameters, $.proxy(function (text) {
         this.element.find('#msgTargetGroupsContainer').prepend($.parseHTML(text));
@@ -244,10 +297,8 @@
           endDate: endDate
         };
         
-        payload.userGroupEntityIds = $.map(this.element.find('input[name="userGroupEntityIds"]'), function (input) {
-          return Number($(input).val());
-        });
-        
+        payload.userGroupEntityIds = this._getTargetGroupIds();
+          
         if (payload.userGroupEntityIds.length > 0) {
           payload.publiclyVisible = false;
         } else {
@@ -380,54 +431,23 @@
     _onArchiveAnnouncementsClick: function () {
       
       var selected = $(".an-announcements").find("input:checked");
-      var values = [];
-      var titles =[];
+      var items = [];
       
       $.each(selected, function(i, val){
         var parent = $(val).parents(".an-announcement");
         var child = parent.find(".an-announcement-topic");
         var title = child.text();
         
-        values.push($(val).attr("value"));
-        titles.push(title)
+        items.push({id: Number($(val).attr("value")), title: title});
+      });
+      
+      var dialog = $('<div>').announcementArchiveDialog({
+        items: items
       });
 
-      var formFunctions = function() {
-         var titlesContainer = $('.an-archiving-ids-container');
-         var idsInput = titlesContainer.find("input");
-
-         if(titles.length > 0){
-           $.each(titles, function(index,title){
-             titlesContainer.append("<span>" + title + "</span>");
-           });
-         }else{
-           titlesContainer.append("<span>" + getLocaleText('plugin.announcer.archiveannouncement.archiving.noneselected') + "</span>");
-         }
-         idsInput.val(values);
-
-      }
-      
-      var archiveAnnouncements = function(values){
-
-         var ids = values.ids;
-         var arr = ids.split(',');
-        
-         var calls=$.map(arr, function(announcement){
-           return mApi().announcer.announcements.del(announcement);
-         });
-         
-         mApi().batch(calls).callback(function(err, results){
-           if (err) {
-             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.announcer.archiveannouncement.error'));
-           } else {
-             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.announcer.archiveannouncement.success'));
-             window.location.reload(true);             
-           }
-           
-         });         
-
-      }   
-      openInSN('/announcer/announcer_archive_announcement.dust', null, archiveAnnouncements, formFunctions);
+      $("#socialNavigation")
+        .empty()
+        .append(dialog);
     },  
     
     _load: function(){
