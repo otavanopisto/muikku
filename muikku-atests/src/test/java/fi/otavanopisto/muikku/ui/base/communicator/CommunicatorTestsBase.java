@@ -36,6 +36,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         addTextToCKEditor("Communicator test");
         waitAndClick("*[name='send']");
         waitForPresent(".mf-content-master");
+        getWebDriver().get("about:blank");
         navigate("/communicator#sent", true);
         waitForPresent(".cm-message-header-content-secondary");
         assertText(".cm-message-header-content-secondary", "Test");  
@@ -67,6 +68,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         addTextToCKEditor("Communicator test");
         waitAndClick("*[name='send']");
         waitForPresent(".mf-content-master");
+        getWebDriver().get("about:blank");
         navigate("/communicator#sent", true);
         waitForPresent(".cm-message-header-content-secondary");
         assertText(".cm-message-header-content-secondary", "Test");  
