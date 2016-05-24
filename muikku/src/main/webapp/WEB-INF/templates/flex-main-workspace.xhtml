@@ -41,7 +41,7 @@
           </div>
         </ui:fragment>
         <!-- GUIDER -->
-        <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('GUIDER_VIEW')}">
           <div class="dock-static-navi-button-guider #{activeTrail eq 'guider' ? 'active-trail' : ''}" title="#{i18n.text['plugin.guider.guider']}">
             <a jsf:outcome="/jsf/guider/index.jsf" class="icon-members">
               <span style="display:none" class="dock-notification"></span>
@@ -49,7 +49,7 @@
           </div>
         </ui:fragment>
         <!-- TRANSCRIPT of RECORDS -->
-        <ui:fragment rendered="#{sessionBackingBean.studentLoggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('TRANSCRIPT_OF_RECORDS_VIEW')}">
           <div class="dock-static-navi-button-records #{activeTrail eq 'records' ? 'active-trail' : ''}" title="#{i18n.text['plugin.records.records']}">
             <a jsf:outcome="/jsf/records/index.jsf" class="icon-profile">
               <span style="display:none" class="dock-notification"></span>
@@ -65,7 +65,7 @@
           </div>
         </ui:fragment>
         <!-- ANNOUNCER -->
-        <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('ANNOUNCER_TOOL')}">
           <div class="dock-static-navi-button-announcer sm-flex-hide #{activeTrail eq 'announcer' ? 'active-trail' : ''}" title="#{i18n.text['plugin.announcer.announcer']}">
             <a jsf:outcome="/jsf/announcer/index.jsf" class="icon-announcer">
               <span style="display:none" class="dock-notification"></span>
@@ -104,7 +104,7 @@
                   </div>
                 </ui:fragment>
                 <!-- ANNOUNCER -->
-                <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">
+                <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('ANNOUNCER_TOOL')}">
                   <div class="dock-static-navi-button-announcer lg-flex-hide md-flex-hide">
                     <a jsf:outcome="/jsf/announcer/index.jsf" class="icon-announcer"><span>#{i18n.text['plugin.announcer.announcer']}</span></a>
                   </div>
