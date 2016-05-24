@@ -180,6 +180,10 @@ public class SessionBackingBean {
       return localeController.getText(locale, "role.custom");
     }
   }
+
+  public Locale getLocale() {
+    return localeController.resolveLocale(sessionController.getLocale());
+  }
   
   public String getCurrentCountry() {
     return sessionController.getLocale().getCountry();
