@@ -101,7 +101,7 @@
           </div>
         </ui:fragment>
         <!-- EVALUATION -->
-        <ui:fragment rendered="#{evaluationWidgetBackingBean.visible}">
+        <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('EVALUATION_VIEW_INDEX')}">
           <div class="dock-static-navi-button-evaluation sm-flex-hide" title="#{i18n.text['plugin.evaluation.evaluation']}">
             <a jsf:outcome="/jsf/evaluation/index.jsf" class="icon-evaluate" target="top">
               <span style="display:none" class="dock-notification"></span>
@@ -127,7 +127,7 @@
                   <a jsf:outcome="/jsf/discussion/index.jsf" class="icon-bubble"><span>#{i18n.text['plugin.forum.forum']}</span></a>
                 </div>
                 <!-- EVALUATION -->
-                <ui:fragment rendered="#{evaluationWidgetBackingBean.visible}">
+                <ui:fragment rendered="#{muikkuSession.hasEnvironmentPermission('EVALUATION_VIEW_INDEX')}">
                   <div class="dock-static-navi-button-evaluation lg-flex-hide md-flex-hide">
                     <a jsf:outcome="/jsf/evaluation/index.jsf" class="icon-evaluate" target="top"><span>#{i18n.text['plugin.evaluation.evaluation']}</span></a>
                   </div>
