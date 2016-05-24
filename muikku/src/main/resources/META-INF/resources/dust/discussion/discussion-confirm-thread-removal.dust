@@ -1,3 +1,0 @@
-<div class="discussion-confirm-dialog" title="{#localize key="plugin.discussion.confirmThreadRemovalDialog.title"/}" data-button-confirm-text="{#localize key="plugin.discussion.confirmThreadRemovalDialog.confirmButton"/}" data-button-cancel-text="{#localize key="plugin.discussion.confirmThreadRemovalDialog.cancelButton"/}">
-  {#localize key="plugin.discussion.confirmThreadRemovalDialog.text"/}
-</div>
