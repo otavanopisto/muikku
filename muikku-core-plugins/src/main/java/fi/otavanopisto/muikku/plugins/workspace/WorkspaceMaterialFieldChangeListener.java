@@ -156,7 +156,8 @@ public class WorkspaceMaterialFieldChangeListener {
           try {
             boolean answerModified = false;
             List<String> answerItems = objectMapper.readValue(answer.getValue(), new TypeReference<ArrayList<String>>() {});
-            for (String answerItem : answerItems) {
+            for (int i = answerItems.size() - 1; i >= 0; i--) {
+              String answerItem = answerItems.get(i);
               if (!sorterFieldMeta.hasItemWithId(answerItem)) {
                 if (!event.getRemoveAnswers()) {
                   throw new WorkspaceMaterialContainsAnswersExeption("Could not update sorter field because it contains answers");
