@@ -9,9 +9,8 @@ public class SorterFieldMeta extends FieldMeta {
   public SorterFieldMeta() {
   }
 
-  public SorterFieldMeta(String name, String title, List<SorterFieldItemMeta> items) {
+  public SorterFieldMeta(String name, List<SorterFieldItemMeta> items) {
     super(name);
-    setTitle(title);
     setItems(items);
   }
   
@@ -19,14 +18,6 @@ public class SorterFieldMeta extends FieldMeta {
   @JsonIgnore
   public String getType() {
     return "application/vnd.muikku.field.sorter";
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
   }
 
   public List<SorterFieldItemMeta> getItems() {
@@ -47,7 +38,6 @@ public class SorterFieldMeta extends FieldMeta {
     return false;
   }
   
-  private String title;
   private List<SorterFieldItemMeta> items;
 
 }

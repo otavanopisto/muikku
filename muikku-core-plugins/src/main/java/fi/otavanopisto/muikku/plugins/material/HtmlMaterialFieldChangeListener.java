@@ -104,7 +104,7 @@ public class HtmlMaterialFieldChangeListener {
     }
   }
 
-  // Sorterr field
+  // Sorter field
   public void onHtmlMaterialSorterFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.sorter")) {
       ObjectMapper objectMapper = new ObjectMapper();
