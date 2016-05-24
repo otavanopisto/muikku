@@ -1,97 +1,340 @@
 (function() {
-  
-  $.widget("custom.announcer", {
-     options: {
-       workspaceEntityId: null
-     },
+  $.widget("custom.announcementCreateEditDialog", {
+    
+    options: {
+      showTargetGroups: true,
+      announcement: null,
+      ckeditor: {
+        toolbar: [
+          { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+          { name: 'links', items: [ 'Link' ] },
+          { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
+          { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+          { name: 'styles', items: [ 'Format' ] },
+          { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+          { name: 'tools', items: [ 'Maximize' ] }
+        ],
+        extraPlugins: {
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js'
+        }
+      }
+    },
     
     _create : function() {
-     var mainfunction = ".mf-content-master";
+      var extraPlugins = [];
       
-     $(mainfunction).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
-     $('.an-announcements-view-container').on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
-     $(mainfunction).on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
-     
-     
-     $(document).on('focus', '#targetGroupContent', $.proxy(function(event) {
-       this._onTargetGroupFocus(event);
-     }, this));
-     
-     $(document).on('click', '.an-announcement-targetgroup', function(event) {
-       $(this).remove();
-     });
-     
-      this._loadAnnouncements();
-    },
-    _onCreateAnnouncementClick: function () {
+      $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
+        CKEDITOR.plugins.addExternal(plugin, url);
+        extraPlugins.push(plugin);
+      }, this));
       
-      var formFunctions = function() {
+      this.options.ckeditor.extraPlugins = extraPlugins.join(',');
+      
+      this.element.on('click', 'input[name="send"]', $.proxy(this._onSendClick, this));
+      this.element.on('click', 'input[name="cancel"]', $.proxy(this._onCancelClick, this));
+      this.element.on('click', '.an-announcement-targetgroup-search', $.proxy(this._onTargetGroupClick, this));
+      
+      this._load($.proxy(function () {
+        this._contentsEditor = CKEDITOR.replace(this.element.find('textarea[name="content"]')[0], $.extend(this.options.ckeditor, {
+          draftKey: this.options.announcement ? 'announcement-edit-message' : 'announcement-create-message',
+          on: {
+            instanceReady: $.proxy(this._onCKEditorReady, this)
+          }
+        }));
         
-        // Date and timepickers for start and end time/date
-        var start = new Date();
-        start.setMinutes(0);
-        start.setHours(start.getHours() + 1);
-        var end = new Date(start.getTime());
-        end.setHours(end.getHours() + 1);
-        
-        $('#startDate').datepicker({
-            "dateFormat": "dd.mm.yy",
-            onClose: function( selectedDate ) {
-              if(moment(selectedDate, "DD.MM.YYYY").isBefore()){
-                $("#endDate").datepicker( "option", "minDate", 0 );
-              }else{
-                $("#endDate").datepicker( "option", "minDate", selectedDate );
+        var autocomplete = this.element.find('input#targetGroupContent').autocomplete({
+          open: function(event, ui) {
+            $(event.target).perfectScrollbar({
+              wheelSpeed:3,
+              swipePropagation:false
+            });
+          },  
+          source: $.proxy(function (request, response) {
+            this._searchTargetGroups(request.term, function (err, results) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                response(results);
               }
-              
+            });
+          }, this),
+          select: $.proxy(function (event, ui) {
+            var item = ui.item;
+            if (!item.existing) {
+              this._addTargetGroup(item.label, item.id);
+              $(event.target).val("");
             }
-        }).datepicker('setDate', start);
-        
-        $('#endDate').datepicker({
-            "dateFormat": "dd.mm.yy",
-            "minDate": 0,
-            onClose: function( selectedDate ) {
-              $("#startDate").datepicker( "option", "maxDate", selectedDate );
-            }
-        }).datepicker('setDate', end);
-
-      }
-      
-      var createAnnouncement = $.proxy(function(values){
-        values.startDate = moment(values.startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
-        values.endDate = moment(values.endDate, "DD.MM.YYYY").format("YYYY-MM-DD");
-        values.userGroupEntityIds = $.map($("input[name='userGroupEntityIds']"), function(element) {
-          return $(element).val();
+            return false;
+          }, this),
+          
+          appendTo: '#msgTargetGroupsContainer'
         });
         
-        if (values.userGroupEntityIds.length) {
-          values.publiclyVisible = false;
+        autocomplete.data("ui-autocomplete")._renderItem = function (ul, item) {
+          var li = $("<li>")
+            .text(item.label)
+            .appendTo(ul);
+        
+          return li;
+        };
+      }, this));
+    },
+    
+    _destroy: function () {
+      try {
+        this._contentsEditor.destroy();
+      } catch (e) {
+      }
+    },
+    
+    _load: function (callback) {
+      var data = {};
+      var dustFile = '/announcer/announcer_create_announcement.dust';
+      
+      if (this.options.announcement) {
+        data.announcement = this.options.announcement;
+        dustFile = '/announcer/announcer_edit_announcement.dust';
+      }
+      
+      if (this.options.showTargetGroups) {
+        data.showTargetGroups = true;
+      }
+      
+      renderDustTemplate(dustFile, data, $.proxy(function (text) {
+        this.element.html(text);
+        
+        if (data.announcement) {
+          this._setCaption(data.announcement.caption);
+          this._setContent(data.announcement.content);
+          this._setStartDate(data.announcement.startDate);
+          this._setEndDate(data.announcement.endDate);
+          
+          if (data.showTargetGroups) {
+            for (var i=0; i<data.announcement.userGroupEntityIds; i++) {
+              var userGroupEntityId = data.announcement.userGroupEntityIds[i];
+              this._addTargetGroupWithId(userGroupEntityId);
+            }
+          }
         } else {
-          values.publiclyVisible = true;
+          var start = new Date();
+          start.setMinutes(0);
+          start.setHours(start.getHours() + 1);
+          var end = new Date(start.getTime());
+          end.setHours(end.getHours() + 1);
+
+          this._setCaption("");
+          this._setContent("");
+          this._setStartDate(start);
+          this._setEndDate(end);
+        }
+
+        if (callback) {
+          callback();
+        }
+      }, this));
+    },
+    
+    _setCaption: function (caption) {
+      this.element.find('input[name="caption"]').val(caption);
+    },
+
+    _setContent: function (content) {
+      this.element.find('textarea[name="content"]').val(content);
+    },
+    
+    _setStartDate: function (startDate) {
+      startDate = moment(startDate, "YYYY-MM-DD").format("DD.MM.YYYY");
+      this.element.find('input[name="startDate"]').datepicker({
+          "dateFormat": "dd.mm.yy",
+          onClose: $.proxy(function( selectedDate ) {
+            if(moment(selectedDate, "DD.MM.YYYY").isBefore()){
+              this.element.find('input[name="endDate"]').datepicker( "option", "minDate", 0 );
+            }else{
+              this.element.find('input[name="endDate"]').datepicker( "option", "minDate", selectedDate );
+            }
+            
+          }, this)
+      }).datepicker('setDate', startDate);
+    },
+    
+    _setEndDate: function (endDate) {
+      endDate = moment(endDate, "YYYY-MM-DD").format("DD.MM.YYYY");
+      this.element.find('input[name="endDate"]').datepicker({
+          "dateFormat": "dd.mm.yy",
+          "minDate": 0,
+          onClose: $.proxy(function( selectedDate ) {
+            this.element.find('input[name="startDate"]').datepicker( "option", "maxDate", selectedDate );
+          }, this)
+      }).datepicker('setDate', endDate);
+    },
+    
+    _addTargetGroupWithId: function (id) {
+      mApi().usergroup.groups.read(id).callback($.proxy(function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._addTargetGroup(result.name + " (" + result.userCount + ")", result.id);
+        }
+      }, this));
+    },
+
+    _addTargetGroup: function (label, id) {
+      var parameters = {
+        id: id,
+        name: label
+      };
+
+      renderDustTemplate('announcer/announcer_targetgroup.dust', parameters, $.proxy(function (text) {
+        this.element.find('#msgTargetGroupsContainer').prepend($.parseHTML(text));
+      }, this));
+    },
+    
+    _searchTargetGroups: function (term, callback) {
+      mApi().usergroup.groups
+        .read({ 'searchString' : term })
+        .callback(function(err, results) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, $.map(results||[], function (result) {
+              return {
+                label : result.name + " (" + result.userCount + ")",
+                id: result.id,
+              };
+            }));
+          }
+        });
+    },
+    
+    _discardDraft: function () {
+      try {
+        this._contentsEditor.discardDraft();
+      } catch (e) {
+      }
+    },
+    
+    _onSendClick: function (event) {
+      this.element.addClass('loading');
+      
+      var form = $(event.target).closest('form')[0];
+      if (form.checkValidity()) {
+        var caption = this.element.find('input[name="caption"]').val();
+        var content = this._contentsEditor.getData();
+        var startDate = this.element.find('input[name="startDate"]').val();
+        var endDate = this.element.find('input[name="endDate"]').val();
+        startDate = moment(startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+        endDate = moment(endDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+
+        if (!caption || !caption.trim()) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.notitle'));
+          return false;
+        }
+        
+        if (!content || !content.trim()) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.nomessage'));
+          return false;
+        }
+        
+        var payload = {
+          caption: caption,  
+          content: content,
+          startDate: startDate,
+          endDate: endDate
+        };
+        
+        payload.userGroupEntityIds = $.map(this.element.find('input[name="userGroupEntityIds"]'), function (input) {
+          return Number($(input).val());
+        });
+        
+        if (payload.userGroupEntityIds.length > 0) {
+          payload.publiclyVisible = false;
+        } else {
+          payload.publiclyVisible = true;
         }
         
         if (this.options.workspaceEntityId != null) {
-          values.workspaceEntityIds = [this.options.workspaceEntityId];
-          values.userGroupEntityIds = [];
-          values.publiclyVisible = true;
+          payload.userGroupEntityIds = [];
+          payload.workspaceEntityIds = [this.options.workspaceEntityId];
+          payload.publiclyVisible = true;
+        } else {
+          payload.workspaceEntityIds = [];
         }
+            
+        if (! (this.options.announcement)) {
+          mApi().announcer.announcements
+          .create(payload)
+          .callback($.proxy(function (err, result) {
+            this._discardDraft();
+            
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.announcer.createannouncement.error'));
+            } else {
+              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.announcer.createannouncement.success'));
+              this.element.removeClass('loading');
+              window.location.reload(true);
+            }
+          }, this));
+        } else {
+          var announcementId = this.options.announcement.id;
 
-        mApi().announcer.announcements.create(values).callback($.proxy(function(err, result) {
-          if (err) {
-            $(".notification-queue").notificationQueue('notification','error',err);
-          } else {
-            $(".notification-queue").notificationQueue('notification','success',getLocaleText('plugin.announcer.createannouncement.success'));
-            window.location.reload(true);      
-          }
-        }, this));
-
-      }, this);   
-      
-      var dustFile = '/announcer/announcer_create_announcement.dust';
-      if (this.options.workspaceEntityId != null) {
-        dustFile = '/announcer/workspace_announcer_create_announcement.dust';
+          mApi().announcer.announcements
+            .update(announcementId, payload)
+            .callback($.proxy(function (err, result) {
+              this._discardDraft();
+              
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.announcer.editannouncement.error'));
+              } else {
+                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.announcer.editannouncement.success'));
+                this.element.removeClass('loading');
+                window.location.reload(true);
+              }
+            }, this));
+        }
       }
-      
-      openInSN(dustFile, null, createAnnouncement, formFunctions);
+    },
+    
+    _onCancelClick: function (event) {
+      event.preventDefault();
+      this.element.remove();
+    },
+    
+    _onRecipientClick: function (event) {
+      $(event.target).closest('.an-announcement-targetgroup')
+        .remove();
+    },
+    
+    _onCKEditorReady: function (e) {
+      this.element.find('input[name="send"]').removeAttr('disabled'); 
+    }
+    
+  });
+  
+  $.widget("custom.announcer", {
+     options: {
+       workspaceEntityId: null,
+       outerContainer: ".mf-content-master"
+     },
+    
+    _create : function() {
+     $(this.options.outerContainer).on('click', '.bt-mainFunction', $.proxy(this._onCreateAnnouncementClick, this));
+     this.element.on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
+     this.element.on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
+     
+     this._loadAnnouncements();
+    },
+    _onCreateAnnouncementClick: function () {
+      var dialog = $('<div>')
+        .announcementCreateEditDialog({
+          workspaceEntityId: this.options.workspaceEntityId,
+          showTargetGroups: ! (this.options.workspaceEntityId)
+        });
+
+      $("#socialNavigation")
+        .empty()
+        .append(dialog);
     },
     
     _onEditAnnouncementClick: function (event) {
@@ -100,112 +343,20 @@
       var par = $(ann).parents(".an-announcement");
       var id = $(par).attr("data-announcement-id");
         
-      var formFunctions = function() {        
-        
-        // Date and timepickers for start and end time/date
-        mApi()
-        .announcer
-        .announcements
-        .read(id).callback($.proxy(function(err, announcement){
-          var start = moment(announcement.startDate, "YYYY-MM-DD").format("DD.MM.YYYY");
-          var end = moment(announcement.endDate,  "YYYY-MM-DD").format("DD.MM.YYYY");
-          var groups = [];
-          var callbacks = [];
-          
-          var retrieveUserGroup = function(userGroupEntityId, callback) {
-            mApi().usergroup.groups.read(userGroupEntityId).callback(function(err, result) {
-              if (err) {
-                callback(err);
-              } else {
-                callback(null, {
-                  name : result.name + " (" + result.userCount + ")",
-                  id : result.id,
-                });
-              }
-            });
-          };
-          
-          async.map(announcement.userGroupEntityIds, retrieveUserGroup, $.proxy(function(err, userGroups) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              var targetGroupsContainerElement = $("#msgTargetGroupsContainer");      
-
-              for (var i=0; i<userGroups.length; i++) {
-                renderDustTemplate('announcer/announcer_targetgroup.dust', userGroups[i], function (text) {
-                  targetGroupsContainerElement.prepend($.parseHTML(text));
-                });
-              }
-              
-              $('#startDate').datepicker({
-                  "dateFormat": "dd.mm.yy",
-                  onClose: function( selectedDate ) {
-                    if(moment(selectedDate, "DD.MM.YYYY").isBefore()){
-                      $("#endDate").datepicker( "option", "minDate", 0 );
-                    }else{
-                      $("#endDate").datepicker( "option", "minDate", selectedDate );
-                    }
-                    
-                  }
-              }).datepicker('setDate', start);
-              
-              var endMinDate = 0;
-              
-              if(moment(end, "DD.MM.YYYY").isBefore()){
-                endMinDate = end;
-              }
-              
-              $('#endDate').datepicker({
-                  "dateFormat": "dd.mm.yy",
-                  "minDate": endMinDate,
-                  onClose: function( selectedDate ) {
-                    $("#startDate").datepicker( "option", "maxDate", selectedDate );
-                  }
-              }).datepicker('setDate', end);
-              
-              $("input[name='caption']").val(announcement.caption);  
-              CKEDITOR.instances.textContent.setData(announcement.content);
-                  
-            }
-          }, this));
-        }, this));
-      }
-      
-      var editAnnouncement = $.proxy(function(values){
-        values.startDate = moment(values.startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
-        values.endDate = moment(values.endDate, "DD.MM.YYYY").format("YYYY-MM-DD");
-        values.userGroupEntityIds = $.map($("input[name='userGroupEntityIds']"), function(element) {
-          return $(element).val();
+      mApi()
+      .announcer
+      .announcements
+      .read(id).callback($.proxy(function(err, announcement){
+        var dialog = $('<div>').announcementCreateEditDialog({
+            workspaceEntityId: this.options.workspaceEntityId,
+            announcement: announcement,
+            showTargetGroups: ! (this.options.workspaceEntityId)
         });
-        
-        if (values.userGroupEntityIds.length) {
-          values.publiclyVisible = false;
-        } else {
-          values.publiclyVisible = true;
-        }
 
-        if (this.options.workspaceEntityId != null) {
-          values.workspaceEntityIds = [this.options.workspaceEntityId];
-          values.userGroupEntityIds = [];
-          values.publiclyVisible = true;
-        }
-        
-        mApi().announcer.announcements.update(id, values).callback($.proxy(function(err, result) {
-          if (err) {
-            $(".notification-queue").notificationQueue('notification','error',err);
-          } else {
-            $(".notification-queue").notificationQueue('notification','success',getLocaleText('plugin.announcer.editannouncement.success'));
-            window.location.reload(true);      
-          }
-        }, this));
-      }, this);   
-
-      var dustFile = '/announcer/announcer_edit_announcement.dust';
-      if (this.options.workspaceEntityId != null) {
-        dustFile = '/announcer/workspace_announcer_edit_announcement.dust';
-      }
-      
-      openInSN(dustFile, null, editAnnouncement, formFunctions);
+        $("#socialNavigation")
+          .empty()
+          .append(dialog);
+      }, this));
     },    
     
     _loadAnnouncements: function () {
@@ -279,8 +430,6 @@
       openInSN('/announcer/announcer_archive_announcement.dust', null, archiveAnnouncements, formFunctions);
     },  
     
-    
-    
     _load: function(){
       this.element.empty();      
       $(this.element).append('<div class="mf-loading"><div class"circle1"></div><div class"circle2"></div><div class"circle3"></div></div>');      
@@ -293,55 +442,7 @@
     },
     _destroy: function () {
     },
-
-    _searchGroups: function (searchTerm, callback) {
-      var groups = new Array();
-    
-      mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
-        if (result != undefined) {
-          for (var i = 0, l = result.length; i < l; i++) {
-            groups.push({
-              label : result[i].name + " (" + result[i].userCount + ")",
-              id : result[i].id,
-            });
-          }
-
-          callback(groups);
-        }
-      });
-    },
-
-    _onTargetGroupFocus:function(event){
-      $(event.target).autocomplete({
-        create: $.proxy(function(event, ui){
-          $('.ui-autocomplete').perfectScrollbar(); 
-        }, this),  
-        source: $.proxy(function (request, response) {
-          this._searchGroups(request.term, response);
-        }, this),
-        select: $.proxy(function (event, ui) {
-          this._selectRecipient(event, ui.item);
-          $(event.target).val("");
-          return false;
-        }, this)
-      });
-    }, 
-
-    _selectRecipient: function (event, item) {
-      var element = $(event.target);
-      var targetGroupsContainerElement = $("#msgTargetGroupsContainer");      
-      var group = {
-        id: item.id,
-        name: item.label
-      };
-
-      renderDustTemplate('announcer/announcer_targetgroup.dust', group, function (text) {
-        targetGroupsContainerElement.prepend($.parseHTML(text));
-      });
-    }
   });
-  
-  
   
   $(document).ready(function(){
     var options = {};
@@ -352,8 +453,6 @@
     $('.an-announcements-view-container').announcer(options);
 
   });
-  
- 
 
 }).call(this);
 
