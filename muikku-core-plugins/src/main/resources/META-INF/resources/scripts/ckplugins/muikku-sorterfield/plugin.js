@@ -36,7 +36,7 @@
           var sorterField = editor.restoreRealElement(element);
           if (sorterField !== null) {
             if (sorterField.getAttribute('type') === 'application/vnd.muikku.field.sorter') {
-              return {muikkuSelectionItem: CKEDITOR.TRISTATE_OFF};
+              return {muikkuSorterFieldItem: CKEDITOR.TRISTATE_OFF};
             }
           }
         });
