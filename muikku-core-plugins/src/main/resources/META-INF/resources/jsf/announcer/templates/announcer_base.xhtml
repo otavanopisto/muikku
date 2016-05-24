@@ -14,10 +14,13 @@
     <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
   </ui:define>
         
-  <ui:define name="viewScripts">
+  <ui:define name="scripts">
     <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
     <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js"></script>
     <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lodash/4.12.0/lodash.min.js"></script>
+  </ui:define>
+    
+  <ui:define name="viewScripts">
     <h:outputScript name="scripts/gui/announcer.js" />
   </ui:define>
 
