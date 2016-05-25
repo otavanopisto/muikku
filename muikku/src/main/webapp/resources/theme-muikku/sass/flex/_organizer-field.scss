@@ -26,18 +26,19 @@
       cursor:move;
       
       &.term-in-use {
-        background:#6cd2fc; 
-        color:#fff;
+        background:#b1e8fe; 
+        color:#000;
+      }
+      
+      &:hover {
+        background:#b1e8fe;
+        color:#000;
       }
       
       &.ui-draggable-dragging {
         z-index:99;
-      }
-      
-      &:hover {
-        background:#3dc7ff;
+        background:#3dc7ff; 
         color:#fff;
-        text-shadow:0 0 0px #fff;
       }
       
     }
@@ -86,8 +87,8 @@
       line-height:1;
       
       &.term-in-use {
-        background:#6cd2fc; 
-        color:#fff;
+        background:#b1e8fe; 
+        color:#000;
       }
       
       .icon-delete {
@@ -99,12 +100,6 @@
         font-size:14px;
         color:#000;
         cursor:pointer;
-      }
-      
-      &:hover {
-        background:#3dc7ff;
-        color:#fff;
-        text-shadow:0 0 0px #fff;
       }
       
     }
