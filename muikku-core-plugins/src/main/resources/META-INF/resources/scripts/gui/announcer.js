@@ -417,6 +417,8 @@
       
         if (this.options.workspaceEntityId != null) {
           options.workspaceEntityId = this.options.workspaceEntityId;
+        } else {
+          options.hideWorkspaceAnnouncements = true;
         }
       
         mApi().announcer.announcements.read(options).callback($.proxy(function(err, result) {

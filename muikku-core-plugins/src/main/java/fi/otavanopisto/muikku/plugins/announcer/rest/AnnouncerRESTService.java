@@ -198,7 +198,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   public Response listAnnouncements(
       @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive,
       @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
-      @QueryParam("hideWorkspaceAnnouncements") @DefaultValue("true") boolean hideWorkspaceAnnouncements, // TODO false
+      @QueryParam("hideWorkspaceAnnouncements") @DefaultValue("false") boolean hideWorkspaceAnnouncements,
       @QueryParam("workspaceEntityId") Long workspaceEntityId
   ) {
     if (!onlyActive) {
@@ -223,8 +223,10 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
     
     if (workspaceEntityId == null && !hideWorkspaceAnnouncements) {
-      // TODO: unimplemented
-      return Response.status(Status.NOT_IMPLEMENTED).build();
+      return Response
+          .status(Status.NOT_IMPLEMENTED)
+          .entity("Listing combined workspace and environment announcements is not supported yet.")
+          .build();
     }
 
     if (workspaceEntityId != null) {

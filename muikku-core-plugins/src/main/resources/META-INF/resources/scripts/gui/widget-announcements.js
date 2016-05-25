@@ -4,7 +4,7 @@ $(document).ready(function(){
   mApi()
   .announcer
   .announcements
-  .read({onlyActive: "true", onlyMine: "true"})
+  .read({onlyActive: "true", onlyMine: "true", hideWorkspaceAnnouncements: "true"})
   .callback($.proxy(function(err, result) {
       if (err) {
         $(".notification-queue").notificationQueue(
