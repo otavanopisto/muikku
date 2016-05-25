@@ -6,9 +6,6 @@ import fi.otavanopisto.muikku.atests.Discussion;
 import fi.otavanopisto.muikku.atests.DiscussionGroup;
 import fi.otavanopisto.muikku.atests.DiscussionThread;
 import fi.otavanopisto.muikku.atests.Workspace;
-import fi.otavanopisto.muikku.atests.WorkspaceDiscussion;
-import fi.otavanopisto.muikku.atests.WorkspaceDiscussionGroup;
-import fi.otavanopisto.muikku.atests.WorkspaceDiscussionThread;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 
 public class CourseDiscussionTestsBase extends AbstractUITest {
