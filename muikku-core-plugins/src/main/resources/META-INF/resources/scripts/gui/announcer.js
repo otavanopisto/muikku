@@ -471,7 +471,6 @@
     
     if ($("#workspaceEntityId").val() != null) {
       options.workspaceEntityId = Number($("#workspaceEntityId").val());
-      options.outerContainer = ".workspace-announcer-content-wrapper";
     }
     
     $('.an-announcements-view-container').announcer(options);
