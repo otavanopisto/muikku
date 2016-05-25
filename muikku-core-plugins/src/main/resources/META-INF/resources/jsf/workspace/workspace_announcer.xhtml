@@ -24,6 +24,7 @@
   </ui:define>
   
   <ui:define name="grid-content">
+    <input type="hidden" id="workspaceEntityId" value="#{workspaceAnnouncerBackingBean.workspaceEntityId}" />
     <main id="content" class="mf-content-master">
       <section>
         <h1 class="workspace-generic-view-title ">#{i18n.text['plugin.workspace.announcer.pageTitle']} - #{workspaceAnnouncerBackingBean.workspaceName}</h1>
