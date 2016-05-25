@@ -9,7 +9,9 @@
               <div class="mf-textfield-subcontainer flex-row">
                 <div class="mf-textfield-title an-archive-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><span>{#localize key="plugin.announcer.archiveannouncement.archiving.title"/}</span></div>
                 <div class="an-archiving-ids-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-                  <input type="hidden" name="ids" data-arrray="true" value="" />
+                  {#items}
+                  <span>{title}</span>
+                  {/items}
                 </div>
               </div>
             </div>
