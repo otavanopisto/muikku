@@ -48,6 +48,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.InboxCommunicatorMessag
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
+import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
@@ -451,7 +452,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups")
   @RESTPermit (handling = Handling.UNSECURED)
-  public Response createWorkspaceDiscussionGroup(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, fi.otavanopisto.muikku.atests.WorkspaceDiscussionGroup payload) {
+  public Response createWorkspaceDiscussionGroup(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, fi.otavanopisto.muikku.atests.DiscussionGroup payload) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
@@ -486,7 +487,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions")
   @RESTPermit (handling = Handling.UNSECURED)
-  public Response createWorkspaceDiscussion(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("GROUPID") Long groupId, fi.otavanopisto.muikku.atests.WorkspaceDiscussion payload) {
+  public Response createWorkspaceDiscussion(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("GROUPID") Long groupId, fi.otavanopisto.muikku.atests.Discussion payload) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
@@ -541,7 +542,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads")
   @RESTPermit (handling = Handling.UNSECURED)
-  public Response createWorkspaceDiscussionThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("GROUPID") Long groupId, @PathParam ("DISCUSSIONID") Long discussionId, fi.otavanopisto.muikku.atests.WorkspaceDiscussionThread payload) {
+  public Response createWorkspaceDiscussionThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("GROUPID") Long groupId, @PathParam ("DISCUSSIONID") Long discussionId, fi.otavanopisto.muikku.atests.DiscussionThread payload) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
@@ -663,7 +664,117 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     
     return Response.noContent().build();
   }
+
+  @POST
+  @Path("/discussiongroups")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createDiscussionGroup(fi.otavanopisto.muikku.atests.DiscussionGroup payload) {
+    if (StringUtils.isBlank(payload.getName())) {
+      return Response.status(Status.BAD_REQUEST).entity("Mandatory name is missing").build(); 
+    }
+    
+    return Response.ok(createRestEntity(forumController.createForumAreaGroup(payload.getName()))).build();
+  }  
   
+  @DELETE
+  @Path("/discussiongroups/{GROUPID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteDiscussionGroup(@PathParam ("GROUPID") Long groupId) {
+    ForumAreaGroup group = forumController.findForumAreaGroup(groupId);
+    if (group == null) {
+      return Response.status(Status.NOT_FOUND).entity("Group not found").build();
+    }
+    
+    forumController.deleteAreaGroup(group);
+    
+    return Response.noContent().build();
+  }  
+
+  @POST
+  @Path("/discussiongroups/{GROUPID}/discussions")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createDiscussion(@PathParam ("GROUPID") Long groupId, fi.otavanopisto.muikku.atests.Discussion payload) {
+    ForumAreaGroup group = forumController.findForumAreaGroup(groupId);
+    if (group == null) {
+      return Response.status(Status.NOT_FOUND).entity("Group not found").build();
+    }
+    
+    if (StringUtils.isBlank(payload.getName())) {
+      return Response.status(Status.BAD_REQUEST).entity("Mandatory name is missing").build(); 
+    }
+    return Response.ok(createRestEntity(forumController.createEnvironmentForumArea(payload.getName(), group.getId()))).build();
+  }
+
+  @DELETE
+  @Path("/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteDiscussion(@PathParam ("GROUPID") Long groupId, @PathParam ("DISCUSSIONID") Long discussionId) {
+    ForumAreaGroup group = forumController.findForumAreaGroup(groupId);
+    if (group == null) {
+      return Response.status(Status.NOT_FOUND).entity("Group not found").build();
+    }
+    
+    ForumArea forumArea = forumController.getForumArea(discussionId);
+    if (forumArea == null) {
+      return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
+    }
+
+    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE);
+    for (ForumThread thread : threads) {
+      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE);
+      for (ForumThreadReply reply : replies) {
+        forumController.deleteReply(reply); 
+      }
+      
+      forumController.deleteThread(thread);
+    }
+    
+    forumController.deleteArea(forumArea);
+    
+    return Response.noContent().build();
+  }
+
+  @POST
+  @Path("/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createDiscussionThread(@PathParam ("GROUPID") Long groupId, @PathParam ("DISCUSSIONID") Long discussionId, fi.otavanopisto.muikku.atests.DiscussionThread payload) {
+    ForumAreaGroup group = forumController.findForumAreaGroup(groupId);
+    if (group == null) {
+      return Response.status(Status.NOT_FOUND).entity("Group not found").build();
+    }
+    
+    ForumArea discussion = forumController.getForumArea(discussionId);
+    if (discussion == null) {
+      return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
+    }
+    
+    return Response.ok(createRestEntity(forumController.createForumThread(discussion, payload.getTitle(), payload.getMessage(), payload.getSticky(), payload.getLocked()))).build();
+  }
+  
+  @DELETE
+  @Path("/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteDiscussionThread(@PathParam ("GROUPID") Long groupId, @PathParam ("DISCUSSIONID") Long discussionId, @PathParam ("ID") Long id) {
+    ForumAreaGroup group = forumController.findForumAreaGroup(groupId);
+    if (group == null) {
+      return Response.status(Status.NOT_FOUND).entity("Group not found").build();
+    }
+    
+    ForumArea forumArea = forumController.getForumArea(discussionId);
+    if (forumArea == null) {
+      return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
+    }
+    
+    ForumThread thread = forumController.getForumThread(id);
+    if (thread == null) {
+      return Response.status(Status.NOT_FOUND).entity("Thread not found").build();
+    }
+
+    forumController.deleteThread(thread);
+    
+    return Response.noContent().build();
+  }
+
   private fi.otavanopisto.muikku.atests.Workspace createRestEntity(WorkspaceEntity workspaceEntity, String name) {
     return new fi.otavanopisto.muikku.atests.Workspace(workspaceEntity.getId(), 
         name, 
@@ -673,14 +784,18 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         workspaceEntity.getPublished());
   }
 
-  private WorkspaceDiscussionGroup createRestEntity(ForumAreaGroup entity) {
-    return new WorkspaceDiscussionGroup(entity.getId(), entity.getName());
+  private DiscussionGroup createRestEntity(ForumAreaGroup entity) {
+    return new DiscussionGroup(entity.getId(), entity.getName());
   }
 
-  private fi.otavanopisto.muikku.atests.WorkspaceDiscussion createRestEntity(WorkspaceForumArea entity) {
-    return new fi.otavanopisto.muikku.atests.WorkspaceDiscussion(entity.getId(), entity.getName(), entity.getGroup().getId());
+  private fi.otavanopisto.muikku.atests.Discussion createRestEntity(WorkspaceForumArea entity) {
+    return new fi.otavanopisto.muikku.atests.Discussion(entity.getId(), entity.getName(), entity.getGroup().getId());
   }
-
+  
+  private fi.otavanopisto.muikku.atests.Discussion createRestEntity(EnvironmentForumArea entity) {
+    return new fi.otavanopisto.muikku.atests.Discussion(entity.getId(), entity.getName(), entity.getGroup().getId());
+  }
+  
   private fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial createRestEntity(WorkspaceMaterial workspaceMaterial, HtmlMaterial htmlMaterial) {
     return new fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial(workspaceMaterial.getId(), 
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, 
@@ -700,8 +815,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         workspaceFolder.getParent() != null ? workspaceFolder.getParent().getId() : null);
   }
 
-  private fi.otavanopisto.muikku.atests.WorkspaceDiscussionThread createRestEntity(ForumThread entity) {
-    return new fi.otavanopisto.muikku.atests.WorkspaceDiscussionThread(entity.getId(), 
+  private fi.otavanopisto.muikku.atests.DiscussionThread createRestEntity(ForumThread entity) {
+    return new fi.otavanopisto.muikku.atests.DiscussionThread(entity.getId(), 
         entity.getTitle(), 
         entity.getMessage(), 
         entity.getSticky(), 

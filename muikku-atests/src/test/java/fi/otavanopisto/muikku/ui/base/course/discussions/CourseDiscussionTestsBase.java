@@ -2,6 +2,9 @@ package fi.otavanopisto.muikku.ui.base.course.discussions;
 
 import org.junit.Test;
 
+import fi.otavanopisto.muikku.atests.Discussion;
+import fi.otavanopisto.muikku.atests.DiscussionGroup;
+import fi.otavanopisto.muikku.atests.DiscussionThread;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceDiscussion;
 import fi.otavanopisto.muikku.atests.WorkspaceDiscussionGroup;
@@ -16,9 +19,9 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
-      WorkspaceDiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
+      DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
       try {
-        WorkspaceDiscussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
+        Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
         try {
           navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
           waitAndClick(".di-new-message-button");
@@ -45,9 +48,9 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
-      WorkspaceDiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
+      DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
       try {
-        WorkspaceDiscussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
+        Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
         try {
           navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
           waitAndClick(".sm-flex-hide .di-new-area-button");
@@ -72,11 +75,11 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
-      WorkspaceDiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
+      DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
       try {
-        WorkspaceDiscussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
+        Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
         try {
-          WorkspaceDiscussionThread thread = createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
+          DiscussionThread thread = createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
           try {
             navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
             waitAndClick(".di-message-meta-topic>span");
@@ -105,11 +108,11 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
-      WorkspaceDiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
+      DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
       try {
-        WorkspaceDiscussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
+        Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
         try {
-          WorkspaceDiscussionThread thread = createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
+          DiscussionThread thread = createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
           try {
             navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
             waitAndClick(".di-message-meta-topic>span");
@@ -140,11 +143,11 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
     
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
-      WorkspaceDiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
+      DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
       try {
-        WorkspaceDiscussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
+        Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
         try {
-          WorkspaceDiscussionThread thread = createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
+          DiscussionThread thread = createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
           try {
             navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
             waitAndClick(".di-message-meta-topic>span");
