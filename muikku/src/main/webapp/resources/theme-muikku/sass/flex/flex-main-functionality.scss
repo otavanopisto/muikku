@@ -324,7 +324,9 @@
   padding:6px 0;
   text-align:center;
   width:37px;
-   
+  &.toolset-1{
+    background:#72d200 none repeat scroll 0 0;  
+  }
   .mf-tool {
     cursor:pointer;
   }
@@ -403,9 +405,8 @@
   width:100%;
 }
 
-.mf-form-tab {
-   padding:10px;
-   
+.mf-form-header {
+   padding-top:20px;
    h3 {
      color:#fff;
      font-weight:700;
