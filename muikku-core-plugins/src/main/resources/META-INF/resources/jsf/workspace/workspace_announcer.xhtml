@@ -12,26 +12,39 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/moment/2.10.6/moment-with-locales.min.js"/>    
     <script defer="defer" type="text/javascript" src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/announcer.js" />
   </ui:define>
-  
-  <ui:define name="workspace-view-styles">
-    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-announcer.css"/>  
-  </ui:define>
 
+  <ui:define name="workspace-view-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/announcer.css"/>    
+    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main-functionality.css"/>        
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-announcer.css"/>      
+  </ui:define>
+  
   <ui:define name="grid-content">
-    <div class="flex-row">
-      <h1 class="workspace-generic-view-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.announcer.pageTitle']}</h1>
-    </div>
-    <section class="flex-row workspace-announcer-content-wrapper">
-      <article class="lg-flex-cell-11 md-flex-cell-11 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first no-margin-top">
-        <input type="hidden" id="workspaceEntityId" value="#{workspaceAnnouncerBackingBean.workspaceEntityId}" />
-        <div class="mf-content-main an-announcements-view-container">
-        
+    <main id="content" class="mf-content-master">
+      <section>
+        <h1 class="workspace-generic-view-title ">#{i18n.text['plugin.workspace.announcer.pageTitle']} - #{workspaceAnnouncerBackingBean.workspaceName}</h1>
+        <div class="mf-content-functions flex-row flex-align-items-center">
+          <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-6 sm-flex-order-1 sm-flex-cell-first ">
+            <div class="mf-primary-function">
+              <div class="an-new-announcement">
+                <span class="mf-primary-function-text">#{i18n.text['plugin.announcer.button.create']}</span>
+              </div>
+            </div>            
+          </div>
+        </div>        
+        <div class="mf-content-area flex-row">
+          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+            <div class="flex-row">
+              <div class="an-announcements-view-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"></div>
+            </div>                     
+          </div>
         </div>
-      </article>
-    </section>
+      </section>
+    </main>
   </ui:define>
      
 </ui:composition>

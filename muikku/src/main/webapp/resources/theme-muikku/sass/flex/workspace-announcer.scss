@@ -14,13 +14,10 @@ h1.workspace-generic-view-title {
 }
 
 .an-announcements {
-  padding:25px;
   
   .an-announcement {
     box-sizing: border-box;
     display: inline-block;
-    margin-bottom: 25px;
-    margin-right: 25px;
     max-height: 330px;
     overflow: hidden;
     vertical-align: top;
@@ -51,3 +48,111 @@ h1.workspace-generic-view-title {
   }
   
 }
+
+  /* Discussion areas overrides */
+  .mf-content-area {
+    background-color: #fff;
+    
+    .di-no-messages {
+    
+      h3 {
+        font-weight:300;
+      }
+    
+    }
+    
+  }
+  
+  .mf-toolbar {
+  
+    input {
+      border-radius:0px;
+      border:0;
+      color:#fff;
+      font-weight:400;
+      text-transform:uppercase;
+      margin:5px;
+      outline:none;
+      font-family:'Open Sans', Arial, sans-serif;
+      min-width:90px;
+      padding:10px;
+      font-size:16px;
+    }
+  
+    input[name="send"] {
+      background:#27b91c;
+    }
+    
+    input[name="cancel"] {
+      background:#7391a7;
+    }
+  
+  }
+  .mf-content-functions {
+    background-color:#fff;
+    font-size:14px;
+    
+    .mf-button-container {
+      background-color: transparent;
+      
+      .mf-primary-function { /* Overrides mainfunction button styles */
+        margin:0 0 0 15px;
+        box-shadow:none;
+        border:0px;
+        text-shadow:none;
+        background:#0099ff;
+        width:auto;
+        border-radius: 3px;
+        color: #ffffff;
+        cursor: pointer;
+        font-size: 1em;
+        line-height: 1.3em;
+        text-transform: uppercase;       
+        padding: 12px; 
+        &.disabled{
+          background:#dadada;
+          color: #efefef;
+        }
+
+        span{
+
+          white-space: nowrap;
+        }
+      }
+      
+      .di-new-message-button {
+        font-weight:400;
+        
+      }
+      
+    }
+    
+    .mf-view-container {
+      background-color:#fff;
+      height:55px;
+      
+      .di-browse-areas-container {
+        margin:0px 0 10px 0px;
+      }
+      
+      .di-new-area-container, .di-edit-area-container,
+      .di-delete-area-container {
+        margin:2px 0 0 5px;
+      }
+    } 
+    
+    .mf-view-container {
+      background-color:#fff;
+      height:55px;
+      
+      .di-browse-areas-container {
+        margin:0px 0 10px 0px;
+      }
+      
+      .di-new-area-container, .di-edit-area-container,
+      .di-delete-area-container {
+        margin:2px 0 0 5px;
+      }
+    }
+  
+  }  
