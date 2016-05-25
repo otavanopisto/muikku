@@ -85,6 +85,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(announcement.get(Announcement_.archived), archived)),
+            criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), false),
             criteriaBuilder.equal(root.get(AnnouncementWorkspace_.workspaceEntityId), workspaceEntityId));
     criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
     
@@ -109,6 +110,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
             criteriaBuilder.lessThanOrEqualTo(announcement.get(Announcement_.startDate), date),
             criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), date),
             criteriaBuilder.equal(announcement.get(Announcement_.archived), archived)),
+            criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), false),
             criteriaBuilder.equal(root.get(AnnouncementWorkspace_.workspaceEntityId), workspaceEntityId));
     criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
     
