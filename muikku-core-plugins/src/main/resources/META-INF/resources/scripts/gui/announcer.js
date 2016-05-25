@@ -110,13 +110,15 @@
           appendTo: '#msgTargetGroupsContainer'
         });
         
-        autocomplete.data("ui-autocomplete")._renderItem = function (ul, item) {
-          var li = $("<li>")
-            .text(item.label)
-            .appendTo(ul);
-        
-          return li;
-        };
+        if (autocomplete.data("ui-autocomplete") != null) {
+          autocomplete.data("ui-autocomplete")._renderItem = function (ul, item) {
+            var li = $("<li>")
+              .text(item.label)
+              .appendTo(ul);
+          
+            return li;
+          };
+        }
       }, this));
     },
     
