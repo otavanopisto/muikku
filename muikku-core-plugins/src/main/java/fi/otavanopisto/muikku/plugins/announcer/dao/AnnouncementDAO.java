@@ -74,6 +74,20 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<Announcement> listByArchived(boolean archived){
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+
+    Root<Announcement> root = criteria.from(Announcement.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.equal(root.get(Announcement_.archived), archived));
+    criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public List<Announcement> listByArchivedAndWorkspaceEntityId(boolean archived, long workspaceEntityId){
     EntityManager entityManager = getEntityManager();
     
@@ -230,6 +244,24 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
         criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)),
         criteriaBuilder.not(
           criteriaBuilder.in(root).value(subquery)));
+    criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<Announcement> listByArchivedAndDate(boolean archived, Date currentDate) {
+    EntityManager entityManager = getEntityManager(); 
+    currentDate = onlyDateFields(currentDate);
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+
+    Root<Announcement> root = criteria.from(Announcement.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(Announcement_.archived), false),
+        criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
+        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)));
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     return entityManager.createQuery(criteria).getResultList();
   }

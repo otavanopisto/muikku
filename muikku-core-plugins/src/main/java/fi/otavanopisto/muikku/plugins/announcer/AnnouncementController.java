@@ -90,6 +90,10 @@ public class AnnouncementController {
   public List<Announcement> listUnarchivedEnvironmentAnnouncements() {
     return announcementDAO.listByArchivedWithNoWorkspaces(false);
   }
+
+  public List<Announcement> listUnarchivedAnnouncements() {
+    return announcementDAO.listByArchived(false);
+  }
   
   public List<Announcement> listUnarchivedByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
     return announcementDAO.listByArchivedAndWorkspaceEntityId(false, workspaceEntity.getId());
@@ -105,6 +109,10 @@ public class AnnouncementController {
   
   public List<Announcement> listActiveEnvironmentAnnouncements() {
     return announcementDAO.listByArchivedAndDateWithNoWorkspaces(false, new Date());
+  }
+
+  public List<Announcement> listActiveAnnouncements() {
+    return announcementDAO.listByArchivedAndDate(false, new Date());
   }
   
   public Announcement findById(Long id) {
@@ -139,13 +147,29 @@ public class AnnouncementController {
     return result;
   }
   
-  public List<Announcement> listActiveByTargetedUserEntity(
+  public List<Announcement> listActiveEnvironmentAnnouncementsByTargetedUserEntity(
       UserEntity targetedUserEntity
   ) {
     List<UserGroupEntity> userGroupEntities = 
         userGroupEntityController.listUserGroupsByUserEntity(targetedUserEntity);
     
     return listActiveByUserGroupEntities(userGroupEntities);
+  }
+  
+  public List<Announcement> listActiveEnvironmentAndWorkspaceAnnouncementsByTargetedUserEntity(
+      UserEntity targetedUserEntity
+  ) {
+    List<UserGroupEntity> userGroupEntities = 
+        userGroupEntityController.listUserGroupsByUserEntity(targetedUserEntity);
+    List<Announcement> result = new ArrayList<>();
+    result.addAll(listActiveByUserGroupEntities(userGroupEntities));
+    result.addAll(listActiveEnvironmentAnnouncementsByTargetedUserEntity(targetedUserEntity));
+    Collections.sort(result, new Comparator<Announcement>() {
+      public int compare(Announcement o1, Announcement o2) {
+        return o2.getStartDate().compareTo(o1.getStartDate());
+      }
+    });
+    return result;
   }
   
   public List<AnnouncementUserGroup> listUserGroups(Announcement announcement) {
