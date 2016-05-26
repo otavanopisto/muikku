@@ -389,6 +389,20 @@
 .mf-content-main {
   background-color:$mainFuncContent; 
 }
+
+.mf-content-empty {
+  min-height:400px;
+  padding-top:160px;
+  
+  h3 {
+    font-weight:300;
+    font-size:20px;
+    margin:0 0 0.5em;
+    text-transform:none;
+    font-style:italic;
+  }
+  
+}
   
 .mf-event {
   background-color:$bgr1;
@@ -405,9 +419,13 @@
 
 .mf-form-header {
    padding-top:20px;
+   
    h3 {
      color:#fff;
-     font-weight:700;
+     font-weight:400;
+     font-size:20px;
+     margin:0 0 0.5em;
+     text-transform:uppercase;
    }
    
 }
