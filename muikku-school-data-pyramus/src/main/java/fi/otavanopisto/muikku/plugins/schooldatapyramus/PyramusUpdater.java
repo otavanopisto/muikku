@@ -547,17 +547,18 @@ public class PyramusUpdater {
     }
     
     CourseStaffMemberRole[] staffMemberRoles = pyramusClient.get().get("/courses/staffMemberRoles", CourseStaffMemberRole[].class);
-    if (staffMemberRoles != null) {
-      for (CourseStaffMemberRole staffMemberRole : staffMemberRoles) {
-        String identifier = identifierMapper.getWorkspaceStaffRoleIdentifier(staffMemberRole.getId());
-        removedIdentifiers.remove(identifier);
-  
-        WorkspaceRoleEntity workspaceRoleEntity = workspaceRoleEntityController.findWorkspaceRoleEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
-        if (workspaceRoleEntity == null) {
-          WorkspaceRole workspaceRole = entityFactory.createEntity(staffMemberRole);
-          schoolDataWorkspaceRoleDiscoveredEvent.fire(new SchoolDataWorkspaceRoleDiscoveredEvent(workspaceRole.getSchoolDataSource(), workspaceRole.getIdentifier(), workspaceRole.getArchetype(), workspaceRole.getName()));
-          count++;
-        }
+    if (staffMemberRoles == null || staffMemberRoles.length == 0) {
+      logger.warning("Aborting role synchronization because Pyramus has no course staff member roles");
+      return count;
+    }
+    for (CourseStaffMemberRole staffMemberRole : staffMemberRoles) {
+      String identifier = identifierMapper.getWorkspaceStaffRoleIdentifier(staffMemberRole.getId());
+      removedIdentifiers.remove(identifier);
+      WorkspaceRoleEntity workspaceRoleEntity = workspaceRoleEntityController.findWorkspaceRoleEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+      if (workspaceRoleEntity == null) {
+        WorkspaceRole workspaceRole = entityFactory.createEntity(staffMemberRole);
+        schoolDataWorkspaceRoleDiscoveredEvent.fire(new SchoolDataWorkspaceRoleDiscoveredEvent(workspaceRole.getSchoolDataSource(), workspaceRole.getIdentifier(), workspaceRole.getArchetype(), workspaceRole.getName()));
+        count++;
       }
     }
     
