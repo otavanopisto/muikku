@@ -21,8 +21,6 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
-import fi.otavanopisto.muikku.security.MuikkuPermissions;
-import fi.otavanopisto.muikku.session.SessionController;
 
 @Named
 @Stateful
@@ -46,9 +44,6 @@ public class WorkspaceHelpPageBackingBean extends AbstractWorkspaceBackingBean {
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
-  private SessionController sessionController;
-
-  @Inject
   @Named
   private WorkspaceBackingBean workspaceBackingBean;
 
@@ -64,10 +59,6 @@ public class WorkspaceHelpPageBackingBean extends AbstractWorkspaceBackingBean {
 
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
-    }
-    
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_HELP, workspaceEntity)) {
-      return NavigationRules.ACCESS_DENIED;
     }
     
     workspaceEntityId = workspaceEntity.getId();
