@@ -213,7 +213,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       if (onlyActive) {
         if (onlyMine) {
           UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
-          announcements = announcementController.listActiveByTargetedUserEntity(currentUserEntity);
+          announcements = announcementController.listActiveEnvironmentAnnouncementsByTargetedUserEntity(currentUserEntity);
         } else {
           announcements = announcementController.listActiveEnvironmentAnnouncements();
         }
@@ -223,10 +223,16 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
     
     if (workspaceEntityId == null && !hideWorkspaceAnnouncements) {
-      return Response
-          .status(Status.NOT_IMPLEMENTED)
-          .entity("Listing combined workspace and environment announcements is not supported yet.")
-          .build();
+      if (onlyActive) {
+        if (onlyMine) {
+          UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
+          announcements = announcementController.listActiveEnvironmentAndWorkspaceAnnouncementsByTargetedUserEntity(currentUserEntity);
+        } else {
+          announcements = announcementController.listActiveAnnouncements();
+        }
+      } else {
+        announcements = announcementController.listUnarchivedAnnouncements();
+      }
     }
 
     if (workspaceEntityId != null) {
