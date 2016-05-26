@@ -8,7 +8,7 @@
        <div class="tr-side-button-dropdown">
         <ul id="trCategories">
           <li id="trCat-1" ><span id="myUnfinishedWps" class="tr-category-unfinishedWps">#{i18n.text['plugin.records.views.ongoing']}</span></li>
-          <ui:fragment rendered="#{muikkuSession.loggedIn}">
+          <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
             <li id="trCat-2"><span id="myComingWps" class="tr-category-comingWps">#{i18n.text['plugin.records.views.completed']}</span></li>
             <li id="trCat-3"><span id="allMyWps" class="tr-category-allWps">#{i18n.text['plugin.records.views.all']}</span></li>
           </ui:fragment>                 

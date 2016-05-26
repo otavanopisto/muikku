@@ -6,7 +6,7 @@
   template="/WEB-INF/templates/flex-main-workspace.xhtml"> 
 
   <ui:define name="scripts">
-    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
@@ -148,6 +148,7 @@
     <input class="workspaceNameExtension" type="hidden" value="#{workspaceMaterialsBackingBean.workspaceNameExtension}"/>
     <input class="workspaceEntityId" type="hidden" value="#{workspaceMaterialsBackingBean.workspaceEntityId}"/>
     <input class="materialsBaseUrl" type="hidden" value="#{workspaceMaterialsBackingBean.materialsBaseUrl}"/>
+    <input class="maySignUp" type="hidden" value="#{workspaceMaterialsBackingBean.maySignUp}"/>
     <input class="canSignUp" type="hidden" value="#{workspaceMaterialsBackingBean.canSignUp}"/>
   </ui:define>
 

@@ -6,7 +6,7 @@
   template="/WEB-INF/templates/flex-main-workspace.xhtml">
   
   <ui:define name="scripts">
-    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js" />
@@ -25,7 +25,7 @@
 
  
   <ui:define name="grid-content">
-    <input type="hidden" name="userEntityId" value="#{muikkuSession.loggedUserEntity.id}"/>
+    <input type="hidden" name="userEntityId" value="#{sessionBackingBean.loggedUserId}"/>
     <input type="hidden" name="workspaceEntityId" value="#{workspaceDiscussionsBackingBean.workspaceEntityId}"/>
     <input type="hidden" name="areaPermissions" value="#{workspaceDiscussionsBackingBean.areaPermissions}"/>
     <main id="content">

@@ -66,7 +66,15 @@ public interface SessionController {
    * @param permission requested permission
    * @return whether logged user has specified course permission.
    */
+  @Deprecated
   public boolean hasCoursePermission(String permission, WorkspaceEntity course);
+  
+  /**
+   * Returns whether logged user has specified workspace permission.
+   * @param permission requested permission
+   * @return whether logged user has specified workspace permission.
+   */
+  public boolean hasWorkspacePermission(String permission, WorkspaceEntity workspaceEntity);
 
   /**
    * Returns whether logged user has specified resource permission.

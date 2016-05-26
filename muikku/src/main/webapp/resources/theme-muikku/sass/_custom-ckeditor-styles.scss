@@ -7,9 +7,8 @@
   padding:10px 15px 10px 85px;
   margin:20px auto;
   min-height:64px;
-  font-size:16px;
+  font-size:inherit;
   position:relative;
-  line-height:1.7em;
   
   p:first-child,
   ul:first-child,
@@ -187,6 +186,7 @@
   color:#000;
   font-size:20px;
   font-style:italic;
+  line-height:40px;
   display:inline-block;
   quotes: "\201C""\201D";
   
@@ -272,7 +272,6 @@
   quotes: "\201C""\201D";
   box-shadow:none;
   text-shadow:none;
-  font-size:16px;
   position:relative;
   background:#f8f8f8;
   font-style:normal;
@@ -298,5 +297,4 @@
   border-radius:0px;
   box-shadow:none;
   text-shadow:none;
-  font-size:16px;
 }

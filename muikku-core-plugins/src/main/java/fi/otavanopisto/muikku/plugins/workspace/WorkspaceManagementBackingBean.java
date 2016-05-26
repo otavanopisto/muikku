@@ -48,7 +48,7 @@ public class WorkspaceManagementBackingBean extends AbstractWorkspaceBackingBean
       return NavigationRules.NOT_FOUND;
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE, workspaceEntity)) {
       return NavigationRules.ACCESS_DENIED;
     }
     
