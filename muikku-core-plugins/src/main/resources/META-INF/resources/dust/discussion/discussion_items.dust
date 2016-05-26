@@ -1,11 +1,11 @@
 
 
   <div class="di-messages-pages lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-      {?.}
+      {?threads}
         {>"discussion/discussion_page.dust"/}  
       {:else}
         {>"discussion/discussion_empty.dust"/}
-      {/.}  
+      {/threads}  
   </div>
 
 
