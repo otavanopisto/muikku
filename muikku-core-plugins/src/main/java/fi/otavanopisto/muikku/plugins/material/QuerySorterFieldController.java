@@ -45,7 +45,7 @@ public class QuerySorterFieldController {
     try {
       sorterFieldMeta = objectMapper.readValue(field.getContent(), SorterFieldMeta.class);
     } catch (IOException e) {
-      throw new MaterialFieldMetaParsingExeption("Could not parse select field meta", e);
+      throw new MaterialFieldMetaParsingExeption("Could not parse sorter field meta", e);
     }
     QuerySorterField queryField = querySorterFieldDAO.findByMaterialAndName(material, sorterFieldMeta.getName());
     // -> fi.otavanopisto.muikku.plugins.workspace.QueryFieldChangeListener
