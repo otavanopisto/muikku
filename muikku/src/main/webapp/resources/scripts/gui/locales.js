@@ -3,10 +3,6 @@ function getLocaleText(key) {
   if (val !== undefined) {
     val = val.replace(/\{(\d+)(,?\w*)(,?\w*)\}/gi, function (match, number, type, format) {
       var currentValue = arguments[Number(number)];
-      
-      number = number.trim();
-      type = type.trim();
-      format = format.trim();
 
       if (type == ",date") {
         if (format == ",short") {
