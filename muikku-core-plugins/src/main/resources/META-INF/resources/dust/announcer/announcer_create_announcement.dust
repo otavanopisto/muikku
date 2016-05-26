@@ -9,11 +9,11 @@
               <div class="mf-textfield-subcontainer flex-row">
                 <div class="mf-textfield-subelement an-date-field lg-flex-cell-3 md-flex-cell-4 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
                   <span class="mf-textfield-title">{#localize key="plugin.announcer.createannouncement.startdate.label"/}</span>
-                  <input id="startDate" class="mf-textfield-date" type="text" name="startDate"></input>
+                  <input required="required" id="startDate" class="mf-textfield-date" type="text" name="startDate"></input>
                 </div>
                 <div class="mf-textfield-subelement an-date-field lg-flex-cell-4 md-flex-cell-5 sm-flex-cell-full">
                   <span class="mf-textfield-title">{#localize key="plugin.announcer.createannouncement.enddate.label"/}</span>
-                  <input id="endDate" class="mf-textfield-date" type="text" name="endDate"></input>
+                  <input required="required" id="endDate" class="mf-textfield-date" type="text" name="endDate"></input>
                 </div>
                <div class="lg-flex-cell-9 md-flex-cell-7 sm-flex-cell-hide"></div>
               </div>
@@ -22,7 +22,7 @@
           <div class="mf-form-row flex-row">
             <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
              <div class="mf-textfield-subcontainer">
-               <input class="mf-textfield-subject" type="text" name="caption" placeholder="{#localize key="plugin.announcer.createannouncement.title.label"/}" maxlength="255"></input>
+               <input required="required" class="mf-textfield-subject" type="text" name="caption" placeholder="{#localize key="plugin.announcer.createannouncement.title.label"/}" maxlength="255"></input>
               </div>                      
             </div>                     
           </div>            

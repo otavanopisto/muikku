@@ -1,17 +1,25 @@
 function getLocaleText(key) {
   var val = window._MUIKKU_LOCALEMAP[key];
   if (val !== undefined) {
-    for (var i = 1; i < arguments.length; i++) {
-      val = val.replace('{' + (i - 1) + '}', arguments[i]);
-    }
-    
-    if (val.indexOf('{date}') !== -1) {
-      val = val.replace('{date}', getCurrentDate());
-    }
-    
-    if (val.indexOf('{time}') !== -1) {
-      val = val.replace('{time}', getCurrentTime());
-    }
+    val = val.replace(/\{(\d+)(,?\w*)(,?\w*)\}/gi, function (match, number, type, format) {
+      var currentValue = arguments[Number(number)];
+      
+      number = number.trim();
+      type = type.trim();
+      format = format.trim();
+
+      if (type == ",date") {
+        if (format == ",short") {
+          return formatDate(currentValue, true);
+        } else {
+          return formatDate(currentValue);
+        }
+      } else if (type == ",time") {
+        return formatTime(currentValue);
+      } else {
+        return currentValue;
+      }
+    });
     
     return val;
   } else {
@@ -27,8 +35,12 @@ function getCurrentDate() {
   return formatDate(new Date());
 }
 
-function formatDate(d) {
-  return $.datepicker.formatDate(getLocaleText('datePattern'), d);
+function formatDate(d, shortDate) {
+  if (shortDate) {
+    return $.datepicker.formatDate(getLocaleText('shortDatePattern'), d);
+  } else {
+    return $.datepicker.formatDate(getLocaleText('datePattern'), d);
+  }
 }
 
 function getCurrentTime() {

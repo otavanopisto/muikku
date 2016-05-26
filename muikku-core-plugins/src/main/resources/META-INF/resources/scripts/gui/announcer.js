@@ -479,6 +479,8 @@
   });
   
   $(document).ready(function(){
+    webshim.polyfill('forms');
+
     var options = {};
     
     if ($("#workspaceEntityId").val() != null) {
