@@ -1,17 +1,17 @@
-function getLocaleText(key) {
+function getLocaleText(key, args) {
   var val = window._MUIKKU_LOCALEMAP[key];
   if (val !== undefined) {
     val = val.replace(/\{(\d+)(,?\w*)(,?\w*)\}/gi, function (match, number, type, format) {
-      var currentValue = arguments[Number(number)];
+      var currentValue = args[Number(number)];
 
       if (type == ",date") {
         if (format == ",short") {
-          return formatDate(currentValue, true);
+          return formatDate(new Date(currentValue), true);
         } else {
-          return formatDate(currentValue);
+          return formatDate(new Date(currentValue));
         }
       } else if (type == ",time") {
-        return formatTime(currentValue);
+        return formatTime(new Date(currentValue));
       } else {
         return currentValue;
       }

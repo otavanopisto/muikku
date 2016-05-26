@@ -2,7 +2,7 @@
     {#.}
       <div class="workspace-single-announcement lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full">
         <div class="workspace-announcement-title">{caption}</div>
-        <div class="workspace-announcement-date">{startDate|formatDate}</div>
+        <div class="workspace-announcement-date">{#localize key="plugin.workspace.index.announcementStartDate" arg0=startDate /}</div>
       </div>
     {/.}
   {:else}
