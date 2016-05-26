@@ -16,7 +16,7 @@
               </a>
               <div class="lu-info-container">
                 <div class="lu-user-name">
-                  <a jsf:outcome="/jsf/profile/profile.jsf">#{sessionBackingBean.loggedUserName}<ui:fragment rendered="#{sessionBackingBean.isStaffMember}"> (#{sessionBackingBean.loggedUserRole})</ui:fragment></a>
+                  <a jsf:outcome="/jsf/profile/profile.jsf">#{sessionBackingBean.loggedUserName}</a>
                 </div>
                 <div class="lu-actions">
                   <h:form>
@@ -85,7 +85,7 @@
           </div>
         </ui:fragment>
         <!-- GUIDER -->
-        <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('GUIDER_VIEW')}">
           <div class="dock-static-navi-button-guider #{activeTrail eq 'guider' ? 'active-trail' : ''}" title="#{i18n.text['plugin.guider.guider']}">
             <a jsf:outcome="/jsf/guider/index.jsf" class="icon-members">
               <span style="display:none" class="dock-notification"></span>
@@ -93,7 +93,7 @@
           </div>
         </ui:fragment>
         <!-- TRANSCRIPT of RECORDS -->
-        <ui:fragment rendered="#{sessionBackingBean.studentLoggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('TRANSCRIPT_OF_RECORDS_VIEW')}">
           <div class="dock-static-navi-button-records #{activeTrail eq 'records' ? 'active-trail' : ''}" title="#{i18n.text['plugin.records.records']}">
             <a jsf:outcome="/jsf/records/index.jsf" class="icon-profile">
               <span style="display:none" class="dock-notification"></span>
@@ -101,7 +101,7 @@
           </div>
         </ui:fragment>
         <!-- EVALUATION -->
-        <ui:fragment rendered="#{evaluationWidgetBackingBean.visible}">
+        <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('EVALUATION_VIEW_INDEX')}">
           <div class="dock-static-navi-button-evaluation sm-flex-hide" title="#{i18n.text['plugin.evaluation.evaluation']}">
             <a jsf:outcome="/jsf/evaluation/index.jsf" class="icon-evaluate" target="top">
               <span style="display:none" class="dock-notification"></span>
@@ -109,7 +109,7 @@
           </div>
         </ui:fragment>
         <!-- ANNOUNCER -->
-        <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('ANNOUNCER_TOOL')}">
           <div class="dock-static-navi-button-announcer sm-flex-hide #{activeTrail eq 'announcer' ? 'active-trail' : ''}" title="#{i18n.text['plugin.announcer.announcer']}">
             <a jsf:outcome="/jsf/announcer/index.jsf" class="icon-announcer">
               <span style="display:none" class="dock-notification"></span>
@@ -127,13 +127,13 @@
                   <a jsf:outcome="/jsf/discussion/index.jsf" class="icon-bubble"><span>#{i18n.text['plugin.forum.forum']}</span></a>
                 </div>
                 <!-- EVALUATION -->
-                <ui:fragment rendered="#{evaluationWidgetBackingBean.visible}">
+                <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('EVALUATION_VIEW_INDEX')}">
                   <div class="dock-static-navi-button-evaluation lg-flex-hide md-flex-hide">
                     <a jsf:outcome="/jsf/evaluation/index.jsf" class="icon-evaluate" target="top"><span>#{i18n.text['plugin.evaluation.evaluation']}</span></a>
                   </div>
                 </ui:fragment>
                 <!-- ANNOUNCER -->
-                <ui:fragment rendered="#{sessionBackingBean.administratorLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.teacherLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">
+                <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('ANNOUNCER_TOOL')}">
                   <div class="dock-static-navi-button-announcer lg-flex-hide md-flex-hide">
                     <a jsf:outcome="/jsf/announcer/index.jsf" class="icon-announcer"><span>#{i18n.text['plugin.announcer.announcer']}</span></a>
                   </div>

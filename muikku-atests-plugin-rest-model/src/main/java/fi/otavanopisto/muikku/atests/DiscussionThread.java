@@ -1,11 +1,11 @@
 package fi.otavanopisto.muikku.atests;
 
-public class WorkspaceDiscussionThread {
+public class DiscussionThread {
 
-  public WorkspaceDiscussionThread() {
+  public DiscussionThread() {
   }
 
-  public WorkspaceDiscussionThread(Long id, String title, String message, Boolean sticky, Boolean locked) {
+  public DiscussionThread(Long id, String title, String message, Boolean sticky, Boolean locked) {
     this.id = id;
     this.title = title;
     this.message = message;

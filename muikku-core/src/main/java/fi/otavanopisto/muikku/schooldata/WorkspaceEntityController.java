@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
@@ -20,6 +21,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
+@Dependent
 public class WorkspaceEntityController { 
 
   @Inject

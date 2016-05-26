@@ -1,14 +1,15 @@
 package fi.otavanopisto.muikku.atests;
 
-public class WorkspaceDiscussionGroup {
+public class Discussion {
 
-  public WorkspaceDiscussionGroup() {
+  public Discussion() {
   }
 
-  public WorkspaceDiscussionGroup(Long id, String name) {
+  public Discussion(Long id, String name, Long groupId) {
     super();
     this.id = id;
     this.name = name;
+    this.groupId = groupId;
   }
 
   public Long getId() {
@@ -27,6 +28,15 @@ public class WorkspaceDiscussionGroup {
     this.name = name;
   }
 
+  public Long getGroupId() {
+    return groupId;
+  }
+
+  public void setGroupId(Long groupId) {
+    this.groupId = groupId;
+  }
+
   private Long id;
   private String name;
+  private Long groupId;
 }
