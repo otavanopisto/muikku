@@ -56,7 +56,7 @@ public class EvaluationIndexBackingBean {
       }
     }
     else {
-      if (!sessionController.hasCoursePermission(EvaluationResourcePermissionCollection.EVALUATION_VIEW_INDEX, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(EvaluationResourcePermissionCollection.EVALUATION_VIEW_INDEX, workspaceEntity)) {
         return NavigationRules.ACCESS_DENIED; 
       }
     }

@@ -23,6 +23,7 @@ import fi.otavanopisto.muikku.plugins.material.fieldmeta.MultiSelectFieldOptionM
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.OrganizerFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
+import fi.otavanopisto.muikku.plugins.material.fieldmeta.SorterFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectFieldOption;
 import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
@@ -31,6 +32,7 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialMultiSelectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialOrganizerFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSorterFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
@@ -41,6 +43,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSele
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialOrganizerFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSorterFieldAnswer;
 
 public class WorkspaceMaterialFieldChangeListener {
   
@@ -64,6 +67,9 @@ public class WorkspaceMaterialFieldChangeListener {
 
   @Inject
   private WorkspaceMaterialOrganizerFieldAnswerDAO workspaceMaterialOrganizerFieldAnswerDAO;
+
+  @Inject
+  private WorkspaceMaterialSorterFieldAnswerDAO workspaceMaterialSorterFieldAnswerDAO;
   
   // Create
   
@@ -131,6 +137,49 @@ public class WorkspaceMaterialFieldChangeListener {
     }
   }
   
+  // Sorter field
+  public void onWorkspaceMaterialSorterFieldUpdate(@Observes WorkspaceMaterialFieldUpdateEvent event) throws MaterialFieldMetaParsingExeption, WorkspaceMaterialContainsAnswersExeption {
+    if (event.getMaterialField().getType().equals("application/vnd.muikku.field.sorter")) {
+      
+      ObjectMapper objectMapper = new ObjectMapper();
+      SorterFieldMeta sorterFieldMeta;
+      try {
+        sorterFieldMeta = objectMapper.readValue(event.getMaterialField().getContent(), SorterFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse sorter field meta", e);
+      }
+      
+      List<WorkspaceMaterialField> fields = workspaceMaterialFieldDAO.listByQueryField(event.getWorkspaceMaterialField().getQueryField());
+      for (WorkspaceMaterialField field : fields) {
+        List<WorkspaceMaterialSorterFieldAnswer> answers = workspaceMaterialSorterFieldAnswerDAO.listByWorkspaceMaterialField(field);
+        for (WorkspaceMaterialSorterFieldAnswer answer : answers) {
+          try {
+            boolean answerModified = false;
+            List<String> answerItems = objectMapper.readValue(answer.getValue(), new TypeReference<ArrayList<String>>() {});
+            for (int i = answerItems.size() - 1; i >= 0; i--) {
+              String answerItem = answerItems.get(i);
+              if (!sorterFieldMeta.hasItemWithId(answerItem)) {
+                if (!event.getRemoveAnswers()) {
+                  throw new WorkspaceMaterialContainsAnswersExeption("Could not update sorter field because it contains answers");
+                }
+                else {
+                  answerItems.remove(answerItem);
+                  answerModified = true;
+                }
+              }
+            }
+            if (answerModified) {
+              workspaceMaterialSorterFieldAnswerDAO.updateValue(answer, objectMapper.writeValueAsString(answerItems));
+            }
+          }
+          catch (IOException e) {
+            throw new MaterialFieldMetaParsingExeption("Could not parse sorter field answer meta", e);
+          }
+        }
+      }
+    }
+  }
+
   // Select field
   public void onWorkspaceMaterialSelectFieldUpdate(@Observes WorkspaceMaterialFieldUpdateEvent event) throws MaterialFieldMetaParsingExeption, WorkspaceMaterialContainsAnswersExeption {
     if (event.getMaterialField().getType().equals("application/vnd.muikku.field.select")) {

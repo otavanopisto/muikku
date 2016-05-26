@@ -49,37 +49,51 @@ public class WorkspaceBackingBean {
     discussionsVisible = true;
     usersVisible = true;
     journalVisible = true;
+    workspaceEntityId = null;
   }
   
   public String getWorkspaceUrlName() {
     return workspaceUrlName;
   }
 
+  @Deprecated
+  public Long getWorkspaceId() {
+    return workspaceEntityId;
+  }
+  
+  public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+  
+  public WorkspaceEntity getWorkspaceEntity() {
+    if (getWorkspaceEntityId() == null) {
+      return null;
+    }
+    
+    return workspaceController.findWorkspaceEntityById(getWorkspaceEntityId());
+  }
+
   public void setWorkspaceUrlName(String workspaceUrlName) {
-    this.workspaceUrlName = workspaceUrlName;
+    WorkspaceEntity workspaceEntity = resolveWorkspaceEntity(workspaceUrlName);
+    if (workspaceEntity != null) {
+      this.workspaceEntityId = workspaceEntity.getId();
+      this.workspaceUrlName = workspaceEntity.getUrlName();
+    }
     
-    WorkspaceEntity workspaceEntity = getWorkspaceEntity();
-    
-    mayManageMaterials = sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity);
     homeVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "home");
     guidesVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "guides");
     materialsVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "materials");
-    discussionsVisible = sessionController.hasCoursePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "discussions");
-    usersVisible = sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "users");
-    journalVisible = sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "journal");
+    discussionsVisible = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "discussions");
+    usersVisible = sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "users");
+    journalVisible = sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "journal");
   }
 
-  public Long getWorkspaceId() {
-    return getWorkspaceEntity().getId();
-  }
-
-  private WorkspaceEntity getWorkspaceEntity() {
-    String urlName = getWorkspaceUrlName();
-    if (StringUtils.isBlank(urlName)) {
+  private WorkspaceEntity resolveWorkspaceEntity(String workspaceUrlName) {
+    if (StringUtils.isBlank(workspaceUrlName)) {
       return null;
     }
 
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(workspaceUrlName);
     if (workspaceEntity == null) {
       return null;
     }
@@ -116,10 +130,6 @@ public class WorkspaceBackingBean {
       return null;
   }
 
-  public Boolean getMayManageMaterials() {
-    return mayManageMaterials;
-  }
-
   public boolean getHomeVisible() {
     return homeVisible;
   }
@@ -144,7 +154,7 @@ public class WorkspaceBackingBean {
     return journalVisible;
   }
 
-  private Boolean mayManageMaterials;
+  private Long workspaceEntityId;
   private String workspaceUrlName;
   private boolean homeVisible;
   private boolean guidesVisible;

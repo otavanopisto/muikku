@@ -56,8 +56,14 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   }
 
   @Override
+  @Deprecated
   protected boolean hasCoursePermissionImpl(String permission, WorkspaceEntity course) {
     return hasPermissionImpl(permission, course);
+  }
+  
+  @Override
+  public boolean hasWorkspacePermission(String permission, WorkspaceEntity workspaceEntity) {
+    return hasCoursePermission(permission, workspaceEntity);
   }
   
   @Override

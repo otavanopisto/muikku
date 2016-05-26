@@ -64,7 +64,7 @@ public class WorkspaceMaterialsManagementBackingBean extends AbstractWorkspaceBa
       return NavigationRules.NOT_FOUND;
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return NavigationRules.ACCESS_DENIED;
     }
 

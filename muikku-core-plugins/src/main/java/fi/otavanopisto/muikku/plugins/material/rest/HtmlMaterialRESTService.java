@@ -54,17 +54,17 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   private CoOpsApi coOpsApi;
   
   @Inject
-  private SessionController muikkuSessionController;
+  private SessionController sessionController;
   
   @Inject
   private EnvironmentUserController environmentUserController;
   
   private boolean isAuthorized() {
-      if (!muikkuSessionController.isLoggedIn()) {
+      if (!sessionController.isLoggedIn()) {
         return false;
       }
       
-      UserEntity userEntity = muikkuSessionController.getLoggedUserEntity();
+      UserEntity userEntity = sessionController.getLoggedUserEntity();
       
       EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
       

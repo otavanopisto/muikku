@@ -5,7 +5,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:ui="http://java.sun.com/jsf/facelets">
 
-  <f:view locale="#{muikkuSession.locale}">
+  <f:view locale="#{sessionBackingBean.locale}">
 
     <h:head>
       <title>#{i18n.text['title']}</title>
@@ -15,14 +15,7 @@
           var CONTEXTPATH = "#{request.contextPath}";
           var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
           var MUIKKU_LOGGED_USER = '#{sessionBackingBean.loggedUser}'||null;
-          var MUIKKU_LOGGEDIN = #{muikkuSession.loggedIn};
-          var MUIKKU_LOGGEDINROLES = {
-            teacher: #{sessionBackingBean.teacherLoggedIn},
-            manager: #{sessionBackingBean.managerLoggedIn},
-            studyProgrammeLeader: #{sessionBackingBean.studyProgrammeLeaderLoggedIn},
-            admin: #{sessionBackingBean.administratorLoggedIn},
-            student: #{sessionBackingBean.studentLoggedIn}
-          };
+          var MUIKKU_LOGGEDIN = #{sessionBackingBean.loggedIn};
       </script>
       
       <ui:fragment rendered="#{sessionBackingBean.bugsnagEnabled}">
@@ -31,7 +24,7 @@
       
       <script type="text/javascript" src="#{request.contextPath}/rest/meta/resources?format=js"></script>
       
-      <script type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
+      <script type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"></script>
       <h:outputScript name="scripts/gui/locales.js" target="head" />
   
       <!-- CSS to remove all default styles -->
