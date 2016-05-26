@@ -170,12 +170,14 @@ div.cke_reset_all {
                 }
               
               }
+              
             }
             
             .selection-title-container,
             .textfield-title-container,
             .memofield-title-container,
-            .connectfield-title-container {
+            .connectfield-title-container,
+            .sorter-title-container {
               position:relative;
               
               label {
@@ -193,9 +195,18 @@ div.cke_reset_all {
             
             }
             
+            .sorter-items-container .sorter-item-container {
+            
+              input[type="text"] {
+                margin-right:10px;
+              }
+              
+            }
+            
             .selection-options-container,
             .textfield-elements-container,
-            .connectfield-elements-container {
+            .connectfield-elements-container,
+            .sorter-items-container {
               max-height:300px;
               overflow-y:auto;
               overflow-x:hidden;
@@ -203,7 +214,8 @@ div.cke_reset_all {
             
             .selection-options-container .selection-option-container,
             .textfield-elements-container .textfield-element-container,
-            .memofield-elements-container .memofield-element-container {
+            .memofield-elements-container .memofield-element-container,
+            .sorter-items-container .sorter-item-container {
             
               input[type="text"] {
                 width:330px;

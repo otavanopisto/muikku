@@ -72,6 +72,11 @@
   font-size:16px;
   transition:height 0.2s ease-in-out;
   
+  &:hover {
+    background:#b1e8fe;
+    color:#000;
+  }
+  
   &.term-full-text,
   &.counterpart-full-text {
     height:auto;

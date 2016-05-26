@@ -593,6 +593,23 @@
 
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.sorter') {
+      var sorterField = $('<div>').muikkuSorterField({
+        fieldName: data.name,
+        materialId: data.materialId,
+        embedId: data.embedId,
+        meta: data.meta,
+        readonly: data.readOnlyFields||false
+      });
+      if (data.value) {
+        sorterField.muikkuField('answer', data.value);
+      }
+      $(object).replaceWith(sorterField);
+    }
+  });
+
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.organizer') {
       var meta = data.meta;
       var organizerField = $('<div>').addClass('muikku-organizer-field');
