@@ -279,8 +279,18 @@
         var content = this._contentsEditor.getData();
         var startDate = this.element.find('input[name="startDate"]').val();
         var endDate = this.element.find('input[name="endDate"]').val();
-        startDate = moment(startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
-        endDate = moment(endDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+        if (startDate) {
+          startDate = moment(startDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+        } else {
+          startDate = null;
+        }
+        
+        if (endDate) {
+          endDate = moment(endDate, "DD.MM.YYYY").format("YYYY-MM-DD");
+        } else {
+          endDate = null;
+        }
+        
 
         if (!caption || !caption.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.notitle'));
@@ -417,6 +427,8 @@
       
         if (this.options.workspaceEntityId != null) {
           options.workspaceEntityId = this.options.workspaceEntityId;
+        } else {
+          options.hideWorkspaceAnnouncements = true;
         }
       
         mApi().announcer.announcements.read(options).callback($.proxy(function(err, result) {

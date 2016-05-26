@@ -198,7 +198,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   public Response listAnnouncements(
       @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive,
       @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
-      @QueryParam("hideWorkspaceAnnouncements") @DefaultValue("true") boolean hideWorkspaceAnnouncements, // TODO false
+      @QueryParam("hideWorkspaceAnnouncements") @DefaultValue("false") boolean hideWorkspaceAnnouncements,
       @QueryParam("workspaceEntityId") Long workspaceEntityId
   ) {
     if (!onlyActive) {
@@ -213,7 +213,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       if (onlyActive) {
         if (onlyMine) {
           UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
-          announcements = announcementController.listActiveByTargetedUserEntity(currentUserEntity);
+          announcements = announcementController.listActiveEnvironmentAnnouncementsByTargetedUserEntity(currentUserEntity);
         } else {
           announcements = announcementController.listActiveEnvironmentAnnouncements();
         }
@@ -223,8 +223,16 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
     
     if (workspaceEntityId == null && !hideWorkspaceAnnouncements) {
-      // TODO: unimplemented
-      return Response.status(Status.NOT_IMPLEMENTED).build();
+      if (onlyActive) {
+        if (onlyMine) {
+          UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
+          announcements = announcementController.listActiveEnvironmentAndWorkspaceAnnouncementsByTargetedUserEntity(currentUserEntity);
+        } else {
+          announcements = announcementController.listActiveAnnouncements();
+        }
+      } else {
+        announcements = announcementController.listUnarchivedAnnouncements();
+      }
     }
 
     if (workspaceEntityId != null) {

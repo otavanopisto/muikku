@@ -2,23 +2,6 @@
 @import "_styles.scss";
 
 /* discussion (.di-*) */
-
-
-
-.di-no-messages {
-  min-height:400px;
-  padding-top:200px;
-  
-  h3 {
-    text-align:center;
-    color:#000;
-    font-size:24px;
-    text-transform:none;
-    font-weight:300;
-  }
-  
-}
-
 .di-browse-areas-container {
   float:left;
   
@@ -30,9 +13,7 @@
        padding:8px;
      }
   }
-  
-  
-  
+
 }
 .di-content-main { 
    .di-reply{
