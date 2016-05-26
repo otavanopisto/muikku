@@ -25,6 +25,16 @@ public class QueryFieldChangeListener {
     }
   }
 
+  public void onQuerySorterFieldUpdate(@Observes QueryFieldUpdateEvent event) {
+    if (event.getMaterialField().getType().equals("application/vnd.muikku.field.sorter")) {
+      QueryField queryField = event.getQueryField();
+      List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByQueryField(queryField);
+      for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {
+        workspaceMaterialFieldController.updateWorkspaceMaterialField(workspaceMaterialField, event.getMaterialField(), event.getRemoveAnswers());
+      }
+    }
+  }
+
   public void onQuerySelectFieldUpdate(@Observes QueryFieldUpdateEvent event) {
     if (event.getMaterialField().getType().equals("application/vnd.muikku.field.select")) {
       QueryField queryField = event.getQueryField();

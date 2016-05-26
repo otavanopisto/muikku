@@ -1293,7 +1293,7 @@
       
       this.element.addClass('evaluation-student-wrapper');
       this.element.append($('<div>').addClass('evaluation-student-picture'));
-      this.element.append($('<div>').addClass('evaluation-student-name').text(this._displayName).append($('<span>').text(this._studyProgrammeName)));
+      this.element.append($('<div>').addClass('evaluation-student-name-plate').append($('<span class="evaluation-student-name">').text(this._displayName)).append($('<span class="evaluation-student-studyprogramme">').text(this._studyProgrammeName)));
       this.element.prepend($('<div>').addClass('workspace-student-joined-date').text(formatDate(new Date(this.options.enrolmentTime))).attr("title", getLocaleText("plugin.evaluation.studentGrid.joined.label")));
       
       if (this.options.assessment) {

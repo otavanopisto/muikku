@@ -442,7 +442,7 @@ public class ForumRESTService extends PluginRESTService {
     ForumThread thread = forumController.getForumThread(threadId);
 
     if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEMESSAGES, thread)) {
-      forumController.deleteThread(thread);
+      forumController.archiveThread(thread);
       
       return Response.noContent().build();
     } else {
@@ -619,7 +619,7 @@ public class ForumRESTService extends PluginRESTService {
     ForumThreadReply reply = forumController.getForumThreadReply(replyId);
 
     if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEMESSAGES, reply.getForumArea())) {
-      forumController.deleteReply(reply);
+      forumController.archiveReply(reply);
       
       return Response.noContent().build();
     } else {
@@ -740,7 +740,7 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
     }
     
-    if (!sessionController.hasCoursePermission(ForumResourcePermissionCollection.FORUM_FINDWORKSPACE_USERSTATISTICS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_FINDWORKSPACE_USERSTATISTICS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     

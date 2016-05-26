@@ -58,11 +58,11 @@ public class CoOpsDocumentWebSocket {
 //      
 //  TODO: RequestScope is not available on the websockets, switch to ticket system
 //      
-//      if (!muikkuSessionController.isLoggedIn()) {
+//      if (!sessionController.isLoggedIn()) {
 //        client.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Permission denied"));
 //      }
 //      
-//      UserEntity userEntity = muikkuSessionController.getLoggedUserEntity();
+//      UserEntity userEntity = sessionController.getLoggedUserEntity();
 //      
 //      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
 //      
