@@ -2,7 +2,7 @@
     {#.}
       <div class="workspace-single-announcement lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full">
         <div class="workspace-announcement-title">{caption}</div>
-        <div class="workspace-announcement-date">15.5.</div>
+        <div class="workspace-announcement-date">{startDate|formatDate}</div>
       </div>
     {/.}
   {:else}
