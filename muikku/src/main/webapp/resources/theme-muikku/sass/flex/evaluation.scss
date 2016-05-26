@@ -534,7 +534,7 @@ body.evaluation {
         background-position:center center;
       }
       
-      .evaluation-student-name {
+      .evaluation-student-name-plate {
         cursor:pointer;
         width:100%;
         box-sizing:border-box;
@@ -548,20 +548,38 @@ body.evaluation {
         right:0;
         bottom:0;
         line-height:22px;
-        padding:2px;
         transition:background 0.3s ease-in-out;
+        font-weight:300;
+        
+        .evaluation-student-name {
+          white-space:nowrap;
+          overflow:hidden;
+          text-overflow:ellipsis;
+          font-size:16px;
+          display:block;
+          text-align:left;
+          padding:2px 4px 0 4px;
+        }
+        
+        .evaluation-student-studyprogramme {
+          white-space:nowrap;
+          overflow:hidden;
+          text-overflow:ellipsis;
+          font-size:12px;
+          display:block;
+          font-style:italic;
+          text-align:left;
+          padding:0 4px 2px 4px;
+        }
         
         &:hover {
           box-shadow:0 0 0 5px #c1e8ff;
         }
-        
-        > span {
-          font-size:12px;
-          display:block;
-        }
+
       }
     
     }
+    
   }
   
   .evaluation-assignments {
