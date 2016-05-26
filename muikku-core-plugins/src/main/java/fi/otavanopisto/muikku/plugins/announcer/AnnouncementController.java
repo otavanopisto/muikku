@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementWorkspaceDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
 public class AnnouncementController {
@@ -32,6 +33,9 @@ public class AnnouncementController {
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
   
   public Announcement create(
       UserEntity publisher,
@@ -146,6 +150,29 @@ public class AnnouncementController {
     });
     return result;
   }
+
+  public List<Announcement> listActiveByWorkspaceEntities(
+      List<WorkspaceEntity> workspaceEntities
+  ) {
+    List<Long> workspaceEntityIds = new ArrayList<>();
+    
+    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+      workspaceEntityIds.add(workspaceEntity.getId());
+    }
+    
+    Date currentDate = new Date();
+    List<Announcement> result = new ArrayList<>();
+    result.addAll(announcementDAO.listByArchivedAndDateAndWorkspaceEntityIds(
+        false,
+        currentDate,
+        workspaceEntityIds));
+    Collections.sort(result, new Comparator<Announcement>() {
+      public int compare(Announcement o1, Announcement o2) {
+        return o2.getStartDate().compareTo(o1.getStartDate());
+      }
+    });
+    return result;
+  }
   
   public List<Announcement> listActiveEnvironmentAnnouncementsByTargetedUserEntity(
       UserEntity targetedUserEntity
@@ -161,9 +188,11 @@ public class AnnouncementController {
   ) {
     List<UserGroupEntity> userGroupEntities = 
         userGroupEntityController.listUserGroupsByUserEntity(targetedUserEntity);
+    List<WorkspaceEntity> workspaceEntities =
+        workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(targetedUserEntity);
     List<Announcement> result = new ArrayList<>();
     result.addAll(listActiveByUserGroupEntities(userGroupEntities));
-    result.addAll(listActiveEnvironmentAnnouncementsByTargetedUserEntity(targetedUserEntity));
+    result.addAll(listActiveByWorkspaceEntities(workspaceEntities));
     Collections.sort(result, new Comparator<Announcement>() {
       public int compare(Announcement o1, Announcement o2) {
         return o2.getStartDate().compareTo(o1.getStartDate());

@@ -162,6 +162,35 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<Announcement> listByArchivedAndDateAndWorkspaceEntityIds(
+      boolean archived,
+      Date currentDate,
+      List<Long> workspaceEntityIds
+  ) {
+    currentDate = onlyDateFields(currentDate);
+    if (workspaceEntityIds.isEmpty()) {
+      return Collections.emptyList();
+    }
+    
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+    Root<AnnouncementWorkspace> root = criteria.from(AnnouncementWorkspace.class);
+    Join<AnnouncementWorkspace, Announcement> announcement = root.join(AnnouncementWorkspace_.announcement);
+    criteria.select(announcement);
+    criteria.where(
+        criteriaBuilder.and(
+          criteriaBuilder.lessThanOrEqualTo(announcement.get(Announcement_.startDate), currentDate),
+          criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), currentDate),
+          criteriaBuilder.equal(announcement.get(Announcement_.archived), archived),
+          criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), false),
+          root.get(AnnouncementWorkspace_.workspaceEntityId).in(workspaceEntityIds)));
+    criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   private Date onlyDateFields(Date currentDate) {
     Calendar cal = Calendar.getInstance();
     cal.setTime(currentDate);
