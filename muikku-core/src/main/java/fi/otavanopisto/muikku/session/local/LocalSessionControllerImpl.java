@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -33,6 +34,9 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   
   private static final long serialVersionUID = 4947154641883149837L;
   private static final String[] SUPPORTED_LOCALES = {"fi", "en"};
+  
+  @Inject
+  private Logger logger;
   
   @Inject
   private HttpServletRequest httpServletRequest;
@@ -95,8 +99,14 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
   
   @Override
+  @Deprecated
   public boolean hasCoursePermission(String permission, WorkspaceEntity course) {
     return hasCoursePermissionImpl(permission, course);
+  }
+  
+  @Override
+  public boolean hasWorkspacePermission(String permission, WorkspaceEntity workspaceEntity) {
+    return hasCoursePermission(permission, workspaceEntity);
   }
   
   /**
@@ -123,6 +133,10 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   @Override
   protected boolean hasPermissionImpl(String permission, ContextReference contextReference) {
     PermissionResolver permissionResolver = getPermissionResolver(permission);
+    if (permissionResolver == null) {
+      logger.severe(String.format("could not resolve permission resolver for permission %s", permission));
+      return false;
+    }
     
     if (isLoggedIn()) {
       if (!isRepresenting()) {
