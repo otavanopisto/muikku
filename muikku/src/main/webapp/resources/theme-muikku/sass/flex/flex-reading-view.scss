@@ -1,0 +1,104 @@
+body { 
+  
+  #readingView {
+
+    .context-wrapper {
+      padding:20px 20px 20px 20px;
+      @include flexbox();
+      flex-flow:row wrap;
+      justify-content:flex-start;
+      align-items:stretch;
+    
+      section {
+        flex:2 1;
+        padding:0 20px 0 0;
+        
+        article {
+          margin:20px 0;
+          
+          &:first-child {
+            margin:0 0 20px 0;
+          }
+        
+          header {
+            position:relative;
+            
+            h2 {
+              font-weight:300;
+              font-size:28px;
+              text-transform:none;
+              padding:0;
+              background:#fff;
+              display:block;
+              line-height:1.4em;
+              margin:0;
+            }
+            
+            .article-datetime {
+              font-size:16px;
+              font-weight:300;
+              background:#fff;
+              padding:5px 0 10px 0;
+              font-style:italic;
+              color:#666;
+              border-bottom:1px solid #eee;
+            }
+          
+          }
+          
+          .article-context {
+            padding:10px 5px;
+            line-height:1.9em;
+            font-weight:300;
+            font-size:16px;
+            
+            p {
+              margin:10px 0;
+              
+              &:first-child {
+                margin-top:0;
+              }
+              
+            }
+          
+          }
+          
+        }
+  
+      }
+      
+      nav.gc-navigation {
+        flex:1 0;
+        max-height:100%;
+        min-height:670px;
+        padding:0 0 0 10px;
+        
+        .gc-navigation-item {
+          margin:0 0 20px 0;
+          border-radius:5px;
+          
+          a.gc-navigation-title {
+            font-weight:300;
+            color:#000;
+            text-decoration:none;
+            font-size:16px;
+            display:block;
+            padding:4px 8px;
+          }
+          
+          .gc-navigation-date {
+            font-weight:300;
+            font-size:16px;
+            padding:4px 8px;
+          }
+        
+        }
+          
+      }
+
+    }
+    
+  }
+  
+}
+  
