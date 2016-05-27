@@ -71,6 +71,7 @@
         return true;
       },
       checkAnswer: function(showCorrectAnswers) {
+        $(this.element).find('.muikku-field-examples').remove();
         var result = {
           'correctAnswers': 0,
           'wrongAnswers': 0
@@ -84,27 +85,24 @@
           var itemElement = $(this.element).find('.muikku-sorter-item[data-item-id="' + userId + '"]')[0];
           if (correctId == userId) {
             result.correctAnswers++;
-            if (showCorrectAnswers) {
-              $(itemElement).addClass('muikku-field-correct-answer');
-            }
+            $(itemElement).addClass('muikku-field-correct-answer');
           }
           else {
             result.wrongAnswers++;
-            if (showCorrectAnswers) {
-              $(itemElement).addClass('muikku-field-incorrect-answer');
-            }
+            $(itemElement).addClass('muikku-field-incorrect-answer');
           }
         }
-        if (!showCorrectAnswers) {
-          if (result.wrongAnswers == 0) {
-            $(itemsContainer).addClass('muikku-field-correct-answer');
+        if (showCorrectAnswers) {
+          var exampleDetails = $('<span>').addClass('muikku-field-examples').attr('data-for-field', $(this.element).attr('name'));
+          exampleDetails.append( 
+            $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
+          );
+          var correctString = '';
+          for (var i = 0; i < correctItems.length; i++) {
+            correctString += i == 0 ? correctItems[i].name : ', ' + correctItems[i].name; 
           }
-          else if (result.correctAnswers == 0) {
-            $(itemsContainer).addClass('muikku-field-incorrect-answer');
-          }
-          else {
-            $(itemsContainer).addClass('muikku-field-semi-correct-answer');
-          }
+          exampleDetails.append($('<span>').addClass('muikku-field-example').text(correctString));
+          $(this.element).after(exampleDetails);
         }
         return result;
       },
