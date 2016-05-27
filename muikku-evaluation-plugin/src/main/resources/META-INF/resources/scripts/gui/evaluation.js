@@ -1314,7 +1314,7 @@
       }
 
       this.element.addClass('evaluation-student-loaded');
-      this.element.find(".evaluation-student-name").on("click", $.proxy(this._onClick, this));
+      this.element.find(".evaluation-student-name-plate").on("click", $.proxy(this._onClick, this));
     },
     
     displayName: function () {
