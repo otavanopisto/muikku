@@ -31,8 +31,19 @@
         if (err) {
           $(".notification-queue").notificationQueue('notification','error', err);
         } else {
+          var baseUrl = $('.announcementsBaseUrl').val();
+
+          for (var i=0; i<result.length; i++) {
+            result[i].link = baseUrl + "?announcementId=" + result[i].id;
+          }
+          
           renderDustTemplate('workspace/workspace_frontpage_announcements.dust', result, $.proxy(function (text) {
             var element = $(text);
+            var href = element.attr('data-href');
+            element.click(function () {
+              window.location.assign(href);
+            });
+
             $('.workspace-announcements-container').append(element);
             $('.workspace-announcements-container').perfectScrollbar({"suppressScrollY" : true});
           }, this));
