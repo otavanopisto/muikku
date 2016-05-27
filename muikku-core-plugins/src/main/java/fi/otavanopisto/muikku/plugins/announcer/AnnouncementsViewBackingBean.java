@@ -41,7 +41,8 @@ public class AnnouncementsViewBackingBean {
     if (loggedUserEntity == null) {
       activeAnnouncements = announcementController.listActiveEnvironmentAnnouncements();
     } else {
-      activeAnnouncements = announcementController.listActiveEnvironmentAnnouncementsByTargetedUserEntity(loggedUserEntity);
+      activeAnnouncements = announcementController
+          .listActiveEnvironmentAnnouncementsByTargetedUserEntity(loggedUserEntity);
     }
     
     return null;
