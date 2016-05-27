@@ -1,10 +1,12 @@
+@import "_vars.scss";
+@import "_styles.scss";
+
 body { 
   
   #readingView {
 
     .context-wrapper {
       padding:20px 20px 20px 20px;
-      @include flexbox();
       flex-flow:row wrap;
       justify-content:flex-start;
       align-items:stretch;
