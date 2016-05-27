@@ -215,12 +215,6 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER }) 
   public static final String LIST_MATERIAL_WORKSPACE_MATERIALS = "LIST_MATERIAL_WORKSPACE_MATERIALS";
   
-  /* RESOURCE */
-  
-  @Scope (PermissionScope.RESOURCE)
-  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
-  public static final String MANAGE_RESOURCERIGHTS = "MANAGE_RESOURCERIGHTS";
-  
   /* USERGROUPS */
   
   @Scope (PermissionScope.ENVIRONMENT)
