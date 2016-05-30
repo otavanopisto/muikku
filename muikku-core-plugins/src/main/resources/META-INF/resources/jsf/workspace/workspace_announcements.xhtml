@@ -24,11 +24,10 @@
     <link rel="stylesheet" type="text/css" href="/css/flex/flex-main-functionality.css"/>        
     <link rel="stylesheet" type="text/css" href="/css/flex/flex-reading-view.css"/>      
     <link rel="stylesheet" type="text/css" href="/css/flex/announcement-view.css"/>  
-    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-announcer.css"/>       
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-announcements.css"/>       
   </ui:define>
   <ui:define name="grid-content">
     <input type="hidden" id="workspaceEntityId" value="#{workspaceAnnouncerBackingBean.workspaceEntityId}" />
-    <main id="content" >   
       <ui:insert name="mf-content-area">
         <div id="readingView" class="mf-content-master">
           <div id="announcements">  
@@ -85,8 +84,6 @@
           </div>
         </div>  
       </ui:insert>
-    </main>
-
   </ui:define>
      
      
