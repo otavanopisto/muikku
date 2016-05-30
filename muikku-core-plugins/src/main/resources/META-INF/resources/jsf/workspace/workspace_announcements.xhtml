@@ -19,17 +19,75 @@
     <script defer="defer" type="text/javascript" src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
     <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/webshim/1.15.10/minified/polyfiller.js"/>
   </ui:define>
-
   <ui:define name="workspace-view-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/announcer.css"/>    
     <link rel="stylesheet" type="text/css" href="/css/flex/flex-main-functionality.css"/>        
+    <link rel="stylesheet" type="text/css" href="/css/flex/flex-reading-view.css"/>      
+    <link rel="stylesheet" type="text/css" href="/css/flex/announcement-view.css"/>  
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-announcer.css"/>       
   </ui:define>
-  
   <ui:define name="grid-content">
     <input type="hidden" id="workspaceEntityId" value="#{workspaceAnnouncerBackingBean.workspaceEntityId}" />
-    <main id="content" class="mf-content-master">
+    <main id="content" >   
+      <ui:insert name="mf-content-area">
+        <div id="readingView" class="mf-content-master">
+          <div id="announcements">  
+            <div class="context-wrapper flex-row">
+              <section class="section-for-articles lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">
+                  <article class="announcement-article">
+                    <header>
+                      <h2>
+                        <h:outputText value="#{workspaceAnnouncementsViewBackingBean.currentAnnouncement.caption}" />
+                      </h2>
+                      <div class="article-datetime">
+                        <h:outputText value="#{workspaceAnnouncementsViewBackingBean.currentAnnouncement.startDate}">
+                          <f:convertDateTime type="date" dateStyle="short" />
+                        </h:outputText>
+                      </div>
+                    </header>
+                    <div class="article-context">
+                      <h:outputText value="#{workspaceAnnouncementsViewBackingBean.currentAnnouncement.content}" escape="false" />
+                    </div>
+                  </article>          
+                <ui:fragment rendered="#{not empty workspaceAnnouncementsViewBackingBean.currentAnnouncement}">
+                  <article class="announcement-article">
+                    <header>
+                      <h2>
+                        <h:outputText value="#{workspaceAnnouncementsViewBackingBean.currentAnnouncement.caption}" />
+                      </h2>
+                      <div class="article-datetime">
+                        <h:outputText value="#{workspaceAnnouncementsViewBackingBean.currentAnnouncement.startDate}">
+                          <f:convertDateTime type="date" dateStyle="short" />
+                        </h:outputText>
+                      </div>
+                    </header>
+                    <div class="article-context">
+                      <h:outputText value="#{workspaceAnnouncementsViewBackingBean.currentAnnouncement.content}" escape="false" />
+                    </div>
+                  </article>
+                </ui:fragment>
+              </section>
+              <nav id="announcementContextNavigation" data-url-name="#{workspaceAnnouncementsViewBackingBean.workspaceUrlName}" class="gc-navigation lg-flex-cell-5 md-flex-cell-6 sm-flex-hide">
+                <ui:repeat value="#{workspaceAnnouncementsViewBackingBean.activeAnnouncements}" var="announcement">
+                  <div class="gc-navigation-item">
+                    <a class="gc-navigation-title" jsf:outcome="/jsf/workspace/workspace_announcements.jsf?workspaceUrlName=#{workspaceAnnouncementsViewBackingBean.workspaceUrlName}&amp;announcementId=#{announcement.id}">
+                      <h:outputText value="#{announcement.caption}" />
+                    </a>
+                    <div class="gc-navigation-date">
+                      <h:outputText value="#{announcement.startDate}">
+                        <f:convertDateTime type="date" dateStyle="short" />
+                      </h:outputText>
+                    </div>
+                  </div>
+                </ui:repeat>
+              </nav>    
+            </div>
+          </div>
+        </div>  
+      </ui:insert>
     </main>
+
   </ui:define>
+     
      
 </ui:composition>

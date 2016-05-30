@@ -3,6 +3,11 @@
   $(document).ready(function() {
     var workspaceEntityId = $('.workspaceEntityId').val();
     
+    $('.workspace-announcements-container').on('click', '.workspace-single-announcement', function(){
+      var href = $(this).attr('data-href');
+      window.location.assign(href);
+    });
+    
     $(document)
       .muikkuMaterialLoader({
         workspaceEntityId: workspaceEntityId,
@@ -39,11 +44,6 @@
           
           renderDustTemplate('workspace/workspace_frontpage_announcements.dust', result, $.proxy(function (text) {
             var element = $(text);
-            var href = element.attr('data-href');
-            element.click(function () {
-              window.location.assign(href);
-            });
-
             $('.workspace-announcements-container').append(element);
             $('.workspace-announcements-container').perfectScrollbar({"suppressScrollY" : true});
           }, this));
