@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.Robot;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -431,6 +432,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void waitForPresentAndVisible(String selector) {
     waitForPresent(selector);
+    waitForVisible(selector);
     assertVisible(selector);
   }
    
@@ -551,7 +553,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void click(String selector) {
     getWebDriver().findElement(By.cssSelector(selector)).click();
   }
-
+  
   protected void waitForClickable(final String selector) {
     new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
@@ -662,6 +664,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void hoverOverElement(String selector) {
+    waitForPresent(".gu-add-flag-widget-label");
     Actions action = new Actions(getWebDriver());
     action.moveToElement(findElementByCssSelector(selector)).perform();
   }
