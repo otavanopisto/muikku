@@ -14,7 +14,7 @@ body.evaluation {
   padding:0.01em; /* Prevent margin collapsing  */
   min-height:100%;
   line-height:1.7em;
-  font-size:18px;
+  font-size:16px;
   
   > .loading {
     background: #fff none repeat scroll 0 0;
@@ -147,7 +147,6 @@ body.evaluation {
       top:0;
       padding:5px 0;
       font-weight:300;
-      font-size:16px;
       
       .evaluation-filter {
         display:inline-block;
@@ -216,7 +215,6 @@ body.evaluation {
               padding:5px;
               font-family:'Open Sans', Arial, sans-serif;
               color:#000;
-              font-size:14px;
               font-weight:300;
               vertical-align:top;
               display:inline-block;
@@ -329,7 +327,6 @@ body.evaluation {
           display:inline-block;
           margin:0 0 0 15px;
           font-weight:300;
-          font-size:16px;
           cursor:pointer;
           text-shadow:0 0 10px #fff;
         }
@@ -544,7 +541,6 @@ body.evaluation {
         background:#3a86bd;
         color:#fff;
         border-radius:3px;
-        font-size:16px;
         white-space:normal;
         position:absolute;
         left:0;
@@ -558,7 +554,6 @@ body.evaluation {
           white-space:nowrap;
           overflow:hidden;
           text-overflow:ellipsis;
-          font-size:16px;
           display:block;
           text-align:left;
           padding:2px 4px 0 4px;
@@ -879,6 +874,7 @@ body.evaluation {
                       color:#000;
                       font-weight:300;
                       padding:0 0 0 5px;
+                      text-transform:none;
                       
                     }
                     
@@ -893,19 +889,19 @@ body.evaluation {
                     }
                     
                     h3 {
-                      font-size:22px;
+                      font-size:19px;
                     }
                     
                     h4 {
-                      font-size:20px;
+                      font-size:17px;
                     }
                     
                     h5 {
-                      font-size:18px;
+                      font-size:16px;
                     }
                     
                     h6 {
-                      font-size:16px;
+                      font-size:14px;
                     }
                     
                     p {
@@ -1048,19 +1044,19 @@ body.evaluation {
                 }
                 
                 h3 {
-                  font-size:22px;
+                  font-size:19px;
                 }
                 
                 h4 {
-                  font-size:20px;
+                  font-size:17px;
                 }
                 
                 h5 {
-                  font-size:18px;
+                  font-size:16px;
                 }
                 
                 h6 {
-                  font-size:16px;
+                  font-size:14px;
                 }
                 
                 p {
@@ -1364,7 +1360,6 @@ body.evaluation {
           text-transform:uppercase;
           padding:0 0 3px 0;
           font-weight:300;
-          font-size:16px;
         }
         
         textarea,
@@ -1454,7 +1449,6 @@ body.evaluation {
   .evaluation-evaluate-modal {
     background:#fff;
     font-family:'Open Sans', Arial, sans-serif;
-    font-size:16px;
     padding:0;
     border:none;
     z-index:9999;
