@@ -138,8 +138,13 @@
     },
     
     _create : function() {
+      $('<div>')
+        .addClass('page-content')
+        .appendTo(this.element);
+      
       var assignmentType = this.assignmentType();      
       if (assignmentType) {
+        // TODO muikku-save-page-wrapper > muikku-buttons-container?
         var buttonWrapper = $('<div>')
           .addClass('muikku-save-page-wrapper')
           .appendTo(this.element);
@@ -155,6 +160,7 @@
           .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'))
           .click($.proxy(this._onShowAnswersButtonClick, this));
         
+        // TODO this under element rather than muikku-save-page-wrapper?
         $("<div>")
           .addClass("correct-answers-count-container")
           .appendTo(buttonWrapper);
@@ -163,11 +169,24 @@
         
         this.element.on('fieldAnswerSaved', '.muikku-field', $.proxy(this._onFieldAnswerSaved, this));
       }
+      // TODO correct-answers-count-container always as own div after page-content
+    },
+    
+    content: function (content) {
+      if (content !== undefined) {
+        this.element.find('.page-content')
+          .empty();
+        
+        content.children()
+          .appendTo(this.element.find('.page-content'));
+      } else {
+        return this.element.find('.page-content');
+      }
     },
     
     _checkableExercise: function () {
       var assignmentType = this.assignmentType();
-      
+        
       if (assignmentType == 'EXERCISE') {
         var fields = this.element.find('.muikku-field');
         
@@ -210,7 +229,7 @@
     },
     
     assignmentType: function () {
-      return this.element.attr('data-workspace-material-assigment-type');
+      return this.element.attr('data-assignment-type');
     },
     
     correctAnswers: function() {
@@ -266,7 +285,7 @@
       fileField.attr('data-readonly', "" + stateOptions['fields-read-only']);
       
       if (stateOptions['check-answers']) {
-        this._checkExercises();
+        this.checkExercises();
       }
       
       
@@ -274,7 +293,7 @@
       if (tocItem) {
         switch ($(this.element).attr('data-workspace-material-state')) {
           case "SUBMITTED":
-            if ($(this.element).attr("data-workspace-material-assigment-type") == "EVALUATED") {
+            if ($(this.element).attr("data-assignment-type") == "EVALUATED") {
               $(tocItem).find('.assignment').append($('<span>')
                   .addClass('submitted')
                   .attr("title", getLocaleText('plugin.workspace.materials.assignmentDoneTooltip'))
@@ -392,7 +411,7 @@
       }
     },    
     
-    _checkExercises: function (requestAnswers) {
+    checkExercises: function (requestAnswers) {
       var correctAnswersDisplay = this.correctAnswers();
       var correctAnswersCountContainer = this.element.find('.correct-answers-count-container');
       correctAnswersCountContainer.empty();
@@ -503,7 +522,7 @@
     _onShowAnswersButtonClick: function (event) {
       var target = (event.target) ? event.target : event.srcElement;  
       if ($(target).hasClass("muikku-show-correct-answers-button")) {
-        this._checkExercises(true);  
+        this.checkExercises(true);  
         $(target)
           .removeClass("muikku-show-correct-answers-button")
           .addClass("muikku-hide-correct-answers-button")
@@ -513,7 +532,7 @@
           .addClass("muikku-show-correct-answers-button")
           .removeClass("muikku-hide-correct-answers-button")
           .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'));
-        this._checkExercises(false); 
+        this.checkExercises(false); 
       }
       
     },

@@ -43,7 +43,6 @@
         if (material.title && this.options.prependTitle) {
           parsed.append('<h2>' + material.title + '</h2>');
         }
-        
         if (material.html) {
           parsed.append(material.html);
         }
@@ -114,7 +113,8 @@
         if (this._getRenderMode('html') == 'dust') {
           material.html = parsed.html();
           renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material, hidden: pageElement.hasClass('item-hidden') }, $.proxy(function (text) {
-            $(pageElement).append(text);
+            $(pageElement).empty().append(text);
+
             $(document).trigger('afterHtmlMaterialRender', {
               pageElement: pageElement,
               parentIds: parentIds,
@@ -127,7 +127,8 @@
           }, this));
         }
         else {
-          $(pageElement).append(parsed);
+          $(pageElement).muikkuMaterialPage('content', parsed);
+          
           $(document).trigger('afterHtmlMaterialRender', {
             pageElement: pageElement,
             parentIds: parentIds,
@@ -150,6 +151,9 @@
       var materialTitle = $(page).attr('data-material-title');
       switch (materialType) {
         case 'html':
+          $(page).muikkuMaterialPage({
+            workspaceEntityId: this.options.workspaceEntityId
+          });
           this._loadHtmlMaterial($(page), fieldAnswers);
         break;
         case 'folder':
@@ -237,9 +241,6 @@
             // actual loading of pages
             $(pageElements).each($.proxy(function (index, page) {
               this.loadMaterial(page, fieldAnswers);
-              $(page).muikkuMaterialPage({
-                workspaceEntityId: this.options.workspaceEntityId
-              });
             }, this));
           }       
         }, this));
