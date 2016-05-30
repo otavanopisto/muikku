@@ -6,6 +6,7 @@
   template="/WEB-INF/templates/flex-main-workspace.xhtml"> 
 
   <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lodash/4.12.0/lodash.min.js"></script>
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
@@ -22,6 +23,7 @@
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-file-field-component.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-connect-field-component.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-rich-memo-field-component.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-sorter-component.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-image-details.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-word-definition.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace.js"/>  

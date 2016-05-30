@@ -35,6 +35,7 @@
         entities: false,
         entities_latin: false,
         entities_greek: false,
+        mathJaxLib: '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML',
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
@@ -42,13 +43,17 @@
           { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
           { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
           { name: 'styles', items: [ 'Format' ] },
+          { name: 'insert', items : [ 'Muikku-mathjax' ] },
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
         ],
         extraPlugins: {
           'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
           'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
-          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js'
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js',
+          'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.8/',
+          'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.8/',
+          'muikku-mathjax': CONTEXTPATH + '/scripts/ckplugins/muikku-mathjax/'
         }
       }
     },
@@ -418,6 +423,7 @@
         entities: false,
         entities_latin: false,
         entities_greek: false,
+        mathJaxLib: '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML',
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
@@ -425,13 +431,17 @@
           { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
           { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
           { name: 'styles', items: [ 'Format' ] },
+          { name: 'insert', items : [ 'Muikku-mathjax' ] },
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
         ],
         extraPlugins: {
           'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
           'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
-          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js'
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js',
+          'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.8/',
+          'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.8/',
+          'muikku-mathjax': CONTEXTPATH + '/scripts/ckplugins/muikku-mathjax/'
         }
       }
     },
@@ -1304,7 +1314,7 @@
       }
 
       this.element.addClass('evaluation-student-loaded');
-      this.element.find(".evaluation-student-name").on("click", $.proxy(this._onClick, this));
+      this.element.find(".evaluation-student-name-plate").on("click", $.proxy(this._onClick, this));
     },
     
     displayName: function () {
