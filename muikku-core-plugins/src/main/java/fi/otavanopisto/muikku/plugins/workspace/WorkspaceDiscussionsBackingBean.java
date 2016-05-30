@@ -64,7 +64,7 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
 
-    if (!sessionController.hasCoursePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity)) {
       return NavigationRules.ACCESS_DENIED;
     }
 
@@ -75,8 +75,8 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
-    for (WorkspaceForumArea forumArea : forumController.listCourseForums(workspaceEntity)) {
-      areaPermissions.put(forumArea.getId(), new AreaPermission(sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEMESSAGES, forumArea)));
+    for (WorkspaceForumArea forumArea : forumController.listWorkspaceForumAreas(workspaceEntity)) {
+      areaPermissions.put(forumArea.getId(), new AreaPermission(sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES, workspaceEntity)));
     }
     
     try {

@@ -56,7 +56,6 @@ public class SystemForumRESTService extends PluginRESTService {
         if (resourceRightsIds != null) {
           ResourceRights resourceRights = resourceRightsController.findResourceRightsById(resourceRightsIds);
           resourceRightsController.deleteByResourceRights(resourceRights);
-          forumController.createDefaultForumPermissions(forumArea, resourceRights);
         }
         else {
           return Response.status(Status.NOT_FOUND).entity(String.format("Forum area %d has no rights", forumAreaId)).build();
