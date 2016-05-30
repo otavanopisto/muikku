@@ -3,6 +3,7 @@
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 @import "_jquery.datepicker.scss";
+@import "_draft.scss";
 
 body.evaluation {
   background:none;
@@ -1640,71 +1641,6 @@ body.evaluation {
       
     }
     
-  }
-  
-  .cke_notification {
-  
-  } 
-  
-  .cke_notification_info {
-  
-  }
-  
-  p.cke_notification_message {
-  
-  
-    div.draft-restore {
-      font-family:"Open Sans", Arial, sans-serif;
-      padding:5px 0;
-    
-      span.draft-label {
-        text-transform:uppercase;
-        font-size:14px;
-        font-weight:400;
-        display:block;
-        margin:0 0 5px 0;
-      }
-      
-      span.draft-text {
-        font-size:14px;
-        font-weight:300;
-      }
-      
-      a {
-        display:inline-block;
-        padding:0 5px;
-        color:#fff;
-        font-weight:400;
-      }
-    
-    }
-    
-    div.draft-cancel {
-      font-family:"Open Sans", Arial, sans-serif;
-      padding:5px 0;
-    
-      span.draft-label {
-        text-transform:uppercase;
-        font-size:14px;
-        font-weight:400;
-        display:block;
-        margin:0 0 5px 0;
-      }
-      
-      span.draft-text {
-        font-size:14px;
-        font-weight:300;
-      }
-      
-      a {
-        display:inline-block;
-        padding:0 5px;
-        color:#fff;
-        font-weight:400;
-      }
-    
-    }
-  
   }
   
 }
