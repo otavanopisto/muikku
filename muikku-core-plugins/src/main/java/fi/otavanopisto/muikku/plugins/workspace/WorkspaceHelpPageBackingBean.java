@@ -60,6 +60,7 @@ public class WorkspaceHelpPageBackingBean extends AbstractWorkspaceBackingBean {
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
     }
+    
     workspaceEntityId = workspaceEntity.getId();
     
     try {

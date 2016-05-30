@@ -548,6 +548,7 @@ strong, b {
 table {
   margin:initial;
   padding:initial;
+  font-size:14px;
 }
 
 table[cellspacing] {
@@ -612,6 +613,10 @@ sub {
 sup {
   vertical-align:super;
   font-size:70%;
+}
+
+.clear {
+  clear:both;
 }
 
 .muikku-save-page-wrapper {
@@ -801,6 +806,63 @@ sup {
         box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
       }
 
+    }
+    
+  }
+  
+  /* For sorterfields checks */
+  div.muikku-sorter-field {
+    
+    .muikku-sorter-items-container.muikku-field-correct-answer {
+      box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
+      border:3px solid #00ff2a;
+      @include rounded(3px);
+      
+      &:hover {
+        box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
+        border:3px solid #00ff2a;
+      }
+      
+    }
+    
+    .muikku-sorter-items-container.muikku-field-semi-correct-answer {
+      box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
+      border:3px solid #dab33d;
+      @include rounded(3px);
+      
+      &:hover {
+        box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
+        border:3px solid #dab33d;
+      }
+      
+    }
+    
+    .muikku-sorter-items-container.muikku-field-incorrect-answer {
+      border:3px solid #f64e4e;
+      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
+      @include rounded(3px);
+      
+      &:hover {
+        border:3px solid #f64e4e;
+        box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
+      }
+
+    }
+    
+    .muikku-sorter-items-container {
+    
+      .muikku-sorter-item {
+      
+        &.muikku-field-correct-answer {
+          background:#55fc70;
+        }
+        
+        &.muikku-field-incorrect-answer {
+          background:#f64e4e;
+        }
+      
+      }
+    
     }
     
   }

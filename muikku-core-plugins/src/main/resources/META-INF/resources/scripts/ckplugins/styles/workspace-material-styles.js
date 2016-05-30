@@ -16,6 +16,7 @@
 CKEDITOR.stylesSet.add( 'workspace-material-styles', [
   /* Block Styles */
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.genericBox"), element: 'div', attributes: { 'class': 'material-basicbox material-styles-block' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.grammarBox"), element: 'div', attributes: { 'class': 'material-grammarbox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.thinkingBox"), element: 'div', attributes: { 'class': 'material-thinkingbox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.objectiveBox"), element: 'div', attributes: { 'class': 'material-objectivebox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.informationBox"), element: 'div', attributes: { 'class': 'material-infobox material-styles-block' } },

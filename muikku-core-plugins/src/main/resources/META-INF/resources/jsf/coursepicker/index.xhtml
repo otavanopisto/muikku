@@ -7,7 +7,7 @@
   <ui:param name="activeTrail" value="coursepicker"/>
   
   <ui:define name="scripts">
-    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
@@ -43,11 +43,11 @@
                 <li data-value="all">
                   <span class="mf-dropdown-item">#{i18n.text['plugin.coursepicker.allcourses']}</span>
                 </li>
-                <ui:fragment rendered="#{muikkuSession.loggedIn}">
+                <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
                   <li data-value="my">
                     <span data-id="my" class="mf-dropdown-item">#{i18n.text['plugin.coursepicker.owncourses']}</span>
                   </li>
-                  <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}">
+                  <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('COURSE_PICKER_LIST_TEACHER_COURSES')}">
                     <li data-value="te">
                       <span class="mf-dropdown-item">#{i18n.text['plugin.coursepicker.teachercourses']}</span>
                     </li>

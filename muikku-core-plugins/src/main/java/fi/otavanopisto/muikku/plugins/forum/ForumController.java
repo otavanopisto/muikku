@@ -217,13 +217,27 @@ public class ForumController {
     return forumThreadDAO.create(forumArea, title, clean(message), sessionController.getLoggedUserEntity(), sticky, locked);
   }
 
-  @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
-  public void deleteThread(@PermitContext ForumThread thread) {
+  public void archiveThread(ForumThread thread) {
     List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
     for (ForumThreadReply reply : replies) {
       forumThreadReplyDAO.updateArchived(reply, true);
     }
+    
     forumThreadDAO.updateArchived(thread, true);
+  }
+  
+  public void deleteThread(ForumThread thread) {
+    List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
+    
+    for (ForumThreadReply reply : replies) {
+      forumThreadReplyDAO.updateParentReply(reply, null);
+    }  
+    
+  	for (ForumThreadReply reply : replies) {
+  	  forumThreadReplyDAO.delete(reply);
+  	}
+	
+  	forumThreadDAO.delete(thread);
   }
   
   @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
@@ -250,9 +264,12 @@ public class ForumController {
     }
   }
 
-  @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
-  public void deleteReply(@PermitContext ForumThreadReply reply) {
+  public void archiveReply(ForumThreadReply reply) {
     forumThreadReplyDAO.updateArchived(reply, true);
+  }
+  
+  public void deleteReply(ForumThreadReply reply) {
+    forumThreadReplyDAO.delete(reply);
   }
   
   public List<EnvironmentForumArea> listEnvironmentForums() {

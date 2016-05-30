@@ -1,0 +1,34 @@
+.muikku-sorter-field {
+  
+}
+
+.muikku-sorter-items-container {
+  
+  .muikku-sorter-item {
+    border-radius:3px;
+    background:#e1f7fc;
+    box-sizing:border-box;
+    font-size:16px;
+    margin:5px 0;
+    padding:6px 8px;
+    position:relative;
+    line-height:1;
+  
+    &.ui-sortable-handle {
+      cursor:move;
+    }
+    
+    &:hover {
+      background:#b1e8fe;
+      color:#000;
+    }
+    
+    &.ui-sortable-helper {
+      z-index:99;
+      background:#3dc7ff; 
+      color:#fff;
+    }
+  
+  }
+  
+}

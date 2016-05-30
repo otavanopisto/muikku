@@ -853,7 +853,10 @@
     },
     
     _onReplyClick: function (event) {
-      var messageId = $('.cm-message').attr('data-id');
+      var messageId = $(event.target)
+        .closest('.cm-message')
+        .attr('data-id');
+      
       this.element.closest('.communicator') 
         .communicator('newMessageDialog', {
           replyThreadId: this._threadId, 

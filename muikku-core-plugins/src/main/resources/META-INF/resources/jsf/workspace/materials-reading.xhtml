@@ -19,7 +19,7 @@
           <m:widgetSpace name="workspaces.materials.reading.dock" keepEmpty="true" sizing="MINIMIZE" styleClass="">
             <m:widget name="workspaces-materials-full-screen-toc" size="1" />
             <m:widget name="workspaces-materials-full-screen-goback" size="1" />
-            <m:widget name="workspaces-materials-full-screen-manage-materials" size="1" rendered="#{workspaceBackingBean.mayManageMaterials}"/>
+            <m:widget name="workspaces-materials-full-screen-manage-materials" size="1" rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_MATERIALS')}"/>
           </m:widgetSpace>
         </m:widgetSpaceSet>
       </nav>

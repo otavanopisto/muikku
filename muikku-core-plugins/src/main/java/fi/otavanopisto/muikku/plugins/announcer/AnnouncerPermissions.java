@@ -68,7 +68,7 @@ public class AnnouncerPermissions extends AbstractMuikkuPermissionCollection imp
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   @DefaultWorkspacePermissionRoles( {WorkspaceRoleArchetype.TEACHER } )
   public static final String WORKSPACE_ANNOUNCER_TOOL = "WORKSPACE_ANNOUNCER_TOOL";
-  
+  	
   @Override
   public List<String> listPermissions() {
     return listPermissions(AnnouncerPermissions.class);
