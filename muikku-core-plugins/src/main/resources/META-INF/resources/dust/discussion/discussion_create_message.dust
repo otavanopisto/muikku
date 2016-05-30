@@ -32,7 +32,7 @@
         </div>
       
        <div class="mf-toolbar flex-row">
-         <input type="submit" name="send" value='{#localize key="plugin.discussion.createmessage.send"/}' {?.}{:else}disabled{/.}/>
+         <input type="submit" name="send" value='{#localize key="plugin.discussion.createmessage.send"/}' disabled="disabled"/>
          <input type="submit" name="cancel" value='{#localize key="plugin.discussion.createmessage.cancel"/}'/>
       </div>   
     </form>

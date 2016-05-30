@@ -1,4 +1,4 @@
-<div class="mf-subitem {?isReply}di-reply-reply{/isReply} di-message di-reply open lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top" {?parentReplyId}data-parent-id="{parentReplyId}"{/parentReplyId}id="{id}">
+<div class="mf-subitem {?isReply}di-reply-reply{/isReply} di-message di-reply open lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top" {?parentReplyId}data-parent-id="{parentReplyId}"{/parentReplyId} data-id="{id}">
     <div class="di-message-topic mf-item-topic flex-row">    
       <div class="di-message-meta lg-flex-cell-13 md-flex-cell-13 sm-flex-cell-13">
         <input type="hidden" name="mf-person-id" value="{sender}"/>
@@ -16,10 +16,7 @@
           </div> 
         </div>
       </div>        
-      <div class="lg-flex-cell-3 md-flex-cell-3 sm-flex-cell-3">
-        {#mayRemoveThread}
-          <a class="di-remove-thread-link">{#localize key="plugin.discussion.removeThread"/}</a>
-        {/mayRemoveThread}          
+      <div class="lg-flex-cell-3 md-flex-cell-3 sm-flex-cell-3">         
       </div>  
     </div>
     <div class="flex-row">
@@ -51,8 +48,6 @@
         </div>
       </div>
     </div>   
-  <input type="hidden" name="areaId" value="{forumAreaId}"/>
-  <input type="hidden" name="threadId" value="{threadId}"/>
 </div>  
 
 

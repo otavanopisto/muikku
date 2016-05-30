@@ -6,6 +6,6 @@
      {/mayRemoveThread}
   </div>
   {#.}
-      {>"discussion/discussion_item_open.dust"/}  
+    {>"discussion/discussion_item_open.dust"/}  
   {/.}
 </div>
