@@ -149,7 +149,7 @@
 .cm-messages-container {
 
   &.loading {
-    padding-bottom: 20px;
+    padding:20px;
   
     &:after {
       @include generic-loader(50px);
