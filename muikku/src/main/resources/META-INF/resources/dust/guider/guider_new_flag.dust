@@ -1,0 +1,18 @@
+<div class="guider-add-flag-dialog" title="{#localize key="plugin.guider.flags.newFlagDialog.title"/}" data-button-create="{#localize key="plugin.guider.flags.newFlagDialog.create"/}" data-button-cancel="{#localize key="plugin.guider.flags.newFlagDialog.cancel"/}">
+  
+  <div>
+    <label for="guider-add-flag-dialog-color">{#localize key="plugin.guider.flags.newFlagDialog.color"/}</label>
+    <input type="color" name="color" id="guider-add-flag-dialog-color"/>
+  </div>
+  
+  <div>
+    <label for="guider-add-flag-dialog-name">{#localize key="plugin.guider.flags.newFlagDialog.name"/}</label>
+    <input type="text" name="name" id="guider-add-flag-dialog-name"/>
+  </div>
+
+  <div>
+    <label id="guider-add-flag-dialog-description">{#localize key="plugin.guider.flags.newFlagDialog.description"/}</label>
+    <textarea name="description" id="guider-add-flag-dialog-description"></textarea>
+  </div>
+  
+</div>
