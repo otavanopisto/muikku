@@ -10,19 +10,16 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.rewrite.annotation.Join;
-import org.ocpsoft.rewrite.annotation.Matches;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceBackingBean;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -44,9 +41,6 @@ public class WorkspaceAnnouncerBackingBean {
 
   @Inject
   private WorkspaceController workspaceController;
-
-  @Inject
-  private WorkspaceEntityController workspaceEntityController;
   
   @Inject
   private NavigationController navigationController;
@@ -73,13 +67,13 @@ public class WorkspaceAnnouncerBackingBean {
     }
 
     if (!workspaceEntity.getPublished()) {
-      if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
         return NavigationRules.NOT_FOUND;
       }
     }
 
     if (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE) {
-      if (!sessionController.hasCoursePermission(AnnouncerPermissions.WORKSPACE_ANNOUNCER_TOOL, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(AnnouncerPermissions.WORKSPACE_ANNOUNCER_TOOL, workspaceEntity)) {
         if (!sessionController.isLoggedIn()) {
           return navigationController.requireLogin();
         } else {

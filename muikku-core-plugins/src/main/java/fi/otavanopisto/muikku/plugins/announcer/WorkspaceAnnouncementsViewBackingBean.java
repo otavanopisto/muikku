@@ -76,13 +76,13 @@ public class WorkspaceAnnouncementsViewBackingBean {
     }
 
     if (!workspaceEntity.getPublished()) {
-      if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
         return NavigationRules.NOT_FOUND;
       }
     }
 
     if (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE) {
-      if (!sessionController.hasCoursePermission(AnnouncerPermissions.LIST_WORKSPACE_ANNOUNCEMENTS, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(AnnouncerPermissions.LIST_WORKSPACE_ANNOUNCEMENTS, workspaceEntity)) {
         if (!sessionController.isLoggedIn()) {
           return navigationController.requireLogin();
         } else {

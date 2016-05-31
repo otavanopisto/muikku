@@ -84,7 +84,7 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceEntityId").build();
       }
 
-      if (!sessionController.hasCoursePermission(AnnouncerPermissions.CREATE_WORKSPACE_ANNOUNCEMENT, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(AnnouncerPermissions.CREATE_WORKSPACE_ANNOUNCEMENT, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create workspace announcement").build();
       }
     }
@@ -139,7 +139,7 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceEntityId").build();
       }
 
-      if (!sessionController.hasCoursePermission(AnnouncerPermissions.UPDATE_WORKSPACE_ANNOUNCEMENT, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(AnnouncerPermissions.UPDATE_WORKSPACE_ANNOUNCEMENT, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update workspace announcement").build();
       }
     }
@@ -241,7 +241,7 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity("Workspace entity with given ID not found").build();
       }
 
-      if (!sessionController.hasCoursePermission(AnnouncerPermissions.LIST_WORKSPACE_ANNOUNCEMENTS, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(AnnouncerPermissions.LIST_WORKSPACE_ANNOUNCEMENTS, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to list workspace announcements").build();
       }
       
@@ -341,7 +341,7 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceEntityId").build();
       }
 
-      if (!sessionController.hasCoursePermission(AnnouncerPermissions.DELETE_WORKSPACE_ANNOUNCEMENT, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(AnnouncerPermissions.DELETE_WORKSPACE_ANNOUNCEMENT, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update workspace announcement").build();
       }
     }
