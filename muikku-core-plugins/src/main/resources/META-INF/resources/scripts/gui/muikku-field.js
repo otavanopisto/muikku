@@ -160,16 +160,10 @@
           .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'))
           .click($.proxy(this._onShowAnswersButtonClick, this));
         
-        // TODO this under element rather than muikku-save-page-wrapper?
-        $("<div>")
-          .addClass("correct-answers-count-container")
-          .appendTo(buttonWrapper);
-
         this._applyState(assignmentType, this.workspaceMaterialState());
         
         this.element.on('fieldAnswerSaved', '.muikku-field', $.proxy(this._onFieldAnswerSaved, this));
       }
-      // TODO correct-answers-count-container always as own div after page-content
     },
     
     content: function (content) {
@@ -287,7 +281,6 @@
       if (stateOptions['check-answers']) {
         this.checkExercises();
       }
-      
       
       var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(this.element).attr('data-workspace-material-id') + '"]');
       if (tocItem) {
@@ -412,8 +405,15 @@
     },    
     
     checkExercises: function (requestAnswers) {
+      // TODO override correctAnswersDisplay to always (if lacks data-correct-answers, defaults to ALWAYS tho) 
       var correctAnswersDisplay = this.correctAnswers();
+
       var correctAnswersCountContainer = this.element.find('.correct-answers-count-container');
+      if (correctAnswersCountContainer.length == 0) {
+        correctAnswersCountContainer = $("<div>")
+          .addClass("correct-answers-count-container")
+          .appendTo(this.element);
+      }
       correctAnswersCountContainer.empty();
       
       var fields = this.element.find('.muikku-field');
@@ -424,7 +424,6 @@
       this.element.find('.muikku-field-correct-answer').removeClass('muikku-field-correct-answer');
       this.element.find('.muikku-field-incorrect-answer').removeClass('muikku-field-incorrect-answer');
       this.element.find('.muikku-field-semi-correct-answer').removeClass('muikku-field-semi-correct-answer');
-      this.element.find('.correct-answers-count-container').empty();
 
       $(fields).each(function (index, field) {
         $(field).find(".muikku-field-correct-answer-override").removeClass("muikku-field-correct-answer-override");
@@ -493,12 +492,12 @@
       });
       
       if ((correctAnswerCount + wrongAnswerCount) > 0) {
-        correctAnswersCountContainer.append(
+        this.element.find('.correct-answers-count-container').append(
           $('<span>')
             .addClass('correct-answers-count-label')
             .text(getLocaleText('plugin.workspace.materialsLoader.correctAnswersCountLabel'))
         );
-        correctAnswersCountContainer.append(
+        this.element.find('.correct-answers-count-container').append(
             $('<span>')
               .addClass('correct-answers-count-data')
               .text(correctAnswerCount + ' / ' + (correctAnswerCount + wrongAnswerCount))
