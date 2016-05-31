@@ -404,7 +404,6 @@
     },    
     
     checkExercises: function (requestAnswers) {
-      // TODO override correctAnswersDisplay to always (if lacks data-correct-answers, defaults to ALWAYS tho) 
       var correctAnswersDisplay = this.correctAnswers();
 
       var correctAnswersCountContainer = this.element.find('.correct-answers-count-container');
