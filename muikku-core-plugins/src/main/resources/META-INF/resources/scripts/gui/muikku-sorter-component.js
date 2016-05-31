@@ -48,7 +48,7 @@
       setReadonly: function(readonly) {
         var itemsContainer = this.element.find('.muikku-sorter-items-container');
         if (readonly) {
-          $(itemsContainer).sortable("destroy"); //call widget-function destroy
+          $(itemsContainer).sortable("destroy");
         } else {
           $(itemsContainer).sortable({
             update: $.proxy(function (event, ui) {
