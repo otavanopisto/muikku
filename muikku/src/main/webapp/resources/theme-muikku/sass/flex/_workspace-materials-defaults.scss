@@ -52,6 +52,7 @@
 
 }
 
+
 /* Input field and textarea overrides */
 input[type="text"] {
   width:auto;
@@ -617,32 +618,12 @@ sup {
   clear:both;
 }
 
+/* Material's Assignment Submit Buttons */
 .muikku-save-page-wrapper {
   text-align:center;
   margin:20px -15px 15px -15px;
   clear:both;
-}
 
-.workspace-materials-view-page {
-
-  .correct-answers-count-container {
-    display:block;
-    margin:5px;
-    
-    .correct-answers-count-label {
-      padding:0px 5px;
-      display:inline-block;
-    }
-    
-    .correct-answers-count-data {
-      padding:0px 5px;
-      display:inline-block;
-      font-size:1.4em;
-    }
-    
-  }
-
-  /* Material's Assignment Submit Buttons */
   button {
     font-size:14px;
     color:#fff;
@@ -701,244 +682,9 @@ sup {
     
   }
 
-  /* For textfields/memofields/selections checks */
-  input[type="text"].muikku-field-correct-answer,
-  textarea.muikku-field-correct-answer,
-  select.muikku-field-correct-answer {
-    box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
-    border:3px solid #00ff2a;
-    @include rounded(3px);
-    
-    &:hover {
-      box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
-      border:3px solid #00ff2a;
-    }
-    
-  }
-  
-  input[type="text"].muikku-field-incorrect-answer,
-  textarea.muikku-field-incorrect-answer,
-  select.muikku-field-incorrect-answer {
-    border:3px solid #f64e4e;
-    box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-    @include rounded(3px);
-    
-    &:hover {
-      border:3px solid #f64e4e;
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-    }
-    
-  }
+}
 
-  /* For connectfields checks */
-  div.muikku-connect-field.muikku-field-correct-answer {
-    box-shadow:none;
-    border:none;
-    
-    .muikku-connect-field-counterpart.muikku-connect-field-correct-answer, 
-    .muikku-connect-field-term.muikku-connect-field-correct-answer {
-      background:#55fc70;
-    }
-    
-  }
-  
-  div.muikku-connect-field.muikku-field-incorrect-answer {
-    box-shadow:none;
-    border:none;
-    
-    .muikku-connect-field-counterpart.muikku-connect-field-wrong-answer, 
-    .muikku-connect-field-term.muikku-connect-field-wrong-answer {
-      background:#f64e4e;
-      
-      &.muikku-connect-field-term-selected {
-        background:#3dc7ff;
-        color:#fff;
-        font-weight:400;
-      }
-      
-    }
-    
-    /* Connect field's correct answer's styling is required here as we mark 
-    wrapping element to be incorrect when checking exercise */
-    .muikku-connect-field-counterpart.muikku-connect-field-correct-answer, 
-    .muikku-connect-field-term.muikku-connect-field-correct-answer {
-      background:#55fc70;
-    }
-    
-  }
-  
-  /* For organizerfields checks */
-  div.muikku-organizer-field {
-    
-    .muikku-category.muikku-field-correct-answer {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
-      border:3px solid #00ff2a;
-      @include rounded(3px);
-      
-      &:hover {
-        box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
-        border:3px solid #00ff2a;
-      }
-      
-    }
-    
-    .muikku-category.muikku-field-semi-correct-answer {
-      box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
-      border:3px solid #dab33d;
-      @include rounded(3px);
-      
-      &:hover {
-        box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
-        border:3px solid #dab33d;
-      }
-      
-    }
-    
-    .muikku-category.muikku-field-incorrect-answer {
-      border:3px solid #f64e4e;
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-      @include rounded(3px);
-      
-      &:hover {
-        border:3px solid #f64e4e;
-        box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-      }
-
-    }
-    
-  }
-  
-  /* For sorterfields checks */
-  div.muikku-sorter-field {
-    
-    .muikku-sorter-items-container.muikku-field-correct-answer {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
-      border:3px solid #00ff2a;
-      @include rounded(3px);
-      
-      &:hover {
-        box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
-        border:3px solid #00ff2a;
-      }
-      
-    }
-    
-    .muikku-sorter-items-container.muikku-field-semi-correct-answer {
-      box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
-      border:3px solid #dab33d;
-      @include rounded(3px);
-      
-      &:hover {
-        box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
-        border:3px solid #dab33d;
-      }
-      
-    }
-    
-    .muikku-sorter-items-container.muikku-field-incorrect-answer {
-      border:3px solid #f64e4e;
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-      @include rounded(3px);
-      
-      &:hover {
-        border:3px solid #f64e4e;
-        box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-      }
-
-    }
-    
-    .muikku-sorter-items-container {
-    
-      .muikku-sorter-item {
-      
-        &.muikku-field-correct-answer {
-          background:#55fc70;
-        }
-        
-        &.muikku-field-incorrect-answer {
-          background:#f64e4e;
-        }
-      
-      }
-    
-    }
-    
-  }
-  
-  /* For checkboxes/radiobuttons checks */
-  span.muikku-field-correct-answer {
-    box-shadow:none;
-    border:none;
-    
-    input[type="checkbox"],
-    input[type="radio"] {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.9);
-    }
-    
-    &:hover {
-      box-shadow:none;
-      border:none;  
-    }
-    
-  }
-  
-  span.muikku-field-incorrect-answer {
-    box-shadow:none;
-    border:none;
-    
-    input[type="checkbox"],
-    input[type="radio"] {
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.7);
-    }
-    
-    &:hover {
-      box-shadow:none;
-      border:none;  
-    }
-    
-    input[type="checkbox"].muikku-field-correct-answer-override,
-    input[type="radio"].muikku-field-correct-answer-override {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.9);
-      border:3px solid #00ff2a;
-      @include rounded(3px);
-      
-      &:hover {
-        box-shadow:0 0 1px 3px rgba(0,255,42,0.9);
-        border:3px solid #00ff2a;
-      }
-    
-    }
-    
-  }
-    
-  span.muikku-field-examples {
-    border-radius:3px;
-    padding:3px;
-    width:auto;
-    background:#e2ffe2;
-    font-style:italic;
-    margin:1px 3px 1px 3px;
-    display:inline-block;
-    font-size:13px;
-    
-    span.muikku-field-examples-title {
-      font-weight:600;
-      margin:0px 6px;
-    }
-    
-    span.muikku-field-example {
-      margin:3px 0px 3px 5px;
-      padding:0 8px;
-      border-left:1px solid #439ba0;
-      display:inline-block;
-      line-height:1.5;
-      
-      &:last-child {
-        
-      }
-    }
-    
-  }
+.workspace-materials-view-page {
 
   .muikku-page-assignment-type {
     padding:0px 8px;
