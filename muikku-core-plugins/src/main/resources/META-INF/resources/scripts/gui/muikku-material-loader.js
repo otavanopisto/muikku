@@ -127,7 +127,6 @@
         }
         else {
           $(pageElement).muikkuMaterialPage('content', parsed);
-          $(pageElement).muikkuMaterialPage('applyState');
           $(document).trigger('afterHtmlMaterialRender', {
             pageElement: pageElement,
             parentIds: parentIds,
@@ -136,6 +135,7 @@
             fieldAnswers: fieldAnswers,
             readOnlyFields: this.options.readOnlyFields
           });
+          $(pageElement).muikkuMaterialPage('applyState');
         }
 
       } catch (e) {
