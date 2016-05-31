@@ -1,12 +1,22 @@
 (function() {
   'use strict';
   
+  window.DiscussionIOController = function (options) {
+    this.options = options;
+  };
+  
+  $.extend(window.DiscussionIOController.prototype, {
+  
+  });
+  
   $.widget("custom.discussion", {
     
     _create : function() {
+      this.element.addClass('discussion');
+      
       this._areaId = null;
       
-      this.element.on("change", "#discussionAreaSelect", $.proxy(this._onAreaSelectChange, this));
+      this.element.on("change", "select[name='areas']", $.proxy(this._onAreaSelectChange, this));
       this.element.on("click", ".di-new-area-button", $.proxy(this._onNewAreaClick, this));
       this.element.on("click", ".di-new-message-button", $.proxy(this._onNewMessageClick, this));
       this.element.on("click", ".di-edit-area-button", $.proxy(this._onEditMessageClick, this));
@@ -14,11 +24,15 @@
 
       this.element.find('.di-threads')
         .show()
-        .discussionThreads();
+        .discussionThreads({
+          ioController: this.options.ioController
+        });
       
       this.element.find('.di-thread')
         .hide()
-        .discussionThread();
+        .discussionThread({
+          ioController: this.options.ioController
+        });
       
       this._load($.proxy(function () {
         var areaId = null;
@@ -62,7 +76,7 @@
       this._areaId = null;
       this._allAreas = true;
       this._updateHash();
-      this.element.find("#discussionAreaSelect").val('all');
+      this.element.find("select[name='areas']").val('all');
       this._loadThreads('all');
     },
     
@@ -71,7 +85,7 @@
       this._areaId = areaId;
       this._allAreas = false;
       this._updateHash();
-      this.element.find("#discussionAreaSelect").val(areaId);
+      this.element.find("select[name='areas']").val(areaId);
       this._loadThreads(areaId);
     },
     
@@ -84,7 +98,7 @@
     },
     
     reloadAreas: function () {
-      var tasks = [this._createAreaLoad()];
+      var tasks = [this._createAreasLoad()];
       async.parallel(tasks, $.proxy(function (err, results) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -110,9 +124,9 @@
       this._updateHash();
       
       if (this._allAreas) {
-        this.element.find("#discussionAreaSelect").val('all');      
+        this.element.find("select[name='areas']").val('all');      
       } else {
-        this.element.find("#discussionAreaSelect").val(areaId);
+        this.element.find("select[name='areas']").val(areaId);
       }
       
       this._loadThread(areaId, threadId);
@@ -124,7 +138,9 @@
         
     newAreaDialog: function () {
       var dialog = $('<div>')
-        .discussionNewAreaDialog();
+        .discussionNewAreaDialog({
+          ioController: this.options.ioController
+        });
       
       $('#socialNavigation')
         .empty()
@@ -134,6 +150,7 @@
     editAreaDialog: function (areaId) {
       var dialog = $('<div>')
         .discussionEditAreaDialog({
+          ioController: this.options.ioController,
           areaId: areaId
         });
       
@@ -145,6 +162,7 @@
     deleteAreaDialog: function (areaId) {
       var dialog = $('<div>')
         .discussionDeleteAreaDialog({
+          ioController: this.options.ioController,
           areaId: areaId
         });
       
@@ -155,7 +173,9 @@
     
     newMessageDialog: function (options) {
       var dialog = $('<div>')
-        .discussionNewMessageDialog(options||{});
+        .discussionNewMessageDialog($.extend({
+          ioController: this.options.ioController
+        }, options||{}));
       
       $('#socialNavigation')
         .empty()
@@ -164,7 +184,9 @@
     
     replyMessageDialog: function (options) {
       var dialog = $('<div>')
-        .discussionReplyMessageDialog(options||{});
+        .discussionReplyMessageDialog($.extend({
+          ioController: this.options.ioController
+        }, options||{}));
       
       $('#socialNavigation')
         .empty()
@@ -173,7 +195,9 @@
     
     editMessageDialog: function (options) {
       var dialog = $('<div>')
-        .discussionEditMessageDialog(options||{});
+        .discussionEditMessageDialog($.extend({
+          ioController: this.options.ioController
+        }, options||{}));
       
       $('#socialNavigation')
         .empty()
@@ -182,7 +206,9 @@
     
     editReplyDialog: function (options) {
       var dialog = $('<div>')
-        .discussionEditReplyDialog(options||{});
+        .discussionEditReplyDialog($.extend({
+          ioController: this.options.ioController
+        }, options||{}));
       
       $('#socialNavigation')
         .empty()
@@ -214,7 +240,7 @@
     },
     
     _load: function (callback) {
-      var tasks = [this._createAreaLoad()];
+      var tasks = [this._createAreasLoad()];
       async.parallel(tasks, $.proxy(function (err, results) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -226,17 +252,15 @@
       }, this));
     },
     
-    _createAreaLoad: function () {
+    _createAreasLoad: function () {
       return $.proxy(function (callback) {
-        mApi().forum.areas
-          .read()
-          .callback(callback);
+        this.options.ioController.loadAreas(callback);
       }, this);
     },
     
     _buildAreaSelect: function (areas) {
       var areaSelect = $(this.element)
-        .find("#discussionAreaSelect")
+        .find("select[name='areas']")
         .empty();
         
       if (areas && areas.length) {
@@ -340,55 +364,14 @@
     
     _createThreadLoad: function (areaId, threadId) {
       return $.proxy(function (callback) {
-        mApi().forum.areas.threads
-          .read(areaId, threadId)
-          .callback(callback);
+        this.options.ioController.loadThread(areaId, threadId, callback);
       }, this);
     },
     
     _createThreadRepliesLoad: function (areaId, threadId) {
-      var replyCreatedMap = {};
-      
       return $.proxy(function (callback) {
-        mApi().forum.areas.threads.replies
-          .read(areaId, threadId, {
-            firstResult: this._firstResult,
-            maxResults: this.options.maxReplyCount + 1
-          })
-          .on('$', $.proxy(function(reply, replyCallback) {
-            mApi().user.users.basicinfo
-              .read(reply.creator)
-              .callback($.proxy(function(err, user) {
-                if (err) {
-                  $('.notification-queue').notificationQueue('notification', 'error', err);
-                } else {
-                  // TODO: remove pretty dates
-                  var d = new Date(reply.created);
-                  var ld = new Date(reply.lastModified);
-                  replyCreatedMap[reply.id] = d;
-                  
-                  reply.creatorFullName = user.firstName + ' ' + user.lastName;
-                  reply.isEdited = reply.lastModified == reply.created ? false : true;            
-                  reply.canEdit = reply.creator === MUIKKU_LOGGED_USER_ID ? true : false;
-                  reply.prettyDate = formatDate(d) + ' ' + formatTime(d);
-                  reply.prettyDateModified = formatDate(ld) + ' ' + formatTime(ld);                    
-                  reply.threadId = threadId;
-                  reply.userRandomNo = (user.id % 6) + 1;
-                  reply.nameLetter = user.firstName.substring(0,1);
-                  reply.isReply = reply.parentReplyId ? true : false;
-                  
-                  if (reply.isReply){
-                    reply.replyParentTime = formatDate(replyCreatedMap[reply.parentReplyId]) + ' ' + formatTime(replyCreatedMap[reply.parentReplyId]);
-                  }
-                  
-                  replyCallback();
-                }
-              }, this))
-            },this))
-            .callback(callback);
-        
-          }, this);
-      
+        this.options.ioController.loadThreadReplies(areaId, threadId, this._firstResult, this.options.maxReplyCount + 1, callback);
+      }, this);
     },
     
     loadThread: function (areaId, threadId) {
@@ -406,36 +389,23 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          var thread = results[0];
+          var thread = _.clone(results[0]);
           var replies = _.clone(results[1]||[]);
-
-          mApi().user.users.basicinfo
-            .read(thread.creator)
-            .callback($.proxy(function(userErr, user) {
-              if (userErr) {
-                $('.notification-queue').notificationQueue('notification', 'error', userErr);
-              } else {
-                var d = new Date(thread.created);
-                var ld = new Date(thread.lastModified);          
-                this._thread = $.extend({
-                  creatorFullName: user.firstName + ' ' + user.lastName,
-                  isEdited: thread.lastModified == thread.created ? false : true,
-                  prettyDate: formatDate(d) + ' ' + formatTime(d),
-                  prettyDateModified: formatDate(ld) + ' ' + formatTime(ld),
-                  canEdit: thread.creator === MUIKKU_LOGGED_USER_ID ? true : false,
-                  userRandomNo: (user.id % 6) + 1,
-                  nameLetter: user.firstName.substring(0,1)
-                }, thread);
-                
-                var hasMore = false;
-                if (replies.length > this.options.maxReplyCount) {
-                  hasMore = true;
-                  replies.pop();
-                }
-                
-                this._replies = this._replies.concat(replies);
-                this._renderReplies(hasMore);
+          
+          this.options.ioController.loadThreadDetails(thread, $.proxy(function (detailsErr, thread) {
+            if (detailsErr) {
+              $('.notification-queue').notificationQueue('notification', 'error', detailsErr);
+            } else {
+              var hasMore = false;
+              if (replies.length > this.options.maxReplyCount) {
+                hasMore = true;
+                replies.pop();
               }
+              
+              this._thread = thread;
+              this._replies = this._replies.concat(replies);
+              this._renderReplies(hasMore);
+            }
           }, this));
         }
       }, this));
@@ -472,7 +442,7 @@
         thread: this._thread,
         replies: this._replies,
         hasMore: hasMore,
-        mayRemoveThread : this.element.closest('#discussion').discussion('mayRemoveThread', this._areaId)
+        mayRemoveThread : this.element.closest('.discussion').discussion('mayRemoveThread', this._areaId)
       }, $.proxy(function(text) {
         this.element
           .html(text)
@@ -481,16 +451,14 @@
     },
     
     _removeThread: function () {
-      mApi().forum.areas.threads
-        .del(this._areaId, this._threadId)
-        .callback($.proxy(function(err, result) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.threadremoved'));
-            $('#discussion').discussion('reloadArea');
-          }
-        }, this));
+      this.options.ioController.deleteThread(this._areaId, this._threadId, $.proxy(function(err, result) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.threadremoved'));
+          $('.discussion').discussion('reloadArea');
+        }
+      }, this));
     },
     
     _confirmThreadRemoval: function (confirmCallback) {
@@ -526,7 +494,7 @@
       var areaId = messageElement.attr('data-area-id');
       var threadId = messageElement.attr('data-id');
       
-      this.element.closest('#discussion').discussion('replyMessageDialog', {
+      this.element.closest('.discussion').discussion('replyMessageDialog', {
         areaId: areaId,
         threadId: threadId
       });
@@ -540,7 +508,7 @@
       var threadId = messageElement.attr('data-id');
       var quote = $('<pre>').append($('<blockquote>').html(messageElement.find('.mf-item-content-text').html())).html();
 
-      this.element.closest('#discussion').discussion('replyMessageDialog', {
+      this.element.closest('.discussion').discussion('replyMessageDialog', {
         areaId: areaId,
         threadId: threadId,
         content: quote
@@ -554,7 +522,7 @@
       var areaId = messageElement.attr('data-area-id');
       var threadId = messageElement.attr('data-id');
 
-      this.element.closest('#discussion').discussion('editMessageDialog', {
+      this.element.closest('.discussion').discussion('editMessageDialog', {
         areaId: areaId,
         threadId: threadId
       });
@@ -570,7 +538,7 @@
       var threadId = repliesElement.attr('data-thread-id');
       var replyId = messageElement.attr('data-id');
 
-      this.element.closest('#discussion').discussion('editReplyDialog', {
+      this.element.closest('.discussion').discussion('editReplyDialog', {
         areaId: areaId,
         threadId: threadId,
         replyId: replyId
@@ -587,7 +555,7 @@
       var threadId = repliesElement.attr('data-thread-id');
       var parentReplyId = $(messageElement).attr("data-parent-id") ? $(messageElement).attr("data-parent-id") : $(messageElement).attr("data-id");
       
-      this.element.closest('#discussion').discussion('replyMessageDialog', {
+      this.element.closest('.discussion').discussion('replyMessageDialog', {
         areaId: areaId,
         threadId: threadId,
         parentReplyId: parentReplyId
@@ -605,7 +573,7 @@
       var parentReplyId = $(replyElement).attr("data-parent-id") ? $(replyElement).attr("data-parent-id") : $(replyElement).attr("data-id");
       var quote = $('<pre>').append($('<blockquote>').html(replyElement.find('.mf-item-content-text').html())).html();
       
-      this.element.closest('#discussion').discussion('replyMessageDialog', {
+      this.element.closest('.discussion').discussion('replyMessageDialog', {
         areaId: areaId,
         threadId: threadId,
         parentReplyId: parentReplyId,
@@ -614,7 +582,7 @@
     },
     
     _onBackClick: function (event) {
-      this.element.closest('#discussion').discussion('reloadArea');
+      this.element.closest('.discussion').discussion('reloadArea');
     },
     
     _onRemoveClick: function (event) {
@@ -664,96 +632,30 @@
         .text('')
         .addClass('loading');
       
-      var parameters = {
-        firstResult: this._firstResults,
-        maxResults: this.options.maxThreadCount + 1
-      };
-        
-      var request = areaId == 'all' ? mApi().forum.latest.read(parameters) : mApi().forum.areas.threads.read(areaId, parameters);
-      
-      request
-        .on('$', $.proxy(function(message, messageCallback) {
-          this._loadThreadDetails(message, function (err, details) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              message = $.extend(message, details);
-              messageCallback();
-            }
-          });
-        }, this))
-        .callback($.proxy(function(err, response) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            var threads = _.clone(response);
-            
-            var hasMore = false;
-            if (threads.length > this.options.maxThreadCount) {
-              hasMore = true;
-              threads.pop();
-            }
-            
-            this._threads = this._threads.concat(threads);
-            
-            renderDustTemplate('/discussion/discussion_items.dust', { 
-              threads: this._threads, 
-              hasMore: hasMore 
-            }, $.proxy(function(text) {
-              this.element
-                .html(text)
-                .removeClass('loading');
-            }, this))
-          }
-        }, this));
-    },
-    
-    _loadArea: function (forumAreaId, callback) {
-      mApi().forum.areas
-        .read(forumAreaId)
-        .callback(callback);
-    },
-    
-    _loadUserInfo: function (userEntityId, callback) {
-      mApi().user.users.basicinfo
-        .read(userEntityId)
-        .callback(callback);
-    },
-    
-    _createLoadArea: function (forumAreaId) {
-      return $.proxy(function (callback) {
-        this._loadArea(forumAreaId, callback);
-      }, this);
-    },
-    
-    _createUserInfoLoad: function (userEntityId) {
-      return $.proxy(function (callback) {
-        this._loadUserInfo(userEntityId, callback);
-      }, this);
-    },
-    
-    _loadThreadDetails: function(message, callback) {
-      var tasks = [this._createUserInfoLoad(message.creator), this._createLoadArea(message.forumAreaId)];
-      
-      async.parallel(tasks, function (err, results) {
+      this.options.ioController.loadThreads(areaId, this._firstResults, this.options.maxThreadCount + 1, $.proxy(function (err, response) {
         if (err) {
-          callback(err);
+          $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          var user = results[0];
-          var area = results[1];
-          var d = new Date(message.created);
-          var ud = new Date(message.updated);          
-          // TODO: remove prettyDates...
-          callback(null, {
-            areaName: area.name,
-            creatorFullName: user.firstName + ' ' + user.lastName,
-            prettyDate: formatDate(d) + ' ' + formatTime(d),
-            prettyDateUpdated: formatDate(ud) + ' ' + formatTime(ud),
-            userRandomNo: (user.id % 6) + 1,
-            nameLetter: user.firstName.substring(0,1)
-          });
+          var threads = _.clone(response);
+          
+          var hasMore = false;
+          if (threads.length > this.options.maxThreadCount) {
+            hasMore = true;
+            threads.pop();
+          }
+          
+          this._threads = this._threads.concat(threads);
+          
+          renderDustTemplate('/discussion/discussion_items.dust', { 
+            threads: this._threads, 
+            hasMore: hasMore 
+          }, $.proxy(function(text) {
+            this.element
+              .html(text)
+              .removeClass('loading');
+          }, this))
         }
-      });
+      }, this));
     },
     
     _onLoadMoreClick: function (event) {
@@ -767,7 +669,7 @@
         .attr('data-id');
       
       this.element
-        .closest('#discussion')
+        .closest('.discussion')
         .discussion('loadThread', areaId, threadId);
     }
   });
@@ -796,19 +698,15 @@
     _onSendClick: function (event) {
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
-        mApi().forum.areas
-          .create({
-            name: this.element.find('input[name="name"]').val()
-          })
-          .callback($.proxy(function(err, result) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.newarea', err));
-            } else {        
-              $('#discussion').discussion('reloadAreas');
-            }
-            
-            this.element.remove();
-          }, this));
+        this.options.ioController.createArea(this.element.find('input[name="name"]').val(), $.proxy(function(err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.newarea', err));
+          } else {        
+            $('.discussion').discussion('reloadAreas');
+          }
+          
+          this.element.remove();
+        }, this));
       }
     },
 
@@ -830,9 +728,7 @@
     },
     
     _load: function (callback) {
-      mApi().forum.areas
-        .read()
-        .callback($.proxy(function(err, areas) {
+      this.options.ioController.loadAreas($.proxy(function(err, areas) {
           renderDustTemplate('/discussion/discussion_edit_area.dust', areas, $.proxy(function (text) {
             this.element.html(text);
             
@@ -853,20 +749,17 @@
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
         var areaId = this.element.find("select[name='forumAreaId']").val();
+        var name = this.element.find('input[name="name"]').val();
         
-        mApi().forum.areas
-          .update(areaId, {
-            name: this.element.find('input[name="name"]').val()
-          })
-          .callback($.proxy(function(err, result) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.newarea', err));
-            } else {
-              $('#discussion').discussion('reloadAreas');
-            }
-            
-            this.element.remove();
-          }, this));
+        this.options.ioController.updateArea(areaId, name, $.proxy(function(err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.newarea', err));
+          } else {
+            $('.discussion').discussion('reloadAreas');
+          }
+          
+          this.element.remove();
+        }, this));
       }
     },
 
@@ -890,40 +783,35 @@
     },
     
     _load: function (callback) {
-      mApi().forum.areas
-        .read()
-        .callback($.proxy(function(err, areas) {
-          renderDustTemplate('/discussion/discussion_delete_area.dust', areas, $.proxy(function (text) {
-            this.element.html(text);
-            
-            if (this.options.areaId && this.options.areaId != 'all') {
-              this.element.find("select[name='forumAreaId']")
-                .val(this.options.areaId)
-            }
-            
-            if (callback) {
-              callback();
-            }
-          }, this));
+      this.options.ioController.loadAreas($.proxy(function(err, areas) {
+        renderDustTemplate('/discussion/discussion_delete_area.dust', areas, $.proxy(function (text) {
+          this.element.html(text);
+          
+          if (this.options.areaId && this.options.areaId != 'all') {
+            this.element.find("select[name='forumAreaId']")
+              .val(this.options.areaId)
+          }
+          
+          if (callback) {
+            callback();
+          }
         }, this));
+      }, this));
     },
     
     _onSendClick: function (event) {
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
         var areaId = this.element.find("select[name='forumAreaId']").val();
-        
-        mApi().forum.areas
-          .del(areaId)
-          .callback($.proxy(function(err, result) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              $('#discussion').discussion('reloadAreas');
-            }
-            
-            this.element.remove();
-          }, this));
+        this.options.ioController.deleteArea(areaId, $.proxy(function(err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $('.discussion').discussion('reloadAreas');
+          }
+          
+          this.element.remove();
+        }, this));
       }
     },
 
@@ -1045,9 +933,7 @@
     
     _createAreasLoad: function () {
       return $.proxy(function (callback) {
-        mApi().forum.areas
-          .read()
-          .callback(callback);
+        this.options.ioController.loadAreas(callback);
       }, this);
     },
     
@@ -1074,26 +960,16 @@
 
         var sticky = this.element.find('*[name="sticky"]').val() == 'true';
         var locked = this.element.find('*[name="locked"]').val() == 'true';
-
-        var payload = {
-          title: title,
-          message: message,
-          forumAreaId: forumAreaId,
-          sticky: sticky,
-          locked: locked
-        };
         
-        mApi().forum.areas.threads
-          .create(forumAreaId, payload)
-          .callback($.proxy(function(err, result) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newmessage'));
-              $('#discussion').discussion('reloadArea');
-              this.element.remove();
-            }
-          }, this));
+        this.options.ioController.createThread(forumAreaId, title, message, sticky, locked, $.proxy(function(err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newmessage'));
+            $('.discussion').discussion('reloadArea');
+            this.element.remove();
+          }
+        }, this));
       }
     },
 
@@ -1126,17 +1002,13 @@
     
     _createThreadLoad: function (areaId, threadId) {
       return $.proxy(function (callback) {
-        mApi().forum.areas.threads
-          .read(areaId, threadId)
-          .callback(callback);
+        this.options.ioController.loadThread(areaId, threadId, callback);
       }, this);
     },
     
     _createAreaLoad: function (areaId) {
       return $.proxy(function (callback) {
-        mApi().forum.areas
-          .read(areaId)
-          .callback(callback);
+        this.options.ioController.loadArea(areaId, callback);
       }, this);
     },
     
@@ -1186,26 +1058,16 @@
           return;
         }
         
-        var payload = {
-          message: message
-        };
-        
-        if (this.options.parentReplyId) {
-          payload.parentReplyId = this.options.parentReplyId;
-        }
-        
-        mApi().forum.areas.threads.replies
-          .create(this.options.areaId, this.options.threadId, payload)
-          .callback($.proxy(function(err, result) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              this.destroyEditor(true);
-              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newreply'));
-              $('#discussion').discussion('reloadThread');
-              this.element.remove();
-            }
-          },this));
+        this.options.ioController.createThreadReply(this.options.areaId, this.options.threadId, this.options.parentReplyId, message, $.proxy(function(err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            this.destroyEditor(true);
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newreply'));
+            $('.discussion').discussion('reloadThread');
+            this.element.remove();
+          }
+        },this));
       }
     },
 
@@ -1236,14 +1098,10 @@
     },
     
     _load: function (callback) {
-      var tasks = [this._createThreadLoad(this.options.areaId, this.options.threadId)];
-      
-      async.parallel(tasks, $.proxy(function (err, results) {
+      this.options.ioController.loadThread(this.options.areaId, this.options.threadId, $.proxy(function (err, thread) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          var thread = results[0];
-          
           renderDustTemplate('/discussion/discussion_edit_message.dust', thread, $.proxy(function (text) {
             this.element.html(text);
             this._messageEditor = CKEDITOR.replace(this.element.find('textarea[name="message"]')[0], $.extend(this.options.ckeditor, {
@@ -1261,14 +1119,6 @@
       }, this));
     },
     
-    _createThreadLoad: function (areaId, threadId) {
-      return $.proxy(function (callback) {
-        mApi().forum.areas.threads
-          .read(areaId, threadId)
-          .callback(callback);
-      }, this);
-    },
-    
     _onCKEditorReady: function (event) {
       this.element.find('input[name="send"]').removeAttr('disabled'); 
     },
@@ -1276,8 +1126,6 @@
     _onSendClick: function (event) {
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
-        var forumAreaId = this.element.find('*[name="forumAreaId"]').val();
-        
         var title = this.element.find('*[name="title"]').val();
         if (!title && !title.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.notitle'));
@@ -1290,30 +1138,15 @@
           return;
         }
         
-        mApi().forum.areas.threads
-          .read(this.options.areaId, this.options.threadId)
-          .callback($.proxy(function(getErr, thread) {
-            if (getErr) {
-              $('.notification-queue').notificationQueue('notification', 'error', getErr);
-            } else {
-              thread = $.extend(thread, {
-                title: title,
-                message: message
-              });
-              
-              mApi().forum.areas.threads
-                .update(this.options.areaId, this.options.threadId, thread)
-                .callback($.proxy(function(err, result) {
-                  if (err) {
-                    $('.notification-queue').notificationQueue('notification', 'error', err);
-                  } else {
-                    this.destroyEditor(true);
-                    $('#discussion').discussion('reloadThread');
-                    this.element.remove();
-                  }
-                }, this));   
-            }
-          }, this));
+        this.options.ioController.updateThread(this.options.areaId, this.options.threadId, title, message, $.proxy(function(err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            this.destroyEditor(true);
+            $('.discussion').discussion('reloadThread');
+            this.element.remove();
+          }
+        }, this));
       }
     },
 
@@ -1344,14 +1177,10 @@
     },
     
     _load: function (callback) {
-      var tasks = [this._createReplyLoad(this.options.areaId, this.options.threadId, this.options.replyId)];
-      
-      async.parallel(tasks, $.proxy(function (err, results) {
+      this.options.ioController.loadThreadReply(this.options.areaId, this.options.threadId, this.options.replyId, $.proxy(function (err, reply) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          var reply = results[0];
-          
           renderDustTemplate('/discussion/discussion_edit_reply.dust', reply, $.proxy(function (text) {
             this.element.html(text);
             this._messageEditor = CKEDITOR.replace(this.element.find('textarea[name="message"]')[0], $.extend(this.options.ckeditor, {
@@ -1369,14 +1198,6 @@
       }, this));
     },
     
-    _createReplyLoad: function (areaId, threadId, replyId) {
-      return $.proxy(function (callback) {
-        mApi().forum.areas.threads.replies
-          .read(areaId, threadId, replyId)
-          .callback(callback);
-      }, this);
-    },
-    
     _onCKEditorReady: function (event) {
       this.element.find('input[name="send"]').removeAttr('disabled'); 
     },
@@ -1390,29 +1211,15 @@
           return;
         }
         
-        mApi().forum.areas.threads.replies
-          .read(this.options.areaId, this.options.threadId, this.options.replyId)
-          .callback($.proxy(function(getErr, reply) {
-            if (getErr) {
-              $('.notification-queue').notificationQueue('notification', 'error', getErr);
-            } else {
-              reply = $.extend(reply, {
-                message: message
-              });
-              
-              mApi().forum.areas.threads.replies
-                .update(this.options.areaId, this.options.threadId, this.options.replyId, reply)
-                .callback($.proxy(function(err, result) {
-                  if (err) {
-                    $('.notification-queue').notificationQueue('notification', 'error', err);
-                  } else {
-                    this.destroyEditor(true);
-                    $('#discussion').discussion('reloadThread');
-                    this.element.remove();
-                  }
-                }, this));   
-            }
-          }, this));
+        this.options.ioController.updateThreadReply(this.options.areaId, this.options.threadId, this.options.replyId, message, $.proxy(function(err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            this.destroyEditor(true);
+            $('.discussion').discussion('reloadThread');
+            this.element.remove();
+          }
+        }, this));
       }
     },
 
@@ -1420,14 +1227,6 @@
       event.preventDefault();
       this.element.remove();
     }
-  });
-  
-  $(document).ready(function() {
-    $('#discussion').discussion({
-      areaPermissions: $.parseJSON($('input[name="areaPermissions"]').val())
-    });
-    
-    webshim.polyfill('forms');
   });
 
 }).call(this);
