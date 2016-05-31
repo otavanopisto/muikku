@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.session;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.ejb.Stateful;
@@ -25,16 +24,6 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
     this.authentication = authentication;
     this.activeUserIdentifier = authentication.getActiveUserIdentifier();
     this.activeUserSchoolDataSource = authentication.getActiveUserSchoolDataSource();
-  }
-
-  @Override
-  public Locale getLocale() {
-    return locale;
-  }
-  
-  @Override
-  public void setLocale(Locale locale) {
-    this.locale = locale;
   }
 
   @Override
@@ -116,7 +105,6 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   }
   
   private RestAuthentication authentication;
-  private Locale locale;
   private String activeUserIdentifier;
   private String activeUserSchoolDataSource;
   private Map<String, AccessToken> accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());

@@ -1,5 +1,5 @@
-$(function() {
-  "use strict";
+(function() {
+  'use strict';
   
   function getLocaleText(key, args) {
     var val = window._MUIKKU_LOCALEMAP[key];
