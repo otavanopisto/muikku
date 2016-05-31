@@ -54,8 +54,8 @@
         ],
         extraPlugins: {
           'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
-          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
-          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js'
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.2/plugin.min.js'
         }
       }
     },
@@ -265,6 +265,7 @@
     
     _discardDraft: function () {
       try {
+        this._contentsEditor.pauseDrafting();
         this._contentsEditor.discardDraft();
       } catch (e) {
       }
@@ -291,7 +292,6 @@
           endDate = null;
         }
         
-
         if (!caption || !caption.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.notitle'));
           return false;
@@ -325,7 +325,7 @@
           payload.workspaceEntityIds = [];
         }
             
-        if (! (this.options.announcement)) {
+        if (!(this.options.announcement)) {
           mApi().announcer.announcements
           .create(payload)
           .callback($.proxy(function (err, result) {
@@ -388,6 +388,7 @@
      
      this._loadAnnouncements();
     },
+    
     _onCreateAnnouncementClick: function () {
       var dialog = $('<div>')
         .announcementCreateEditDialog({
@@ -401,25 +402,23 @@
     },
     
     _onEditAnnouncementClick: function (event) {
-      var ann = event.target;
+      var announcementId = $(event.target)
+        .closest(".an-announcement")
+        .attr("data-announcement-id");
       
-      var par = $(ann).parents(".an-announcement");
-      var id = $(par).attr("data-announcement-id");
-        
-      mApi()
-      .announcer
-      .announcements
-      .read(id).callback($.proxy(function(err, announcement){
-        var dialog = $('<div>').announcementCreateEditDialog({
+      mApi().announcer.announcements
+        .read(announcementId)
+        .callback($.proxy(function(err, announcement){
+          var dialog = $('<div>').announcementCreateEditDialog({
             workspaceEntityId: this.options.workspaceEntityId,
             announcement: announcement,
             showTargetGroups: ! (this.options.workspaceEntityId)
-        });
+          });
 
-        $("#socialNavigation")
-          .empty()
-          .append(dialog);
-      }, this));
+          $("#socialNavigation")
+            .empty()
+            .append(dialog);
+        }, this));
     },    
     
     _loadAnnouncements: function () {
@@ -431,27 +430,29 @@
           options.hideWorkspaceAnnouncements = true;
         }
       
-        mApi().announcer.announcements.read(options).callback($.proxy(function(err, result) {
-          if (err) {
-            $(".notification-queue").notificationQueue('notification','error', err);
-          } else {
-            renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
-              var element = $(text);
-              $('.an-announcements-view-container').append(element);
-            }, this));
-          }
-        }, this));
+        mApi().announcer.announcements
+          .read(options)
+          .callback($.proxy(function(err, result) {
+            if (err) {
+              $(".notification-queue").notificationQueue('notification', 'error', err);
+            } else {
+              renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
+                var element = $(text);
+                $('.an-announcements-view-container').append(element);
+              }, this));
+            }
+          }, this));
     },
-    _onArchiveAnnouncementsClick: function () {
-      
-      var selected = $(".an-announcements").find("input:checked");
+    
+    _onArchiveAnnouncementsClick: function (event) {
+      var selected = $(".an-announcements")
+        .find("input:checked");
       var items = [];
       
-      $.each(selected, function(i, val){
+      $.each(selected, function(i, val) {
         var parent = $(val).parents(".an-announcement");
         var child = parent.find(".an-announcement-topic");
         var title = child.text();
-        
         items.push({id: Number($(val).attr("value")), title: title});
       });
       
@@ -468,14 +469,18 @@
       this.element.empty();      
       $(this.element).append('<div class="mf-loading"><div class"circle1"></div><div class"circle2"></div><div class"circle3"></div></div>');      
     },    
+    
     _reload: function(){
       window.location.reload(true);      
     },
+    
     _clear: function(){
       this.element.empty();      
     },
+    
     _destroy: function () {
-    },
+    }
+    
   });
   
   $(document).ready(function(){
@@ -488,7 +493,6 @@
     }
     
     $('.an-announcements-view-container').announcer(options);
-
   });
 
 }).call(this);

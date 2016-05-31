@@ -578,7 +578,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response createAnnouncement(fi.otavanopisto.muikku.atests.Announcement payload) {
     UserEntity user = userEntityController.findUserEntityById(payload.getPublisherUserEntityId());
-    Announcement announcement = announcementController.create(user, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.getPubliclyVisible());
+    Announcement announcement = announcementController.createAnnouncement(user, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.getPubliclyVisible());
     if(payload.getUserGroupEntityIds() != null) {
       List<Long> userGroups = payload.getUserGroupEntityIds();
       for (Long userGroupId : userGroups) {

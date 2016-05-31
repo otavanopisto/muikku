@@ -24,16 +24,8 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
 	
   private static final long serialVersionUID = -8721990589622544635L;
   
-  public Announcement create(
-      Long publisherUserEntityId,
-      String caption,
-      String content,
-      Date created,
-      Date startDate,
-      Date endDate,
-      boolean archived,
-      boolean publiclyVisible
-  ) {
+  public Announcement create(Long publisherUserEntityId, String caption, String content, Date created, Date startDate, 
+      Date endDate, Boolean archived, Boolean publiclyVisible) {
     Announcement announcement = new Announcement();
     announcement.setPublisherUserEntityId(publisherUserEntityId);
     announcement.setCaption(caption);
@@ -43,23 +35,23 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     announcement.setEndDate(endDate);
     announcement.setArchived(archived);
     announcement.setPubliclyVisible(publiclyVisible);
-    
     return persist(announcement);
  }
   
-  public List<Announcement> listByArchivedWithNoWorkspaces(boolean archived){
+  public List<Announcement> listByArchivedWithNoWorkspaces(Boolean archived){
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
 
-    Subquery<Announcement> subquery = unarchivedWorkspaceAnnouncements(criteriaBuilder, criteria);
-
+    Subquery<Announcement> subquery = subqueryWorkspaceAnnouncements(criteriaBuilder, criteria);
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.and(criteriaBuilder.equal(root.get(Announcement_.archived), archived)),
-      criteriaBuilder.not(criteriaBuilder.in(root).value(subquery))
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(Announcement_.archived), archived),
+        criteriaBuilder.not(criteriaBuilder.in(root).value(subquery))
+      )
     );
     
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
@@ -81,7 +73,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<Announcement> listByArchivedAndWorkspaceEntityId(boolean archived, long workspaceEntityId){
+  public List<Announcement> listByWorkspaceEntityIdAndArchived(Long workspaceEntityId, Boolean archived){
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -91,9 +83,10 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     criteria.select(announcement);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(announcement.get(Announcement_.archived), archived)),
-        criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), false),
+        criteriaBuilder.equal(announcement.get(Announcement_.archived), archived),
+        criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), archived),
         criteriaBuilder.equal(root.get(AnnouncementWorkspace_.workspaceEntityId), workspaceEntityId)
+      )
     );
     
     criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
@@ -101,11 +94,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<Announcement> listByArchivedAndDateAndWorkspaceEntityId(
-      boolean archived,
-      Date date,
-      long workspaceEntityId
-  ){
+  public List<Announcement> listByDateAndWorkspaceEntityIdAndArchived(Date date, Long workspaceEntityId, Boolean archived) {
     EntityManager entityManager = getEntityManager();
     date = onlyDateFields(date);
     
@@ -115,27 +104,26 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     Join<AnnouncementWorkspace, Announcement> announcement = root.join(AnnouncementWorkspace_.announcement);
     criteria.select(announcement);
     criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.lessThanOrEqualTo(announcement.get(Announcement_.startDate), date),
-            criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), date),
-            criteriaBuilder.equal(announcement.get(Announcement_.archived), archived)),
-            criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), false),
-            criteriaBuilder.equal(root.get(AnnouncementWorkspace_.workspaceEntityId), workspaceEntityId));
+      criteriaBuilder.and(
+        criteriaBuilder.lessThanOrEqualTo(announcement.get(Announcement_.startDate), date),
+        criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), date),
+        criteriaBuilder.equal(announcement.get(Announcement_.archived), archived),
+        criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), archived),
+        criteriaBuilder.equal(root.get(AnnouncementWorkspace_.workspaceEntityId), workspaceEntityId)
+      )
+    );
+    
     criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<Announcement> listByArchivedAndDateAndUserGroupEntityIdsAndPubliclyVisible(
-      boolean archived,
-      Date currentDate,
-      List<Long> userGroupEntityIds,
-      boolean publiclyVisible
-  ) {
-    currentDate = onlyDateFields(currentDate);
+  public List<Announcement> listByDateAndUserGroupEntityIdsAndPubliclyVisibleAndArchived(Date currentDate, List<Long> userGroupEntityIds, Boolean publiclyVisible, Boolean archived) {
     if (userGroupEntityIds.isEmpty()) {
       return Collections.emptyList();
     }
+    
+    currentDate = onlyDateFields(currentDate);
     
     EntityManager entityManager = getEntityManager();
     
@@ -145,27 +133,27 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     Join<AnnouncementUserGroup, Announcement> announcement = root.join(AnnouncementUserGroup_.announcement);
     criteria.select(announcement);
     criteria.where(
-        criteriaBuilder.and(
-          criteriaBuilder.lessThanOrEqualTo(announcement.get(Announcement_.startDate), currentDate),
-          criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), currentDate),
-          criteriaBuilder.equal(announcement.get(Announcement_.archived), archived),
-          criteriaBuilder.equal(root.get(AnnouncementUserGroup_.archived), false),
-          root.get(AnnouncementUserGroup_.userGroupEntityId).in(userGroupEntityIds),
-          criteriaBuilder.equal(announcement.get(Announcement_.publiclyVisible), publiclyVisible)));
+      criteriaBuilder.and(
+        criteriaBuilder.lessThanOrEqualTo(announcement.get(Announcement_.startDate), currentDate),
+        criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), currentDate),
+        criteriaBuilder.equal(announcement.get(Announcement_.archived), archived),
+        criteriaBuilder.equal(root.get(AnnouncementUserGroup_.archived), archived),
+        root.get(AnnouncementUserGroup_.userGroupEntityId).in(userGroupEntityIds),
+        criteriaBuilder.equal(announcement.get(Announcement_.publiclyVisible), publiclyVisible)
+      )
+    );
+    
     criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<Announcement> listByArchivedAndDateAndWorkspaceEntityIds(
-      boolean archived,
-      Date currentDate,
-      List<Long> workspaceEntityIds
-  ) {
-    currentDate = onlyDateFields(currentDate);
+  public List<Announcement> listByDateAndWorkspaceEntityIdsAndArchived(Date currentDate, List<Long> workspaceEntityIds, Boolean archived) {
     if (workspaceEntityIds.isEmpty()) {
       return Collections.emptyList();
     }
+    
+    currentDate = onlyDateFields(currentDate);
     
     EntityManager entityManager = getEntityManager();
     
@@ -175,26 +163,18 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     Join<AnnouncementWorkspace, Announcement> announcement = root.join(AnnouncementWorkspace_.announcement);
     criteria.select(announcement);
     criteria.where(
-        criteriaBuilder.and(
-          criteriaBuilder.lessThanOrEqualTo(announcement.get(Announcement_.startDate), currentDate),
-          criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), currentDate),
-          criteriaBuilder.equal(announcement.get(Announcement_.archived), archived),
-          criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), false),
-          root.get(AnnouncementWorkspace_.workspaceEntityId).in(workspaceEntityIds)));
+      criteriaBuilder.and(
+        criteriaBuilder.lessThanOrEqualTo(announcement.get(Announcement_.startDate), currentDate),
+        criteriaBuilder.greaterThanOrEqualTo(announcement.get(Announcement_.endDate), currentDate),
+        criteriaBuilder.equal(announcement.get(Announcement_.archived), archived),
+        criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), archived),
+        root.get(AnnouncementWorkspace_.workspaceEntityId).in(workspaceEntityIds)
+      )
+    );
+    
     criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
-  }
-
-  private Date onlyDateFields(Date currentDate) {
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(currentDate);
-    cal.set(Calendar.HOUR_OF_DAY, 0);
-    cal.set(Calendar.MINUTE, 0);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MILLISECOND, 0);
-    currentDate = cal.getTime();
-    return currentDate;
   }
   
   public List<Announcement> listActiveWithNoWorkspaces() {
@@ -205,7 +185,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
 
-    Subquery<Announcement> subquery = unarchivedWorkspaceAnnouncements(criteriaBuilder, criteria);
+    Subquery<Announcement> subquery = subqueryWorkspaceAnnouncements(criteriaBuilder, criteria);
 
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
@@ -213,66 +193,66 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       criteriaBuilder.and(
         criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
         criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate),
-        criteriaBuilder.not(
-            criteriaBuilder.in(root).value(subquery))
+        criteriaBuilder.not(criteriaBuilder.in(root).value(subquery))
       )
     );
+    
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
+    
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<Announcement> listByArchivedAndDateAndPubliclyVisibleWithNoWorkspaces(
-      boolean archived,
-      Date currentDate,
-      boolean publiclyVisible
-  ) {
+  public List<Announcement> listByDateAndPubliclyVisibleWithNoWorkspacesAndArchived(Date currentDate, Boolean publiclyVisible, Boolean archived) {
     EntityManager entityManager = getEntityManager();
     currentDate = onlyDateFields(currentDate);
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
 
-    Subquery<Announcement> subquery = unarchivedWorkspaceAnnouncements(criteriaBuilder, criteria);
+    Subquery<Announcement> subquery = subqueryWorkspaceAnnouncements(criteriaBuilder, criteria);
 
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.and(
-          criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
-          criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate),
-          criteriaBuilder.equal(root.get(Announcement_.archived), archived),
-          criteriaBuilder.equal(root.get(Announcement_.publiclyVisible), publiclyVisible),
-          criteriaBuilder.not(
-            criteriaBuilder.in(root).value(subquery))));
+      criteriaBuilder.and(
+        criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
+        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate),
+        criteriaBuilder.equal(root.get(Announcement_.archived), archived),
+        criteriaBuilder.equal(root.get(Announcement_.publiclyVisible), publiclyVisible),
+        criteriaBuilder.not(criteriaBuilder.in(root).value(subquery))
+      )
+    );
           
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<Announcement> listByArchivedAndDateWithNoWorkspaces(boolean archived, Date currentDate) {
+  public List<Announcement> listByDateWithNoWorkspacesAndArchived(Date currentDate, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     currentDate = onlyDateFields(currentDate);
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
 
-    Subquery<Announcement> subquery = unarchivedWorkspaceAnnouncements(criteriaBuilder, criteria);
+    Subquery<Announcement> subquery = subqueryWorkspaceAnnouncements(criteriaBuilder, criteria);
 
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(Announcement_.archived), false),
+        criteriaBuilder.equal(root.get(Announcement_.archived), archived),
         criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
-        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)),
-        criteriaBuilder.not(
-          criteriaBuilder.in(root).value(subquery)));
+        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate),
+        criteriaBuilder.not(criteriaBuilder.in(root).value(subquery))
+      )
+    );
+    
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<Announcement> listByArchivedAndDate(boolean archived, Date currentDate) {
+  public List<Announcement> listByDateAndArchived(Date currentDate, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     currentDate = onlyDateFields(currentDate);
     
@@ -283,19 +263,14 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(Announcement_.archived), false),
+        criteriaBuilder.equal(root.get(Announcement_.archived), archived),
         criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate),
-        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)));
+        criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate)
+      )
+    );
+    
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     return entityManager.createQuery(criteria).getResultList();
-  }
-
-  private Subquery<Announcement> unarchivedWorkspaceAnnouncements(CriteriaBuilder criteriaBuilder, CriteriaQuery<Announcement> criteria) {
-    Subquery<Announcement> subquery = criteria.subquery(Announcement.class);
-    Root<AnnouncementWorkspace> announcementWorkspaces = subquery.from(AnnouncementWorkspace.class);
-    subquery.select(announcementWorkspaces.get(AnnouncementWorkspace_.announcement));
-    subquery.where(criteriaBuilder.equal(announcementWorkspaces.get(AnnouncementWorkspace_.archived), false));
-    return subquery;
   }
 
   public Announcement updateCaption(Announcement announcement, String caption) {
@@ -318,7 +293,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return persist(announcement);
   }
 
-  public Announcement updatePubliclyVisible(Announcement announcement, boolean publiclyVisible) {
+  public Announcement updatePubliclyVisible(Announcement announcement, Boolean publiclyVisible) {
     announcement.setPubliclyVisible(publiclyVisible);
     return persist(announcement);
   }
@@ -331,5 +306,22 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   public void delete(Announcement announcement) {
     super.delete(announcement);
   }
-  
+
+  private Subquery<Announcement> subqueryWorkspaceAnnouncements(CriteriaBuilder criteriaBuilder, CriteriaQuery<Announcement> criteria) {
+    Subquery<Announcement> subquery = criteria.subquery(Announcement.class);
+    Root<AnnouncementWorkspace> announcementWorkspaces = subquery.from(AnnouncementWorkspace.class);
+    subquery.select(announcementWorkspaces.get(AnnouncementWorkspace_.announcement));
+    return subquery;
+  }
+
+  private Date onlyDateFields(Date currentDate) {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(currentDate);
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MILLISECOND, 0);
+    currentDate = cal.getTime();
+    return currentDate;
+  }
 }

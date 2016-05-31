@@ -28,11 +28,9 @@
         }
       });
     
-    mApi()
-    .announcer
-    .announcements
-    .read({onlyActive: "true", workspaceEntityId: workspaceEntityId})
-    .callback($.proxy(function(err, result) {
+    mApi().announcer.announcements
+      .read({onlyActive: "true", workspaceEntityId: workspaceEntityId})
+      .callback($.proxy(function(err, result) {
         if (err) {
           $(".notification-queue").notificationQueue('notification','error', err);
         } else {
@@ -48,9 +46,7 @@
             $('.workspace-announcements-container').perfectScrollbar({"suppressScrollY" : true});
           }, this));
         }
-    }, this));
-    
-    
+      }, this));
   });
 
 }).call(this);

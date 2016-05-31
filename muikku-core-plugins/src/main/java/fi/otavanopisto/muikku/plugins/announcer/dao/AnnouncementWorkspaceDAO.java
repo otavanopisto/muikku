@@ -14,9 +14,9 @@ import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWork
 
 public class AnnouncementWorkspaceDAO extends CorePluginsDAO<AnnouncementWorkspace> {
 	
-  private static final long serialVersionUID = -8721990589622544635L;
-  
-  public AnnouncementWorkspace create(Announcement announcement, Long workspaceEntityId, boolean archived) {
+  private static final long serialVersionUID = -9179843785232941193L;
+
+  public AnnouncementWorkspace create(Announcement announcement, Long workspaceEntityId, Boolean archived) {
     AnnouncementWorkspace announcemenWorkspace = new AnnouncementWorkspace();
     announcemenWorkspace.setAnnouncement(announcement);
     announcemenWorkspace.setWorkspaceEntityId(workspaceEntityId);
@@ -24,7 +24,7 @@ public class AnnouncementWorkspaceDAO extends CorePluginsDAO<AnnouncementWorkspa
     return persist(announcemenWorkspace);
   }
   
-  public List<AnnouncementWorkspace> listByArchived(boolean archived){
+  public List<AnnouncementWorkspace> listByArchived(Boolean archived){
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -36,7 +36,7 @@ public class AnnouncementWorkspaceDAO extends CorePluginsDAO<AnnouncementWorkspa
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<AnnouncementWorkspace> listByAnnouncementAndArchived(Announcement announcement, boolean archived) {
+  public List<AnnouncementWorkspace> listByAnnouncementAndArchived(Announcement announcement, Boolean archived) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

@@ -14,9 +14,9 @@ import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 
 public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGroup> {
 	
-  private static final long serialVersionUID = -8721990589622544635L;
-  
-  public AnnouncementUserGroup create(Announcement announcement, Long userGroupEntityId, boolean archived) {
+  private static final long serialVersionUID = -6367885147690217019L;
+
+  public AnnouncementUserGroup create(Announcement announcement, Long userGroupEntityId, Boolean archived) {
     AnnouncementUserGroup announcementUserGroup = new AnnouncementUserGroup();
     announcementUserGroup.setAnnouncement(announcement);
     announcementUserGroup.setUserGroupEntityId(userGroupEntityId);
@@ -25,7 +25,7 @@ public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGro
     return persist(announcementUserGroup);
  }
   
-  public List<AnnouncementUserGroup> listByArchived(boolean archived){
+  public List<AnnouncementUserGroup> listByArchived(Boolean archived){
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -37,7 +37,7 @@ public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGro
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<AnnouncementUserGroup> listByAnnouncementAndArchived(Announcement announcement, boolean archived) {
+  public List<AnnouncementUserGroup> listByAnnouncementAndArchived(Announcement announcement, Boolean archived) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

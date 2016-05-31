@@ -100,7 +100,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       }
     }
     
-    Announcement announcement = announcementController.create(
+    Announcement announcement = announcementController.createAnnouncement(
         userEntity,
         restModel.getCaption(),
         restModel.getContent(),
@@ -171,7 +171,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    Announcement newAnnouncement = announcementController.update(
+    Announcement newAnnouncement = announcementController.updateAnnouncement(
         oldAnnouncement,
         restModel.getCaption(),
         restModel.getContent(),
@@ -204,8 +204,8 @@ public class AnnouncerRESTService extends PluginRESTService {
     return Response.ok(
         createRESTModel(
             newAnnouncement,
-            announcementController.listUserGroups(newAnnouncement),
-            announcementController.listWorkspaces(newAnnouncement)))
+            announcementController.listAnnouncementUserGroups(newAnnouncement),
+            announcementController.listAnnouncementWorkspaces(newAnnouncement)))
         .build();
   }
   
@@ -273,8 +273,8 @@ public class AnnouncerRESTService extends PluginRESTService {
     for (Announcement announcement : announcements) {
       AnnouncementRESTModel restModel = createRESTModel(
           announcement,
-          announcementController.listUserGroups(announcement),
-          announcementController.listWorkspaces(announcement));
+          announcementController.listAnnouncementUserGroups(announcement),
+          announcementController.listAnnouncementWorkspaces(announcement));
       restModels.add(restModel);
     }
 
@@ -290,8 +290,8 @@ public class AnnouncerRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Announcement not found").build();
     }
     
-    List<AnnouncementUserGroup> announcementUserGroups = announcementController.listUserGroups(announcement);
-    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listWorkspaces(announcement);
+    List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement);
     
     return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces)).build();
   }
@@ -310,7 +310,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setStartDate(announcement.getStartDate());
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
-    restModel.setPubliclyVisible(announcement.isPubliclyVisible());
+    restModel.setPubliclyVisible(announcement.getPubliclyVisible());
 
     List<Long> userGroupEntityIds = new ArrayList<>();
     for (AnnouncementUserGroup announcementUserGroup : userGroups) {
@@ -345,7 +345,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listWorkspaces(announcement);
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement);
 
     if (announcementWorkspaces.isEmpty() && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.DELETE_ANNOUNCEMENT)) {
       return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update environment announcements").build();
