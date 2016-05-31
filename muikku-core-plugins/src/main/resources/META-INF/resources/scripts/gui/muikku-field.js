@@ -144,7 +144,6 @@
       
       var assignmentType = this.assignmentType();      
       if (assignmentType) {
-        // TODO muikku-save-page-wrapper > muikku-buttons-container?
         var buttonWrapper = $('<div>')
           .addClass('muikku-save-page-wrapper')
           .appendTo(this.element);
