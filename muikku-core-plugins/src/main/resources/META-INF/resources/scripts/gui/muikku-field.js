@@ -159,10 +159,12 @@
           .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'))
           .click($.proxy(this._onShowAnswersButtonClick, this));
         
-        this._applyState(assignmentType, this.workspaceMaterialState());
-        
         this.element.on('fieldAnswerSaved', '.muikku-field', $.proxy(this._onFieldAnswerSaved, this));
       }
+    },
+    
+    applyState: function() {
+      this._applyState(this.assignmentType(), this.workspaceMaterialState());
     },
     
     content: function (content) {
@@ -238,6 +240,9 @@
     },
 
     _applyState: function (assignmentType, state) {
+      if (!assignmentType) {
+        return;
+      }
       var stateOptions = this._getStateOptions(assignmentType, state);
       var removeClasses = $.map(this.options.states, function (value) {
         return value['button-class'];
