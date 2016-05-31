@@ -8,6 +8,7 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.security.AbstractMuikkuPermissionCollection;
 import fi.otavanopisto.muikku.security.DefaultEnvironmentPermissionRoles;
+import fi.otavanopisto.muikku.security.DefaultWorkspacePermissionRoles;
 import fi.otavanopisto.muikku.security.MuikkuPermissionCollection;
 import fi.otavanopisto.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
@@ -19,13 +20,28 @@ public class AnnouncerPermissions extends AbstractMuikkuPermissionCollection imp
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String CREATE_ANNOUNCEMENT = "CREATE_ANNOUNCEMENT";
 
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  @DefaultWorkspacePermissionRoles( { WorkspaceRoleArchetype.TEACHER } )
+  public static final String CREATE_WORKSPACE_ANNOUNCEMENT = "CREATE_WORKSPACE_ANNOUNCEMENT";
+
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String UPDATE_ANNOUNCEMENT = "UPDATE_ANNOUNCEMENT";
 
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  @DefaultWorkspacePermissionRoles( { WorkspaceRoleArchetype.TEACHER } )
+  public static final String UPDATE_WORKSPACE_ANNOUNCEMENT = "UPDATE_WORKSPACE_ANNOUNCEMENT";
+
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String DELETE_ANNOUNCEMENT = "DELETE_ANNOUNCEMENT";
+  
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  @DefaultWorkspacePermissionRoles( { WorkspaceRoleArchetype.TEACHER } )
+  public static final String DELETE_WORKSPACE_ANNOUNCEMENT = "DELETE_WORKSPACE_ANNOUNCEMENT";
   
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
@@ -35,6 +51,11 @@ public class AnnouncerPermissions extends AbstractMuikkuPermissionCollection imp
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String LIST_UNARCHIVED_ANNOUNCEMENTS = "LIST_UNARCHIVED_ANNOUNCEMENTS";
   
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  @DefaultWorkspacePermissionRoles( { WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT } )
+  public static final String LIST_WORKSPACE_ANNOUNCEMENTS = "LIST_WORKSPACE_ANNOUNCEMENTS";
+  
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String FIND_ANNOUNCEMENT = "FIND_ANNOUNCEMENT";
@@ -42,7 +63,12 @@ public class AnnouncerPermissions extends AbstractMuikkuPermissionCollection imp
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String ANNOUNCER_TOOL = "ANNOUNCER_TOOL";
-  
+
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  @DefaultWorkspacePermissionRoles( {WorkspaceRoleArchetype.TEACHER } )
+  public static final String WORKSPACE_ANNOUNCER_TOOL = "WORKSPACE_ANNOUNCER_TOOL";
+  	
   @Override
   public List<String> listPermissions() {
     return listPermissions(AnnouncerPermissions.class);

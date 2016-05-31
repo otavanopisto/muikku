@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.announcer.model;
+package fi.otavanopisto.muikku.plugins.announcer.workspace.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,19 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
+
 @Entity
-public class AnnouncementUserGroup {
+public class AnnouncementWorkspace {
 
   public Long getId() {
     return id;
-  }
-
-  public Long getUserGroupEntityId() {
-    return userGroupEntityId;
-  }
-
-  public void setUserGroupEntityId(Long userGroupEntityId) {
-    this.userGroupEntityId = userGroupEntityId;
   }
 
   public Announcement getAnnouncement() {
@@ -29,6 +23,14 @@ public class AnnouncementUserGroup {
 
   public void setAnnouncement(Announcement announcement) {
     this.announcement = announcement;
+  }
+  
+  public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+
+  public void setWorkspaceEntityId(Long workspaceEntityId) {
+    this.workspaceEntityId = workspaceEntityId;
   }
   
   public Boolean getArchived() {
@@ -48,8 +50,8 @@ public class AnnouncementUserGroup {
   
   @Column (nullable=false)
   @NotNull
-  private Long userGroupEntityId;
-  
+  private Long workspaceEntityId;
+
   @ManyToOne(optional=false)
   @NotNull
   private Announcement announcement;
