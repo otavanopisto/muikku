@@ -47,28 +47,21 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return persist(announcement);
  }
   
-  public void archive(Announcement announcement) {
-    if(announcement != null){
-      announcement.setArchived(true);
-      getEntityManager().persist(announcement);
-    }
-  }
-  
   public List<Announcement> listByArchivedWithNoWorkspaces(boolean archived){
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
 
-    Subquery<Announcement> subquery = unarchivedAnnouncementWorkspaces(criteriaBuilder, criteria);
+    Subquery<Announcement> subquery = unarchivedWorkspaceAnnouncements(criteriaBuilder, criteria);
 
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(Announcement_.archived), archived)),
-            criteriaBuilder.not(
-                criteriaBuilder.in(root).value(subquery)));
+      criteriaBuilder.and(criteriaBuilder.equal(root.get(Announcement_.archived), archived)),
+      criteriaBuilder.not(criteriaBuilder.in(root).value(subquery))
+    );
+    
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
@@ -97,10 +90,12 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     Join<AnnouncementWorkspace, Announcement> announcement = root.join(AnnouncementWorkspace_.announcement);
     criteria.select(announcement);
     criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.equal(announcement.get(Announcement_.archived), archived)),
-            criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), false),
-            criteriaBuilder.equal(root.get(AnnouncementWorkspace_.workspaceEntityId), workspaceEntityId));
+      criteriaBuilder.and(
+        criteriaBuilder.equal(announcement.get(Announcement_.archived), archived)),
+        criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), false),
+        criteriaBuilder.equal(root.get(AnnouncementWorkspace_.workspaceEntityId), workspaceEntityId)
+    );
+    
     criteria.orderBy(criteriaBuilder.desc(announcement.get(Announcement_.startDate)));
     
     return entityManager.createQuery(criteria).getResultList();
@@ -210,7 +205,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
 
-    Subquery<Announcement> subquery = unarchivedAnnouncementWorkspaces(criteriaBuilder, criteria);
+    Subquery<Announcement> subquery = unarchivedWorkspaceAnnouncements(criteriaBuilder, criteria);
 
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
@@ -237,7 +232,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
 
-    Subquery<Announcement> subquery = unarchivedAnnouncementWorkspaces(criteriaBuilder, criteria);
+    Subquery<Announcement> subquery = unarchivedWorkspaceAnnouncements(criteriaBuilder, criteria);
 
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
@@ -262,7 +257,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
 
-    Subquery<Announcement> subquery = unarchivedAnnouncementWorkspaces(criteriaBuilder, criteria);
+    Subquery<Announcement> subquery = unarchivedWorkspaceAnnouncements(criteriaBuilder, criteria);
 
     Root<Announcement> root = criteria.from(Announcement.class);
     criteria.select(root);
@@ -295,60 +290,41 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  private Subquery<Announcement> unarchivedAnnouncementWorkspaces(
-      CriteriaBuilder criteriaBuilder,
-      CriteriaQuery<Announcement> criteria
-  ) {
+  private Subquery<Announcement> unarchivedWorkspaceAnnouncements(CriteriaBuilder criteriaBuilder, CriteriaQuery<Announcement> criteria) {
     Subquery<Announcement> subquery = criteria.subquery(Announcement.class);
     Root<AnnouncementWorkspace> announcementWorkspaces = subquery.from(AnnouncementWorkspace.class);
     subquery.select(announcementWorkspaces.get(AnnouncementWorkspace_.announcement));
-    subquery.where(
-        criteriaBuilder.equal(announcementWorkspaces.get(AnnouncementWorkspace_.archived), false));
+    subquery.where(criteriaBuilder.equal(announcementWorkspaces.get(AnnouncementWorkspace_.archived), false));
     return subquery;
   }
 
-  public Announcement updateCaption(
-      Announcement announcement,
-      String caption
-  ) {
+  public Announcement updateCaption(Announcement announcement, String caption) {
     announcement.setCaption(caption);
-
     return persist(announcement);
   }
 
-  public Announcement updateContent(
-      Announcement announcement,
-      String content
-  ) {
+  public Announcement updateContent(Announcement announcement, String content) {
     announcement.setContent(content);
-
     return persist(announcement);
   }
 
-  public Announcement updateStartDate(
-      Announcement announcement,
-      Date startDate
-  ) {
+  public Announcement updateStartDate(Announcement announcement, Date startDate) {
     announcement.setStartDate(startDate);
-
     return persist(announcement);
   }
 
-  public Announcement updateEndDate(
-      Announcement announcement,
-      Date endDate
-  ) {
+  public Announcement updateEndDate(Announcement announcement, Date endDate) {
     announcement.setEndDate(endDate);
-
     return persist(announcement);
   }
 
-  public Announcement updatePubliclyVisible(
-      Announcement announcement,
-      boolean publiclyVisible
-  ) {
+  public Announcement updatePubliclyVisible(Announcement announcement, boolean publiclyVisible) {
     announcement.setPubliclyVisible(publiclyVisible);
-
+    return persist(announcement);
+  }
+  
+  public Announcement updateArchived(Announcement announcement, Boolean archived) {
+    announcement.setArchived(archived);
     return persist(announcement);
   }
   

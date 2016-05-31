@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.announcer.rest;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -72,13 +73,23 @@ public class AnnouncerRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE)
   public Response createAnnouncement(AnnouncementRESTModel restModel) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
-
-    if (restModel.getWorkspaceEntityIds().isEmpty() && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.CREATE_ANNOUNCEMENT)) {
+    
+    List<Long> workspaceEntityIds = restModel.getWorkspaceEntityIds();
+    if (workspaceEntityIds == null) {
+      workspaceEntityIds = Collections.emptyList();
+    }
+    
+    List<Long> userGroupEntityIds = restModel.getUserGroupEntityIds();
+    if (userGroupEntityIds == null) {
+      userGroupEntityIds = Collections.emptyList();
+    }
+    
+    if (workspaceEntityIds.isEmpty() && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.CREATE_ANNOUNCEMENT)) {
       return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create environment announcements").build();
     }
 
-    for (Long id : restModel.getWorkspaceEntityIds()) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(id);
+    for (Long workspaceEntityId : workspaceEntityIds) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
 
       if (workspaceEntity == null) {
         return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceEntityId").build();
@@ -97,8 +108,8 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getEndDate(),
         restModel.getPubliclyVisible());
     
-    for (Long id : restModel.getUserGroupEntityIds()) {
-      UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(id);
+    for (Long userGroupEntityId : userGroupEntityIds) {
+      UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
 
       if (userGroupEntity == null) {
         return Response.status(Status.BAD_REQUEST).entity("Invalid userGroupEntityId").build();
@@ -107,8 +118,8 @@ public class AnnouncerRESTService extends PluginRESTService {
       announcementController.addAnnouncementTargetGroup(announcement, userGroupEntity);
     }
 
-    for (Long id : restModel.getWorkspaceEntityIds()) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(id);
+    for (Long workspaceEntityId : workspaceEntityIds) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
 
       if (workspaceEntity == null) {
         return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceEntityId").build();
@@ -123,17 +134,23 @@ public class AnnouncerRESTService extends PluginRESTService {
   @PUT
   @Path("/announcements/{ID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response updateAnnouncement(
-      @PathParam("ID") Long announcementId,
-      AnnouncementRESTModel restModel
-  ) {
-
-    if (restModel.getWorkspaceEntityIds().isEmpty() && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.UPDATE_ANNOUNCEMENT)) {
+  public Response updateAnnouncement(@PathParam("ID") Long announcementId, AnnouncementRESTModel restModel) {
+    List<Long> workspaceEntityIds = restModel.getWorkspaceEntityIds();
+    if (workspaceEntityIds == null) {
+      workspaceEntityIds = Collections.emptyList();
+    }
+    
+    List<Long> userGroupEntityIds = restModel.getUserGroupEntityIds();
+    if (userGroupEntityIds == null) {
+      userGroupEntityIds = Collections.emptyList();
+    }
+    
+    if (workspaceEntityIds.isEmpty() && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.UPDATE_ANNOUNCEMENT)) {
       return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update environment announcements").build();
     }
 
-    for (Long id : restModel.getWorkspaceEntityIds()) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(id);
+    for (Long workspaceEntityId : workspaceEntityIds) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
 
       if (workspaceEntity == null) {
         return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceEntityId").build();
@@ -163,8 +180,8 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getPubliclyVisible());
 
     announcementController.clearAnnouncementTargetGroups(newAnnouncement);
-    for (Long id : restModel.getUserGroupEntityIds()) {
-      UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(id);
+    for (Long userGroupEntityId : userGroupEntityIds) {
+      UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
       
       if (userGroupEntity == null) {
         return Response.status(Status.BAD_REQUEST).entity("Invalid userGroupEntityId").build();
@@ -174,8 +191,8 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
 
     announcementController.clearAnnouncementWorkspaces(newAnnouncement);
-    for (Long id : restModel.getWorkspaceEntityIds()) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(id);
+    for (Long workspaceEntityId : workspaceEntityIds) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
 
       if (workspaceEntity == null) {
         return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceEntityId").build();

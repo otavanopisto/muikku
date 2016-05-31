@@ -16,24 +16,12 @@ public class AnnouncementWorkspaceDAO extends CorePluginsDAO<AnnouncementWorkspa
 	
   private static final long serialVersionUID = -8721990589622544635L;
   
-  public AnnouncementWorkspace create(
-      Announcement announcement,
-      Long workspaceEntityId,
-      boolean archived
-  ) {
+  public AnnouncementWorkspace create(Announcement announcement, Long workspaceEntityId, boolean archived) {
     AnnouncementWorkspace announcemenWorkspace = new AnnouncementWorkspace();
     announcemenWorkspace.setAnnouncement(announcement);
     announcemenWorkspace.setWorkspaceEntityId(workspaceEntityId);
     announcemenWorkspace.setArchived(archived);
-    
     return persist(announcemenWorkspace);
- }
-  
-  public void archive(AnnouncementWorkspace announcementWorkspace) {
-    if(announcementWorkspace != null){
-      announcementWorkspace.setArchived(true);
-      getEntityManager().persist(announcementWorkspace);
-    }
   }
   
   public List<AnnouncementWorkspace> listByArchived(boolean archived){
@@ -48,10 +36,7 @@ public class AnnouncementWorkspaceDAO extends CorePluginsDAO<AnnouncementWorkspa
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<AnnouncementWorkspace> listByAnnouncementAndArchived(
-      Announcement announcement,
-      boolean archived
-  ) {
+  public List<AnnouncementWorkspace> listByAnnouncementAndArchived(Announcement announcement, boolean archived) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -59,11 +44,18 @@ public class AnnouncementWorkspaceDAO extends CorePluginsDAO<AnnouncementWorkspa
     Root<AnnouncementWorkspace> root = criteria.from(AnnouncementWorkspace.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.and(
-          criteriaBuilder.equal(root.get(AnnouncementWorkspace_.announcement), announcement),
-          criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), archived)));
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(AnnouncementWorkspace_.announcement), announcement),
+        criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), archived)
+      )
+    );
     
     return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public AnnouncementWorkspace updateArchived(AnnouncementWorkspace announcementWorkspace, Boolean archived) {
+    announcementWorkspace.setArchived(archived);
+    return persist(announcementWorkspace);
   }
   
   public void delete(AnnouncementWorkspace announcementWorkspace){

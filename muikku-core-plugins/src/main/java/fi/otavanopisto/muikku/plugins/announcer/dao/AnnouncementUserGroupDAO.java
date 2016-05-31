@@ -16,11 +16,7 @@ public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGro
 	
   private static final long serialVersionUID = -8721990589622544635L;
   
-  public AnnouncementUserGroup create(
-      Announcement announcement,
-      Long userGroupEntityId,
-      boolean archived
-  ) {
+  public AnnouncementUserGroup create(Announcement announcement, Long userGroupEntityId, boolean archived) {
     AnnouncementUserGroup announcementUserGroup = new AnnouncementUserGroup();
     announcementUserGroup.setAnnouncement(announcement);
     announcementUserGroup.setUserGroupEntityId(userGroupEntityId);
@@ -28,13 +24,6 @@ public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGro
     
     return persist(announcementUserGroup);
  }
-  
-  public void archive(AnnouncementUserGroup announcementUserGroup) {
-    if(announcementUserGroup != null){
-      announcementUserGroup.setArchived(true);
-      getEntityManager().persist(announcementUserGroup);
-    }
-  }
   
   public List<AnnouncementUserGroup> listByArchived(boolean archived){
     EntityManager entityManager = getEntityManager();
@@ -48,10 +37,7 @@ public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGro
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<AnnouncementUserGroup> listByAnnouncementAndArchived(
-      Announcement announcement,
-      boolean archived
-  ) {
+  public List<AnnouncementUserGroup> listByAnnouncementAndArchived(Announcement announcement, boolean archived) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -59,11 +45,18 @@ public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGro
     Root<AnnouncementUserGroup> root = criteria.from(AnnouncementUserGroup.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.and(
-          criteriaBuilder.equal(root.get(AnnouncementUserGroup_.announcement), announcement),
-          criteriaBuilder.equal(root.get(AnnouncementUserGroup_.archived), archived)));
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(AnnouncementUserGroup_.announcement), announcement),
+        criteriaBuilder.equal(root.get(AnnouncementUserGroup_.archived), archived)
+      )
+    );
     
     return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public AnnouncementUserGroup updateArchived(AnnouncementUserGroup announcementUserGroup, Boolean archived) {
+    announcementUserGroup.setArchived(archived);
+    return persist(announcementUserGroup);
   }
   
   public void delete(AnnouncementUserGroup announcementUserGroup){
