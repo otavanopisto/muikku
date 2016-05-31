@@ -38,16 +38,22 @@
         while (itemObjects.length) {
           itemsContainer.append(itemObjects.splice(Math.floor(Math.random() * itemObjects.length), 1)[0]);
         }
-        $(itemsContainer).sortable({
-          update: $.proxy(function (event, ui) {
-            $(this.element).trigger("change");
-          }, this)
-        });
+        if (!this.isReadonly()) {
+          $(itemsContainer).sortable({
+            update: $.proxy(function (event, ui) {
+              $(this.element).trigger("change");
+            }, this)
+          });
+        }
         this.element.append(itemsContainer);
+      },
+      isReadonly: function () {
+        return this.element.attr('data-disabled') == 'true';
       },
       setReadonly: function(readonly) {
         var itemsContainer = this.element.find('.muikku-sorter-items-container');
         if (readonly) {
+          this.element.attr('data-disabled', 'true');
           $(itemsContainer).sortable("destroy");
         } else {
           $(itemsContainer).sortable({
@@ -55,6 +61,7 @@
               $(this.element).trigger("change");
             }, this)
           });
+          this.element.removeAttr('data-disabled');
         } 
       },
       answer: function(val) {
