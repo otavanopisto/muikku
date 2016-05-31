@@ -1,5 +1,6 @@
 @import "_vars.scss";
 @import "_styles.scss";
+@import "_draft.scss";
 
 .cm-message-create {
   width:100%;
@@ -149,7 +150,7 @@
 .cm-messages-container {
 
   &.loading {
-    padding-bottom: 20px;
+    padding:20px;
   
     &:after {
       @include generic-loader(50px);

@@ -45,6 +45,18 @@
         });
         this.element.append(itemsContainer);
       },
+      setReadonly: function(readonly) {
+        var itemsContainer = this.element.find('.muikku-sorter-items-container');
+        if (readonly) {
+          $(itemsContainer).sortable("destroy");
+        } else {
+          $(itemsContainer).sortable({
+            update: $.proxy(function (event, ui) {
+              $(this.element).trigger("change");
+            }, this)
+          });
+        } 
+      },
       answer: function(val) {
         if (val === undefined) {
           var answer = [];
