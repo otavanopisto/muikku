@@ -114,7 +114,6 @@
           material.html = parsed.html();
           renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material, hidden: pageElement.hasClass('item-hidden') }, $.proxy(function (text) {
             $(pageElement).empty().append(text);
-
             $(document).trigger('afterHtmlMaterialRender', {
               pageElement: pageElement,
               parentIds: parentIds,
@@ -128,7 +127,7 @@
         }
         else {
           $(pageElement).muikkuMaterialPage('content', parsed);
-          
+          $(pageElement).muikkuMaterialPage('applyState');
           $(document).trigger('afterHtmlMaterialRender', {
             pageElement: pageElement,
             parentIds: parentIds,
