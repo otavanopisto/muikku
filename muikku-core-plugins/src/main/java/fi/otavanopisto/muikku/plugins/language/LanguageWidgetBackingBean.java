@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.LocaleUtils;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
@@ -24,6 +25,11 @@ public class LanguageWidgetBackingBean {
 
   @Inject
   private UserEntityController userEntityController;
+  
+  @RequestAction
+  public String load() {
+    return null;
+  }
 
   public String setLanguage(String language){
     Locale locale = LocaleUtils.toLocale(language);
@@ -32,7 +38,8 @@ public class LanguageWidgetBackingBean {
     if (localSessionController.isLoggedIn()) {
       userEntityController.updateLocale(localSessionController.getLoggedUserEntity(), locale);
     }
-    return "?faces-redirect=true";
+    
+    return "/index.jsf?faces-redirect=true";
   }
   
 }

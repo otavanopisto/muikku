@@ -1,0 +1,53 @@
+@import "_vars.scss";
+@import "_styles.scss";
+
+body { 
+  
+ #announcements {
+    min-height:800px;
+    background:#fff;
+    margin-top:30px;
+  
+    .context-wrapper {
+
+      
+      nav#announcementContextNavigation {
+
+        .gc-navigation-item {
+          background:#dff7fe;
+          
+          a.gc-navigation-title {
+            font-weight:300;
+            color:#000;
+            text-decoration:none;
+            font-size:16px;
+            display:block;
+            padding:8px;
+            text-shadow:0 0 5px #fff;
+            
+            &:hover {
+              color:#047094;
+            }
+          }
+          
+          .gc-navigation-date {
+            font-weight:300;
+            font-size:16px;
+            margin-top:5px;
+            padding-top:5px;
+            border-top:1px solid #fff;
+            padding:8px;
+            background:#f3fcff;
+            text-align:right;
+          }
+        
+        }
+      
+      }
+
+    }
+  
+  }
+  
+}
+  

@@ -19,11 +19,11 @@ import org.jsoup.safety.Whitelist;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageCategoryDAO;
+import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageTemplateDAO;
-import fi.otavanopisto.muikku.plugins.communicator.dao.InboxCommunicatorMessageDAO;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
@@ -31,14 +31,13 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
-import fi.otavanopisto.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.otavanopisto.security.Permit;
 import fi.otavanopisto.security.PermitContext;
 
 public class CommunicatorController {
    
   @Inject
-  private InboxCommunicatorMessageDAO communicatorMessageDAO;
+  private CommunicatorMessageDAO communicatorMessageDAO;
 
   @Inject
   private CommunicatorMessageCategoryDAO communicatorMessageCategoryDAO;
@@ -65,11 +64,11 @@ public class CommunicatorController {
     return doc.body().html();
   }
 
-  public List<InboxCommunicatorMessage> listReceivedItems(UserEntity userEntity) {
-    return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
+  public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
+    return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity, firstResult, maxResults);
   }
   
-  public List<InboxCommunicatorMessage> listSentItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
+  public List<CommunicatorMessage> listSentItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
     return communicatorMessageDAO.listFirstMessagesBySender(userEntity, firstResult, maxResults);
   }
 
@@ -105,7 +104,7 @@ public class CommunicatorController {
     return communicatorMessageIdDAO.findById(communicatorMessageId);
   }
 
-  public List<InboxCommunicatorMessage> listInboxMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
+  public List<CommunicatorMessage> listInboxMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
     return communicatorMessageDAO.listMessagesByRecipientAndMessageId(user, messageId);
   }
 
@@ -188,7 +187,7 @@ public class CommunicatorController {
   }
 
   public void archiveSentMessages(UserEntity user, CommunicatorMessageId messageId) {
-    List<InboxCommunicatorMessage> sent = communicatorMessageDAO.listBySenderAndMessageId(user, messageId);
+    List<CommunicatorMessage> sent = communicatorMessageDAO.listBySenderAndMessageId(user, messageId);
 
     for (CommunicatorMessage msg : sent) {
       communicatorMessageDAO.archiveSent(msg);
@@ -202,10 +201,10 @@ public class CommunicatorController {
    * @param messageId
    * @return
    */
-  public List<InboxCommunicatorMessage> listMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
-    Set<InboxCommunicatorMessage> result = new TreeSet<>(new Comparator<InboxCommunicatorMessage>() {
+  public List<CommunicatorMessage> listMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
+    Set<CommunicatorMessage> result = new TreeSet<>(new Comparator<CommunicatorMessage>() {
       @Override
-      public int compare(InboxCommunicatorMessage o1, InboxCommunicatorMessage o2) {
+      public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
         if (o1 == null || o1.getId() == null) {
           if (o2 == null || o2.getId() == null) {
             return 0;
@@ -243,7 +242,7 @@ public class CommunicatorController {
     return createMessage(communicatorMessageId, sender, recipients, categoryEntity, subject, content, null);
   }
 
-  public List<InboxCommunicatorMessage> listAllInboxMessages() {
+  public List<CommunicatorMessage> listAllMessages() {
     return communicatorMessageDAO.listAll();
   }
 
@@ -255,7 +254,7 @@ public class CommunicatorController {
     return communicatorMessageIdDAO.listAll();
   }
 
-  public void delete(InboxCommunicatorMessage icm) {
+  public void delete(CommunicatorMessage icm) {
     communicatorMessageDAO.delete(icm);
   }
 

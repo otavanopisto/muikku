@@ -9,12 +9,12 @@
     
     <ui:define name="content.center.widget">
       <c:choose>
-        <c:when test="#{!muikkuSession.loggedIn}">
+        <c:when test="#{!sessionBackingBean.loggedIn}">
         
           <ui:include src="/widgets/login.xhtml">
           </ui:include>
     
-          <ui:fragment rendered="#{not muikkuSession.loggedIn}">
+          <ui:fragment rendered="#{not sessionBackingBean.loggedIn}">
             <ui:include src="/widgets/register.xhtml">
             </ui:include>
           </ui:fragment>

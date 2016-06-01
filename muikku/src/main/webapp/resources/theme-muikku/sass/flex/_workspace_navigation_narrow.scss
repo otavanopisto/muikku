@@ -36,12 +36,28 @@
         background:transparent;
         border-radius:3px;
         text-align:left;
+        box-shadow:0 3px 5px rgba(0,0,0,0.3);
+        
+        &:after {
+          right:100%;
+          top:26px;
+          border:solid transparent;
+          content:" ";
+          height:0;
+          width:0;
+          position:absolute;
+          pointer-events:none;
+          border-color:rgba(76, 102, 105, 0);
+          border-right-color:#4c6669;
+          border-width:8px;
+          margin-top:-8px;
+        }
         
         .navmore-management-links {
           padding:10px;
           background:#4c6669;
-          border-radius:3px;
-          box-shadow:0 -1px 5px rgba(0,0,0,0.3);
+          border-top-left-radius:3px;
+          border-top-right-radius:3px;
           
           .workspace-management-item {
             
@@ -71,11 +87,10 @@
         }
         
         .navmore-student-links {
-          margin-top:3px;
           padding:10px;
           background:#36b497;
-          border-radius:3px;
-          box-shadow:0 1px 5px rgba(0,0,0,0.3);
+          border-bottom-left-radius:3px;
+          border-bottom-right-radius:3px;
           
           .workspace-student-item {
             

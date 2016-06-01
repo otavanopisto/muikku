@@ -1,7 +1,7 @@
 <div class="cm-messages-page lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-  {#.}
+  {#items}
       {>"communicator/communicator_item.dust"/}
-  {/.} 
+  {/items} 
   {@lt key=msgLoadCount value=10}
     <div class="mf-items-paging cm-messages-paging">
       <div class="mf-paging-toolbar cm-paging-toolbar">
@@ -9,7 +9,7 @@
       </div>
     </div>    
    {:else}   
-    {?.}  
+    {?items}  
       <div class="mf-items-paging cm-messages-paging">
         <div class="mf-paging-toolbar gt-paging-toolbar">
           <div class="mf-paging-tool mf-page-link-load-more cm-paging-tool cm-page-link-load-more">{#localize key="plugin.communicator.links.more"/}</div>
@@ -21,6 +21,6 @@
           <div class="mf-paging-tool mf-page-link-load-more cm-paging-tool cm-page-link-load-more disabled">{#localize key="plugin.communicator.links.nomore"/}</div>
         </div>
       </div>    
-    {/.}
+    {/items}
   {/lt}    
 </div>

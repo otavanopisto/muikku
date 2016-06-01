@@ -72,10 +72,10 @@ import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
+import fi.otavanopisto.muikku.atests.Discussion;
+import fi.otavanopisto.muikku.atests.DiscussionGroup;
+import fi.otavanopisto.muikku.atests.DiscussionThread;
 import fi.otavanopisto.muikku.atests.Workspace;
-import fi.otavanopisto.muikku.atests.WorkspaceDiscussion;
-import fi.otavanopisto.muikku.atests.WorkspaceDiscussionGroup;
-import fi.otavanopisto.muikku.atests.WorkspaceDiscussionThread;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
@@ -520,8 +520,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().manage().window().maximize();
   }
   
-  protected void waitForPresent(String selector) {
-    waitForElementToBePresent(By.cssSelector(selector));
+  protected void waitForPresent(final String selector) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElements(selector);
+          return !elements.isEmpty();
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
   }
 
   protected void waitForNotVisible(String selector) {
@@ -747,10 +757,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return workspace;
   }
   
-  protected WorkspaceDiscussionGroup createWorkspaceDiscussionGroup(Long workspaceEntityId, String name) throws IOException {
+  protected DiscussionGroup createWorkspaceDiscussionGroup(Long workspaceEntityId, String name) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    WorkspaceDiscussionGroup payload = new WorkspaceDiscussionGroup(null, name);
+    DiscussionGroup payload = new DiscussionGroup(null, name);
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
@@ -759,7 +769,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     response.then()
       .statusCode(200);
       
-    WorkspaceDiscussionGroup workspaceDiscussionGroup = objectMapper.readValue(response.asString(), WorkspaceDiscussionGroup.class);
+    DiscussionGroup workspaceDiscussionGroup = objectMapper.readValue(response.asString(), DiscussionGroup.class);
     assertNotNull(workspaceDiscussionGroup);
     assertNotNull(workspaceDiscussionGroup.getId());
     
@@ -773,10 +783,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
-  protected WorkspaceDiscussion createWorkspaceDiscussion(Long workspaceEntityId, Long groupId, String name) throws IOException {
+  protected Discussion createWorkspaceDiscussion(Long workspaceEntityId, Long groupId, String name) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    WorkspaceDiscussion payload = new WorkspaceDiscussion(null, name, groupId);
+    Discussion payload = new Discussion(null, name, groupId);
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
@@ -785,7 +795,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     response.then()
       .statusCode(200);
       
-    WorkspaceDiscussion workspaceDiscussion = objectMapper.readValue(response.asString(), WorkspaceDiscussion.class);
+    Discussion workspaceDiscussion = objectMapper.readValue(response.asString(), Discussion.class);
     assertNotNull(workspaceDiscussion);
     assertNotNull(workspaceDiscussion.getId());
     
@@ -799,10 +809,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
-  protected WorkspaceDiscussionThread createWorkspaceDiscussionThread(Long workspaceEntityId, Long groupId, Long discussionId, String title, String message, Boolean sticky, Boolean locked) throws IOException {
+  protected DiscussionThread createWorkspaceDiscussionThread(Long workspaceEntityId, Long groupId, Long discussionId, String title, String message, Boolean sticky, Boolean locked) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    WorkspaceDiscussionThread payload = new WorkspaceDiscussionThread(null, title, message, sticky, locked);
+    DiscussionThread payload = new DiscussionThread(null, title, message, sticky, locked);
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
@@ -811,7 +821,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     response.then()
       .statusCode(200);
       
-    WorkspaceDiscussionThread workspaceDiscussionThread = objectMapper.readValue(response.asString(), WorkspaceDiscussionThread.class);
+    DiscussionThread workspaceDiscussionThread = objectMapper.readValue(response.asString(), DiscussionThread.class);
     assertNotNull(workspaceDiscussionThread);
     assertNotNull(workspaceDiscussionThread.getId());
     
@@ -824,7 +834,85 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .then()
       .statusCode(204);
   }
+
+  protected DiscussionGroup createDiscussionGroup(String name) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    DiscussionGroup payload = new DiscussionGroup(null, name);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/discussiongroups");
+    
+    response.then()
+      .statusCode(200);
+      
+    DiscussionGroup discussionGroup = objectMapper.readValue(response.asString(), DiscussionGroup.class);
+    assertNotNull(discussionGroup);
+    assertNotNull(discussionGroup.getId());
+    
+    return discussionGroup;
+  }
   
+  protected void deleteDiscussionGroup(Long groupId) {
+    asAdmin()
+      .delete("/test/discussiongroups/{GROUPID}", groupId)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected Discussion createDiscussion(Long groupId, String name) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    Discussion payload = new Discussion(null, name, groupId);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/discussiongroups/{GROUPID}/discussions", groupId);
+    
+    response.then()
+      .statusCode(200);
+      
+    Discussion discussion = objectMapper.readValue(response.asString(), Discussion.class);
+    assertNotNull(discussion);
+    assertNotNull(discussion.getId());
+    
+    return discussion;
+  }
+
+  protected void deleteDiscussion(Long groupId, Long id) {
+    asAdmin()
+      .delete("/test/discussiongroups/{GROUPID}/discussions/{ID}", groupId, id)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected DiscussionThread createDiscussionThread(Long groupId, Long discussionId, String title, String message, Boolean sticky, Boolean locked) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    DiscussionThread payload = new DiscussionThread(null, title, message, sticky, locked);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads", groupId, discussionId);
+    
+    response.then()
+      .statusCode(200);
+      
+    DiscussionThread discussionThread = objectMapper.readValue(response.asString(), DiscussionThread.class);
+    assertNotNull(discussionThread);
+    assertNotNull(discussionThread.getId());
+    
+    return discussionThread;
+  }
+
+  protected void deleteDiscussionThread(Long groupId, Long discussionId, Long id) {
+    asAdmin()
+      .delete("/test/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}", groupId, discussionId, id)
+      .then()
+      .statusCode(204);
+  }  
+
   protected void deleteWorkspace(Long id) {
     asAdmin()
       .delete("/test/workspaces/{WORKSPACEID}", id)
@@ -985,7 +1073,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       waitForCKReady("textContent");
       ((JavascriptExecutor) getWebDriver()).executeScript("CKEDITOR.instances.textContent.setData('"+ text +"');");
     } else {
-      waitAndClick("#cke_1_contents");
+      waitAndClick(".cke_contents");
       getWebDriver().switchTo().activeElement().sendKeys(text);
     }
   }

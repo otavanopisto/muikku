@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,9 +22,11 @@ import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
+@Stateful
 @RequestScoped
 @Join(path = "/records/", to = "/jsf/records/index.jsf")
 @LoggedIn
@@ -31,12 +34,19 @@ public class TranscriptofRecordsBackingBean {
   
   @Inject
   private Logger logger;
-  
+
+  @Inject
+  private SessionController sessionController;
+
   @Inject
   private GradingController gradingController;
 
   @RequestAction
 	public String init() {
+    if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW)) {
+      return NavigationRules.ACCESS_DENIED;
+    }
+    
     Map<String, Grade> grades = new HashMap<>();
     
     List<GradingScale> gradingScales = gradingController.listGradingScales();

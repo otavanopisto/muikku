@@ -25,14 +25,20 @@
       line-height:1;
       cursor:move;
       
-      &.ui-draggable-dragging {
-        z-index:99;
+      &.term-in-use {
+        background:#b1e8fe; 
+        color:#000;
+      }
+
+      &:hover {
+        background:#b1e8fe;
+        color:#000;
       }
       
-      &:hover {
-        background:#3dc7ff;
+      &.ui-draggable-dragging {
+        z-index:99;
+        background:#3dc7ff; 
         color:#fff;
-        text-shadow:0 0 0px #fff;
       }
       
     }
@@ -80,6 +86,11 @@
       position:relative;
       line-height:1;
       
+      &.term-in-use {
+        background:#b1e8fe; 
+        color:#000;
+      }
+      
       .icon-delete {
         position:absolute;
         right:5px;
@@ -89,12 +100,6 @@
         font-size:14px;
         color:#000;
         cursor:pointer;
-      }
-      
-      &:hover {
-        background:#3dc7ff;
-        color:#fff;
-        text-shadow:0 0 0px #fff;
       }
       
     }

@@ -8,21 +8,25 @@
         entities_latin: false,
         entities_greek: false,
         autoGrow_onStartup: true,
+        mathJaxLib: '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML',
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
           { name: 'links', items: [ 'Link' ] },
-          { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+          { name: 'insert', items: [ 'Image', 'Table', 'Muikku-mathjax', 'Smiley', 'SpecialChar' ] },
           { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
           { name: 'styles', items: [ 'Format' ] },
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
         ],
         externalPlugins : {
+          'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.8/',
+          'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.8/',
           'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
-          'autogrow' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autogrow/4.5.8/plugin.js'
+          'autogrow' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autogrow/4.5.8/plugin.js',
+          'muikku-mathjax': CONTEXTPATH + '/scripts/ckplugins/muikku-mathjax/'
         },
-        extraPlugins : 'change,autogrow'
+        extraPlugins : 'change,autogrow,muikku-mathjax'
       }
     },
     _create : function() {

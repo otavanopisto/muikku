@@ -1,7 +1,7 @@
 /* Material loading */
 .workspace-material-queued-html,
 .workspace-material-loading {
-  background-image:url("gfx/workspace-material-loading.gif"); 
+  background-image:url("gfx/workspace-material-loading.gif");  
   background-repeat: no-repeat;
   background-position: center;
   min-height: 500px;
@@ -57,7 +57,7 @@ input[type="text"] {
   width:auto;
   height:auto;
   border:3px solid #c9e0fb;
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   padding:4px 8px;
   transition:border,box-shadow 0.2s,0.2s ease-in-out;
@@ -129,7 +129,7 @@ input[type="text"] {
 textarea {
   height:auto;
   border:3px solid #c9e0fb;
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   padding:4px 8px;
   transition:border,box-shadow 0.1s,0.2s ease-in-out;
@@ -155,6 +155,7 @@ textarea {
       box-shadow:none !important;
       color:#555555 !important;
     }
+    
   }
   
   &:focus,
@@ -175,7 +176,7 @@ select {
   display:inline-block;
   margin:4px;
   box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
-  @include rounded(3px);
+  border-radius:3px;
   max-width:100%;
   word-wrap:break-word;
   vertical-align:middle;
@@ -232,7 +233,7 @@ input[type="checkbox"] {
   outline:none;
   display:inline-block;
   box-shadow:0 0 1px 3px rgba(215,215,215,0.15);
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   
   &:focus,
@@ -266,6 +267,7 @@ select {
     &:hover {
       border:3px solid #e4e630;
     }
+    
   }
   
   &.muikku-field-saving {
@@ -546,6 +548,7 @@ strong, b {
 table {
   margin:initial;
   padding:initial;
+  font-size:14px;
 }
 
 table[cellspacing] {
@@ -610,6 +613,10 @@ sub {
 sup {
   vertical-align:super;
   font-size:70%;
+}
+
+.clear {
+  clear:both;
 }
 
 .muikku-save-page-wrapper {
@@ -702,7 +709,7 @@ sup {
   select.muikku-field-correct-answer {
     box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
     border:3px solid #00ff2a;
-    @include rounded(3px);
+    border-radius:3px;
     
     &:hover {
       box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
@@ -716,7 +723,7 @@ sup {
   select.muikku-field-incorrect-answer {
     border:3px solid #f64e4e;
     box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-    @include rounded(3px);
+    border-radius:3px;
     
     &:hover {
       border:3px solid #f64e4e;
@@ -768,7 +775,7 @@ sup {
     .muikku-category.muikku-field-correct-answer {
       box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
       border:3px solid #00ff2a;
-      @include rounded(3px);
+      border-radius:3px;
       
       &:hover {
         box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
@@ -780,7 +787,7 @@ sup {
     .muikku-category.muikku-field-semi-correct-answer {
       box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
       border:3px solid #dab33d;
-      @include rounded(3px);
+      border-radius:3px;
       
       &:hover {
         box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
@@ -792,13 +799,70 @@ sup {
     .muikku-category.muikku-field-incorrect-answer {
       border:3px solid #f64e4e;
       box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-      @include rounded(3px);
+      border-radius:3px;
       
       &:hover {
         border:3px solid #f64e4e;
         box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
       }
 
+    }
+    
+  }
+  
+  /* For sorterfields checks */
+  div.muikku-sorter-field {
+    
+    .muikku-sorter-items-container.muikku-field-correct-answer {
+      box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
+      border:3px solid #00ff2a;
+      border-radius: 3px;;
+      
+      &:hover {
+        box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
+        border:3px solid #00ff2a;
+      }
+      
+    }
+    
+    .muikku-sorter-items-container.muikku-field-semi-correct-answer {
+      box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
+      border:3px solid #dab33d;
+      border-radius: 3px;;
+      
+      &:hover {
+        box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
+        border:3px solid #dab33d;
+      }
+      
+    }
+    
+    .muikku-sorter-items-container.muikku-field-incorrect-answer {
+      border:3px solid #f64e4e;
+      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
+      border-radius: 3px;;
+      
+      &:hover {
+        border:3px solid #f64e4e;
+        box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
+      }
+
+    }
+    
+    .muikku-sorter-items-container {
+    
+      .muikku-sorter-item {
+      
+        &.muikku-field-correct-answer {
+          background:#55fc70;
+        }
+        
+        &.muikku-field-incorrect-answer {
+          background:#f64e4e;
+        }
+      
+      }
+    
     }
     
   }
@@ -838,7 +902,7 @@ sup {
     input[type="radio"].muikku-field-correct-answer-override {
       box-shadow:0 0 1px 3px rgba(0,255,42,0.9);
       border:3px solid #00ff2a;
-      @include rounded(3px);
+      border-radius:3px;
       
       &:hover {
         box-shadow:0 0 1px 3px rgba(0,255,42,0.9);

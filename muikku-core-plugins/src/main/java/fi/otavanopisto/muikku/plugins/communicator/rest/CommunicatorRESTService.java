@@ -1,8 +1,6 @@
 package fi.otavanopisto.muikku.plugins.communicator.rest;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +22,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -44,7 +44,6 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
-import fi.otavanopisto.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -110,39 +109,30 @@ public class CommunicatorRESTService extends PluginRESTService {
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
-    List<InboxCommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user);
+    List<CommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user, firstResult, maxResults);
 
     List<CommunicatorMessageItemRESTModel> result = new ArrayList<CommunicatorMessageItemRESTModel>();
     
-    for (InboxCommunicatorMessage msg : receivedItems) {
-      String categoryName = msg.getCategory() != null ? msg.getCategory().getName() : null;
+    for (CommunicatorMessage receivedItem : receivedItems) {
+      String categoryName = receivedItem.getCategory() != null ? receivedItem.getCategory().getName() : null;
       boolean hasUnreadMsgs = false;
-      Date latestMessageDate = msg.getCreated();
+      Date latestMessageDate = receivedItem.getCreated();
       
       List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(
-          user, msg.getCommunicatorMessageId());
+          user, receivedItem.getCommunicatorMessageId());
       
-      for (CommunicatorMessageRecipient r : recipients) {
-        hasUnreadMsgs = hasUnreadMsgs || Boolean.FALSE.equals(r.getReadByReceiver()); 
-        Date created = r.getCommunicatorMessage().getCreated();
+      for (CommunicatorMessageRecipient recipient : recipients) {
+        hasUnreadMsgs = hasUnreadMsgs || Boolean.FALSE.equals(recipient.getReadByReceiver()); 
+        Date created = recipient.getCommunicatorMessage().getCreated();
         latestMessageDate = latestMessageDate == null || latestMessageDate.before(created) ? created : latestMessageDate;
       }
       
       result.add(new CommunicatorMessageItemRESTModel(
-          msg.getId(), msg.getCommunicatorMessageId().getId(), msg.getSender(), categoryName, 
-          msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), 
-          getMessageRecipientIdList(msg), hasUnreadMsgs, latestMessageDate));
+          receivedItem.getId(), receivedItem.getCommunicatorMessageId().getId(), receivedItem.getSender(), categoryName, 
+          receivedItem.getCaption(), receivedItem.getContent(), receivedItem.getCreated(), tagIdsToStr(receivedItem.getTags()), 
+          getMessageRecipientIdList(receivedItem), hasUnreadMsgs, latestMessageDate));
     }
-    
-    Collections.sort(result, new Comparator<CommunicatorMessageItemRESTModel>() {
-      @Override
-      public int compare(CommunicatorMessageItemRESTModel o1, CommunicatorMessageItemRESTModel o2) {
-        return o2.getThreadLatestMessageDate().compareTo(o1.getThreadLatestMessageDate());
-      }
-    });
-    
-    result = result.subList(firstResult, Math.min(firstResult + maxResults, result.size()));
-    
+
     return Response.ok(
       result
     ).build();
@@ -170,11 +160,11 @@ public class CommunicatorRESTService extends PluginRESTService {
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
-    List<InboxCommunicatorMessage> sentItems = communicatorController.listSentItems(user, firstResult, maxResults);
+    List<CommunicatorMessage> sentItems = communicatorController.listSentItems(user, firstResult, maxResults);
 
     List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
     
-    for (InboxCommunicatorMessage msg : sentItems) {
+    for (CommunicatorMessage msg : sentItems) {
       String categoryName = msg.getCategory() != null ? msg.getCategory().getName() : null;
       
       result.add(new CommunicatorMessageRESTModel(
@@ -237,11 +227,11 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
-    List<InboxCommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, messageId);
+    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, messageId);
 
     List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
     
-    for (InboxCommunicatorMessage msg : receivedItems) {
+    for (CommunicatorMessage msg : receivedItems) {
       String categoryName = msg.getCategory() != null ? msg.getCategory().getName() : null;
       
       result.add(new CommunicatorMessageRESTModel(
@@ -337,6 +327,10 @@ public class CommunicatorRESTService extends PluginRESTService {
       } else
         return Response.status(Status.BAD_REQUEST).build();
     }      
+    
+    if (StringUtils.isBlank(newMessage.getCategoryName())) {
+      return Response.status(Status.BAD_REQUEST).entity("CategoryName missing").build();
+    }
     
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
@@ -507,12 +501,10 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getCommunicatorMessage(
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
-   ) throws AuthorizationException {
+  public Response getCommunicatorMessage(@PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) throws AuthorizationException {
     CommunicatorMessage msg = communicatorController.findCommunicatorMessageById(communicatorMessageId);
     
-    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, msg)) {
+    if (!hasCommunicatorMessageAccess(msg)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -530,12 +522,10 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}/recipients")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listCommunicatorMessageRecipients(
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
-   ) throws AuthorizationException {
+  public Response listCommunicatorMessageRecipients(@PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) throws AuthorizationException {
     CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
 
-    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, communicatorMessage)) {
+    if (!hasCommunicatorMessageAccess(communicatorMessage)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -555,15 +545,13 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}/recipients/{RECIPIENTID}/info")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listCommunicatorMessageRecipients(
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
-      @PathParam ("RECIPIENTID") Long recipientId
-   ) throws AuthorizationException {
+  public Response listCommunicatorMessageRecipients(@PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId, @PathParam ("RECIPIENTID") Long recipientId) throws AuthorizationException {
+
     CommunicatorMessageRecipient recipient = communicatorController.findCommunicatorMessageRecipient(recipientId);
 
     CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
 
-    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, communicatorMessage)) {
+    if (!hasCommunicatorMessageAccess(communicatorMessage)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -592,12 +580,10 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}/sender")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getCommunicatorMessageSenderInfo(
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
-   ) {
-    CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
+  public Response getCommunicatorMessageSenderInfo(@PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
 
-    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, communicatorMessage)) {
+    CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
+    if (!hasCommunicatorMessageAccess(communicatorMessage)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -660,9 +646,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/templates/{TEMPLATEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getUserMessageTemplate(
-      @PathParam ("TEMPLATEID") Long templateId
-   ) throws AuthorizationException {
+  public Response getUserMessageTemplate(@PathParam ("TEMPLATEID") Long templateId) throws AuthorizationException {
     CommunicatorMessageTemplate template = communicatorController.getMessageTemplate(templateId);
     
     if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, template)) {
@@ -679,9 +663,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @DELETE
   @Path ("/templates/{TEMPLATEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response deleteUserMessageTemplate(
-      @PathParam ("TEMPLATEID") Long templateId
-   ) throws AuthorizationException {
+  public Response deleteUserMessageTemplate(@PathParam ("TEMPLATEID") Long templateId) throws AuthorizationException {
     CommunicatorMessageTemplate messageTemplate = communicatorController.getMessageTemplate(templateId);
 
     if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, messageTemplate)) {
@@ -696,10 +678,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @POST
   @Path ("/templates/{TEMPLATEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response editUserMessageTemplate(
-      @PathParam ("TEMPLATEID") Long templateId,
-      CommunicatorMessageTemplateRESTModel template
-   ) throws AuthorizationException {
+  public Response editUserMessageTemplate(@PathParam ("TEMPLATEID") Long templateId, CommunicatorMessageTemplateRESTModel template) throws AuthorizationException {
     if (!template.getId().equals(templateId)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("Id is immutable").build();
     }
@@ -812,6 +791,24 @@ public class CommunicatorRESTService extends PluginRESTService {
     return Response.ok(
       result
     ).build();
+  }
+  
+  private boolean hasCommunicatorMessageAccess(CommunicatorMessage communicatorMessage) {
+    Long userEntityId = sessionController.getLoggedUserEntity() == null ? null : sessionController.getLoggedUserEntity().getId();
+    if (userEntityId != null) {
+      if (communicatorMessage.getSender() != null && communicatorMessage.getSender().equals(userEntityId)) {
+        return true;
+      }
+      else {
+        List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipients(communicatorMessage);
+        for (CommunicatorMessageRecipient recipient : recipients) {
+          if (recipient.getRecipient().equals(userEntityId)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
 }

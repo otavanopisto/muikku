@@ -324,7 +324,9 @@
   padding:6px 0;
   text-align:center;
   width:37px;
-   
+  &.toolset-1{
+    background:#72d200 none repeat scroll 0 0;  
+  }
   .mf-tool {
     cursor:pointer;
   }
@@ -389,6 +391,20 @@
 .mf-content-main {
   background-color:$mainFuncContent; 
 }
+
+.mf-content-empty {
+  min-height:400px;
+  padding-top:160px;
+  
+  h3 {
+    font-weight:300;
+    font-size:20px;
+    margin:0 0 0.5em;
+    text-transform:none;
+    font-style:italic;
+  }
+  
+}
   
 .mf-event {
   background-color:$bgr1;
@@ -403,12 +419,15 @@
   width:100%;
 }
 
-.mf-form-tab {
-   padding:10px;
+.mf-form-header {
+   padding-top:20px;
    
    h3 {
      color:#fff;
-     font-weight:700;
+     font-weight:400;
+     font-size:20px;
+     margin:0 0 0.5em;
+     text-transform:uppercase;
    }
    
 }
@@ -779,13 +798,15 @@
     }
     
     .mf-textfield-date {
-     width:80px;
+      font-size: 14px;
+      width: 95px;
+      margin-left:5px;
     }
     
     .mf-textfield {
       position:relative;
       top:0;
-      
+     
       
       .mf-textfield-subcontainer {
         border:2px solid #fff;
@@ -815,6 +836,7 @@
         padding-top:5px;
         padding-bottom:5px;
         padding-left:5px;
+        font-size:14px;
         &:focus {
           background-color:#eee;     
           border:0;
@@ -828,7 +850,7 @@
         }
         
         &.mf-textfield-subject {        
-/*           width:750px; */
+
           
           &:focus {
             background-color:#eee;         

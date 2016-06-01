@@ -127,8 +127,15 @@
         complete: $.proxy(function (xhr, settings) {
           var pos = this._xhrs.indexOf(xhr);
           this._xhrs.splice(pos, 1);
-        }, this),
+        }, this)
       };
+      
+      var locale = window.getLocale ? getLocale() : null;
+      if (locale) {
+        this._client.opts.ajax.headers = {
+          'Accept-Language': locale
+        };
+      }
     },
     add: function (resources) {
       var current = this;

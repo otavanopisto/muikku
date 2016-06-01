@@ -383,7 +383,7 @@
         });
         editor.contextMenu.addListener(function(element, selection) {
           if (element && element.is('img') && !element.isReadOnly() && element.data('cke-real-element-type') == 'muikkuorganizerfield') {
-            return { muikkuConnectFieldItem : CKEDITOR.TRISTATE_OFF };
+            return { muikkuOrganizerFieldItem : CKEDITOR.TRISTATE_OFF };
           }
         });
       }

@@ -7,8 +7,8 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
   <m:widgetSpace name="workspaces.edit.dock" keepEmpty="true" sizing="MINIMIZE" styleClass="">
-    <m:widget name="dock-workspaces-frontpage-editor" size="1"  rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}" />
-    <m:widget name="dock-workspaces-helppage-editor" size="1"  rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn || sessionBackingBean.studyProgrammeLeaderLoggedIn}" />
+    <m:widget name="dock-workspaces-frontpage-editor" size="1"  rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_FRONTPAGE')}" />
+    <m:widget name="dock-workspaces-helppage-editor" size="1"  rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_HELP')}" />
   </m:widgetSpace>
 
 </ui:composition>
