@@ -64,7 +64,7 @@
   padding:8px 15px;
 	background:#e1f7fc;
 	margin:0px 4px 8px 4px;
-	@include rounded(3px);
+	border-radius:3px;
 	transition:background 0.3s ease-in-out;
 	box-sizing:border-box;
 	height:56px;
@@ -111,7 +111,7 @@
   padding:8px 21px;
   background:#e1f7fc;
   margin:4px;
-  @include rounded(3px);
+  border-radius:3px;
   background:#f8f8f8;
   height:1.7em;
 }

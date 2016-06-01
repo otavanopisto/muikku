@@ -94,7 +94,7 @@ select {
   display:inline-block;
   margin:4px;
   box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
-  @include rounded(3px);
+  border-radius:3px;
   max-width:100%;
   word-wrap:break-word;
   vertical-align:middle;

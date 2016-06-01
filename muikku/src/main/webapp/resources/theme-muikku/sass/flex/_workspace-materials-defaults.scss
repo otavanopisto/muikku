@@ -58,7 +58,7 @@ input[type="text"] {
   width:auto;
   height:auto;
   border:3px solid #c9e0fb;
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   padding:4px 8px;
   transition:border,box-shadow 0.2s,0.2s ease-in-out;
@@ -130,7 +130,7 @@ input[type="text"] {
 textarea {
   height:auto;
   border:3px solid #c9e0fb;
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   padding:4px 8px;
   transition:border,box-shadow 0.1s,0.2s ease-in-out;
@@ -176,7 +176,7 @@ select {
   display:inline-block;
   margin:4px;
   box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
-  @include rounded(3px);
+  border-radius:3px;
   max-width:100%;
   word-wrap:break-word;
   vertical-align:middle;
@@ -233,7 +233,7 @@ input[type="checkbox"] {
   outline:none;
   display:inline-block;
   box-shadow:0 0 1px 3px rgba(215,215,215,0.15);
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   
   &:focus,
