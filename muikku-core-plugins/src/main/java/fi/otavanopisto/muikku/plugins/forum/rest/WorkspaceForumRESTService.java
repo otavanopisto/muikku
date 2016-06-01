@@ -46,7 +46,6 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -120,6 +119,10 @@ public class WorkspaceForumRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).build();
       }
       
+      if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+      }
+      
       if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity)) {
         Long numThreads = forumController.getThreadCount(forumArea);
         
@@ -165,6 +168,10 @@ public class WorkspaceForumRESTService extends PluginRESTService {
         logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
         return Response.status(Status.NOT_FOUND).build();
       }
+      
+      if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+      }
 
       if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_UPDATEWORKSPACEFORUM, workspaceEntity)) {
         forumController.updateForumAreaName(forumArea, restModel.getName());
@@ -180,7 +187,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response deleteWorkspaceForumArea(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId) throws AuthorizationException {
+  public Response deleteWorkspaceForumArea(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
@@ -191,7 +198,11 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+
+    if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+    }
+
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumArea) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETEWORKSPACEFORUM, workspaceEntity)) {
       forumController.deleteArea(forumArea);
     } else {
@@ -283,7 +294,11 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+
+    if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+    }
+
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_READ_WORKSPACE_MESSAGES, workspaceEntity)) {
       List<ForumThread> threads = forumController.listForumThreads(forumArea, firstResult, maxResults);
       
@@ -305,7 +320,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @GET
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}/threads/{THREADID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response findThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) throws AuthorizationException {
+  public Response findThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
@@ -316,11 +331,16 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Forum thread not found").build();
     }
     
-    if (!(thread.getForumArea() instanceof WorkspaceForumArea)) {
-      logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", thread.getForumArea().getId()));
+    ForumArea forumArea = thread.getForumArea();
+    if (!(forumArea instanceof WorkspaceForumArea)) {
+      logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+
+    if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+    }
+
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_READ_WORKSPACE_MESSAGES, workspaceEntity)) {
       long numReplies = forumController.getThreadReplyCount(thread);
       ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified());
@@ -336,7 +356,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @PUT
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}/threads/{THREADID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response updateThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadRESTModel updThread) throws AuthorizationException {
+  public Response updateThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadRESTModel updThread) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
@@ -356,6 +376,10 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
       return Response.status(Status.NOT_FOUND).build();
     }
+
+    if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+    }
     
     if (!forumArea.getId().equals(forumThread.getForumArea().getId())) {
       return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
@@ -365,7 +389,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_UPDATEWORKSPACEFORUM, workspaceEntity)) {
+    if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_WRITE_WORKSPACE_MESSAGES, workspaceEntity)) {
       forumController.updateForumThread(forumThread, 
           updThread.getTitle(),
           updThread.getMessage(),
@@ -388,7 +412,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}/threads/{THREADID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response deleteThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) throws AuthorizationException {
+  public Response deleteThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
@@ -404,7 +428,11 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+
+    if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+    }
+
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_WORKSPACE_MESSAGES, workspaceEntity)) {
       forumController.archiveThread(thread);
       return Response.noContent().build();
@@ -416,7 +444,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @POST
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}/threads")
   @RESTPermit(handling = Handling.INLINE)
-  public Response createThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, ForumThreadRESTModel newThread) throws AuthorizationException {
+  public Response createThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, ForumThreadRESTModel newThread) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
@@ -431,7 +459,11 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+
+    if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+    }
+
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_WRITE_WORKSPACE_MESSAGES, workspaceEntity)) {
       ForumThread thread = forumController.createForumThread(
           forumArea, 
@@ -456,10 +488,19 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   public Response listLatestThreadsFromWorkspace(
       @PathParam ("WORKSPACEID") Long workspaceEntityId, 
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
-      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) throws AuthorizationException {
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
+
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
+    }
+    
+    if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_READ_WORKSPACE_MESSAGES, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     List<ForumThread> threads = forumController.listLatestForumThreadsFromWorkspace(workspaceEntity, firstResult, maxResults);
@@ -503,7 +544,11 @@ public class WorkspaceForumRESTService extends PluginRESTService {
         logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
         return Response.status(Status.NOT_FOUND).build();
       }
-     
+      
+      if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+      }
+      
       if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_READ_WORKSPACE_MESSAGES, workspaceEntity)) {
         if (!forumArea.getId().equals(forumThread.getForumArea().getId())) {
           return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
@@ -522,7 +567,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @GET
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response findReply(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) throws AuthorizationException {
+  public Response findReply(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
@@ -556,7 +601,11 @@ public class WorkspaceForumRESTService extends PluginRESTService {
         logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
         return Response.status(Status.NOT_FOUND).build();
       }
-      
+
+      if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+      }
+
       if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_READ_WORKSPACE_MESSAGES, workspaceEntity)) {
         return Response.ok(createRestModel(threadReply)).build();
       } else {
@@ -609,7 +658,11 @@ public class WorkspaceForumRESTService extends PluginRESTService {
         logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
         return Response.status(Status.NOT_FOUND).build();
       }
-      
+
+      if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+      }
+
       if (sessionController.hasPermission(MuikkuPermissions.OWNER, threadReply) ||
           sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_EDIT_WORKSPACE_MESSAGES, workspaceEntity)) {
         forumController.updateForumThreadReply(threadReply, reply.getMessage());
@@ -626,7 +679,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response deleteReply(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) throws AuthorizationException {
+  public Response deleteReply(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
@@ -639,7 +692,11 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+
+    if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+    }
+
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_WORKSPACE_MESSAGES, workspaceEntity)) {
       forumController.archiveReply(reply);
       return Response.noContent().build();
@@ -651,7 +708,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @POST
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}/threads/{THREADID}/replies")
   @RESTPermit(handling = Handling.INLINE)
-  public Response createReply(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadReplyRESTModel newReply) throws AuthorizationException {
+  public Response createReply(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadReplyRESTModel newReply) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
@@ -680,7 +737,11 @@ public class WorkspaceForumRESTService extends PluginRESTService {
         logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
         return Response.status(Status.NOT_FOUND).build();
       }
-      
+
+      if (!workspaceEntity.getId().equals(((WorkspaceForumArea) forumArea).getWorkspace())) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
+      }
+
       if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_WRITE_WORKSPACE_MESSAGES, workspaceEntity)) {
         ForumThreadReply parentReply = null;
         
