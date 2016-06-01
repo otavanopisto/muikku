@@ -23,10 +23,23 @@
           renderDustTemplate('workspace/workspace-index-material-producers.dust', {
             materialProducers: materialProducers
           }, $.proxy(function (text) {
-            $('#content').append($.parseHTML(text));
+            $('.workspace-frontpage-footer').append($.parseHTML(text));
           }, this));
         }
       });
+    
+    mApi().workspace.workspaces
+     .read(workspaceEntityId).callback(function (err, workspace) {
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', err);
+      } else {
+        renderDustTemplate('workspace/workspace-index-material-license.dust', {
+          materialDefaultLicense: workspace.materialDefaultLicense
+        }, $.proxy(function (text) {
+          $('.workspace-frontpage-footer').prepend($.parseHTML(text));
+        }, this));
+      }
+    });
     
     mApi().announcer.announcements
       .read({onlyActive: "true", workspaceEntityId: workspaceEntityId})

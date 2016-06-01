@@ -1,0 +1,6 @@
+{?materialDefaultLicense}
+  <div class="workspace-footer-license-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+    <span class="workspace-material-license-label">{#localize key="plugin.workspace.index.licenseLabel"/}:</span>
+    <span class="workspace-material-license"><a href="{materialDefaultLicense}" target="top">{materialDefaultLicense}</a></span>
+  </div>
+{/materialDefaultLicense}  

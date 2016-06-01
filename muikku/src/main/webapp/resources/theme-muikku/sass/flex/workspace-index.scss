@@ -259,16 +259,40 @@ h1.workspace-block-title {
   
 }
 
-footer#workspaceFrontpageFooter {
+footer.workspace-frontpage-footer {
   background:#fff;
   box-sizing:border-box;
-  max-width:960px;
   position:relative;
-  padding:20px;
+    
+  .workspace-footer-license-wrapper {
+    font-size:14px;
+    font-weight:300;
+    background:#98c807;
+    padding:20px;
+  
+    .workspace-material-license-label {
+      color:#fff;
+      padding:0 5px 0 0;
+      text-transform:uppercase;
+    }
+    
+    .workspace-material-license {
+      padding:0;
+      color:#fff;
+      font-weight:400;
+      
+      a {
+        color:#fff;      
+      }
+      
+    }
+  
+  }
   
   .workspace-footer-producers-wrapper {
     font-size:14px;
     font-weight:300;
+    padding:20px;
   
     .workspace-material-producers-label {
       color:#727272;
