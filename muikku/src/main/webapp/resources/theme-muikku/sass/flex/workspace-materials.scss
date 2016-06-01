@@ -200,7 +200,7 @@ nav.workspace-materials-toc-wrapper {
             text-decoration:none;
             color:#2c2c2c;
             display:block;
-            @include rounded(2px);
+            border-radius:2px;
             padding:2px 8px 2px 6px;
             border-left:2px solid #fff;
             margin:1px 0;
@@ -339,7 +339,7 @@ nav.workspace-materials-toc-wrapper {
               text-decoration:none;
               color:#41505b;
               display:block;
-              @include rounded(2px);
+              border-radius:2px;
               padding:2px 8px;
               
               &:hover,
