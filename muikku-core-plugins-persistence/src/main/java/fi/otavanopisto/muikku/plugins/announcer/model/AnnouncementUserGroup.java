@@ -15,14 +15,6 @@ public class AnnouncementUserGroup {
     return id;
   }
 
-  public boolean isArchived() {
-    return archived;
-  }
-
-  public void setArchived(boolean archived) {
-    this.archived = archived;
-  }
-
   public Long getUserGroupEntityId() {
     return userGroupEntityId;
   }
@@ -38,13 +30,21 @@ public class AnnouncementUserGroup {
   public void setAnnouncement(Announcement announcement) {
     this.announcement = announcement;
   }
+  
+  public Boolean getArchived() {
+    return archived;
+  }
+  
+  public void setArchived(Boolean archived) {
+    this.archived = archived;
+  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column (nullable=false)
-  private boolean archived;
+  private Boolean archived;
   
   @Column (nullable=false)
   @NotNull

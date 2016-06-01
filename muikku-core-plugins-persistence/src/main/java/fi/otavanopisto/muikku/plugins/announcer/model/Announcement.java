@@ -68,20 +68,20 @@ public class Announcement {
   public void setEndDate(Date endDate) {
     this.endDate = endDate;
   }
-
-  public boolean isArchived() {
+  
+  public Boolean getArchived() {
     return archived;
   }
-
-  public void setArchived(boolean archived) {
+  
+  public void setArchived(Boolean archived) {
     this.archived = archived;
   }
   
-  public boolean isPubliclyVisible() {
+  public Boolean getPubliclyVisible() {
     return publiclyVisible;
   }
   
-  public void setPubliclyVisible(boolean publiclyVisible) {
+  public void setPubliclyVisible(Boolean publiclyVisible) {
     this.publiclyVisible = publiclyVisible;
   }
 
@@ -119,8 +119,8 @@ public class Announcement {
   private Date endDate;
 
   @Column (nullable=false)
-  private boolean archived;
+  private Boolean archived;
   
   @Column (nullable=false)
-  private boolean publiclyVisible;
+  private Boolean publiclyVisible;
 }

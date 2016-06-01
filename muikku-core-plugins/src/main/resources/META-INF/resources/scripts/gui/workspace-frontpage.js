@@ -3,6 +3,11 @@
   $(document).ready(function() {
     var workspaceEntityId = $('.workspaceEntityId').val();
     
+    $('.workspace-announcements-container').on('click', '.workspace-single-announcement', function(){
+      var href = $(this).attr('data-href');
+      window.location.assign(href);
+    });
+    
     $(document)
       .muikkuMaterialLoader({
         workspaceEntityId: workspaceEntityId,
@@ -22,6 +27,26 @@
           }, this));
         }
       });
+    
+    mApi().announcer.announcements
+      .read({onlyActive: "true", workspaceEntityId: workspaceEntityId})
+      .callback($.proxy(function(err, result) {
+        if (err) {
+          $(".notification-queue").notificationQueue('notification','error', err);
+        } else {
+          var baseUrl = $('.announcementsBaseUrl').val();
+
+          for (var i=0; i<result.length; i++) {
+            result[i].link = baseUrl + "?announcementId=" + result[i].id;
+          }
+          
+          renderDustTemplate('workspace/workspace_frontpage_announcements.dust', result, $.proxy(function (text) {
+            var element = $(text);
+            $('.workspace-announcements-container').append(element);
+            $('.workspace-announcements-container').perfectScrollbar({"suppressScrollY" : true});
+          }, this));
+        }
+      }, this));
   });
 
 }).call(this);

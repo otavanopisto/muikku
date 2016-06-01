@@ -206,13 +206,28 @@ div.workspace-dock-navi-button-workspace-management {
     position:absolute;
     background:#4c6669;
     z-index:99;
-    left:55px;
-    top:0;
+    left:57px;
+    top:-2px;
     padding:10px;
     text-align:left;
-    border-bottom-left-radius:3px;
-    border-top-right-radius:3px;
-    border-bottom-right-radius:3px;
+    border-radius:3px;
+    box-shadow:0 3px 5px rgba(0,0,0,0.3);
+    
+    &:after {
+      right:100%;
+      top:26px;
+      border:solid transparent;
+      content:" ";
+      height:0;
+      width:0;
+      position:absolute;
+      pointer-events:none;
+      border-color:rgba(76, 102, 105, 0);
+      border-right-color:#4c6669;
+      border-width:8px;
+      margin-top:-8px;
+    }
+
   }
   
 }
@@ -231,7 +246,7 @@ div.workspace-dock-navi-button-workspace-management > div.icon-cogs {
   border-radius:3px;
   
   &:hover {
-    background:#4c6669;
+    background:#1a2122;
     border-top-left-radius:3px;
     border-bottom-left-radius:3px;
     border-top-right-radius:0px;

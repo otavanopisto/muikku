@@ -20,11 +20,13 @@
     <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
   </ui:define>
   
   <ui:define name="workspace-view-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-index.css"/>  
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.css"/> 
+    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
   </ui:define>
 
   <ui:define name="grid-content">
@@ -81,6 +83,14 @@
         </div>
       </div>
     </section>
+    
+    <section class="flex-row">
+      <!--  <div class="workspace-frontpage-teachers lg-flex-cell-first md-flex-cell-first lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full sm-flex-order-2"></div> -->
+      <div class="workspace-frontpage-announcements lg-flex-cell-full md-flex-cell-full sm-flex-cell-full sm-flex-order-1">
+        <h1 class="workspace-block-title">#{i18n.text['plugin.workspace.index.announcementsTitle']}</h1>
+        <div class="flex-row workspace-announcements-container flex-align-items-center"></div>
+      </div>
+    </section>
 
     <section class="flex-row workspace-frontpage-material-page">
       <ui:repeat value="#{workspaceIndexBackingBean.contentNodes}" var="contentNode">
@@ -94,6 +104,7 @@
       </ui:repeat>
       <input class="workspaceEntityId" type="hidden" value="#{workspaceIndexBackingBean.workspaceEntityId}" />
       <input class="materialsBaseUrl" type="hidden" value="#{workspaceIndexBackingBean.materialsBaseUrl}" />
+      <input class="announcementsBaseUrl" type="hidden" value="#{workspaceIndexBackingBean.announcementsBaseUrl}" />
     </section>
   </ui:define>
 
