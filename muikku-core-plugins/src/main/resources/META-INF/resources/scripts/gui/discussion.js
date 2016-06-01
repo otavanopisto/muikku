@@ -332,7 +332,11 @@
         if (this._areaId && this._threadId) {
           window.location.hash = "#a" + this._areaId + "/" + this._threadId;
         } else {
-          window.location.hash = "";
+          if (this._areaId) {
+            window.location.hash = "#a" + this._areaId;
+          } else {
+            window.location.hash = "";
+          }
         }
       } else {
         if (this._areaId) {
@@ -521,7 +525,7 @@
     
     _loadMoreReplies: function () {
       this.element
-         .html('')
+        .html('')
         .addClass('loading');
     
       this._firstResult += this.options.maxReplyCount;
@@ -837,20 +841,20 @@
     
     _load: function (callback) {
       this.options.ioController.loadAreas($.proxy(function(err, areas) {
-          renderDustTemplate('/discussion/discussion_edit_area.dust', areas, $.proxy(function (text) {
-            this.element.html(text);
-            
-            if (this.options.areaId && this.options.areaId != 'all') {
-              var areaSelect = this.element.find("select[name='forumAreaId']");
-              areaSelect.val(this.options.areaId)
-              this.element.find('input[name="name"]').val(areaSelect.find(':selected').text());
-            }
-            
-            if (callback) {
-              callback();
-            }
-          }, this));
+        renderDustTemplate('/discussion/discussion_edit_area.dust', areas, $.proxy(function (text) {
+          this.element.html(text);
+          
+          if (this.options.areaId && this.options.areaId != 'all') {
+            var areaSelect = this.element.find("select[name='forumAreaId']");
+            areaSelect.val(this.options.areaId)
+            this.element.find('input[name="name"]').val(areaSelect.find(':selected').text());
+          }
+          
+          if (callback) {
+            callback();
+          }
         }, this));
+      }, this));
     },
     
     _onSendClick: function (event) {
@@ -948,7 +952,7 @@
         ],
         extraPlugins: {
           'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
-          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
           'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.2/plugin.min.js'
         }
       }
@@ -999,15 +1003,7 @@
         
       }, this));
     },
-    
-    _destroy: function () {
-      try {
-        this._messageEditor.destroy();
-      } catch (e) {
-        
-      }
-    },
-    
+
     _load: function (callback) {
       var tasks = [this._createAreasLoad()];
       
@@ -1073,6 +1069,7 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
+            this.destroyEditor(true);
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newmessage'));
             $('.discussion').discussion('reloadArea');
             this.element.remove();
@@ -1292,7 +1289,7 @@
           renderDustTemplate('/discussion/discussion_edit_reply.dust', reply, $.proxy(function (text) {
             this.element.html(text);
             this._messageEditor = CKEDITOR.replace(this.element.find('textarea[name="message"]')[0], $.extend(this.options.ckeditor, {
-              draftKey: 'discussion-reply-message-' + this.options.areaId + '-' + this.options.threadId + '-' +  this.options.replyId,
+              draftKey: 'discussion-edit-reply-message-' + this.options.areaId + '-' + this.options.threadId + '-' +  this.options.replyId,
               on: {
                 instanceReady: $.proxy(this._onCKEditorReady, this)
               }

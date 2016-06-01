@@ -90,7 +90,7 @@
         .read(this.options.workspaceEntityId, areaId, threadId)
         .callback($.proxy(function(getErr, thread) {
           if (getErr) {
-            $('.notification-queue').notificationQueue('notification', 'error', getErr);
+            callback(getErr);
           } else {
             thread = $.extend(thread, {
               title: title,
