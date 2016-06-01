@@ -15,6 +15,8 @@
         }, this));
         this.element.muikkuField($.extend(this.options, methods));
         this._buildUi();
+        var pageElement = this.options.pageElement;
+        $(pageElement).on('beforeAssignmentSubmit', $.proxy(this._onBeforeAssignmentSubmit, this));
       },
       _destroy : function() {
         
@@ -41,7 +43,7 @@
         if (!this.isReadonly()) {
           $(itemsContainer).sortable({
             update: $.proxy(function (event, ui) {
-              $(this.element).trigger("change");
+              $(this.element).trigger('change');
             }, this)
           });
         }
@@ -74,7 +76,6 @@
           return JSON.stringify(answer);
         }
         else {
-          var previousObject = null;
           var answer = $.parseJSON(val);
           var items = $(this.element).find('.muikku-sorter-item');
           items.sort(function(a, b) {
@@ -127,6 +128,11 @@
       },
       canCheckAnswer: function() {
         return true;
+      },
+      _onBeforeAssignmentSubmit: function (event, data) {
+        if (data.state == 'UNANSWERED') {
+          $(this.element).trigger('change');
+        }
       }
     });
    

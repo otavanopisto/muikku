@@ -395,7 +395,7 @@
     },
     
     _waitFieldsSaved: function (callback) {
-      if (this.element.find('.muikku-field-unsaved').length === 0) {
+      if (this.element.find('.muikku-field-unsaved,.muikku-field-saving').length === 0) {
         callback();
       } else {
         if (this._savedWaitTimeout) {
@@ -512,6 +512,8 @@
       var assignmentType = this.assignmentType();
       var stateOptions = this._getStateOptions(assignmentType, this.workspaceMaterialState());
       
+      $(this.element).trigger('beforeAssignmentSubmit', {state: this.workspaceMaterialState()});
+
       this._saveWorkspaceMaterialReply(stateOptions['success-state'], $.proxy(function (reply) {
         this._applyState(assignmentType, stateOptions['success-state']);
         
@@ -686,6 +688,7 @@
     _saveField: function () {
       if (!this.readonly()) {
         this._checkStatusMessage();
+        
         $(this.element)
           .removeClass('muikku-field-unsaved')
           .addClass('muikku-field-saving');
@@ -704,7 +707,7 @@
         }));
         
         if (this._saveFailedTimeoutId == null) {
-            this._saveFailedTimeoutId = setTimeout($.proxy(this._saveFailed, this), this.options.saveFailedTimeout);
+          this._saveFailedTimeoutId = setTimeout($.proxy(this._saveFailed, this), this.options.saveFailedTimeout);
         }
         
         $(this.element).on('muikku-field-progress', $.proxy(function(e){

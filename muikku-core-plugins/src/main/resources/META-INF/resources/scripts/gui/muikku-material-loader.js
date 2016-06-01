@@ -595,6 +595,7 @@
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.sorter') {
       var sorterField = $('<div>').muikkuSorterField({
+        pageElement: data.pageElement,
         fieldName: data.name,
         materialId: data.materialId,
         embedId: data.embedId,
@@ -687,6 +688,7 @@
         categoriesContainer.append(categoryContainer);
       }
       organizerField.muikkuField({
+        pageElement: data.pageElement,
         fieldName: data.name,
         materialId: data.materialId,
         embedId: data.embedId,
@@ -888,6 +890,7 @@
           input
             .val(data.value)
             .muikkuField({
+              pageElement: data.pageElement,
               fieldName: data.name,
               materialId: data.materialId,
               embedId: data.embedId,
@@ -1059,6 +1062,7 @@
         optionContainer.append(label);
       }      
       container.muikkuField({
+        pageElement: data.pageElement,
         fieldName: data.name,
         materialId: data.materialId,
         embedId: data.embedId,
