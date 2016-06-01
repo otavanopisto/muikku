@@ -1,0 +1,18 @@
+<div class="gt-users-page lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top">
+  {#students}
+      {>"guider/guider_item.dust"/}
+  {/students}
+  {?hasMore}
+    <div class="mf-items-paging gt-users-paging lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+      <div class="mf-paging-toolbar gt-paging-toolbar">
+        <div class="mf-paging-tool mf-page-link-load-more gt-paging-tool gt-page-link-load-more">{#localize key="plugin.guider.links.more"/}</div>
+      </div>
+    </div>
+  {:else}
+    <div class="mf-items-paging gt-users-paging lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+      <div class="mf-paging-toolbar gt-paging-toolbar">
+        <div class="mf-paging-tool mf-page-link-load-more gt-paging-tool gt-page-link-load-more disabled">{#localize key="plugin.guider.links.nomore"/}</div>
+      </div>
+    </div>    
+  {/hasMore}
+</div>

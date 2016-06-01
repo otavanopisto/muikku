@@ -1,0 +1,105 @@
+{#student}
+  <div class="gt-user-view-headline mf-widget flex-row flex-align-items-center">
+    <h1 class="lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">{firstName} {lastName}</h1>
+    <div class="gt-user-view-flags-container lg-flex-cell-4 md-flex-cell-4 sm-flex-hide flex-right">      
+      <div class="gt-add-flag-widget icon-add">
+        <span class="gt-add-flag-widget-label">{#localize key="plugin.guider.flags.addFlag.label"/}</span>
+        <div class="gt-add-flags-container">
+          <a class="gt-new-flag icon-add" href="javascript:void(null)"><span class="gt-flag-label">{#localize key="plugin.guider.flags.newFlag.label"/}</span></a>
+          <div class="gt-flags-separator"></div>
+          {#flags}
+            <a class="gt-existing-flag icon-flag" style="color:{color}" href="javascript:void(null)" data-flag-id="{id}"><span class="gt-flag-label">{name}</span></a>
+          {/flags}
+        </div>
+      </div>      
+    </div>  
+  </div>
+  {?studentFlags}  
+    <div class="mf-widget gt-user-view-flags-container flex-row">  
+      {#studentFlags}
+        <div data-id="{id}" data-flag-id="{flag.id}" data-flag-color="{flag.color}" class="gt-flag icon-flag" style="color: {flag.color}">
+          <span class="gt-flag-label">{flag.name}</span>
+          <div class="gt-flag-action-container">
+            <a class="gt-remove-flag icon-remove" href="javascript:void(null)"><span class="gt-flag-action-label">{#localize key="plugin.guider.flags.unFlag.label"/}</span></a>
+            <div class="gt-flag-actions-separator"></div>
+            <!-- <a class="gt-remove-flag icon-delete" href="javascript:void(null)"><span class="gt-flag-action-label">{#localize key="plugin.guider.flags.removeFlag.label"/}</span></a> -->
+            <a class="gt-edit-flag icon-edit" href="javascript:void(null)"><span class="gt-flag-action-label">{#localize key="plugin.guider.flags.editFlag.label"/}</span></a>
+            <a class="gt-share-flag icon-share" href="javascript:void(null)"><span class="gt-flag-action-label">{#localize key="plugin.guider.flags.shareFlag.label"/}</span></a>
+          </div>          
+        </div>
+      {/studentFlags}  
+    </div>
+  {/studentFlags}
+  <div class="gt-user-view-profile-info mf-widget flex-row">
+<!--     <div class="gt-user-details-picture"> -->
+<!--       {?senderHasPicture}  -->
+<!--         <img class="gt-user-picture custom" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />  -->
+<!--       {:else} -->
+<!--         <div class="gt-user-picture default "></div> -->
+<!--       {/senderHasPicture} -->
+<!--     </div> -->
+    <div class="gt-user-details-items lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
+     <div class="gt-user-details-item">
+       <span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.studyTimeEndTitle"/}</span>
+       <span class="mf-item-details-value gt-user-details-value">{?studyTimeEnd}{studyTimeEnd|formatDate}{:else}{#localize key="plugin.guider.content.null"/}{/studyTimeEnd}</span>
+     </div>
+     <div class="gt-user-details-item">
+       <span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.studyStartDateTitle"/}</span>
+       <span class="mf-item-details-value gt-user-details-value">{?studyStartDate}{studyStartDate|formatDate}{:else}{#localize key="plugin.guider.content.null"/}{/studyStartDate}</span>
+     </div>
+     <div class="gt-user-details-item">
+       <span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.studyEndDateTitle"/}</span>
+       <span class="mf-item-details-value gt-user-details-value">{?studyEndDate}{studyEndDate|formatDate}{:else}{#localize key="plugin.guider.content.null"/}{/studyEndDate}</span>
+     </div>
+     <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.nationality"/}</span><span class="mf-item-details-value gt-user-details-value">{?nationality}{nationality}{:else}{#localize key="plugin.guider.content.null"/}{/nationality}</span></div>
+     <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.language"/}</span><span class="mf-item-details-value gt-user-details-value">{?language}{language}{:else}{#localize key="plugin.guider.content.null"/}{/language}</span></div>
+     <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.municipality"/}</span><span class="mf-item-details-value gt-user-details-value">{?municipality}{municipality}{:else}{#localize key="plugin.guider.content.null"/}{/municipality}</span></div>
+     <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.school"/}</span><span class="mf-item-details-value gt-user-details-value">{?school}{school}{:else}{#localize key="plugin.guider.content.null"/}{/school}</span></div>
+     <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.lastLogin"/}</span><span class="mf-item-details-value gt-user-details-value">{?lastLogin}{lastLogin|formatDate}{:else}{#localize key="plugin.guider.content.null"/}{/lastLogin}</span></div>
+
+     {#emails}
+       <div class="gt-user-details-item">
+         <span class="mf-item-details-label gt-user-details-label">
+           {#localize key="plugin.guider.user.details.label.email" arg0=type/}
+         </span>
+         <span class="mf-item-details-value gt-user-details-value">
+           {address}{?defaultAddress} ({#localize key="plugin.guider.user.details.label.emailDefault" arg0=type/}){/defaultAddress}
+         </span>
+       </div>
+     {/emails}
+
+     {#phoneNumbers}
+       <div class="gt-user-details-item">
+         <span class="mf-item-details-label gt-user-details-label">
+           {#localize key="plugin.guider.user.details.label.phoneNumber" arg0=type/}
+         </span>
+         <span class="mf-item-details-value gt-user-details-value">
+           {number}{?defaultNumber} ({#localize key="plugin.guider.user.details.label.phoneNumberDefault" arg0=type/}){/defaultNumber}
+         </span>
+       </div>
+     {/phoneNumbers}
+
+     {#addresses}
+       <div class="gt-user-details-item">
+         <span class="mf-item-details-label gt-user-details-label">
+           {#localize key="plugin.guider.user.details.label.address" arg0=type/}
+         </span>
+         <span class="mf-item-details-value gt-user-details-value">
+           {?street}{street}{/street}{?postalCode} {postalCode}{/postalCode}{?city} {city}{/city}{?region} {region}{/region}{?country} {country}{/country}{?defaultAddress} ({#localize key="plugin.guider.user.details.label.addressDefault"/}){/defaultAddress}
+         </span>
+       </div>
+     {/addresses}
+    </div>
+    <div class="clear"></div>  
+  </div>
+  <div class="gt-user-view-profile-data mf-widget flex-row">
+     <div class="gt-user-view-profile-data gt-data-container-1 mf-widget-subarea lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+       <div class="flex-row">
+         <h3>{#localize key="plugin.guider.title.workspaces"/}</h3>
+         <div class="gt-data lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"></div>
+       </div>
+     </div>
+     <div class="clear"></div>
+  </div>
+{/student}
+
