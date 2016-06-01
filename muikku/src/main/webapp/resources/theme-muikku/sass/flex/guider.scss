@@ -8,9 +8,6 @@
   padding:0 5px 0 5px;
 }
 
-
-
-
 .gt-side-header{
   padding:3px;
 }
@@ -31,23 +28,16 @@
   min-height:400px;
 }
 
-
-
 .gt-content-functions{
    height:70px;  
 }
-
-
-
 
 .gt-content-main{
   min-height:450px;
 }
 
-
-
 .gt-user {
-
+  margin: 0 0 5px 0;
 
   &.closed,
   &.loading {
@@ -58,10 +48,8 @@
   
   &.loading {
     padding-bottom: 20px;
-  
     &:after {
       @include generic-loader(50px);
-    
       margin-left: auto;
       margin-right: auto;
       display: block;
@@ -70,8 +58,15 @@
 }  
 
 .gt-user-name{
-  width:100%;
   cursor:pointer;
+}
+
+.gt-user-meta-topic{
+  span{
+   margin-left:10px;
+   font-weight:400;
+  }
+  
 }
 
 .gt-email-field{
@@ -93,7 +88,6 @@
 
 .gt-user-details-items{
     padding:10px;
-    width:555px;
     
     .gt-user-details-item{
     
@@ -101,7 +95,7 @@
     
    .gt-user-details-label{
      display:inline-block;
-   
+     font-weight:400;
      &:after{
       content: ":";
      }
@@ -172,13 +166,14 @@
   h1 {
     margin-bottom: 10px;
     margin-top: 10px;
+    line-height: 1em;
   }
   
 }
 
 .gt-user-view-profile {
   > div{
-    padding:15px;
+    padding:10px;
   }
   
   div[class*="gt-data-container"]{
@@ -199,15 +194,12 @@
 }
 
  .gt-data {
-   width:100%;
-
    .gt-course-details-container {
       cursor:pointer;
       background:#fff;
       
       .gt-course-description {
         display:inline-block;
-        width:100%;
         cursor:pointer;  
       }
       
@@ -218,8 +210,6 @@
 
  
 .gt-course {
-  padding:5px 5px 5px 5px;
-  margin-bottom:10px;
   border-left: 3px solid $mainFuncFilter1; 
 
   
@@ -278,7 +268,6 @@
 
 
 .gt-course-activity-row {
-  display: flex;  
   transition:background 0.3s ease-in-out;
   
   &:hover {
@@ -288,22 +277,19 @@
 }
 
 .gt-course-activity-row label {
-  flex: 1;
   font-weight:300;
   padding:5px;
   margin:0 0 0 5px;
 }
 
 .gt-course-activity-row span {
-  flex: 1;
   text-align: right;
   padding:5px;
 }
 
-.gu-user-view-flags-container {
-  margin:20px 0 0 0;
-  
-  .gu-flag {
+.gt-user-view-flags-container {
+  vertical-align:center;
+  .gt-flag {
     display:inline-block;
     white-space:nowrap;
     margin:0;
@@ -326,14 +312,14 @@
       border-color: attr(data-flag-color color);
     }
     
-    .gu-flag-label {
+    .gt-flag-label {
       font-family:'Open Sans', Arial, sans-serif;
       color:#000;
       display:inline-block;
       padding:0 5px;
     }
     
-    .gu-flag-action-container {
+    .gt-flag-action-container {
       display:none;
       float:none;
       position:absolute;
@@ -374,7 +360,7 @@
         margin-left:-8px;
       }
       
-      .gu-flag-actions-separator {
+      .gt-flag-actions-separator {
         margin:1px 0;
         height:1px;
         background:#eee;
@@ -389,7 +375,7 @@
         font-size:14px;
         border-radius:3px;
         
-        .gu-flag-action-label {
+        .gt-flag-action-label {
           font-family:'Open Sans', Arial, sans-serif;
           color:#000;
           padding:0 0 0 8px;
@@ -406,7 +392,7 @@
     
     &:hover {
     
-      .gu-flag-action-container {
+      .gt-flag-action-container {
         display:block;
       }
     
@@ -414,7 +400,7 @@
     
   }
 
-  .gu-add-flag-widget {
+  .gt-add-flag-widget {
     background:#4faaff;
     color:#fff;
     border-radius:5px;
@@ -422,22 +408,21 @@
     display:inline-block;
     cursor:pointer;
     position:relative;
-    margin:0 10px 0 0;
     font-size:14px;
     border:2px solid #fff;
 
-    .gu-add-flag-widget-label {
+    .gt-add-flag-widget-label {
       font-family:'Open Sans', Arial, sans-serif;
       vertical-align:top;
       text-transform:uppercase;
     }
     
-    .gu-add-flags-container {
+    .gt-add-flags-container {
       display:none;
       padding:0;
       background:#fff;
       position:absolute;
-      left:0;
+      left:-40px;
       margin:8px 0 0 0;
       border-radius:5px;
       box-shadow:0 7px 15px rgba(0,0,0,0.3);
@@ -448,7 +433,7 @@
       &:after, 
       &:before {
         bottom:100%;
-        left:15px;
+        left:52px;
         border:solid transparent;
         content:" ";
         height:0;
@@ -471,7 +456,7 @@
         margin-left:-8px;
       }
         
-      .gu-flags-separator {
+      .gt-flags-separator {
         margin:1px 0;
         height:1px;
         background:#eee;
@@ -483,12 +468,13 @@
         margin:0;
         font-size:14px;
         border-radius:3px;
+        text-align: left;
         
-        &.gu-new-flag {
+        &.gt-new-flag {
           color:#000;
         }
         
-        .gu-flag-label {
+        .gt-flag-label {
           font-family:'Open Sans', Arial, sans-serif;
           color:#000;
           padding:0 0 0 8px;
@@ -505,7 +491,7 @@
     &:hover {
       background:#3a98f0;
     
-      .gu-add-flags-container {
+      .gt-add-flags-container {
         display:block;
       }
     
