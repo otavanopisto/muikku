@@ -1,9 +1,0 @@
-<div class="gt-users-pages flex-row">
-    {?.}
-      {>"guider/guider_page.dust"/}  
-    {:else}
-    
-      {>"guider/guider_empty.dust"/}
-    
-    {/.}  
- </div>
