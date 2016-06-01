@@ -389,7 +389,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_WRITE_WORKSPACE_MESSAGES, workspaceEntity)) {
+    if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_EDIT_WORKSPACE_MESSAGES, workspaceEntity)) {
       forumController.updateForumThread(forumThread, 
           updThread.getTitle(),
           updThread.getMessage(),
