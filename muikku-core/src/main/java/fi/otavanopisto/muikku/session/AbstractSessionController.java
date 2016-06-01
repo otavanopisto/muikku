@@ -2,10 +2,13 @@ package fi.otavanopisto.muikku.session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import fi.otavanopisto.muikku.dao.users.SuperUserDAO;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -16,6 +19,8 @@ import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
 
 public abstract class AbstractSessionController implements SessionController {
+
+  private static final String[] SUPPORTED_LOCALES = {"fi", "en"};
 
   @Inject
   private SuperUserDAO superUserDAO;
@@ -29,6 +34,19 @@ public abstract class AbstractSessionController implements SessionController {
       return isSuperuser(getLoggedUserEntity());
     else
       return false;
+  }
+
+  @Override
+  public Locale getLocale() {
+    if (locale == null) {
+      locale = new Locale(SUPPORTED_LOCALES[0]);
+    }
+    return locale;
+  }
+
+  @Override
+  public void setLocale(Locale locale) {
+    this.locale = resolveLocale(locale);
   }
 
   @Override
@@ -98,4 +116,14 @@ public abstract class AbstractSessionController implements SessionController {
   protected abstract boolean hasCoursePermissionImpl(String permission, WorkspaceEntity course);
   
   protected abstract boolean hasResourcePermissionImpl(String permission, ResourceEntity resource);
+
+  private Locale resolveLocale(Locale requestLocale) {
+    if (requestLocale != null && ArrayUtils.contains(SUPPORTED_LOCALES, requestLocale.getLanguage())) {
+      return new Locale(requestLocale.getLanguage());
+    }
+    return new Locale(SUPPORTED_LOCALES[0]);
+  }
+  
+  private Locale locale;
+
 }

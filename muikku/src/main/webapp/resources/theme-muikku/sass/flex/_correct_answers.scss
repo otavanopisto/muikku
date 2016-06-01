@@ -58,7 +58,7 @@ select {
   display:inline-block;
   margin:4px;
   box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
-  @include rounded(3px);
+  border-radius:3px;
   max-width:100%;
   word-wrap:break-word;
   vertical-align:middle;
@@ -79,7 +79,7 @@ textarea.muikku-field-correct-answer,
 select.muikku-field-correct-answer {
   box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
   border:3px solid #00ff2a;
-  @include rounded(3px);
+  border-radius:3px;
   
   &:hover {
     box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
@@ -93,7 +93,7 @@ textarea.muikku-field-incorrect-answer,
 select.muikku-field-incorrect-answer {
   border:3px solid #f64e4e;
   box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-  @include rounded(3px);
+  border-radius:3px;
   
   &:hover {
     border:3px solid #f64e4e;
@@ -145,7 +145,7 @@ div.muikku-organizer-field {
   .muikku-category.muikku-field-correct-answer {
     box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
     border:3px solid #00ff2a;
-    @include rounded(3px);
+    border-radius:3px;
     
     &:hover {
       box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
@@ -157,7 +157,7 @@ div.muikku-organizer-field {
   .muikku-category.muikku-field-semi-correct-answer {
     box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
     border:3px solid #dab33d;
-    @include rounded(3px);
+    border-radius:3px;
     
     &:hover {
       box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
@@ -169,7 +169,7 @@ div.muikku-organizer-field {
   .muikku-category.muikku-field-incorrect-answer {
     border:3px solid #f64e4e;
     box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-    @include rounded(3px);
+    border-radius:3px;
     
     &:hover {
       border:3px solid #f64e4e;
@@ -186,7 +186,7 @@ div.muikku-sorter-field {
   .muikku-sorter-items-container.muikku-field-correct-answer {
     box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
     border:3px solid #00ff2a;
-    @include rounded(3px);
+    border-radius: 3px;
     
     &:hover {
       box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
@@ -198,7 +198,7 @@ div.muikku-sorter-field {
   .muikku-sorter-items-container.muikku-field-semi-correct-answer {
     box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
     border:3px solid #dab33d;
-    @include rounded(3px);
+    border-radius: 3px;
     
     &:hover {
       box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
@@ -210,7 +210,7 @@ div.muikku-sorter-field {
   .muikku-sorter-items-container.muikku-field-incorrect-answer {
     border:3px solid #f64e4e;
     box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-    @include rounded(3px);
+    border-radius: 3px;
     
     &:hover {
       border:3px solid #f64e4e;
@@ -272,7 +272,7 @@ span.muikku-field-incorrect-answer {
   input[type="radio"].muikku-field-correct-answer-override {
     box-shadow:0 0 1px 3px rgba(0,255,42,0.9);
     border:3px solid #00ff2a;
-    @include rounded(3px);
+    border-radius:3px;
     
     &:hover {
       box-shadow:0 0 1px 3px rgba(0,255,42,0.9);

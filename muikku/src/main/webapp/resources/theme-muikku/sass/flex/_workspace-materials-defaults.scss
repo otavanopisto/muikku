@@ -683,8 +683,37 @@ sup {
   }
 
 }
-
+  
 .workspace-materials-view-page {
+    
+  span.muikku-field-examples {
+    border-radius:3px;
+    padding:3px;
+    width:auto;
+    background:#e2ffe2;
+    font-style:italic;
+    margin:1px 3px 1px 3px;
+    display:inline-block;
+    font-size:13px;
+    
+    span.muikku-field-examples-title {
+      font-weight:600;
+      margin:0px 6px;
+    }
+    
+    span.muikku-field-example {
+      margin:3px 0px 3px 5px;
+      padding:0 8px;
+      border-left:1px solid #439ba0;
+      display:inline-block;
+      line-height:1.5;
+      
+      &:last-child {
+        
+      }
+    }
+    
+  }
 
   .muikku-page-assignment-type {
     padding:0px 8px;

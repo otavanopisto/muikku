@@ -137,6 +137,7 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     }
     
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
+    announcementsBaseUrl = String.format("/workspace/%s/announcements", workspaceUrlName);
     workspaceVisitController.visit(workspaceEntity);
     
     return null;
@@ -258,6 +259,14 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     this.workspaceNameExtension = workspaceNameExtension;
   }
 
+  public String getAnnouncementsBaseUrl() {
+    return announcementsBaseUrl;
+  }
+
+  public void setAnnouncementsBaseUrl(String announcementsBaseUrl) {
+    this.announcementsBaseUrl = announcementsBaseUrl;
+  }
+
   private Long workspaceId;
   private String workspaceName;
   private String workspaceNameExtension;
@@ -278,4 +287,5 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
   private Date endDate;
   private List<ContentNode> contentNodes;
   private String materialsBaseUrl;
+  private String announcementsBaseUrl;
 }
