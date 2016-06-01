@@ -865,7 +865,7 @@
     
     _createStudentWorkspaceForumStatisticsLoad: function (workspaceEntityId) {
       return $.proxy(function (callback) {
-        mApi().forum.workspace.statistics
+        mApi().workspace.workspaces.forumStatistics
           .read(workspaceEntityId, { userIdentifier: this.options.userIdentifier })
           .callback($.proxy(function(err, statistics) {
             if (err) {
