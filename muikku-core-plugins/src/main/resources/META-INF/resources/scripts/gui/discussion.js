@@ -861,7 +861,7 @@
         
         this.options.ioController.updateArea(areaId, name, $.proxy(function(err, result) {
           if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.newarea', err));
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.editarea', err));
           } else {
             $('.discussion').discussion('reloadAreas');
           }
@@ -913,7 +913,7 @@
         var areaId = this.element.find("select[name='forumAreaId']").val();
         this.options.ioController.deleteArea(areaId, $.proxy(function(err, result) {
           if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.areadelete', err));
           } else {
             $('.discussion').discussion('reloadAreas');
           }
