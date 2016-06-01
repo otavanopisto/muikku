@@ -55,7 +55,7 @@ public abstract class AbstractWorkspaceBackingBean {
         
         WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
         if (workspaceUserEntity == null) {
-          if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_MEMBERS_ONLY_WORKSPACE, workspaceEntity)) {
+          if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_MEMBERS_ONLY_WORKSPACE, workspaceEntity)) {
             return NavigationRules.ACCESS_DENIED;
           }
         }

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -13,7 +12,6 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.dao.users.UserEntityDAO;
@@ -33,7 +31,6 @@ import fi.otavanopisto.security.Permit;
 public class LocalSessionControllerImpl extends AbstractSessionController implements Serializable, LocalSessionController {
   
   private static final long serialVersionUID = 4947154641883149837L;
-  private static final String[] SUPPORTED_LOCALES = {"fi", "en"};
   
   @Inject
   private Logger logger;
@@ -47,7 +44,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   @PostConstruct
   private void init() {
     representedUserId = null;
-    locale = resolveLocale(httpServletRequest.getLocale());
+    setLocale(httpServletRequest.getLocale());
     accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());
   }
 
@@ -56,16 +53,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   	this.representedUserId = null;
   	this.activeUserIdentifier = null;
     this.activeUserSchoolDataSource = null;
-  }
-
-  @Override
-  public Locale getLocale() {
-    return locale;
-  }
-
-  @Override
-  public void setLocale(Locale locale) {
-    this.locale = locale;
   }
 
   @Permit(MuikkuPermissions.REPRESENT_USER)
@@ -200,16 +187,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
     this.activeUserIdentifier = identifier;
     this.activeUserSchoolDataSource = dataSource;
   }
-
-  private Locale resolveLocale(Locale requestLocale) {
-    if (requestLocale != null && ArrayUtils.contains(SUPPORTED_LOCALES, requestLocale.getLanguage())) {
-      return new Locale(requestLocale.getLanguage());
-    }
-    
-    return new Locale(SUPPORTED_LOCALES[0]);
-  }
-  
-  private Locale locale;
 
   private Long representedUserId;
   

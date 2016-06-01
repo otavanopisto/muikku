@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  <sql>
+    create table AnnouncementWorkspace(
+      id bigint not null auto_increment,
+      archived bit not null,
+      workspaceEntityId bigint not null,
+      announcement_id bigint not null,
+      primary key (id),
+      constraint
+        AnnouncementWorkspace_fk_announcement_id
+      foreign key
+        (announcement_id)
+      references
+        Announcement (id)
+    )
+  </sql>
+</update>
