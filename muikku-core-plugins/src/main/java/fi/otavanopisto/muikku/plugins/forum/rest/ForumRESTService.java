@@ -40,7 +40,6 @@ import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -50,7 +49,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Produces ("application/json")
 public class ForumRESTService extends PluginRESTService {
 
-  private static final long serialVersionUID = 8910816437728659987L;
+  private static final long serialVersionUID = 687114723532731651L;
 
   @Inject
   private Logger logger;
@@ -64,7 +63,7 @@ public class ForumRESTService extends PluginRESTService {
   @GET
   @Path ("/areagroups")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS)
-  public Response listForumAreaGroups() throws AuthorizationException {
+  public Response listForumAreaGroups() {
     List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
     
     if (groups.size() > 0) {
@@ -85,7 +84,7 @@ public class ForumRESTService extends PluginRESTService {
   @GET
   @Path ("/areagroups/{AREAGROUPID}")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_FIND_FORUMAREAGROUP)
-  public Response findAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) throws AuthorizationException {
+  public Response findAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) {
     ForumAreaGroup forumArea = forumController.findForumAreaGroup(areaGroupId);
     
     ForumAreaGroupRESTModel result = new ForumAreaGroupRESTModel(forumArea.getId(), forumArea.getName()); 
@@ -98,7 +97,7 @@ public class ForumRESTService extends PluginRESTService {
   @POST
   @Path ("/areagroups")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_CREATEFORUMAREAGROUP)
-  public Response createForumAreaGroup(ForumAreaGroupRESTModel newGroup) throws AuthorizationException {
+  public Response createForumAreaGroup(ForumAreaGroupRESTModel newGroup) {
     ForumAreaGroup forumArea = forumController.createForumAreaGroup(newGroup.getName());
     
     ForumAreaGroupRESTModel result = new ForumAreaGroupRESTModel(forumArea.getId(), forumArea.getName()); 
@@ -111,7 +110,7 @@ public class ForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/areagroups/{AREAGROUPID}")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_DELETE_FORUMAREAGROUP)
-  public Response deleteAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) throws AuthorizationException {
+  public Response deleteAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) {
     ForumAreaGroup forumAreaGroup = forumController.findForumAreaGroup(areaGroupId);
     
     forumController.deleteAreaGroup(forumAreaGroup);
@@ -121,26 +120,27 @@ public class ForumRESTService extends PluginRESTService {
   
   @GET
   @Path ("/areas")
-  @RESTPermit(handling = Handling.UNSECURED)
-  public Response listForumAreas() throws AuthorizationException {
+  @RESTPermit(handling = Handling.INLINE)
+  public Response listForumAreas() {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build(); 
+    }
+    
+    if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM)) {
+      return Response.status(Status.FORBIDDEN).entity("Forbidden").build(); 
+    }
+    
     // Permission to see the area is checked by controller here
     List<EnvironmentForumArea> forums = forumController.listEnvironmentForums();
     
-    if (forums.size() > 0) {
-      List<ForumAreaRESTModel> result = new ArrayList<ForumAreaRESTModel>();
-      
-      for (EnvironmentForumArea forum : forums) {
-        Long numThreads = forumController.getThreadCount(forum);
-
-        result.add(new ForumAreaRESTModel(forum.getId(), forum.getName(), forum.getGroup() != null ? forum.getGroup().getId() : null, numThreads));
-      }
-      
-      return Response.ok(
-        result
-      ).build();
-    } else {
-      return Response.noContent().build();
+    List<ForumAreaRESTModel> result = new ArrayList<ForumAreaRESTModel>();
+    
+    for (EnvironmentForumArea forum : forums) {
+      Long numThreads = forumController.getThreadCount(forum);
+      result.add(new ForumAreaRESTModel(forum.getId(), forum.getName(), forum.getGroup() != null ? forum.getGroup().getId() : null, numThreads));
     }
+    
+    return Response.ok(result).build();
   }
   
   @GET
@@ -187,9 +187,7 @@ public class ForumRESTService extends PluginRESTService {
   @PUT
   @Path ("/areas/{AREAID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response updateArea( 
-      @PathParam ("AREAID") Long areaId,
-      ForumAreaRESTModel restModel) {
+  public Response updateArea(@PathParam ("AREAID") Long areaId, ForumAreaRESTModel restModel) {
     ForumArea forumArea = forumController.getForumArea(areaId);
     
     if (forumArea != null) {
@@ -222,7 +220,12 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumArea) || sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEENVIRONMENTFORUM, forumArea)) {
+    if (!(forumArea instanceof EnvironmentForumArea)) {
+      logger.severe(String.format("Trying to access forum %d via incorrect REST endpoint", forumArea.getId()));
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumArea) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_DELETEENVIRONMENTFORUM)) {
       forumController.deleteArea(forumArea);
     } else {
       return Response.status(Status.FORBIDDEN).build();
@@ -234,14 +237,12 @@ public class ForumRESTService extends PluginRESTService {
   @POST
   @Path ("/areas")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
-  public Response createForumArea(ForumAreaRESTModel newForum) throws AuthorizationException {
+  public Response createForumArea(ForumAreaRESTModel newForum) {
     EnvironmentForumArea forumArea = forumController.createEnvironmentForumArea(newForum.getName(), newForum.getGroupId());
     
     ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), forumArea.getGroup() != null ? forumArea.getGroup().getId() : null, 0l); 
     
-    return Response.ok(
-      result
-    ).build();
+    return Response.ok(result).build();
   }
 
   @GET
@@ -270,9 +271,7 @@ public class ForumRESTService extends PluginRESTService {
         result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified()));
       }
       
-      return Response.ok(
-        result
-      ).build();
+      return Response.ok(result).build();
     } else {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -281,7 +280,7 @@ public class ForumRESTService extends PluginRESTService {
   @GET
   @Path ("/areas/{AREAID}/threads/{THREADID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response findThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) throws AuthorizationException {
+  public Response findThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) {
     ForumThread thread = forumController.getForumThread(threadId);
     if (thread == null) {
       return Response.status(Status.NOT_FOUND).entity("Forum thread not found").build();
@@ -296,9 +295,7 @@ public class ForumRESTService extends PluginRESTService {
       long numReplies = forumController.getThreadReplyCount(thread);
       ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified());
       
-      return Response.ok(
-        result
-      ).build();
+      return Response.ok(result).build();
     } else {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -307,7 +304,7 @@ public class ForumRESTService extends PluginRESTService {
   @PUT
   @Path ("/areas/{AREAID}/threads/{THREADID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response updateThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadRESTModel updThread) throws AuthorizationException {
+  public Response updateThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadRESTModel updThread) {
     ForumThread forumThread = forumController.getForumThread(threadId);
     if (forumThread == null) {
       return Response.status(Status.NOT_FOUND).entity("Forum thread not found").build();
@@ -331,7 +328,7 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_UPDATEENVIRONMENTFORUM)) {
+    if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES)) {
       forumController.updateForumThread(forumThread, 
           updThread.getTitle(),
           updThread.getMessage(),
@@ -354,7 +351,7 @@ public class ForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/areas/{AREAID}/threads/{THREADID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response deleteThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) throws AuthorizationException {
+  public Response deleteThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) {
     ForumThread thread = forumController.getForumThread(threadId);
     if (thread == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Forum thread (%d) not found", threadId)).build();
@@ -376,7 +373,7 @@ public class ForumRESTService extends PluginRESTService {
   @POST
   @Path ("/areas/{AREAID}/threads")
   @RESTPermit(handling = Handling.INLINE)
-  public Response createThread(@PathParam ("AREAID") Long areaId, ForumThreadRESTModel newThread) throws AuthorizationException {
+  public Response createThread(@PathParam ("AREAID") Long areaId, ForumThreadRESTModel newThread) {
     ForumArea forumArea = forumController.getForumArea(areaId);
     if (forumArea == null) {
       return Response.status(Status.NOT_FOUND).entity("Forum area not found").build();
@@ -445,7 +442,7 @@ public class ForumRESTService extends PluginRESTService {
   @GET
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response findReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) throws AuthorizationException {
+  public Response findReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) {
     try {
       ForumArea forumArea = forumController.getForumArea(areaId);
       if (forumArea == null) {
@@ -490,7 +487,7 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
   @RESTPermit(handling = Handling.INLINE)
   public Response updateReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId, 
-      ForumThreadReplyRESTModel reply) throws AuthorizationException {
+      ForumThreadReplyRESTModel reply) {
     try {
       ForumArea forumArea = forumController.getForumArea(areaId);
       if (forumArea == null) {
@@ -540,8 +537,12 @@ public class ForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response deleteReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) throws AuthorizationException {
+  public Response deleteReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) {
     ForumThreadReply reply = forumController.getForumThreadReply(replyId);
+    if (reply == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Forum thread reply (%d) not found", replyId)).build();
+    }
+     
     if (!(reply.getForumArea() instanceof EnvironmentForumArea)) {
       logger.severe(String.format("Trying to delete non environment forum thread reply (%d) from environment endpoint", reply.getId()));
       return Response.status(Status.BAD_REQUEST).build();
@@ -558,7 +559,7 @@ public class ForumRESTService extends PluginRESTService {
   @POST
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies")
   @RESTPermit(handling = Handling.INLINE)
-  public Response createReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadReplyRESTModel newReply) throws AuthorizationException {
+  public Response createReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadReplyRESTModel newReply) {
     try {
       ForumArea forumArea = forumController.getForumArea(areaId);
       if (forumArea == null) {
@@ -612,7 +613,16 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/latest")
   @RESTPermit(handling = Handling.INLINE)
   public Response listLatestThreads(@QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
-      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) throws AuthorizationException {
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_READ_ENVIRONMENT_MESSAGES)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     List<ForumThread> threads = forumController.listLatestForumThreads(firstResult, maxResults);
     
     List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
@@ -622,9 +632,7 @@ public class ForumRESTService extends PluginRESTService {
       result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified()));
     }
     
-    return Response.ok(
-      result
-    ).build();
+    return Response.ok(result).build();
   }
   
   private ForumThreadReplyRESTModel createRestModel(ForumThreadReply entity) {
