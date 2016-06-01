@@ -33,21 +33,6 @@
           <div id="announcements">  
             <div class="context-wrapper flex-row">
               <section class="section-for-articles lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">
-                  <article class="announcement-article">
-                    <header>
-                      <h2>
-                        <h:outputText value="#{workspaceAnnouncementsViewBackingBean.currentAnnouncement.caption}" />
-                      </h2>
-                      <div class="article-datetime">
-                        <h:outputText value="#{workspaceAnnouncementsViewBackingBean.currentAnnouncement.startDate}">
-                          <f:convertDateTime type="date" dateStyle="short" />
-                        </h:outputText>
-                      </div>
-                    </header>
-                    <div class="article-context">
-                      <h:outputText value="#{workspaceAnnouncementsViewBackingBean.currentAnnouncement.content}" escape="false" />
-                    </div>
-                  </article>          
                 <ui:fragment rendered="#{not empty workspaceAnnouncementsViewBackingBean.currentAnnouncement}">
                   <article class="announcement-article">
                     <header>
