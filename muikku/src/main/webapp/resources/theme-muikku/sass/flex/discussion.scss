@@ -1,8 +1,42 @@
 @import "_vars.scss";
 @import "_styles.scss";
+@import "_draft.scss";
 
 /* discussion (.di-*) */
 
+.di-threads {
+  
+  &.loading {
+    padding-top: 75px;
+    padding-bottom: 75px;
+  
+    &:after {
+      @include generic-loader(50px);
+    
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+  }
+  
+}
+
+.di-thread {
+  
+  &.loading {
+    padding-top: 75px;
+    padding-bottom: 75px;
+  
+    &:after {
+      @include generic-loader(50px);
+    
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+  }
+  
+}
 
 .di-search-result-container{
   background-color: #fff;

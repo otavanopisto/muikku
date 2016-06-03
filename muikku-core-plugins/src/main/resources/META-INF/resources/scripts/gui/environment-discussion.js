@@ -1,44 +1,44 @@
 (function() {
   'use strict';
-  
-  var WorkspaceDiscussionIOController = function (options) {
+
+  var EnvironmentDiscussionIOController = function (options) {
     this._super = DiscussionIOController.prototype;
-    DiscussionIOController.apply(this, arguments); 
+    DiscussionIOController.call(this, arguments); 
   };
   
-  $.extend(WorkspaceDiscussionIOController.prototype, DiscussionIOController.prototype, {
-
+  $.extend(EnvironmentDiscussionIOController.prototype, DiscussionIOController.prototype, {
+    
     createArea: function (name, callback) {
-      mApi().workspace.workspaces.forumAreas
-        .create(this.options.workspaceEntityId, {
+      mApi().forum.areas
+        .create({
           name: name
         })
         .callback(callback);
     },
     
     loadArea: function (areaId, callback) {
-      mApi().workspace.workspaces.forumAreas
-        .read(this.options.workspaceEntityId, areaId)
+      mApi().forum.areas
+        .read(areaId)
         .callback(callback);
     },
     
     loadAreas: function (callback) {
-      mApi().workspace.workspaces.forumAreas
-        .read(this.options.workspaceEntityId)
+      mApi().forum.areas
+        .read()
         .callback(callback);
     },
     
     updateArea: function (areaId, name, callback) {
-      mApi().workspace.workspaces.forumAreas
-        .update(this.options.workspaceEntityId, areaId, {
+      mApi().forum.areas
+        .update(areaId, {
           name: name
         })
         .callback(callback);
     },
     
     deleteArea: function (areaId, callback) {
-      mApi().workspace.workspaces.forumAreas
-        .del(this.options.workspaceEntityId, areaId)
+      mApi().forum.areas
+        .del(areaId)
         .callback(callback);
     },
     
@@ -51,14 +51,14 @@
         locked: locked
       };
       
-      mApi().workspace.workspaces.forumAreas.threads
-        .create(this.options.workspaceEntityId, forumAreaId, payload)
+      mApi().forum.areas.threads
+        .create(forumAreaId, payload)
         .callback(callback);
     },
     
     loadThread: function (areaId, threadId, callback) {
-      mApi().workspace.workspaces.forumAreas.threads
-        .read(this.options.workspaceEntityId, areaId, threadId)
+      mApi().forum.areas.threads
+        .read(areaId, threadId)
         .callback(callback);
     },
     
@@ -68,7 +68,7 @@
         maxResults: maxResults
       };
         
-      var request = areaId == 'all' ? mApi().workspace.workspaces.forumLatest.read(this.options.workspaceEntityId, parameters) : mApi().workspace.workspaces.forumAreas.threads.read(this.options.workspaceEntityId, areaId, parameters);
+      var request = areaId == 'all' ? mApi().forum.latest.read(parameters) : mApi().forum.areas.threads.read(areaId, parameters);
       
       request
         .on('$', $.proxy(function(thread, threadCallback) {
@@ -86,8 +86,8 @@
     },
     
     updateThread: function (areaId, threadId, title, message, callback) {
-      mApi().workspace.workspaces.forumAreas.threads
-        .read(this.options.workspaceEntityId, areaId, threadId)
+      mApi().forum.areas.threads
+        .read(areaId, threadId)
         .callback($.proxy(function(getErr, thread) {
           if (getErr) {
             callback(getErr);
@@ -97,16 +97,16 @@
               message: message
             });
             
-            mApi().workspace.workspaces.forumAreas.threads
-              .update(this.options.workspaceEntityId, areaId, threadId, thread)
+            mApi().forum.areas.threads
+              .update(areaId, threadId, thread)
               .callback(callback);   
           }
         }, this));
     },
     
     deleteThread: function (areaId, threadId, callback) {
-      mApi().workspace.workspaces.forumAreas.threads
-        .del(this.options.workspaceEntityId, areaId, threadId)
+      mApi().forum.areas.threads
+        .del(areaId, threadId)
         .callback(callback);
     },
     
@@ -119,14 +119,14 @@
         payload.parentReplyId = parentReplyId;
       }
       
-      mApi().workspace.workspaces.forumAreas.threads.replies
-        .create(this.options.workspaceEntityId, areaId, threadId, payload)
+      mApi().forum.areas.threads.replies
+        .create(areaId, threadId, payload)
         .callback(callback);
     },
     
     loadThreadReplies: function (areaId, threadId, firstResult, maxResults, callback) {
-      mApi().workspace.workspaces.forumAreas.threads.replies
-        .read(this.options.workspaceEntityId, areaId, threadId, {
+      mApi().forum.areas.threads.replies
+        .read(areaId, threadId, {
           firstResult: firstResult,
           maxResults: maxResults
         })
@@ -150,8 +150,8 @@
     },
     
     loadThreadReply: function (areaId, threadId, replyId, callback) {
-      mApi().workspace.workspaces.forumAreas.threads.replies
-        .read(this.options.workspaceEntityId, areaId, threadId, replyId)
+      mApi().forum.areas.threads.replies
+        .read(areaId, threadId, replyId)
         .callback(callback);
     },
     
@@ -164,21 +164,19 @@
             message: message
           });
           
-          mApi().workspace.workspaces.forumAreas.threads.replies
-            .update(this.options.workspaceEntityId, areaId, threadId, replyId, reply)
+          mApi().forum.areas.threads.replies
+            .update(areaId, threadId, replyId, reply)
             .callback(callback);
         }
       }, this));
     }
-  
+    
   });
   
   $(document).ready(function() {
-    $('#content').discussion({
+    $('#discussion').discussion({
       areaPermissions: $.parseJSON($('input[name="areaPermissions"]').val()),
-      ioController: new WorkspaceDiscussionIOController({
-        workspaceEntityId: $("input[name='workspaceEntityId']").val()
-      })
+      ioController: new EnvironmentDiscussionIOController()
     });
     
     webshim.polyfill('forms');

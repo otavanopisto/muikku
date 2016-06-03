@@ -102,7 +102,7 @@
           'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.8/plugin.js',
           'image2' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/image2/4.5.8/plugin.js',
           'oembed' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/oembed/1.17/',
-          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.1/plugin.min.js',
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
           'coops' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/coops/0.1.1/plugin.min.js',
           'coops-connector' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/coops-connector/0.1.1/plugin.min.js',
           'coops-dmp' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/coops-dmp/0.1.1/plugin.min.js',

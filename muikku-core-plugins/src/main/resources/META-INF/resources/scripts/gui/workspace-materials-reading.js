@@ -58,14 +58,14 @@
       offset: '0%'
     });
     
-    $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
+    $('.workspace-materials-view-page[data-assignment-type="EXERCISE"]').each(function (index, page) {
       $(page).prepend($('<div>')
           .addClass('muikku-page-assignment-type exercise')
           .text(getLocaleText("plugin.workspace.materialsLoader.exerciseAssignmentLabel"))
       );
     });
     
-    $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
+    $('.workspace-materials-view-page[data-assignment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
           .addClass('muikku-page-assignment-type assignment')
           .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))

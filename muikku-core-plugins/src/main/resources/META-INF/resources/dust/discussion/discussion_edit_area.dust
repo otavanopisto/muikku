@@ -1,33 +1,33 @@
 
-<div class="mf-form di-createarea-form-container flex-row" id="{id}">
+<div class="mf-form di-editarea-form-container flex-row" id="{id}">
   <div class="di-area-create lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-    <form>
+    <form onsubmit="return false">
       <div class="mf-form-header flex-row"><h3>{#localize key="plugin.discussion.editarea.topic"/}</h3></div>
       <div class="mf-content flex-row">
         <div class="di-area-new-body lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
           <div class="mf-form-row flex-row flex-align-items-center">
             <div id="areaSelect" class="mf-select lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-full">
-              <select id="forumAreaIdSelect" name="forumAreaId">
-               <option>{#localize key="plugin.discussion.editarea.selectarea"/}</option>
+              <select id="forumAreaIdSelect" name="forumAreaId" required="required">
+               <option value="">{#localize key="plugin.discussion.editarea.selectarea"/}</option>
                {#.}
                   <option value="{id}">{name}</option>
                {:else}
-                 <option>{#localize key="plugin.discussion.selectarea.empty" /}</option>
+                 <option value="">{#localize key="plugin.discussion.selectarea.empty" /}</option>
                {/.}
               </select>
             </div>   
             <div class="mf-textfield  lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-full">
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-4">{#localize key="plugin.discussion.editarea.newname"/}</span>
-                <input class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-12" type="text" value="" name="name" maxlength="105"></input>                
+                <input required="required" class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-12" type="text" value="" name="name" maxlength="105"></input>                
               </div>
             </div>  
           </div>
        </div>   
        </div>
        <div class="mf-toolbar flex-row">
-        <input type="button" name="send" value='{#localize key="plugin.discussion.createarea.send"/}'/>
-        <input type="button" name="cancel" value='{#localize key="plugin.discussion.createarea.cancel"/}'/>
+        <input type="submit" name="send" value='{#localize key="plugin.discussion.editarea.send"/}'/>
+        <input type="submit" name="cancel" value='{#localize key="plugin.discussion.editarea.cancel"/}'/>
       </div>   
     </form>
   </div>

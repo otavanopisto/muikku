@@ -630,6 +630,22 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
 
+  protected void waitForAttributeToHaveValue(final String selector, final String attribute) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          String attributeValue = getAttributeValue(selector, attribute);
+          if (!attributeValue.isEmpty()) {
+            return true;
+          }
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
+  
   protected boolean waitForMoreThanSize(final String selector, final int size) {
     WebDriver driver = getWebDriver();
     return new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
@@ -673,6 +689,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void assertClassPresent(String selector, String className) {
+    waitForPresent(selector + "." + className);
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     String[] classes = StringUtils.split(element.getAttribute("class"), " ");
     assertTrue(String.format("Class %s is not present in %s", className, selector), ArrayUtils.contains(classes, className));
@@ -1065,6 +1082,22 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         .dragAndDrop(sourceElement, targetElement)
         .perform();
     }
+  }
+
+  protected void dragAndDropWithOffSetAndTimeout(String source, String target, int x, int y){  
+    WebElement sourceElement = findElement(source); 
+    WebElement targetElement = findElement(target);
+    
+    (new Actions(getWebDriver()))
+      .clickAndHold(sourceElement)
+      .moveToElement(targetElement, x, y)
+      .build()
+      .perform();
+    sleep(500);
+    (new Actions(getWebDriver()))
+      .release()
+      .build()
+      .perform();
   }
   
   protected void addTextToCKEditor(String text) {

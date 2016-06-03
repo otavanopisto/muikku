@@ -15,6 +15,8 @@
         }, this));
         this.element.muikkuField($.extend(this.options, methods));
         this._buildUi();
+        var pageElement = this.options.pageElement;
+        $(pageElement).on('beforeAssignmentSubmit', $.proxy(this._onBeforeAssignmentSubmit, this));
       },
       _destroy : function() {
         
@@ -38,16 +40,22 @@
         while (itemObjects.length) {
           itemsContainer.append(itemObjects.splice(Math.floor(Math.random() * itemObjects.length), 1)[0]);
         }
-        $(itemsContainer).sortable({
-          update: $.proxy(function (event, ui) {
-            $(this.element).trigger("change");
-          }, this)
-        });
+        if (!this.isReadonly()) {
+          $(itemsContainer).sortable({
+            update: $.proxy(function (event, ui) {
+              $(this.element).trigger('change');
+            }, this)
+          });
+        }
         this.element.append(itemsContainer);
+      },
+      isReadonly: function () {
+        return this.element.attr('data-disabled') == 'true';
       },
       setReadonly: function(readonly) {
         var itemsContainer = this.element.find('.muikku-sorter-items-container');
         if (readonly) {
+          this.element.attr('data-disabled', 'true');
           $(itemsContainer).sortable("destroy");
         } else {
           $(itemsContainer).sortable({
@@ -55,6 +63,7 @@
               $(this.element).trigger("change");
             }, this)
           });
+          this.element.removeAttr('data-disabled');
         } 
       },
       answer: function(val) {
@@ -67,7 +76,6 @@
           return JSON.stringify(answer);
         }
         else {
-          var previousObject = null;
           var answer = $.parseJSON(val);
           var items = $(this.element).find('.muikku-sorter-item');
           items.sort(function(a, b) {
@@ -120,6 +128,11 @@
       },
       canCheckAnswer: function() {
         return true;
+      },
+      _onBeforeAssignmentSubmit: function (event, data) {
+        if (data.state == 'UNANSWERED') {
+          $(this.element).trigger('change');
+        }
       }
     });
    

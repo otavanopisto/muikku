@@ -18,17 +18,30 @@
           renderDustTemplate('workspace/workspace-index-material-producers.dust', {
             materialProducers: materialProducers
           }, $.proxy(function (text) {
-            $('#content').append($.parseHTML(text));
+            $('.workspace-frontpage-footer').append($.parseHTML(text));
           }, this));
         }
       });
+
+    mApi().workspace.workspaces
+      .read(workspaceEntityId).callback($.proxy(function (err, workspace) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          renderDustTemplate('workspace/workspace-index-material-license.dust', {
+            materialDefaultLicense: workspace.materialDefaultLicense
+          }, $.proxy(function (text) {
+            $('.workspace-frontpage-footer').prepend($.parseHTML(text));
+          }, this));
+        }
+      }, this));
     
     if ($('.workspace-announcements-container').length > 0) {
-      $('.workspace-announcements-container').on('click', '.workspace-single-announcement', function(){
+
+      $('.workspace-announcements-container').on('click', '.workspace-single-announcement', function() {
         var href = $(this).attr('data-href');
         window.location.assign(href);
       });
-      
   
       mApi().announcer.announcements
         .read({onlyActive: "true", workspaceEntityId: workspaceEntityId})

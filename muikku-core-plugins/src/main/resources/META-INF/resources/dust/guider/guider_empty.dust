@@ -1,4 +1,4 @@
-<div class="mf-content-empty gt-no-users">
+<div class="mf-content-empty gt-no-users flex-row flex-align-items-center">
   <h3>
     {#localize key="plugin.guider.errormessage.nousers"/}
   </h3>
