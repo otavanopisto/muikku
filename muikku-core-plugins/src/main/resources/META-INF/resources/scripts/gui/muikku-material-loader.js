@@ -1205,6 +1205,15 @@
     $(data.pageElement)
       .append($('<div>').addClass('clear'));
     
+    /* If material page has overriding producers or license 
+    renderDustTemplate('workspace/materials-page-license-producers-orveride.dust', {
+      materialProducers: materialProducers,
+      materialLicense: materialLicense
+    }, $.proxy(function (text) {
+      $(data.pageElement).append($.parseHTML(text));
+    }, this));
+    */
+   
     $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
       var meta = $.parseJSON($(field).attr('data-meta'));
       $(field).muikkuConnectField({

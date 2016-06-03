@@ -1050,6 +1050,35 @@ sup {
   
 }
 
+.license-producers-override-wrapper {
+  margin:0 -20px -10px -20px;
+  padding:15px;
+  border-top:2px solid #e6f2c4;
+  font-size:13px;
+  line-height:1;
+  
+  .producers-override {
+  
+    .material-producers-label {
+      color:#727272;
+      padding:0 5px 0 0;
+      text-transform:uppercase;
+    }
+    
+    .material-producer {
+      padding:0;
+      color:#000;
+      text-transform:uppercase;
+    }
+  
+  }
+  
+  .license-override {
+  
+  }
+  
+}
+
 /* Different reading view's overrides */
 
 body.workspace-materials #contentWorkspaceMaterials {
