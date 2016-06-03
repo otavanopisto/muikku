@@ -1087,7 +1087,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void dragAndDropWithOffSetAndTimeout(String source, String target, int x, int y){  
     WebElement sourceElement = findElement(source); 
     WebElement targetElement = findElement(target);
-    
+
+//    (new Actions(getWebDriver()))
+//      .moveToElement(sourceElement)
+//      .clickAndHold()
+//      .moveToElement(targetElement, x, y)
+//      .release()
+//      .build()
+//      .perform();
     (new Actions(getWebDriver()))
       .clickAndHold(sourceElement)
       .moveToElement(targetElement, x, y)
