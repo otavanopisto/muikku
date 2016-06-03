@@ -1024,6 +1024,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.SAFARI,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.EDGE
     }
   )
   public void organizerFieldAsciiMathSupportTest() throws Exception {
