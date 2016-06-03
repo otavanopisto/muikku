@@ -38,7 +38,7 @@
             <div class="workspace-study-level-text">#{workspaceIndexBackingBean.educationType}</div>
           </div>
         </ui:fragment>
-        <ui:fragment rendered="#{workspaceIndexBackingBean.workspaceNameExtension ne null}">
+        <ui:fragment rendered="#{not empty workspaceIndexBackingBean.workspaceNameExtension}">
           <div class="workspace-additional-info-wrapper"><span>#{workspaceIndexBackingBean.workspaceNameExtension}</span></div>
         </ui:fragment>
       </div>
