@@ -1,17 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"  
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-  template="./templates/guider_base.xhtml">
-
-
-  <ui:define name="content.center.widget">
-    <m:widget name="guider-content" size="24" rendered="#{sessionBackingBean.loggedIn}"/>  
-    <m:widget name="mainfunction-notlogged" size="24" rendered="#{!sessionBackingBean.loggedIn}"/>
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-functionality.xhtml">
+  
+  <ui:param name="activeTrail" value="guider"/>
+  
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/Base64/0.3.0/base64.min.js"></script>    
+    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/webshim/1.15.10/minified/polyfiller.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js"></script>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lodash/4.12.0/lodash.min.js"></script>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/mainfunctions.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/guider.js"/>
   </ui:define>
-     
+  
+  
+  <ui:define name="main-functionality-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/guider.css"/>
+  </ui:define>  
+  
+  <ui:define name="mf-content-master"> 
+    <input type="hidden" name="userId" value="#{sessionBackingBean.loggedUserId}"/>
+    <input type="hidden" name="canListHiddenStudents" value="#{sessionBackingBean.hasEnvironmentPermission('LIST_HIDDEN_STUDENTS')}"/>  
+    <div class="guider">
+      <ui:insert name="mf-content-functions">
+        <div class="mf-content-functions flex-row flex-align-items-center">
+<!--           <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8 sm-flex-order-1 sm-flex-cell-first">                    -->
+<!--             <div class="mf-primary-function"> -->
+<!--               <div class="gt-dropdown-button mf-primary-function-content"> -->
+<!--                 <span id="btnValue" class="mf-primary-function-text gt-main-dropdown-label">#{i18n.text['plugin.communicator.newMessage']}</span> -->
+<!--                 <span style="display:none" class="mf-primary-function-dropdown-chevron gt-main-dropdown-chevron icon-arrow-down"></span>                 -->
+<!--               </div> -->
+<!--          <div class="gt-side-button-dropdown"> -->
+<!--           <ul id="gtCategories"> -->
+<!--             <li id="cat-1"><span id="my" class="gt-category-myCourses">Omat opiskelijat</span></li> -->
+<!--             <li id="cat-2" ><span id="all" class="gt-category-allCourses">Kaikki opiskelijat</span></li> -->
+<!--           </ul> -->
+<!--         </div>               -->
+<!--             </div>   -->
+<!--           </div> -->
+<!--           <div class="mf-controls-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-8 sm-flex-order-2"> -->
+
+          <div class="mf-controls-container gt-controls-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full sm-flex-order-2">
+           <div class="mf-search">
+             <div class="mf-search-field"> 
+              <span id="testResult"></span>
+               <input type="text" class="search" name="guiderSearch"/>
+             </div>
+           </div>          
+          </div>
+        </div>
+      </ui:insert>
+      <ui:insert name="mf-content-area">
+        <div class="mf-content-area flex-row">
+          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+            <div class="gt-content-main flex-row">
+              <div class="lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-full sm-flex-order-1 gt-categories">
+                <div class="mf-list-container gt-filters-container"></div>
+              </div>
+              <div class="lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-full sm-flex-order-2 gt-students-view-container"></div>
+  <!--             <div class="lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-full sm-flex-order-2 cm-thread-container" style="display: none;"></div> -->
+            </div>
+          </div>
+        </div>
+      </ui:insert>
+    </div>
+  </ui:define>
 </ui:composition>
