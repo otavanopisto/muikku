@@ -99,7 +99,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>a", "Test title");
+        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
       }finally{
         deleteAnnouncements();
       }
@@ -123,7 +123,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>a", "Test title");
+        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
         navigate("/announcements", true);
         waitForPresent("#announcementContextNavigation .gc-navigation-item");
         assertTextIgnoreCase("#announcementContextNavigation .gc-navigation-item a", "Test title");
@@ -156,7 +156,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>a", "Test title");
+        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
       }finally{
         deleteAnnouncements();
         deleteUserGroup(2l);
@@ -182,7 +182,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         waitForPresent("#announcements");
-        assertTrue("Element found even though it shouldn't be there", isElementPresent("#announcements ul>li>a") == false);
+        assertTrue("Element found even though it shouldn't be there", isElementPresent("#announcements ul>li>div>a") == false);
       }finally{
         deleteAnnouncements();
       }
