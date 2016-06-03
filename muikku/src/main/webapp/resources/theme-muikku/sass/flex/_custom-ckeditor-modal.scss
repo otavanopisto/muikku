@@ -222,8 +222,8 @@ div.cke_reset_all {
               }
             
               .sort-handle {
-                @include rounded-top-left(4px);
-                @include rounded-bottom-left(4px);
+                border-top-left-radius:4px;
+                border-bottom-left-radius:4px;
                 color: #7996aa;
                 background: #f3faff;
                 padding: 6px 4px 6px 6px;
@@ -309,7 +309,7 @@ div.cke_reset_all {
       input[type="text"], textarea {
         height:auto;
         border:1px solid #eee;
-        @include rounded(3px);
+        border-radius:3px;
         display:inline-block;
         padding:3px 5px;
         transition:border,box-shadow 0.1s,0.2s ease-in-out;
@@ -366,7 +366,7 @@ div.cke_reset_all {
         outline:none;
         display:inline-block;
         box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
-        @include rounded(3px);
+        border-radius:3px;
         display:inline-block;
         
         &:focus,
@@ -389,7 +389,7 @@ div.cke_reset_all {
         display:inline-block;
         margin:4px 0px;
         box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
-        @include rounded(3px);
+        border-radius:3px;
         max-width:100%;
         word-wrap:break-word;
         
