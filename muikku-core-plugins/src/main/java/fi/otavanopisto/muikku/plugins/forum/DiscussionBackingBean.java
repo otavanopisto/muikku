@@ -25,7 +25,7 @@ import fi.otavanopisto.security.LoggedIn;
 @RequestScoped
 @Join (path = "/discussion", to = "/jsf/discussion/index.jsf")
 @LoggedIn
-public class ForumBackingBean {
+public class DiscussionBackingBean {
   
   @Inject
   private SessionController sessionController;
@@ -39,7 +39,7 @@ public class ForumBackingBean {
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
     for (EnvironmentForumArea forumArea : forumAreas) {
-      areaPermissions.put(forumArea.getId(), new AreaPermission(sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEMESSAGES, forumArea)));
+      areaPermissions.put(forumArea.getId(), new AreaPermission(sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES, forumArea)));
     }
     
     try {

@@ -6,7 +6,7 @@
         <div class="di-message-new-body lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
           <div class="mf-form-row flex-row">
             <div class="di-message-new-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-               <textarea id="textContent" name="message"></textarea>
+               <textarea id="textContent" name="message">{message}</textarea>
             </div>
            </div> 
           </div>

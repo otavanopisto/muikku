@@ -100,7 +100,7 @@ public class DiscussionTestsBase extends AbstractUITest {
           waitAndClick(".di-remove-thread-link");
           waitAndClick(".delete-button>span");
           waitForPresent(".mf-content-empty>h3");
-          assertNotPresent(".di-message");
+          assertNotPresent(".di-threads .di-message");
         } catch (Exception e) {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
         } finally {

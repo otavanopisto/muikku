@@ -17,8 +17,6 @@ import fi.otavanopisto.security.Scope;
 @ApplicationScoped
 public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
-  public static final String PERMISSIONSCOPE_FORUM = "FORUM";
-  
   /**
    * Forum Area Groups
    */
@@ -47,13 +45,13 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
   public static final String FORUM_CREATEENVIRONMENTFORUM = "FORUM_CREATEENVIRONMENTFORUM";
 
-  @Scope (PERMISSIONSCOPE_FORUM)
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
-  public static final String FORUM_UPDATEFORUM = "FORUM_UPDATEFORUM";
+  public static final String FORUM_UPDATEENVIRONMENTFORUM = "FORUM_UPDATEENVIRONMENTFORUM";
   
-  @Scope (PERMISSIONSCOPE_FORUM)
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
-  public static final String FORUM_LISTFORUM = "FORUM_LISTFORUM";
+  public static final String FORUM_ACCESSENVIRONMENTFORUM = "FORUM_ACCESSENVIRONMENTFORUM";
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
@@ -72,10 +70,15 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER })
   public static final String FORUM_CREATEWORKSPACEFORUM = "FORUM_CREATEWORKSPACEFORUM";
 
-  @Scope (PERMISSIONSCOPE_FORUM)
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER })
+  public static final String FORUM_UPDATEWORKSPACEFORUM = "FORUM_UPDATEWORKSPACEFORUM";
+
+  @Scope (PermissionScope.WORKSPACE)
   @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT } )
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
-  public static final String FORUM_LISTWORKSPACEFORUM = "FORUM_LISTWORKSPACEFORUM";
+  public static final String FORUM_LIST_WORKSPACE_FORUM = "FORUM_LIST_WORKSPACE_FORUM";
 
   @Scope (PermissionScope.WORKSPACE)
   @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER } )
@@ -90,21 +93,43 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
    * Forum Message related rights
    */
   
-  @Scope (PERMISSIONSCOPE_FORUM)
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
-  public static final String FORUM_READMESSAGES = "FORUM_READMESSAGES";
+  public static final String FORUM_READ_ENVIRONMENT_MESSAGES = "FORUM_READ_ENVIRONMENT_MESSAGES";
 
-  @Scope (PERMISSIONSCOPE_FORUM)
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
-  public static final String FORUM_WRITEMESSAGES = "FORUM_WRITEMESSAGES";
+  public static final String FORUM_WRITE_ENVIRONMENT_MESSAGES = "FORUM_WRITE_ENVIRONMENT_MESSAGES";
   
-  @Scope (PERMISSIONSCOPE_FORUM)
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
-  public static final String FORUM_DELETEMESSAGES = "FORUM_DELETEMESSAGES";
+  public static final String FORUM_DELETE_ENVIRONMENT_MESSAGES = "FORUM_DELETE_ENVIRONMENT_MESSAGES";
 
-  @Scope (PERMISSIONSCOPE_FORUM)
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
-  public static final String FORUM_EDITMESSAGES = "FORUM_EDITMESSAGES";
+  public static final String FORUM_EDIT_ENVIRONMENT_MESSAGES = "FORUM_EDIT_ENVIRONMENT_MESSAGES";
+  
+  // Workspace forum messages
+  
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
+  public static final String FORUM_READ_WORKSPACE_MESSAGES = "FORUM_READ_WORKSPACE_MESSAGES";
+
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
+  public static final String FORUM_WRITE_WORKSPACE_MESSAGES = "FORUM_WRITE_WORKSPACE_MESSAGES";
+  
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  public static final String FORUM_DELETE_WORKSPACE_MESSAGES = "FORUM_DELETE_WORKSPACE_MESSAGES";
+
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  public static final String FORUM_EDIT_WORKSPACE_MESSAGES = "FORUM_EDIT_WORKSPACE_MESSAGES";
 
   @Override
   public List<String> listPermissions() {
