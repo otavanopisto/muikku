@@ -17,7 +17,7 @@
   </ui:define>  
 
   <ui:define name="mf-content-master"> 
-    <ui:framgment rendered="#{sessionBackingBean.loggedIn}">
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
       <div id="announcements">
         <ui:insert name="mf-content-area">
           <div class="context-wrapper flex-row">
@@ -72,6 +72,6 @@
           </div>
         </ui:insert>
       </div>
-    </ui:framgment>
+    </ui:fragment>
   </ui:define>
 </ui:composition>
