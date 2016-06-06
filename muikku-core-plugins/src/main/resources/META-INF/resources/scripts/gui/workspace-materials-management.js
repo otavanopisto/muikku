@@ -440,6 +440,36 @@
     }
   });
   
+  $.widget("custom.muikkuPageLicense", {
+    _create : function() {
+      this.element.addClass('materials-management-page-license-widget');
+      this._load($.proxy(function () {
+        this.element.find('input[name="license"]').licenseSelector({
+          locale: getLocale() == 'fi' ? 'fi' : 'en',
+          types: {
+            'ogl': false
+          },
+          locales: {
+            en: { 
+              noneLabel: getLocaleText('plugin.workspace.materialsManagement.inheritedLicenseLabel')
+            },
+            fi: { 
+              noneLabel: getLocaleText('plugin.workspace.materialsManagement.inheritedLicenseLabel')
+            }
+          }
+        });
+      }, this));
+    },
+    
+    _load: function (callback) {
+      var data = {};
+      renderDustTemplate("workspace/materials-management-page-license.dust", data, $.proxy(function (html) {
+        this.element.html(html);
+        callback();
+      }, this));
+    }
+  });  
+  
   $.widget("custom.muikkuPageAttachments", {
     _create : function() {
       this.element.addClass('materials-management-page-attachment-widget');
@@ -738,6 +768,20 @@
     
     section.find('.workspace-materials-management-view-page-controls')
       .after($('<div>').muikkuPageAttachments({
+        workspaceEntityId: workspaceEntityId,
+        parentId: workspaceMaterialId
+      }));
+  });
+  
+  $(document).on('click', '.page-license', function (event, data) {
+    var workspaceEntityId = $('.workspaceEntityId').val();
+    var workspaceMaterialId = $(event.target).attr('data-workspace-material-id');
+    var section = $(event.target).closest('section');
+    
+    section.addClass('workspace-materials-management-editing-license');
+    
+    section.find('.workspace-materials-management-view-page-controls')
+      .after($('<div>').muikkuPageLicense({
         workspaceEntityId: workspaceEntityId,
         parentId: workspaceMaterialId
       }));
