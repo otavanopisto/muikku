@@ -23,6 +23,7 @@ $(document).ready(function(){
                 if (err) {
                   callback(err);
                 } else {
+                  announcement.workspaceName = result.name;
                   announcement.link =
                     "workspace/" + result.urlName +
                     "/announcements?announcementId=" + announcement.id;
@@ -39,8 +40,7 @@ $(document).ready(function(){
                 err);
           } else {
             renderDustTemplate('announcer/announcer_widget_items.dust', result, $.proxy(function (text) {
-                  var element = $(text);
-                  cont.append(element);
+                  cont.html(text);
                   cont.perfectScrollbar({"suppressScrollY" : true});
             }, this));
           }
