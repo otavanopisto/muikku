@@ -54,7 +54,8 @@
 
 
 /* Input field and textarea overrides */
-input[type="text"] {
+input[type="text"],
+input[type="url"] {
   width:auto;
   height:auto;
   border:3px solid #c9e0fb;

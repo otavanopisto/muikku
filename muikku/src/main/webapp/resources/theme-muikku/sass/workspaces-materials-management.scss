@@ -749,6 +749,49 @@ body.workspace-materials-management {
       
       }
       
+      /* Material's License Override widget */
+      .materials-management-page-license-widget {
+        min-height:215px;
+        margin:5px -20px 0px -20px;
+        
+        .materials-management-page-license {
+        
+          input[type="url"] {
+            width:calc(100% - 5px);
+          }
+        
+        }
+        
+        label {
+         font-weight:400;
+        }
+        
+        .save-page-license {
+          background:#27b91c none repeat scroll 0 0;
+          border:0 none;
+          border-radius:2px;
+          color:#fff;
+          display:block;
+          font-size:14px;
+          line-height:1;
+          margin:10px 0 0 5px;
+          padding:6px 8px;
+        }
+        
+        .creative-commons-container {
+         margin:4px; 
+         font-size:16px;
+        }
+        
+        .creative-commons-attribute {
+        
+          label {
+            font-weight:300;
+          }
+        
+        }
+        
+      }
       
       img {
         max-width:100%;
