@@ -1,20 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition 
-  xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd" 
-  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:f="http://java.sun.com/jsf/core"  
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:c="http://java.sun.com/jsp/jstl/core" 
-  xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
-  template="/jsf/profile/templates/profile-view.xhtml">
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-reading-view.xhtml">
 
-  <ui:define name="content.center.widget">
-    <m:widget name="profile-content" size="18" rendered="#{sessionBackingBean.loggedIn}"/>
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/profile.js"/>  
   </ui:define>
 
-  <ui:define name="content.right.widget">
-    <m:widget name="profile-section-links" size="6" rendered="#{sessionBackingBean.loggedIn}" />
-  </ui:define>
+  <ui:define name="main-functionality-styles">
+<!--     <link rel="stylesheet" type="text/css" href="/css/flex/announcement-view.css"/> -->
+  </ui:define>  
 
+  <ui:define name="mf-content-master"> 
+    <ui:framgment rendered="#{sessionBackingBean.loggedIn}">
+      <div id="announcements">
+        <ui:insert name="mf-content-area">
+          <div class="context-wrapper flex-row">
+            <section class="section-for-articles lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">
+              <div class="profile-content">
+                <div class="profile-picture-wrapper">
+                  <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/>
+                </div>
+                <div class="profile-data-wrapper">
+                  <h1 class="profile-user-realname">#{profileBackingBean.displayName}</h1>
+                  
+                  <ui:fragment rendered="#{!empty(profileBackingBean.emails)}">
+                    <h2>#{i18n.text['plugin.profile.emailsLabel']}</h2>
+                    <ui:repeat var="email" value="#{profileBackingBean.emails}">
+                      <div class="profile-user-email">#{email}</div>
+                    </ui:repeat>
+                  </ui:fragment>
+                  
+                  <ui:fragment rendered="#{!empty(profileBackingBean.addresses)}">
+                    <h2>#{i18n.text['plugin.profile.addressesLabel']}</h2>
+                    <ui:repeat var="address" value="#{profileBackingBean.addresses}">
+                      <div class="profile-user-address">#{address}</div>
+                    </ui:repeat>
+                  </ui:fragment>
+                  
+                  <ui:fragment rendered="#{!empty(profileBackingBean.phoneNumbers)}">
+                    <h2>#{i18n.text['plugin.profile.phoneNumbers']}</h2>
+                    <ui:repeat var="phoneNumber" value="#{profileBackingBean.phoneNumbers}">
+                      <div class="profile-user-phone-number">#{phoneNumber}</div>
+                    </ui:repeat>
+                  </ui:fragment>
+                  
+                  <div class="profile-change-password-container">
+                    <div class="profile-change-password">#{i18n.text['plugin.profile.changePassword.buttonLabel']}</div>
+                  </div>
+                </div>
+                
+              </div>
+            </section>
+            <nav id="profileSectionNavigation" class="gc-navigation lg-flex-cell-5 md-flex-cell-6 sm-flex-hide">
+              <div class="profile-section-links-container">
+                <ul class="profile-section-links">
+                  <li class="profile-section-links active">Omat tiedot</li>
+                  <!-- To Be Added In The Future 
+                  <li class="profile-section-links">Työtilat</li>
+                  <li class="profile-section-links">Suoritusrekisteri</li>
+                  <li class="profile-section-links">Kaverit</li>
+                   -->
+                </ul>
+              </div>
+            </nav>    
+          </div>
+        </ui:insert>
+      </div>
+    </ui:framgment>
+  </ui:define>
 </ui:composition>
