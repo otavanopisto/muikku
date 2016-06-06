@@ -131,7 +131,7 @@
     <div class="flex-grid" id="content">
       <!-- WORKSPACE NAVIGATION -->
       <div id="workspaceNavigationWrapper">
-        <ui:fragment rendered="#{workspaceBackingBean.isStudent()}">
+        <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('REQUEST_WORKSPACE_ASSESSMENT')}">
           <!-- WORKSPACE EVALUATION NAVIGATION -->
           <nav id="workspaceEvaluationDockWrapper">
             <div id="workspaceEvaluationDock">
@@ -299,7 +299,7 @@
       <div id="workspaceNavigationWrapperBuble">
         <div class="icon-navicon">
           <div class="navmore-container">
-            <ui:fragment rendered="#{workspaceBackingBean.isStudent()}">
+            <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('REQUEST_WORKSPACE_ASSESSMENT')}">
               <div class="navmore-evaluation-links">
                 <div class="workspace-evaluation-item workspace-dock-navi-button-evaluation" data-state="#{workspaceBackingBean.assessmentState}">
                   <ui:fragment rendered="#{workspaceBackingBean.assessmentState eq 'unassessed'}">
