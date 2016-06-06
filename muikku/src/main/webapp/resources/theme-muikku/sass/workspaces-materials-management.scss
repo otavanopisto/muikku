@@ -1161,7 +1161,10 @@ body.workspace-materials-management {
         a.revert-page,
         a.close-page-editor,
         a.page-attachments,
-        a.close-attachments-editor {
+        a.close-attachments-editor,
+        a.page-license,
+        a.page-producers,
+        a.page-closed-material {
           color:#fff;
           font-size:21px;
           display:inline-block;
