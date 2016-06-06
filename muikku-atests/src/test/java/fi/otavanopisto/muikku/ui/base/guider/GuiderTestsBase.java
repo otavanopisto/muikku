@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.ui.base;
+package fi.otavanopisto.muikku.ui.base.guider;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
