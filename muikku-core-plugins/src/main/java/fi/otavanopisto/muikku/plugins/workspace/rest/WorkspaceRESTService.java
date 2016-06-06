@@ -480,7 +480,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_WORKSPACE_DETAILS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.VIEW_WORKSPACE_DETAILS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -503,7 +503,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -528,12 +528,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     if (!workspaceEntity.getPublished()) {
-      if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
       switch (workspaceEntity.getAccess()) {
         case ANYONE:
         break;
@@ -549,7 +549,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           
           WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
           if (workspaceUserEntity == null) {
-            if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_MEMBERS_ONLY_WORKSPACE, workspaceEntity)) {
+            if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_MEMBERS_ONLY_WORKSPACE, workspaceEntity)) {
               return Response.status(Status.FORBIDDEN).build();
             }
           }
@@ -571,7 +571,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -598,7 +598,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_DETAILS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_DETAILS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -654,7 +654,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -741,7 +741,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     // Access check
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
       if (studentIdentifiers == null
           || studentIdentifiers.size() != 1
           || !studentIdentifiers.get(0).equals(sessionController.getLoggedUser())) {
@@ -976,7 +976,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     // Access check
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -1123,7 +1123,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.noContent().build();
       
     } else {
-      if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).build();
       }
   
@@ -1680,7 +1680,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -1761,7 +1761,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -1796,7 +1796,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -1845,7 +1845,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -1876,7 +1876,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -1924,7 +1924,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.EVALUATE_USER, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.EVALUATE_USER, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -2007,7 +2007,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.EVALUATE_USER, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.EVALUATE_USER, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -2156,11 +2156,14 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     if (!workspaceUserEntity.getWorkspaceEntity().getId().equals(workspaceEntity.getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("WorkspaceEntityUser's workpsace does not match specified workspace").build();
+      logger.severe(String.format("listWorkspaceAssessments(%d, %s, %s) workspace user mismatch. Resolves to WorkspaceUserEntity %d with workspace %d",
+          workspaceEntityId, workspaceStudentId, studentId,
+          workspaceUserEntity.getId(), workspaceUserEntity.getWorkspaceEntity().getId()));
+      return Response.status(Status.BAD_REQUEST).entity("WorkspaceEntityUser's workspace does not match specified workspace").build();
     }
     
     if (!sessionController.getLoggedUserEntity().getId().equals(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId())) {
-      if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_USER_EVALUATION, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.VIEW_USER_EVALUATION, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -2233,7 +2236,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
     }
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -2292,7 +2295,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
     }
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -2328,7 +2331,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     UserEntity userEntity = sessionController.getLoggedUserEntity();
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
       if (workspaceStudentId == null) {
         entries = workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
       } else {
