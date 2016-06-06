@@ -33,7 +33,7 @@
           </div>
         {/verbalAssessment}
       {/evaluation}
-      <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" data-path="{path}" class="evaluation-assignment"></article>
+      <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" data-path="{path}" class="evaluation-assignment"  data-reply-state="{reply.state}"></article>
     </div>
   </div>
 
@@ -52,7 +52,7 @@
       </div>
     </div>
     <div class="evaluation-assignment-content" data-open-state="closed">
-      <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" data-path="{path}" class="evaluation-assignment"></article>
+      <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" data-path="{path}" class="evaluation-assignment" data-reply-state="{reply.state}"></article>
     </div>
   </div>
 

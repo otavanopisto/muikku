@@ -1,29 +1,25 @@
 {#.}
-  <div id="crsId-{id}" class="gt-course ft-01">
+  <div id="crsId-{id}" class="gt-course ft-01 flex-row">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
-    <div class="gt-course-details">
-      <div class="gt-course-details-container">       
-        <div class="gt-course-description">
+    <div class="gt-course-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+      <div class="gt-course-details-container flex-row">       
+        <div class="gt-course-description lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full">
           <div class="gt-course-header-name">
             <span class="gt-course-long">{name}</span>
             {?nameExtension}
               <span class="gt-course-extension">( {nameExtension} )</span>
             {/nameExtension}
           </div>
-        </div>       
-        
-        <div class="gt-course-activity-short">
+        </div>               
+        <div class="gt-course-activity-short lg-flex-cell-8 md-flex-cell-8 sm-flex-hide">
           <span title="{#localize key="plugin.guider.headerEvaluatedTitle" arg0=activity.evaluablesDonePercent/}">{activity.evaluablesDonePercent} %</span>
           <span> / </span>
           <span title="{#localize key="plugin.guider.headerExercisesTitle" arg0=activity.excercicesDonePercent/}">{activity.excercicesDonePercent} %</span>
-        </div>
-        
-        <div class="clear"></div>
+        </div>       
       </div>
-      <div class="gt-course-activity">
-        <h4>{#localize key="plugin.guider.assessmentStateTitle"/}</h4>
-      
+      <div class="gt-course-activity flex-row">
+        <h4>{#localize key="plugin.guider.assessmentStateTitle"/}</h4>      
         <div class="gt-course-activity-row">
           <label>{#localize key="plugin.guider.assessmentStateLabel"/}</label>
           <span>
@@ -160,8 +156,8 @@
     </div>
   </div>
 {:else}
-  <div class="mf-content-empty cm-no-messages">
-    <h3>{#localize key="plugin.guider.noWorkspaces"/}</h3>
+  <div class="mf-content-empty cm-no-messages flex-row">
+    <h3 class=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-align-items-center">{#localize key="plugin.guider.noWorkspaces"/}</h3>
   </div>
 {/.}
 

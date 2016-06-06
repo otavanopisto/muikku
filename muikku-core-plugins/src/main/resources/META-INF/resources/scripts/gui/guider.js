@@ -636,11 +636,11 @@
     _create : function() {
       this.element.addClass('gt-user-view-profile');
       
-      this.element.on("click", ".gu-new-flag", $.proxy(this._onNewFlagClick, this));
-      this.element.on("click", ".gu-edit-flag", $.proxy(this._onEditFlagClick, this));
-      this.element.on("click", ".gu-share-flag", $.proxy(this._onShareFlagClick, this));
-      this.element.on("click", ".gu-remove-flag", $.proxy(this._onRemoveFlagClick, this));
-      this.element.on("click", ".gu-existing-flag", $.proxy(this._onExistingFlagClick, this));
+      this.element.on("click", ".gt-new-flag", $.proxy(this._onNewFlagClick, this));
+      this.element.on("click", ".gt-edit-flag", $.proxy(this._onEditFlagClick, this));
+      this.element.on("click", ".gt-share-flag", $.proxy(this._onShareFlagClick, this));
+      this.element.on("click", ".gt-remove-flag", $.proxy(this._onRemoveFlagClick, this));
+      this.element.on("click", ".gt-existing-flag", $.proxy(this._onExistingFlagClick, this));
       
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       $(document).on("mouseup", $.proxy(this._onDocumentMouseUp, this));
@@ -753,7 +753,7 @@
     },
     
     _onEditFlagClick: function (event) {
-      var flagElement = $(event.target).closest('.gu-flag');
+      var flagElement = $(event.target).closest('.gt-flag');
       var flagId = flagElement.attr('data-flag-id');
       
       this._loadFlag(flagId, $.proxy(function (err, flag) {
@@ -801,7 +801,7 @@
     },
     
     _onShareFlagClick: function (event) {
-      var flagElement = $(event.target).closest('.gu-flag');
+      var flagElement = $(event.target).closest('.gt-flag');
       var flagId = flagElement.attr('data-flag-id');
       
       $('<div>').guiderFlagShareDialog({
@@ -810,7 +810,7 @@
     },
     
     _onExistingFlagClick: function (event) {
-      var flagElement = $(event.target).closest('.gu-existing-flag');
+      var flagElement = $(event.target).closest('.gt-existing-flag');
       var flagId = $(flagElement).attr('data-flag-id');
       this._flagStudent(flagId, function () {
         window.location.reload(true);
@@ -818,7 +818,7 @@
     },
     
     _onRemoveFlagClick: function (event) {
-      var flagElement = $(event.target).closest('.gu-flag');
+      var flagElement = $(event.target).closest('.gt-flag');
       var id = $(flagElement).attr('data-id');
       
       this._unflagStudent(id, function () {
@@ -865,7 +865,7 @@
     
     _createStudentWorkspaceForumStatisticsLoad: function (workspaceEntityId) {
       return $.proxy(function (callback) {
-        mApi().forum.workspace.statistics
+        mApi().workspace.workspaces.forumStatistics
           .read(workspaceEntityId, { userIdentifier: this.options.userIdentifier })
           .callback($.proxy(function(err, statistics) {
             if (err) {

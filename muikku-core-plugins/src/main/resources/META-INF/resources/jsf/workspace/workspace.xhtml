@@ -8,19 +8,13 @@
   <ui:define name="scripts">
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-image-details.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-word-definition.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-rich-memo-field-component.js"/> 
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-material-loader.js"/> 
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-frontpage.js"/>
-    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
+    <ui:include src="templates/workspace-material-scripts.xhtml"/>
   </ui:define>
   
   <ui:define name="workspace-view-styles">
@@ -38,7 +32,7 @@
             <div class="workspace-study-level-text">#{workspaceIndexBackingBean.educationType}</div>
           </div>
         </ui:fragment>
-        <ui:fragment rendered="#{workspaceIndexBackingBean.workspaceNameExtension ne null}">
+        <ui:fragment rendered="#{not empty workspaceIndexBackingBean.workspaceNameExtension}">
           <div class="workspace-additional-info-wrapper"><span>#{workspaceIndexBackingBean.workspaceNameExtension}</span></div>
         </ui:fragment>
       </div>
@@ -84,13 +78,15 @@
       </div>
     </section>
     
-    <section class="flex-row">
-      <!--  <div class="workspace-frontpage-teachers lg-flex-cell-first md-flex-cell-first lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full sm-flex-order-2"></div> -->
-      <div class="workspace-frontpage-announcements lg-flex-cell-full md-flex-cell-full sm-flex-cell-full sm-flex-order-1">
-        <h1 class="workspace-block-title">#{i18n.text['plugin.workspace.index.announcementsTitle']}</h1>
-        <div class="flex-row workspace-announcements-container flex-align-items-center"></div>
-      </div>
-    </section>
+    <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('LIST_WORKSPACE_ANNOUNCEMENTS')}">
+      <section class="flex-row">
+        <!--  <div class="workspace-frontpage-teachers lg-flex-cell-first md-flex-cell-first lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full sm-flex-order-2"></div> -->
+        <div class="workspace-frontpage-announcements lg-flex-cell-full md-flex-cell-full sm-flex-cell-full sm-flex-order-1">
+          <h1 class="workspace-block-title">#{i18n.text['plugin.workspace.index.announcementsTitle']}</h1>
+          <div class="flex-row workspace-announcements-container flex-align-items-center"></div>
+        </div>
+      </section>
+    </ui:fragment>
 
     <section class="flex-row workspace-frontpage-material-page">
       <ui:repeat value="#{workspaceIndexBackingBean.contentNodes}" var="contentNode">
@@ -106,6 +102,11 @@
       <input class="materialsBaseUrl" type="hidden" value="#{workspaceIndexBackingBean.materialsBaseUrl}" />
       <input class="announcementsBaseUrl" type="hidden" value="#{workspaceIndexBackingBean.announcementsBaseUrl}" />
     </section>
+    
+    <footer class="flex-row workspace-frontpage-footer">
+    
+    </footer>
+    
   </ui:define>
 
 </ui:composition>

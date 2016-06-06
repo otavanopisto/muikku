@@ -37,7 +37,7 @@
       }
       
       this._dialog.dialog({
-        title: getLocaleText("plugin.workspaceSignUp.title", this.options.workspaceName, this.options.workspaceNameExtension),
+        title: getLocaleText("plugin.workspaceSignUp.title", [this.options.workspaceName, this.options.workspaceNameExtension]),
         draggable: false,
         modal: true,
         resizable: false,

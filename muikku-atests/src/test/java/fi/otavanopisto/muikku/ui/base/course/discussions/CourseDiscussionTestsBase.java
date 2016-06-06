@@ -116,7 +116,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
             waitAndClick(".di-remove-thread-link");
             waitAndClick(".delete-button>span");
             waitForPresent(".mf-content-empty>h3");
-            assertNotPresent(".di-message");
+            assertNotPresent(".di-threads .di-message");
 //            assertText(".mf-content-empty>h3", "No ongoing discussions");
           } catch (Exception e) {
             deleteWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), thread.getId());

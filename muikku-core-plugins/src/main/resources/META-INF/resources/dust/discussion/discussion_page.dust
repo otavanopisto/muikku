@@ -1,8 +1,8 @@
 
   <div class="di-messages-page flex-row">
-    {#.}
+    {#threads}
         {>"discussion/discussion_item.dust"/}
-    {/.} 
+    {/threads} 
     {@lt key=length value=10}
       <div class="mf-items-paging di-messages-paging lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-center">
         <div class="mf-paging-toolbar di-paging-toolbar">
@@ -10,7 +10,7 @@
         </div>
       </div>  
     {:else}       
-      {?.}  
+      {?hasMore}  
         <div class="mf-items-paging di-messages-paging lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-center">
           <div class="mf-paging-toolbar di-paging-toolbar">
             <div class="mf-paging-tool mf-page-link-load-more di-paging-tool di-page-link-load-more-messages">{#localize key="plugin.discussion.links.more"/}</div>
@@ -22,6 +22,6 @@
             <div class="mf-paging-tool mf-page-link-load-more di-paging-tool di-page-link-load-more disabled">{#localize key="plugin.discussion.links.nomore"/}</div>
           </div>
         </div>    
-      {/.}    
+      {/hasMore}    
     {/lt}
   </div>

@@ -89,3 +89,40 @@
 -ms-user-select: none;
 user-select: none;
 }
+
+@mixin flexbox() {
+  display:-webkit-box; 
+  display:-moz-box;
+  display:-ms-flexbox;
+  display:-webkit-flex;
+  display:flex;
+}
+
+@mixin flex-grow($value) {
+  -webkit-flex-grow:$value;
+  -moz-flex-grow:$value;
+  -ms-flex-grow:$value;
+  flex-grow:$value;
+}
+
+@mixin flex-shrink($value) {
+  -webkit-flex-shrink:$value;
+  -moz-flex-shrink:$value;
+  -ms-flex-shrink:$value;
+  flex-shrink:$value;
+}
+
+@mixin flex-basis($value) {
+  -webkit-flex-basis:$value;
+  -moz-flex-basis:$value;
+  -ms-flex-basis:$value;
+  flex-basis:$value;
+}
+
+@mixin flex($values) {
+  -webkit-box-flex:$values;
+  -moz-box-flex:$values;
+  -webkit-flex:$values;
+  -ms-flex:$values;
+  flex:$values;
+}
