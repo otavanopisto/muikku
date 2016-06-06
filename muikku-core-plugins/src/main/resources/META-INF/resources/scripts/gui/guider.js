@@ -565,7 +565,8 @@
             $(this).perfectScrollbar(); 
           },  
           source: $.proxy(this._search, this),
-          select: $.proxy(this._onAddUserSelect, this)
+          select: $.proxy(this._onAddUserSelect, this),
+          appendTo: $('.guider-dialog-user-search')
         });
       
       var autocompleteData = $(this._dialog).find('.add-user').data("ui-autocomplete");
