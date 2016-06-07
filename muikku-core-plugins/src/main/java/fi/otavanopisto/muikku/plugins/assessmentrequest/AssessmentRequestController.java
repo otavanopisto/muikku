@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -23,8 +22,6 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
-import fi.otavanopisto.security.Permit;
-import fi.otavanopisto.security.PermitContext;
 
 @Dependent
 public class AssessmentRequestController {
@@ -70,11 +67,8 @@ public class AssessmentRequestController {
     }
   }
   
-  @Permit (AssessmentRequestPermissions.LIST_WORKSPACE_ASSESSMENTREQUESTS)
-  public List<WorkspaceAssessmentRequest> listByWorkspace(@PermitContext WorkspaceEntity workspaceEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    return gradingController.listWorkspaceAssessmentRequests(
-        workspaceEntity.getDataSource().getIdentifier(), 
-        workspaceEntity.getIdentifier());
+  public List<WorkspaceAssessmentRequest> listByWorkspace(WorkspaceEntity workspaceEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    return gradingController.listWorkspaceAssessmentRequests(workspaceEntity.getDataSource().getIdentifier(), workspaceEntity.getIdentifier());
   }
 
   public List<WorkspaceAssessmentRequest> listByWorkspaceUser(WorkspaceUserEntity workspaceUserEntity) {
