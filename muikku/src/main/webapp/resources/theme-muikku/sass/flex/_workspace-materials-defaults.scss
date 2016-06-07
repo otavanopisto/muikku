@@ -824,7 +824,7 @@ sup {
   
 }
 
-.license-producers-override-wrapper {
+footer.article-details {
   margin:0 -20px -10px -20px;
   padding:15px;
   border-top:2px solid #e6f2c4;
@@ -832,6 +832,7 @@ sup {
   line-height:1;
   
   .producers-override {
+    display:none;
   
     .material-producers-label {
       color:#727272;
@@ -849,6 +850,21 @@ sup {
   
   .license-override {
   
+    .material-license-label {
+      color:#727272;
+      padding:0 5px 0 0;
+      text-transform:uppercase;
+    }
+
+    .material-license {
+      padding:0;
+      
+      a {
+        color:#09f;
+      }
+      
+    }
+    
   }
   
 }

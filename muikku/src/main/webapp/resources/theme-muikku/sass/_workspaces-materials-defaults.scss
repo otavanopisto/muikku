@@ -838,7 +838,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     clear:both;
   }
   
-  .license-producers-override-wrapper {
+  footer.article-details {
     margin:0 -30px -10px -30px;
     padding:15px;
     border-top:2px solid #e6f2c4;
@@ -846,6 +846,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     line-height:1;
     
     .producers-override {
+      display:none;
     
       .material-producers-label {
         color:#727272;
@@ -863,6 +864,21 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
     .license-override {
     
+      .material-license-label {
+        color:#727272;
+        padding:0 5px 0 0;
+        text-transform:uppercase;
+      }
+      
+      .material-license {
+        padding:0;
+        
+        a {
+          color:#09f;
+        }
+        
+      }
+      
     }
     
   }
