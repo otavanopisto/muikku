@@ -130,12 +130,32 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date)
       throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     
-    long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
-    long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
-    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
+    Long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     Long gradeId = identifierMapper.getPyramusGradeId(gradeIdentifier);
     Long gradingScaleId = identifierMapper.getPyramusGradingScaleId(gradingScaleIdentifier);
+    
+    if (courseStudentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course student", workspaceUserIdentifier));
+      return null; 
+    }
+
+    if (assessingUserId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus staff member", assessingUserIdentifier));
+      return null; 
+    }
+    
+    if (courseId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
+      return null; 
+    }
+    
+    if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+      return null; 
+    }
     
     if (gradeId == null) {
       logger.severe(String.format("Could not translate %s to Pyramus grade", gradeIdentifier));
@@ -162,9 +182,21 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
   @Override
   public WorkspaceAssessment findWorkspaceAssessment(String identifier, String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
-    long id = Long.parseLong(identifier);
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    Long id = Long.parseLong(identifier);
+    if (courseId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
+      return null; 
+    }
+    if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+      return null; 
+    }
+    if (id == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus assessment", identifier));
+      return null; 
+    }
     return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessments/%d", studentId, courseId, id ), CourseAssessment.class));
   }
 
@@ -173,13 +205,38 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment,
       Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 
-    long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
-    long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
-    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
-    long id = Long.parseLong(identifier);
+    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
+    Long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    Long id = Long.parseLong(identifier);
     Long gradeId = identifierMapper.getPyramusGradeId(gradeIdentifier);
     Long gradingScaleId = identifierMapper.getPyramusGradingScaleId(gradingScaleIdentifier);
+    
+    if (courseStudentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course student", workspaceUserIdentifier));
+      return null; 
+    }
+
+    if (assessingUserId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus staff member", assessingUserIdentifier));
+      return null; 
+    }
+    
+    if (courseId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
+      return null; 
+    }
+    
+    if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+      return null; 
+    }
+
+    if (id == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus assessment", identifier));
+      return null; 
+    }
     
     if (gradeId == null) {
       logger.severe(String.format("Could not translate %s to Pyramus grade", gradeIdentifier));
@@ -206,21 +263,32 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public List<WorkspaceAssessment> listWorkspaceAssessments(String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException,
       UnexpectedSchoolDataBridgeException {
-    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
-    return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessments/", studentId, courseId), CourseAssessment[].class));
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (courseId == null || studentId == null) {
+      logger.severe(String.format("Unable to resolve workspace %s or student %s", workspaceIdentifier, studentIdentifier));
+      return Collections.emptyList();
+    }
+    else {
+      return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessments/", studentId, courseId), CourseAssessment[].class));
+    }
   }
 
   @Override
   public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(String workspaceUserIdentifier,
       String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String requestText,
       Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
-    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
-    
-    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, new DateTime(date), requestText, Boolean.FALSE);
-    return entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId), courseAssessmentRequest));
+    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (courseStudentId == null || courseId == null || studentId == null) {
+      logger.severe(String.format("Unable to resolve workspace user %s workspace %s or student %s", workspaceUserIdentifier, workspaceIdentifier, studentIdentifier));
+      return null;
+    }
+    else {
+      CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, new DateTime(date), requestText, Boolean.FALSE);
+      return entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId), courseAssessmentRequest));
+    }
   }
 
   @Override
@@ -240,21 +308,37 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
   @Override
   public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    if (courseId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
+      return null; 
+    }
     return entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/assessmentsRequests/?activeStudents=true", courseId), CourseAssessmentRequest[].class));
   }
 
   @Override
   public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier,
       String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (courseId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
+      return null; 
+    }
+    if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+      return null; 
+    }
     return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId), CourseAssessmentRequest[].class));
   }
 
   @Override
   public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+      return null; 
+    }
     return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/assessmentRequests/", studentId), CourseAssessmentRequest[].class));
   }
   
@@ -262,11 +346,26 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier,
       String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
       String requestText, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
-    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
-    long id = Long.parseLong(identifier);
-    
+    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    Long id = Long.parseLong(identifier);
+    if (courseStudentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course student", workspaceUserIdentifier));
+      return null; 
+    }
+    if (courseId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
+      return null; 
+    }
+    if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+      return null; 
+    }
+    if (id == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus assessment", identifier));
+      return null; 
+    }
     CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, new DateTime(date), requestText, Boolean.FALSE);
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), courseAssessmentRequest));
   }
@@ -275,8 +374,15 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   public void deleteWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-
-    pyramusClient.delete(String.format("/students/students/%d/courses/%d/assessmentRequests/%s", studentId, courseId, identifier));
+    if (courseId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
+    }
+    else if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+    }
+    else {
+      pyramusClient.delete(String.format("/students/students/%d/courses/%d/assessmentRequests/%s", studentId, courseId, identifier));
+    }
   }
 
   @Override

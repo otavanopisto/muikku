@@ -505,10 +505,11 @@
 
 /* Flag Share Dialog's additional styles. Main dialog style i sin separate .scss */
 .guider-share-flag-dialog {
-  
+   overflow:visible !important;
   .ui-autocomplete {
     text-transform:none;
     font-family:'Open Sans', Arial, sans-serif;
+    position:absolute;
     
     .ui-menu-item {
       font-size:14px;
@@ -529,7 +530,10 @@
     }
     
   }
-  
+    
+  .guider-dialog-user-search{
+/*     position:relative; */
+  }  
   #guider-share-flag-dialog-users {
     margin:0 0 10px 0;
   }
