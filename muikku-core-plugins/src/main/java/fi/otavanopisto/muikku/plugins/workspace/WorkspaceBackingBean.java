@@ -86,7 +86,7 @@ public class WorkspaceBackingBean {
     usersVisible = sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "users");
     journalVisible = sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "journal");
     // Assessment state
-    if (sessionController.isLoggedIn()) {
+    if (sessionController.isLoggedIn() && sessionController.hasWorkspacePermission(MuikkuPermissions.REQUEST_WORKSPACE_ASSESSMENT, workspaceEntity)) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
       if (workspaceUserEntity != null) {
         WorkspaceAssessmentState workspaceAssessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
