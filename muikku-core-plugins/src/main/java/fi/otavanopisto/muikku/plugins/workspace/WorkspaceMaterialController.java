@@ -685,7 +685,8 @@ public class WorkspaceMaterialController {
     List<WorkspaceMaterial> frontPageMaterials = listWorkspaceMaterialsByParent(frontPageFolder);
     if (frontPageMaterials.isEmpty()) {
       String title = localeController.getText(sessionController.getLocale(), "plugin.workspace.frontPage.title");
-      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(title, "", "text/html", 0l);
+      String license = null;
+      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(title, "", "text/html", 0l, license);
       frontPageMaterial = createWorkspaceMaterial(frontPageFolder, htmlMaterial);
     }
     else {
@@ -703,7 +704,8 @@ public class WorkspaceMaterialController {
     List<WorkspaceMaterial> helpPageMaterials = listWorkspaceMaterialsByParent(helpPageFolder);
     if (helpPageMaterials.isEmpty()) {
       String title = localeController.getText(sessionController.getLocale(), "plugin.workspace.helpPage.title");
-      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(title, "", "text/html", 0l);
+      String license = null;
+      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(title, "", "text/html", 0l, license);
       helpPageMaterial = createWorkspaceMaterial(helpPageFolder, htmlMaterial);
     }
     else {
