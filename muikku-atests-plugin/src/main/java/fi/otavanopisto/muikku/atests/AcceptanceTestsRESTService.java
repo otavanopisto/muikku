@@ -399,7 +399,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Mandatory parentId is missing").build(); 
     }
 
-    HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(payload.getTitle(), payload.getHtml(), payload.getContentType(), payload.getRevisionNumber());
+    HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(payload.getTitle(), payload.getHtml(), payload.getContentType(), payload.getRevisionNumber(), payload.getLicense());
     WorkspaceNode parent = workspaceMaterialController.findWorkspaceNodeById(payload.getParentId());
     if (parent == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid parentId").build();
@@ -803,7 +803,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         htmlMaterial.getContentType(), 
         htmlMaterial.getHtml(), 
         htmlMaterial.getRevisionNumber(), 
-        workspaceMaterial.getAssignmentType() != null ? workspaceMaterial.getAssignmentType().toString() : null);
+        workspaceMaterial.getAssignmentType() != null ? workspaceMaterial.getAssignmentType().toString() : null,
+        htmlMaterial.getLicense());
   }
 
   private fi.otavanopisto.muikku.atests.WorkspaceFolder createRestEntity(WorkspaceFolder workspaceFolder) {
