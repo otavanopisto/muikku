@@ -202,5 +202,16 @@
       }
     }
   });
-
+  
+  $(document).on('afterHtmlMaterialRender', function (event, data) {
+    var license = $(data.pageElement).attr('data-license');
+    if (license) {
+      $('<footer>')
+        .articleDetails({
+          license: license
+        })
+        .appendTo(data.pageElement);
+    }
+  });
+  
 }).call(this);
