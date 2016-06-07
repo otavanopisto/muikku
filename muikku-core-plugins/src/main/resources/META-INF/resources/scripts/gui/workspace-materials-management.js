@@ -441,6 +441,11 @@
   });
   
   $.widget("custom.muikkuPageLicense", {
+    
+    options: {
+      materialId: null
+    },
+    
     _create : function() {
       this.element.addClass('materials-management-page-license-widget');
       this._load($.proxy(function () {
@@ -459,14 +464,58 @@
           }
         });
       }, this));
+      
+      this.element.on("click", ".save-page-license", $.proxy(this._onSaveLicenseClick, this));
+    },
+    
+    close: function () {
+      this.element.closest('section')
+        .removeClass('workspace-materials-management-editing-license');
+      this.element.remove();
     },
     
     _load: function (callback) {
-      var data = {};
-      renderDustTemplate("workspace/materials-management-page-license.dust", data, $.proxy(function (html) {
-        this.element.html(html);
-        callback();
-      }, this));
+      mApi().materials.material
+        .read(this.options.materialId)
+        .callback($.proxy(function (readErr, material) {
+          if (readErr) {
+            $('.notification-queue').notificationQueue('notification', 'error', readErr);
+          } else {
+            var data = {
+              material: material
+            };
+            
+            renderDustTemplate("workspace/materials-management-page-license.dust", data, $.proxy(function (html) {
+              this.element.html(html);
+              callback();
+            }, this));
+          }
+        }, this));
+    },
+    
+    _onSaveLicenseClick: function (event) {
+      var license = this.element.find('input[name="license"]').val();
+      
+      mApi().materials.material
+        .read(this.options.materialId)
+        .callback($.proxy(function (readErr, material) {
+          if (readErr) {
+            $('.notification-queue').notificationQueue('notification', 'error', readErr);
+          } else {
+            mApi().materials.material
+              .update(this.options.materialId, $.extend(material, {
+                license: license||null
+              }))
+              .callback($.proxy(function (updErr, result) {
+                if (updErr) {
+                  $('.notification-queue').notificationQueue('notification', 'error', updErr);
+                } else {
+                  this.close();
+                }
+              }, this));
+          }
+        }, this));
+      
     }
   });  
   
@@ -773,20 +822,6 @@
       }));
   });
   
-  $(document).on('click', '.page-license', function (event, data) {
-    var workspaceEntityId = $('.workspaceEntityId').val();
-    var workspaceMaterialId = $(event.target).attr('data-workspace-material-id');
-    var section = $(event.target).closest('section');
-    
-    section.addClass('workspace-materials-management-editing-license');
-    
-    section.find('.workspace-materials-management-view-page-controls')
-      .after($('<div>').muikkuPageLicense({
-        workspaceEntityId: workspaceEntityId,
-        parentId: workspaceMaterialId
-      }));
-  });
-  
   $(document).on('click', '.close-attachments-editor', function (event, data) {
     var section = $(event.target)
       .closest('section');
@@ -795,6 +830,27 @@
       .remove();
     
     section.removeClass('workspace-materials-management-editing-attachments');
+  });
+  
+  $(document).on('click', '.page-license', function (event, data) {
+//    var workspaceEntityId = $('.workspaceEntityId').val();
+//    var workspaceMaterialId = $(event.target).attr('data-workspace-material-id');
+    var materialId = $(event.target).attr('data-material-id');
+    var section = $(event.target).closest('section');
+    
+    section.addClass('workspace-materials-management-editing-license');
+    
+    section.find('.workspace-materials-management-view-page-controls')
+      .after($('<div>').muikkuPageLicense({
+        materialId: materialId
+      }));
+  });
+  
+  $(document).on('click', '.close-license-editor', function (event, data) {
+    var section = $(event.target)
+      .closest('section')
+      .find('.materials-management-page-license-widget')
+      .muikkuPageLicense('close');
   });
   
   function toggleVisibility(node, hidden) {
