@@ -50,6 +50,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER })
+  public static final String MANAGE_MATERIALS = "MANAGE_MATERIALS"; // Edit material content in content editor, including publishing or reverting revisions
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER })
   public static final String MANAGE_MATERIAL_META = "MANAGE_MATERIAL_META";
 
   @Scope (PermissionScope.ENVIRONMENT)
