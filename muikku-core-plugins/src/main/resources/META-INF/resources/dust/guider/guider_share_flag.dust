@@ -3,6 +3,7 @@
   <div>
     <label for="guider-share-flag-dialog-users">{#localize key="plugin.guider.flags.shareFlagDialog.users"/}</label>
     <input type="text" class="add-user" id="guider-share-flag-dialog-users"/>
+    <div class="guider-dialog-user-search"></div>
     <div class="shares">
       {#shares}
         <div class="share" data-share-id="{id}" data-share-target-id="{userIdentifier}" data-share-status="EXISTING" data-share-type="USER">
@@ -11,6 +12,5 @@
         </div>
       {/shares}
     </div>
-  </div>
-  
+  </div>  
 </div>
