@@ -24,15 +24,14 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.files.TempFileUtils;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.material.BinaryMaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @RequestScoped
 @Path("/materials/binary")
@@ -48,47 +47,25 @@ public class BinaryMaterialRESTService extends PluginRESTService {
   @Inject
   private SessionController sessionController;
   
-  @Inject
-  private EnvironmentUserController environmentUserController;
-  
-  private boolean isAuthorized() {
-      if (!sessionController.isLoggedIn()) {
-        return false;
-      }
-      
-      UserEntity userEntity = sessionController.getLoggedUserEntity();
-      
-      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-      
-      if (environmentUser.getRole() == null || environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
-        return false;
-      }
-      
-      return true;
-  }
-
   @POST
   @Path("/")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createMaterial(BinaryRestMaterial entity) {
     
-    if (!isAuthorized()) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
       return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
     }
 
     if (StringUtils.isBlank(entity.getContentType())) {
-      return Response.status(Status.BAD_REQUEST)
-          .entity("contentType is missing").build();
+      return Response.status(Status.BAD_REQUEST).entity("contentType is missing").build();
     }
 
     if (StringUtils.isBlank(entity.getTitle())) {
-      return Response.status(Status.BAD_REQUEST).entity("title is missing")
-          .build();
+      return Response.status(Status.BAD_REQUEST).entity("title is missing").build();
     }
 
     if (StringUtils.isBlank(entity.getFileId())) {
-      return Response.status(Status.BAD_REQUEST).entity("fileId is missing")
-          .build();
+      return Response.status(Status.BAD_REQUEST).entity("fileId is missing").build();
     }
 
     byte[] content = null;
@@ -100,8 +77,7 @@ public class BinaryMaterialRESTService extends PluginRESTService {
     }
 
     if (content == null) {
-      return Response.status(Status.BAD_REQUEST).entity("fileId is invalid")
-          .build();
+      return Response.status(Status.BAD_REQUEST).entity("fileId is invalid").build();
     }
 
     BinaryMaterial material = binaryMaterialController.createBinaryMaterial(
@@ -176,8 +152,13 @@ public class BinaryMaterialRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/{id}")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteMaterial(@PathParam("id") Long id) {
+
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
+      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
+    }
+    
     BinaryMaterial binaryMaterial = binaryMaterialController.findBinaryMaterialById(id);
     if (binaryMaterial != null) {
       binaryMaterialController.deleteBinaryMaterial(binaryMaterial);

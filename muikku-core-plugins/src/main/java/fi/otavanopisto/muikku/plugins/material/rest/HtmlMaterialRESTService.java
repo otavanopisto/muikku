@@ -28,16 +28,15 @@ import fi.foyt.coops.CoOpsNotFoundException;
 import fi.foyt.coops.CoOpsNotImplementedException;
 import fi.foyt.coops.CoOpsUsageException;
 import fi.foyt.coops.model.File;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @RequestScoped
 @Path("/materials/html")
@@ -56,31 +55,12 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   @Inject
   private SessionController sessionController;
   
-  @Inject
-  private EnvironmentUserController environmentUserController;
-  
-  private boolean isAuthorized() {
-      if (!sessionController.isLoggedIn()) {
-        return false;
-      }
-      
-      UserEntity userEntity = sessionController.getLoggedUserEntity();
-      
-      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-      
-      if (environmentUser.getRole() == null || environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
-        return false;
-      }
-      
-      return true;
-  }
-
   @POST
   @Path("/")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createMaterial(HtmlRestMaterial entity) {
     
-    if (!isAuthorized()) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
       return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
     }
 
@@ -134,12 +114,13 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   
   @POST
   @Path("/{id}/publish/")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response publishMaterial(@PathParam("id") Long id, HtmlRestMaterialPublish entity) {
     
-    if (!isAuthorized()) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
       return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
     }
+
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
     if (htmlMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -169,12 +150,13 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   
   @PUT
   @Path("/{id}/revert/")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response revertMaterial(@PathParam("id") Long id, HtmlRestMaterialRevert entity) {
     
-    if (!isAuthorized()) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
       return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
     }
+
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
     if (htmlMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
