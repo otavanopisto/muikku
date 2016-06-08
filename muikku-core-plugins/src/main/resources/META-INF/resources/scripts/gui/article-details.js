@@ -13,7 +13,8 @@
     
     _load: function (callback) {
       var data = { 
-        license: this.options.license  
+        license: this.options.license,
+        producers: this.options.producers
       };
       
       renderDustTemplate('workspace/materials-article-details.dust', data, $.proxy(function (text) {

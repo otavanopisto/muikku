@@ -87,14 +87,14 @@
                 </ui:fragment>
               </ui:fragment>
               <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-assignment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" data-license="#{articleNode.license}" class="workspace-materials-view-page material-reading-view"/>
+                <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-assignment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" data-license="#{articleNode.license}" data-producers="#{articleNode.producers}" class="workspace-materials-view-page material-reading-view"/>
               </ui:fragment>
             </ui:repeat>
           </section>
         </ui:fragment>  
         
         <ui:fragment rendered="#{node.type ne 'folder'}">
-          <article id="page-#{node.workspaceMaterialId}" data-correct-answers="#{node.correctAnswers}" data-assignment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" data-path="#{node.path}" data-license="#{node.license}" class="workspace-materials-view-page material-reading-view"/>
+          <article id="page-#{node.workspaceMaterialId}" data-correct-answers="#{node.correctAnswers}" data-assignment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" data-path="#{node.path}" data-license="#{node.license}" data-producers="#{node.producers}" class="workspace-materials-view-page material-reading-view"/>
         </ui:fragment>  
       </ui:repeat>
     </article>

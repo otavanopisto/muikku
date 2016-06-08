@@ -1,7 +1,12 @@
-<div class="producers-override">
-  <span class="material-producers-label">{#localize key="plugin.workspace.materials.producersLabel"/}:</span>
-  <span class="material-producer"></span>
-</div>
+{?producers}
+  <div class="producers-override">
+    <span class="material-producers-label">{#localize key="plugin.workspace.materials.producersLabel"/}:</span>
+    {#producers}
+      <span class="material-producer">{.}</span>
+    {/producers}
+  </div>
+{/producers}
+
 <div class="license-override">
   <span class="material-license-label">{#localize key="plugin.workspace.materials.licenseLabel"/}:</span>
   <span class="material-license"><a href="{license}" target="top">{license}</a></span>
