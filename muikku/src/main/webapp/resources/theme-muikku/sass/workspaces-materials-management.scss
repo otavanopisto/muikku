@@ -1075,14 +1075,16 @@ body.workspace-materials-management {
         
       .workspace-materials-management-view-page-controls {
         a.close-attachments-editor, 
-        a.close-license-editor {
+        a.close-license-editor, 
+        a.close-producers-editor {
           display: none !important;
         }
       }
       
       /* If page is in attachment edit-mode then we hide everything else including ckeditor */  
       &.workspace-materials-management-editing-attachments,
-      &.workspace-materials-management-editing-license {
+      &.workspace-materials-management-editing-license,
+      &.workspace-materials-management-editing-producers {
       
         .workspace-material-html-editor-title-wrapper,
         .cke,
@@ -1117,6 +1119,14 @@ body.workspace-materials-management {
       &.workspace-materials-management-editing-license {
         .workspace-materials-management-view-page-controls {
           a.close-license-editor {
+            display: inline-block !important;
+          }
+        }
+      }
+      
+      &.workspace-materials-management-editing-producers {
+        .workspace-materials-management-view-page-controls {
+          a.close-producers-editor {
             display: inline-block !important;
           }
         }
@@ -1222,6 +1232,7 @@ body.workspace-materials-management {
         a.page-attachments,
         a.close-attachments-editor,
         a.close-license-editor,
+        a.close-producers-editor,
         a.page-license,
         a.page-producers,
         a.page-closed-material {

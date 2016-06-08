@@ -1,0 +1,4 @@
+<div class="material-producers">
+  <input type="text" class="material-producer-add"/>
+</div>
+<input type="submit" class="save-page-producers" value="{#localize key="plugin.workspace.materialsManagement.materialProducersSave"/}"/>
