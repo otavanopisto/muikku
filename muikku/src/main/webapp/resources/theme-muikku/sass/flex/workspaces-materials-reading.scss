@@ -74,6 +74,7 @@ body {
     left:0;
     top:0;
     bottom:0;
+    z-index:99;
 
     nav.workspace-waterials-reading-nav {
       width:46px;
@@ -106,6 +107,8 @@ body {
       ul,
       li {
         list-style:none;
+        padding:0;
+        margin:0;
       }
       
       .workspace-materials-reading-TOC-title {
@@ -117,6 +120,7 @@ body {
           font-size:20px;
           margin:0;
           padding:0;
+          text-transform:uppercase;
         }
         
         #workspaceMaterialsReadingTOCPinicon {
@@ -363,13 +367,13 @@ body {
   } 
   
   #contentWorkspaceMaterialsReading {
-    padding-left:60px;
-    max-width:715px;
+    max-width:705px;
     width:auto;
     margin:0 auto;
+    padding-left:50px;
     
     article > h1 { /* Material's title */
-      max-width:640px;
+      max-width:655px;
       width:auto;
       background:#fff;
       margin:30px auto -30px auto; 
@@ -379,6 +383,7 @@ body {
       padding:20px;
       text-transform:none;
       line-height:1.3em;
+      box-sizing:border-box;
     }
     
     .workspace-materials-view-page-section.material-reading-view { /* <section> */
@@ -386,7 +391,7 @@ body {
       & > h2 { /* Section's title */
         position:relative;
         z-index:12;
-        max-width:640px;
+        max-width:655px;
         width:auto;
         border:1px solid #fff;
         background:#ddf5ff;
@@ -397,10 +402,11 @@ body {
         padding:10px 20px;
         text-transform:uppercase;
         line-height:1.3em;
+        box-sizing:border-box;
       }
      
       & > h3, & > h4, & > h5, & > h6 { /* Alternative Section's titles */
-        max-width:640px;
+        max-width:655px;
         width:auto;
         background:#fff;
         margin:30px auto -30px auto; 
@@ -410,12 +416,13 @@ body {
         padding:30px 20px 0px 20px;
         text-transform:none;
         line-height:1.3em;
+        box-sizing:border-box;
       }
     
     }
   
     .workspace-materials-view-page.material-reading-view { /* <article> */
-      max-width:700px;
+      max-width:655px;
       width:auto;
       background:#fff;
       margin:30px auto;
@@ -456,4 +463,13 @@ body {
     
   }
   
+}
+
+@media screen and (max-width: 479px) {
+
+  body #workspaceMaterialsReadingTOCWrapper #workspaceMaterialsReadingTOCContainer,
+  body #workspaceMaterialsReadingTOCWrapper #workspaceMaterialsReadingTOCContainer .workspace-materials-toc-content-scrolling {
+    width:300px;
+  }
+
 }
