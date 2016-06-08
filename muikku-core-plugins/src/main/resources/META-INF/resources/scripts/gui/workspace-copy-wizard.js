@@ -351,7 +351,7 @@
           
           $('<ul>')
             .append($('<li>').text(nameExtension ? 
-              getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspaceNameWithExtension', name, nameExtension) :
+              getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspaceNameWithExtension', [name, nameExtension]) :
               getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspaceName', name)))
             .appendTo(copyWorkspaceStep);
           
