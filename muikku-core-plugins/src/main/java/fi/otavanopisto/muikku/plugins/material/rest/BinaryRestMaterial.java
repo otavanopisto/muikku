@@ -1,12 +1,14 @@
 package fi.otavanopisto.muikku.plugins.material.rest;
 
+import fi.otavanopisto.muikku.plugins.material.model.MaterialVisibility;
+
 public class BinaryRestMaterial extends RestMaterial {
 
   public BinaryRestMaterial() {
   }
   
-  public BinaryRestMaterial(Long id, String fileId, String title, String contentType, String license) {
-    super(id ,title, license);
+  public BinaryRestMaterial(Long id, String fileId, String title, String contentType, String license, MaterialVisibility visibility) {
+    super(id ,title, license, visibility);
     this.fileId = fileId;
     this.contentType = contentType;
   }

@@ -100,13 +100,18 @@ public class MaterialRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Refused to update title via this REST endpoint").build();
     }
     
+    if (payload.getVisibility() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Required field visibility missing").build();
+    }
+    
     materialController.updateMaterialLicense(material, payload.getLicense());
-
+    materialController.updateMaterialVisibility(material, payload.getVisibility());
+    
     return Response.ok(createRestModel(material)).build();
   }
 
   private RestMaterial createRestModel(Material material) {
-    return new RestMaterial(material.getId(), material.getTitle(), material.getLicense());
+    return new RestMaterial(material.getId(), material.getTitle(), material.getLicense(), material.getVisibility());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial[] createRestModel(WorkspaceMaterial... workspaceMaterials) {

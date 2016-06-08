@@ -192,7 +192,8 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       fileRevision.getContent(), 
       fileRevision.getRevisionNumber(), 
       htmlMaterial.getRevisionNumber(), 
-      htmlMaterial.getLicense());
+      htmlMaterial.getLicense(),
+      htmlMaterial.getVisibility());
   }
   
   private HtmlRestMaterial createRestModel(HtmlMaterial htmlMaterial) {
@@ -204,7 +205,8 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       htmlMaterial.getHtml(),
       currentRevision,
       htmlMaterial.getRevisionNumber(),
-      htmlMaterial.getLicense());
+      htmlMaterial.getLicense(),
+      htmlMaterial.getVisibility());
   }
   
 }
