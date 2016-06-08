@@ -1,7 +1,15 @@
 (function() {
   'use strict';
   
-  function getLocaleText(key, args) {
+  function getLocaleText(key) {
+
+    var args = Array.prototype.slice.call(arguments, 1);
+    if (args.length === 1) {
+      if ($.isArray(args[0])) {
+        args = args[0];
+      }
+    }
+    
     var val = window._MUIKKU_LOCALEMAP[key];
     if (val !== undefined) {
       val = val.replace(/\{(\d+)(,?\w*)(,?\w*)\}/gi, function (match, number, type, format) {
