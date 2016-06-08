@@ -337,7 +337,7 @@ blockquote {
   border-color:#eee;
   border-width:0;
   color:#777;
-  font-size:22px;
+  font-size:20px;
   margin:0 40px 0 40px;
 
   p {
@@ -360,6 +360,11 @@ blockquote {
 
 p, h1, h2, h3, h4, h5, h6 {
   word-wrap:break-word;
+}
+
+label,select,option,input,textarea { /* Overrides the values used in reading/management */
+  font-weight:400;
+  font-size:14px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -436,6 +441,27 @@ mark[data-muikku-word-definition] {
   cursor:help;
   font-weight:400;
   position:relative;
+}
+
+.muikku-file-input-field-file-uploader-container {
+  font-size:14px;
+}
+
+.workspace-materials-view-page.material-view { /* This is single material page */
+  padding:10px 20px;
+  margin:30px auto;
+  position:relative;
+  background:#fff;
+  
+  &[data-binary-type="pdf"] { /* If material page is PDF */
+    padding:0;
+    
+    h2 {
+      padding:20px 20px 10px 20px;
+    }
+    
+  }
+
 }
           
 figure.image {
@@ -848,64 +874,6 @@ sup {
   
   .license-override {
   
-  }
-  
-}
-
-/* Different reading view's overrides */
-
-body.workspace-materials #contentWorkspaceMaterials {
-  
-  /* Save answers button's font-size under basic view */
-  .workspace-materials-view-page {
-  
-    button.muikku-assignment-button {
-      font-size:14px;
-    }
-    
-    button.muikku-show-correct-answers-button,
-    button.muikku-hide-correct-answers-button {
-      font-size:14px;
-    }
-  
-  }
-  
-  /* Textfield example answers under basic view */
-  span.muikku-field-examples {
-    font-size:13px;
-  }
-
-  /* Assigment type indicators under basic view */
-  .muikku-page-assignment-type {
-    font-size: 12px;
-  }
-  
-}
-
-body.workspace-materials-reading #contentWorkspaceMaterialsReading {
-  
-  /* Save answers button's font-size under reading view view */
-  .workspace-materials-view-page {
-  
-    button.muikku-assignment-button {
-      font-size:16px;
-    }
-    
-    button.muikku-show-correct-answers-button,
-    button.muikku-hide-correct-answers-button {
-      font-size:16px;
-    }
-  
-  }
-  
-  /* Textfield example answers under reading view */
-  span.muikku-field-examples {
-    font-size:15px;
-  }
-  
-  /* Assigment type indicators under reading view */
-  .muikku-page-assignment-type {
-    font-size: 14px;
   }
   
 }
