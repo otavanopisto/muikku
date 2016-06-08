@@ -12,6 +12,7 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/> 
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/article-details.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace.js"/>  
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-signup-dialog.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-materials.js"/>
@@ -78,14 +79,14 @@
                   </ui:fragment>
                 </ui:fragment>
                 <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                  <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-assignment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" class="workspace-materials-view-page material-view"/>
+                  <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-assignment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" data-license="#{articleNode.license}" class="workspace-materials-view-page material-view"/>
                 </ui:fragment>
               </ui:repeat>
             </section>
           </ui:fragment>  
           
           <ui:fragment rendered="#{node.type ne 'folder'}">
-            <article id="page-#{node.workspaceMaterialId}" data-correct-answers="#{node.correctAnswers}" data-assignment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" data-path="#{node.path}" class="workspace-materials-view-page material-view"/>
+            <article id="page-#{node.workspaceMaterialId}" data-correct-answers="#{node.correctAnswers}" data-assignment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" data-path="#{node.path}" data-license="#{node.license}" class="workspace-materials-view-page material-view"/>
           </ui:fragment>  
         </ui:repeat>
       </article>

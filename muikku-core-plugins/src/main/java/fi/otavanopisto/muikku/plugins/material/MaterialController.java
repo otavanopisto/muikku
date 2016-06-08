@@ -64,6 +64,10 @@ public class MaterialController {
     return null;
 	}
 
+  public Material updateMaterialLicense(Material material, String license) {
+    return materialDAO.updateLicense(material, license);
+  }
+  
   public List<MaterialMetaKey> listMaterialMetaKeys() {
     return materialMetaKeyDAO.listAll();
   }

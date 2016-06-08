@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.ui.base;
+package fi.otavanopisto.muikku.ui.base.guider;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -10,6 +10,7 @@ import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
@@ -49,7 +50,13 @@ public class GuiderTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     Workspace workspace2 = createWorkspace("diffentcourse", "Second test course", "2", Boolean.TRUE);
     MockCourseStudent mcs = new MockCourseStudent(1l, workspace.getId(), student.getId());
-    mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
+    
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, 1l, admin.getId(), 7l);
+
+    mockBuilder
+      .addCourseStaffMember(workspace.getId(), courseStaffMember)
+      .addCourseStudent(workspace.getId(), mcs)
+      .build();
     try {
       navigate("/guider", true);
       waitAndClick(String.format("#workspace-%d>a", workspace.getId()));
