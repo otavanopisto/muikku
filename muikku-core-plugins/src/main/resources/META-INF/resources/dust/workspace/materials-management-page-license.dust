@@ -1,0 +1,5 @@
+<div class="material-license-title">{#localize key="plugin.workspace.materialsManagement.materialLicenseTitle"/}</div>
+<div class="materials-management-page-license">
+  <input type="url" name="license" value="{material.license}"/>
+  <input type="submit" class="save-page-license" value="{#localize key="plugin.workspace.materialsManagement.materialLicenseSave"/}"/>
+</div>

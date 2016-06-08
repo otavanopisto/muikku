@@ -21,12 +21,12 @@ public class BinaryMaterialController {
   @Inject
   private Event<BinaryMaterialUpdateEvent> materialUpdateEvent;
   
-	public BinaryMaterial createBinaryMaterial(String title, String contentType, byte[] content) {
-	  return createBinaryMaterial(title, contentType, content,  null);
+	public BinaryMaterial createBinaryMaterial(String title, String contentType, byte[] content, String license) {
+	  return createBinaryMaterial(title, contentType, content, null, license);
 	}
 
-	public BinaryMaterial createBinaryMaterial(String title, String contentType, byte[] content, BinaryMaterial originMaterial) {
-    BinaryMaterial material = binaryMaterialDAO.create(title, contentType, content, originMaterial);
+	public BinaryMaterial createBinaryMaterial(String title, String contentType, byte[] content, BinaryMaterial originMaterial, String license) {
+    BinaryMaterial material = binaryMaterialDAO.create(title, contentType, content, originMaterial, license);
     materialCreateEvent.fire(new BinaryMaterialCreateEvent(material));
     return material;
   }

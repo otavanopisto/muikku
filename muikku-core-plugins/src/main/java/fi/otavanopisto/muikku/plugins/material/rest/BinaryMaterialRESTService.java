@@ -80,7 +80,8 @@ public class BinaryMaterialRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("fileId is invalid").build();
     }
 
-    BinaryMaterial material = binaryMaterialController.createBinaryMaterial(entity.getTitle(), entity.getContentType(), content);
+    BinaryMaterial material = binaryMaterialController.createBinaryMaterial(
+        entity.getTitle(), entity.getContentType(), content, entity.getLicense());
 
     if (material == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -148,7 +149,7 @@ public class BinaryMaterialRESTService extends PluginRESTService {
         .build();
     }
   }
-  
+
   @DELETE
   @Path("/{id}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -166,9 +167,9 @@ public class BinaryMaterialRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
   }
-
+  
   private BinaryRestMaterial createRestModel(BinaryMaterial material) {
-    return new BinaryRestMaterial(material.getId(), null, material.getTitle(), material.getContentType());
+    return new BinaryRestMaterial(material.getId(), null, material.getTitle(), material.getContentType(), material.getLicense());
   }
   
 }

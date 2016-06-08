@@ -6,7 +6,7 @@ public class WorkspaceHtmlMaterial {
   }
 
   public WorkspaceHtmlMaterial(Long id, Long parentId, String title, String contentType, String html,
-      Long revisionNumber, String assignmentType) {
+      Long revisionNumber, String assignmentType, String license) {
     super();
     this.id = id;
     this.parentId = parentId;
@@ -15,6 +15,7 @@ public class WorkspaceHtmlMaterial {
     this.html = html;
     this.revisionNumber = revisionNumber;
     this.assignmentType = assignmentType;
+    this.license = license;
   }
 
   public Long getId() {
@@ -72,6 +73,14 @@ public class WorkspaceHtmlMaterial {
   public void setAssignmentType(String assignmentType) {
     this.assignmentType = assignmentType;
   }
+  
+  public String getLicense() {
+    return license;
+  }
+  
+  public void setLicense(String license) {
+    this.license = license;
+  }
 
   private Long id;
   private Long parentId;
@@ -80,4 +89,5 @@ public class WorkspaceHtmlMaterial {
   private String html;
   private Long revisionNumber;
   private String assignmentType;
+  private String license;
 }

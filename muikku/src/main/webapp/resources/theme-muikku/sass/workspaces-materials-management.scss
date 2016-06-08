@@ -596,6 +596,11 @@ body.workspace-materials-management {
       .materials-management-page-attachment-widget {
         min-height:70px;
         margin:5px -20px 0px -20px;
+        
+        .material-attachments-title {
+          margin:0 0 10px 0;
+          font-size:20px;
+        }
       
         /* Material's attachment upload wrapper */
         .materials-management-page-attachments-upload-container {
@@ -749,7 +754,123 @@ body.workspace-materials-management {
       
       }
       
+      /* Material's License Override widget */
+      .materials-management-page-license-widget {
+        min-height:215px;
+        margin:5px -20px 0px -20px;
+        
+        .material-license-title {
+          margin:0 0 10px 0;
+          font-size:20px;
+        }
+        
+        .materials-management-page-license {
+        
+          input[type="url"] {
+            width:calc(100% - 5px);
+          }
+        
+        }
+        
+        label {
+         font-weight:400;
+        }
+        
+        .save-page-license {
+          background:#27b91c none repeat scroll 0 0;
+          border:0 none;
+          border-radius:2px;
+          color:#fff;
+          display:block;
+          font-size:14px;
+          line-height:1;
+          margin:10px 0 0 5px;
+          padding:6px 8px;
+        }
+        
+        .creative-commons-container {
+         margin:4px; 
+         font-size:16px;
+        }
+        
+        .creative-commons-attribute {
+        
+          label {
+            font-weight:300;
+          }
+        
+        }
+        
+      }
+
+       /* Material's Producers Override widget */
+      .materials-management-page-producers-widget {
+        min-height:215px;
+        margin:5px -20px 0px -20px;
+        
+        .material-producers-title {
+          margin:0 0 10px 0;
+          font-size:20px;
+        }
+        
+        .material-producers {
+    
+          input.material-producer-add {
+            width:250px;
+          }
+          
+          .material-producer {
+            border-radius:2px;
+            color:#000;
+            display:inline-block;
+            font-size:18px;
+            font-weight:300;
+            line-height:1;
+            margin:0 5px 20px;
+            padding:8px 8px 8px 12px;  
+            
+            a.material-producer-remove {
+              text-decoration:none;
+              vertical-align:middle;
+              display:inline-block;
+              margin:0 0 0 5px;
+              
+              &:before {
+                content:"\e63b";
+                color:#de3211;
+                font-size:20px;
+                font-weight:normal;
+                font-family: 'muikku';
+                speak: none;
+                font-style: normal;
+                text-decoration:none;
+                font-variant: normal;
+                text-transform: none;
+                line-height: 1;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+              }
+              
+            }
+            
+          }
+          
+        }
+        
+        .save-page-producers {
+          background:#27b91c none repeat scroll 0 0;
+          border:0 none;
+          border-radius:2px;
+          color:#fff;
+          display:block;
+          font-size:14px;
+          line-height:1;
+          margin:10px 0 0 5px;
+          padding:6px 8px;
+        }
       
+      }
+
       img {
         max-width:100%;
         height:auto !important;
@@ -1028,13 +1149,20 @@ body.workspace-materials-management {
         }
          
       }
+      
         
-      .workspace-materials-management-view-page-controls a.close-attachments-editor {
-        display: none !important;
+      .workspace-materials-management-view-page-controls {
+        a.close-attachments-editor, 
+        a.close-license-editor, 
+        a.close-producers-editor {
+          display: none !important;
+        }
       }
       
       /* If page is in attachment edit-mode then we hide everything else including ckeditor */  
-      &.workspace-materials-management-editing-attachments {
+      &.workspace-materials-management-editing-attachments,
+      &.workspace-materials-management-editing-license,
+      &.workspace-materials-management-editing-producers {
       
         .workspace-material-html-editor-title-wrapper,
         .cke,
@@ -1053,15 +1181,34 @@ body.workspace-materials-management {
         
         }
       
+        .page-content {
+          display: none;
+        }   
       } 
       
-      &.workspace-materials-management-editing-attachments .page-content {
-        display: none;
+      &.workspace-materials-management-editing-attachments {
+        .workspace-materials-management-view-page-controls {
+          a.close-attachments-editor {
+            display: inline-block !important;
+          }
+        }
       }
-
-      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls a.close-attachments-editor {
-        display: inline-block !important;
-      }   
+      
+      &.workspace-materials-management-editing-license {
+        .workspace-materials-management-view-page-controls {
+          a.close-license-editor {
+            display: inline-block !important;
+          }
+        }
+      }
+      
+      &.workspace-materials-management-editing-producers {
+        .workspace-materials-management-view-page-controls {
+          a.close-producers-editor {
+            display: inline-block !important;
+          }
+        }
+      }
       
       .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link and correct answers */
         height:25px;
@@ -1161,7 +1308,12 @@ body.workspace-materials-management {
         a.revert-page,
         a.close-page-editor,
         a.page-attachments,
-        a.close-attachments-editor {
+        a.close-attachments-editor,
+        a.close-license-editor,
+        a.close-producers-editor,
+        a.page-license,
+        a.page-producers,
+        a.page-closed-material {
           color:#fff;
           font-size:21px;
           display:inline-block;

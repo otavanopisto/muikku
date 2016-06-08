@@ -1,24 +1,14 @@
 package fi.otavanopisto.muikku.plugins.material.rest;
 
-public class BinaryRestMaterial {
+public class BinaryRestMaterial extends RestMaterial {
 
   public BinaryRestMaterial() {
   }
   
-  public BinaryRestMaterial(Long id, String fileId, String title, String contentType) {
-    super();
-    this.id = id;
+  public BinaryRestMaterial(Long id, String fileId, String title, String contentType, String license) {
+    super(id ,title, license);
     this.fileId = fileId;
-    this.title = title;
     this.contentType = contentType;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
   }
 
   public String getFileId() {
@@ -28,15 +18,7 @@ public class BinaryRestMaterial {
   public void setFileId(String fileId) {
     this.fileId = fileId;
   }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
+  
   public String getContentType() {
     return contentType;
   }
@@ -45,8 +27,6 @@ public class BinaryRestMaterial {
     this.contentType = contentType;
   }
 
-  private Long id;
   private String fileId;
-  private String title;
   private String contentType;
 }

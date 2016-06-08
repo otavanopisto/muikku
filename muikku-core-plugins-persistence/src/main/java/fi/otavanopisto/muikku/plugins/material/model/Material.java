@@ -53,6 +53,14 @@ public class Material {
     this.originMaterial = originMaterial;
   }
   
+  public String getLicense() {
+    return license;
+  }
+  
+  public void setLicense(String license) {
+    this.license = license;
+  }
+  
   public Long getVersion() {
     return version;
   }
@@ -72,6 +80,8 @@ public class Material {
 
   @ManyToOne
   private Material originMaterial;
+
+  private String license;
   
   @Version
   private Long version;
