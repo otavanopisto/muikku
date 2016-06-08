@@ -28,5 +28,10 @@ public class MaterialDAO extends CorePluginsDAO<Material> {
 
     return entityManager.createQuery(criteria).getResultList();
 	}
+
+  public Material updateLicense(Material material, String license) {
+    material.setLicense(license);
+    return persist(material);
+  }
 	
 }

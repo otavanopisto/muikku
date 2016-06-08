@@ -53,8 +53,9 @@ public class TaskBase64Image extends AbstractHtmlMaterialCleanerTask {
           String name = prefix == null
               ? String.format("img%s", StringUtils.leftPad(++imageCounter + "", 3, '0'))
               : String.format("img%s.%s", StringUtils.leftPad(++imageCounter + "", 3, '0'), prefix);
+          String license = null;
 
-          BinaryMaterial material = binaryMaterialController.createBinaryMaterial(name, contentType, data);
+          BinaryMaterial material = binaryMaterialController.createBinaryMaterial(name, contentType, data, license);
           WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(getWorkspaceMaterial(), material);
           String workspaceUrl = StringUtils.prependIfMissing(workspaceMaterialController.getCompletePath(workspaceMaterial), "/");
           logger.info(String.format("Image converted to %s", workspaceUrl));

@@ -749,6 +749,49 @@ body.workspace-materials-management {
       
       }
       
+      /* Material's License Override widget */
+      .materials-management-page-license-widget {
+        min-height:215px;
+        margin:5px -20px 0px -20px;
+        
+        .materials-management-page-license {
+        
+          input[type="url"] {
+            width:calc(100% - 5px);
+          }
+        
+        }
+        
+        label {
+         font-weight:400;
+        }
+        
+        .save-page-license {
+          background:#27b91c none repeat scroll 0 0;
+          border:0 none;
+          border-radius:2px;
+          color:#fff;
+          display:block;
+          font-size:14px;
+          line-height:1;
+          margin:10px 0 0 5px;
+          padding:6px 8px;
+        }
+        
+        .creative-commons-container {
+         margin:4px; 
+         font-size:16px;
+        }
+        
+        .creative-commons-attribute {
+        
+          label {
+            font-weight:300;
+          }
+        
+        }
+        
+      }
       
       img {
         max-width:100%;
@@ -1028,13 +1071,18 @@ body.workspace-materials-management {
         }
          
       }
+      
         
-      .workspace-materials-management-view-page-controls a.close-attachments-editor {
-        display: none !important;
+      .workspace-materials-management-view-page-controls {
+        a.close-attachments-editor, 
+        a.close-license-editor {
+          display: none !important;
+        }
       }
       
       /* If page is in attachment edit-mode then we hide everything else including ckeditor */  
-      &.workspace-materials-management-editing-attachments {
+      &.workspace-materials-management-editing-attachments,
+      &.workspace-materials-management-editing-license {
       
         .workspace-material-html-editor-title-wrapper,
         .cke,
@@ -1053,15 +1101,26 @@ body.workspace-materials-management {
         
         }
       
+        .page-content {
+          display: none;
+        }   
       } 
       
-      &.workspace-materials-management-editing-attachments .page-content {
-        display: none;
+      &.workspace-materials-management-editing-attachments {
+        .workspace-materials-management-view-page-controls {
+          a.close-attachments-editor {
+            display: inline-block !important;
+          }
+        }
       }
-
-      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls a.close-attachments-editor {
-        display: inline-block !important;
-      }   
+      
+      &.workspace-materials-management-editing-license {
+        .workspace-materials-management-view-page-controls {
+          a.close-license-editor {
+            display: inline-block !important;
+          }
+        }
+      }
       
       .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link and correct answers */
         height:25px;
@@ -1161,7 +1220,11 @@ body.workspace-materials-management {
         a.revert-page,
         a.close-page-editor,
         a.page-attachments,
-        a.close-attachments-editor {
+        a.close-attachments-editor,
+        a.close-license-editor,
+        a.page-license,
+        a.page-producers,
+        a.page-closed-material {
           color:#fff;
           font-size:21px;
           display:inline-block;

@@ -57,12 +57,12 @@ public class HtmlMaterialController {
   @Inject
   private Event<HtmlMaterialUpdateEvent> materialUpdateEvent;
 
-  public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, Long revisionNumber) {
-    return createHtmlMaterial(title, html, contentType, revisionNumber, null);
+  public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, Long revisionNumber, String license) {
+    return createHtmlMaterial(title, html, contentType, revisionNumber, null, license);
   }
 
-  public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, Long revisionNumber, HtmlMaterial originMaterial) {
-    HtmlMaterial material = htmlMaterialDAO.create(title, html, contentType, revisionNumber, originMaterial);
+  public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, Long revisionNumber, HtmlMaterial originMaterial, String license) {
+    HtmlMaterial material = htmlMaterialDAO.create(title, html, contentType, revisionNumber, originMaterial, license);
     materialCreateEvent.fire(new HtmlMaterialCreateEvent(material));
     return material;
   }

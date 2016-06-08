@@ -72,7 +72,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("title is missing").build();
     }
     
-    HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(entity.getTitle(), entity.getHtml(), entity.getContentType(), 0l);
+    HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(entity.getTitle(), entity.getHtml(), entity.getContentType(), 0l, entity.getLicense());
     return Response.ok(createRestModel(htmlMaterial)).build();
   }
 
@@ -107,7 +107,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
           return Response.status(Status.NOT_FOUND).build();
         }
         
-        return Response.ok(new HtmlRestMaterial(htmlMaterial.getId(), htmlMaterial.getTitle(), htmlMaterial.getContentType(), fileRevision.getContent(), fileRevision.getRevisionNumber(), htmlMaterial.getRevisionNumber())).build();
+        return Response.ok(createRestModel(htmlMaterial, fileRevision)).build();
       }
     }
   }
@@ -184,16 +184,27 @@ public class HtmlMaterialRESTService extends PluginRESTService {
     
     return Response.noContent().build();
   }
+
+  private HtmlRestMaterial createRestModel(HtmlMaterial htmlMaterial, File fileRevision) {
+    return new HtmlRestMaterial(htmlMaterial.getId(), 
+      htmlMaterial.getTitle(), 
+      htmlMaterial.getContentType(), 
+      fileRevision.getContent(), 
+      fileRevision.getRevisionNumber(), 
+      htmlMaterial.getRevisionNumber(), 
+      htmlMaterial.getLicense());
+  }
   
   private HtmlRestMaterial createRestModel(HtmlMaterial htmlMaterial) {
     Long currentRevision = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
     
     return new HtmlRestMaterial(htmlMaterial.getId(),
-                                htmlMaterial.getTitle(),
-                                htmlMaterial.getContentType(),
-                                htmlMaterial.getHtml(),
-                                currentRevision,
-                                htmlMaterial.getRevisionNumber());
+      htmlMaterial.getTitle(),
+      htmlMaterial.getContentType(),
+      htmlMaterial.getHtml(),
+      currentRevision,
+      htmlMaterial.getRevisionNumber(),
+      htmlMaterial.getLicense());
   }
   
 }

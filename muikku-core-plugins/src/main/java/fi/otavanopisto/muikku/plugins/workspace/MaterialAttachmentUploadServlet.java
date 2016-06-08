@@ -99,7 +99,7 @@ public class MaterialAttachmentUploadServlet extends HttpServlet {
       return;
     }
     
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       sendResponse(resp, "Forbidden", HttpServletResponse.SC_FORBIDDEN);
       return;
     }
@@ -110,9 +110,12 @@ public class MaterialAttachmentUploadServlet extends HttpServlet {
       return;
     }
     
+    String license = null;
+    
     BinaryMaterial uploadedMaterial = binaryMaterialController.createBinaryMaterial(file.getSubmittedFileName(), 
         file.getContentType(), 
-        IOUtils.toByteArray(file.getInputStream()));
+        IOUtils.toByteArray(file.getInputStream()),
+        license);
     
     String uploadedUrl = null;
     
