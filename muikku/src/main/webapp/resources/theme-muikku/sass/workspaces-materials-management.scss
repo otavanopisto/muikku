@@ -596,6 +596,11 @@ body.workspace-materials-management {
       .materials-management-page-attachment-widget {
         min-height:70px;
         margin:5px -20px 0px -20px;
+        
+        .material-attachments-title {
+          margin:0 0 10px 0;
+          font-size:20px;
+        }
       
         /* Material's attachment upload wrapper */
         .materials-management-page-attachments-upload-container {
@@ -754,6 +759,11 @@ body.workspace-materials-management {
         min-height:215px;
         margin:5px -20px 0px -20px;
         
+        .material-license-title {
+          margin:0 0 10px 0;
+          font-size:20px;
+        }
+        
         .materials-management-page-license {
         
           input[type="url"] {
@@ -797,6 +807,11 @@ body.workspace-materials-management {
       .materials-management-page-producers-widget {
         min-height:215px;
         margin:5px -20px 0px -20px;
+        
+        .material-producers-title {
+          margin:0 0 10px 0;
+          font-size:20px;
+        }
         
         .material-producers {
     

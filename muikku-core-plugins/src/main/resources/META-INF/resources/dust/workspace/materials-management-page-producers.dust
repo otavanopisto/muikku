@@ -1,3 +1,4 @@
+<div class="material-producers-title">{#localize key="plugin.workspace.materialsManagement.materialProducersTitle"/}</div>
 <div class="material-producers">
   <input type="text" class="material-producer-add"/>
 </div>
