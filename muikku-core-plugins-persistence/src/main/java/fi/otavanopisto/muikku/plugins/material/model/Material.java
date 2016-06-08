@@ -3,6 +3,8 @@ package fi.otavanopisto.muikku.plugins.material.model;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -61,6 +63,14 @@ public class Material {
     this.license = license;
   }
   
+  public MaterialVisibility getVisibility() {
+    return visibility;
+  }
+  
+  public void setVisibility(MaterialVisibility visibility) {
+    this.visibility = visibility;
+  }
+  
   public Long getVersion() {
     return version;
   }
@@ -82,6 +92,10 @@ public class Material {
   private Material originMaterial;
 
   private String license;
+  
+  @Column (nullable = false)
+  @Enumerated (EnumType.STRING)
+  private MaterialVisibility visibility;
   
   @Version
   private Long version;

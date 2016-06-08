@@ -16,6 +16,7 @@ import fi.otavanopisto.muikku.plugins.material.dao.MaterialMetaKeyDAO;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialMeta;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialMetaKey;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialVisibility;
 import fi.otavanopisto.muikku.plugins.material.operations.MaterialCloneOperation;
 
 @Dependent
@@ -66,6 +67,10 @@ public class MaterialController {
 
   public Material updateMaterialLicense(Material material, String license) {
     return materialDAO.updateLicense(material, license);
+  }
+
+  public Material updateMaterialVisibility(Material material, MaterialVisibility visibility) {
+    return materialDAO.updateVisibility(material, visibility);
   }
   
   public List<MaterialMetaKey> listMaterialMetaKeys() {

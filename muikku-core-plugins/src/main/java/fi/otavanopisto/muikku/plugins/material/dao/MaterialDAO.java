@@ -10,6 +10,7 @@ import javax.persistence.criteria.Root;
 import fi.otavanopisto.muikku.plugins.material.model.Material_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialVisibility;
 
 public class MaterialDAO extends CorePluginsDAO<Material> {
 
@@ -31,6 +32,11 @@ public class MaterialDAO extends CorePluginsDAO<Material> {
 
   public Material updateLicense(Material material, String license) {
     material.setLicense(license);
+    return persist(material);
+  }
+
+  public Material updateVisibility(Material material, MaterialVisibility visibility) {
+    material.setVisibility(visibility);
     return persist(material);
   }
 	

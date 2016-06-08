@@ -8,6 +8,7 @@ import fi.otavanopisto.muikku.plugins.material.dao.BinaryMaterialDAO;
 import fi.otavanopisto.muikku.plugins.material.events.BinaryMaterialCreateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.BinaryMaterialUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialVisibility;
 
 @Dependent
 public class BinaryMaterialController {
@@ -22,11 +23,11 @@ public class BinaryMaterialController {
   private Event<BinaryMaterialUpdateEvent> materialUpdateEvent;
   
 	public BinaryMaterial createBinaryMaterial(String title, String contentType, byte[] content, String license) {
-	  return createBinaryMaterial(title, contentType, content, null, license);
+	  return createBinaryMaterial(title, contentType, content, null, license, MaterialVisibility.EVERYONE);
 	}
 
-	public BinaryMaterial createBinaryMaterial(String title, String contentType, byte[] content, BinaryMaterial originMaterial, String license) {
-    BinaryMaterial material = binaryMaterialDAO.create(title, contentType, content, originMaterial, license);
+	public BinaryMaterial createBinaryMaterial(String title, String contentType, byte[] content, BinaryMaterial originMaterial, String license, MaterialVisibility visibility) {
+    BinaryMaterial material = binaryMaterialDAO.create(title, contentType, content, originMaterial, license, visibility);
     materialCreateEvent.fire(new BinaryMaterialCreateEvent(material));
     return material;
   }

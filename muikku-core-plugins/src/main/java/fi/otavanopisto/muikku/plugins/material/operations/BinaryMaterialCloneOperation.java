@@ -12,7 +12,7 @@ public class BinaryMaterialCloneOperation implements MaterialCloneOperation<Bina
 
   @Override
   public BinaryMaterial clone(BinaryMaterial material) {
-    return binaryMaterialController.createBinaryMaterial(material.getTitle(), material.getContentType(), material.getContent(), material, material.getLicense());
+    return binaryMaterialController.createBinaryMaterial(material.getTitle(), material.getContentType(), material.getContent(), material, material.getLicense(), material.getVisibility());
   }
   
 }
