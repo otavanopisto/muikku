@@ -5,18 +5,15 @@ import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
 
 public class BinaryMaterialDAO extends CorePluginsDAO<BinaryMaterial> {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = -1938438840419871131L;
 
-	public BinaryMaterial create(String title, String contentType, byte[] content) {
-	  return create(title, contentType, content, null);
-	}
-
-	public BinaryMaterial create(String title, String contentType, byte[] content, BinaryMaterial originMaterial) {
+  public BinaryMaterial create(String title, String contentType, byte[] content, BinaryMaterial originMaterial, String license) {
     BinaryMaterial binaryMaterial = new BinaryMaterial();
     binaryMaterial.setContent(content);
     binaryMaterial.setContentType(contentType);
     binaryMaterial.setTitle(title);
     binaryMaterial.setOriginMaterial(originMaterial);
+    binaryMaterial.setLicense(license);
     return persist(binaryMaterial);
   }
 

@@ -1,33 +1,16 @@
 package fi.otavanopisto.muikku.plugins.material.rest;
 
-public class HtmlRestMaterial {
+public class HtmlRestMaterial extends RestMaterial {
 
   public HtmlRestMaterial() {
   }
   
-  public HtmlRestMaterial(Long id, String title, String contentType, String html, Long currentRevision, Long publishedRevision) {
-    this.id = id;
-    this.title = title;
+  public HtmlRestMaterial(Long id, String title, String contentType, String html, Long currentRevision, Long publishedRevision, String license) {
+    super(id, title, license);
     this.contentType = contentType;
     this.html = html;
     this.currentRevision = currentRevision;
     this.publishedRevision = publishedRevision;
-  }
-  
-  public Long getId() {
-    return id;
-  }
-  
-  public void setId(Long id) {
-    this.id = id;
-  }
-  
-  public String getTitle() {
-    return title;
-  }
-  
-  public void setTitle(String title) {
-    this.title = title;
   }
   
   public String getContentType() {
@@ -62,8 +45,7 @@ public class HtmlRestMaterial {
     this.publishedRevision = publishedRevision;
   }
   
-  private Long id;
-  private String title;
+  
   private String html;
   private String contentType;
   private Long currentRevision;

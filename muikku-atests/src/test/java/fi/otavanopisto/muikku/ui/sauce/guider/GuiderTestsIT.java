@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.ui.sauce;
+package fi.otavanopisto.muikku.ui.sauce.guider;
 
 import java.net.MalformedURLException;
 
@@ -8,7 +8,7 @@ import org.junit.Rule;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.junit.SauceOnDemandTestWatcher;
 
-import fi.otavanopisto.muikku.ui.base.GuiderTestsBase;
+import fi.otavanopisto.muikku.ui.base.guider.GuiderTestsBase;
 
 public class GuiderTestsIT extends GuiderTestsBase {
   
