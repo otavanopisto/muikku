@@ -7,7 +7,9 @@
   </div>
 {/producers}
 
-<div class="license-override">
-  <span class="material-license-label">{#localize key="plugin.workspace.materials.licenseLabel"/}:</span>
-  <span class="material-license"><a href="{license}" target="top">{license}</a></span>
-</div>
+{?license}
+  <div class="license-override">
+    <span class="material-license-label">{#localize key="plugin.workspace.materials.licenseLabel"/}:</span>
+    <span class="material-license"><a href="{license}" target="top">{license}</a></span>
+  </div>
+{/license}
