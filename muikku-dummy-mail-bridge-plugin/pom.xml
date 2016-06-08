@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.34-SNAPSHOT</version>
+    <version>1.1.34</version>
   </parent>
 
   <artifactId>dummy-mail-bridge-plugin</artifactId>
