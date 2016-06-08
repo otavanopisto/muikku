@@ -163,10 +163,6 @@ public class GradingController {
     return gradingSchoolDataController.listWorkspaceAssessmentRequests(schoolDataSource, workspaceIdentifier, studentIdentifier);
   }
   
-  public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String schoolDataSource, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    return gradingSchoolDataController.listWorkspaceAssessmentRequests(schoolDataSource, studentIdentifier);
-  }
-
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
       String workspaceIdentifier, String studentIdentifier, String requestText, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     return gradingSchoolDataController.updateWorkspaceAssessmentRequest(schoolDataSource, identifier, workspaceUserIdentifier, workspaceUserSchoolDataSource, workspaceIdentifier, studentIdentifier, requestText, date);
