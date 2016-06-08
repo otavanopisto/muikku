@@ -1,13 +1,13 @@
 package fi.otavanopisto.muikku.plugins.material.rest;
 
-import fi.otavanopisto.muikku.plugins.material.model.MaterialVisibility;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 
 public class HtmlRestMaterial extends RestMaterial {
 
   public HtmlRestMaterial() {
   }
   
-  public HtmlRestMaterial(Long id, String title, String contentType, String html, Long currentRevision, Long publishedRevision, String license, MaterialVisibility visibility) {
+  public HtmlRestMaterial(Long id, String title, String contentType, String html, Long currentRevision, Long publishedRevision, String license, MaterialViewRestrict visibility) {
     super(id, title, license, visibility);
     this.contentType = contentType;
     this.html = html;

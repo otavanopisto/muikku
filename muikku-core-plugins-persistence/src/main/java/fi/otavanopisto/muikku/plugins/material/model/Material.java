@@ -63,12 +63,12 @@ public class Material {
     this.license = license;
   }
   
-  public MaterialVisibility getVisibility() {
-    return visibility;
+  public MaterialViewRestrict getViewRestrict() {
+    return viewRestrict;
   }
   
-  public void setVisibility(MaterialVisibility visibility) {
-    this.visibility = visibility;
+  public void setViewRestrict(MaterialViewRestrict viewRestrict) {
+    this.viewRestrict = viewRestrict;
   }
   
   public Long getVersion() {
@@ -95,7 +95,7 @@ public class Material {
   
   @Column (nullable = false)
   @Enumerated (EnumType.STRING)
-  private MaterialVisibility visibility;
+  private MaterialViewRestrict viewRestrict;
   
   @Version
   private Long version;

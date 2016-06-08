@@ -1,18 +1,18 @@
 package fi.otavanopisto.muikku.plugins.material.rest;
 
-import fi.otavanopisto.muikku.plugins.material.model.MaterialVisibility;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 
 public class RestMaterial {
   
   public RestMaterial() {
   }
   
-  public RestMaterial(Long id, String title, String license, MaterialVisibility visibility) {
+  public RestMaterial(Long id, String title, String license, MaterialViewRestrict visibility) {
     super();
     this.id = id;
     this.title = title;
     this.license = license;
-    this.visibility = visibility;
+    this.viewRestrict = visibility;
   }
 
   public Long getId() {
@@ -39,16 +39,16 @@ public class RestMaterial {
     this.license = license;
   }
 
-  public MaterialVisibility getVisibility() {
-    return visibility;
+  public MaterialViewRestrict getViewRestrict() {
+    return viewRestrict;
   }
   
-  public void setVisibility(MaterialVisibility visibility) {
-    this.visibility = visibility;
+  public void setViewRestrict(MaterialViewRestrict viewRestrict) {
+    this.viewRestrict = viewRestrict;
   }
   
   private Long id;
   private String title;
   private String license;
-  private MaterialVisibility visibility;
+  private MaterialViewRestrict viewRestrict;
 }

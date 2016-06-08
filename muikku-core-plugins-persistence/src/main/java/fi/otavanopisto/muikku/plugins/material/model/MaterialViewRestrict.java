@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.plugins.material.model;
 
-public enum MaterialVisibility {
+public enum MaterialViewRestrict {
  
-  EVERYONE,
+  NONE,
   
   LOGGED_IN
   
