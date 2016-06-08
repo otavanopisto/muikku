@@ -1,6 +1,6 @@
 <li class="fp-announcement{?workspaceEntityIds} workspace{:else} environment{/workspaceEntityIds}" title="{startDate|formatDate}-{endDate|formatDate}">
   <div class="fp-announcement-link"><a href="{@contextPath/}{link}">{caption}</a></div>
   {?workspaceEntityIds}
-    <div class="fp-announcement-info-workspace">{workspaceName}</div>
+    <div class="fp-announcement-info-workspace"><span>{workspaceName}</span></div>
   {/workspaceEntityIds}   
 </li>  
