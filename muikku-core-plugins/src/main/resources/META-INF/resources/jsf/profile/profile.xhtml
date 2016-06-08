@@ -4,21 +4,24 @@
   xmlns:f="http://java.sun.com/jsf/core"  
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="/WEB-INF/templates/flex-reading-view.xhtml">
+  template="/WEB-INF/templates/flex-config-view.xhtml">
 
   <ui:define name="scripts">
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/profile.js"/>  
   </ui:define>
 
   <ui:define name="main-functionality-styles">
-<!--     <link rel="stylesheet" type="text/css" href="/css/flex/announcement-view.css"/> -->
+    <link rel="stylesheet" type="text/css" href="/css/flex/profile.css"/>
   </ui:define>  
 
   <ui:define name="mf-content-master"> 
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <div id="announcements">
+      <div id="profile">
         <ui:insert name="mf-content-area">
           <div class="context-wrapper flex-row">
             <section class="section-for-articles lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">

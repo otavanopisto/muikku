@@ -1,7 +1,8 @@
-@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "_vars.scss";
+@import "_styles.scss";
 
-body.profile,
-body.workspace-profile { 
+
+#profile { 
   
   .profile-content {
     background:#fff;
