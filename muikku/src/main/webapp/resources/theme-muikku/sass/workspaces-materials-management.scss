@@ -502,6 +502,20 @@ body.workspace-materials-management {
       -ms-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
       transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
       
+      /* TEMP STYLES start --> */
+      
+      .page-view-restrict {
+        background: #0f0;      
+      }
+      
+      &[data-view-restrict="LOGGED_IN"] {
+        .page-view-restrict {
+          background: #f00;
+        }
+      }
+      
+      /* <-- TEMP STYLES end */
+      
       &.folder { 
         position:relative;
         font-weight:300;

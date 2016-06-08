@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
@@ -850,7 +851,7 @@ public class WorkspaceMaterialController {
       switch (rootMaterialNode.getType()) {
       case FOLDER:
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
-        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getParent().getId(), rootMaterialNode.getHidden(), null, 0l, 0l, workspaceFolder.getPath(), null);
+        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getParent().getId(), rootMaterialNode.getHidden(), null, 0l, 0l, workspaceFolder.getPath(), null, false);
 
         List<WorkspaceNode> children = includeHidden
             ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
@@ -868,7 +869,7 @@ public class WorkspaceMaterialController {
         for (FlattenedWorkspaceNode child : flattenedChildren) {
           ContentNode contentNode;
           if (child.isEmptyFolder) {
-            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.hidden, null, 0l, 0l, child.node.getPath(), null);
+            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.hidden, null, 0l, 0l, child.node.getPath(), null, false);
           } else {
             contentNode = createContentNode(child.node, child.level, processHtml, includeHidden);
           }
@@ -894,10 +895,21 @@ public class WorkspaceMaterialController {
         Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
         Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
         Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
+        String html;
+        boolean viewRestricted;
+        
+        if (sessionController.isLoggedIn() || (material.getViewRestrict() == MaterialViewRestrict.NONE)) {
+          viewRestricted = false;
+          html = processHtml ? getMaterialHtml(material, parser, transformer) : null;
+        } else {
+          viewRestricted = true;
+          html = String.format("<p class=\"content-view-restricted-message\">%s</p>", localeController.getText(sessionController.getLocale(), "plugin.workspace.materialViewRestricted"));
+        }
+          
         return new ContentNode(workspaceMaterial.getTitle(), material.getType(), rootMaterialNode.getId(), material.getId(), level,
             workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getParent().getId(),
-            workspaceMaterial.getHidden(), processHtml ? getMaterialHtml(material, parser, transformer) : null,
-            currentRevision, publishedRevision, workspaceMaterial.getPath(), material.getLicense());
+            workspaceMaterial.getHidden(), html,
+            currentRevision, publishedRevision, workspaceMaterial.getPath(), material.getLicense(), viewRestricted);
       default:
         return null;
       }

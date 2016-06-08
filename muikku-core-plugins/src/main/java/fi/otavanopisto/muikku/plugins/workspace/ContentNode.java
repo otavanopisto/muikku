@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.workspace;
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 
@@ -12,7 +11,7 @@ public class ContentNode {
   public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       Long parentId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path,
-      String license) {
+      String license, boolean viewRestricted) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -29,6 +28,7 @@ public class ContentNode {
     this.publishedRevision = publishedRevision;
     this.path = path;
     this.license = license;
+    this.viewRestricted = viewRestricted;
   }
 
   public void addChild(ContentNode child) {
@@ -135,6 +135,14 @@ public class ContentNode {
     this.license = license;
   }
   
+  public boolean getViewRestricted() {
+    return viewRestricted;
+  }
+  
+  public void setViewRestricted(boolean viewRestricted) {
+    this.viewRestricted = viewRestricted;
+  }
+  
   private String title;
   private String type;
   private List<ContentNode> children;
@@ -150,4 +158,5 @@ public class ContentNode {
   private Long publishedRevision;
   private String path;
   private String license;
+  private boolean viewRestricted;
 }
