@@ -297,10 +297,9 @@
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     var license = $(data.pageElement).attr('data-license');
-    var producersAttr = $(data.pageElement).attr('data-producers');
-    var producers = producersAttr ? producersAttr.split(',') : null;
+    var producers = $(data.pageElement).attr('data-producers');
     
-    if (license) {
+    if (license || producers) {
       $('<footer>')
         .articleDetails({
           license: license,
