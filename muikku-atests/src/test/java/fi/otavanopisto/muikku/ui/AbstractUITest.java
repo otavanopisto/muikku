@@ -22,8 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ws.rs.Path;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jboss.netty.util.ThreadNameDeterminer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -73,6 +76,8 @@ import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
+import fi.otavanopisto.muikku.atests.Flag;
+import fi.otavanopisto.muikku.atests.StudentFlag;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceDiscussion;
 import fi.otavanopisto.muikku.atests.WorkspaceDiscussionGroup;
@@ -668,6 +673,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     Actions action = new Actions(getWebDriver());
     action.moveToElement(findElementByCssSelector(selector)).perform();
   }
+   
+  protected void setAttributeBySelector(String selector, String attribute, String value){
+    JavascriptExecutor js = (JavascriptExecutor) getWebDriver();
+    String jsString = String.format("$('%s').attr('%s', '%s');", selector, attribute, value );
+    js.executeScript(jsString);
+  }
   
   protected void assertClassNotPresent(String selector, String className) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
@@ -959,6 +970,47 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .delete("/test/passwordchange/{EMAIL}", email)
       .then()
       .statusCode(204);
+  }
+  
+  protected Long createFlag(String name, String color, String description) throws JsonParseException, JsonMappingException, IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    Flag flag = new Flag(null, name, color, description, null);
+    Response response = asAdmin()
+    .contentType("application/json")
+    .body(flag)
+    .post("/test/flags");
+    
+    response.then()
+      .statusCode(200);
+    
+    Flag result = objectMapper.readValue(response.asString(), Flag.class);
+    return result.getId();
+  }
+  
+  protected void deleteFlag(Long flagId) {
+    asAdmin()
+      .delete("/test/flags/{FLAGID}", flagId)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void deleteStudentFlag(Long studentFlagId) {
+    asAdmin()
+    .delete("/test/students/flags/{ID}", studentFlagId)
+    .then()
+    .statusCode(204);
+  } 
+  
+  protected Long flagStudent(Long studentId, Long flagId) throws JsonParseException, JsonMappingException, IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    Response response = asAdmin()
+      .post("/test/students/{ID}/flags/{FLAGID}", studentId, flagId);
+    
+    response.then()
+      .statusCode(200);
+    
+    StudentFlag result = objectMapper.readValue(response.asString(), StudentFlag.class);
+    return result.getId();
   }
   
   protected String getAttributeValue(String selector, String attribute){
