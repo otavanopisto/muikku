@@ -3,8 +3,10 @@
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 @import "_organizer-field.scss";
+@import "_sorter-field.scss";
 @import "_file-field.scss";
 @import "_workspace-materials-defaults.scss"; 
+@import "_correct_answers.scss"; 
 
 .lazy-pdf {
   height: 822px;
@@ -198,7 +200,7 @@ nav.workspace-materials-toc-wrapper {
             text-decoration:none;
             color:#2c2c2c;
             display:block;
-            @include rounded(2px);
+            border-radius:2px;
             padding:2px 8px 2px 6px;
             border-left:2px solid #fff;
             margin:1px 0;
@@ -337,7 +339,7 @@ nav.workspace-materials-toc-wrapper {
               text-decoration:none;
               color:#41505b;
               display:block;
-              @include rounded(2px);
+              border-radius:2px;
               padding:2px 8px;
               
               &:hover,

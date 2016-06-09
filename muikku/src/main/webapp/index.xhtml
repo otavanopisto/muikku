@@ -7,7 +7,7 @@
   <ui:param name="activeTrail" value="index"/>
   
   <ui:define name="scripts">
-    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
@@ -30,6 +30,7 @@
   <ui:define name="styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/flex-main.css"/>
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/flex/frontpage.css"/>
   </ui:define>  
   
   <ui:define name="grid-content">

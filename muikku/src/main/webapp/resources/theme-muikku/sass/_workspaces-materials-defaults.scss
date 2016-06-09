@@ -58,7 +58,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   }
   
   /* Input field and textarea overrides */
-  input[type="text"] {
+  input[type="text"],
+  input[type="url"] {
     width:auto;
     height:auto;
     border:3px solid #c9e0fb;
@@ -378,9 +379,11 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     font-style:inherit;
   }
 
+  /* This is for material's management and reading views */
   table {
     margin:initial;
     padding:initial;
+    font-size:15px;
   }
 
   table[cellspacing] {
@@ -651,6 +654,63 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       
     }
     
+    /* For sorterfields checks */
+    div.muikku-sorter-field {
+      
+      .muikku-sorter-items-container.muikku-field-correct-answer {
+        box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
+        border:3px solid #00ff2a;
+        @include rounded(3px);
+        
+        &:hover {
+          box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
+          border:3px solid #00ff2a;
+        }
+        
+      }
+      
+      .muikku-sorter-items-container.muikku-field-semi-correct-answer {
+        box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
+        border:3px solid #dab33d;
+        @include rounded(3px);
+        
+        &:hover {
+          box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
+          border:3px solid #dab33d;
+        }
+        
+      }
+      
+      .muikku-sorter-items-container.muikku-field-incorrect-answer {
+        border:3px solid #f64e4e;
+        box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
+        @include rounded(3px);
+        
+        &:hover {
+          border:3px solid #f64e4e;
+          box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
+        }
+  
+      }
+      
+      .muikku-sorter-items-container {
+      
+        .muikku-sorter-item {
+        
+          &.muikku-field-correct-answer {
+            background:#55fc70;
+          }
+          
+          &.muikku-field-incorrect-answer {
+            background:#f64e4e;
+          }
+        
+        }
+      
+      }
+      
+    }
+    
     /* For checkboxes/radiobuttons checks */
     span.muikku-field-correct-answer {
       box-shadow:none !important;
@@ -776,6 +836,51 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   .clear {
     clear:both;
+  }
+  
+  footer.article-details {
+    margin:0 -30px -10px -30px;
+    padding:15px;
+    border-top:2px solid #e6f2c4;
+    font-size:13px;
+    line-height:1;
+    
+    .producers-override {
+      display:none;
+    
+      .material-producers-label {
+        color:#727272;
+        padding:0 5px 0 0;
+        text-transform:uppercase;
+      }
+      
+      .material-producer {
+        padding:0;
+        color:#000;
+        text-transform:uppercase;
+      }
+    
+    }
+    
+    .license-override {
+    
+      .material-license-label {
+        color:#727272;
+        padding:0 5px 0 0;
+        text-transform:uppercase;
+      }
+      
+      .material-license {
+        padding:0;
+        
+        a {
+          color:#09f;
+        }
+        
+      }
+      
+    }
+    
   }
   
 }

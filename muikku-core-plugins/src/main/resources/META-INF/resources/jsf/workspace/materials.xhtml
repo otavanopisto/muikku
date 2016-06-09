@@ -6,35 +6,19 @@
   template="/WEB-INF/templates/flex-main-workspace.xhtml"> 
 
   <ui:define name="scripts">
-    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lodash/4.12.0/lodash.min.js"></script>
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/> 
-    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.js"/>    
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/lazypdf.js" />
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/lazyswf.js" />
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.ui.swappable/0.9.5_custom/jquery.ui.swappable.js"/>
-    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/jquery.magnific-popup.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/connectionlostnotifier.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-file-field-component.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-connect-field-component.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-rich-memo-field-component.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-image-details.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-word-definition.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/article-details.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace.js"/>  
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-field.js"/> 
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-material-loader.js"/> 
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-signup-dialog.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-materials.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/waypoints/2.0.5/waypoints.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.auto-grow-input/1.0.3/jquery.auto-grow-input.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/autosize/3.0.15/autosize.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML"/>
+    <ui:include src="templates/workspace-material-scripts.xhtml"/>
   </ui:define>
   
   <ui:define name="workspace-view-styles">
@@ -95,14 +79,14 @@
                   </ui:fragment>
                 </ui:fragment>
                 <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                  <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-workspace-material-assigment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" class="workspace-materials-view-page material-view"/>
+                  <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-assignment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" data-license="#{articleNode.license}" class="workspace-materials-view-page material-view"/>
                 </ui:fragment>
               </ui:repeat>
             </section>
           </ui:fragment>  
           
           <ui:fragment rendered="#{node.type ne 'folder'}">
-            <article id="page-#{node.workspaceMaterialId}" data-correct-answers="#{node.correctAnswers}" data-workspace-material-assigment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" data-path="#{node.path}" class="workspace-materials-view-page material-view"/>
+            <article id="page-#{node.workspaceMaterialId}" data-correct-answers="#{node.correctAnswers}" data-assignment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" data-path="#{node.path}" data-license="#{node.license}" class="workspace-materials-view-page material-view"/>
           </ui:fragment>  
         </ui:repeat>
       </article>
@@ -148,6 +132,7 @@
     <input class="workspaceNameExtension" type="hidden" value="#{workspaceMaterialsBackingBean.workspaceNameExtension}"/>
     <input class="workspaceEntityId" type="hidden" value="#{workspaceMaterialsBackingBean.workspaceEntityId}"/>
     <input class="materialsBaseUrl" type="hidden" value="#{workspaceMaterialsBackingBean.materialsBaseUrl}"/>
+    <input class="maySignUp" type="hidden" value="#{workspaceMaterialsBackingBean.maySignUp}"/>
     <input class="canSignUp" type="hidden" value="#{workspaceMaterialsBackingBean.canSignUp}"/>
   </ui:define>
 

@@ -13,7 +13,7 @@
   </ui:define> 
  
   <ui:define name="hiddenFields">
-    <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
+    <input type="hidden" name="userId" value="#{sessionBackingBean.loggedUserId}"/>
   </ui:define>
         
   <ui:define name="viewScripts">

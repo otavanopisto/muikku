@@ -30,10 +30,10 @@ public class AnnouncerTestsBase extends AbstractUITest {
         login();
         maximizeWindow();
         navigate("/announcer", true);
-        waitAndClick(".bt-mainFunction-content");
-        waitForPresent("#endDate");
-        clearElement("#endDate");
-        sendKeys("#endDate", "21.12.2025");
+        waitAndClick(".an-new-announcement");
+        waitForPresent("*[name='endDate']");
+        clearElement("*[name='endDate']");
+        sendKeys("*[name='endDate']", "21.12.2025");
         sendKeys(".mf-textfield-subject", "Test title");
         click(".mf-form-header");
         waitForPresent("#ui-datepicker-div");
@@ -61,10 +61,10 @@ public class AnnouncerTestsBase extends AbstractUITest {
         login();
         maximizeWindow();
         navigate("/announcer", true);
-        waitAndClick(".bt-mainFunction-content");
-        waitForPresent("#endDate");
-        clearElement("#endDate");
-        sendKeys("#endDate", "21.12.2025");
+        waitAndClick(".an-new-announcement");
+        waitForPresent("*[name='endDate']");
+        clearElement("*[name='endDate']");
+        sendKeys("*[name='endDate']", "21.12.2025");
         sendKeys(".mf-textfield-subject", "Test title");
         click(".mf-form-header");
         waitForNotVisible("#ui-datepicker-div");
@@ -99,7 +99,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>a", "Test title");
+        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
       }finally{
         deleteAnnouncements();
       }
@@ -123,7 +123,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>a", "Test title");
+        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
         navigate("/announcements", true);
         waitForPresent("#announcementContextNavigation .gc-navigation-item");
         assertTextIgnoreCase("#announcementContextNavigation .gc-navigation-item a", "Test title");
@@ -156,7 +156,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>a", "Test title");
+        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
       }finally{
         deleteAnnouncements();
         deleteUserGroup(2l);
@@ -182,7 +182,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         waitForPresent("#announcements");
-        assertTrue("Element found even though it shouldn't be there", isElementPresent("#announcements ul>li>a") == false);
+        assertTrue("Element found even though it shouldn't be there", isElementPresent("#announcements ul>li>div>a") == false);
       }finally{
         deleteAnnouncements();
       }

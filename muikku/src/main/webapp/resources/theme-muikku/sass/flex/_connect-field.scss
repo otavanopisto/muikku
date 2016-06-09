@@ -64,13 +64,18 @@
   padding:8px 15px;
 	background:#e1f7fc;
 	margin:0px 4px 8px 4px;
-	@include rounded(3px);
+	border-radius:3px;
 	transition:background 0.3s ease-in-out;
 	box-sizing:border-box;
 	height:56px;
   line-height:20px;
   font-size:16px;
   transition:height 0.2s ease-in-out;
+  
+  &:hover {
+    background:#b1e8fe;
+    color:#000;
+  }
   
   &.term-full-text,
   &.counterpart-full-text {
@@ -106,7 +111,7 @@
   padding:8px 21px;
   background:#e1f7fc;
   margin:4px;
-  @include rounded(3px);
+  border-radius:3px;
   background:#f8f8f8;
   height:1.7em;
 }

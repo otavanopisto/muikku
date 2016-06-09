@@ -1,54 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:f="http://java.sun.com/jsf/core"  
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"  
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="/jsf/announcements/templates/announcements_base.xhtml">
+  template="/WEB-INF/templates/flex-reading-view.xhtml">
 
-  <ui:define name="context.pageTitle">
-    <h1 class="view-title">#{i18n.text['plugin.announcements.sectionTitle']}</h1>    
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
   </ui:define>
 
-  <ui:define name="context.area">
-    <section class="section-for-articles">
-      <ui:fragment rendered="#{not empty announcementsViewBackingBean.currentAnnouncement}">
-        <article class="announcement-article">
-          <header>
-            <h2>
-              <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.caption}" />
-            </h2>
-            <div class="article-datetime">
-              <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.startDate}">
-                <f:convertDateTime type="date" dateStyle="short" />
-              </h:outputText>
-            </div>
-          </header>
-          <div class="article-context">
-            <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.content}" escape="false" />
-          </div>
-        </article>
-      </ui:fragment>
+  <ui:define name="main-functionality-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/announcement-view.css"/>
+  </ui:define>  
 
-    </section>
+  <ui:define name="mf-content-master"> 
+    <div id="announcements">
+      <ui:insert name="mf-content-area">
+        <div class="context-wrapper flex-row">
+          <section class="section-for-articles lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">
+            <ui:fragment rendered="#{not empty announcementsViewBackingBean.currentAnnouncement}">
+              <article class="announcement-article">
+                <header>
+                  <h2>
+                    <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.caption}" />
+                  </h2>
+                  <div class="article-datetime">
+                    <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.startDate}">
+                      <f:convertDateTime type="date" dateStyle="short" />
+                    </h:outputText>
+                  </div>
+                </header>
+                <div class="article-context">
+                  <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.content}" escape="false" />
+                </div>
+              </article>
+            </ui:fragment>
+          </section>
+          <nav id="announcementContextNavigation" class="gc-navigation lg-flex-cell-5 md-flex-cell-6 sm-flex-hide">
+            <ui:repeat value="#{announcementsViewBackingBean.activeAnnouncements}" var="announcement">
+              <div class="gc-navigation-item">
+                <a class="gc-navigation-title" jsf:outcome="/jsf/announcements/index.jsf?announcementId=#{announcement.id}">
+                  <h:outputText value="#{announcement.caption}" />
+                </a>
+                <div class="gc-navigation-date">
+                  <h:outputText value="#{announcement.startDate}">
+                    <f:convertDateTime type="date" dateStyle="short" />
+                  </h:outputText>
+                </div>
+              </div>
+            </ui:repeat>
+          </nav>    
+        </div>
+      </ui:insert>
+    </div>
   </ui:define>
-  
-  <ui:define name="context.navigation">
-    <nav id="announcementContextNavigation" class="gc-navigation">
-      <ui:repeat value="#{announcementsViewBackingBean.activeAnnouncements}" var="announcement">
-	      <div class="gc-navigation-item">
-	        <a class="gc-navigation-title" jsf:outcome="/jsf/announcements/index.jsf?announcementId=#{announcement.id}">
-            <h:outputText value="#{announcement.caption}" />
-	        </a>
-          <div class="gc-navigation-date">
-            <h:outputText value="#{announcement.startDate}">
-              <f:convertDateTime type="date" dateStyle="short" />
-            </h:outputText>
-          </div>
-	      </div>
-      </ui:repeat>
-    </nav>
-  </ui:define>
-
 </ui:composition>

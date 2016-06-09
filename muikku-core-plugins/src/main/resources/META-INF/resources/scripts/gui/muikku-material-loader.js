@@ -43,7 +43,6 @@
         if (material.title && this.options.prependTitle) {
           parsed.append('<h2>' + material.title + '</h2>');
         }
-        
         if (material.html) {
           parsed.append(material.html);
         }
@@ -114,7 +113,7 @@
         if (this._getRenderMode('html') == 'dust') {
           material.html = parsed.html();
           renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material, hidden: pageElement.hasClass('item-hidden') }, $.proxy(function (text) {
-            $(pageElement).append(text);
+            $(pageElement).empty().append(text);
             $(document).trigger('afterHtmlMaterialRender', {
               pageElement: pageElement,
               parentIds: parentIds,
@@ -127,7 +126,7 @@
           }, this));
         }
         else {
-          $(pageElement).append(parsed);
+          $(pageElement).muikkuMaterialPage('content', parsed);
           $(document).trigger('afterHtmlMaterialRender', {
             pageElement: pageElement,
             parentIds: parentIds,
@@ -136,6 +135,7 @@
             fieldAnswers: fieldAnswers,
             readOnlyFields: this.options.readOnlyFields
           });
+          $(pageElement).muikkuMaterialPage('applyState');
         }
 
       } catch (e) {
@@ -150,6 +150,9 @@
       var materialTitle = $(page).attr('data-material-title');
       switch (materialType) {
         case 'html':
+          $(page).muikkuMaterialPage({
+            workspaceEntityId: this.options.workspaceEntityId
+          });
           this._loadHtmlMaterial($(page), fieldAnswers);
         break;
         case 'folder':
@@ -237,9 +240,6 @@
             // actual loading of pages
             $(pageElements).each($.proxy(function (index, page) {
               this.loadMaterial(page, fieldAnswers);
-              $(page).muikkuMaterialPage({
-                workspaceEntityId: this.options.workspaceEntityId
-              });
             }, this));
           }       
         }, this));
@@ -593,6 +593,24 @@
 
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.sorter') {
+      var sorterField = $('<div>').muikkuSorterField({
+        pageElement: data.pageElement,
+        fieldName: data.name,
+        materialId: data.materialId,
+        embedId: data.embedId,
+        meta: data.meta,
+        readonly: data.readOnlyFields||false
+      });
+      if (data.value) {
+        sorterField.muikkuField('answer', data.value);
+      }
+      $(object).replaceWith(sorterField);
+    }
+  });
+
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.organizer') {
       var meta = data.meta;
       var organizerField = $('<div>').addClass('muikku-organizer-field');
@@ -670,6 +688,7 @@
         categoriesContainer.append(categoryContainer);
       }
       organizerField.muikkuField({
+        pageElement: data.pageElement,
         fieldName: data.name,
         materialId: data.materialId,
         embedId: data.embedId,
@@ -871,6 +890,7 @@
           input
             .val(data.value)
             .muikkuField({
+              pageElement: data.pageElement,
               fieldName: data.name,
               materialId: data.materialId,
               embedId: data.embedId,
@@ -1042,6 +1062,7 @@
         optionContainer.append(label);
       }      
       container.muikkuField({
+        pageElement: data.pageElement,
         fieldName: data.name,
         materialId: data.materialId,
         embedId: data.embedId,
@@ -1188,6 +1209,15 @@
     $(data.pageElement)
       .append($('<div>').addClass('clear'));
     
+    /* If material page has overriding producers or license 
+    renderDustTemplate('workspace/materials-page-license-producers-orveride.dust', {
+      materialProducers: materialProducers,
+      materialLicense: materialLicense
+    }, $.proxy(function (text) {
+      $(data.pageElement).append($.parseHTML(text));
+    }, this));
+    */
+   
     $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
       var meta = $.parseJSON($(field).attr('data-meta'));
       $(field).muikkuConnectField({

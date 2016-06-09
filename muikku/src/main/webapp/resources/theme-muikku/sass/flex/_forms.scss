@@ -70,7 +70,8 @@ label {
 
 /* Every main functionality's search has to be added here as 
 input elements does not allow use of :after nor :before pseudo classes */
-.cp-search-field {
+
+.mf-search-field {
   position:relative;
   
   input.search {

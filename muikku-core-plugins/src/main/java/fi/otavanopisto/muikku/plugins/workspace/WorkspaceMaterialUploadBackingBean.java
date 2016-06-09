@@ -162,9 +162,10 @@ public class WorkspaceMaterialUploadBackingBean extends AbstractWorkspaceBacking
           String contentType = fileMeta.getContentType();
           String fileName = fileMeta.getName();
           byte[] fileData = TempFileUtils.getTempFileData(fileId);
-
+          String license = null;
+          
           BinaryMaterial binaryMaterial = binaryMaterialController
-              .createBinaryMaterial(fileName, contentType, fileData);
+              .createBinaryMaterial(fileName, contentType, fileData, license);
           workspaceMaterialController.createWorkspaceMaterial(parent, binaryMaterial);
         } finally {
           TempFileUtils.deleteTempFile(fileId);

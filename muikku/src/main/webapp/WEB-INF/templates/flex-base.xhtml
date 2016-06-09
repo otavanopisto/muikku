@@ -5,7 +5,7 @@
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   xmlns:ui="http://java.sun.com/jsf/facelets">
 
-  <f:view locale="#{muikkuSession.locale}">
+  <f:view locale="#{sessionBackingBean.locale}">
   
     <head>
       <ui:insert name="title"></ui:insert>
@@ -17,14 +17,7 @@
           var CONTEXTPATH = "#{request.contextPath}";
           var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
           var MUIKKU_LOGGED_USER = '#{sessionBackingBean.loggedUser}'||null;
-          var MUIKKU_LOGGEDIN = #{muikkuSession.loggedIn};
-          var MUIKKU_LOGGEDINROLES = {
-            teacher: #{sessionBackingBean.teacherLoggedIn},
-            manager: #{sessionBackingBean.managerLoggedIn},
-            studyProgrammeLeader: #{sessionBackingBean.studyProgrammeLeaderLoggedIn},
-            admin: #{sessionBackingBean.administratorLoggedIn},
-            student: #{sessionBackingBean.studentLoggedIn}
-          };
+          var MUIKKU_LOGGEDIN = #{sessionBackingBean.loggedIn};
       </script>
       
       <ui:fragment rendered="#{sessionBackingBean.bugsnagEnabled}">
@@ -77,7 +70,7 @@
 
       <!-- Flex Grid -->
       <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/fni-flexgrid/1.0.0/flexgrid.css"/>
-      <link rel="stylesheet" type="text/css" href="/icons/icomoon/icons.css"/>
+      <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.0.0/style.css"/>
       <ui:insert name="styles"></ui:insert>
     </head>
   

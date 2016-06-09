@@ -63,14 +63,14 @@
       offset: '0%'
     });
     
-    $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
+    $('.workspace-materials-view-page[data-assignment-type="EXERCISE"]').each(function (index, page) {
       $(page).prepend($('<div>')
           .addClass('muikku-page-assignment-type exercise')
           .text(getLocaleText("plugin.workspace.materialsLoader.exerciseAssignmentLabel"))
       );
     });
     
-    $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
+    $('.workspace-materials-view-page[data-assignment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
           .addClass('muikku-page-assignment-type assignment')
           .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
@@ -151,55 +151,67 @@
         }, this));
     };
     
-    if (MUIKKU_LOGGEDINROLES.student && ($('.canSignUp').val() == 'true')) {
-      var workspaceEntityId = $('.workspaceEntityId').val();
-      
-      mApi().workspace.workspaces.students
-        .read(workspaceEntityId, { studentIdentifier: MUIKKU_LOGGED_USER, archived: false })
-        .callback(function(err, result) {
-          if (!err) {
-            if (!result || !result.length) {
-              var signUpLink = $('<a>')
-                .attr('href', 'javascript:void(null)').text(getLocaleText('plugin.workspace.materials.notSignedUpWarningLink'))
-                .click(function () {
-                  getEvaluationFee(workspaceEntityId, function (err, hasEvaluationFee) {
-                    if (err) {
-                      $('.notification-queue').notificationQueue('notification', 'error', err);
-                    } else {
-                      $('<div>').workspaceSignUpDialog({
-                        workspaceName: $('.workspaceName').val(),
-                        workspaceNameExtension: $('.workspaceNameExtension').val(),
-                        hasEvaluationFee: hasEvaluationFee,
-                        workspaceEntityId: workspaceEntityId
-                      });
-                    }
+    if ($('.maySignUp').val() == 'true') {
+      if ($('.canSignUp').val() == 'true') {
+        var workspaceEntityId = $('.workspaceEntityId').val();
+        
+        mApi().workspace.workspaces.students
+          .read(workspaceEntityId, { studentIdentifier: MUIKKU_LOGGED_USER, archived: false })
+          .callback(function(err, result) {
+            if (!err) {
+              if (!result || !result.length) {
+                var signUpLink = $('<a>')
+                  .attr('href', 'javascript:void(null)').text(getLocaleText('plugin.workspace.materials.notSignedUpWarningLink'))
+                  .click(function () {
+                    getEvaluationFee(workspaceEntityId, function (err, hasEvaluationFee) {
+                      if (err) {
+                        $('.notification-queue').notificationQueue('notification', 'error', err);
+                      } else {
+                        $('<div>').workspaceSignUpDialog({
+                          workspaceName: $('.workspaceName').val(),
+                          workspaceNameExtension: $('.workspaceNameExtension').val(),
+                          hasEvaluationFee: hasEvaluationFee,
+                          workspaceEntityId: workspaceEntityId
+                        });
+                      }
+                    });
                   });
-                });
-              
-              var warning = $('<span>')
-                .text(getLocaleText('plugin.workspace.materials.notSignedUpWarning') + ' ')
-                .append(signUpLink)
-                .append('.');
-           
-              $('.notification-queue').notificationQueue('notification', 'warn', warning);
+                
+                var warning = $('<span>')
+                  .text(getLocaleText('plugin.workspace.materials.notSignedUpWarning') + ' ')
+                  .append(signUpLink)
+                  .append('.');
+             
+                $('.notification-queue').notificationQueue('notification', 'warn', warning);
+              }
             }
-          }
-        });
-    }
-    else if (MUIKKU_LOGGEDINROLES.student) {
-      var workspaceEntityId = $('.workspaceEntityId').val();
-      mApi().workspace.workspaces.students
-        .read(workspaceEntityId, { studentIdentifier: MUIKKU_LOGGED_USER, archived: false })
-        .callback(function(err, result) {
-          if (!err) {
-            if (!result || !result.length) {
-              var warning = $('<span>')
-                .text(getLocaleText('plugin.workspace.materials.cannotSignUpWarning'));
-              $('.notification-queue').notificationQueue('notification', 'warn', warning);
+          });
+      } else {
+        var workspaceEntityId = $('.workspaceEntityId').val();
+        mApi().workspace.workspaces.students
+          .read(workspaceEntityId, { studentIdentifier: MUIKKU_LOGGED_USER, archived: false })
+          .callback(function(err, result) {
+            if (!err) {
+              if (!result || !result.length) {
+                var warning = $('<span>')
+                  .text(getLocaleText('plugin.workspace.materials.cannotSignUpWarning'));
+                $('.notification-queue').notificationQueue('notification', 'warn', warning);
+              }
             }
-          }
-        });
+          });
+      }
     }
   });
-
+  
+  $(document).on('afterHtmlMaterialRender', function (event, data) {
+    var license = $(data.pageElement).attr('data-license');
+    if (license) {
+      $('<footer>')
+        .articleDetails({
+          license: license
+        })
+        .appendTo(data.pageElement);
+    }
+  });
+  
 }).call(this);

@@ -52,12 +52,14 @@
 
 }
 
+
 /* Input field and textarea overrides */
-input[type="text"] {
+input[type="text"],
+input[type="url"] {
   width:auto;
   height:auto;
   border:3px solid #c9e0fb;
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   padding:4px 8px;
   transition:border,box-shadow 0.2s,0.2s ease-in-out;
@@ -129,7 +131,7 @@ input[type="text"] {
 textarea {
   height:auto;
   border:3px solid #c9e0fb;
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   padding:4px 8px;
   transition:border,box-shadow 0.1s,0.2s ease-in-out;
@@ -175,7 +177,7 @@ select {
   display:inline-block;
   margin:4px;
   box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
-  @include rounded(3px);
+  border-radius:3px;
   max-width:100%;
   word-wrap:break-word;
   vertical-align:middle;
@@ -232,7 +234,7 @@ input[type="checkbox"] {
   outline:none;
   display:inline-block;
   box-shadow:0 0 1px 3px rgba(215,215,215,0.15);
-  @include rounded(3px);
+  border-radius:3px;
   display:inline-block;
   
   &:focus,
@@ -546,6 +548,7 @@ strong, b {
 table {
   margin:initial;
   padding:initial;
+  font-size:14px;
 }
 
 table[cellspacing] {
@@ -616,32 +619,12 @@ sup {
   clear:both;
 }
 
+/* Material's Assignment Submit Buttons */
 .muikku-save-page-wrapper {
   text-align:center;
   margin:20px -15px 15px -15px;
   clear:both;
-}
 
-.workspace-materials-view-page {
-
-  .correct-answers-count-container {
-    display:block;
-    margin:5px;
-    
-    .correct-answers-count-label {
-      padding:0px 5px;
-      display:inline-block;
-    }
-    
-    .correct-answers-count-data {
-      padding:0px 5px;
-      display:inline-block;
-      font-size:1.4em;
-    }
-    
-  }
-
-  /* Material's Assignment Submit Buttons */
   button {
     font-size:14px;
     color:#fff;
@@ -700,158 +683,9 @@ sup {
     
   }
 
-  /* For textfields/memofields/selections checks */
-  input[type="text"].muikku-field-correct-answer,
-  textarea.muikku-field-correct-answer,
-  select.muikku-field-correct-answer {
-    box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
-    border:3px solid #00ff2a;
-    @include rounded(3px);
-    
-    &:hover {
-      box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
-      border:3px solid #00ff2a;
-    }
-    
-  }
+}
   
-  input[type="text"].muikku-field-incorrect-answer,
-  textarea.muikku-field-incorrect-answer,
-  select.muikku-field-incorrect-answer {
-    border:3px solid #f64e4e;
-    box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-    @include rounded(3px);
-    
-    &:hover {
-      border:3px solid #f64e4e;
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-    }
-    
-  }
-
-  /* For connectfields checks */
-  div.muikku-connect-field.muikku-field-correct-answer {
-    box-shadow:none;
-    border:none;
-    
-    .muikku-connect-field-counterpart.muikku-connect-field-correct-answer, 
-    .muikku-connect-field-term.muikku-connect-field-correct-answer {
-      background:#55fc70;
-    }
-    
-  }
-  
-  div.muikku-connect-field.muikku-field-incorrect-answer {
-    box-shadow:none;
-    border:none;
-    
-    .muikku-connect-field-counterpart.muikku-connect-field-wrong-answer, 
-    .muikku-connect-field-term.muikku-connect-field-wrong-answer {
-      background:#f64e4e;
-      
-      &.muikku-connect-field-term-selected {
-        background:#3dc7ff;
-        color:#fff;
-        font-weight:400;
-      }
-      
-    }
-    
-    /* Connect field's correct answer's styling is required here as we mark 
-    wrapping element to be incorrect when checking exercise */
-    .muikku-connect-field-counterpart.muikku-connect-field-correct-answer, 
-    .muikku-connect-field-term.muikku-connect-field-correct-answer {
-      background:#55fc70;
-    }
-    
-  }
-  
-  /* For organizerfields checks */
-  div.muikku-organizer-field {
-    
-    .muikku-category.muikku-field-correct-answer {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
-      border:3px solid #00ff2a;
-      @include rounded(3px);
-      
-      &:hover {
-        box-shadow:0 0 2px 3px rgba(0,255,42,0.3);
-        border:3px solid #00ff2a;
-      }
-      
-    }
-    
-    .muikku-category.muikku-field-semi-correct-answer {
-      box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
-      border:3px solid #dab33d;
-      @include rounded(3px);
-      
-      &:hover {
-        box-shadow:0 0 1px 3px rgba(218,153,61,0.3);
-        border:3px solid #dab33d;
-      }
-      
-    }
-    
-    .muikku-category.muikku-field-incorrect-answer {
-      border:3px solid #f64e4e;
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-      @include rounded(3px);
-      
-      &:hover {
-        border:3px solid #f64e4e;
-        box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-      }
-
-    }
-    
-  }
-  
-  /* For checkboxes/radiobuttons checks */
-  span.muikku-field-correct-answer {
-    box-shadow:none;
-    border:none;
-    
-    input[type="checkbox"],
-    input[type="radio"] {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.9);
-    }
-    
-    &:hover {
-      box-shadow:none;
-      border:none;  
-    }
-    
-  }
-  
-  span.muikku-field-incorrect-answer {
-    box-shadow:none;
-    border:none;
-    
-    input[type="checkbox"],
-    input[type="radio"] {
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.7);
-    }
-    
-    &:hover {
-      box-shadow:none;
-      border:none;  
-    }
-    
-    input[type="checkbox"].muikku-field-correct-answer-override,
-    input[type="radio"].muikku-field-correct-answer-override {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.9);
-      border:3px solid #00ff2a;
-      @include rounded(3px);
-      
-      &:hover {
-        box-shadow:0 0 1px 3px rgba(0,255,42,0.9);
-        border:3px solid #00ff2a;
-      }
-    
-    }
-    
-  }
+.workspace-materials-view-page {
     
   span.muikku-field-examples {
     border-radius:3px;
@@ -984,6 +818,51 @@ sup {
       position:absolute;
       top:0;
       left:0;
+    }
+    
+  }
+  
+}
+
+footer.article-details {
+  margin:0 -20px -10px -20px;
+  padding:15px;
+  border-top:2px solid #e6f2c4;
+  font-size:13px;
+  line-height:1;
+  
+  .producers-override {
+    display:none;
+  
+    .material-producers-label {
+      color:#727272;
+      padding:0 5px 0 0;
+      text-transform:uppercase;
+    }
+    
+    .material-producer {
+      padding:0;
+      color:#000;
+      text-transform:uppercase;
+    }
+  
+  }
+  
+  .license-override {
+  
+    .material-license-label {
+      color:#727272;
+      padding:0 5px 0 0;
+      text-transform:uppercase;
+    }
+
+    .material-license {
+      padding:0;
+      
+      a {
+        color:#09f;
+      }
+      
     }
     
   }

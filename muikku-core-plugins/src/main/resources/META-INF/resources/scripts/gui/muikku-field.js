@@ -138,6 +138,10 @@
     },
     
     _create : function() {
+      $('<div>')
+        .addClass('page-content')
+        .appendTo(this.element);
+      
       var assignmentType = this.assignmentType();      
       if (assignmentType) {
         var buttonWrapper = $('<div>')
@@ -155,19 +159,29 @@
           .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'))
           .click($.proxy(this._onShowAnswersButtonClick, this));
         
-        $("<div>")
-          .addClass("correct-answers-count-container")
-          .appendTo(buttonWrapper);
-
-        this._applyState(assignmentType, this.workspaceMaterialState());
-        
         this.element.on('fieldAnswerSaved', '.muikku-field', $.proxy(this._onFieldAnswerSaved, this));
+      }
+    },
+    
+    applyState: function() {
+      this._applyState(this.assignmentType(), this.workspaceMaterialState());
+    },
+    
+    content: function (content) {
+      if (content !== undefined) {
+        this.element.find('.page-content')
+          .empty();
+        
+        content.children()
+          .appendTo(this.element.find('.page-content'));
+      } else {
+        return this.element.find('.page-content');
       }
     },
     
     _checkableExercise: function () {
       var assignmentType = this.assignmentType();
-      
+        
       if (assignmentType == 'EXERCISE') {
         var fields = this.element.find('.muikku-field');
         
@@ -210,7 +224,7 @@
     },
     
     assignmentType: function () {
-      return this.element.attr('data-workspace-material-assigment-type');
+      return this.element.attr('data-assignment-type');
     },
     
     correctAnswers: function() {
@@ -226,6 +240,9 @@
     },
 
     _applyState: function (assignmentType, state) {
+      if (!assignmentType) {
+        return;
+      }
       var stateOptions = this._getStateOptions(assignmentType, state);
       var removeClasses = $.map(this.options.states, function (value) {
         return value['button-class'];
@@ -266,15 +283,14 @@
       fileField.attr('data-readonly', "" + stateOptions['fields-read-only']);
       
       if (stateOptions['check-answers']) {
-        this._checkExercises();
+        this.checkExercises();
       }
-      
       
       var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(this.element).attr('data-workspace-material-id') + '"]');
       if (tocItem) {
         switch ($(this.element).attr('data-workspace-material-state')) {
           case "SUBMITTED":
-            if ($(this.element).attr("data-workspace-material-assigment-type") == "EVALUATED") {
+            if ($(this.element).attr("data-assignment-type") == "EVALUATED") {
               $(tocItem).find('.assignment').append($('<span>')
                   .addClass('submitted')
                   .attr("title", getLocaleText('plugin.workspace.materials.assignmentDoneTooltip'))
@@ -379,7 +395,7 @@
     },
     
     _waitFieldsSaved: function (callback) {
-      if (this.element.find('.muikku-field-unsaved').length === 0) {
+      if (this.element.find('.muikku-field-unsaved,.muikku-field-saving').length === 0) {
         callback();
       } else {
         if (this._savedWaitTimeout) {
@@ -392,9 +408,15 @@
       }
     },    
     
-    _checkExercises: function (requestAnswers) {
+    checkExercises: function (requestAnswers) {
       var correctAnswersDisplay = this.correctAnswers();
+
       var correctAnswersCountContainer = this.element.find('.correct-answers-count-container');
+      if (correctAnswersCountContainer.length == 0) {
+        correctAnswersCountContainer = $("<div>")
+          .addClass("correct-answers-count-container")
+          .appendTo(this.element);
+      }
       correctAnswersCountContainer.empty();
       
       var fields = this.element.find('.muikku-field');
@@ -402,10 +424,11 @@
       var wrongAnswerCount = 0;
 
       this.element.find('.muikku-field-examples').remove();
-      this.element.find('.muikku-connect-field-correct-number').remove();
+      this.element.find('.muikku-field-correct-answer').removeClass('muikku-field-correct-answer');
+      this.element.find('.muikku-field-incorrect-answer').removeClass('muikku-field-incorrect-answer');
+      this.element.find('.muikku-field-semi-correct-answer').removeClass('muikku-field-semi-correct-answer');
 
       $(fields).each(function (index, field) {
-        $(field).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
         $(field).find(".muikku-field-correct-answer-override").removeClass("muikku-field-correct-answer-override");
         if ($(field).muikkuField('canCheckAnswer')) {
           if ($(field).muikkuField('checksOwnAnswer')) {
@@ -472,12 +495,12 @@
       });
       
       if ((correctAnswerCount + wrongAnswerCount) > 0) {
-        correctAnswersCountContainer.append(
+        this.element.find('.correct-answers-count-container').append(
           $('<span>')
             .addClass('correct-answers-count-label')
             .text(getLocaleText('plugin.workspace.materialsLoader.correctAnswersCountLabel'))
         );
-        correctAnswersCountContainer.append(
+        this.element.find('.correct-answers-count-container').append(
             $('<span>')
               .addClass('correct-answers-count-data')
               .text(correctAnswerCount + ' / ' + (correctAnswerCount + wrongAnswerCount))
@@ -489,6 +512,8 @@
       var assignmentType = this.assignmentType();
       var stateOptions = this._getStateOptions(assignmentType, this.workspaceMaterialState());
       
+      $(this.element).trigger('beforeAssignmentSubmit', {state: this.workspaceMaterialState()});
+
       this._saveWorkspaceMaterialReply(stateOptions['success-state'], $.proxy(function (reply) {
         this._applyState(assignmentType, stateOptions['success-state']);
         
@@ -501,7 +526,7 @@
     _onShowAnswersButtonClick: function (event) {
       var target = (event.target) ? event.target : event.srcElement;  
       if ($(target).hasClass("muikku-show-correct-answers-button")) {
-        this._checkExercises(true);  
+        this.checkExercises(true);  
         $(target)
           .removeClass("muikku-show-correct-answers-button")
           .addClass("muikku-hide-correct-answers-button")
@@ -511,7 +536,7 @@
           .addClass("muikku-show-correct-answers-button")
           .removeClass("muikku-hide-correct-answers-button")
           .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'));
-        this._checkExercises(false); 
+        this.checkExercises(false); 
       }
       
     },
@@ -663,6 +688,7 @@
     _saveField: function () {
       if (!this.readonly()) {
         this._checkStatusMessage();
+        
         $(this.element)
           .removeClass('muikku-field-unsaved')
           .addClass('muikku-field-saving');
@@ -681,7 +707,7 @@
         }));
         
         if (this._saveFailedTimeoutId == null) {
-            this._saveFailedTimeoutId = setTimeout($.proxy(this._saveFailed, this), this.options.saveFailedTimeout);
+          this._saveFailedTimeoutId = setTimeout($.proxy(this._saveFailed, this), this.options.saveFailedTimeout);
         }
         
         $(this.element).on('muikku-field-progress', $.proxy(function(e){

@@ -14,10 +14,12 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
+@LoggedIn
 @Join (path = "/announcements", to = "/jsf/announcements/index.jsf")
 public class AnnouncementsViewBackingBean {
   
@@ -33,17 +35,10 @@ public class AnnouncementsViewBackingBean {
   @RequestAction
   public String init() {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-    
     if (announcementId != null) {
       currentAnnouncement = announcementController.findById(announcementId);
     }
-    
-    if (loggedUserEntity == null) {
-      activeAnnouncements = announcementController.listActive();
-    } else {
-      activeAnnouncements = announcementController.listActiveByTargetedUserEntity(loggedUserEntity);
-    }
-    
+    activeAnnouncements = announcementController.listActiveEnvironmentAnnouncementsByTargetedUserEntity(loggedUserEntity);
     return null;
   }
 

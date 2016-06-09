@@ -63,7 +63,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Produces ("application/json")
 public class CommunicatorRESTService extends PluginRESTService {
 
-  private static final long serialVersionUID = 8910816437728659987L;
+  private static final long serialVersionUID = 5020674196438210604L;
 
   @Inject
   @BaseUrl
@@ -501,12 +501,10 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getCommunicatorMessage(
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
-   ) throws AuthorizationException {
+  public Response getCommunicatorMessage(@PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) throws AuthorizationException {
     CommunicatorMessage msg = communicatorController.findCommunicatorMessageById(communicatorMessageId);
     
-    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, msg)) {
+    if (!hasCommunicatorMessageAccess(msg)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -524,12 +522,10 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}/recipients")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listCommunicatorMessageRecipients(
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
-   ) throws AuthorizationException {
+  public Response listCommunicatorMessageRecipients(@PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) throws AuthorizationException {
     CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
 
-    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, communicatorMessage)) {
+    if (!hasCommunicatorMessageAccess(communicatorMessage)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -549,15 +545,13 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}/recipients/{RECIPIENTID}/info")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listCommunicatorMessageRecipients(
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
-      @PathParam ("RECIPIENTID") Long recipientId
-   ) throws AuthorizationException {
+  public Response listCommunicatorMessageRecipients(@PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId, @PathParam ("RECIPIENTID") Long recipientId) throws AuthorizationException {
+
     CommunicatorMessageRecipient recipient = communicatorController.findCommunicatorMessageRecipient(recipientId);
 
     CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
 
-    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, communicatorMessage)) {
+    if (!hasCommunicatorMessageAccess(communicatorMessage)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -586,12 +580,10 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}/sender")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getCommunicatorMessageSenderInfo(
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
-   ) {
-    CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
+  public Response getCommunicatorMessageSenderInfo(@PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
 
-    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, communicatorMessage)) {
+    CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
+    if (!hasCommunicatorMessageAccess(communicatorMessage)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -654,9 +646,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/templates/{TEMPLATEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getUserMessageTemplate(
-      @PathParam ("TEMPLATEID") Long templateId
-   ) throws AuthorizationException {
+  public Response getUserMessageTemplate(@PathParam ("TEMPLATEID") Long templateId) throws AuthorizationException {
     CommunicatorMessageTemplate template = communicatorController.getMessageTemplate(templateId);
     
     if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, template)) {
@@ -673,9 +663,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @DELETE
   @Path ("/templates/{TEMPLATEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response deleteUserMessageTemplate(
-      @PathParam ("TEMPLATEID") Long templateId
-   ) throws AuthorizationException {
+  public Response deleteUserMessageTemplate(@PathParam ("TEMPLATEID") Long templateId) throws AuthorizationException {
     CommunicatorMessageTemplate messageTemplate = communicatorController.getMessageTemplate(templateId);
 
     if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, messageTemplate)) {
@@ -690,10 +678,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @POST
   @Path ("/templates/{TEMPLATEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response editUserMessageTemplate(
-      @PathParam ("TEMPLATEID") Long templateId,
-      CommunicatorMessageTemplateRESTModel template
-   ) throws AuthorizationException {
+  public Response editUserMessageTemplate(@PathParam ("TEMPLATEID") Long templateId, CommunicatorMessageTemplateRESTModel template) throws AuthorizationException {
     if (!template.getId().equals(templateId)) {
       return Response.status(Response.Status.BAD_REQUEST).entity("Id is immutable").build();
     }
@@ -806,6 +791,24 @@ public class CommunicatorRESTService extends PluginRESTService {
     return Response.ok(
       result
     ).build();
+  }
+  
+  private boolean hasCommunicatorMessageAccess(CommunicatorMessage communicatorMessage) {
+    Long userEntityId = sessionController.getLoggedUserEntity() == null ? null : sessionController.getLoggedUserEntity().getId();
+    if (userEntityId != null) {
+      if (communicatorMessage.getSender() != null && communicatorMessage.getSender().equals(userEntityId)) {
+        return true;
+      }
+      else {
+        List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipients(communicatorMessage);
+        for (CommunicatorMessageRecipient recipient : recipients) {
+          if (recipient.getRecipient().equals(userEntityId)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
 }

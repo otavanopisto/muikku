@@ -58,7 +58,8 @@ public class TaskMathMl extends AbstractHtmlMaterialCleanerTask {
             is.close();
           }
           String name = "mathml" + StringUtils.leftPad(++imageCounter + "", 3, '0') + ".png";
-          BinaryMaterial material = binaryMaterialController.createBinaryMaterial(name, "image/png", data);
+          String license = null;
+          BinaryMaterial material = binaryMaterialController.createBinaryMaterial(name, "image/png", data, license);
           WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(getWorkspaceMaterial(), material);
           String workspaceUrl = StringUtils.prependIfMissing(workspaceMaterialController.getCompletePath(workspaceMaterial), "/");
           logger.info("MathML converted to " + workspaceUrl);

@@ -269,11 +269,6 @@
   text-align:center;
 }   
 
-.mf-search {
-  margin-left:10px;
-  width:300px;
-}
-
 .mf-search-icon {
   display:inline-block;
   color:#c4cdd1;
@@ -282,18 +277,35 @@
 }
 
 .mf-search-field {
-  width:200px;
-  display:inline-block;
-  margin-top:10px;
-   
-  > input {
-    margin-left:10px;
-    padding:10px;
-    font-size:20px;
-    color:#c4cdd1;     
+  position:relative;
+  
+  input.search {
+    padding:10px 10px 10px 40px !important;
   }
-
+  
+  &:before {
+    display:inline-block;
+    content: "\e61c";
+    font-family: 'muikku' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size:26px;
+    height:26px;
+    width:26px;
+    color:#ddd;
+    position:absolute;
+    left:10px;
+    top:12px;
+  }
+  
 }
+
 
 .mf-content-toolbar {
   /* padding:20px 0 0 0px; */
@@ -391,6 +403,20 @@
 .mf-content-main {
   background-color:$mainFuncContent; 
 }
+
+.mf-content-empty {
+  min-height:400px;
+  padding-top:160px;
+  
+  h3 {
+    font-weight:300;
+    font-size:20px;
+    margin:0 0 0.5em;
+    text-transform:none;
+    font-style:italic;
+  }
+  
+}
   
 .mf-event {
   background-color:$bgr1;
@@ -407,9 +433,13 @@
 
 .mf-form-header {
    padding-top:20px;
+   
    h3 {
      color:#fff;
-     font-weight:700;
+     font-weight:400;
+     font-size:20px;
+     margin:0 0 0.5em;
+     text-transform:uppercase;
    }
    
 }
@@ -780,13 +810,15 @@
     }
     
     .mf-textfield-date {
-     width:80px;
+      font-size: 14px;
+      width: 95px;
+      margin-left:5px;
     }
     
     .mf-textfield {
       position:relative;
       top:0;
-      
+     
       
       .mf-textfield-subcontainer {
         border:2px solid #fff;
@@ -816,6 +848,7 @@
         padding-top:5px;
         padding-bottom:5px;
         padding-left:5px;
+        font-size:14px;
         &:focus {
           background-color:#eee;     
           border:0;
@@ -829,7 +862,7 @@
         }
         
         &.mf-textfield-subject {        
-/*           width:750px; */
+
           
           &:focus {
             background-color:#eee;         

@@ -9,7 +9,6 @@ import javax.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
@@ -49,37 +48,62 @@ public class WorkspaceBackingBean {
     discussionsVisible = true;
     usersVisible = true;
     journalVisible = true;
+    workspaceEntityId = null;
+    assessmentState = null;
   }
   
   public String getWorkspaceUrlName() {
     return workspaceUrlName;
   }
 
+  @Deprecated
+  public Long getWorkspaceId() {
+    return workspaceEntityId;
+  }
+  
+  public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+  
+  public WorkspaceEntity getWorkspaceEntity() {
+    if (getWorkspaceEntityId() == null) {
+      return null;
+    }
+    
+    return workspaceController.findWorkspaceEntityById(getWorkspaceEntityId());
+  }
+
   public void setWorkspaceUrlName(String workspaceUrlName) {
-    this.workspaceUrlName = workspaceUrlName;
-    
-    WorkspaceEntity workspaceEntity = getWorkspaceEntity();
-    
-    mayManageMaterials = sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity);
+    WorkspaceEntity workspaceEntity = resolveWorkspaceEntity(workspaceUrlName);
+    if (workspaceEntity != null) {
+      this.workspaceEntityId = workspaceEntity.getId();
+      this.workspaceUrlName = workspaceEntity.getUrlName();
+    }
     homeVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "home");
     guidesVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "guides");
     materialsVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "materials");
-    discussionsVisible = sessionController.hasCoursePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "discussions");
-    usersVisible = sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "users");
-    journalVisible = sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "journal");
+    discussionsVisible = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "discussions");
+    usersVisible = sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "users");
+    journalVisible = sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "journal");
+    // Assessment state
+    if (sessionController.isLoggedIn() && sessionController.hasWorkspacePermission(MuikkuPermissions.REQUEST_WORKSPACE_ASSESSMENT, workspaceEntity)) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+      if (workspaceUserEntity != null) {
+        WorkspaceAssessmentState workspaceAssessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
+        this.assessmentState = workspaceAssessmentState == null ? null : workspaceAssessmentState.getStateName();
+      }
+    }
+    else {
+      this.assessmentState = null;
+    }
   }
 
-  public Long getWorkspaceId() {
-    return getWorkspaceEntity().getId();
-  }
-
-  private WorkspaceEntity getWorkspaceEntity() {
-    String urlName = getWorkspaceUrlName();
-    if (StringUtils.isBlank(urlName)) {
+  private WorkspaceEntity resolveWorkspaceEntity(String workspaceUrlName) {
+    if (StringUtils.isBlank(workspaceUrlName)) {
       return null;
     }
 
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(workspaceUrlName);
     if (workspaceEntity == null) {
       return null;
     }
@@ -87,37 +111,8 @@ public class WorkspaceBackingBean {
     return workspaceEntity;
   }
 
-  public Boolean isStudent() {
-    if (!sessionController.isLoggedIn()) {
-      return false;
-    }
-
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(getWorkspaceEntity(),
-        sessionController.getLoggedUser());
-
-    if (workspaceUserEntity != null)
-      return workspaceUserEntity.getWorkspaceUserRole().getArchetype().equals(WorkspaceRoleArchetype.STUDENT);
-    else
-      return false;
-  }
-
   public String getAssessmentState() {
-    if (!sessionController.isLoggedIn()) {
-      return null;
-    }
-
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(getWorkspaceEntity(),
-        sessionController.getLoggedUser());
-
-    if (workspaceUserEntity != null) {
-      WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-      return assessmentState.getStateName();
-    } else
-      return null;
-  }
-
-  public Boolean getMayManageMaterials() {
-    return mayManageMaterials;
+    return this.assessmentState;
   }
 
   public boolean getHomeVisible() {
@@ -144,7 +139,7 @@ public class WorkspaceBackingBean {
     return journalVisible;
   }
 
-  private Boolean mayManageMaterials;
+  private Long workspaceEntityId;
   private String workspaceUrlName;
   private boolean homeVisible;
   private boolean guidesVisible;
@@ -152,4 +147,5 @@ public class WorkspaceBackingBean {
   private boolean discussionsVisible;
   private boolean usersVisible;
   private boolean journalVisible;
+  private String assessmentState;
 }

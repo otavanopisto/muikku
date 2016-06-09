@@ -1,10 +1,8 @@
 {?materialProducers}
-  <footer id="workspaceFrontpageFooter">
-    <div class="workspace-footer-producers-wrapper">
-      <span class="workspace-material-producers-label">{#localize key="plugin.workspace.index.producersLabel"/}:</span>
-      {#materialProducers}
-        <span class="workspace-material-producer">{name}{@sep}, {/sep}</span>
-      {/materialProducers}
-    </div>
-  </footer>
+  <div class="workspace-footer-producers-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+    <span class="workspace-material-producers-label">{#localize key="plugin.workspace.index.producersLabel"/}:</span>
+    {#materialProducers}
+      <span class="workspace-material-producer">{name}{@sep}, {/sep}</span>
+    {/materialProducers}
+  </div>
 {/materialProducers}  

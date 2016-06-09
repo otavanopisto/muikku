@@ -23,12 +23,10 @@ import fi.foyt.coops.CoOpsNotImplementedException;
 import fi.foyt.coops.CoOpsUsageException;
 import fi.foyt.coops.model.File;
 import fi.foyt.coops.model.Patch;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
-import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Path ("/coops/{FILEID}")
 @RequestScoped
@@ -40,31 +38,17 @@ public class CoOpsRESTService {
   private CoOpsApi coOpsApi;
   
   @Inject
-  private SessionController muikkuSessionController;
+  private SessionController sessionController;
   
-  @Inject
-  private EnvironmentUserController environmentUserController;
-  
-  private boolean isAuthorized() {
-      if (!muikkuSessionController.isLoggedIn()) {
-        return false;
-      }
-      
-      UserEntity userEntity = muikkuSessionController.getLoggedUserEntity();
-      
-      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-      
-      if (environmentUser.getRole() == null || environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
-        return false;
-      }
-      
-      return true;
-  }
-
   @GET
   @Path ("/")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response load(@PathParam ("FILEID") String fileId, @QueryParam ("revisionNumber") Long revisionNumber) {
+
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
+      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
+    }
+    
     try {
       File file = coOpsApi.fileGet(fileId, revisionNumber);
       return Response.ok(file).build();
@@ -83,11 +67,11 @@ public class CoOpsRESTService {
   
   @PATCH
   @Path ("/")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response patch(@PathParam ("FILEID") String fileId, Patch patch) {
     
-    if (!isAuthorized()) {
-      return Response.status(Status.FORBIDDEN).build();
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
+      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
     }
 
     try {
@@ -108,8 +92,13 @@ public class CoOpsRESTService {
   
   @GET
   @Path ("/update")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response update(@PathParam ("FILEID") String fileId, @QueryParam ("sessionId") String sessionId, @QueryParam ("revisionNumber") Long revisionNumber) {
+
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
+      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
+    }
+    
     try {
       List<Patch> patches = coOpsApi.fileUpdate(fileId, sessionId, revisionNumber);
       if (patches.isEmpty()) {
@@ -130,8 +119,13 @@ public class CoOpsRESTService {
   
   @GET
   @Path ("/join")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response join(@PathParam ("FILEID") String fileId, @QueryParam("algorithm") List<String> algorithms, @QueryParam ("protocolVersion") String protocolVersion) {
+
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
+      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
+    }
+    
     try {
       return Response.ok(coOpsApi.fileJoin(fileId, algorithms, protocolVersion)).build();
     } catch (CoOpsNotFoundException e) {

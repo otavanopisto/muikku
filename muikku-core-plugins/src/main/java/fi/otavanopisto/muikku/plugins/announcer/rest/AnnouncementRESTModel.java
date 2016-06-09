@@ -76,6 +76,14 @@ public class AnnouncementRESTModel {
     this.userGroupEntityIds = userGroupEntityIds;
   }
 
+  public List<Long> getWorkspaceEntityIds() {
+    return workspaceEntityIds;
+  }
+
+  public void setWorkspaceEntityIds(List<Long> workspaceEntityIds) {
+    this.workspaceEntityIds = workspaceEntityIds;
+  }
+
   public Boolean getPubliclyVisible() {
     return publiclyVisible;
   }
@@ -101,6 +109,7 @@ public class AnnouncementRESTModel {
   private Date endDate;
   private Boolean archived;
   private List<Long> userGroupEntityIds;
+  private List<Long> workspaceEntityIds;
   private Boolean publiclyVisible;
   private AnnouncementTemporalStatus temporalStatus;
 

@@ -153,9 +153,10 @@ public class MaterialUnEmbedder {
                 }
               }
               else {
+                String license = null;
                 HtmlMaterial pieceHtmlMaterial = htmlMaterialController.createHtmlMaterial(htmlMaterial.getTitle() + " (" + i + ")",
                     DeusNexXmlUtils.serializeElement(documentPiece.getDocumentElement(), true, false, "xml"), "text/html; editor=CKEditor",
-                    0l);
+                    0l, license);
                 logger.info("New html material piece " + pieceHtmlMaterial.getId() + " split from " + htmlMaterial.getId());
                 pieceHtmlMaterials = new ArrayList<HtmlMaterial>();
                 pieceHtmlMaterials.add(pieceHtmlMaterial);

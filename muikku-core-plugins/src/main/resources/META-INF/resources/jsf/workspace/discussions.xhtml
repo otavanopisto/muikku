@@ -6,14 +6,20 @@
   template="/WEB-INF/templates/flex-main-workspace.xhtml">
   
   <ui:define name="scripts">
-    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"/>
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js" />
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>    
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.klass/0.1a/jquery.klass-0.1a.js"/>  
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/webshim/1.15.10/minified/polyfiller.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js"></script>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lodash/4.12.0/lodash.min.js"></script>
     <script defer="defer" type="text/javascript" src="/scripts/gui/socialnavigation.js"/>       
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/discussion.js"/>    
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-discussions.js"/>    
   </ui:define>
   
@@ -25,7 +31,7 @@
 
  
   <ui:define name="grid-content">
-    <input type="hidden" name="userEntityId" value="#{muikkuSession.loggedUserEntity.id}"/>
+    <input type="hidden" name="userEntityId" value="#{sessionBackingBean.loggedUserId}"/>
     <input type="hidden" name="workspaceEntityId" value="#{workspaceDiscussionsBackingBean.workspaceEntityId}"/>
     <input type="hidden" name="areaPermissions" value="#{workspaceDiscussionsBackingBean.areaPermissions}"/>
     <main id="content">
@@ -76,30 +82,12 @@
             </div>
           </div>      
         </div>        
-<!--         <div class="widgetSpaceSet mf-content-functions grid_24 nomargin noLid"> -->
-<!--           <div class="bt-mainFunction"> -->
-<!--             <div class="di-new-message-button bt-mainFunction-content"> -->
-<!--               <span>#{i18n.text['plugin.communicator.newMessage']}</span> -->
-<!--             </div> -->
-<!--           </div> -->
-<!--           <div class="di-browse-areas-container"> -->
-<!--             <select id="discussionAreaSelect" name="areas"> -->
-<!--             </select> -->
-<!--           </div> -->
-<!--           <div class="mf-tool-container di-edit-area-container"> -->
-<!--             <div class="mf-tool di-edit-area-button icon-edit" title="#{i18n.text['plugin.discussion.editarea.topic']}"></div> -->
-<!--           </div> -->
-<!--           <div class="mf-tool-container di-new-area-container"> -->
-<!--             <div class="mf-tool di-new-area-button icon-add" -->
-<!--               title="#{i18n.text['plugin.discussion.createarea.topic']}"></div> -->
-<!--           </div> -->
-<!--           <div class="mf-tool-container di-delete-area-container"> -->
-<!--             <div class="mf-tool di-delete-area-button icon-delete" title="#{i18n.text['plugin.discussion.deletearea.topic']}"></div>     -->
-<!--           </div> -->
-<!--         </div> -->
         <div class="mf-content-area flex-row">
           <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-            <div class="di-content-main flex-row"></div>          
+            <div class="di-content-main">
+              <div class="di-threads flex-row"></div>
+              <div class="di-thread flex-row"></div>
+            </div>          
           </div>
         </div>
       </section>
