@@ -46,11 +46,13 @@
             <span class="workspace-materials-full-screen-tt-container-goback">Palaa takaisin</span>
           </h:link>
         </div>
-        <div class="widget wi-workspace-materials-full-screen-navi-button-manage-materials">
-          <h:link styleClass="icon-manage-materials w-tooltip" title="Muokkaa materiaaleja" outcome="/jsf/workspace/materials-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
-            <span class="workspace-materials-full-screen-tt-container-manage-materials">Muokkaa materiaaleja</span>
-          </h:link>
-        </div>
+        <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_MATERIALS')}">
+          <div class="widget wi-workspace-materials-full-screen-navi-button-manage-materials">
+            <h:link styleClass="icon-edit-materials w-tooltip" title="Muokkaa materiaaleja" outcome="/jsf/workspace/materials-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+              <span class="workspace-materials-full-screen-tt-container-manage-materials">Muokkaa materiaaleja</span>
+            </h:link>
+          </div>
+        </ui:fragment>
       </nav>
     
       <div id="workspaceMaterialsReadingTOCContainer">
