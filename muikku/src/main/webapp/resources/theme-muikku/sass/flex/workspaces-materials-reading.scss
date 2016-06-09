@@ -11,6 +11,7 @@
 @import "_correct_answers.scss"; 
 @import "_notif-queue.scss";
 @import "_connectionlost.scss";
+@import "_ckeditor_theme.scss";
 
 .lazy-pdf {
   height: 882px;
@@ -83,13 +84,6 @@ body {
       position:absolute;
       top:0;
       z-index:36;
-      
-      .grid_1 {
-        float:none;
-        width:auto;
-        margin:0;
-      }
-      
     }
     
     #workspaceMaterialsReadingTOCContainer {
@@ -367,7 +361,7 @@ body {
   } 
   
   #contentWorkspaceMaterialsReading {
-    max-width:705px;
+    max-width:695px;
     width:auto;
     margin:0 auto;
     padding-left:50px;
@@ -383,7 +377,6 @@ body {
       padding:20px;
       text-transform:none;
       line-height:1.3em;
-      box-sizing:border-box;
     }
     
     .workspace-materials-view-page-section.material-reading-view { /* <section> */
@@ -393,7 +386,6 @@ body {
         z-index:12;
         max-width:655px;
         width:auto;
-        border:1px solid #fff;
         background:#ddf5ff;
         margin:30px auto -30px auto; 
         font-weight:300;
@@ -402,7 +394,6 @@ body {
         padding:10px 20px;
         text-transform:uppercase;
         line-height:1.3em;
-        box-sizing:border-box;
       }
      
       & > h3, & > h4, & > h5, & > h6 { /* Alternative Section's titles */
@@ -470,6 +461,18 @@ body {
   body #workspaceMaterialsReadingTOCWrapper #workspaceMaterialsReadingTOCContainer,
   body #workspaceMaterialsReadingTOCWrapper #workspaceMaterialsReadingTOCContainer .workspace-materials-toc-content-scrolling {
     width:300px;
+  }
+
+}
+
+@media screen and (max-width: 399px) {
+
+  body #contentWorkspaceMaterialsReading #workspaceMaterialsReadingTOCWrapper {
+    display:none;
+  }
+  
+  body #contentWorkspaceMaterialsReading {
+     padding:0;
   }
 
 }
