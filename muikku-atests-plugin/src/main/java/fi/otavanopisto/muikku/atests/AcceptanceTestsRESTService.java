@@ -603,7 +603,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @POST
   @Path("/flags")
   @RESTPermit (handling = Handling.UNSECURED)
-  public Response createFlag(fi.otavanopisto.muikku.atests.Flag payload) {   
+  public Response createFlag(fi.otavanopisto.muikku.atests.Flag payload) {
     if (StringUtils.isBlank(payload.getColor())) {
       return Response.status(Status.BAD_REQUEST).entity("color is missing").build();
     }
@@ -612,8 +612,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("name is missing").build();
     }
 
-    Flag flag = flagController.createFlag(localSessionController.getLoggedUser(), payload.getName(), payload.getColor(), payload.getDescription());
-    logger.severe(String.format("Flag created with id %s name %s color %s desc %s  " , flag.getId(), flag.getName(), flag.getColor(), flag.getDescription()));    
+    Flag flag = flagController.createFlag(SchoolDataIdentifier.fromString("STAFF-1/PYRAMUS"), payload.getName(), payload.getColor(), payload.getDescription());
+    logger.severe(String.format("Flag created with id %s name %s color %s desc %s  " , flag.getId(), flag.getName(), flag.getColor(), flag.getDescription()));
     return Response.ok(createRestEntity(flag)).build();
 
   }  
@@ -633,8 +633,11 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @POST
   @Path("/students/{ID}/flags/{FLAGID}")
-  public Response createStudentFlag(@PathParam("ID") Long studentId, Long flagId) { 
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(userEntityController.findUserEntityById(studentId).getDefaultIdentifier());
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createStudentFlag(@PathParam("ID") Long studentId, @PathParam("FLAGID") Long flagId) {
+    String identifier = userEntityController.findUserEntityById(studentId).getDefaultIdentifier();
+    logger.severe(String.format("Student defaultIdent %s", identifier));
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromString(identifier + "/PYRAMUS");
     if (studentIdentifier == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity("Invalid studentIdentifier").build();
     }
@@ -649,6 +652,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @DELETE
   @Path("/students/flags/{ID}")
+  @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteStudentFlag(@PathParam("ID") Long id) {   
     FlagStudent flagStudent = flagController.findFlagStudentById(id);
     if (flagStudent == null) {

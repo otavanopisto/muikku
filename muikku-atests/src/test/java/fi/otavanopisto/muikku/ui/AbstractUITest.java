@@ -605,7 +605,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
 
   protected void assertTextIgnoreCase(String selector, String text) {
-    assertEquals(StringUtils.lowerCase(text), StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText()));
+    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    assertEquals(StringUtils.lowerCase(text), actual);
   }
   
   protected void sendKeys(String selector, String keysToSend) {
@@ -974,7 +975,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected Long createFlag(String name, String color, String description) throws JsonParseException, JsonMappingException, IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    Flag flag = new Flag(null, name, color, description, null);
+    Flag flag = new Flag(null, name, color, description, "STAFF-1/PYRAMUS");
     Response response = asAdmin()
     .contentType("application/json")
     .body(flag)
@@ -1004,6 +1005,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected Long flagStudent(Long studentId, Long flagId) throws JsonParseException, JsonMappingException, IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     Response response = asAdmin()
+      .contentType("application/json")
       .post("/test/students/{ID}/flags/{FLAGID}", studentId, flagId);
     
     response.then()
@@ -1053,6 +1055,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       waitAndClick("#cke_1_contents");
       getWebDriver().switchTo().activeElement().sendKeys(text);
     }
+  }
+  
+  protected void setTextAreaText(String selector, String value) {
+    JavascriptExecutor js = (JavascriptExecutor) getWebDriver();
+    String jsString = String.format("$('%s').html('%s');", selector, value );
+    js.executeScript(jsString);
   }
   
   private void waitForCKReady(final String instanceName) {
