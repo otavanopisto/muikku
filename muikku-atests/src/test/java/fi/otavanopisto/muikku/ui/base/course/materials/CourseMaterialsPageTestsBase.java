@@ -1003,12 +1003,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         String mathml = getAttributeValue(".muikku-sorter-item #MathJax-Element-1-Frame", "data-mathml");
         assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
 //      TODO: Fix functionality test if possible
-//        dragAndDropWithOffSetAndTimeout("div[data-item-id=\"f07wb\"]", ".muikku-sorter-item:first-child", 320, -30);
-//        dragAndDropWithOffSetAndTimeout("div[data-item-id=\"y3l26\"]", ".muikku-sorter-item:last-child",  320, 30);
-//        sleep(350);
-//        waitAndClick("button.muikku-check-exercises");
-//        waitForPresentAndVisible("div.muikku-field-correct-answer");
-//        assertEquals(3, countElements("div.muikku-field-correct-answer"));
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
       }
