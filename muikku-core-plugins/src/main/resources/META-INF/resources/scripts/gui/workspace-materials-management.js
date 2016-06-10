@@ -2066,6 +2066,16 @@
         .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
       }
     }
+    
+     mApi().materials.material
+       .read(node.attr('data-material-id'))
+       .callback(function (readErr, material) {
+         if (readErr) {
+           $('.notification-queue').notificationQueue('notification', 'error', readErr);
+         } else {
+           node.attr('data-view-restrict', material.viewRestrict);
+         }
+       });
   });
   
 }).call(this);
