@@ -107,7 +107,7 @@
 				<input type="hidden" name="max-file-size" value="#{workspaceMaterialsBackingBean.maxFileSize}" />
 			</form>
 	
-			<div class="workspace-materials-management-add lg-flex-cell-full md-flexx-cell-full sm-flex-cell-full">
+			<div class="workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
 				<span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
 			</div>
 			<ui:repeat var="node" value="#{workspaceMaterialsManagementBackingBean.contentNodes}">
@@ -118,12 +118,12 @@
 						data-parent-id="#{node.parentId}" data-material-type="#{node.type}"
 						data-material-title="#{node.title}"
 	          data-path="#{node.path}"
-						class="lg-flex-cell-full md-flexx-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view folder #{node.hidden ? 'item-hidden' : ''}"></section>
+						class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view folder #{node.hidden ? 'item-hidden' : ''}"></section>
 	
-					<div class="workspace-materials-management-add lg-flex-cell-full md-flexx-cell-full sm-flex-cell-full">
+					<div class="workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
 						<span class="workspace-materials-management-line-separator"></span><a	class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
 					</div>
-					<div class="workspaces-materials-management-insert-file lg-flex-cell-full md-flexx-cell-full sm-flex-cell-full">
+					<div class="workspaces-materials-management-insert-file lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
 						<input type="file" />
 					</div>
 	
@@ -136,7 +136,7 @@
 								data-material-type="#{articleNode.type}"
 								data-material-title="#{articleNode.title}"
 	              data-path="#{articleNode.path}"
-								class="lg-flex-cell-full md-flexx-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view folder #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"></h2>
+								class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view folder #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"></h2>
 						</ui:fragment>
 	
 						<ui:fragment rendered="#{articleNode.type ne 'folder'}">
@@ -152,13 +152,13 @@
 								data-material-published-revision="#{articleNode.publishedRevision}"
 								data-assignment-type="#{articleNode.assignmentType}"
 	              data-correct-answers="#{articleNode.correctAnswers eq null ? 'ALWAYS' : articleNode.correctAnswers}"
-								class="lg-flex-cell-full md-flexx-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}" />
+								class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}" />
 						</ui:fragment>
 	
-						<div class="workspace-materials-management-add lg-flex-cell-full md-flexx-cell-full sm-flex-cell-full">
+						<div class="workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
 							<span class="workspace-materials-management-line-separator"></span><a	class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
 						</div>
-						<div class="workspaces-materials-management-insert-file lg-flex-cell-full md-flexx-cell-full sm-flex-cell-full">
+						<div class="workspaces-materials-management-insert-file lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
 							<input type="file" />
 						</div>
 					</ui:repeat>
@@ -176,11 +176,11 @@
 						data-material-published-revision="#{node.publishedRevision}"
 						data-assignment-type="#{node.assignmentType}"
 	          data-correct-answers="#{articleNode.correctAnswers eq null ? 'ALWAYS' : articleNode.correctAnswers}"
-						class="lg-flex-cell-full md-flexx-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view #{node.hidden ? 'item-hidden' : ''}" />
-					<div class="workspace-materials-management-add lg-flex-cell-full md-flexx-cell-full sm-flex-cell-full">
+						class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view #{node.hidden ? 'item-hidden' : ''}" />
+					<div class="workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
 						<span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
 					</div>
-					<div class="workspaces-materials-management-insert-file lg-flex-cell-full md-flexx-cell-full sm-flex-cell-full">
+					<div class="workspaces-materials-management-insert-file lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
 						<input type="file" />
 					</div>
 				</ui:fragment>

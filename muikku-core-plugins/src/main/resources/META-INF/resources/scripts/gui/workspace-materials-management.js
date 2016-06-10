@@ -2,14 +2,14 @@
   
   function createAddPageSectionLink() {
     return $('<div>')
-      .addClass('workspace-materials-management-add')
+      .addClass('workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full')
       .append($('<span>').addClass('workspace-materials-management-line-separator'))
       .append($('<a>').addClass('workspaces-materials-management-add icon-add').attr('href', 'javascript:void(null)').append($('<span>').html(getLocaleText("plugin.workspace.materialsManagement.addNew"))));
   }
   
   function createFileUploader() {
     return $('<div>')
-      .addClass('workspaces-materials-management-insert-file')
+      .addClass('workspaces-materials-management-insert-file lg-flex-cell-full md-flex-cell-full sm-flex-cell-full')
       .append($('<input>').attr('type', 'file'));
   }
   
@@ -24,7 +24,7 @@
       .workspaceMaterialUpload({maxFileSize: maxFileSize})
       .on('fileUploaded', function (event, data) {
         var newPage = $('<section>')
-          .addClass('workspace-materials-view-page material-management-view')
+          .addClass('workspace-materials-view-page material-management-view lg-flex-cell-full md-flex-cell-full sm-flex-cell-full')
           .attr({
             'id': 'page-' + data.workspaceMaterialId,
             'data-material-title': data.title,
