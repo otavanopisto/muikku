@@ -11,7 +11,7 @@ public class ContentNode {
   public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       Long parentId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path,
-      String license, boolean viewRestricted) {
+      String license, String producers, boolean viewRestricted) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -29,6 +29,7 @@ public class ContentNode {
     this.path = path;
     this.license = license;
     this.viewRestricted = viewRestricted;
+    this.producers = producers;
   }
 
   public void addChild(ContentNode child) {
@@ -143,6 +144,10 @@ public class ContentNode {
     this.viewRestricted = viewRestricted;
   }
   
+  public String getProducers() {
+    return producers;
+  }
+  
   private String title;
   private String type;
   private List<ContentNode> children;
@@ -159,4 +164,5 @@ public class ContentNode {
   private String path;
   private String license;
   private boolean viewRestricted;
+  private String producers;
 }

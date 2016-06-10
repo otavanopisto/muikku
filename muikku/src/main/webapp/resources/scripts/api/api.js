@@ -324,6 +324,16 @@
     },
     batch: function (operations) {
       return new BatchRequestImpl(operations);
+    },
+    abortAll: function () {
+      $.each(this, function (name, service) {
+        try {
+          if (service && service.abortAll) {
+            service.abortAll();
+          }
+        } catch (e) {
+        }
+      });
     }
   });
   
@@ -398,23 +408,13 @@
   }
   
   $(window).unload(function () {
-    $.each(window.muikkuApi, function (name, service) {
-      try {
-        if (service && service.abortAll) {
-          service.abortAll();
-        }
-      } catch (e) {
-      }
-    });
+    if (window.muikkuApi) {
+      window.muikkuApi.abortAll();
+    }
     
-    $.each(window.asyncMuikkuApi, function (name, service) {
-      try {
-        if (service && service.abortAll) {
-          service.abortAll();
-        }
-      } catch (e) {
-      }
-    });
+    if (window.asyncMuikkuApi) {
+      window.asyncMuikkuApi.abortAll();
+    }
   });
   
   function getApi(options) {
