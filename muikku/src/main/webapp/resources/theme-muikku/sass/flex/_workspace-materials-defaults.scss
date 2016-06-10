@@ -870,6 +870,24 @@ footer.article-details {
   
 }
 
+/* View Restriction */
+p.content-view-restricted-message {
+  text-align:center;
+  font-style:italic;
+  font-size:20px;
+  padding:60px 20px;
+  background:#f9f9f9;
+}
+
+.workspace-materials-view-page[data-view-restricted="true"] {
+
+  .muikku-save-page-wrapper,
+  .article-details {
+    display:none;
+  }
+
+}
+
 /* Different reading view's overrides */
 
 body.workspace-materials #contentWorkspaceMaterials {
