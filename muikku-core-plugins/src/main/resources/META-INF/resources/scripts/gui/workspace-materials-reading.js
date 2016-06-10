@@ -297,10 +297,13 @@
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     var license = $(data.pageElement).attr('data-license');
-    if (license) {
+    var producers = $(data.pageElement).attr('data-producers');
+    
+    if (license || producers) {
       $('<footer>')
         .articleDetails({
-          license: license
+          license: license,
+          producers: producers
         })
         .appendTo(data.pageElement);
     }

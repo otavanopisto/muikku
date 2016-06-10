@@ -12,7 +12,7 @@ public class ContentNode {
   public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       Long parentId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path,
-      String license) {
+      String license, String producers) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -29,6 +29,7 @@ public class ContentNode {
     this.publishedRevision = publishedRevision;
     this.path = path;
     this.license = license;
+    this.producers = producers;
   }
 
   public void addChild(ContentNode child) {
@@ -135,6 +136,10 @@ public class ContentNode {
     this.license = license;
   }
   
+  public String getProducers() {
+    return producers;
+  }
+  
   private String title;
   private String type;
   private List<ContentNode> children;
@@ -150,4 +155,5 @@ public class ContentNode {
   private Long publishedRevision;
   private String path;
   private String license;
+  private String producers;
 }

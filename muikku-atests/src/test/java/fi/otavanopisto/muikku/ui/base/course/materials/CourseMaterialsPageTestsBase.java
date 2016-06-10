@@ -965,168 +965,167 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   }
 
-//  @Test
-//  @TestEnvironments (
-//      browsers = {
-//        TestEnvironments.Browser.CHROME,
-//        TestEnvironments.Browser.FIREFOX,
-//      }
-//    )
-//  public void sorterFieldAsciiMathSupportTest() throws Exception {
-//    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-//    Builder mockBuilder = mocker();
-//    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-//    login();
-//    maximizeWindow();
-//    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-//    try {
-//      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-//      
-//      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-//          "Test", "text/html;editor=CKEditor", 
-//          "<p><object type=\"application/vnd.muikku.field.sorter\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" "
-//          + "value=\"{&quot;name&quot;:&quot;muikku-field-2lIF1dGXqMJtFA2M2el2aSaF&quot;,&quot;items&quot;:[{&quot;id&quot;:&quot;f07wb&quot;,&quot;name&quot;:&quot;`5x(a/(a + c)) = d`&quot;},"
-//          + "{&quot;id&quot;:&quot;tfqd8&quot;,&quot;name&quot;:&quot;dsaf&quot;},{&quot;id&quot;:&quot;y3l26&quot;,&quot;name&quot;:&quot;54et&quot;}]}\" /></object></p>"
-//          + "<p>Mea facete feugiat scriptorem ei, ex vidit everti laoreet mea. Ius soleat consectetuer eu, docendi mandamus iudicabit vis ne. Aliquam detracto per te, "
-//          + "ne fabulas consulatu nec, modo ocurreret assentior quo an. Ius invenire similique ei, et aeque consequat per. Has in facete delicata praesent, mei no lorem ignota. "
-//          + "Eu eam dictas ceteros petentium.<br />&nbsp;</p>", 1l, 
-//          "EXERCISE");
-//      try {
-//        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-//        waitForPresent(String.format("#page-%d .muikku-sorter-field", htmlMaterial.getId()));
-//        assertVisible(String.format("#page-%d .muikku-sorter-field", htmlMaterial.getId()));
-//        waitForPresent(".muikku-sorter-item #MathJax-Element-1-Frame");
-//        waitForAttributeToHaveValue(".muikku-sorter-item #MathJax-Element-1-Frame", "data-mathml");
-//        String mathml = getAttributeValue(".muikku-sorter-item #MathJax-Element-1-Frame", "data-mathml");
-//        assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
-//
-//        dragAndDropWithOffSetAndTimeout("div[data-item-id=\"f07wb\"]", ".muikku-sorter-item:first-child", 0, -20);
-//        dragAndDropWithOffSetAndTimeout("div[data-item-id=\"y3l26\"]", ".muikku-sorter-item:last-child",  0, 20);
-//        sleep(350);
-//        waitAndClick("button.muikku-check-exercises");
-//        waitForPresentAndVisible("div.muikku-field-correct-answer");
-//        assertEquals(3, countElements("div.muikku-field-correct-answer"));
-//      } finally {
-//        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-//      }
-//    } finally {
-//      deleteWorkspace(workspace.getId());
-//      mockBuilder.wiremockReset();
-//    }
-//  }
-//  
-//  @Test
-//  @TestEnvironments (
-//    browsers = {
-//      TestEnvironments.Browser.CHROME,
-//      TestEnvironments.Browser.FIREFOX,
-//      TestEnvironments.Browser.SAFARI,
-//    }
-//  )
-//  public void organizerFieldAsciiMathSupportTest() throws Exception {
-//    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-//    Builder mockBuilder = mocker();
-//    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-//    login();
-//    maximizeWindow();
-//    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-//    try {
-//      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-//      
-//      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-//          "Test", "text/html;editor=CKEditor", 
-//          "<p><object type=\"application/vnd.muikku.field.organizer\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" "
-//          + "value=\"{&quot;name&quot;:&quot;muikku-field-yFfjVqYptKe076qYHJDhJUW8&quot;,&quot;termTitle&quot;:&quot;Testi&quot;,&quot;terms&quot;"
-//          + ":[{&quot;id&quot;:&quot;t2&quot;,&quot;name&quot;:&quot;tarminen&quot;},{&quot;id&quot;:&quot;t3&quot;,&quot;name&quot;:&quot;torminen&quot;}"
-//          + ",{&quot;id&quot;:&quot;t4&quot;,&quot;name&quot;:&quot;`5x(a/(a + c)) = d`&quot;},{&quot;id&quot;:&quot;t5&quot;,&quot;name&quot;:&quot;dswe&quot;}],"
-//          + "&quot;categories&quot;:[{&quot;id&quot;:&quot;c1&quot;,&quot;name&quot;:&quot;Test1&quot;},{&quot;id&quot;:&quot;c2&quot;,&quot;name&quot;:&quot;test2&quot;}],"
-//          + "&quot;categoryTerms&quot;:[{&quot;category&quot;:&quot;c1&quot;,&quot;terms&quot;:[&quot;t2&quot;,&quot;t3&quot;,&quot;t4&quot;]},{&quot;category&quot;:&quot;c2&quot;"
-//          + ",&quot;terms&quot;:[&quot;t4&quot;,&quot;t5&quot;]}]}\" /></object></p>", 1l, 
-//          "EXERCISE");
-//      try {
-//        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-//        waitForPresent(String.format("#page-%d .muikku-term #MathJax-Element-1-Frame", htmlMaterial.getId()));
-//        assertVisible(String.format("#page-%d .muikku-term #MathJax-Element-1-Frame", htmlMaterial.getId()));
-//        waitForAttributeToHaveValue(".muikku-term #MathJax-Element-1-Frame", "data-mathml");
-//        String mathml = getAttributeValue(".muikku-term #MathJax-Element-1-Frame", "data-mathml");
-//        assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
-//        dragAndDrop("div[data-term-id=\"t4\"]", "div[data-category-id=\"c1\"]");
-//        dragAndDrop("div[data-term-id=\"t2\"]", "div[data-category-id=\"c1\"]");
-//        dragAndDrop("div[data-term-id=\"t3\"]", "div[data-category-id=\"c1\"]");
-//        
-//        dragAndDrop("div[data-term-id=\"t4\"]", "div[data-category-id=\"c2\"]");
-//        dragAndDrop("div[data-term-id=\"t5\"]", "div[data-category-id=\"c2\"]");
-////        TODO: Remove sleep when concurrent save and submit issue fixed
-//        sleep(350);
-//        waitAndClick("button.muikku-check-exercises");
-//        waitForPresentAndVisible("span.muikku-field-examples");
-//        assertClassPresent("div[data-category-id='c1']", "muikku-field-correct-answer");
-//        assertClassPresent("div[data-category-id='c2']", "muikku-field-correct-answer");
-//      } finally {
-//        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-//      }
-//    } finally {
-//      deleteWorkspace(workspace.getId());
-//      mockBuilder.wiremockReset();
-//    }
-//  }
-//  
-//  @Test
-//  @TestEnvironments (
-//    browsers = {
-//      TestEnvironments.Browser.CHROME,
-//      TestEnvironments.Browser.FIREFOX,
-//      TestEnvironments.Browser.INTERNET_EXPLORER,
-//      TestEnvironments.Browser.EDGE,
-//      TestEnvironments.Browser.SAFARI,
-//    }
-//  )
-//  public void connectFieldAsciiMathSupportTest() throws Exception {
-//    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-//    Builder mockBuilder = mocker();
-//    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-//    login();
-//    maximizeWindow();
-//    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-//    try {
-//      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-//      
-//      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-//          "Test", "text/html;editor=CKEditor", 
-//          "<p>Lorem not solor emut.</p><p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\" />"
-//          + "<param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-r0iJ7LgkLdnysqQvJvIFffMf&quot;,&quot;fields&quot;:[{&quot;name&quot;"
-//          + ":&quot;1&quot;,&quot;text&quot;:&quot;`5x(a/(a + c)) = d`&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;perti&quot;},"
-//          + "{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;sampo&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Ei&quot;},"
-//          + "{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Kylla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;kunta&quot;}],&quot;connections&quot;"
-//          + ":[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},"
-//          + "{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\" /></object></p> ", 1l, 
-//          "EXERCISE");
-//      try {
-//        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-//        waitForPresent(String.format("#page-%d .muikku-connect-field-term #MathJax-Element-2-Frame", htmlMaterial.getId()));
-//        assertVisible(String.format("#page-%d .muikku-connect-field-term #MathJax-Element-2-Frame", htmlMaterial.getId()));
-//        waitForAttributeToHaveValue(".muikku-connect-field-term #MathJax-Element-2-Frame", "data-mathml");
-//        String mathml = getAttributeValue(".muikku-connect-field-term #MathJax-Element-2-Frame", "data-mathml");
-//        assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
-//        waitAndClick("div[data-field-name='1']");
-//        waitAndClick("div[data-field-value='A']");
-//        
-//        waitAndClick("div[data-field-name='2']");
-//        waitAndClick("div[data-field-value='B']");
-//
-//        waitAndClick("div[data-field-name='3']");
-//        waitAndClick("div[data-field-value='C']");
-////      TODO: Remove sleep when concurrent save and submit issue fixed
-//        sleep(350);
-//        waitAndClick("button.muikku-check-exercises");
-//        waitForPresentAndVisible(".correct-answers-count-data");
-//        assertEquals("1 / 1", getWebDriver().findElement(By.cssSelector(".correct-answers-count-data")).getText());
-//      } finally {
-//        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-//      }
-//    } finally {
-//      deleteWorkspace(workspace.getId());
-//      mockBuilder.wiremockReset();
-//    }
-//  }    
+  @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.SAFARI,
+      }
+    )
+  public void sorterFieldAsciiMathSupportTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
+    maximizeWindow();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.sorter\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" "
+          + "value=\"{&quot;name&quot;:&quot;muikku-field-2lIF1dGXqMJtFA2M2el2aSaF&quot;,&quot;items&quot;:[{&quot;id&quot;:&quot;f07wb&quot;,&quot;name&quot;:&quot;`5x(a/(a + c)) = d`&quot;},"
+          + "{&quot;id&quot;:&quot;tfqd8&quot;,&quot;name&quot;:&quot;dsaf&quot;},{&quot;id&quot;:&quot;y3l26&quot;,&quot;name&quot;:&quot;54et&quot;}]}\" /></object></p>"
+          + "<p>Mea facete feugiat scriptorem ei, ex vidit everti laoreet mea. Ius soleat consectetuer eu, docendi mandamus iudicabit vis ne. Aliquam detracto per te, "
+          + "ne fabulas consulatu nec, modo ocurreret assentior quo an. Ius invenire similique ei, et aeque consequat per. Has in facete delicata praesent, mei no lorem ignota. "
+          + "Eu eam dictas ceteros petentium.<br />&nbsp;</p>", 1l, 
+          "EXERCISE");
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d .muikku-sorter-field", htmlMaterial.getId()));
+        assertVisible(String.format("#page-%d .muikku-sorter-field", htmlMaterial.getId()));
+        waitForPresent(".muikku-sorter-item #MathJax-Element-1-Frame");
+        waitForAttributeToHaveValue(".muikku-sorter-item #MathJax-Element-1-Frame", "data-mathml");
+        String mathml = getAttributeValue(".muikku-sorter-item #MathJax-Element-1-Frame", "data-mathml");
+        assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
+//      TODO: Fix functionality test if possible
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+      }
+    } finally {
+      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
+    }
+  }
+
+  @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.SAFARI,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.EDGE
+    }
+  )
+  public void organizerFieldAsciiMathSupportTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
+    maximizeWindow();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.organizer\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" "
+          + "value=\"{&quot;name&quot;:&quot;muikku-field-yFfjVqYptKe076qYHJDhJUW8&quot;,&quot;termTitle&quot;:&quot;Testi&quot;,&quot;terms&quot;"
+          + ":[{&quot;id&quot;:&quot;t2&quot;,&quot;name&quot;:&quot;tarminen&quot;},{&quot;id&quot;:&quot;t3&quot;,&quot;name&quot;:&quot;torminen&quot;}"
+          + ",{&quot;id&quot;:&quot;t4&quot;,&quot;name&quot;:&quot;`5x(a/(a + c)) = d`&quot;},{&quot;id&quot;:&quot;t5&quot;,&quot;name&quot;:&quot;dswe&quot;}],"
+          + "&quot;categories&quot;:[{&quot;id&quot;:&quot;c1&quot;,&quot;name&quot;:&quot;Test1&quot;},{&quot;id&quot;:&quot;c2&quot;,&quot;name&quot;:&quot;test2&quot;}],"
+          + "&quot;categoryTerms&quot;:[{&quot;category&quot;:&quot;c1&quot;,&quot;terms&quot;:[&quot;t2&quot;,&quot;t3&quot;,&quot;t4&quot;]},{&quot;category&quot;:&quot;c2&quot;"
+          + ",&quot;terms&quot;:[&quot;t4&quot;,&quot;t5&quot;]}]}\" /></object></p>", 1l, 
+          "EXERCISE");
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d .muikku-term #MathJax-Element-1-Frame", htmlMaterial.getId()));
+        assertVisible(String.format("#page-%d .muikku-term #MathJax-Element-1-Frame", htmlMaterial.getId()));
+        waitForAttributeToHaveValue(".muikku-term #MathJax-Element-1-Frame", "data-mathml");
+        String mathml = getAttributeValue(".muikku-term #MathJax-Element-1-Frame", "data-mathml");
+        assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
+        dragAndDrop("div[data-term-id=\"t4\"]", "div[data-category-id=\"c1\"]");
+        dragAndDrop("div[data-term-id=\"t2\"]", "div[data-category-id=\"c1\"]");
+        dragAndDrop("div[data-term-id=\"t3\"]", "div[data-category-id=\"c1\"]");
+        
+        dragAndDrop("div[data-term-id=\"t4\"]", "div[data-category-id=\"c2\"]");
+        dragAndDrop("div[data-term-id=\"t5\"]", "div[data-category-id=\"c2\"]");
+//        TODO: Remove sleep when concurrent save and submit issue fixed
+        sleep(350);
+        waitAndClick("button.muikku-check-exercises");
+        waitForPresentAndVisible("span.muikku-field-examples");
+        assertClassPresent("div[data-category-id='c1']", "muikku-field-correct-answer");
+        assertClassPresent("div[data-category-id='c2']", "muikku-field-correct-answer");
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+      }
+    } finally {
+      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
+    }
+  }
+ 
+  @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.EDGE,
+      TestEnvironments.Browser.SAFARI,
+    }
+  )
+  public void connectFieldAsciiMathSupportTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
+    maximizeWindow();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p>Lorem not solor emut.</p><p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\" />"
+          + "<param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-r0iJ7LgkLdnysqQvJvIFffMf&quot;,&quot;fields&quot;:[{&quot;name&quot;"
+          + ":&quot;1&quot;,&quot;text&quot;:&quot;`5x(a/(a + c)) = d`&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;perti&quot;},"
+          + "{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;sampo&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Ei&quot;},"
+          + "{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Kylla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;kunta&quot;}],&quot;connections&quot;"
+          + ":[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},"
+          + "{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\" /></object></p> ", 1l, 
+          "EXERCISE");
+      try {
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d .muikku-connect-field-term #MathJax-Element-2-Frame", htmlMaterial.getId()));
+        assertVisible(String.format("#page-%d .muikku-connect-field-term #MathJax-Element-2-Frame", htmlMaterial.getId()));
+        waitForAttributeToHaveValue(".muikku-connect-field-term #MathJax-Element-2-Frame", "data-mathml");
+        String mathml = getAttributeValue(".muikku-connect-field-term #MathJax-Element-2-Frame", "data-mathml");
+        assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
+        waitAndClick("div[data-field-name='1']");
+        waitAndClick("div[data-field-value='A']");
+        
+        waitAndClick("div[data-field-name='2']");
+        waitAndClick("div[data-field-value='B']");
+
+        waitAndClick("div[data-field-name='3']");
+        waitAndClick("div[data-field-value='C']");
+//      TODO: Remove sleep when concurrent save and submit issue fixed
+        sleep(350);
+        waitAndClick("button.muikku-check-exercises");
+        waitForPresentAndVisible(".correct-answers-count-data");
+        assertEquals("1 / 1", getWebDriver().findElement(By.cssSelector(".correct-answers-count-data")).getText());
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+      }
+    } finally {
+      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
+    }
+  }    
 }

@@ -519,6 +519,154 @@
     }
   });  
   
+  $.widget("custom.muikkuPageProducers", {
+    
+    options: {
+      materialId: null
+    },
+    
+    _create : function() {
+      this.element.addClass('materials-management-page-producers-widget');
+      this._load($.proxy(function () {
+        
+      }, this));
+      
+      this.element.on("click", ".save-page-producers", $.proxy(this._onSaveProducersClick, this));
+      this.element.on("keydown", ".material-producer-add", $.proxy(this._onMaterialProducerAddKeyDown, this)); 
+      this.element.on("blur", ".material-producer-add", $.proxy(this._onMaterialProducerBlur, this)); 
+      this.element.on('click', '.material-producer-remove', $.proxy(this._onMaterialProducerRemoveClick, this));
+    },
+    
+    close: function () {
+      this.element.closest('section')
+        .removeClass('workspace-materials-management-editing-producers');
+      this.element.remove();
+    },
+    
+    _load: function (callback) {
+      this.element.addClass('loading');
+      mApi().materials.material.producers
+        .read(this.options.materialId)
+        .callback($.proxy(function (readErr, producers) {
+          this.element.removeClass('loading');
+          
+          if (readErr) {
+            $('.notification-queue').notificationQueue('notification', 'error', readErr);
+          } else {
+            var data = {
+            };
+            
+            renderDustTemplate("workspace/materials-management-page-producers.dust", data, $.proxy(function (html) {
+              this.element.html(html);
+              
+              $.each(producers, $.proxy(function (index, producer) {
+                this._addMaterialProducerElement(producer.id, 'EXISTING', producer.name);
+              }, this));
+              
+              callback();
+            }, this));
+          }
+        }, this));
+    },
+    
+    _createCreateMaterialProducer: function (name) {
+      return $.proxy(function (callback) {
+        mApi().materials.material.producers
+          .create(this.options.materialId, {
+            name: name
+          })
+          .callback(function (err, materialProducer) {
+            callback(err, materialProducer);
+          })
+      }, this); 
+    },
+    
+    _createDeleteMaterialProducer: function (id) {
+      return $.proxy(function (callback) {
+        mApi().materials.material.producers
+          .del(this.options.materialId, id)
+          .callback(function (err) {
+            callback(err);
+          })
+      }, this); 
+    },
+    
+    _addMaterialProducerElement: function (id, status, name) {
+      $('<span>')
+      .attr({
+        'data-id': id,
+        'data-status': status,
+        'data-name': name
+      })
+      .addClass('material-producer')
+      .text(name)
+      .appendTo(this.element.find('.material-producers'))
+      .append($('<a>')
+        .addClass('material-producer-remove')
+        .attr('href', 'javascript:void(null)'));
+  },
+
+    _onMaterialProducerAddKeyDown: function (event) {
+      if (((event.keyCode ? event.keyCode : event.which) == 13)) {
+        event.preventDefault();
+        var input = this.element.find('.material-producer-add');
+        this._addMaterialProducerElement('', 'NEW', input.val());
+        input.val('');
+      }
+    },
+    
+    _onMaterialProducerBlur: function (event) {
+      var input = this.element.find('.material-producer-add');
+      var value = input.val();
+      if (value) {
+        this._addMaterialProducerElement('', 'NEW', value);
+        input.val('');
+      }
+    },
+    
+    _onMaterialProducerRemoveClick: function (event) {
+      var producer = $(event.target)
+        .closest('.material-producer');
+      
+      if (producer.attr('data-status') == 'NEW') {
+        producer.remove();
+      } else {
+        producer
+          .attr('data-status', 'REMOVED')
+          .hide();
+      }
+    },
+    
+    _onSaveProducersClick: function (event) {
+      this.element.addClass('loading');
+      var operations = [];
+      
+      this.element.find('.material-producer').each($.proxy(function (index, producer) {
+        var id = $(producer).attr('data-id');
+        var status = $(producer).attr('data-status');
+        var name = $(producer).attr('data-name');
+        
+        switch (status) {
+          case 'NEW':
+            operations.push(this._createCreateMaterialProducer(name));
+          break;
+          case 'REMOVED':
+            operations.push(this._createDeleteMaterialProducer(id));
+          break;
+        }        
+      }, this));
+      
+      async.series(operations, $.proxy(function (err, results) {
+        this.element.removeClass('loading');
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this.close();
+        }
+      }, this));
+    }
+  });
+  
   $.widget("custom.muikkuPageAttachments", {
     _create : function() {
       this.element.addClass('materials-management-page-attachment-widget');
@@ -851,6 +999,25 @@
       .closest('section')
       .find('.materials-management-page-license-widget')
       .muikkuPageLicense('close');
+  });
+
+  $(document).on('click', '.page-producers', function (event, data) {
+    var materialId = $(event.target).attr('data-material-id');
+    var section = $(event.target).closest('section');
+    
+    section.addClass('workspace-materials-management-editing-producers');
+    
+    section.find('.workspace-materials-management-view-page-controls')
+      .after($('<div>').muikkuPageProducers({
+        materialId: materialId
+      }));
+  });
+  
+  $(document).on('click', '.close-producers-editor', function (event, data) {
+    var section = $(event.target)
+      .closest('section')
+      .find('.materials-management-page-producers-widget')
+      .muikkuPageProducers('close');
   });
   
   function toggleVisibility(node, hidden) {
