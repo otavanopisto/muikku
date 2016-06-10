@@ -955,6 +955,32 @@
     
   });
   
+  $(document).on('click', '.page-view-restrict', function (event, data) {
+    var section = $(event.target).closest('section');
+    var materialId = $(section).attr('data-material-id');
+    
+    mApi().materials.material
+      .read(materialId)
+      .callback(function (readErr, material) {
+        if (readErr) {
+          $('.notification-queue').notificationQueue('notification', 'error', readErr);
+        } else {
+          mApi().materials.material
+            .update(materialId, $.extend(material, {
+              viewRestrict: material.viewRestrict == 'LOGGED_IN' ? 'NONE' : 'LOGGED_IN'
+            }))
+            .callback($.proxy(function (updErr, result) {
+              if (updErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', updErr);
+              } else {
+                section.attr('data-view-restrict', result.viewRestrict);
+                this.close();
+              }
+            }, this));
+        }
+      });
+  });
+  
   $(document).on('click', '.page-attachments', function (event, data) {
     var workspaceEntityId = $('.workspaceEntityId').val();
     var workspaceMaterialId = $(event.target).attr('data-workspace-material-id');

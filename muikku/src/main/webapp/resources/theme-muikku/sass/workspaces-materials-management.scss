@@ -386,7 +386,7 @@ body.workspace-materials-management {
         text-transform:uppercase;
         font-size:16px;
         transition: color 0.3s ease-in-out;
-        font-family:'Open Sans', Arial, sans-serif;
+        font-family:'Open Sans', Arial, sans-serif !important;
         display:inline-block;
         background:#fff;
         text-align:center;
@@ -501,6 +501,22 @@ body.workspace-materials-management {
       -o-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
       -ms-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
       transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+
+      a.page-view-restrict {
+        background: #0f0;   
+        border-radius:100%; 
+        border:1px solid #fff;  
+      }
+      
+      &[data-view-restrict="LOGGED_IN"] {
+      
+        a.page-view-restrict {
+          background: #f00;
+          border-radius:100%;
+          border:1px solid #fff;
+        }
+        
+      }
       
       &.folder { 
         position:relative;
@@ -1211,26 +1227,29 @@ body.workspace-materials-management {
       }
       
       .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link and correct answers */
-        height:25px;
-        width:25px;
-        padding:2px;
-        margin:0 10px;
-        border-radius:25px;
+        height:29px;
+        width:29px;
+        margin:5px 10px;
+        border-radius:100%;
+        line-height:1;
         border:1px solid #fff;
         position:relative;
         left:0;
-        top:-1px;
+        top:0;
         color:#fff;
         text-align:center;
         display:inline-block;
         background:#bdc7cf;
+        vertical-align:top;
       
         a.change-assignment {
           margin:0;
           position:relative;
-          top:-3px;
-          left:-1px;
+          top:0;
+          left:0;
           font-size:17px;
+          height:29px;
+          width:29px;
         }
       }
     
@@ -1243,24 +1262,29 @@ body.workspace-materials-management {
       }
       
       .workspace-materials-management-view-page-controls span.correct-answers-settings { /* Special case for assignment type link and correct answers */
-        height:25px;
-        width:25px;
-        padding:2px;
-        margin:0 10px;
-        border-radius:25px;
+        height:29px;
+        width:29px;
+        margin:5px 10px;
+        border-radius:100%;
+        line-height:1;
         border:1px solid #fff;
         position:relative;
         left:0;
-        top:-4px;
+        top:0;
         color:#fff;
         text-align:center;
         background:#bdc7cf;
+        display:inline-block;
+        vertical-align:top;
     
         a.correct-answers {
           margin:0;
           position:relative;
-          left:0px;
-          font-size:16px;
+          left:0;
+          top:1px;
+          font-size:17px;
+          height:29px;
+          width:29px;
         }
 
         &.hidden {
@@ -1312,6 +1336,7 @@ body.workspace-materials-management {
         a.close-license-editor,
         a.close-producers-editor,
         a.page-license,
+        a.page-view-restrict,
         a.page-producers,
         a.page-closed-material {
           color:#fff;
@@ -1319,7 +1344,7 @@ body.workspace-materials-management {
           display:inline-block;
           margin:5px 10px;
           position:relative;
-          height:31px;
+          height:30px;
           text-align:center;
           
           &:hover {
@@ -1330,19 +1355,26 @@ body.workspace-materials-management {
             padding:5px;
             display:inline-block;
           }
-          
+        
           span {
             display:none;
           }
+          
         }
         
         a.delete-page {
           font-size:22px;
+          height:31px;
         }
         
         a.edit-page,
         a.close-page-editor {
           width:29px;
+        }
+        
+        a.page-view-restrict {
+          width:29px;
+          height:29px;
         }
         
         a.close-page-editor {
