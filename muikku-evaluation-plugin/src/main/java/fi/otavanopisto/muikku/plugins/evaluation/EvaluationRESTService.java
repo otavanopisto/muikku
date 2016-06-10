@@ -227,10 +227,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     return Response.ok(createRestModel(workspaceEntity, assessments.toArray(new fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment[0]))).build();
   }
-  
-//  @GET
-//  @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessments/{EVALUATIONID}")
-//  
+    
   @PUT
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessments/{EVALUATIONID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -805,8 +802,6 @@ public class EvaluationRESTService extends PluginRESTService {
   }
 
   private void sendAssessmentNotification(WorkspaceAssessment payload, UserEntity evaluator, UserEntity student, Workspace workspace) {
-    // TODO: umm...???
-    
     Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
     communicatorController.createMessage(

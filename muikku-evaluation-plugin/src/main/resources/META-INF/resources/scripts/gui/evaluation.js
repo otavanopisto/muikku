@@ -373,7 +373,7 @@
               assignments: assignments,
               exercises: [],
               journalEntries: journalEntries,
-              removable: this.options.assessmentId
+              removable: !!this.options.assessmentId
             }, callback);
         }, this));
     },
