@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.workspace.rest.model;
+package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 
 import java.util.Date;
 

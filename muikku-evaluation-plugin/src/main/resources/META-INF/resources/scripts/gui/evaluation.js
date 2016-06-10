@@ -25,6 +25,7 @@
       assessorEntityId: null,
       verbalAssessment: null,
       studentEntityId: null,
+      studentIdentifier: null,
       workspaceEntityId: null,
       triggeringElement: null,
       studentAnswers: [],
@@ -69,6 +70,7 @@
       
       this._load($.proxy(function (text) {
         this._dialog = $(text);
+        this._dialog.on("click", ".remove-evaluation", $.proxy(this._onRemoveEvaluationClick, this));
         
         this._dialog.dialog({
           modal: true, 
@@ -173,7 +175,7 @@
               
               this._loader = $('<div>').addClass('loading').appendTo('body.evaluation');
               if(this.options.assessmentId){
-                mApi({async: false}).workspace.workspaces.assessments.update(workspaceEntityId, this.options.assessmentId, {
+                mApi().workspace.workspaces.students.assessments.update(workspaceEntityId, this.options.studentIdentifier, this.options.assessmentId, {
                   evaluated: assessedDate,
                   gradeIdentifier: grade[0],
                   gradeSchoolDataSource: grade[1],
@@ -214,7 +216,7 @@
                   }
                 }, this));
               } else {
-                mApi({async: false}).workspace.workspaces.assessments.create(workspaceEntityId, {
+                mApi().workspace.workspaces.students.assessments.create(workspaceEntityId, this.options.studentIdentifier, {
                   evaluated: assessedDate,
                   gradeIdentifier: grade[0],
                   gradeSchoolDataSource: grade[1],
@@ -308,7 +310,8 @@
         }
       }, this));
     },
-    _loadAssigmentEvaluation: function(workspaceAssignment, htmlMaterialMap){
+    
+    _loadAssigmentEvaluation: function(workspaceAssignment, htmlMaterialMap) {
       var replyLoad = $.proxy(function(replyCallback){
         mApi().workspace.workspaces.materials.compositeMaterialReplies
         .read(this.options.workspaceEntityId, workspaceAssignment.workspaceMaterial.id, {
@@ -354,6 +357,7 @@
         });
       },this)
     },
+    
     _loadTemplate: function (assignments, callback) {
       mApi().workspace.workspaces.journal.read(this.options.workspaceEntityId, {workspaceStudentId: this.options.workspaceStudentId}).callback(
         $.proxy(function(err, journalEntries) {
@@ -371,6 +375,9 @@
               journalEntries: journalEntries
             }, callback);
         }, this));
+    },
+    
+    _onRemoveEvaluationClick: function (event) {
     },
     
     _onAssignmentTitleClick: function (event) {
@@ -1023,8 +1030,8 @@
     
     _loadStudentAssessments: function (workspaceStudent) {
       return $.proxy(function (callback) {
-        mApi().workspace.workspaces.assessments
-          .read(this.options.workspaceEntityId, { workspaceStudentIdentifier : workspaceStudent.id })
+        mApi().workspace.workspaces.students.assessments
+          .read(this.options.workspaceEntityId, workspaceStudent.studentIdentifier)
           .callback(function(err, workspaceAssessments) {
             if (err) {
               callback(err, null);
@@ -1058,7 +1065,8 @@
                 .attr('data-workspace-student', workspaceStudent.id)
                 .evaluationStudent({
                   workspaceStudentId: workspaceStudent.id,
-                  studentEntityId: workspaceStudent.userId,
+                  studentEntityId: workspaceStudent.studentEntityId,
+                  studentIdentifier: workspaceStudent.studentIdentifier,
                   studentFirstName: workspaceStudent.firstName,
                   studentLastName: workspaceStudent.lastName,
                   studentStudyProgrammeName: workspaceStudent.studyProgrammeName,
@@ -1100,7 +1108,7 @@
                 title: evaluableAssignment.workspaceMaterial.title,
                 path: evaluableAssignment.workspaceMaterial.path,
                 workspaceStudentId: workspaceUser.id,
-                studentEntityId: workspaceUser.userId,
+                studentEntityId: workspaceUser.studentEntityId,
                 workspaceAssignment: evaluableAssignment
               })
               .appendTo(materialRow);
@@ -1282,6 +1290,7 @@
   $.widget("custom.evaluationStudent", {
     
     options: {
+      studentIdentifier: null,
       workspaceStudentId: null,
       studentEntityId: null,
       assessment: null
@@ -1328,6 +1337,10 @@
     studentEntityId: function () {
       return this.options.studentEntityId;
     },
+
+    studentIdentifier: function () {
+      return this.options.studentIdentifier;
+    },
     
     workspaceStudentId: function () {
       return this.options.workspaceStudentId;
@@ -1365,11 +1378,12 @@
                   gradingScales: gradingScales,
                   assessors: assessors,
                   evaluationDate: this.options.assessment ? new Date(this.options.assessment.evaluated) : null,
-                  evaluationGradeId: this.options.assessment ? this.options.assessment.gradeIdentifier+'/'+this.options.assessment.gradeSchoolDataSource+'@'+this.options.assessment.gradingScaleIdentifier+'/'+this.options.assessment.gradingScaleSchoolDataSource : null,
+                  evaluationGradeId: this.options.assessment ? this.options.assessment.gradeIdentifier + '/' + this.options.assessment.gradeSchoolDataSource+'@'+this.options.assessment.gradingScaleIdentifier+'/'+this.options.assessment.gradingScaleSchoolDataSource : null,
                   assessorEntityId: this.options.assessment ? this.options.assessment.assessorEntityId : null,
                   verbalAssessment: this.options.assessment ? this.options.assessment.verbalAssessment : null,
                   assessmentId: this.options.assessment ? this.options.assessment.identifier : null,
                   studentEntityId: this.studentEntityId(),
+                  studentIdentifier: this.studentIdentifier(),
                   workspaceStudentId: this.workspaceStudentId(),
                   workspaceAssignments: workspaceAssignments,
                   workspaceEntityId: workspaceEntityId,
