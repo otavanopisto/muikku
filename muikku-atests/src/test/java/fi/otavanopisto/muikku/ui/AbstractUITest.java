@@ -689,8 +689,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void hoverOverElement(String selector) {
-    waitForPresent(".gu-add-flag-widget-label");
     Actions action = new Actions(getWebDriver());
+    waitForPresentAndVisible(selector);
     action.moveToElement(findElementByCssSelector(selector)).perform();
   }
    

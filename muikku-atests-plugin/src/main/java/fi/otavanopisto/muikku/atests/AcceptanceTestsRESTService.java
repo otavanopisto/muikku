@@ -614,7 +614,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
 
     Flag flag = flagController.createFlag(SchoolDataIdentifier.fromString("STAFF-1/PYRAMUS"), payload.getName(), payload.getColor(), payload.getDescription());
-    logger.severe(String.format("Flag created with id %s name %s color %s desc %s  " , flag.getId(), flag.getName(), flag.getColor(), flag.getDescription()));
+    
     return Response.ok(createRestEntity(flag)).build();
 
   }  
@@ -637,7 +637,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response createStudentFlag(@PathParam("ID") Long studentId, @PathParam("FLAGID") Long flagId) {
     String identifier = userEntityController.findUserEntityById(studentId).getDefaultIdentifier();
-    logger.severe(String.format("Student defaultIdent %s", identifier));
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromString(identifier + "/PYRAMUS");
     if (studentIdentifier == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity("Invalid studentIdentifier").build();
@@ -656,6 +655,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteStudentFlag(@PathParam("ID") Long id) {   
     FlagStudent flagStudent = flagController.findFlagStudentById(id);
+
     if (flagStudent == null) {
       return Response.status(Response.Status.NOT_FOUND).entity(String.format("Flag not found %d", id)).build();
     }
