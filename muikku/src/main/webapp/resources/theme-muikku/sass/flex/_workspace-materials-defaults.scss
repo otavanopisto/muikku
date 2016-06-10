@@ -893,5 +893,81 @@ footer.article-details {
     }
     
   }
+
+}
+
+/* View Restriction */
+p.content-view-restricted-message {
+  text-align:center;
+  font-style:italic;
+  font-size:20px;
+  padding:60px 20px;
+  background:#f9f9f9;
+}
+
+.workspace-materials-view-page[data-view-restricted="true"] {
+
+  .muikku-save-page-wrapper,
+  .article-details {
+    display:none;
+  }
+
+}
+
+/* Different reading view's overrides */
+
+body.workspace-materials #contentWorkspaceMaterials {
+  
+  /* Save answers button's font-size under basic view */
+  .workspace-materials-view-page {
+  
+    button.muikku-assignment-button {
+      font-size:14px;
+    }
+    
+    button.muikku-show-correct-answers-button,
+    button.muikku-hide-correct-answers-button {
+      font-size:14px;
+    }
+  
+  }
+  
+  /* Textfield example answers under basic view */
+  span.muikku-field-examples {
+    font-size:13px;
+  }
+
+  /* Assigment type indicators under basic view */
+  .muikku-page-assignment-type {
+    font-size: 12px;
+  }
+  
+}
+
+body.workspace-materials-reading #contentWorkspaceMaterialsReading {
+  
+  /* Save answers button's font-size under reading view view */
+  .workspace-materials-view-page {
+  
+    button.muikku-assignment-button {
+      font-size:16px;
+    }
+    
+    button.muikku-show-correct-answers-button,
+    button.muikku-hide-correct-answers-button {
+      font-size:16px;
+    }
+  
+  }
+  
+  /* Textfield example answers under reading view */
+  span.muikku-field-examples {
+    font-size:15px;
+  }
+  
+  /* Assigment type indicators under reading view */
+  .muikku-page-assignment-type {
+    font-size: 14px;
+  }
   
 }
