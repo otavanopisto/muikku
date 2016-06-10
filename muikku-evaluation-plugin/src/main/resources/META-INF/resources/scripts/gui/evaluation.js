@@ -372,12 +372,51 @@
               studentStudyProgrammeName: this.options.studentStudyProgrammeName,
               assignments: assignments,
               exercises: [],
-              journalEntries: journalEntries
+              journalEntries: journalEntries,
+              removable: this.options.assessmentId
             }, callback);
         }, this));
     },
     
+    _confirmArchive: function(studentName, callback) {
+      renderDustTemplate('evaluation/evaluation_remove_workspace_evaluation_confirm.dust', { studentName: studentName }, $.proxy(function(text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal : true,
+          minHeight : 200,
+          resizable : false,
+          width : 560,
+          dialogClass : "evaluation-remove-workspace-evaluation-confirm-dialog",
+          buttons : [ {
+            'text' : dialog.attr('data-button-remove-text'),
+            'class' : 'remove-button',
+            'click' : function(event) {
+              $(this).dialog("destroy").remove();
+              callback();
+            }
+          }, {
+            'text' : dialog.attr('data-button-cancel-text'),
+            'class' : 'cancel-button',
+            'click' : function(event) {
+              $(this).dialog("destroy").remove();
+            }
+          } ]
+        });
+      }, this));
+    },
+    
     _onRemoveEvaluationClick: function (event) {
+      this._confirmArchive(this.options.studentDisplayName, $.proxy(function () {
+        mApi().workspace.workspaces.students.assessments
+          .del(this.options.workspaceEntityId, this.options.studentIdentifier, this.options.assessmentId)
+          .callback(function (err) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              window.location.reload(true);
+            }
+          });
+      }, this));
     },
     
     _onAssignmentTitleClick: function (event) {

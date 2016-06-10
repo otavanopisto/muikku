@@ -13,6 +13,10 @@
   </header>
   -->
   <div class="evaluation-modal-evaluateForm-content"> 
+    {?removable}
+      <button class="remove-evaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.removeEvaluationButton"/}</button>
+    {/removable}
+    
     <div class="evaluation-modal-evaluateForm-literal-eval-wrapper">
       <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.literalAssessment"/}</label>
       <textarea id="evaluateFormLiteralEvaluation"></textarea>
