@@ -1,18 +1,27 @@
-@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
-@import "_workspaces-materials-defaults.scss";
+@import "_fonts.scss";
+@import "_vars.scss";
+@import "_styles.scss";
+@import "_forms.scss";
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 @import "_organizer-field.scss";
 @import "_sorter-field.scss";
+@import "_file-field.scss";
+@import "_workspace-materials-defaults.scss"; 
+@import "_correct_answers.scss"; 
+@import "_notif-queue.scss";
+@import "_connectionlost.scss";
 @import "_ckeditor_theme.scss";
+@import "_dialog.scss";
 
-body.workspace-materials-management {
+body {
   background:#4f6677;
   padding:0.01em; /* Prevent margin collapsing  */
+  font-family:'Open Sans', Arial, sans-serif;
   min-height:100%;
   line-height:1.7em;
   font-weight:300;
-  font-size:18px;
+  font-size:16px;
   
   >.cke_combopanel { /* Increases width for styles and format dropdowns in CKEditor */
     width:350px;
@@ -66,6 +75,8 @@ body.workspace-materials-management {
     left:0;
     top:0;
     bottom:0;
+    width:396px;
+    z-index:20;
     
     nav.workspace-waterials-management-nav {
       width:46px;
@@ -74,13 +85,6 @@ body.workspace-materials-management {
       position:absolute;
       top:0;
       z-index:36;
-      
-      .grid_1 {
-        float:none;
-        width:auto;
-        margin:0;
-      }
-
     }
 
     #workspaceMaterialsManagementTOCContainer {
@@ -91,6 +95,7 @@ body.workspace-materials-management {
       position:absolute;
       top:0;
       bottom:0; 
+      margin-left:46px;
       border-left:1px solid #fff;
       line-height:1.5em;
       font-size:14px;
@@ -98,6 +103,8 @@ body.workspace-materials-management {
       ul,
       li {
         list-style:none;
+        padding:0;
+        margin:0;
       }
       
       .workspace-materials-management-TOC-title {
@@ -109,6 +116,7 @@ body.workspace-materials-management {
           font-size:20px;
           margin:0;
           padding:0;
+          text-transform:uppercase;
         }
 
       }
@@ -293,11 +301,12 @@ body.workspace-materials-management {
   } 
   
   #contentWorkspaceMaterialsManagement {
-    padding-left:60px;
-    padding-top:30px;
-    max-width:700px;
+    max-width:695px;
+    min-width:695px;
     width:auto;
     margin:0 auto;
+    position:absolute;
+    left:420px;
     
     .workspace-materials-management-add {
       text-align:center;
@@ -337,6 +346,7 @@ body.workspace-materials-management {
         span {
           float:left;
           padding:2px 4px;
+          font-family:'Open Sans', Arial, sans-serif !important;
         }
         
       }
@@ -432,7 +442,6 @@ body.workspace-materials-management {
         border-radius:0;
         text-transform:uppercase;
         font-size:14px;
-        font-weight:400;
         
         span {
           text-transform:uppercase;
@@ -449,12 +458,12 @@ body.workspace-materials-management {
       /* File-upload selection container where user selects what to do with the file */
       .materials-management-file-upload-selection-container {
         position:relative;
-        max-width:700px;
+        max-width:655px;
         width:auto;
         background:#fff;
         margin:25px auto 40px auto;
         box-shadow:0 0 0 5px rgba(137,212,142,0.95);
-        padding:20px 30px;
+        padding:20px;
         word-wrap: break-word;
         -webkit-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
         -moz-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
@@ -487,13 +496,12 @@ body.workspace-materials-management {
 
     .workspace-materials-view-page.material-management-view {
       position:relative;
-      max-width:700px;
+      max-width:695px;
       width:auto;
       background:#fff;
       margin:30px auto;
       box-shadow:$w-page-sc;
-      padding:50px 30px 10px 30px;
-      font-size:18px;
+      padding:50px 20px 10px 20px;
       word-wrap: break-word;
       box-shadow:0 0 0 0 rgba(148,183,208,0.95);
       -webkit-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
@@ -503,7 +511,7 @@ body.workspace-materials-management {
       transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
 
       a.page-view-restrict {
-        background: #0f0;   
+        background: #62eba9;   
         border-radius:100%; 
         border:1px solid #fff;  
       }
@@ -511,7 +519,7 @@ body.workspace-materials-management {
       &[data-view-restrict="LOGGED_IN"] {
       
         a.page-view-restrict {
-          background: #f00;
+          background: #da4a51;
           border-radius:100%;
           border:1px solid #fff;
         }
@@ -521,11 +529,11 @@ body.workspace-materials-management {
       &.folder { 
         position:relative;
         font-weight:300;
-        max-width:700px;
+        max-width:695px;
         width:auto;
         background:#fff;
         box-shadow:0 0 0 0 rgba(148,183,208,0.95);
-        padding:70px 30px 30px 30px;
+        padding:70px 20px 30px 20px;
         word-wrap: break-word;
         line-height:1.3em;
         font-size:18px;
@@ -611,7 +619,7 @@ body.workspace-materials-management {
       /* Material's attachment widget */
       .materials-management-page-attachment-widget {
         min-height:70px;
-        margin:5px -20px 0px -20px;
+        margin:0 -10px 0 -10px;
         
         .material-attachments-title {
           margin:0 0 10px 0;
@@ -772,8 +780,8 @@ body.workspace-materials-management {
       
       /* Material's License Override widget */
       .materials-management-page-license-widget {
-        min-height:215px;
-        margin:5px -20px 0px -20px;
+        min-height:240px;
+        margin:0 -10px 0 -10px;
         
         .material-license-title {
           margin:0 0 10px 0;
@@ -822,7 +830,7 @@ body.workspace-materials-management {
        /* Material's Producers Override widget */
       .materials-management-page-producers-widget {
         min-height:215px;
-        margin:5px -20px 0px -20px;
+        margin:0 -10px 0 -10px;
         
         .material-producers-title {
           margin:0 0 10px 0;
@@ -1030,7 +1038,6 @@ body.workspace-materials-management {
         box-shadow:0 0 0 10px rgba(148,183,208,0.95);
         position:relative;
         padding:50px 0px 0px 0px;
-        min-width:700px;
         
         /* Editor input override */
         input[type="text"].workspace-material-html-editor-title {
@@ -1137,7 +1144,7 @@ body.workspace-materials-management {
           color:#fff;
           
           span {
-          
+            font-family:'Open Sans', Arial, sans-serif;
           }
         
           &.icon-saved {
@@ -1162,11 +1169,22 @@ body.workspace-materials-management {
         .materials-management-page-attachment-widget {
           min-height:85px;
           margin:5px 10px 5px 10px;
+          padding-bottom:10px;
+        }
+        
+        .materials-management-page-license-widget {
+          margin:5px 10px 5px 10px;
+          padding-bottom:10px;
+          min-height:240px;
+        }
+        
+        .materials-management-page-producers-widget {
+          margin:5px 10px 5px 10px;
+          padding-bottom:10px;
         }
          
       }
-      
-        
+
       .workspace-materials-management-view-page-controls {
         a.close-attachments-editor, 
         a.close-license-editor, 
@@ -1251,6 +1269,7 @@ body.workspace-materials-management {
           height:29px;
           width:29px;
         }
+        
       }
     
       &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
@@ -1362,6 +1381,12 @@ body.workspace-materials-management {
           
         }
         
+        a.change-assignment:before,
+        a.correct-answers:before {
+          position:relative;
+          top:1px;
+        }
+        
         a.delete-page {
           font-size:22px;
           height:31px;
@@ -1389,46 +1414,23 @@ body.workspace-materials-management {
         
       }
 
-      h1,
-      h2,
-      h3,
-      h4 {
-        margin:40px 0 20px 0;
-        color:#38393a;
-        font-weight:300;
-        text-transform:none;
-        line-height:1.3em;
-        
-        &:first-child {
-          margin:20px 0 20px 0;
-        }
-      }
-      
-      h1 {
-        font-size:31px;
-      }
-        
-      h2 {
-        font-size:27px;
-      }
-      
-      h3 {
-        margin:20px 0 20px 0;
-        font-size:24px;
-      }
-      
-      h4 {
-        margin:20px 0 20px 0;
-        font-size:20px;
-        font-weight:400;
-      }
-      
-      p {
-        margin:20px 0 20px 0;
-      }
-      
     }
     
   }
   
+}
+
+@media screen and (max-width: 767px) {
+
+  body #workspaceMaterialsManagementTOCWrapper {
+    display:none;
+  }
+  
+  body #contentWorkspaceMaterialsManagement {
+     padding:0;
+     position:relative;
+     left:auto;
+     min-width:320px;
+  }
+
 }

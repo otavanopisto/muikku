@@ -7,6 +7,7 @@
 @import "_file-field.scss";
 @import "_workspace-materials-defaults.scss"; 
 @import "_correct_answers.scss"; 
+@import "_ckeditor_theme.scss";
 
 .lazy-pdf {
   height: 822px;
@@ -75,61 +76,6 @@ body {
     padding:10px 20px 10px 20px;
     text-transform:none;
     line-height:1.3em;
-  }
-  
-  .muikku-file-input-field-file-uploader-container {
-   font-size:14px;
-  }
-  
-}
-
-.workspace-materials-view-page.material-view { /* <article> */
-  padding:10px 20px;
-  margin:30px auto;
-  position:relative;
-  background:#fff;
-  
-  &[data-binary-type="pdf"] {
-    padding:0;
-    
-    h2 {
-      padding:20px 20px 10px 20px;
-    }
-    
-  }
-
-  label,select,option,input,textarea { /* Overrides the values used in reading/management */
-    font-weight:400;
-    font-size:14px;
-  }
-
-  blockquote {
-    font-family:'Open Sans', Arial, sans-serif;
-    font-style:italic;
-    padding:2px 0;
-    border-style:solid;
-    border-color:#eee;
-    border-width:0;
-    color:#777;
-    font-size:20px;
-    margin:0 40px 0 40px;
-  
-    p {
-      margin:10px 0 10px 0;
-    }
-  
-  }
-  
-  .cke_contents_ltr blockquote {
-    padding-left:20px;
-    padding-right:8px;
-    border-left-width:8px;
-  }
-  
-  .cke_contents_rtl blockquote {
-    padding-left:8px;
-    padding-right:20px;
-    border-right-width:8px;
   }
   
 }
