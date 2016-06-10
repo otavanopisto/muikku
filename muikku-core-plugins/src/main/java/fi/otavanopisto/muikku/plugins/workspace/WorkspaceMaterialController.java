@@ -24,6 +24,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.xerces.parsers.DOMParser;
 import org.cyberneko.html.HTMLConfiguration;
@@ -42,6 +43,7 @@ import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
@@ -850,7 +852,7 @@ public class WorkspaceMaterialController {
       switch (rootMaterialNode.getType()) {
       case FOLDER:
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
-        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getParent().getId(), rootMaterialNode.getHidden(), null, 0l, 0l, workspaceFolder.getPath(), null);
+        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getParent().getId(), rootMaterialNode.getHidden(), null, 0l, 0l, workspaceFolder.getPath(), null, null);
 
         List<WorkspaceNode> children = includeHidden
             ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
@@ -868,7 +870,7 @@ public class WorkspaceMaterialController {
         for (FlattenedWorkspaceNode child : flattenedChildren) {
           ContentNode contentNode;
           if (child.isEmptyFolder) {
-            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.hidden, null, 0l, 0l, child.node.getPath(), null);
+            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.hidden, null, 0l, 0l, child.node.getPath(), null, null);
           } else {
             contentNode = createContentNode(child.node, child.level, processHtml, includeHidden);
           }
@@ -894,10 +896,20 @@ public class WorkspaceMaterialController {
         Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
         Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
         Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
+        List<String> producerNames = null;
+        
+        List<MaterialProducer> producers = materialController.listMaterialProducers(material);
+        if ((producers != null) && !producers.isEmpty()) {
+          producerNames = new ArrayList<>();
+          for (MaterialProducer producer : producers) {
+            producerNames.add(StringUtils.replace(StringEscapeUtils.escapeHtml4(producer.getName()), ",", "&#44;"));
+          }
+        }
+        
         return new ContentNode(workspaceMaterial.getTitle(), material.getType(), rootMaterialNode.getId(), material.getId(), level,
             workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getParent().getId(),
             workspaceMaterial.getHidden(), processHtml ? getMaterialHtml(material, parser, transformer) : null,
-            currentRevision, publishedRevision, workspaceMaterial.getPath(), material.getLicense());
+            currentRevision, publishedRevision, workspaceMaterial.getPath(), material.getLicense(), StringUtils.join(producerNames, ','));
       default:
         return null;
       }
