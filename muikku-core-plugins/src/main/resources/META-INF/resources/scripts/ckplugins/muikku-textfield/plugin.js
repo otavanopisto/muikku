@@ -1,9 +1,7 @@
-/**
- * @license Copyright (c) 2003-2014, CKSource - Frederico Knabben, Otavan
- *          opisto. All rights reserved.
- */
-
 (function() {
+  
+  /* global CKEDITOR:true */
+  
   function isMuikkuTextField(element) {
     var attributes = element.attributes;
 
