@@ -108,38 +108,36 @@
           element.getFirst().remove();
         }
       },
-      setupContainers : function(label) {
+      setupContainers : function() {
         var uiElement = this.getElement();
-        if (this.label) {
-          var titleContainer = uiElement
-              .findOne('.textfield-title-container');
-          if (titleContainer === null) {
-            titleContainer = new CKEDITOR.dom.element('div');
-            titleContainer.addClass('textfield-title-container');
-            uiElement.append(titleContainer);
+        var titleContainer = uiElement
+            .findOne('.textfield-title-container');
+        if (titleContainer === null) {
+          titleContainer = new CKEDITOR.dom.element('div');
+          titleContainer.addClass('textfield-title-container');
+          uiElement.append(titleContainer);
 
-            var optionLabel = new CKEDITOR.dom.element('label');
-            optionLabel.setText(this.label);
-            titleContainer.append(optionLabel);
+          var optionLabel = new CKEDITOR.dom.element('label');
+          optionLabel.setText(this.label);
+          titleContainer.append(optionLabel);
 
-            var _this = this;
-            var addLink = new CKEDITOR.dom.element('a');
-            addLink.addClass('icon-add');
-            addLink.on('click', function() {
-              _this.addAnswer('', false);
-            });
-            titleContainer.append(addLink);
-            var addLinkTooltip = new CKEDITOR.dom.element('span');
-            addLinkTooltip.setText(this.addOptionLink);
-            addLink.append(addLinkTooltip);
+          var _this = this;
+          var addLink = new CKEDITOR.dom.element('a');
+          addLink.addClass('icon-add');
+          addLink.on('click', function() {
+            _this.addAnswer('', false);
+          });
+          titleContainer.append(addLink);
+          var addLinkTooltip = new CKEDITOR.dom.element('span');
+          addLinkTooltip.setText(this.addOptionLink);
+          addLink.append(addLinkTooltip);
 
-            var correctLabel = new CKEDITOR.dom.element('label');
-            correctLabel.addClass('icon-checkmark');
-            titleContainer.append(correctLabel);
-            var correctTooltip = new CKEDITOR.dom.element('span');
-            correctTooltip.setText(this.correctTooltip);
-            correctLabel.append(correctTooltip);
-          }
+          var correctLabel = new CKEDITOR.dom.element('label');
+          correctLabel.addClass('icon-checkmark');
+          titleContainer.append(correctLabel);
+          var correctTooltip = new CKEDITOR.dom.element('span');
+          correctTooltip.setText(this.correctTooltip);
+          correctLabel.append(correctTooltip);
         }
         // Options container
         var optionsContainer = uiElement.findOne('.textfield-elements-container');
