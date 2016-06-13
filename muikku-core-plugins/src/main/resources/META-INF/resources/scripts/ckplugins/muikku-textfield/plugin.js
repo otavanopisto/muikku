@@ -244,7 +244,7 @@
           }
 
           var answersElement = this.getContentElement('info', 'answers');
-          rightAnswers = answersElement.getAnswers();
+          var rightAnswers = answersElement.getAnswers();
           for (var i = 0, l = rightAnswers.length; i < l; i++) {
             // TODO: controls for case sensitive / normalize whitespace
             rightAnswers[i].caseSensitive = false;
