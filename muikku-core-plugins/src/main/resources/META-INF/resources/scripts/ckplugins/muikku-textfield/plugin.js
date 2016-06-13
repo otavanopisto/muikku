@@ -157,9 +157,7 @@
         sortHandle.addClass('icon-move');
         $(optionsContainer.$).sortable({
           handle: '.sort-handle',
-          axis: 'y',
-          stop: function(event, ui) {
-          }
+          axis: 'y'
         });
         optionContainer.append(sortHandle);
 
