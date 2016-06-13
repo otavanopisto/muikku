@@ -4,6 +4,7 @@ CKEDITOR.plugins.setLang('muikku-textfield', 'fi', {
   propertiesMenu: 'Tekstikentän ominaisuudet',
   propertiesDialogTitle: 'Tekstikentän ominaisuudet', 
   propertiesDialogWidth: 'Leveys',
+  propertiesDialogAutoGrow: 'Levene automaattisesti kirjoittaessa',
   propertiesDialogHint: 'Vihjeteksti',
   propertiesDialogHelp: 'Ohjeteksti',
   propertiesDialogRightAnswers: 'Vastausvaihdoehdot',
