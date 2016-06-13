@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.Flag;
+import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
 import fi.otavanopisto.muikku.model.users.FlagStudent_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -662,6 +663,20 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
     flagController.unflagStudent(flagStudent);
     
+    return Response.noContent().build();
+  }
+
+  @DELETE
+  @Path("/flags/share/{FLAGID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteFlagShares(@PathParam("FLAGID") Long flagId) {
+    Flag flag = flagController.findFlagById(flagId);
+    List<FlagShare> listShares = flagController.listShares(flag);
+    
+    for (FlagShare flagShare : listShares) {
+      flagController.deleteFlagShare(flagShare);
+    }
+       
     return Response.noContent().build();
   }
   

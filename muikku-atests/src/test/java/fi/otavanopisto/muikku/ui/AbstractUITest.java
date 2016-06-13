@@ -1093,6 +1093,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
+  protected void deleteFlagShares(Long flagId) {
+    asAdmin()
+    .delete("/test/flags/share/{FLAGID}", flagId)
+    .then()
+    .statusCode(204);
+  }
+  
   protected void deleteStudentFlag(Long studentFlagId) {
     asAdmin()
     .delete("/test/students/flags/{ID}", studentFlagId)
