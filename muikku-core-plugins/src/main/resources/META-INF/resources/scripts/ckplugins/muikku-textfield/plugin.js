@@ -4,16 +4,14 @@
   
   function isMuikkuTextField(element) {
     var attributes = element.attributes;
-
     return (attributes.type == 'application/vnd.muikku.field.text');
   }
 
   function isEmpty(obj) {
-    for ( var prop in obj) {
+    for (var prop in obj) {
       if (obj.hasOwnProperty(prop))
         return false;
     }
-
     return true;
   }
 
@@ -139,7 +137,7 @@
         }
         // Options container
         var optionsContainer = uiElement.findOne('.textfield-elements-container');
-        if (optionsContainer == null) {
+        if (optionsContainer === null) {
           optionsContainer = new CKEDITOR.dom.element('div');
           optionsContainer.addClass('textfield-elements-container');
           uiElement.append(optionsContainer);
