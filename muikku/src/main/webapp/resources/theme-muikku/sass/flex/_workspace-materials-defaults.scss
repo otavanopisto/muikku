@@ -745,7 +745,7 @@ sup {
   .muikku-page-assignment-type {
     padding:0px 8px;
     border-radius:2px;
-    font-size:14px;
+    font-size:12px;
     color: #fff;
     text-align: center;
     text-transform:uppercase;
@@ -852,7 +852,7 @@ sup {
 
 footer.article-details {
   margin:0 -20px -10px -20px;
-  padding:5px 15px;
+  padding:5px 20px;
   border-top:2px solid #e6f2c4;
   font-size:13px;
   line-height:1.2em;
@@ -912,62 +912,4 @@ p.content-view-restricted-message {
     display:none;
   }
 
-}
-
-/* Different reading view's overrides */
-
-body.workspace-materials #contentWorkspaceMaterials {
-  
-  /* Save answers button's font-size under basic view */
-  .workspace-materials-view-page {
-  
-    button.muikku-assignment-button {
-      font-size:14px;
-    }
-    
-    button.muikku-show-correct-answers-button,
-    button.muikku-hide-correct-answers-button {
-      font-size:14px;
-    }
-  
-  }
-  
-  /* Textfield example answers under basic view */
-  span.muikku-field-examples {
-    font-size:13px;
-  }
-
-  /* Assigment type indicators under basic view */
-  .muikku-page-assignment-type {
-    font-size: 12px;
-  }
-  
-}
-
-body.workspace-materials-reading #contentWorkspaceMaterialsReading {
-  
-  /* Save answers button's font-size under reading view view */
-  .workspace-materials-view-page {
-  
-    button.muikku-assignment-button {
-      font-size:16px;
-    }
-    
-    button.muikku-show-correct-answers-button,
-    button.muikku-hide-correct-answers-button {
-      font-size:16px;
-    }
-  
-  }
-  
-  /* Textfield example answers under reading view */
-  span.muikku-field-examples {
-    font-size:15px;
-  }
-  
-  /* Assigment type indicators under reading view */
-  .muikku-page-assignment-type {
-    font-size: 14px;
-  }
-  
 }
