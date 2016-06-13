@@ -1,4 +1,4 @@
-<div class="teachers-list-container">
+<div class="teachers-list-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
   {#teachers}
     <div class="workspace-users" data-user-id="{id}">
       <div class="workspace-users-name">{lastName}, {firstName}</div>

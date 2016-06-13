@@ -1,0 +1,134 @@
+@import "_vars.scss";
+@import "_styles.scss";
+
+
+body { 
+  font-family:'Open Sans', Arial, sans-serif;
+  min-height:100%;
+  line-height:1.7em;
+  font-weight:300;
+}
+
+h1.workspace-generic-view-title {
+  background:#fff;
+  padding:20px;
+  margin:0;
+  font-weight:300;
+  font-size:30px;
+  line-height:1.3em;
+}
+
+h2.workspace-generic-title { 
+  padding:10px 20px;
+  margin:0;
+  background:#fff;
+  font-weight:300;
+  font-size:26px; 
+  line-height:1.3em;
+}
+
+
+.workspace-teachers-listing-wrapper,
+.workspace-students-listing-wrapper {
+  padding:20px;
+  background:#fff; 
+  
+  .workspace-students-list,
+  .workspace-teachers-list {
+     display:block;
+     
+  
+    &.loading {
+      color:#1beeec;
+      height:40px;
+      width:39px;
+      margin:25px auto 5px auto;
+      -webkit-animation:users-loading 0.7s infinite linear;
+      -moz-animation:users-loading 0.7s infinite linear;
+      animation:users-loading 0.7s infinite linear;
+      
+      &:before {
+        content: "\e900";
+        font-family: 'muikku' !important;
+        speak:none;
+        font-style:normal;
+        font-weight:normal;
+        font-variant:normal;
+        text-transform:none;
+        line-height:1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        
+        font-size:39px;
+      }
+    }
+
+  }
+  
+  .workspace-students-active,
+  .workspace-students-evaluated,
+  .workspace-students-inactive {
+	  color:#0099ff;
+	  text-decoration:none;
+	  cursor:pointer;
+	  display:inline-block;
+	  padding:2px 6px;
+	  font-size:14px;
+  }
+  
+  .workspace-users-empty {
+    padding:4px 5px;
+    text-align:center;
+    font-size:18px;
+    font-style:italic;
+  }
+
+  .workspace-users {
+    padding:4px 5px;
+    transition:background 0.3s ease-in-out, border 0.4s ease-in-out;
+    background:#fff;
+    border-radius:2px;
+    border:1px solid #fff;
+    
+    &:hover {
+
+      background:#9fd8ff;
+      
+    }
+    
+    .workspace-users-name {
+      @include flex(1 0 auto);
+    }
+    
+	  .workspace-users-archive,
+	  .workspace-users-unarchive,
+    .workspace-users-delete {
+      @include flex(0 0 auto);
+      padding:0 5px;
+      border-radius:2px;
+      color:#fff;
+      font-size:14px;
+      font-weight:400;
+      cursor:pointer;
+      
+      &:not(:last-child){
+        margin:0 5px;
+      }
+      
+    }
+    
+    .workspace-users-archive {
+      background:#f6a930;
+    }
+    
+    .workspace-users-unarchive {
+      background:#0099ff;
+    }
+    
+    .workspace-users-delete {
+      background:#de3211;
+    }
+    
+  }
+
+} 

@@ -20,30 +20,31 @@
   </ui:define>
   
   <ui:define name="grid-content">
-    <form style="display: none;">
-      <input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
-    </form>
+    <input name="workspaceEntityId" type="hidden" value="#{workspaceUsersBackingBean.workspaceEntityId}" />
     
     <div class="flex-row">
       <h1 class="workspace-generic-view-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.users.pageTitle']}</h1>
     </div>
     
     <div class="flex-row">
-	    <h2 class="workspace-generic-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">#{i18n.text['plugin.workspace.users.teachers.title']}</h2>
-	    <div class="workspace-teachers-listing-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-	      <div class="workspace-teachers-list">
+	    <h2 class="workspace-generic-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.users.teachers.title']}</h2>
+	    <div class="workspace-teachers-listing-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+	      <div class="workspace-teachers-list flex-row">
 	      </div>
 	    </div>
     </div>
 
     <div class="flex-row">
-      <h2 class="workspace-generic-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">#{i18n.text['plugin.workspace.users.students.title']}</h2>
-	    <div class="workspace-students-listing-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-	      <span class="workspace-students-active">#{i18n.text['plugin.workspace.users.students.link.active']}</span>
-	      <span class="workspace-students-inactive">#{i18n.text['plugin.workspace.users.students.link.inactive']}</span>
-	      <div class="workspace-students-list">
-	      </div>
+      <h2 class="workspace-generic-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.users.students.title']}</h2>
+	    <div class="workspace-students-listing-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+		    <div class="flex-row">
+	  	    <span class="workspace-students-active">#{i18n.text['plugin.workspace.users.students.link.active']}</span>
+	        <span class="workspace-students-inactive">#{i18n.text['plugin.workspace.users.students.link.inactive']}</span>
+		    </div>
+		    <div class="workspace-students-list flex-row">
+		    </div>
 	    </div>
     </div>
-
+  </ui:define>
+  
 </ui:composition>
