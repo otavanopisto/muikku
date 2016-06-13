@@ -228,15 +228,9 @@
           var contentJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
           this.setupContent(contentJson);
         },
-        onOk : function(event) {
-          var oldJson = editor.getMuikkuFieldDefinition(editor
-              .getSelection().getStartElement());
-          var name;
-          if (oldJson.name) {
-            name = oldJson.name;
-          } else {
-            name = editor.createRandomMuikkuFieldName();
-          }
+        onOk : function() {
+          var oldJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
+          var name = oldJson.name||editor.createRandomMuikkuFieldName();
 
           var answersElement = this.getContentElement('info', 'answers');
           var rightAnswers = answersElement.getAnswers();
@@ -255,8 +249,7 @@
           };
 
           var object = new CKEDITOR.dom.element('object');
-          object
-              .setAttribute('type', 'application/vnd.muikku.field.text');
+          object.setAttribute('type', 'application/vnd.muikku.field.text');
           var paramType = new CKEDITOR.dom.element('cke:param');
           paramType.setAttribute('name', 'type');
           paramType.setAttribute('value', 'application/json');
@@ -267,8 +260,6 @@
           object.append(paramContent);
           var fakeElement = createFakeElement(editor, object);
           editor.insertElement(fakeElement);
-        },
-        onHide : function() {
         },
         contents : [ {
           id : 'info',
