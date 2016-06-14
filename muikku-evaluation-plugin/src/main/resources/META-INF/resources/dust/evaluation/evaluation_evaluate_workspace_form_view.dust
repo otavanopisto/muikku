@@ -37,7 +37,7 @@
   </div>
   <div class="evaluation-modal-removeWrapper">
     {?removable}
-       <button class="remove-evaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.removeEvaluationButton"/}</button>
+       <button class="remove-evaluation"><span class="ui-button-text">{#localize key="plugin.evaluation.workspaceEvaluationDialog.removeEvaluationButton"/}</span></button>
     {/removable}
   </div>
 </section>
