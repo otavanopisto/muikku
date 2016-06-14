@@ -1,22 +1,5 @@
 <section class="evaluation-modal-evaluateFormWrapper" id="evaluationEvaluateFormWrapper">
-  <!--
-  <header class="evaluation-modal-evaluateForm-header">
-    <h2 class="evaluation-modal-evaluateForm-title">Työtilan arviointi</h2>
-    <div class="evaluation-modal-evaluateForm-meta-wrapper">
-      <div class="meta-education-type">
-        <span class="title">Opiskelijan linja</span><span class="desc">{studentStudyProgrammeName}</span>
-      </div>
-      <div class="meta-workspace">
-        <span class="title">Kurssi</span><span class="desc">{workspaceName}</span>
-      </div>
-    </div>
-  </header>
-  -->
   <div class="evaluation-modal-evaluateForm-content"> 
-    {?removable}
-      <button class="remove-evaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.removeEvaluationButton"/}</button>
-    {/removable}
-    
     <div class="evaluation-modal-evaluateForm-literal-eval-wrapper">
       <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.literalAssessment"/}</label>
       <textarea id="evaluateFormLiteralEvaluation"></textarea>
@@ -39,12 +22,6 @@
         {/gradingScales}
       </select>
     </div>
-    <!--
-    <div class="evaluation-modal-evaluateForm-basedOfPhenomenon-wrapper">
-      <label for="evaluateFormLiteralEvaluation">Ilmiön osuus suorituksesta</label>
-    
-    </div>
-    -->
     <div class="evaluation-modal-evaluateForm-valuer-wrapper">
       <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentAssessor"/}</label>
       <select name="assessor">
@@ -57,5 +34,10 @@
       {/assessors}
       </select>
     </div>
+  </div>
+  <div class="evaluation-modal-removeWrapper">
+    {?removable}
+       <button class="remove-evaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.removeEvaluationButton"/}</button>
+    {/removable}
   </div>
 </section>

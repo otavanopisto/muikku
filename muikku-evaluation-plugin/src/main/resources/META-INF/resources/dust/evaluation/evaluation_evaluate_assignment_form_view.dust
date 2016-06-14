@@ -1,17 +1,4 @@
 <section class="evaluation-modal-evaluateFormWrapper" id="evaluationEvaluateFormWrapper">
-  <!-- 
-  <header class="evaluation-modal-evaluateForm-header">
-    <h2 class="evaluation-modal-evaluateForm-title">Tehtävän arviointi</h2>
-    <div class="evaluation-modal-evaluateForm-meta-wrapper">
-      <div class="meta-education-type">
-        <span class="title">Opiskelijan linja</span><span class="desc">{studentStudyProgrammeName}</span>
-      </div>
-      <div class="meta-workspace">
-        <span class="title">Kurssi</span><span class="desc">{workspaceName}</span>
-      </div>
-    </div>
-  </header>
-  -->
   <div class="evaluation-modal-evaluateForm-content"> 
     <div class="evaluation-modal-evaluateForm-literal-eval-wrapper">
       <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.assignmentEvaluationDialog.literalAssessment"/}</label>
@@ -35,12 +22,6 @@
         {/gradingScales}
       </select>
     </div>
-    <!--
-    <div class="evaluation-modal-evaluateForm-basedOfPhenomenon-wrapper">
-      <label for="evaluateFormLiteralEvaluation">Ilmiön osuus suorituksesta</label>
-    
-    </div>
-    -->
     <div class="evaluation-modal-evaluateForm-valuer-wrapper">
       <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.assignmentEvaluationDialog.assessmentAssessor"/}</label>
       <select name="assessor">

@@ -8,6 +8,7 @@
 @import "_evaluation_material_styles.scss"; 
 @import "_correct_answers.scss"; 
 @import "_draft.scss";
+@import "_dialog.scss";
 
 body.evaluation {
   background:none;
@@ -530,7 +531,7 @@ body.evaluation {
         height:120px;
         margin:0 auto;  
         box-sizing:border-box;
-        background-image:url("gfx/default-user-picture.jpg");
+        background-image:url("/gfx/default-user-picture.jpg");
         background-size:cover;
         border-radius:100%;
         background-position:center center;
@@ -1012,7 +1013,32 @@ body.evaluation {
         }
       
       }
-  
+      
+      .evaluation-modal-removeWrapper {
+        position:absolute;
+        bottom:10px;
+        left:10px;
+        z-index:99;
+      
+        button.remove-evaluation {
+          cursor:pointer;
+          background:#de3211;
+          border-radius:0px;
+          border:0;
+          color:#fff;
+          font-weight:400;
+          padding:5px 15px;
+          text-transform:uppercase;
+          margin:5px;
+          outline:none;
+          font-family:'Open Sans', Arial, sans-serif;
+          min-width:90px;
+          font-size:18px;
+          float:none;
+        }
+      
+      }
+      
       .evaluation-modal-evaluateForm-content {
         padding:10px 20px 10px 2px;
         position:absolute;
@@ -1021,7 +1047,7 @@ body.evaluation {
         right:10px;
         left:10px;
         border-bottom:1px solid #eee;
-        
+
         label {
           text-transform:uppercase;
           padding:0 0 3px 0;
@@ -1072,23 +1098,23 @@ body.evaluation {
         .evaluation-modal-evaluateForm-grade-wrapper {
           margin:10px 0;
         }
-        
+
         .evaluation-modal-evaluateForm-basedOfPhenomenon-wrapper {
           margin:10px 0;
         }
-        
+
         .evaluation-modal-evaluateForm-valuer-wrapper {
           margin:10px 0;
         }
-        
+
       }
-      
+/*
       .evaluation-modal-evaluationFormAction-wrapper {
         text-align:center;
         width:100%;
         bottom:10px;
         position:absolute;
-      
+
         .evaluation-modal-evaluationForm-button {
           border-radius:0px;
           border:0;
@@ -1102,16 +1128,17 @@ body.evaluation {
           min-width:90px;
           font-size:18px;
         }
-        
+
         #evaluateFormCancelButton {
           background:#7391a7;
         }
-        
+
         #evaluateFormSaveButton {
           background:#27b91c;
         }
-        
+
       }
+*/
     }
     
   }
@@ -1186,7 +1213,7 @@ body.evaluation {
           display:inline-block;
           margin:0 20px 0 0;
           padding:0 0 0 40px;
-          background-imageurl:("gfx/default-user-picture.jpg");
+          background-image:url("/gfx/default-user-picture.jpg");
           background-repeat:no-repeat;
           background-position:left center;
           background-size:contain;
@@ -1258,9 +1285,8 @@ body.evaluation {
     }
     
     .ui-dialog-buttonpane {
-      width:100%;
+      width:310px;
       max-width:50%;
-      min-width:400px;
       bottom:10px;
       right:0;
       position:absolute;
