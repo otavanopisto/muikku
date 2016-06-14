@@ -72,10 +72,10 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   }
 
   @Override
-  public Node handleTextField(org.w3c.dom.Document ownerDocument, String paramName, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
+  public Node handleTextField(org.w3c.dom.Document ownerDocument, String paramName, Integer columns, Boolean autogrow, List<RightAnswer> rightAnswers, String help, String hint) {
     // TODO: This is just for show, real implementation depends on QueryMaterial implementation
    
-    TextFieldMeta textFieldData = fieldTranslator.translateTextField(paramName, columns, rightAnswers, help, hint);
+    TextFieldMeta textFieldData = fieldTranslator.translateTextField(paramName, columns, autogrow, rightAnswers, help, hint);
 
     Element inputElement = ownerDocument.createElement("input");
     inputElement.setAttribute("type", "text");
