@@ -115,7 +115,7 @@ body.evaluation {
         visibility:hidden; 
         overflow:hidden;
         opacity:0;
-        height:0px;
+        height:0;
         box-shadow:0 10px 10px rgba(0, 0, 0, 0.1);
         min-width:600px;
 
@@ -179,7 +179,7 @@ body.evaluation {
         .evaluation-flags-container {
           display:none;
           position:absolute;
-          right:0px;
+          right:0;
           top:42px;
           width:250px;
           box-shadow:0 7px 15px rgba(0,0,0,0.3);
@@ -269,7 +269,7 @@ body.evaluation {
         .evaluation-search-container {
           display:none;
           position:absolute;
-          right:0px;
+          right:0;
           top:42px;
           width:310px;
           box-shadow:0 7px 15px rgba(0,0,0,0.3);
@@ -719,7 +719,7 @@ body.evaluation {
     right:0;
     padding:0;
     margin:0;
-    border:0px;
+    border:0;;
     overflow:hidden;
 
     #evaluationStudentAssignmentWrapper {
@@ -1021,7 +1021,7 @@ body.evaluation {
         z-index:99;
 
         button.remove-evaluation {
-          border-radius:0px;
+          border-radius:0;
           border:0;
           background:#de3211;
           color:#fff;
@@ -1050,7 +1050,7 @@ body.evaluation {
         padding:10px 20px 10px 2px;
         position:absolute;
         bottom:65px;
-        top:0px;
+        top:0;
         right:10px;
         left:10px;
         border-bottom:1px solid #eee;
@@ -1127,12 +1127,12 @@ body.evaluation {
     border:none;
     z-index:9999;
     position:fixed;
-    top:0px;
-    right:0px;
-    bottom:0px;
-    left:0px;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
     background:#fff;
-    border-radius:0px;
+    border-radius:0;
     border:1px solid #fff;
     overflow:hidden;
     min-width:990px;
@@ -1209,9 +1209,9 @@ body.evaluation {
       
       .ui-dialog-titlebar-close {
         position:absolute;
-        right:0px;
-        top:13px;
-        border:0px;
+        right:0;
+        top:0;
+        border:0;
         background:transparent;
         z-index:999;
         width:56px;
@@ -1262,7 +1262,7 @@ body.evaluation {
     }
     
     .ui-dialog-buttonpane {
-      border:0px;
+      border:0;
       bottom:10px;
       margin:0;
       max-width:50%;
@@ -1279,7 +1279,7 @@ body.evaluation {
         padding:0 30px 0 0;
         
         button {
-          border-radius:0px;
+          border-radius:0;
           border:0;
           color:#fff;
           font-weight:400;
