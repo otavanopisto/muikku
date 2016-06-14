@@ -338,7 +338,7 @@ blockquote {
   border-color:#eee;
   border-width:0;
   color:#777;
-  font-size:22px;
+  font-size:20px;
   margin:0 40px 0 40px;
 
   p {
@@ -361,6 +361,11 @@ blockquote {
 
 p, h1, h2, h3, h4, h5, h6 {
   word-wrap:break-word;
+}
+
+label,select,option,input,textarea { /* Overrides the values used in reading/management */
+  font-weight:400;
+  font-size:14px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -437,6 +442,27 @@ mark[data-muikku-word-definition] {
   cursor:help;
   font-weight:400;
   position:relative;
+}
+
+.muikku-file-input-field-file-uploader-container {
+  font-size:14px;
+}
+
+.workspace-materials-view-page.material-view { /* This is single material page */
+  padding:10px 20px;
+  margin:30px auto;
+  position:relative;
+  background:#fff;
+  
+  &[data-binary-type="pdf"] { /* If material page is PDF */
+    padding:0;
+    
+    h2 {
+      padding:20px 20px 10px 20px;
+    }
+    
+  }
+
 }
           
 figure.image {
@@ -826,13 +852,13 @@ sup {
 
 footer.article-details {
   margin:0 -20px -10px -20px;
-  padding:15px;
+  padding:5px 15px;
   border-top:2px solid #e6f2c4;
   font-size:13px;
-  line-height:1;
+  line-height:1.2em;
   
   .producers-override {
-    display:none;
+    margin:10px 0;
   
     .material-producers-label {
       color:#727272;
@@ -849,6 +875,7 @@ footer.article-details {
   }
   
   .license-override {
+    margin:10px 0;
   
     .material-license-label {
       color:#727272;
@@ -866,7 +893,25 @@ footer.article-details {
     }
     
   }
-  
+
+}
+
+/* View Restriction */
+p.content-view-restricted-message {
+  text-align:center;
+  font-style:italic;
+  font-size:20px;
+  padding:60px 20px;
+  background:#f9f9f9;
+}
+
+.workspace-materials-view-page[data-view-restricted="true"] {
+
+  .muikku-save-page-wrapper,
+  .article-details {
+    display:none;
+  }
+
 }
 
 /* Different reading view's overrides */

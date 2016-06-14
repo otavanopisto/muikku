@@ -13,9 +13,12 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.plugins.material.dao.MaterialDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.MaterialMetaDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.MaterialMetaKeyDAO;
+import fi.otavanopisto.muikku.plugins.material.dao.MaterialProducerDAO;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialMeta;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialMetaKey;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
 import fi.otavanopisto.muikku.plugins.material.operations.MaterialCloneOperation;
 
 @Dependent
@@ -28,6 +31,9 @@ public class MaterialController {
 	@Inject
 	private MaterialDAO materialDAO;
 	
+	@Inject
+  private MaterialProducerDAO materialProducerDAO;
+  
   @Inject
 	private MaterialMetaDAO materialMetaDAO;
   
@@ -67,6 +73,10 @@ public class MaterialController {
   public Material updateMaterialLicense(Material material, String license) {
     return materialDAO.updateLicense(material, license);
   }
+
+  public Material updateMaterialViewRestrict(Material material, MaterialViewRestrict viewRestrict) {
+    return materialDAO.updateViewRestrict(material, viewRestrict);
+  }
   
   public List<MaterialMetaKey> listMaterialMetaKeys() {
     return materialMetaKeyDAO.listAll();
@@ -90,6 +100,24 @@ public class MaterialController {
   
   public MaterialMetaKey findMaterialMetaKey(String name) {
     return materialMetaKeyDAO.findByName(name);
+  }
+  
+  /* Producers */
+  
+  public MaterialProducer createMaterialProducer(Material material, String name) {
+    return materialProducerDAO.create(material, name);
+  }
+
+  public MaterialProducer findMaterialProducer(Long producerId) {
+    return materialProducerDAO.findById(producerId);
+  }
+  
+  public List<MaterialProducer> listMaterialProducers(Material material) {
+    return materialProducerDAO.listByMaterial(material);
+  }
+  
+  public void deleteMaterialProducer(MaterialProducer materialProducer) {
+    materialProducerDAO.delete(materialProducer);
   }
 
 }

@@ -5,23 +5,20 @@
   /* frontpage (.fp-*) */
 
   
-  .fp-announcement{
-
-    &.environment{
-      border-left: 5px solid #fda726;
-    }
-    &.workspace{
-      border-left: 5px solid #e163ed;
-    }
-    &:not(:first-child){
-      margin-top:10px;
-    }
-    a{
-     margin-left:10px;
-    }
-        
-    .fp-announcement-info-workspace{
-      font-size:10px;
-      padding-left:10px;
-    }
+.fp-announcement{
+  > div{
+    padding-left:10px;  
   }
+  &.environment{
+    border-left: 5px solid #fda726;
+  }
+  &.workspace{
+    border-left: 5px solid #e163ed;
+  }
+  &:not(:first-child){
+    margin-top:10px;
+  }
+  .fp-announcement-info-workspace{
+    font-size:10px;
+  }
+}

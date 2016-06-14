@@ -4,6 +4,7 @@ CKEDITOR.plugins.setLang('muikku-textfield', 'en', {
   propertiesMenu: 'Text Field Properties',
   propertiesDialogTitle: 'Text Field Properties', 
   propertiesDialogWidth: 'Width',
+  propertiesDialogAutoGrow: 'Auto-grow When Typing',
   propertiesDialogHint: 'Hint',
   propertiesDialogHelp: 'Help',
   propertiesDialogRightAnswers: 'Answers',

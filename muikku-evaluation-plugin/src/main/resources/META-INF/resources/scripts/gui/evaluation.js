@@ -826,6 +826,9 @@
   
   $.widget("custom.evaluationView", {
     loadWorkspace: function(workspaceEntityId) {
+      mApi().abortAll();
+      $('#evaluation').evaluation('clearStudentsView');
+      
       try {
         var newUrl = this._updateQueryStringParameter(window.location.href, 'workspaceEntityId', workspaceEntityId);
         window.history.pushState({path:newUrl}, '', newUrl);
@@ -947,14 +950,14 @@
       this._reloadStudents();
     },
     
-    _clearStudentsView: function () {
+    clearStudentsView: function () {
       this.element.find('.evaluation-student-wrapper').remove();
       this.element.find('.evaluation-assignments').empty();
       this.element.find('.evaluation-no-students-found').remove();
     },
     
     _reloadStudents: function () {
-      this._clearStudentsView();
+      this.clearStudentsView();
       this.loadStudents();
     },
     
@@ -1096,7 +1099,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           this._workspaceUsers = workspaceStudents;
-          this._clearStudentsView();
+          this.clearStudentsView();
           
           if (this._workspaceUsers.length > 0) {
             $.each(workspaceStudents, $.proxy(function (index, workspaceStudent) {

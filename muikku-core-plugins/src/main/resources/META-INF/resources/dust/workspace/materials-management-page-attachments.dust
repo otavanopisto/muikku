@@ -1,3 +1,4 @@
+<div class="material-attachments-title">{#localize key="plugin.workspace.materialsManagement.materialAttachmentsTitle"/}</div>
 <div class="materials-management-page-attachments-upload-container">
   <input type="file" multiple="multiple" name="file"/>
   <span class="materials-management-page-attachment-description">{#localize key="plugin.workspace.materialsManagement.attachment.fileHint"/}</span>

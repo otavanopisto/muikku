@@ -2,12 +2,13 @@ package fi.otavanopisto.muikku.plugins.material.dao;
 
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 
 public class HtmlMaterialDAO extends CorePluginsDAO<HtmlMaterial> {
 	
 	private static final long serialVersionUID = 3344543661453014697L;
 
-  public HtmlMaterial create(String title, String html, String contentType, Long revisionNumber, HtmlMaterial originMaterial, String license) {
+  public HtmlMaterial create(String title, String html, String contentType, Long revisionNumber, HtmlMaterial originMaterial, String license, MaterialViewRestrict viewRestrict) {
     HtmlMaterial htmlMaterial = new HtmlMaterial();
     
     htmlMaterial.setHtml(html);
@@ -16,6 +17,7 @@ public class HtmlMaterialDAO extends CorePluginsDAO<HtmlMaterial> {
     htmlMaterial.setContentType(contentType);
     htmlMaterial.setRevisionNumber(revisionNumber);
     htmlMaterial.setLicense(license);
+    htmlMaterial.setViewRestrict(viewRestrict);
     
     return persist(htmlMaterial);
   }

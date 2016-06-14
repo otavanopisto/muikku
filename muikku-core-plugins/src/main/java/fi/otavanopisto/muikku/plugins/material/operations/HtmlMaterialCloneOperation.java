@@ -12,7 +12,7 @@ public class HtmlMaterialCloneOperation implements MaterialCloneOperation<HtmlMa
 
   @Override
   public HtmlMaterial clone(HtmlMaterial material) {
-    return htmlMaterialController.createHtmlMaterial(material.getTitle(), material.getHtml(), material.getContentType(), new Long(0), material, material.getLicense());
+    return htmlMaterialController.createHtmlMaterial(material.getTitle(), material.getHtml(), material.getContentType(), new Long(0), material, material.getLicense(), material.getViewRestrict());
   }
   
 }

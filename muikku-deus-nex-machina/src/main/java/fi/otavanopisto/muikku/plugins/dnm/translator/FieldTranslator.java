@@ -38,13 +38,13 @@ public class FieldTranslator {
     return result;
   }
   
-  public TextFieldMeta translateTextField(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
+  public TextFieldMeta translateTextField(String name, Integer columns, Boolean autogrow, List<RightAnswer> rightAnswers, String help, String hint) {
     List<TextFieldRightAnswer> translatedAnswers = new ArrayList<>();
     for (fi.otavanopisto.muikku.plugins.dnm.parser.content.RightAnswer rightAnswer : rightAnswers) {
       Boolean correct = rightAnswer.getPoints() != null && rightAnswer.getPoints() > 0; 
       translatedAnswers.add(new TextFieldRightAnswer(rightAnswer.getText(), true, false, correct));
     }
-    return new TextFieldMeta(name, columns, translatedAnswers, hint);
+    return new TextFieldMeta(name, columns, autogrow, translatedAnswers, hint);
   }
 
   public MemoFieldMeta translateMemoField(String name, Integer columns, Integer rows, String help, String hint) {
