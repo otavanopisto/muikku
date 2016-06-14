@@ -1019,15 +1019,14 @@ body.evaluation {
         bottom:10px;
         left:10px;
         z-index:99;
-      
+                
         button.remove-evaluation {
-          cursor:pointer;
-          background:#de3211;
           border-radius:0px;
           border:0;
+          background:#de3211;
           color:#fff;
           font-weight:400;
-          padding:5px 15px;
+          padding:4px 15px;
           text-transform:uppercase;
           margin:5px;
           outline:none;
@@ -1035,6 +1034,15 @@ body.evaluation {
           min-width:90px;
           font-size:16px;
           float:none;
+          line-height:normal;
+          
+          span {
+            padding:0;
+            line-height:normal;
+            display:block;
+            line-height:normal;
+          }
+        
         }
       
       }
