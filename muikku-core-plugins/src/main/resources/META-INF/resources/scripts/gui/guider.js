@@ -399,6 +399,10 @@
         }
       }, this));
     },
+    
+    _destroy: function () {
+      this._closeDialog();
+    },
         
     _createFlagLoad: function () {
       return $.proxy(function (callback) {
@@ -507,8 +511,8 @@
     },
     
     _closeDialog: function () {
-      this._dialog.dialog("destroy").remove();
-      this.element.remove();
+      $(this._dialog).remove();
+      $(this.element).remove();
     },
     
     _getExistingStaffMemberIds: function () {
@@ -561,9 +565,6 @@
       $(this._dialog).on("click", ".shares .remove", $.proxy(this._onShareRemoveClick, this));
       $(this._dialog).find('.add-user')
         .autocomplete({
-          create: function(event, ui){
-            $(this).perfectScrollbar(); 
-          },  
           source: $.proxy(this._search, this),
           select: $.proxy(this._onAddUserSelect, this),
           appendTo: $('.guider-dialog-user-search')
