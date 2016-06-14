@@ -18,7 +18,7 @@ body.evaluation {
   min-height:100%;
   line-height:1.7em;
   font-size:16px;
-  
+
   > .loading {
     background: #fff none repeat scroll 0 0;
     bottom:0;
@@ -28,16 +28,16 @@ body.evaluation {
     right:0;
     top:0;
     z-index:9999;
-  
+
     &:before {
       @include generic-loader(50px); 
       position:absolute;
       top:50%;
       left:50%;
     }
-  
+
   }
-  
+
   .evaluation-navigation-wrapper { 
     background:#7ed9ff;
     position:absolute;
@@ -49,20 +49,20 @@ body.evaluation {
     padding:5px;
     box-shadow:0 4px 5px rgba(169,169,169,0.3);
     z-index: 9999;
-    
+
     .icon-navicon {
       color:#fff;
       font-size:30px;
       display:inline-block;
       padding:4px;
       cursor:not-allowed;
-      
+
       span[class*="tt"] {
          display:none;
       }
-      
+
     }
-    
+
     .evaluation-workspacelisting-wrapper {
       position:absolute;
       left:50px;
@@ -73,7 +73,7 @@ body.evaluation {
       height:45px;
       padding:0 0 5px 10px;
       cursor:pointer;
-      
+
       .evaluation-current-workspace {
         color:#fff;
         text-transform:uppercase;
@@ -82,21 +82,21 @@ body.evaluation {
         @include flex(1 1 auto);
         padding:1px 0 0 0;
       }
-      
+
       .evaluation-select-workspace {
         @include flex(1 1 auto);
         cursor:pointer;
         padding:15px 10px 10px 10px;
-        
+
         span.icon-arrow-down,
         span.icon-arrow-up {
           color:#fff;
           font-size:22px;
           display:block;
         }
-        
+
       }
-      
+
       .evaluation-available-workspaces {
         color:#fff;
         padding:0 10px;
@@ -118,39 +118,39 @@ body.evaluation {
         height:0px;
         box-shadow:0 10px 10px rgba(0, 0, 0, 0.1);
         min-width:600px;
-        
+
         &.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
           background-color:#fff;
         }
-        
+
         .evaluation-workspace-item {
           padding:2px 5px;
           border-radius:3px;
-          
+
           &:hover {
             background:#7ad8ff;
           }
-        
+
           a {
             color:#fff;
             text-decoration:none;
             text-transform:uppercase;
             display:block;
           }
-        
+
         }
-        
+
       }
 
     }
-    
+
     .evaluation-filters {
       position:absolute;
       right:20px;
       top:0;
       padding:5px 0;
       font-weight:300;
-      
+
       .evaluation-filter {
         display:inline-block;
         padding:0;
@@ -159,13 +159,13 @@ body.evaluation {
         border-left:1px solid #cfeefb;
         cursor:pointer;
         position:relative;
-        
+
         &:first-child {
           border-left:none;
         }
-        
+
         .evaluation-flags {
-          
+
           &.icon-flag:before {
             color:#fff;
             display:inline-block;
@@ -175,7 +175,7 @@ body.evaluation {
           }
 
         }
-        
+
         .evaluation-flags-container {
           display:none;
           position:absolute;
@@ -186,21 +186,21 @@ body.evaluation {
           background:#fff;
           border:1px solid #fff;
           border-radius:5px;
-          
+
           .evaluation-flag {
             padding:6px 8px;
             margin:1px 0;
             border-radius:3px;
-            
+
             &.active {
               background:#a9e6ff;
-              
+
               span {
                 color:#000;
               }
-              
+
             }
-            
+
             &.icon-flag:before {
               background:#fff none repeat scroll 0 0;
               border-radius:100%;
@@ -213,7 +213,7 @@ body.evaluation {
               border-width:1px;
               border-color: attr(data-flag-color color);
             }
-          
+
             span {
               padding:5px;
               font-family:'Open Sans', Arial, sans-serif;
@@ -223,7 +223,7 @@ body.evaluation {
               display:inline-block;
               width:calc(100% - 37px);
             }
-          
+
           }
 
           &:after, 
@@ -237,25 +237,25 @@ body.evaluation {
             position:absolute;
             pointer-events:none;
           }
-          
+
           &:after {
             border-color:rgba(255, 255, 255, 0);
             border-bottom-color:#fff;
             border-width:8px;
             margin-left:-8px;
           }
-          
+
           &:before {
             border-color:rgba(0, 222, 255, 0);
             border-bottom-color:#ffff;
             border-width:8px;
             margin-left:-8px;
           }
-          
+
         }
-        
+
         .evaluation-search {
-          
+
           &.icon-search:before {
             color:#fff;
             display:inline-block;
@@ -265,7 +265,7 @@ body.evaluation {
           }
 
         }
-        
+
         .evaluation-search-container {
           display:none;
           position:absolute;
@@ -276,7 +276,7 @@ body.evaluation {
           background:#fff;
           border:1px solid #fff;
           border-radius:5px;
-          
+
           &:after, 
           &:before {
             bottom:100%;
@@ -288,14 +288,14 @@ body.evaluation {
             position:absolute;
             pointer-events:none;
           }
-          
+
           &:after {
             border-color:rgba(255, 255, 255, 0);
             border-bottom-color:#fff;
             border-width:8px;
             margin-left:-8px;
           }
-          
+
           &:before {
             border-color:rgba(0, 222, 255, 0);
             border-bottom-color:#ffff;
@@ -314,18 +314,18 @@ body.evaluation {
             box-shadow:none;
             cursor:text;
             font-family:'Open Sans', Arial, sans-serif;
-            
+
             &:focus,
             &:active,
             &:hover {
               border:0;
               box-shadow:none;
             }
-            
+
           }
-          
+
         }
-        
+
         label {
           display:inline-block;
           margin:0 0 0 15px;
@@ -333,27 +333,27 @@ body.evaluation {
           cursor:pointer;
           text-shadow:0 0 10px #fff;
         }
-        
+
         input {
           display:inline-block;
           margin-right:10px;
           margin:0 10px 0 0;
           cursor:pointer;
         }
-        
+
       }
-      
+
     }
 
   }
-  
+
   .evaluation-content-wrapper {
     position:absolute;
     top:50px;
     left:0;
     right:0;
     bottom:0;
-    
+
     &.loading {
 
       &:before {
@@ -363,10 +363,11 @@ body.evaluation {
         left:50%;
         margin:-25px 0 0 -25px;
       }
-      
+
     }
+
   }
-  
+
   .prevPage,
   .nextPage {
     position:absolute;
@@ -381,22 +382,22 @@ body.evaluation {
     background:#eee;
     outline:none;
     transition:background 0.3s ease-in-out;
-  
+
     &:hover {
       color:#57abec;
       background:#fff;
     }
-  
+
   }
 
   .prevPage {
     left:0;
   }
-  
+
   .nextPage {
     right:0;
   }
-  
+
   .evaluation-students {
     overflow: hidden;
     position: absolute;
@@ -406,7 +407,7 @@ body.evaluation {
     height: 150px;
     white-space: nowrap;
     transition:margin 0.2s ease-in-out;
-    
+
     .evaluation-no-students-found {
       text-align:center;
       font-weight:300;
@@ -419,8 +420,7 @@ body.evaluation {
       height:30px;
       text-align:center;
     }
-    
-    
+
     .evaluation-student-wrapper {
       width:160px;
       height:130px;
@@ -430,12 +430,12 @@ body.evaluation {
       text-align:center;
       transition:opacity 1s ease-in-out, transform 1s ease-in-out;
       position:relative;
-      
+
       &.evaluation-student-loaded {
         opacity: 1;
         transform: rotate(0deg) scale(1, 1);
       }
-      
+
       .workspace-student-joined-date {
         position:absolute;
         width:100%;
@@ -449,7 +449,7 @@ body.evaluation {
         color:#000;
         font-size:14px;
       }
-    
+
       .workspace-evaluation-requested-date {
         position:absolute;
         width:100%;
@@ -463,7 +463,7 @@ body.evaluation {
         color:#fff;
         font-size:14px;
       }
-      
+
       .workspace-evaluated-date {
         position:absolute;
         width:100%;
@@ -477,29 +477,29 @@ body.evaluation {
         color:#fff;
         font-size:14px;
       }
-      
+
       /* Workspace has been evaluated by teacher */
       &.workspace-evaluated {
-        
+
         .workspace-evaluated-date {
           background:#3cdd2a;
         }
-      
+
         .evaluation-student-picture {
           box-shadow:0 0 0 5px #3cdd2a;
         }
-    
+
       }
-      
+
       /* Student has sent workspace evaluation request */
       &.workspace-evaluation-requested {
-      
+
         .evaluation-student-picture {
           box-shadow:0 0 0 5px #0099ff;
         }
-      
+
       }
-      
+
       /* Workspace hasn't been evaluated in acceptable time frame and TIME IS RUNNING OUT */
       &.workspace-assessment-critical {
       
@@ -536,7 +536,7 @@ body.evaluation {
         border-radius:100%;
         background-position:center center;
       }
-      
+
       .evaluation-student-name-plate {
         cursor:pointer;
         width:100%;
@@ -552,7 +552,7 @@ body.evaluation {
         line-height:22px;
         transition:background 0.3s ease-in-out;
         font-weight:300;
-        
+
         .evaluation-student-name {
           white-space:nowrap;
           overflow:hidden;
@@ -561,7 +561,7 @@ body.evaluation {
           text-align:left;
           padding:2px 4px 0 4px;
         }
-        
+
         .evaluation-student-studyprogramme {
           white-space:nowrap;
           overflow:hidden;
@@ -572,17 +572,17 @@ body.evaluation {
           text-align:left;
           padding:0 4px 2px 4px;
         }
-        
+
         &:hover {
           box-shadow:0 0 0 5px #c1e8ff;
         }
 
       }
-    
+
     }
-    
+
   }
-  
+
   .evaluation-assignments {
     overflow: hidden;
     position: absolute;
@@ -592,12 +592,12 @@ body.evaluation {
     bottom: 0px;
     white-space: nowrap;
     transition:margin 0.2s ease-in-out;
-    
+
     .ps-scrollbar-y-rail,
     .ps-scrollbar-x-rail {
       z-index:9;
     }
-    
+
     .evaluation-assignment-wrapper {
       width:160px;
       box-sizing:border-box;
@@ -614,18 +614,18 @@ body.evaluation {
       &.assignment-pending {
         opacity:0.1;
       }
-      
+
       &.assignment-loading {
         animation: load-cards 1s infinite ease-in-out;
       }
-      
+
       &:hover {
         box-shadow:0 0 0 5px #c1e8ff;
       }
-      
+
       &.assignment-unaswered {
       }
-      
+
       &.assignment-aswered {
       }
       
@@ -986,40 +986,40 @@ body.evaluation {
           line-height:1.3em;
           position:relative;
         }
-        
+
         .evaluation-modal-evaluateForm-meta-wrapper {
           padding:0;
-        
+
           .meta-education-type,
           .meta-workspace {
             padding:0px 20px 0 0;
             text-transform:uppercase;
             font-size:14px;
             display:inline-block;
-          
+
             .title {
               color:#727272;
               display:inline-block;
               margin:0 5px 0 0;
             }
-            
+
             .desc {
               color:#000;
               display:inline-block;
             }
-          
+
           }
-    
+
         }
-      
+
       }
-      
+
       .evaluation-modal-removeWrapper {
         position:absolute;
         bottom:10px;
         left:10px;
         z-index:99;
-                
+
         button.remove-evaluation {
           border-radius:0px;
           border:0;
@@ -1035,18 +1035,17 @@ body.evaluation {
           font-size:16px;
           float:none;
           line-height:normal;
-          
+
           span {
-            padding:0;
-            line-height:normal;
             display:block;
             line-height:normal;
+            padding:0;
           }
-        
+
         }
-      
+
       }
-      
+
       .evaluation-modal-evaluateForm-content {
         padding:10px 20px 10px 2px;
         position:absolute;
@@ -1263,16 +1262,16 @@ body.evaluation {
     }
     
     .ui-dialog-buttonpane {
-      width:310px;
-      max-width:50%;
-      bottom:10px;
-      right:0;
-      position:absolute;
-      z-index:999;
-      margin:0;
-      padding:0;
       border:0px;
-      
+      bottom:10px;
+      margin:0;
+      max-width:50%;
+      padding:0;
+      position:absolute;
+      right:0;
+      width:310px;
+      z-index:999;
+
       .ui-dialog-buttonset {
         float:none;
         position:relative;
@@ -1292,11 +1291,11 @@ body.evaluation {
           min-width:90px;
           font-size:18px;
           float:none;
-          
+
           span {
             padding:0;
           }
-          
+
         }
         
         button.cancel-evaluation-button {
