@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.ui.local;
+package fi.otavanopisto.muikku.ui.local.guider;
 
 import org.junit.Before;
 
