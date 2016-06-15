@@ -135,7 +135,7 @@
             fieldAnswers: fieldAnswers,
             readOnlyFields: this.options.readOnlyFields
           });
-          $(pageElement).muikkuMaterialPage('applyState');
+          $(pageElement).muikkuMaterialPage('applyState', this.options.readOnlyFields);
         }
 
       } catch (e) {
@@ -1184,7 +1184,16 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.audio') {
-      var audioRecord = $('<div>').audioRecord();
+      var audioRecord = $('<div>').muikkuAudioField({
+        'meta': data.meta,
+        'fieldName': data.name,
+        'materialId': data.materialId,
+        'embedId': data.embedId,
+        'readonly': data.readOnlyFields||false
+      });
+      
+      audioRecord.muikkuAudioField('answer', data.value);
+      
       $(object).replaceWith(audioRecord);
     }
   });

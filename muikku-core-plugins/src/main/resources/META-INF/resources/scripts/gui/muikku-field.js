@@ -163,8 +163,8 @@
       }
     },
     
-    applyState: function() {
-      this._applyState(this.assignmentType(), this.workspaceMaterialState());
+    applyState: function (readonly) {
+      this._applyState(this.assignmentType(), this.workspaceMaterialState(), readonly);
     },
     
     content: function (content) {
@@ -239,10 +239,11 @@
       return this.options.workspaceEntityId;
     },
 
-    _applyState: function (assignmentType, state) {
+    _applyState: function (assignmentType, state, readonly) {
       if (!assignmentType) {
         return;
       }
+      
       var stateOptions = this._getStateOptions(assignmentType, state);
       var removeClasses = $.map(this.options.states, function (value) {
         return value['button-class'];
@@ -277,7 +278,7 @@
       }
       
       this.workspaceMaterialState(state);
-      this.element.find('.muikku-field').muikkuField('readonly', stateOptions['fields-read-only']);
+      this.element.find('.muikku-field').muikkuField('readonly', readonly | stateOptions['fields-read-only']);
       
       var fileField = this.element.find('.muikku-file-field');
       fileField.attr('data-readonly', "" + stateOptions['fields-read-only']);

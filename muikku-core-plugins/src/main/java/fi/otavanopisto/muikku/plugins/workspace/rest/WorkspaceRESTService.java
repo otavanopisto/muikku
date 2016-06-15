@@ -68,6 +68,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
@@ -1382,25 +1383,107 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/fileanswer/{FILEID}")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE)
   public Response getFileAnswer(@PathParam("FILEID") String fileId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
+    
     WorkspaceMaterialFileFieldAnswerFile answerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(fileId);
     if (answerFile != null) {
-      // TODO Security; only allow if userEntity is current user or workspace teacher
-      //WorkspaceMaterialFileFieldAnswer fieldAnswer = answerFile.getFieldAnswer();
-      //fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = fieldAnswer.getReply();
-      //WorkspaceMaterial workspaceMaterial = reply.getWorkspaceMaterial();
-      //Long workspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceMaterial);
-      //WorkspaceEntity workspace = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-      //UserEntity userEntity = userEntityController.findUserEntityById(reply.getUserEntityId());
+      fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = answerFile.getFieldAnswer().getReply();
+      if (workspaceMaterialReply == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(String.format("Could not find reply from answer file %d", answerFile.getId()))
+          .build();
+      }
+      
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialReply.getWorkspaceMaterial();
+      if (workspaceMaterial == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(String.format("Could not find workspace material from reply %d", workspaceMaterialReply.getId()))
+          .build();
+      }
+
+      WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+      if (workspaceRootFolder == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(String.format("Could not find workspace root folder for material %d", workspaceMaterial.getId()))
+          .build();
+      }
+      
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId());
+      if (workspaceEntity == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(String.format("Could not find workspace entity for root folder %d", workspaceRootFolder.getId()))
+          .build();
+      }
+      
+      if (!workspaceMaterialReply.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+        if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
+      }
+      
       return Response.ok(answerFile.getContent())
         .type(answerFile.getContentType())
         .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
         .build();
     }
+    
+    return Response.status(Status.NOT_FOUND).build();
+  }
+
+  @GET
+  @Path("/audioanswer/{CLIPID}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response getAudioAnswer(@PathParam("CLIPID") String clipId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    WorkspaceMaterialAudioFieldAnswerClip answerClip = workspaceMaterialFieldAnswerController.findWorkspaceMaterialAudioFieldAnswerClipByClipId(clipId);
+    if (answerClip != null) {
+      fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = answerClip.getFieldAnswer().getReply();
+      if (workspaceMaterialReply == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(String.format("Could not find reply from answer audio %d", answerClip.getId()))
+          .build();
+      }
+      
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialReply.getWorkspaceMaterial();
+      if (workspaceMaterial == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(String.format("Could not find workspace material from reply %d", workspaceMaterialReply.getId()))
+          .build();
+      }
+
+      WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+      if (workspaceRootFolder == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(String.format("Could not find workspace root folder for material %d", workspaceMaterial.getId()))
+          .build();
+      }
+      
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId());
+      if (workspaceEntity == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(String.format("Could not find workspace entity for root folder %d", workspaceRootFolder.getId()))
+          .build();
+      }
+      
+      if (!workspaceMaterialReply.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+        if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
+      }
+      
+      return Response.ok(answerClip.getContent())
+        .type(answerClip.getContentType())
+        .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
+        .build();
+    }
+    
     return Response.status(Status.NOT_FOUND).build();
   }
 

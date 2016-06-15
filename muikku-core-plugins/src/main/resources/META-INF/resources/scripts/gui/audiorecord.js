@@ -1,18 +1,15 @@
 (function() {
   'use strict';
   
-  // TODO: Force https
-  // TODO: Localize
-  // TODO: Feature to limit clip length
-  
   $.widget("custom.audioRecord", {
-    
     options: {
       bufferSize: 0,
       numberOfAudioChannels: 1,
       sampleRate: 44100, 
       leftChannel: false,
-      disableLogs: false
+      disableLogs: false,
+      maxClipLength: 60000 * 5,  
+      uploadUrl: CONTEXTPATH + '/tempFileUploadServlet'
     },
     
     _create : function() {
@@ -35,8 +32,92 @@
       this.element.on('click', '.remove-clip', $.proxy(this._onRemoveClipClick, this));
     },
     
-    files: function () {
-      
+    readonly: function (readonly) {
+      if (readonly === undefined) {
+        return this.element.attr('data-readonly') == 'readonly';
+      } else {
+        if (readonly) {
+          if (this.element.find('.readonly-hint').length == 0) {
+            $('<label>')
+              .addClass('readonly-hint')
+              .text(getLocaleText('plugin.workspace.audioField.readonlyHint'))
+              .prependTo(this.element);
+          } else {
+            this.element.find('.readonly-hint').show();
+          }
+          
+          this.element.attr('data-readonly', 'readonly')
+          this.element.find('.controls').hide();
+        } else {
+          this.element.removeAttr('data-readonly');
+          this.element.find('.controls').show();
+          this.element.find('.readonly-hint').hide();
+        }
+      }
+    },
+    
+    clips: function (clips) {
+      if (clips === undefined) {
+        return $.map(this.element.find('.clip'), function (clip) {
+          return {
+            id: $(clip).attr('data-id'),
+            contentType: $(clip).attr('data-type'),
+            name: $(clip).attr('data-name')
+          };
+        });
+      } else {
+        var tasks = $.map(clips, $.proxy(function (clip) {
+          return $.proxy(function (callback) {
+            var preparedClip = this._prepareClip();
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/rest/workspace/audioanswer/' + clip.id, true);
+            xhr.responseType = 'blob';
+            
+            xhr.addEventListener('progress', $.proxy(function(evt){
+              if (evt.lengthComputable) {
+                this._setClipStatus(preparedClip, 'LOADING', evt.loaded, evt.total);
+              } else {
+                this._setClipStatus(preparedClip, 'LOADING', 0, 0);
+              }
+            }, this), false);
+            
+            xhr.onload = function (e) {
+              if (this.status == 200) {
+                callback(null, {
+                  data: xhr.response,
+                  preparedClip: preparedClip
+                });
+              } else {
+                callback(e||'Unknown error occurred');
+              }
+            };
+             
+            xhr.send();
+          }, this)
+        }, this));
+        
+        async.parallel(tasks, $.proxy(function (err, results) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err); 
+          } else {
+            $.each(results, $.proxy(function (index, result) {
+              var data = result.data;
+              var preparedClip = result.preparedClip;
+              var clip = clips[index];
+              
+              this._addClip(preparedClip, {
+                flac: {
+                  clipId: clip.id,
+                  blob: data,
+                  type: clip.contentType,
+                  name: clip.name
+                }
+              });
+                
+            }, this));
+          }
+        }, this));
+      }
     },
     
     _normalizeMimeType: function (type) {
@@ -65,12 +146,17 @@
     _setupWebRTC: function () {
       this.element.addClass('webrtc');
       
+      $('<label>')
+        .addClass('hint-text') 
+        .text(getLocaleText('plugin.workspace.audioField.rtcHint'))
+        .appendTo(this.element.find('.controls'));
+      
       $('<a>')
         .addClass('start-record')
         .attr({
           'href': 'javascript:void(null)'
         })
-        .text('Record').appendTo(this.element.find('.controls'));
+        .text(getLocaleText('plugin.workspace.audioField.startLink')).appendTo(this.element.find('.controls'));
       
       $('<a>')
         .addClass('stop-record')
@@ -78,7 +164,7 @@
           'href': 'javascript:void(null)'
         })
         .hide()
-        .text('Stop').appendTo(this.element.find('.controls'));
+        .text(getLocaleText('plugin.workspace.audioField.stopLink')).appendTo(this.element.find('.controls'));
       
       this.element.on('click', '.start-record', $.proxy(this._onStartClick, this));
       this.element.on('click', '.stop-record', $.proxy(this._onStopClick, this));  
@@ -88,7 +174,8 @@
       this.element.addClass('capture');
       
       $('<label>')
-        .text('Liitä äänitiedosto klikkaamalla alla olevaa kenttää')
+        .addClass('hint-text')
+        .text(getLocaleText('plugin.workspace.audioField.captureHint'))
         .appendTo(this.element.find('.controls'));
       
       $('<input>')
@@ -128,7 +215,88 @@
       xhr.send();
     },
     
-    _addClip: function (data) {
+    _formatTime: function (ms) {
+      var sec = ms / 1000;
+      var min = Math.floor(sec / 60);
+      return _.padStart(min, 2, '0') + ':' + _.padStart(Math.floor(sec - (min * 60)), 2, '0');
+    },
+    
+    _setClipStatus: function (clip, status, progress, progressMax) {
+      var label = $(clip).find('.progress-label');
+      var showProgress = false;
+      
+      switch (status) {
+        case 'RECORDING':
+          showProgress = true;
+          label.text(getLocaleText('plugin.workspace.audioField.statusRecording', this._formatTime(progress), this._formatTime(progressMax)));
+        break;
+        case 'PROCESSING':
+          showProgress = true;
+          label.text(getLocaleText('plugin.workspace.audioField.statusProcessing', progressMax ? Math.round(progress / progressMax * 100) : 0));
+        break;
+        case 'UPLOADING':
+          showProgress = true;
+          label.text(getLocaleText('plugin.workspace.audioField.statusUploading', progressMax ? Math.round(progress / progressMax * 100) : 0));
+        break;
+        case 'LOADING':
+          showProgress = true;
+          label.text(getLocaleText('plugin.workspace.audioField.statusLoading', progressMax ? Math.round(progress / progressMax * 100) : 0));
+        break;
+        case 'UPLOADED':
+          $(clip).find('.remove-clip').show();
+          $(clip).find('audio').show();
+        break;
+      }
+      
+      if (showProgress) {
+        label.show();
+        $(clip).find('progress')
+          .show()
+          .attr({
+            'value': progress,
+            'max': progressMax
+          });
+      } else {
+        label.hide();
+        $(clip).find('progress').hide();
+      }
+    },
+    
+    _prepareClip: function () {
+      var clip = $('<div>')
+        .addClass('clip')
+        .appendTo(this.element.find('.clips'));
+      
+      var audio = $('<audio>')
+        .hide()
+        .attr({
+          'controls': 'controls'
+        })
+        .appendTo(clip); 
+      
+      $('<progress>')
+        .hide()
+        .appendTo(clip);
+
+      $('<label>')
+        .hide()
+        .addClass('progress-label')
+        .appendTo(clip);
+      
+      $('<a>')
+        .hide()
+        .attr({
+          'href': 'javascript:void(null)'
+        })
+        .addClass('remove-clip')
+        .text(getLocaleText('plugin.workspace.audioField.removeLink'))
+        .appendTo(clip);
+
+      
+      return clip;
+    },
+    
+    _addClip: function (clip, data) {
       if (!data.wav && !data.flac) {
         $('.notification-queue').notificationQueue('notification', 'error', 'Could not add clip, no data found');
         return;
@@ -138,13 +306,17 @@
       
       if (!data.wav) {
         tasks.wav = $.proxy(function (callback) {
-          this._decodeAudioBlob(data.flac.blob, data.flac.name, "audio/wav", callback);
+          this._decodeAudioBlob(data.flac.blob, data.flac.name, "audio/wav", callback, $.proxy(function (progress) {
+            this._setClipStatus(clip, 'PROCESSING', progress, 100);
+          }, this));
         }, this);
       };
       
       if (!data.flac) {
         tasks.flac = $.proxy(function (callback) {
-          this._encodeAudioBlob(data.wav.blob, data.wav.name, "audio/flac", callback);
+          this._encodeAudioBlob(data.wav.blob, data.wav.name, "audio/flac", callback, $.proxy(function (progress) {
+            this._setClipStatus(clip, 'PROCESSING', progress, 100);
+          }, this));
         }, this);
       };
       
@@ -170,43 +342,93 @@
               data.flac.url = urlResults.flacUrl;
               data.wav.url = urlResults.wavUrl;
               
-              console.log(data);
-              
-              var clip = $('<div>')
-                .addClass('clip')
-                .attr({
-                  'data-id': null
-                })
-                .appendTo(this.element.find('.clips'));
-              
-              var audio = $('<audio>')
-                .attr({
-                  'controls': 'controls'
-                })
-                .appendTo(clip);
-
-              $('<source>').attr({
-                'src': data.wav.url,
-                'type': data.wav.type
-              }).appendTo(audio);
-              
-              $('<source>').attr({
-                'src': data.flac.url,
-                'type': data.flac.type
-              }).appendTo(audio);
-              
-              $('<a>')
-                .attr({
-                  'href': 'javascript:void(null)'
-                })
-                .addClass('remove-clip')
-                .text('Remove')
-                .appendTo(clip); 
-      
-              this.element.trigger("change");
+              if (data.flac.clipId) {
+                // Existing clips are just added as audio sources
+                $(clip).attr({
+                  'data-id': data.flac.clipId,
+                  'data-name': data.flac.name,
+                  'data-type': data.flac.type
+                });
+                
+                var audio = $(clip).find('audio');
+                
+                $('<source>').attr({
+                  'src': data.wav.url,
+                  'type': data.wav.type
+                }).appendTo(audio);
+                
+                $('<source>').attr({
+                  'src': data.flac.url,
+                  'type': data.flac.type
+                }).appendTo(audio);
+                
+                this._setClipStatus(clip, 'UPLOADED');
+                
+              } else {
+                // Newly added clips will instantly be uploaded into the server
+                this._uploadClip(clip, data.flac, $.proxy(function (err, meta) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  } else {
+                    $(clip).attr({
+                      'data-id': meta.fileId,
+                      'data-name': data.flac.name,
+                      'data-type': data.flac.type
+                    });
+                    
+                    var audio = $(clip).find('audio');
+                    
+                    $('<source>').attr({
+                      'src': data.wav.url,
+                      'type': data.wav.type
+                    }).appendTo(audio);
+                    
+                    $('<source>').attr({
+                      'src': data.flac.url,
+                      'type': data.flac.type
+                    }).appendTo(audio);
+                    
+                    this.element.trigger("change");
+                  }
+                }, this));
+              }
             }
           }, this));
         }
+      }, this));
+    },
+    
+    _uploadClip: function (clip, flacClip, callback) {
+      this._setClipStatus(clip, 'UPLOADING', 0, 100);
+
+      var formData = new FormData();
+      formData.append('file', flacClip.blob, flacClip.name);
+
+      $.ajax({
+        type: 'POST',
+        url: this.options.uploadUrl,
+        data: formData,
+        processData: false,
+        contentType: false,
+        xhr: $.proxy(function() {
+          var xhr = new window.XMLHttpRequest();
+          xhr.upload.addEventListener('progress', $.proxy(function(evt){
+            if (evt.lengthComputable) {
+              this._setClipStatus(clip, 'UPLOADING', evt.loaded, evt.total);
+            } else {
+              this._setClipStatus(clip, 'UPLOADING', 0, 0);
+            }
+          }, this), false);
+          
+          return xhr;
+        }, this)
+      })
+      .error(function (jqXHR, textStatus, errorThrown) {
+        callback(textStatus ? jqXHR.responseText || jqXHR.statusText || textStatus : null);
+      })
+      .success($.proxy(function(data) {
+        this._setClipStatus(clip, 'UPLOADED');
+        callback(null, data);
       }, this));
     },
     
@@ -220,11 +442,11 @@
         .createObjectURL(blob);
     },
     
-    _encodeAudioBlob: function (blob, name, type, callback) {
+    _encodeAudioBlob: function (blob, name, type, callback, progress) {
       var fileReader = new FileReader();
       
       fileReader.addEventListener('loadend', $.proxy(function() {
-        this._encodeAudioArrayBuffer(new Uint8Array(fileReader.result), name, type, callback)
+        this._encodeAudioArrayBuffer(new Uint8Array(fileReader.result), name, type, callback, progress)
       }, this));
       
       fileReader.addEventListener('error', $.proxy(function(err) {
@@ -234,7 +456,7 @@
       fileReader.readAsArrayBuffer(blob);
     },
 
-    _encodeAudioArrayBuffer: function (arrayBuffer, name, type, callback) {
+    _encodeAudioArrayBuffer: function (arrayBuffer, name, type, callback, progress) {
       // TODO: Error handling
       
       if (type != 'audio/ogg' && type != 'audio/flac') {
@@ -260,16 +482,9 @@
         if (e.data && e.data.reply === 'progress') {
           var vals = e.data.values;
           if (vals[1]) {
-            var progress = vals[0] / vals[1] * 100;
-            
-            this.element.find('progress')
-              .attr({
-                'max': '100',
-                'value': progress
-              });
-            
-            this.element.find('.progress-label')
-              .text(progress);
+            if ((typeof progress) == 'function') {
+              progress(vals[0] / vals[1] * 100);
+            }
           } 
         } else if (e.data && e.data.reply === 'done') {
           var blob = e.data.values[encodedName].blob;
@@ -289,11 +504,11 @@
       });
     },
     
-    _decodeAudioBlob: function (blob, name, type, callback) {
+    _decodeAudioBlob: function (blob, name, type, callback, progress) {
       var fileReader = new FileReader();
       
       fileReader.addEventListener('loadend', $.proxy(function() {
-        this._decodeAudioArrayBuffer(new Uint8Array(fileReader.result), name, type, callback)
+        this._decodeAudioArrayBuffer(new Uint8Array(fileReader.result), name, type, callback, progress)
       }, this));
       
       fileReader.addEventListener('error', $.proxy(function(err) {
@@ -303,7 +518,7 @@
       fileReader.readAsArrayBuffer(blob);
     },
 
-    _decodeAudioArrayBuffer: function (arrayBuffer, name, type, callback) {
+    _decodeAudioArrayBuffer: function (arrayBuffer, name, type, callback, progress) {
       if (!type) {
         type = 'audio/wav';
       }
@@ -324,16 +539,9 @@
         if (e.data && e.data.reply === 'progress') {
           var vals = e.data.values;
           if (vals[1]) {
-            var progress = vals[0] / vals[1] * 100;
-            
-            this.element.find('progress')
-              .attr({
-                'max': '100',
-                'value': progress
-              });
-            
-            this.element.find('.progress-label')
-              .text(progress);
+            if ((typeof progress) == 'function') {
+              progress(vals[0] / vals[1] * 100);
+            }
           } 
         } else if (e.data && e.data.reply === 'done') {
           var blob = e.data.values[encodedName].blob;
@@ -371,9 +579,10 @@
       
       var type = this._normalizeMimeType(file.type);
       var name = file.name;
+      var clip = this._prepareClip();
       
       if (type == 'audio/wav') {
-        this._addClip({
+        this._addClip(clip, {
           wav: {
             name: name,
             type: type,
@@ -381,7 +590,7 @@
           }
         });
       } else if (type == 'audio/flac') {
-        this._addClip({
+        this._addClip(clip, {
           flac: {
             name: name,
             type: type,
@@ -407,19 +616,7 @@
     },
     
     _startRecording: function () {
-      $('<progress>')
-        .attr({
-          'max': 0,
-          'value': 100
-        })
-        .appendTo(this.element.find('.controls'));
-      
-      $('<label>')
-        .addClass('progress-label')
-        .text('')
-        .appendTo(this.element.find('.controls'));
-      
-      this._captureUserMedia({audio: true}, $.proxy(this._onCaptureAudioStart, this), $.proxy(this._onCaptureAudioError, this));
+     this._captureUserMedia({audio: true}, $.proxy(this._onCaptureAudioStart, this), $.proxy(this._onCaptureAudioError, this));
     },
     
     _stopRecording: function () {
@@ -462,6 +659,20 @@
     },
     
     _onCaptureAudioStart: function (audioStream) {
+      this._recordClip = this._prepareClip();
+      this._recordStartTime = (new Date()).getTime();
+      this._setClipStatus(this._recordClip, 'RECORDING', 0, this.options.maxClipLength);
+
+      this._recordIntervalId = setInterval($.proxy(function () {
+        var clipLength = (new Date()).getTime() - this._recordStartTime;
+        
+        if (clipLength >= this.options.maxClipLength) {
+         this._stopRecording();
+        } else {
+          this._setClipStatus(this._recordClip, 'RECORDING', clipLength, this.options.maxClipLength);
+        }
+      }, this), 200);
+      
       this._audioStream = audioStream;
       
       this._recordRTC = RecordRTC(audioStream, {
@@ -485,8 +696,11 @@
       this.element.find('.start-record').show();
       this.element.find('.stop-record').hide();
       
+      this._recordStartTime = null;
+      clearInterval(this._recordIntervalId);
+      
       if (type == 'audio/wav') {
-        this._addClip({
+        this._addClip(this._recordClip, {
           wav: {
             name: name,
             type: type,
@@ -494,7 +708,7 @@
           }
         });
       } else if (type == 'audio/flac') {
-        this._addClip({
+        this._addClip(this._recordClip, {
           flac: {
             name: name,
             type: type,
