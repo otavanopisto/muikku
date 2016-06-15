@@ -1178,6 +1178,14 @@
     }
   });
   
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.audio') {
+      var audioRecord = $('<div>').audioRecord();
+      $(object).replaceWith(audioRecord);
+    }
+  });
+  
   function createEmbedId(parentIds) {
     return (parentIds.length ? parentIds.join(':') : null);
   }
