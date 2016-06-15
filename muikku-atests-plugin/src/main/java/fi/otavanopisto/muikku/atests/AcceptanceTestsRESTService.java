@@ -21,6 +21,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -28,6 +30,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
+import fi.otavanopisto.muikku.model.users.Flag;
+import fi.otavanopisto.muikku.model.users.FlagShare;
+import fi.otavanopisto.muikku.model.users.FlagStudent;
+import fi.otavanopisto.muikku.model.users.FlagStudent_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
@@ -66,10 +72,14 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.otavanopisto.muikku.rest.model.StudentFlag;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
+import fi.otavanopisto.muikku.users.FlagController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -122,6 +132,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Inject
   private ForumController forumController;
 
+  @Inject
+  private FlagController flagController;
+  
   @Inject
   private Event<SchoolDataWorkspaceDiscoveredEvent> schoolDataWorkspaceDiscoveredEvent;
 
@@ -588,7 +601,85 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     return Response.noContent().build();
   }
+  
+  @POST
+  @Path("/flags")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createFlag(fi.otavanopisto.muikku.atests.Flag payload) {
+    if (StringUtils.isBlank(payload.getColor())) {
+      return Response.status(Status.BAD_REQUEST).entity("color is missing").build();
+    }
 
+    if (StringUtils.isBlank(payload.getName())) {
+      return Response.status(Status.BAD_REQUEST).entity("name is missing").build();
+    }
+
+    Flag flag = flagController.createFlag(SchoolDataIdentifier.fromString("STAFF-1/PYRAMUS"), payload.getName(), payload.getColor(), payload.getDescription());
+    
+    return Response.ok(createRestEntity(flag)).build();
+
+  }  
+
+  @DELETE
+  @Path("/flags/{FLAGID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteFlag(@PathParam ("FLAGID") Long flagId) {
+    Flag flag = flagController.findFlagById(flagId);
+    if (flag == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Flag not found").build();
+    }
+    flagController.deleteFlag(flag);
+    
+    return Response.noContent().build();
+  }
+  
+  @POST
+  @Path("/students/{ID}/flags/{FLAGID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createStudentFlag(@PathParam("ID") Long studentId, @PathParam("FLAGID") Long flagId) {
+    String identifier = userEntityController.findUserEntityById(studentId).getDefaultIdentifier();
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromString(identifier + "/PYRAMUS");
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Invalid studentIdentifier").build();
+    }
+         
+    Flag flag = flagController.findFlagById(flagId);
+    if (flag == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Flag #%d not found", flagId)).build();
+    }
+    
+    return Response.ok(createRestEntity(flagController.flagStudent(flag, studentIdentifier))).build();
+  }
+  
+  @DELETE
+  @Path("/students/flags/{ID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteStudentFlag(@PathParam("ID") Long id) {   
+    FlagStudent flagStudent = flagController.findFlagStudentById(id);
+
+    if (flagStudent == null) {
+      return Response.status(Response.Status.NOT_FOUND).entity(String.format("Flag not found %d", id)).build();
+    }
+
+    flagController.unflagStudent(flagStudent);
+    
+    return Response.noContent().build();
+  }
+
+  @DELETE
+  @Path("/flags/share/{FLAGID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteFlagShares(@PathParam("FLAGID") Long flagId) {
+    Flag flag = flagController.findFlagById(flagId);
+    List<FlagShare> listShares = flagController.listShares(flag);
+    
+    for (FlagShare flagShare : listShares) {
+      flagController.deleteFlagShare(flagShare);
+    }
+       
+    return Response.noContent().build();
+  }
+  
   @POST
   @Path("/passwordchange/{EMAIL}")
   @RESTPermit (handling = Handling.UNSECURED)
@@ -822,6 +913,20 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         entity.getMessage(), 
         entity.getSticky(), 
         entity.getLocked());
+  }
+  
+  private fi.otavanopisto.muikku.atests.Flag createRestEntity(Flag entity) {
+
+    return new fi.otavanopisto.muikku.atests.Flag(entity.getId(),
+        entity.getName(), 
+        entity.getColor(), 
+        entity.getDescription(), 
+        null);
+  }
+  
+  private fi.otavanopisto.muikku.atests.StudentFlag createRestEntity(FlagStudent flagStudent) {
+    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(flagStudent.getStudentIdentifier().getIdentifier(), flagStudent.getStudentIdentifier().getDataSource().getIdentifier());
+    return new fi.otavanopisto.muikku.atests.StudentFlag(flagStudent.getId(), flagStudent.getFlag().getId(), studentIdentifier.toId());
   }
   
   private Set<Tag> parseTags(Set<String> tags) {

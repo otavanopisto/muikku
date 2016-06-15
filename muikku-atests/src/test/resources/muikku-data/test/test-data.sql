@@ -37,3 +37,4 @@ insert into PluginSetting (value, key_id) select '111111111111111111111111111111
 insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi:8089/oauth2ClientTest/success', (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.redirectUrl') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.redirectUrl') having count(*) = 0;
 
 insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi:8089/dnm', (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'service.url') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'service.url') having count(*) = 0;
+
