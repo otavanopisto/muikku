@@ -1,6 +1,6 @@
-<div class="student-list-container">
+<div class="student-list-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
   {#students}
-    <div class="workspace-users" data-user-id="{id}">
+    <div class="workspace-users flex-row" data-user-id="{id}">
       <div class="workspace-users-name">{lastName}, {firstName} ({studyProgrammeName})</div>
       <div class="workspace-users-archive" data-user-name="{lastName}, {firstName}">{#localize key="plugin.workspace.users.student.archiveLink.label"/}</div>
     </div>
