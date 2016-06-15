@@ -453,7 +453,7 @@ public class DeusNexContentParser {
     }
 
     if (fieldElementHandler != null) {
-      return fieldElementHandler.handleTextField(ownerDocument, paramName, columns, rightAnswers, helpOf(fieldElement),
+      return fieldElementHandler.handleTextField(ownerDocument, paramName, columns, Boolean.TRUE, rightAnswers, helpOf(fieldElement),
           hintOf(fieldElement));
     }
 
