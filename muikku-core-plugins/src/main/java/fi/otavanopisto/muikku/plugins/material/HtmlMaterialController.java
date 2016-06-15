@@ -27,6 +27,7 @@ import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialCreateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 
 @Dependent
@@ -58,11 +59,11 @@ public class HtmlMaterialController {
   private Event<HtmlMaterialUpdateEvent> materialUpdateEvent;
 
   public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, Long revisionNumber, String license) {
-    return createHtmlMaterial(title, html, contentType, revisionNumber, null, license);
+    return createHtmlMaterial(title, html, contentType, revisionNumber, null, license, MaterialViewRestrict.NONE);
   }
 
-  public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, Long revisionNumber, HtmlMaterial originMaterial, String license) {
-    HtmlMaterial material = htmlMaterialDAO.create(title, html, contentType, revisionNumber, originMaterial, license);
+  public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, Long revisionNumber, HtmlMaterial originMaterial, String license, MaterialViewRestrict visibility) {
+    HtmlMaterial material = htmlMaterialDAO.create(title, html, contentType, revisionNumber, originMaterial, license, visibility);
     materialCreateEvent.fire(new HtmlMaterialCreateEvent(material));
     return material;
   }

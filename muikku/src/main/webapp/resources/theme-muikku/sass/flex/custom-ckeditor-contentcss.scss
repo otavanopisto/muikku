@@ -9,6 +9,7 @@ body {
   margin:0 auto;
   padding:10px 30px;
   font-weight:300;
+  font-size:16px;
   
   h1.cke_panel_grouptitle {
     margin:0 !important;
@@ -36,7 +37,7 @@ body {
   }
   
   &.cke_editable {
-    font-size:18px;
+    font-size:16px;
     line-height:1.5em; 
   }
   
@@ -282,4 +283,38 @@ mark[data-muikku-word-definition] {
     position: absolute;
   }
 
+}
+
+table {
+  margin:initial;
+  padding:initial;
+  font-size:14px;
+}
+
+table[cellspacing] {
+  border-collapse:separate;
+  border-spacing:50px;
+}
+
+table[cellpadding] td{
+  border-collapse:separate;
+  padding:50px;
+}
+
+@for $i from 0 through 49 {
+  table[cellspacing="#{$i}"] {
+    border-spacing:#{$i}px;
+  }
+  
+  table[cellpadding="#{$i}"] td {
+    padding:#{$i}px;
+  }
+  
+}
+
+td {
+  padding:initial;
+  margin:initial;
+  width:auto;
+  max-width:100%;
 }
