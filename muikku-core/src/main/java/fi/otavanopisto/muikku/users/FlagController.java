@@ -186,6 +186,10 @@ public class FlagController {
     flagShareDAO.delete(flagShare);
   }
   
+  public void deleteFlag(Flag flag) {
+    flagDAO.delete(flag);
+  }
+  
   private List<SchoolDataIdentifier> toIdentifiers(List<UserSchoolDataIdentifier> userSchoolDataIdentifiers) {
     List<SchoolDataIdentifier> result = new ArrayList<>(userSchoolDataIdentifiers.size());
     

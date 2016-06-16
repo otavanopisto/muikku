@@ -5,7 +5,6 @@
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/flex-main-workspace.xhtml">
 
-
   <ui:define name="scripts">
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
@@ -19,6 +18,7 @@
     <script defer="defer" type="text/javascript" src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
     <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/webshim/1.15.10/minified/polyfiller.js"/>
   </ui:define>
+  
   <ui:define name="workspace-view-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/announcer.css"/>    
     <link rel="stylesheet" type="text/css" href="/css/flex/flex-main-functionality.css"/>        
@@ -26,6 +26,7 @@
     <link rel="stylesheet" type="text/css" href="/css/flex/announcement-view.css"/>  
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-announcements.css"/>       
   </ui:define>
+  
   <ui:define name="grid-content">
     <input type="hidden" id="workspaceEntityId" value="#{workspaceAnnouncerBackingBean.workspaceEntityId}" />
       <ui:insert name="mf-content-area">
