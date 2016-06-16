@@ -9,7 +9,9 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import fi.otavanopisto.muikku.TestUtilities;
+import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
+import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
@@ -21,30 +23,38 @@ import static org.junit.Assert.assertTrue;
 public class CourseAnnouncerTestsBase extends AbstractUITest {
 
   @Test
-  public void createAnnouncementTest() throws JsonProcessingException, Exception {
+  public void createWorkspaceAnnouncementTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     try{
+      login();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        login();
         maximizeWindow();
-        navigate("/announcer", true);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        waitForPresent(".icon-cogs");
+        hoverOverElement(".icon-cogs");
+        waitAndClick(".icon-announcer");
         waitAndClick(".an-new-announcement");
+        
         waitForPresent("*[name='endDate']");
         clearElement("*[name='endDate']");
         sendKeys("*[name='endDate']", "21.12.2025");
+        
         sendKeys(".mf-textfield-subject", "Test title");
         click(".mf-form-header");
         waitForPresent("#ui-datepicker-div");
         waitForNotVisible("#ui-datepicker-div");
         addTextToCKEditor("Announcer test announcement");
         waitAndClick(".mf-toolbar input[name='send']");
+        
         waitForPresent(".an-announcement-topic");
         assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
         assertTextIgnoreCase(".an-announcement-content>p", "Announcer test announcement"); 
       }finally{
         deleteAnnouncements();
+        deleteWorkspace(workspace.getId());
       }
     }finally {
       mockBuilder.wiremockReset();
@@ -52,25 +62,32 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
   }
   
   @Test
-  public void deleteAnnouncementTest() throws JsonProcessingException, Exception {
+  public void deleteWorkspaceAnnouncementTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     try{
+      login();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        login();
         maximizeWindow();
-        navigate("/announcer", true);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        waitForPresent(".icon-cogs");
+        hoverOverElement(".icon-cogs");
+        waitAndClick(".icon-announcer");
         waitAndClick(".an-new-announcement");
+        
         waitForPresent("*[name='endDate']");
         clearElement("*[name='endDate']");
         sendKeys("*[name='endDate']", "21.12.2025");
+        
         sendKeys(".mf-textfield-subject", "Test title");
         click(".mf-form-header");
-        waitForNotVisible("#ui-datepicker-div");
         waitForPresent("#ui-datepicker-div");
+        waitForNotVisible("#ui-datepicker-div");
         addTextToCKEditor("Announcer test announcement");
         waitAndClick(".mf-toolbar input[name='send']");
+        
         waitForPresent(".an-announcement-topic");
         waitAndClick(".an-announcement-select input");
         waitAndClick(".mf-items-toolbar .icon-delete");
@@ -79,116 +96,116 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
         assertTrue("Element found even though it shouldn't be there", isElementPresent(".an-announcement-topic>span") == false);
       }finally{
         deleteAnnouncements();
+        deleteWorkspace(workspace.getId());
       }
     }finally {
       mockBuilder.wiremockReset();
     }
   }
   
+  @SuppressWarnings("deprecation")
   @Test
-  public void announcementVisibleInFrontpageWidgetTest() throws JsonProcessingException, Exception {
+  public void announcementVisibleInWorkspaceFrontpageTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+      MockCourseStudent mcs = new MockCourseStudent(2l, workspace.getId(), student.getId());
       login();
       try{
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
+        Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
+        updateAnnouncementWorkspace(announcementId, workspace.getId());
         logout();
-        mockBuilder.mockLogin(student);
+        mockBuilder
+          .addCourseStudent(workspace.getId(), mcs)
+          .mockLogin(student)
+          .build();
         login();
-        waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        waitForPresent(".workspace-announcement-title");
+        assertTextIgnoreCase(".workspace-announcement-title", "Test title");
       }finally{
         deleteAnnouncements();
+        deleteWorkspace(workspace.getId());
       }
     }finally {
       mockBuilder.wiremockReset();
     }
   }
+
 
   @SuppressWarnings("deprecation")
   @Test
-  public void announcementListTest() throws JsonProcessingException, Exception {
+  public void workspaceAnnouncementReadingForStudentTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();
-    try{
-      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-      login();
-      try{
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
-        logout();
-        mockBuilder.mockLogin(student);
-        login();
-        waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
-        navigate("/announcements", true);
-        waitForPresent("#announcementContextNavigation .gc-navigation-item");
-        assertTextIgnoreCase("#announcementContextNavigation .gc-navigation-item a", "Test title");
-        click("#announcementContextNavigation .gc-navigation-item a");
-        waitForPresent(".announcement-article h2");
-        assertTextIgnoreCase(".announcement-article h2", "Test title");
-        assertTextIgnoreCase(".announcement-article div.article-datetime", "12.11.2015");
-        assertTextIgnoreCase(".announcement-article div.article-context", "announcer test announcement");
-      }finally{
-        deleteAnnouncements();
-      }
-    }finally {
-      mockBuilder.wiremockReset();
-    }
-  }
 
-  @Test
-  public void userGroupAnnouncementVisibleTest() throws JsonProcessingException, Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    try{
-      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, "Test group", "Test group for users", 1l, false).addStudentToStudentGroup(2l, student).addStaffMemberToStudentGroup(2l, admin).mockLogin(admin).build();
+    try {
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+      MockCourseStudent mcs = new MockCourseStudent(2l, workspace.getId(), student.getId());
       login();
       try{
-        List<Long> userGroups = new ArrayList<>();
-        userGroups.add(2l);
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, false, userGroups);
+        Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
+        updateAnnouncementWorkspace(announcementId, workspace.getId());
         logout();
-        mockBuilder.mockLogin(student);
+        mockBuilder
+          .addCourseStudent(workspace.getId(), mcs)
+          .mockLogin(student)
+          .build();
         login();
-        waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
+        
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        waitAndClick(".workspace-announcement-title");
+        waitForPresent("#announcements .announcement-article h2");
+        assertTextIgnoreCase("#announcements .announcement-article h2", "Test title");
+        assertTextIgnoreCase("#announcements .announcement-article .article-datetime", "12.11.2015");
+        assertTextIgnoreCase("#announcements .announcement-article .article-context>p", "announcer test announcement");
       }finally{
         deleteAnnouncements();
-        deleteUserGroup(2l);
+        deleteWorkspace(workspace.getId());
       }
     }finally {
       mockBuilder.wiremockReset();
     }
   }
   
+  @SuppressWarnings("deprecation")
   @Test
-  public void userGroupAnnouncementNotVisibleTest() throws JsonProcessingException, Exception {
+  public void workspaceAnnouncementFrontpageListingForStudentTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+
     Builder mockBuilder = mocker();
     try {
-      mockBuilder.addStaffMember(admin).addStudent(student).addStudentGroup(2l, "Test group", "Test group for users", 1l, false).addStaffMemberToStudentGroup(2l, admin).mockLogin(admin).build();
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+      MockCourseStudent mcs = new MockCourseStudent(2l, workspace.getId(), student.getId());
       login();
       try{
-        List<Long> userGroups = new ArrayList<>();
-        userGroups.add(2l);
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, false, userGroups);
+        Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
+        updateAnnouncementWorkspace(announcementId, workspace.getId());
         logout();
-        mockBuilder.mockLogin(student);
+        mockBuilder
+          .addCourseStudent(workspace.getId(), mcs)
+          .mockLogin(student)
+          .build();
         login();
         waitForPresent("#announcements");
-        assertTrue("Element found even though it shouldn't be there", isElementPresent("#announcements ul>li>div>a") == false);
+        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
+        assertTextIgnoreCase("#announcements>ul>li>div.fp-announcement-info-workspace", "testcourse");        
       }finally{
         deleteAnnouncements();
+        deleteWorkspace(workspace.getId());
       }
     }finally {
       mockBuilder.wiremockReset();
     }
   }
+
   
 }
