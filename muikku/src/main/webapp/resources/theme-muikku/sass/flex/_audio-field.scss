@@ -21,11 +21,12 @@
 } 
 
 .audio-record {
-  border:3px solid #c9e0fb;
+  border:1px solid #c9e0fb;
   border-radius:3px;
   box-shadow:0 0 0 3px rgba(215, 215, 215, 0.15);
   line-height:1;
   padding:5px 10px 5px 10px;
+  transition:border 0s ease-in-out, box-shadow 0.1s ease-in-out;
 
   .clip {
     margin:5px 0 10px 0;
