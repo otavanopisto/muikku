@@ -580,10 +580,9 @@
       
       var type = this._normalizeMimeType(file.type);
       var name = file.name;
-      var clip = this._prepareClip();
       
       if (type == 'audio/wav') {
-        this._addClip(clip, {
+        this._addClip(this._prepareClip(), {
           wav: {
             name: name,
             type: type,
@@ -591,7 +590,7 @@
           }
         });
       } else if (type == 'audio/flac') {
-        this._addClip(clip, {
+        this._addClip(this._prepareClip(), {
           flac: {
             name: name,
             type: type,
@@ -599,7 +598,7 @@
           }
         });
       } else {
-        $('.notification-queue').notificationQueue('notification', 'error', 'Unsupported file type ' + type);
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.audioField.unsupportedFileType', type, 'audio/wav, audio/flac'));
       }
     },
     
