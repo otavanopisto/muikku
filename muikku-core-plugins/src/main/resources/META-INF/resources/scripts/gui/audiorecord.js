@@ -21,7 +21,7 @@
         .appendTo(this.element);
       
       $('<div>')
-        .addClass('controls')
+        .addClass('controls flex-row flex-align-items-center')
         .appendTo(this.element);
       
       if (Modernizr.getusermedia) {
@@ -136,26 +136,32 @@
     
     _setupWebRTC: function () {
       this.element.addClass('webrtc');
+
+      $('<a>')
+        .addClass('start-record icon-record')
+        .attr({
+          'href': 'javascript:void(null)'
+        })
+        .append($('<span>')
+          .addClass('start-record-label')
+          .text(getLocaleText('plugin.workspace.audioField.startLink')))
+        .appendTo(this.element.find('.controls'));
+      
+      $('<a>')
+        .addClass('stop-record icon-stop')
+        .attr({
+          'href': 'javascript:void(null)'
+        })
+        .hide()
+        .append($('<span>')
+          .addClass('stop-record-label')
+          .text(getLocaleText('plugin.workspace.audioField.stopLink')))
+        .appendTo(this.element.find('.controls'));
       
       $('<label>')
         .addClass('hint-text') 
         .text(getLocaleText('plugin.workspace.audioField.rtcHint'))
         .appendTo(this.element.find('.controls'));
-      
-      $('<a>')
-        .addClass('start-record')
-        .attr({
-          'href': 'javascript:void(null)'
-        })
-        .text(getLocaleText('plugin.workspace.audioField.startLink')).appendTo(this.element.find('.controls'));
-      
-      $('<a>')
-        .addClass('stop-record')
-        .attr({
-          'href': 'javascript:void(null)'
-        })
-        .hide()
-        .text(getLocaleText('plugin.workspace.audioField.stopLink')).appendTo(this.element.find('.controls'));
       
       this.element.on('click', '.start-record', $.proxy(this._onStartClick, this));
       this.element.on('click', '.stop-record', $.proxy(this._onStopClick, this));  
@@ -255,7 +261,7 @@
     
     _prepareClip: function () {
       var clip = $('<div>')
-        .addClass('clip')
+        .addClass('clip flex-row flex-align-items-center')
         .appendTo(this.element.find('.clips'));
       
       var audio = $('<audio>')
@@ -279,11 +285,10 @@
         .attr({
           'href': 'javascript:void(null)'
         })
-        .addClass('remove-clip')
-        .text(getLocaleText('plugin.workspace.audioField.removeLink'))
+        .addClass('remove-clip icon-remove-clip')
+        .attr('title', getLocaleText('plugin.workspace.audioField.removeLink'))
         .appendTo(clip);
 
-      
       return clip;
     },
     

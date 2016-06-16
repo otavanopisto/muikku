@@ -1,25 +1,156 @@
 .audio-record.webrtc[data-readonly='readonly'] {
-  opacity: 0.8;
-  
-  a {
-    color: #aaa;
-  }
-  
-  &:hover {
-    &:after {
-      position: absolute;
-      width: 100%;
-      background: #eee;
-      color: #555;
-      border: 1px solid #ccc;
-      content: attr(data-disabled-hint);
-      display: block;
-      margin-top: -32px;
-      position: relative;
-      width: 100%;
-      text-align: center;
-      cursor: default;
-      font-size: 12px;
+  padding:0px 10px 0px 10px;
+
+  .clip {
+    margin:10px 0;
+    
+    audio {
+      width:100%;
     }
-  } 
+    
+    a.remove-clip {
+      display:none !important;
+    }
+    
+  }
+
+  .controls {
+    display:none;
+  }
+
 } 
+
+.audio-record {
+  border:1px solid #c9e0fb;
+  border-radius:3px;
+  box-shadow:0 0 0 3px rgba(215, 215, 215, 0.15);
+  line-height:1;
+  padding:5px 10px 5px 10px;
+  transition:border 0s ease-in-out, box-shadow 0.1s ease-in-out;
+
+  .clip {
+    margin:5px 0 10px 0;
+    background:#f9f9f9;
+    border-radius:5px;
+    
+    progress {
+      height:22px;
+      margin:0 0 0 5px;
+    }
+    
+    audio {
+      width:calc(100% - 32px);
+    }
+
+    .remove-clip {
+      text-decoration:none;
+      text-transform:uppercase;
+      font-size:12px;
+      color:#2c2c2c;
+      padding:2px 0px 2px 5px;
+      border-radius:2px;
+      position:relative;
+
+      &.icon-remove-clip:before {
+        content:"\e63b";
+        color:#de3211;
+        font-size:22px;
+        font-weight:normal;
+        font-family: 'muikku';
+        speak: none;
+        font-style: normal;
+        text-decoration:none;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+    }
+    
+    .progress-label {
+      padding:5px;
+      margin:0;
+    }
+
+  }
+    
+  .controls {
+  
+    .hint-text {
+      display:block;
+      margin:0;
+      padding:5px 0;
+      font-style:italic;
+    }
+    
+    a {
+      text-decoration:none;
+      text-transform:uppercase;
+      font-size:12px;
+      color:#2c2c2c;
+      display:inline-block;
+      padding:5px 5px 5px 22px;
+      border-radius:2px;
+      border:1px solid #7391a7;
+      position:relative;
+      transition:all 0.2s ease-in-out;
+      margin:5px 10px 5px 0;
+      
+      &.start-record:hover {
+        border:1px solid #f7846d;
+      }
+      
+      &.stop-record:hover {
+        border:1px solid #000;
+      }
+      
+      &.icon-record:before,
+      &.icon-stop:before {
+        color:#de3211;
+        display:inline-block;
+        font-size:16px;
+        left:4px;
+        position:absolute;
+        top:4px;
+        transition:all 0.2s ease-in-out;
+      }
+      
+      &.icon-record:before {
+        color:#de3211;
+      }
+      
+      &.icon-stop:before {
+        color:#000;
+      }
+
+      &:hover {
+      
+        &.icon-record:before,
+        &.icon-stop:before {
+          transform:scale(1.1);
+        }
+      
+      }
+      
+      span {
+        font-family:'Open Sans', Arial, sans-serif;
+        display:inline-block;
+        margin:0 5px 0 0px;
+        vertical-align:middle;
+      }
+      
+    }
+    
+    .start-record {
+      background:#fff;
+    }
+    
+    .stop-record {
+      background:#fff;
+    }
+  
+  }
+
+}
