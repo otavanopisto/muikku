@@ -49,7 +49,7 @@
     
     clips: function (clips) {
       if (clips === undefined) {
-        return $.map(this.element.find('.clip'), function (clip) {
+        return $.map(this.element.find('.clip[data-id]'), function (clip) {
           return {
             id: $(clip).attr('data-id'),
             contentType: $(clip).attr('data-type'),
@@ -59,7 +59,7 @@
       } else {
         var tasks = $.map(clips, $.proxy(function (clip) {
           return $.proxy(function (callback) {
-            var preparedClip = this._prepareClip();
+            var preparedClip = this._prepareClip(clip.id);
             var xhr = new XMLHttpRequest();
             xhr.open('GET', '/rest/workspace/audioanswer/' + clip.id, true);
             xhr.responseType = 'blob';
@@ -259,10 +259,16 @@
       }
     },
     
-    _prepareClip: function () {
+    _prepareClip: function (clipId) {
       var clip = $('<div>')
         .addClass('clip flex-row flex-align-items-center')
         .appendTo(this.element.find('.clips'));
+      
+      if (clipId) {
+        clip.attr({
+          'data-id': clipId
+        });
+      }
       
       var audio = $('<audio>')
         .hide()
@@ -318,6 +324,7 @@
       
       async.parallel(tasks, $.proxy(function (err, results) {
         if (err) {
+          $(clip).remove();
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           if (results.flac) {
@@ -433,6 +440,16 @@
       this.element.trigger("change");
     },
     
+    _recreateFileField: function () {
+      this.element.find('input[type="file"]')
+        .replaceWith($('<input>')
+          .attr({
+            'type': 'file',
+            'accept': "audio/*",
+            'capture': 'microphone'
+          }));
+    },
+    
     _blobToUrl: function (blob) {
       return (window.URL || window.webkitURL)
         .createObjectURL(blob);
@@ -489,6 +506,12 @@
             type: blob.type, 
             blob: blob
           });
+        } else if (e.data && e.data.reply === 'log') {
+          if (e.data.values.length == 1) {
+            if (e.data.values[0].indexOf('usage summary') > -1) {
+              callback("Encoding failed");
+            }
+          }
         }
       }, this);
       
@@ -546,6 +569,12 @@
             type: blob.type, 
             blob: blob
           });
+        } else if (e.data && e.data.reply === 'log') {
+          if (e.data.values.length == 1) {
+            if (e.data.values[0].indexOf('usage summary') > -1) {
+              callback("Decoding failed");
+            }
+          }
         }
       }, this);
       
@@ -575,7 +604,7 @@
       }
     },
     
-    _onFileChange: function () {
+    _onFileChange: function (event) {
       if (this.readonly()) {
         return;
       }
@@ -605,6 +634,8 @@
       } else {
         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.audioField.unsupportedFileType', type, 'audio/wav, audio/flac'));
       }
+
+      this._recreateFileField();
     },
     
     _readAsDataURL: function (file, callback) {
