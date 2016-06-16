@@ -40,11 +40,7 @@
 	 */
 	global.FlacEncoder = {
 		encode: function( data ) {
-      console.log("______________");
-      console.log(data, "Encoder data");
-      console.log("______________");
-		  
-		  // FlacEncoder.setUpLogging( data );
+      FlacEncoder.setUpLogging( data );
 			FlacEncoder.monitorWWDownload();
 			MainScriptLoader.downloadAndExecute( data, function() {
 				// Before execute main script ...
