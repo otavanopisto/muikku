@@ -1,0 +1,25 @@
+.audio-record.webrtc[data-readonly='readonly'] {
+  opacity: 0.8;
+  
+  a {
+    color: #aaa;
+  }
+  
+  &:hover {
+    &:after {
+      position: absolute;
+      width: 100%;
+      background: #eee;
+      color: #555;
+      border: 1px solid #ccc;
+      content: attr(data-disabled-hint);
+      display: block;
+      margin-top: -32px;
+      position: relative;
+      width: 100%;
+      text-align: center;
+      cursor: default;
+      font-size: 12px;
+    }
+  } 
+} 

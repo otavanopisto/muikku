@@ -14,6 +14,7 @@
     
     _create : function() {
       this.element.addClass('audio-record');
+      this.element.attr('data-disabled-hint', getLocaleText('plugin.workspace.audioField.readonlyHint'));
       
       $('<div>')
         .addClass('clips')
@@ -37,21 +38,11 @@
         return this.element.attr('data-readonly') == 'readonly';
       } else {
         if (readonly) {
-          if (this.element.find('.readonly-hint').length == 0) {
-            $('<label>')
-              .addClass('readonly-hint')
-              .text(getLocaleText('plugin.workspace.audioField.readonlyHint'))
-              .prependTo(this.element);
-          } else {
-            this.element.find('.readonly-hint').show();
-          }
-          
           this.element.attr('data-readonly', 'readonly')
-          this.element.find('.controls').hide();
+          this.element.find(".controls input[type='file']").attr('disabled', 'disabled');
         } else {
           this.element.removeAttr('data-readonly');
-          this.element.find('.controls').show();
-          this.element.find('.readonly-hint').hide();
+          this.element.find(".controls input[type='file']").removeAttr('disabled');
         }
       }
     },
@@ -562,18 +553,28 @@
     },
     
     _onStartClick: function (event) {
-      this._startRecording();
+      if (!this.readonly()) {
+        this._startRecording();
+      }
     },
       
     _onStopClick: function (event) {
-      this._stopRecording();
+      if (!this.readonly()) {
+        this._stopRecording();
+      }
     },
       
     _onRemoveClipClick: function (event) {
-      this._removeClip($(event.target).closest('.clip'));
+      if (!this.readonly()) {
+        this._removeClip($(event.target).closest('.clip'));
+      }
     },
     
     _onFileChange: function () {
+      if (this.readonly()) {
+        return;
+      }
+      
       var file = this.element.find(".controls input[type='file']")[0]
         .files[0];
       
