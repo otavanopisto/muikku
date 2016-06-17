@@ -31,10 +31,7 @@
   </ui:define>
   
   <ui:define name="grid-content">
-    <div id="contentWorkspaceMaterialsReading">
-      <form style="display: none;">
-        <input type="hidden" name="max-file-size" value="#{workspaceMaterialsBackingBean.maxFileSize}" />
-      </form>
+    
     
       <div id="workspaceMaterialsReadingTOCWrapper">
         <nav class="workspace-waterials-reading-nav" id="workspaceMaterialsReadingNav">
@@ -94,7 +91,12 @@
           </div>
         </div>
       </div>
-  
+      
+      <div id="contentWorkspaceMaterialsReading">
+	      <form style="display: none;">
+	        <input type="hidden" name="max-file-size" value="#{workspaceMaterialsBackingBean.maxFileSize}" />
+	      </form>
+	  
       <section class="flex-row">
         <article class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top">
           <h1>#{workspaceMaterialsReadingBackingBean.workspaceName}</h1>
