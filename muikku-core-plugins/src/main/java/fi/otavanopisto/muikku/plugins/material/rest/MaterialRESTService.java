@@ -102,8 +102,13 @@ public class MaterialRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Refused to update title via this REST endpoint").build();
     }
     
+    if (payload.getViewRestrict() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Required field viewRestrict missing").build();
+    }
+    
     materialController.updateMaterialLicense(material, payload.getLicense());
-
+    materialController.updateMaterialViewRestrict(material, payload.getViewRestrict());
+    
     return Response.ok(createRestModel(material)).build();
   }
   
@@ -188,7 +193,7 @@ public class MaterialRESTService extends PluginRESTService {
   } 
 
   private RestMaterial createRestModel(Material material) {
-    return new RestMaterial(material.getId(), material.getTitle(), material.getLicense());
+    return new RestMaterial(material.getId(), material.getTitle(), material.getLicense(), material.getViewRestrict());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial[] createRestModel(WorkspaceMaterial... workspaceMaterials) {

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.Robot;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,8 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ws.rs.Path;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jboss.netty.util.ThreadNameDeterminer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -72,9 +76,14 @@ import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
+
+import fi.otavanopisto.muikku.atests.Flag;
+import fi.otavanopisto.muikku.atests.StudentFlag;
+
 import fi.otavanopisto.muikku.atests.Discussion;
 import fi.otavanopisto.muikku.atests.DiscussionGroup;
 import fi.otavanopisto.muikku.atests.DiscussionThread;
+
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
@@ -431,6 +440,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void waitForPresentAndVisible(String selector) {
     waitForPresent(selector);
+    waitForVisible(selector);
     assertVisible(selector);
   }
    
@@ -551,7 +561,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void click(String selector) {
     getWebDriver().findElement(By.cssSelector(selector)).click();
   }
-
+  
   protected void waitForClickable(final String selector) {
     new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
@@ -598,7 +608,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
 
   protected void assertTextIgnoreCase(String selector, String text) {
-    assertEquals(StringUtils.lowerCase(text), StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText()));
+    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    assertEquals(StringUtils.lowerCase(text), actual);
   }
   
   protected void sendKeys(String selector, String keysToSend) {
@@ -679,7 +690,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void hoverOverElement(String selector) {
     Actions action = new Actions(getWebDriver());
+    waitForPresentAndVisible(selector);
     action.moveToElement(findElementByCssSelector(selector)).perform();
+  }
+   
+  protected void setAttributeBySelector(String selector, String attribute, String value){
+    JavascriptExecutor js = (JavascriptExecutor) getWebDriver();
+    String jsString = String.format("$('%s').attr('%s', '%s');", selector, attribute, value );
+    js.executeScript(jsString);
   }
   
   protected void assertClassNotPresent(String selector, String className) {
@@ -1053,6 +1071,55 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
+  protected Long createFlag(String name, String color, String description) throws JsonParseException, JsonMappingException, IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    Flag flag = new Flag(null, name, color, description, "STAFF-1/PYRAMUS");
+    Response response = asAdmin()
+    .contentType("application/json")
+    .body(flag)
+    .post("/test/flags");
+    
+    response.then()
+      .statusCode(200);
+    
+    Flag result = objectMapper.readValue(response.asString(), Flag.class);
+    return result.getId();
+  }
+  
+  protected void deleteFlag(Long flagId) {
+    asAdmin()
+      .delete("/test/flags/{FLAGID}", flagId)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void deleteFlagShares(Long flagId) {
+    asAdmin()
+    .delete("/test/flags/share/{FLAGID}", flagId)
+    .then()
+    .statusCode(204);
+  }
+  
+  protected void deleteStudentFlag(Long studentFlagId) {
+    asAdmin()
+    .delete("/test/students/flags/{ID}", studentFlagId)
+    .then()
+    .statusCode(204);
+  } 
+  
+  protected Long flagStudent(Long studentId, Long flagId) throws JsonParseException, JsonMappingException, IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .post("/test/students/{ID}/flags/{FLAGID}", studentId, flagId);
+    
+    response.then()
+      .statusCode(200);
+    
+    StudentFlag result = objectMapper.readValue(response.asString(), StudentFlag.class);
+    return result.getId();
+  }
+  
   protected String getAttributeValue(String selector, String attribute){
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     return element.getAttribute(attribute);
@@ -1116,6 +1183,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       waitAndClick(".cke_contents");
       getWebDriver().switchTo().activeElement().sendKeys(text);
     }
+  }
+  
+  protected void setTextAreaText(String selector, String value) {
+    JavascriptExecutor js = (JavascriptExecutor) getWebDriver();
+    String jsString = String.format("$('%s').html('%s');", selector, value );
+    js.executeScript(jsString);
   }
   
   private void waitForCKReady(final String instanceName) {

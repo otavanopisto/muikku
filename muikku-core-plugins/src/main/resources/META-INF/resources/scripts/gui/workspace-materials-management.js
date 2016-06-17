@@ -2,14 +2,14 @@
   
   function createAddPageSectionLink() {
     return $('<div>')
-      .addClass('workspace-materials-management-add')
+      .addClass('workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full')
       .append($('<span>').addClass('workspace-materials-management-line-separator'))
       .append($('<a>').addClass('workspaces-materials-management-add icon-add').attr('href', 'javascript:void(null)').append($('<span>').html(getLocaleText("plugin.workspace.materialsManagement.addNew"))));
   }
   
   function createFileUploader() {
     return $('<div>')
-      .addClass('workspaces-materials-management-insert-file')
+      .addClass('workspaces-materials-management-insert-file lg-flex-cell-full md-flex-cell-full sm-flex-cell-full')
       .append($('<input>').attr('type', 'file'));
   }
   
@@ -24,7 +24,7 @@
       .workspaceMaterialUpload({maxFileSize: maxFileSize})
       .on('fileUploaded', function (event, data) {
         var newPage = $('<section>')
-          .addClass('workspace-materials-view-page material-management-view')
+          .addClass('workspace-materials-view-page material-management-view lg-flex-cell-full md-flex-cell-full sm-flex-cell-full')
           .attr({
             'id': 'page-' + data.workspaceMaterialId,
             'data-material-title': data.title,
@@ -955,6 +955,32 @@
     
   });
   
+  $(document).on('click', '.page-view-restrict', function (event, data) {
+    var section = $(event.target).closest('section');
+    var materialId = $(section).attr('data-material-id');
+    
+    mApi().materials.material
+      .read(materialId)
+      .callback(function (readErr, material) {
+        if (readErr) {
+          $('.notification-queue').notificationQueue('notification', 'error', readErr);
+        } else {
+          mApi().materials.material
+            .update(materialId, $.extend(material, {
+              viewRestrict: material.viewRestrict == 'LOGGED_IN' ? 'NONE' : 'LOGGED_IN'
+            }))
+            .callback($.proxy(function (updErr, result) {
+              if (updErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', updErr);
+              } else {
+                section.attr('data-view-restrict', result.viewRestrict);
+                this.close();
+              }
+            }, this));
+        }
+      });
+  });
+  
   $(document).on('click', '.page-attachments', function (event, data) {
     var workspaceEntityId = $('.workspaceEntityId').val();
     var workspaceMaterialId = $(event.target).attr('data-workspace-material-id');
@@ -1293,53 +1319,12 @@
       var tocWrapper = $('#workspaceMaterialsManagementTOCContainer');
       var navWrapper = $('#workspaceMaterialsManagementNav');
       var tocOpenCloseButton = $('.wi-workspace-materials-full-screen-navi-button-toc > .icon-navicon');
-      var contentPageContainer = $('#contentWorkspaceMaterialsManagement');
       
-      var contentOffset;
       var windowMinWidth;
       var tocWrapperWidth = tocWrapper.width();
       var navWrapperWidth = navWrapper.width();
       var tocWrapperLeftMargin = "-" + (tocWrapperWidth - navWrapperWidth) + "px";
-      var contentMinLeftOffset = tocWrapperWidth + navWrapperWidth + 20;
-      var contentPageContainerRightPadding = 20;
-
-      if (tocWrapper.length > 0) {
-        tocWrapper
-        .css({
-          height: height,
-          "margin-left" : navWrapperWidth
-        });
-        
-        contentPageContainer.css({
-          paddingLeft: contentMinLeftOffset,
-          paddingRight: contentPageContainerRightPadding
-        });
-      }
       
-      $(window).resize(function(){
-        height = $(window).height();
-        tocWrapper.height(height);
-        contentOffset = contentPageContainer.offset();
-        windowMinWidth = contentPageContainer.width() + contentMinLeftOffset*2;
-        
-        // Lets prevent page content to slide under TOC when browser window is been resized
-        if ($('#workspaceMaterialsManagementTOCContainer:visible').length !== 0) {
-          
-          if (contentOffset.left < contentMinLeftOffset) {
-            contentPageContainer.css({
-              paddingLeft: contentMinLeftOffset,
-              paddingRight: contentPageContainerRightPadding
-            });
-          } 
-        } else {
-          contentPageContainer.css({
-            paddingLeft: navWrapperWidth + 20,
-            paddingRight: contentPageContainerRightPadding
-          });
-        }
-        
-      });
-
       // Prevent icon-navicon link from working normally
       $(tocOpenCloseButton).bind('click', function(e) {
         e.stopPropagation();
@@ -1348,15 +1333,6 @@
       $(tocOpenCloseButton).click(function() {
         // If tocWrapper is visible
         if ($('#workspaceMaterialsManagementTOCContainer:visible').length !== 0) {
-          contentPageContainer
-          .animate({
-            paddingLeft: navWrapperWidth,
-            paddingRight: contentPageContainerRightPadding
-          },{
-            duration:500,
-            easing: "easeInOutQuint"
-          });
-          
           tocWrapper
           .clearQueue()
           .stop()
@@ -1371,14 +1347,6 @@
           });
         // If tocWrapper is not visible  
         } else {
-          contentPageContainer
-          .animate({
-            paddingLeft: contentMinLeftOffset,
-            paddingRight: contentPageContainerRightPadding
-          },{
-            duration:500,
-            easing: "easeInOutQuint"
-          });
           tocWrapper
           .show()
           .clearQueue()
@@ -2040,6 +2008,16 @@
         .text(getLocaleText("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"));
       }
     }
+    
+     mApi().materials.material
+       .read(node.attr('data-material-id'))
+       .callback(function (readErr, material) {
+         if (readErr) {
+           $('.notification-queue').notificationQueue('notification', 'error', readErr);
+         } else {
+           node.attr('data-view-restrict', material.viewRestrict);
+         }
+       });
   });
   
 }).call(this);

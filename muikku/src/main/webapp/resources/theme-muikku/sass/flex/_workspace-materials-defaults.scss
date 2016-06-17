@@ -721,7 +721,7 @@ sup {
     font-style:italic;
     margin:1px 3px 1px 3px;
     display:inline-block;
-    font-size:13px;
+    font-size:14px;
     
     span.muikku-field-examples-title {
       font-weight:600;
@@ -745,7 +745,7 @@ sup {
   .muikku-page-assignment-type {
     padding:0px 8px;
     border-radius:2px;
-    font-size:14px;
+    font-size:12px;
     color: #fff;
     text-align: center;
     text-transform:uppercase;
@@ -852,7 +852,7 @@ sup {
 
 footer.article-details {
   margin:0 -20px -10px -20px;
-  padding:5px 15px;
+  padding:5px 20px;
   border-top:2px solid #e6f2c4;
   font-size:13px;
   line-height:1.2em;
@@ -893,5 +893,23 @@ footer.article-details {
     }
     
   }
-  
+
+}
+
+/* View Restriction */
+p.content-view-restricted-message {
+  text-align:center;
+  font-style:italic;
+  font-size:20px;
+  padding:60px 20px;
+  background:#f9f9f9;
+}
+
+.workspace-materials-view-page[data-view-restricted="true"] {
+
+  .muikku-save-page-wrapper,
+  .article-details {
+    display:none;
+  }
+
 }

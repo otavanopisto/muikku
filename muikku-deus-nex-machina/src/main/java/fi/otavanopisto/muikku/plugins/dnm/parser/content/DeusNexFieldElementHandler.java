@@ -12,7 +12,7 @@ public interface DeusNexFieldElementHandler {
 
 	public Node handleOptionList(Document ownerDocument, String paramName, String type, List<OptionListOption> options, Integer size, String help, String hint) throws DeusNexException;
 
-	public Node handleTextField(Document ownerDocument, String paramName, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) throws DeusNexException;
+	public Node handleTextField(Document ownerDocument, String paramName, Integer columns, Boolean autogrow, List<RightAnswer> rightAnswers, String help, String hint) throws DeusNexException;
 
 	public Node handleConnectField(Document ownerDocument, String paramName, List<ConnectFieldOption> options, String help, String hint) throws DeusNexException;
 	 

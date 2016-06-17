@@ -10,10 +10,11 @@ public class TextFieldMeta extends FieldMeta {
     
   }
 
-  public TextFieldMeta(String name, Integer columns, List<TextFieldRightAnswer> rightAnswers, String hint) {
+  public TextFieldMeta(String name, Integer columns, Boolean autogrow, List<TextFieldRightAnswer> rightAnswers, String hint) {
     super(name);
     this.setRightAnswers(rightAnswers);
     this.setColumns(columns);
+    this.setAutogrow(autogrow);
     this.setHint(hint);
   }
   
@@ -48,8 +49,17 @@ public class TextFieldMeta extends FieldMeta {
     this.hint = hint;
   }
 
+  public Boolean getAutogrow() {
+    return autogrow;
+  }
+
+  public void setAutogrow(Boolean autogrow) {
+    this.autogrow = autogrow;
+  }
+
   private List<TextFieldRightAnswer> rightAnswers;
   private Integer columns;
+  private Boolean autogrow;
   private String hint;
   
 }

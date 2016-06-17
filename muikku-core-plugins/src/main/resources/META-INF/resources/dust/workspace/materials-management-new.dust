@@ -1,4 +1,4 @@
-<section class="workspace-materials-view-page material-management-view workspace-materials-management-new">
+<section class="workspace-materials-view-page material-management-view workspace-materials-management-new lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
   <a href="javascript:void(null)" data-material-type="html" class="workspace-materials-management-new-page-link icon-new-page">{#localize key="plugin.workspace.materialsManagement.newDocument"/}</a>
   <a href="javascript:void(null)" data-material-type="html" class="workspace-materials-management-new-section-link icon-new-section">{#localize key="plugin.workspace.materialsManagement.newSection"/}</a>
 </section>

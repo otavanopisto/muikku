@@ -91,9 +91,23 @@
     
   }
   
+  .workspace-materials-view-page-section.material-view .workspace-materials-view-page.material-view,
   .workspace-frontpage-material-page .workspace-materials-view-page.material-view,
-  .workspace-helppage-material-page .workspace-materials-view-page.material-view {
+  .workspace-helppage-material-page .workspace-materials-view-page.material-view,
+  .workspace-journal-content-wrapper,
+  .workspace-students-listing-wrapper,
+  h1.workspace-generic-view-title,
+  h2.workspace-generic-title,
+  .workspace-frontpage-announcements,
+  footer.workspace-frontpage-footer .workspace-footer-license-wrapper,
+  footer.workspace-frontpage-footer .workspace-footer-producers-wrapper,
+  body .workspace-teachers-listing-wrapper, 
+  body .workspace-students-listing-wrapper {
     padding:10px;  
+  }
+  
+  footer.article-details {
+    padding:5px 10px;
   }
   
   .workspace-materials-view-page.material-view footer.article-details {
@@ -105,7 +119,6 @@
   }
   
   .workspace-materials-view-page-section.material-view .workspace-materials-view-page.material-view {
-    padding:10px;  
     
     .muikku-page-assignment-type {
       margin:0 0 0 -15px;

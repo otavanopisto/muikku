@@ -22,7 +22,7 @@
   </ui:define>
   
   <ui:define name="styles">
-    <link rel="stylesheet" type="text/css" href="/css/flex/workspaces-materials-reading.css"/>  
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-materials-reading.css"/>  
     <link rel="stylesheet" type="text/css" href="/css/muikku-file-field-component.css" /> 
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.css"/> 
     <link rel="StyleSheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/magnific-popup.min.css"/>
@@ -30,6 +30,7 @@
   </ui:define>
   
   <ui:define name="grid-content">
+
     <form style="display: none;">
       <input type="hidden" name="max-file-size" value="#{workspaceMaterialsBackingBean.maxFileSize}" />
     </form>
@@ -54,85 +55,107 @@
           </div>
         </ui:fragment>
       </nav>
-    
-      <div id="workspaceMaterialsReadingTOCContainer">
-        <div class="workspace-materials-reading-TOC-title">
-          <h1>#{i18n.text['plugin.workspace.materialsReading.tocTitle']}</h1>
-          <div id="workspaceMaterialsReadingTOCPinicon" class="icon-pin" title="Kiinnitä sisällysluettelo"></div>
-        </div>
-        <div class="workspace-materials-toc-content-scrolling" id="materialsScrollableTOC">
-          <ul class="workspace-materials-toc-root">
-            <ui:repeat var="node" value="#{workspaceMaterialsReadingBackingBean.contentNodes}">
-              <ui:fragment rendered="#{node.type eq 'folder'}">
-                <li>
-                  <ul class="workspace-materials-toc-section">
-                    <li class="workspace-materials-toc-subtitle">#{node.title}</li>
 
-                    <ui:repeat var="articleNode" value="#{node.children}">
-                      <ui:fragment rendered="#{articleNode.type eq 'folder'}">
-                        <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
-                      </ui:fragment>
-                      <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                        <li class="workspace-materials-toc-item" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
-                          <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'assignment' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
-                        </li>
-                      </ui:fragment>
-                    </ui:repeat>
-                  </ul>
-                </li>
-              </ui:fragment>
-
-              <ui:fragment rendered="#{node.type ne 'folder'}">
-                <li class="workspace-materials-toc-item" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
-                  <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'assignment' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
-                </li>
-              </ui:fragment>
-            </ui:repeat>
-          </ul>
+      <div id="workspaceMaterialsReadingTOCWrapper">
+        <nav class="workspace-waterials-reading-nav" id="workspaceMaterialsReadingNav">
+          <div class="widget wi-workspace-materials-full-screen-navi-button-toc">
+            <h:link styleClass="icon-navicon w-tooltip" title="Sisällysluettelo" outcome="#">
+              <span class="workspace-materials-full-screen-tt-container-toc">Sisällysluettelo</span>
+            </h:link>
+          </div>
+          <div class="widget wi-workspace-materials-full-screen-navi-button-goback">
+            <h:link styleClass="icon-goback w-tooltip" title="Palaa takaisin" outcome="/jsf/workspace/materials.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+              <span class="workspace-materials-full-screen-tt-container-goback">Palaa takaisin</span>
+            </h:link>
+          </div>
+          <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_MATERIALS')}">
+            <div class="widget wi-workspace-materials-full-screen-navi-button-manage-materials">
+              <h:link styleClass="icon-edit-materials w-tooltip" title="Muokkaa materiaaleja" outcome="/jsf/workspace/materials-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
+                <span class="workspace-materials-full-screen-tt-container-manage-materials">Muokkaa materiaaleja</span>
+              </h:link>
+            </div>
+          </ui:fragment>
+        </nav>
+      
+        <div id="workspaceMaterialsReadingTOCContainer">
+          <div class="workspace-materials-reading-TOC-title">
+            <h1>#{i18n.text['plugin.workspace.materialsReading.tocTitle']}</h1>
+            <div id="workspaceMaterialsReadingTOCPinicon" class="icon-pin" title="Kiinnitä sisällysluettelo"></div>
+          </div>
+          <div class="workspace-materials-toc-content-scrolling" id="materialsScrollableTOC">
+            <ul class="workspace-materials-toc-root">
+              <ui:repeat var="node" value="#{workspaceMaterialsReadingBackingBean.contentNodes}">
+                <ui:fragment rendered="#{node.type eq 'folder'}">
+                  <li>
+                    <ul class="workspace-materials-toc-section">
+                      <li class="workspace-materials-toc-subtitle">#{node.title}</li>
+  
+                      <ui:repeat var="articleNode" value="#{node.children}">
+                        <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+                          <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+                          <li class="workspace-materials-toc-item" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
+                            <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'assignment' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+                          </li>
+                        </ui:fragment>
+                      </ui:repeat>
+                    </ul>
+                  </li>
+                </ui:fragment>
+  
+                <ui:fragment rendered="#{node.type ne 'folder'}">
+                  <li class="workspace-materials-toc-item" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
+                    <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'assignment' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
+                  </li>
+                </ui:fragment>
+              </ui:repeat>
+            </ul>
+          </div>
         </div>
       </div>
+  
+      <section class="flex-row">
+        <article class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top">
+          <h1>#{workspaceMaterialsReadingBackingBean.workspaceName}</h1>
+          <ui:repeat var="node" value="#{workspaceMaterialsReadingBackingBean.contentNodes}">
+            <ui:fragment rendered="#{node.type eq 'folder'}">
+              <section id="page-#{node.workspaceMaterialId}" class="workspace-materials-view-page-section material-reading-view" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-path="#{node.path}">
+                <h2>#{node.title}</h2>
+                
+                <ui:repeat var="articleNode" value="#{node.children}">
+                  <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+                    <ui:fragment rendered="#{articleNode.level eq 1}">
+                      <h3>#{articleNode.title}</h3>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{articleNode.level eq 2}">
+                      <h4>#{articleNode.title}</h4>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{articleNode.level eq 3}">
+                      <h5>#{articleNode.title}</h5>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{(articleNode.level eq 4) or (articleNode.level gt 4)}">
+                      <h6>#{articleNode.title}</h6>
+                    </ui:fragment>
+                  </ui:fragment>
+                  <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+                    <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-assignment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" data-license="#{articleNode.license}" data-producers="#{articleNode.producers}" data-view-restricted="#{articleNode.viewRestricted}" class="workspace-materials-view-page material-reading-view"/>
+                  </ui:fragment>
+                </ui:repeat>
+              </section>
+            </ui:fragment>  
+            
+            <ui:fragment rendered="#{node.type ne 'folder'}">
+              <article id="page-#{node.workspaceMaterialId}" data-correct-answers="#{node.correctAnswers}" data-assignment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" data-path="#{node.path}" data-license="#{node.license}" data-producers="#{node.producers}" data-view-restricted="#{node.viewRestricted}" class="workspace-materials-view-page material-reading-view"/>
+            </ui:fragment>  
+          </ui:repeat>
+        </article>
+      </section>
+  
+      
+      <input class="workspaceEntityId" type="hidden" value="#{workspaceMaterialsReadingBackingBean.workspaceEntityId}"/>
+      <input class="materialsBaseUrl" type="hidden" value="#{workspaceMaterialsReadingBackingBean.materialsBaseUrl}"/>
     </div>
-
-    <section class="flex-row">
-      <article class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top">
-        <h1>#{workspaceMaterialsReadingBackingBean.workspaceName}</h1>
-        <ui:repeat var="node" value="#{workspaceMaterialsReadingBackingBean.contentNodes}">
-          <ui:fragment rendered="#{node.type eq 'folder'}">
-            <section id="page-#{node.workspaceMaterialId}" class="workspace-materials-view-page-section material-reading-view" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-path="#{node.path}">
-              <h2>#{node.title}</h2>
-              
-              <ui:repeat var="articleNode" value="#{node.children}">
-                <ui:fragment rendered="#{articleNode.type eq 'folder'}">
-                  <ui:fragment rendered="#{articleNode.level eq 1}">
-                    <h3>#{articleNode.title}</h3>
-                  </ui:fragment>
-                  <ui:fragment rendered="#{articleNode.level eq 2}">
-                    <h4>#{articleNode.title}</h4>
-                  </ui:fragment>
-                  <ui:fragment rendered="#{articleNode.level eq 3}">
-                    <h5>#{articleNode.title}</h5>
-                  </ui:fragment>
-	                <ui:fragment rendered="#{(articleNode.level eq 4) or (articleNode.level gt 4)}">
-	                  <h6>#{articleNode.title}</h6>
-	                </ui:fragment>
-	              </ui:fragment>
-	              <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-	                <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-assignment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" data-license="#{articleNode.license}" data-producers="#{articleNode.producers}" class="workspace-materials-view-page material-reading-view"/>
-	              </ui:fragment>
-	            </ui:repeat>
-	          </section>
-	        </ui:fragment>  
-	        
-	        <ui:fragment rendered="#{node.type ne 'folder'}">
-	          <article id="page-#{node.workspaceMaterialId}" data-correct-answers="#{node.correctAnswers}" data-assignment-type="#{node.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-material-content="#{node.html}" data-path="#{node.path}" data-license="#{node.license}" data-producers="#{node.producers}" class="workspace-materials-view-page material-reading-view"/>
-	        </ui:fragment>  
-	      </ui:repeat>
-	    </article>
-    </section>
-
-    
-    <input class="workspaceEntityId" type="hidden" value="#{workspaceMaterialsReadingBackingBean.workspaceEntityId}"/>
-    <input class="materialsBaseUrl" type="hidden" value="#{workspaceMaterialsReadingBackingBean.materialsBaseUrl}"/>
   </ui:define>
 
 </ui:composition>
