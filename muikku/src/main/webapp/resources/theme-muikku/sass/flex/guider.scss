@@ -1,7 +1,6 @@
 @import "_vars.scss";
 @import "_styles.scss";
 
-
 /* Guider, Guiding tool (.gt-*) */
 
 .gt-controls-container{
@@ -506,6 +505,8 @@
 /* Flag Share Dialog's additional styles. Main dialog style i sin separate .scss */
 .guider-share-flag-dialog {
    overflow:visible !important;
+   height:auto !important;
+   
   .ui-autocomplete {
     text-transform:none;
     font-family:'Open Sans', Arial, sans-serif;
@@ -625,4 +626,9 @@
   .icon-flag {
     margin-right: 10px;
   }
+  
+}
+
+span.ui-helper-hidden-accessible {
+  display:none;
 }

@@ -1,31 +1,50 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html" xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
-  xmlns:composite="http://java.sun.com/jsf/composite/composite" template="/jsf/workspace/templates/workspace-users-view.xhtml">
-
-  <!-- Workspace view title -->
-  <ui:define name="workspace.content.top.static">
-    <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.users.pageTitle']}</h1>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/flex-main-workspace.xhtml">
+  
+  <ui:define name="scripts">
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace.js"/> 
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-users.js"/>
   </ui:define>
-
-  <ui:define name="workspace.content">
+  
+  <ui:define name="workspace-view-styles">
+    <link rel="stylesheet" type="text/css" href="/css/flex/workspace-users.css"/>  
+  </ui:define>
+  
+  <ui:define name="grid-content">
     <input name="workspaceEntityId" type="hidden" value="#{workspaceUsersBackingBean.workspaceEntityId}" />
-
-    <h2 class="workspace-generic-title">#{i18n.text['plugin.workspace.users.teachers.title']}</h2>
-    <div class="workspace-teachers-listing-wrapper">
-      <div class="workspace-teachers-list">
-      </div>
+    
+    <div class="flex-row">
+      <h1 class="workspace-generic-view-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.users.pageTitle']}</h1>
     </div>
     
-    <h2 class="workspace-generic-title">#{i18n.text['plugin.workspace.users.students.title']}</h2>
-    <div class="workspace-students-listing-wrapper">
-      <span class="workspace-students-active">#{i18n.text['plugin.workspace.users.students.link.active']}</span>
-      <span class="workspace-students-inactive">#{i18n.text['plugin.workspace.users.students.link.inactive']}</span>
-      <div class="workspace-students-list">
-      </div>
+    <div class="flex-row">
+	    <h2 class="workspace-generic-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.users.teachers.title']}</h2>
+	    <div class="workspace-teachers-listing-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+	      <div class="workspace-teachers-list flex-row">
+	      </div>
+	    </div>
+    </div>
+
+    <div class="flex-row">
+      <h2 class="workspace-generic-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.users.students.title']}</h2>
+	    <div class="workspace-students-listing-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+		    <div class="flex-row">
+	  	    <span class="workspace-students-active">#{i18n.text['plugin.workspace.users.students.link.active']}</span>
+	        <span class="workspace-students-inactive">#{i18n.text['plugin.workspace.users.students.link.inactive']}</span>
+		    </div>
+		    <div class="workspace-students-list flex-row">
+		    </div>
+	    </div>
     </div>
   </ui:define>
-
+  
 </ui:composition>
