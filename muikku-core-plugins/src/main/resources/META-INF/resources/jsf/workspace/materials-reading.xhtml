@@ -13,6 +13,7 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/> 
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/article-details.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace.js"/>  
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-signup-dialog.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-materials-reading.js"/>
@@ -30,32 +31,11 @@
   </ui:define>
   
   <ui:define name="grid-content">
-
-    <form style="display: none;">
-      <input type="hidden" name="max-file-size" value="#{workspaceMaterialsBackingBean.maxFileSize}" />
-    </form>
-  
-    <div id="workspaceMaterialsReadingTOCWrapper">
-      <nav class="workspace-waterials-reading-nav" id="workspaceMaterialsReadingNav">
-        <div class="widget wi-workspace-materials-full-screen-navi-button-toc">
-          <h:link styleClass="icon-navicon w-tooltip" title="Sisällysluettelo" outcome="#">
-            <span class="workspace-materials-full-screen-tt-container-toc">Sisällysluettelo</span>
-          </h:link>
-        </div>
-        <div class="widget wi-workspace-materials-full-screen-navi-button-goback">
-          <h:link styleClass="icon-goback w-tooltip" title="Palaa takaisin" outcome="/jsf/workspace/materials.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
-            <span class="workspace-materials-full-screen-tt-container-goback">Palaa takaisin</span>
-          </h:link>
-        </div>
-        <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_MATERIALS')}">
-          <div class="widget wi-workspace-materials-full-screen-navi-button-manage-materials">
-            <h:link styleClass="icon-edit-materials w-tooltip" title="Muokkaa materiaaleja" outcome="/jsf/workspace/materials-management.jsf?workspaceUrlName=#{workspaceBackingBean.workspaceUrlName}">
-              <span class="workspace-materials-full-screen-tt-container-manage-materials">Muokkaa materiaaleja</span>
-            </h:link>
-          </div>
-        </ui:fragment>
-      </nav>
-
+    <div id="contentWorkspaceMaterialsReading">
+      <form style="display: none;">
+        <input type="hidden" name="max-file-size" value="#{workspaceMaterialsBackingBean.maxFileSize}" />
+      </form>
+    
       <div id="workspaceMaterialsReadingTOCWrapper">
         <nav class="workspace-waterials-reading-nav" id="workspaceMaterialsReadingNav">
           <div class="widget wi-workspace-materials-full-screen-navi-button-toc">
