@@ -105,7 +105,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
   
   @SuppressWarnings("deprecation")
   @Test
-  public void announcementVisibleInWorkspaceFrontpageTest() throws JsonProcessingException, Exception {
+  public void workspaceAnnouncementVisibleInWorkspaceFrontpageTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
 
@@ -160,11 +160,13 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
         login();
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
-        waitAndClick(".workspace-announcement-title");
+        waitForPresent(".workspace-announcement-title");
+        click(".workspace-announcement-title");
         waitForPresent("#announcements .announcement-article h2");
         assertTextIgnoreCase("#announcements .announcement-article h2", "Test title");
         assertTextIgnoreCase("#announcements .announcement-article .article-datetime", "12.11.2015");
-        assertTextIgnoreCase("#announcements .announcement-article .article-context>p", "announcer test announcement");
+        waitForPresent("#announcements .announcement-article .article-context");
+        assertTextIgnoreCase("#announcements .announcement-article .article-context", "announcer test announcement");
       }finally{
         deleteAnnouncements();
         deleteWorkspace(workspace.getId());
