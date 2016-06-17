@@ -470,8 +470,6 @@
     },
 
     _encodeAudioArrayBuffer: function (arrayBuffer, name, type, callback, progress) {
-      // TODO: Error handling
-      
       if (type != 'audio/ogg' && type != 'audio/flac') {
         type = 'audio/ogg';
       }

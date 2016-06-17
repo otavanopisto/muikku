@@ -16,12 +16,12 @@ public class QueryAudioFieldDAO extends CorePluginsDAO<QueryAudioField> {
 
   public QueryAudioField create(Material material, String name) {
 
-    QueryAudioField queryFileField = new QueryAudioField();
+    QueryAudioField queryAudioField = new QueryAudioField();
 
-    queryFileField.setMaterial(material);
-    queryFileField.setName(name);
+    queryAudioField.setMaterial(material);
+    queryAudioField.setName(name);
 
-    return persist(queryFileField);
+    return persist(queryAudioField);
   }
 
   public QueryAudioField findByMaterialAndName(Material material, String name) {

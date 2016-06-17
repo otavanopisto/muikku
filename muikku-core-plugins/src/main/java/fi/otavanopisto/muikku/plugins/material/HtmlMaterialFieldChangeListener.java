@@ -216,25 +216,26 @@ public class HtmlMaterialFieldChangeListener {
     }
   }
   
-  // File field
-   public void onHtmlMaterialAudioFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
-     if (event.getField().getType().equals("application/vnd.muikku.field.audio")) {
-       ObjectMapper objectMapper = new ObjectMapper();
-       AudioFieldMeta audioFieldMeta;
-       try {
-         audioFieldMeta = objectMapper.readValue(event.getField().getContent(), AudioFieldMeta.class);
-       } catch (IOException e) {
-         throw new MaterialFieldMetaParsingExeption("Could not parse audio field meta", e);
-       }
+  // Audio field
+  
+  public void onHtmlMaterialAudioFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.audio")) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      AudioFieldMeta audioFieldMeta;
+      try {
+        audioFieldMeta = objectMapper.readValue(event.getField().getContent(), AudioFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse audio field meta", e);
+      }
        
-       QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), audioFieldMeta.getName());
-       if (queryField != null) {
-         throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
-       }
+      QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), audioFieldMeta.getName());
+      if (queryField != null) {
+        throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
+      }
        
-       queryAudioFieldController.createQueryAudioField(event.getMaterial(), audioFieldMeta.getName());
-     }
-   }
+      queryAudioFieldController.createQueryAudioField(event.getMaterial(), audioFieldMeta.getName());
+    }
+  }
   
   // Connect field
   public void onHtmlMaterialConnectFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
