@@ -12,6 +12,8 @@ import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectFieldOption;
 import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
 import fi.otavanopisto.muikku.plugins.material.model.QuerySelectFieldOption;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerClipDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerDAO;
@@ -22,6 +24,8 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialOrganizerFi
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSorterFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
@@ -66,6 +70,12 @@ public class WorkspaceMaterialFieldAnswerController {
 
   @Inject
   private WorkspaceMaterialFileFieldAnswerFileDAO workspaceMaterialFileFieldAnswerFileDAO;
+  
+  @Inject
+  private WorkspaceMaterialAudioFieldAnswerDAO workspaceMaterialAudioFieldAnswerDAO;
+
+  @Inject
+  private WorkspaceMaterialAudioFieldAnswerClipDAO workspaceMaterialAudioFieldAnswerClipDAO;
   
   @Inject
   private QuerySelectFieldOptionDAO querySelectFieldOptionDAO;
@@ -239,5 +249,48 @@ public class WorkspaceMaterialFieldAnswerController {
   public WorkspaceMaterialFileFieldAnswerFile updateWorkspaceMaterialFileFieldAnswerFileContent(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile, byte[] content) {
     return workspaceMaterialFileFieldAnswerFileDAO.updateContent(fieldAnswerFile, content);
   }
+
+  /* AudioField */
   
+  public WorkspaceMaterialAudioFieldAnswer createWorkspaceMaterialAudioFieldAnswer(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+    return workspaceMaterialAudioFieldAnswerDAO.create(field, reply);
+  }
+
+  public WorkspaceMaterialAudioFieldAnswer findWorkspaceMaterialAudioFieldAnswerByFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+    return workspaceMaterialAudioFieldAnswerDAO.findByQueryFieldAndReply(field, reply);
+  }
+  
+  /* AudioFieldClip */
+
+  public WorkspaceMaterialAudioFieldAnswerClip createWorkspaceMaterialAudioFieldAnswerClip(WorkspaceMaterialAudioFieldAnswer fieldAnswer, byte[] content, String contentType, String audioId, String audioName) {
+    return workspaceMaterialAudioFieldAnswerClipDAO.create(fieldAnswer, content, contentType, audioId, audioName);
+  }
+
+  public WorkspaceMaterialAudioFieldAnswerClip findWorkspaceMaterialAudioFieldAnswerClipByClipId(String clipId) {
+    return workspaceMaterialAudioFieldAnswerClipDAO.findByClipId(clipId);
+  }
+  
+  public List<WorkspaceMaterialAudioFieldAnswerClip> listWorkspaceMaterialAudioFieldAnswerClipsByFieldAnswer(WorkspaceMaterialAudioFieldAnswer fieldAnswer) {
+    return workspaceMaterialAudioFieldAnswerClipDAO.listByFieldAnswer(fieldAnswer);
+  }
+  
+  public void deleteWorkspaceMaterialAudioFieldAnswerClip(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio) {
+    workspaceMaterialAudioFieldAnswerClipDAO.delete(fieldAnswerAudio);
+  }
+
+  public WorkspaceMaterialAudioFieldAnswerClip updateWorkspaceMaterialAudioFieldAnswerClipClipId(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio, String clipId) {
+    return workspaceMaterialAudioFieldAnswerClipDAO.updateClipId(fieldAnswerAudio, clipId);
+  }
+
+  public WorkspaceMaterialAudioFieldAnswerClip updateWorkspaceMaterialAudioFieldAnswerClipContentType(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio, String contentType) {
+    return workspaceMaterialAudioFieldAnswerClipDAO.updateContentType(fieldAnswerAudio, contentType);
+  }
+
+  public WorkspaceMaterialAudioFieldAnswerClip updateWorkspaceMaterialAudioFieldAnswerClipAudioName(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio, String fileName) {
+    return workspaceMaterialAudioFieldAnswerClipDAO.updateFileName(fieldAnswerAudio, fileName);
+  }
+
+  public WorkspaceMaterialAudioFieldAnswerClip updateWorkspaceMaterialAudioFieldAnswerClipContent(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio, byte[] content) {
+    return workspaceMaterialAudioFieldAnswerClipDAO.updateContent(fieldAnswerAudio, content);
+  }
 }

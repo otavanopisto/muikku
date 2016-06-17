@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>create table WorkspaceMaterialAudioFieldAnswer (
+        id bigint not null,
+        primary key (id)
+    )</sql>
+
+  <sql>create table WorkspaceMaterialAudioFieldAnswerClip (
+        id bigint not null auto_increment,
+        clipId varchar(255) not null,
+        content longblob,
+        contentType varchar(255) not null,
+        fileName varchar(255),
+        fieldAnswer_id bigint,
+        primary key (id)
+    )</sql>
+    
+  <sql>alter table WorkspaceMaterialAudioFieldAnswer 
+        add constraint FK_2l2mo6t7q0equwtosj9ob01up 
+        foreign key (id) 
+        references WorkspaceMaterialFieldAnswer (id)</sql>
+
+  <sql>alter table WorkspaceMaterialAudioFieldAnswerClip 
+        add constraint FK_j4dob1mkx4x0d5wo1aexaaehd 
+        foreign key (fieldAnswer_id) 
+        references WorkspaceMaterialAudioFieldAnswer (id)</sql>
+        
+  <sql>create table QueryAudioField (
+        id bigint not null,
+        primary key (id)
+    )</sql>
+    
+  <sql>alter table QueryAudioField 
+        add constraint FK_6u3jfee5tv2pmhmod2hvyt8ym 
+        foreign key (id) 
+        references QueryField (id)</sql>
+    
+</update>
