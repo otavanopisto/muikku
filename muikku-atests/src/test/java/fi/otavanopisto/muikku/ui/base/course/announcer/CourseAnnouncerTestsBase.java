@@ -30,7 +30,6 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      maximizeWindow();
       navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
       waitForPresent(".icon-cogs");
       hoverOverElement(".icon-cogs");
@@ -66,7 +65,6 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      maximizeWindow();
       navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
       waitForPresent(".icon-cogs");
       hoverOverElement(".icon-cogs");
