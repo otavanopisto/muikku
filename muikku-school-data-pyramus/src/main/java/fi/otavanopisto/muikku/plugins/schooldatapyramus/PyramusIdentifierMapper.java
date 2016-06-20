@@ -338,5 +338,9 @@ public class PyramusIdentifierMapper {
   public Long getPyramusEmailId(String emailIdentifier) {
     return NumberUtils.createLong(emailIdentifier);
   }
+
+  public Long getPyramusCourseAssessmentId(String identifier) {
+    return NumberUtils.createLong(identifier);
+  }
   
 }

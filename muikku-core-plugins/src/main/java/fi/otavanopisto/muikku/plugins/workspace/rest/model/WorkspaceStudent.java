@@ -7,11 +7,11 @@ public class WorkspaceStudent {
   public WorkspaceStudent() {
   }
 
-  public WorkspaceStudent(String id, Long workspaceId, Long userId, String firstName, String lastName, String studyProgrammeName, Date enrolmentTime, Boolean archived) {
+  public WorkspaceStudent(String id, Long studentEntityId, String studentIdentifier, String firstName, String lastName, String studyProgrammeName, Date enrolmentTime, Boolean archived) {
     super();
     this.id = id;
-    this.workspaceId = workspaceId;
-    this.userId = userId;
+    this.studentEntityId = studentEntityId;
+    this.studentIdentifier = studentIdentifier;
     this.firstName = firstName;
     this.lastName = lastName;
     this.studyProgrammeName = studyProgrammeName;
@@ -27,20 +27,20 @@ public class WorkspaceStudent {
     this.id = id;
   }
   
-  public Long getWorkspaceId() {
-    return workspaceId;
+  public Long getStudentEntityId() {
+    return studentEntityId;
   }
-
-  public void setWorkspaceId(Long workspaceId) {
-    this.workspaceId = workspaceId;
+  
+  public void setStudentEntityId(Long studentEntityId) {
+    this.studentEntityId = studentEntityId;
   }
-
-  public Long getUserId() {
-    return userId;
+  
+  public String getStudentIdentifier() {
+    return studentIdentifier;
   }
-
-  public void setUserId(Long userId) {
-    this.userId = userId;
+  
+  public void setStudentIdentifier(String studentIdentifier) {
+    this.studentIdentifier = studentIdentifier;
   }
   
   public String getFirstName() {
@@ -89,8 +89,8 @@ public class WorkspaceStudent {
   private String firstName;
   private String lastName;
   private String studyProgrammeName;
-  private Long workspaceId;
-  private Long userId;
+  private Long studentEntityId;
+  private String studentIdentifier;
   private Date enrolmentTime;
   private Boolean archived;
 

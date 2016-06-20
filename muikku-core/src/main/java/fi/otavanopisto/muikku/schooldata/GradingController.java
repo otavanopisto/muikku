@@ -110,6 +110,12 @@ public class GradingController {
 	      verbalAssessment,
 	      date);
 	}
+
+  public fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment findWorkspaceAssessment(
+      SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier,
+      SchoolDataIdentifier workspaceAssesmentIdentifier) {
+    return gradingSchoolDataController.findWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssesmentIdentifier);
+  }
 	
   public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataSource schoolDataSource, String workspaceIdentifier, String studentIdentifier){
     return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);
@@ -128,9 +134,9 @@ public class GradingController {
     return gradingSchoolDataController.listWorkspaceAssessments(studentIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
   }
  
-  public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
-    return gradingSchoolDataController.updateWorkspaceAssessment(schoolDataSource,
-       workspaceAssesmentIdentifier,
+  public WorkspaceAssessment updateWorkspaceAssessment(SchoolDataIdentifier workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
+    return gradingSchoolDataController.updateWorkspaceAssessment(workspaceAssesmentIdentifier.getDataSource(),
+       workspaceAssesmentIdentifier.getIdentifier(),
        workspaceUser.getIdentifier().getIdentifier(),
        workspaceUser.getIdentifier().getDataSource(),
        workspaceUser.getWorkspaceIdentifier().getIdentifier(),
@@ -143,6 +149,10 @@ public class GradingController {
        grade.getSchoolDataSource(),
        verbalAssessment,
        date);
+  }
+
+  public void deleteWorkspaceAssessment(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier workspaceAssesmentIdentifier) {
+    gradingSchoolDataController.deleteWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssesmentIdentifier);
   }
 
   public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(String schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier,
