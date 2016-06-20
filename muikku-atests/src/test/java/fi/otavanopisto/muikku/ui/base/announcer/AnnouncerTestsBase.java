@@ -156,7 +156,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
+        assertTextIgnoreCase("#announcements ul>li>div>a", "Test title");
       }finally{
         deleteAnnouncements();
         deleteUserGroup(2l);
