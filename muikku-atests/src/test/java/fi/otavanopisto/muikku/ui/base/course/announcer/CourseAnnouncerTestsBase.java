@@ -185,8 +185,9 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       .build();
     try {
       login();
-      waitForPresent("#announcements");
+      waitForPresent("#announcements ul>li>div>a");
       assertTextIgnoreCase("#announcements ul>li>div>a", "Test title");
+      waitForPresent("#announcements ul>li>div.fp-announcement-info-workspace");
       assertTextIgnoreCase("#announcements ul>li>div.fp-announcement-info-workspace", "testcourse");        
     }finally{
       deleteAnnouncements();
