@@ -169,7 +169,7 @@ public class BinaryMaterialRESTService extends PluginRESTService {
   }
   
   private BinaryRestMaterial createRestModel(BinaryMaterial material) {
-    return new BinaryRestMaterial(material.getId(), null, material.getTitle(), material.getContentType(), material.getLicense());
+    return new BinaryRestMaterial(material.getId(), null, material.getTitle(), material.getContentType(), material.getLicense(), material.getViewRestrict());
   }
   
 }

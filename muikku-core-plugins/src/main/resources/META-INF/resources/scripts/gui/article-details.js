@@ -5,6 +5,7 @@
     
     _create: function() {
       this.element.addClass('article-details');
+      this._producers = this.options.producers ? this.options.producers.split(',') : null;
       
       this._load($.proxy(function () {
         
@@ -13,7 +14,8 @@
     
     _load: function (callback) {
       var data = { 
-        license: this.options.license  
+        license: this.options.license,
+        producers: this._producers
       };
       
       renderDustTemplate('workspace/materials-article-details.dust', data, $.proxy(function (text) {

@@ -1,0 +1,3 @@
+<div title="{#localize key="plugin.evaluation.workspaceEvaluationDialog.removeDialog.title"/}" data-button-remove-text="{#localize key="plugin.evaluation.workspaceEvaluationDialog.removeDialog.removeButton"/}" data-button-cancel-text="{#localize key="plugin.evaluation.workspaceEvaluationDialog.removeDialog.cancelButton"/}">
+  {#localize key="plugin.evaluation.workspaceEvaluationDialog.removeDialog.description" arg0=studentName/}
+</div>

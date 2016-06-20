@@ -135,7 +135,7 @@
             fieldAnswers: fieldAnswers,
             readOnlyFields: this.options.readOnlyFields
           });
-          $(pageElement).muikkuMaterialPage('applyState');
+          $(pageElement).muikkuMaterialPage('applyState', this.options.readOnlyFields);
         }
 
       } catch (e) {
@@ -255,8 +255,7 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.text') {
-      var taskfieldWrapper = $('<span>')
-        .addClass('textfield-wrapper');
+      var taskfieldWrapper = $('<span>').addClass('textfield-wrapper');
       var input = $('<input>')
         .addClass('muikku-text-field')
         .attr({
@@ -365,7 +364,11 @@
             
             return false; 
           }
-        });  
+        });
+      
+      if (data.meta.autogrow !== false) {
+        input.addClass('autogrow');
+      }
       
       taskfieldWrapper.append(input);
       
@@ -1178,6 +1181,23 @@
     }
   });
   
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.audio') {
+      var audioRecord = $('<div>').muikkuAudioField({
+        'meta': data.meta,
+        'fieldName': data.name,
+        'materialId': data.materialId,
+        'embedId': data.embedId,
+        'readonly': data.readOnlyFields||false
+      });
+      
+      audioRecord.muikkuAudioField('answer', data.value);
+      
+      $(object).replaceWith(audioRecord);
+    }
+  });
+  
   function createEmbedId(parentIds) {
     return (parentIds.length ? parentIds.join(':') : null);
   }
@@ -1271,7 +1291,7 @@
     /* Add autoGrow to textfield */
     if (jQuery().autoGrowInput) {
       $(data.pageElement)
-        .find('.muikku-text-field')
+        .find('.muikku-text-field.autogrow')
         .each(function() {
           $(this)
             .autoGrowInput({

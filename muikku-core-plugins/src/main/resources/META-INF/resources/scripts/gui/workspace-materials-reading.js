@@ -108,15 +108,11 @@
       var navWrapper = $('#workspaceMaterialsReadingNav');
       var tocOpenCloseButton = $('.wi-workspace-materials-full-screen-navi-button-toc > .icon-navicon');
       var tocPinButton = $('#workspaceMaterialsReadingTOCPinicon');
-      var contentPageContainer = $('#contentWorkspaceMaterialsReading');
       
-      var contentOffset;
       var windowMinWidth;
       var tocWrapperWidth = tocWrapper.width();
       var navWrapperWidth = navWrapper.width();
       var tocWrapperLeftMargin = "-" + (tocWrapperWidth - navWrapperWidth) + "px";
-      var contentMinLeftOffset = tocWrapperWidth + navWrapperWidth + 10;
-      var contentPageContainerRightPadding = 10;
       
       if (tocWrapper.length > 0) {
         // If we have tocWrapper lets hide it first and set negative margin for later animation
@@ -126,36 +122,7 @@
           height: height,
           "margin-left" : tocWrapperLeftMargin
         });
-        
-        contentPageContainer.css({
-          paddingLeft: navWrapperWidth + 10,
-          paddingRight: contentPageContainerRightPadding
-        });
       }
-      
-      $(window).resize(function(){
-        height = $(window).height();
-        tocWrapper.height(height);
-        contentOffset = contentPageContainer.offset();
-        windowMinWidth = contentPageContainer.width() + contentMinLeftOffset*2;
-        
-        // Lets prevent page content to slide under TOC when browser window is been resized
-        if ($('#workspaceMaterialsReadingTOCContainer:visible').length !== 0) {
-          
-          if (contentOffset.left < contentMinLeftOffset) {
-            contentPageContainer.css({
-              paddingLeft: contentMinLeftOffset,
-              paddingRight: contentPageContainerRightPadding
-            });
-          } 
-        } else {
-          contentPageContainer.css({
-            paddingLeft: navWrapperWidth + 10,
-            paddingRight: contentPageContainerRightPadding
-          });
-        }
-        
-      });
       
       // TOC pin button click handling
       var tocPinned = 0;
@@ -179,15 +146,6 @@
         
         // If tocWrapper is visible
         if ($('#workspaceMaterialsReadingTOCContainer:visible').length !== 0) {
-          contentPageContainer
-          .animate({
-            paddingLeft: navWrapperWidth,
-            paddingRight: contentPageContainerRightPadding
-          },{
-            duration:500,
-            easing: "easeInOutQuint"
-          });
-          
           tocWrapper
           .clearQueue()
           .stop()
@@ -202,14 +160,6 @@
           });
         // If tocWrapper is not visible  
         } else {
-          contentPageContainer
-          .animate({
-            paddingLeft: contentMinLeftOffset,
-            paddingRight: "10px"
-          },{
-            duration:500,
-            easing: "easeInOutQuint"
-          });
           tocWrapper
           .show()
           .clearQueue()
@@ -229,16 +179,6 @@
                 
                 // Need to check if toc is pinned or not
                 if (tocPinned == 0) {
-                  
-                  contentPageContainer
-                  .animate({
-                    paddingLeft: navWrapperWidth,
-                    paddingRight: "10px"
-                  },{
-                    duration:600,
-                    easing: "easeInOutQuint"
-                  });
-                  
                   tocWrapper
                   .clearQueue()
                   .stop()
@@ -297,10 +237,13 @@
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     var license = $(data.pageElement).attr('data-license');
-    if (license) {
+    var producers = $(data.pageElement).attr('data-producers');
+    
+    if (license || producers) {
       $('<footer>')
         .articleDetails({
-          license: license
+          license: license,
+          producers: producers
         })
         .appendTo(data.pageElement);
     }

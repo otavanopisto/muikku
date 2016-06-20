@@ -12,6 +12,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldCreateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldUpdateEvent;
+import fi.otavanopisto.muikku.plugins.material.fieldmeta.AudioFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldConnectionMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta;
@@ -58,6 +59,9 @@ public class HtmlMaterialFieldChangeListener {
 
   @Inject
   private QueryFileFieldController queryFileFieldController;
+
+  @Inject
+  private QueryAudioFieldController queryAudioFieldController;
   
   @Inject
   private QueryConnectFieldController queryConnectFieldController;
@@ -209,6 +213,27 @@ public class HtmlMaterialFieldChangeListener {
       }
       
       queryFileFieldController.createQueryFileField(event.getMaterial(), fileFieldMeta.getName());
+    }
+  }
+  
+  // Audio field
+  
+  public void onHtmlMaterialAudioFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.audio")) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      AudioFieldMeta audioFieldMeta;
+      try {
+        audioFieldMeta = objectMapper.readValue(event.getField().getContent(), AudioFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse audio field meta", e);
+      }
+       
+      QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), audioFieldMeta.getName());
+      if (queryField != null) {
+        throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
+      }
+       
+      queryAudioFieldController.createQueryAudioField(event.getMaterial(), audioFieldMeta.getName());
     }
   }
   

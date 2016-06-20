@@ -66,8 +66,8 @@
       mApi().workspace.workspaces
         .read({ includeArchivedWorkspaceUsers: true, userIdentifier: studentIdentifier, includeUnpublished: true, orderBy: ['alphabet'], maxResults: 500 })
         .on('$', $.proxy(function (workspaceEntity, callback) {
-          mApi().workspace.workspaces.assessments
-            .read(workspaceEntity.id, { studentIdentifier: studentIdentifier })
+          mApi().workspace.workspaces.students.assessments
+            .read(workspaceEntity.id, studentIdentifier)
             .callback($.proxy(function (assessmentsErr, assessments) {
               if( assessmentsErr ){
                 $('.notification-queue').notificationQueue('notification', 'error', assessmentsErr );

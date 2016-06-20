@@ -10,16 +10,19 @@
 		{:else}
           <a href="javascript:void(null)" class="hide-page icon-hide" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialHideTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialHideTooltip"/}</span></a>
         {/hidden}
-	    <span class="assignment-type">
-	      <a href="javascript:void(null)" class="change-assignment icon-assignment"><span>{#localize key="plugin.workspace.materialsManagement.materialChangeAssesmentTypeTooltip"/}</span></a>
-	    </span>
+      <a href="javascript:void(null)" class="page-attachments icon-attachment" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialAttachmentsTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialAttachmentsTooltip"/}</span></a>
+      <a href="javascript:void(null)" class="page-license icon-license" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialLicenseTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialLicenseTooltip"/}</span></a>
+      <a href="javascript:void(null)" class="page-producers icon-producer" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialProducersTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialProducersTooltip"/}</span></a>
+      <a href="javascript:void(null)" class="close-attachments-editor icon-exit-editing" title="{#localize key="plugin.workspace.materialsManagement.materialCloseAttachmentsTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialCloseAttachmentsTooltip"/}</span></a>
+      <a href="javascript:void(null)" class="close-license-editor icon-exit-editing" title="{#localize key="plugin.workspace.materialsManagement.materialCloseLicenceTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialCloseLicenceTooltip"/}</span></a>
+      <a href="javascript:void(null)" class="close-producers-editor icon-exit-editing" title="{#localize key="plugin.workspace.materialsManagement.materialCloseProducersTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialCloseProducersTooltip"/}</span></a>
+      <a href="javascript:void(null)" class="page-view-restrict icon-closed-material" title="{#localize key="plugin.workspace.materialsManagement.materialViewRestrictionTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialViewRestrictionTooltip"/}</span></a>
+      <span class="assignment-type">
+        <a href="javascript:void(null)" class="change-assignment icon-assignment"><span>{#localize key="plugin.workspace.materialsManagement.materialChangeAssesmentTypeTooltip"/}</span></a>
+      </span>
       <span class="correct-answers-settings hidden">
         <a href="javascript:void(null)" class="correct-answers icon-correct-answers" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip"/}</span></a>
       </span>
-      <a href="javascript:void(null)" class="page-attachments icon-attachment" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialAttachmentsTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialAttachmentsTooltip"/}</span></a>
-      <a href="javascript:void(null)" class="page-license icon-license" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialLicenseTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialLicenseTooltip"/}</span></a>
-      <a href="javascript:void(null)" class="close-attachments-editor icon-exit-editing" title="{#localize key="plugin.workspace.materialsManagement.materialCloseAttachmentsTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialCloseAttachmentsTooltip"/}</span></a>
-      <a href="javascript:void(null)" class="close-license-editor icon-exit-editing" title="{#localize key="plugin.workspace.materialsManagement.materialCloseLicenceTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialCloseLicenceTooltip"/}</span></a>
 	  </div>
 	  <div class="management-page-controls-secondary-subsection">
 	    {@select key=data.publishedRevision}
