@@ -220,6 +220,18 @@
         <artifactId>evaluation-plugin-rest-model</artifactId>
         <version>${muikku.version}</version>
       </dependency>
+      
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>timed-notifications-plugin</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>timed-notifications-plugin-persistence</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
 
 			<!-- Coops -->
 			<dependency>
