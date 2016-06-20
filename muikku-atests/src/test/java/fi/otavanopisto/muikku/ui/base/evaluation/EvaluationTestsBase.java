@@ -332,6 +332,8 @@ public class EvaluationTestsBase extends AbstractUITest {
           selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
           click(".save-evaluation-button");
+          waitForPresent(".notification-queue-item-success");
+          
   //        There's no JSONComparator that allows different values. And since dev machine and travis testing gives different dates we can not test requestBody with CourseAssessment model.
           
           CourseAssessment cAss = new fi.otavanopisto.pyramus.rest.model.CourseAssessment(null, courseStudent.getId(), 1l, 1l, admin.getId(), null, "<p>Test evaluation.</p>\n");
