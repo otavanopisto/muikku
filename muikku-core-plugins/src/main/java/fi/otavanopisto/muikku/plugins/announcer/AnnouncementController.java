@@ -194,5 +194,11 @@ public class AnnouncementController {
     }
   }
   
+  public void deleteAnnouncementWorkspaces(Announcement announcement) {
+    for (AnnouncementWorkspace announcementWorkspace : announcementWorkspaceDAO.listByAnnouncementAndArchived(announcement, Boolean.FALSE)) {
+      announcementWorkspaceDAO.delete(announcementWorkspace);
+    }
+  }
+  
 }
  

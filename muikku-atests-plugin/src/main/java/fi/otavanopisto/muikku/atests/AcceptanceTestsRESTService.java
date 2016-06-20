@@ -17,6 +17,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -579,6 +580,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteAnnouncements() {
     for(Announcement announcement : announcementController.listAll()) {
+      announcementController.deleteAnnouncementWorkspaces(announcement);
       announcementController.deleteAnnouncementTargetGroups(announcement);
       announcementController.delete(announcement);
     }
@@ -599,7 +601,23 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         announcementController.addAnnouncementTargetGroup(announcement, userGroup);
       }
     }
-    return Response.noContent().build();
+    return Response.ok(announcement.getId()).build();
+  }
+  
+  @PUT
+  @Path("/announcements/{ANNOUNCEMENTID}/workspace/{WORKSPACEID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response updateAnnouncementWorkspace(@PathParam ("ANNOUNCEMENTID") Long announcementId, @PathParam ("WORKSPACEID") Long workspaceId) {  
+    Announcement newAnnouncement = announcementController.findById(announcementId);
+    if (newAnnouncement == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Announcement not found").build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Workspace not found").build();
+    }
+    announcementController.addAnnouncementWorkspace(newAnnouncement, workspaceEntity);
+    return Response.ok().build();
   }
   
   @POST
@@ -613,7 +631,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     if (StringUtils.isBlank(payload.getName())) {
       return Response.status(Status.BAD_REQUEST).entity("name is missing").build();
     }
-
+// TODO: OwnerIdentifier from payload, please.
     Flag flag = flagController.createFlag(SchoolDataIdentifier.fromString("STAFF-1/PYRAMUS"), payload.getName(), payload.getColor(), payload.getDescription());
     
     return Response.ok(createRestEntity(flag)).build();
