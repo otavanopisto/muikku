@@ -1035,12 +1035,26 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
-  protected void createAnnouncement(Long publisherUserEntityId, String caption, String content, Date startDate, Date endDate, Boolean archived, Boolean publiclyVisible, List<Long> userGroupIds) throws Exception {
+  protected Long createAnnouncement(Long publisherUserEntityId, String caption, String content, Date startDate, Date endDate, Boolean archived, Boolean publiclyVisible, List<Long> userGroupIds) throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     Announcement payload = new Announcement(null, publisherUserEntityId, userGroupIds, caption, content, new Date(), startDate, endDate, archived, publiclyVisible);                 
-    asAdmin()
+    Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
       .post("/test/announcements");
+    
+    response.then()
+      .statusCode(200);
+    
+    Long result = objectMapper.readValue(response.asString(), Long.class);
+    return result;
+  }
+  
+  protected void updateAnnouncementWorkspace(Long announcementId, Long workspaceId) {
+    asAdmin()
+      .put("/test/announcements/{ANNOUNCEMENTID}/workspace/{WORKSPACEID}", String.valueOf(announcementId), String.valueOf(workspaceId))
+      .then()
+      .statusCode(200);
   }
   
   protected void deleteUserGroup(Long userGroupId) {
