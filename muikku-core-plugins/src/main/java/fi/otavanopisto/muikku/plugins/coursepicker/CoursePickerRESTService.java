@@ -345,7 +345,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity)) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     
