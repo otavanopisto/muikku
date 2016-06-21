@@ -18,15 +18,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.dao.AssessmentRequestNotificationDAO;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Dependent
 public class AssesmentRequestNotificationController {
@@ -37,9 +34,6 @@ public class AssesmentRequestNotificationController {
   
   @Inject
   private AssessmentRequestNotificationDAO assessmentRequestNotificationDAO;
-  
-  @Inject
-  private UserEntityController userEntityController;
   
   @Inject
   private GradingController gradingController;
