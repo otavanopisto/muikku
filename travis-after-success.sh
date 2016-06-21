@@ -26,7 +26,7 @@ if [[ $release = "true" ]]; then
   git checkout -B devel
   git pull
   git merge master
-  mvn versions:use-latest-snapshots -Dincludes=fi.pyramus:* --settings ~/.m2/mySettings.xml
+  mvn versions:use-latest-snapshots -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
   git push --set-upstream origin devel
 fi;
 
