@@ -76,6 +76,11 @@
       <artifactId>timed-notifications-plugin-persistence</artifactId>
     </dependency>
     
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>core-plugins</artifactId>
+    </dependency>
+    
   </dependencies>
 
 </project>
