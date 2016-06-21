@@ -98,8 +98,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student);
         login();
-        waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
+        waitForPresentAndVisible("#announcements ul>li>div>a");
+        assertTextIgnoreCase("#announcements ul>li>div>a", "Test title");
       }finally{
         deleteAnnouncements();
       }
@@ -122,8 +122,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student);
         login();
-        waitForPresent("#announcements");
-        assertTextIgnoreCase("#announcements>ul>li>div>a", "Test title");
+        waitForPresentAndVisible("#announcements ul>li>div>a");
+        assertTextIgnoreCase("#announcements ul>li>div>a", "Test title");
         navigate("/announcements", true);
         waitForPresent("#announcementContextNavigation .gc-navigation-item");
         assertTextIgnoreCase("#announcementContextNavigation .gc-navigation-item a", "Test title");
