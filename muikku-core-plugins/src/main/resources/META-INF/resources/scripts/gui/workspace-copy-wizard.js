@@ -30,7 +30,7 @@
         'copy-discussions-areas': function (callback) {
           var payload = {};
           
-          mApi().forum.workspace.areas
+          mApi().workspace.workspaces.forumAreas
             .create(this._createdWorkspace.id, payload, { sourceWorkspaceEntityId: this.options.workspaceEntityId })
             .callback(callback);
         },
