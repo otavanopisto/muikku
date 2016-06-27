@@ -22,14 +22,14 @@ public class AssessmentRequestNotificationDAO extends TimedNotificationsDAO<Asse
     return persist(assesmentRequestNotification);
   }
 
-  public List<AssesmentRequestNotification> listByStudentIdentifierAndDateAfter(String studentIdentifier, Date sent){
+  public Long countByStudentIdentifierAndDateAfter(String studentIdentifier, Date sent){
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<AssesmentRequestNotification> criteria = criteriaBuilder.createQuery(AssesmentRequestNotification.class);
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
     
     Root<AssesmentRequestNotification> root = criteria.from(AssesmentRequestNotification.class);
-    criteria.select(root);
+    criteria.select(criteriaBuilder.count(root));
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(AssesmentRequestNotification_.studentIdentifier), studentIdentifier),
@@ -37,7 +37,7 @@ public class AssessmentRequestNotificationDAO extends TimedNotificationsDAO<Asse
       )
     );
     
-    return entityManager.createQuery(criteria).getResultList();
+    return entityManager.createQuery(criteria).getSingleResult();
   }
   
 }
