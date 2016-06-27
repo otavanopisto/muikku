@@ -11,25 +11,12 @@ public class JadeLocaleHelper {
   @Inject
   private LocaleController localeController;
   
-  public JadeLocaleHelper(Locale locale) {
-    this.locale = locale;
-  }
-  
-  public String textWithParams(String key, Object... params) {
+  public String textWithParams(Locale locale, String key, Object... params) {
     return localeController.getText(locale, key, params);
   }
   
-  public String text(String key) {
+  public String text(Locale locale, String key) {
     return localeController.getText(locale, key);
   }
   
-  public String language() {
-    return locale.getLanguage();
-  }
-
-  public String locale() {
-    return locale.toString();
-  }
-  
-  private Locale locale;
 }
