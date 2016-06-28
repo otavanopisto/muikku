@@ -22,6 +22,37 @@ public class AssessmentRequestNotificationDAO extends TimedNotificationsDAO<Asse
     return persist(assesmentRequestNotification);
   }
 
+  public List<AssesmentRequestNotification> listByStudentIdentifierAndDateAfter(String studentIdentifier, Date sent){
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<AssesmentRequestNotification> criteria = criteriaBuilder.createQuery(AssesmentRequestNotification.class);
+    
+    Root<AssesmentRequestNotification> root = criteria.from(AssesmentRequestNotification.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(AssesmentRequestNotification_.studentIdentifier), studentIdentifier),
+        criteriaBuilder.greaterThanOrEqualTo(root.get(AssesmentRequestNotification_.sent), sent)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public List<AssesmentRequestNotification> listByDateAfter(Date sent){
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<AssesmentRequestNotification> criteria = criteriaBuilder.createQuery(AssesmentRequestNotification.class);
+    
+    Root<AssesmentRequestNotification> root = criteria.from(AssesmentRequestNotification.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.greaterThanOrEqualTo(root.get(AssesmentRequestNotification_.sent), sent));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   public Long countByStudentIdentifierAndDateAfter(String studentIdentifier, Date sent){
     EntityManager entityManager = getEntityManager();
     

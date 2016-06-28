@@ -1,9 +1,11 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
@@ -31,13 +33,22 @@ public class AssesmentRequestNotificationController {
   @Inject
   private Logger logger;
   
-  public SearchResult searchActiveStudentIds(Collection<Long> groups, int firstResult, int maxResults){
+  public SearchResult searchActiveStudentIds(Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
     SearchProvider searchProvider = getProvider("elastic-search");
-    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, firstResult, maxResults, null); //TODO: search only ids
+    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, firstResult, maxResults, Collections.singleton("id"), excludeSchoolDataIdentifiers, startedStudiesBefore); //TODO: search only ids
   }
   
   public AssesmentRequestNotification createAssesmentRequestNotification(SchoolDataIdentifier studentIdentifier){
     return assessmentRequestNotificationDAO.create(studentIdentifier.toId(), new Date());
+  }
+  
+  public List<SchoolDataIdentifier> listNotifiedSchoolDataIdentifiersAfter(Date date){
+    List<SchoolDataIdentifier> results = new ArrayList<>();
+    List<AssesmentRequestNotification> assessmentRequestNotifications = assessmentRequestNotificationDAO.listByDateAfter(date);
+    for(AssesmentRequestNotification assessmentRequestNotification : assessmentRequestNotifications){
+      results.add(SchoolDataIdentifier.fromId(assessmentRequestNotification.getStudentIdentifier()));
+    }
+    return results;
   }
   
   public Long countAssessmentRequestNotificationsBySchoolDataIdentifierAfter(SchoolDataIdentifier studentIdentifier, Date date) {

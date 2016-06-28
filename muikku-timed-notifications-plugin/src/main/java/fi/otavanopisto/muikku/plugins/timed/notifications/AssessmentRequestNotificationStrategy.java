@@ -18,8 +18,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -36,7 +38,7 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
   
   private static final int firstResult = 0;
   private static final int maxResults = 10;
-  private static final int days = 180;
+  private static final int days = 60;
   
   @Inject
   private AssesmentRequestNotificationController assesmentRequestNotificationController;
@@ -57,6 +59,9 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
   private GradingController gradingController;
   
   @Inject
+  private PluginSettingsController pluginSettingsController;
+  
+  @Inject
   private Logger logger;
   
   @Override
@@ -65,9 +70,20 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
   }
   
   @Override
+  public boolean isActive(){
+    return active;
+  }
+  
+  @Override
   public void sendNotifications() {
-    Collection<Long> groups = Collections.singleton(1l);
-    SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudentIds(groups, firstResult + offset, maxResults);
+    Collection<Long> groups = getGroups();
+    if (groups.isEmpty()) {
+      return;
+    }
+    
+    Date since = new DateTime().minusDays(days).toDate();
+    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = assesmentRequestNotificationController.listNotifiedSchoolDataIdentifiersAfter(since);
+    SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudentIds(groups, firstResult + offset, maxResults, studentIdentifierAlreadyNotified, since);
     
     if (searchResult.getFirstResult() + maxResults >= searchResult.getTotalHitCount()) {
       offset = 0;
@@ -75,10 +91,10 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
       offset += maxResults;
     }
     
-    for (SchoolDataIdentifier studentIdentifier : getStudentIdentifiersWithoutAssesmentRequests(searchResult)) {
+    for (SchoolDataIdentifier studentIdentifier : getStudentIdentifiersWithoutAssesmentRequests(searchResult, since)) {
       
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
-      if(studentEntity != null){
+      if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("locale", studentLocale);
@@ -97,9 +113,26 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
     }
   }
   
-  private List<SchoolDataIdentifier> getStudentIdentifiersWithoutAssesmentRequests(SearchResult searchResult){
+  private Collection<Long> getGroups(){
+    String groupsString = pluginSettingsController.getPluginSetting("timed-notifications", "assesment-request-notification.groups");
+    if (StringUtils.isBlank(groupsString)) {
+      this.active = false;
+      logger.log(Level.WARNING, "Disabling timed assessment request notifications because no groups were configured as targets");
+      return Collections.emptyList();
+    }
+    
+    Collection<Long> groups = new ArrayList<>();
+    String[] groupSplit = groupsString.split(",");
+    for (String group : groupSplit) {
+      if (NumberUtils.isNumber(group)) {
+        groups.add(NumberUtils.createLong(group));
+      }
+    }
+    return groups;
+  }
+  
+  private List<SchoolDataIdentifier> getStudentIdentifiersWithoutAssesmentRequests(SearchResult searchResult, Date since){
     List<SchoolDataIdentifier> studentIdentifiers = new ArrayList<>();
-    Date since = new DateTime().minusDays(days).toDate();
     for (Map<String, Object> result : searchResult.getResults()) {
       String studentId = (String) result.get("id");
       
@@ -114,19 +147,17 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
         logger.severe(String.format("Could not process user found from search index with id %s", studentId));
         continue;
       }
+
+      List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listStudentAssessmentRequestsSince(studentIdentifier, since);
       
-      long notificationCount = assesmentRequestNotificationController.countAssessmentRequestNotificationsBySchoolDataIdentifierAfter(studentIdentifier, since);
-      if(notificationCount == 0){
-        List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listStudentAssessmentRequestsSince(studentIdentifier, since);
-        
-        if (assessmentRequests.isEmpty()){
-          studentIdentifiers.add(studentIdentifier);
-        }
+      if (assessmentRequests.isEmpty()){
+        studentIdentifiers.add(studentIdentifier);
       }
     }
     return studentIdentifiers;
   }
   
   private int offset = 0;
+  private boolean active = true;
 
 }
