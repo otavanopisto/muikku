@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.search;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -29,6 +30,10 @@ public interface SearchProvider {
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden, 
       int start, int maxResults, Collection<String> fields);
+  
+  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
+      Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden, 
+      int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date studiesStartedBefore);
   
   public class Sort {
     
