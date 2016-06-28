@@ -42,9 +42,8 @@ public class AssesmentRequestNotification {
   @Column (nullable=false)
   private String studentIdentifier;
   
-  @NotNull
-  @Column (nullable=false)
-  @Temporal (value=TemporalType.DATE)
+  @Temporal (TemporalType.TIMESTAMP)
+  @Column (nullable = false)
   private Date sent;
   
 }
