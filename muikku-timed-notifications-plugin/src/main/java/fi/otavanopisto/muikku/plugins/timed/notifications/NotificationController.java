@@ -16,7 +16,7 @@ import fi.otavanopisto.muikku.users.UserEmailEntityController;
 
 @Dependent
 public class NotificationController {
-
+  
   @Inject
   private Logger logger;
   
@@ -41,11 +41,12 @@ public class NotificationController {
      );
    }   
    return communicatorController.postMessage(
-        null,
+        recipient,
         category,
         subject,
         content,
         Arrays.asList(recipient)
     );
   }
+
 }
