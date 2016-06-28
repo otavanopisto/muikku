@@ -342,5 +342,9 @@ public class PyramusIdentifierMapper {
   public Long getPyramusCourseAssessmentId(String identifier) {
     return NumberUtils.createLong(identifier);
   }
+
+  public String getCurriculumIdentifier(Long curriculumId) {
+    return curriculumId == null ? null : String.valueOf(curriculumId);
+  }
   
 }

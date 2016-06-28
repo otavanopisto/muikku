@@ -281,11 +281,24 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
-    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, freeText, null, null, includeUnpublished, start, maxResults, null);
+    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, null, freeText, null, null, includeUnpublished, start, maxResults, null);
   }
   
   @Override
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypes, String freeText, List<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts) {
+  public SearchResult searchWorkspaces(
+      String schoolDataSource, 
+      List<String> subjects, 
+      List<String> identifiers, 
+      List<SchoolDataIdentifier> educationTypes, 
+      List<String> curriculums, 
+      String freeText, 
+      List<WorkspaceAccess> accesses, 
+      SchoolDataIdentifier accessUser, 
+      boolean includeUnpublished, 
+      int start, 
+      int maxResults, 
+      List<Sort> sorts) {
+    
     if (identifiers != null && identifiers.isEmpty()) {
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>());
     }
@@ -345,6 +358,10 @@ public class ElasticSearchProvider implements SearchProvider {
       
       if (identifiers != null) {
         filters.add(FilterBuilders.termsFilter("identifier", identifiers));
+      }
+  
+      if (curriculums != null && !curriculums.isEmpty()) {
+        filters.add(FilterBuilders.termsFilter("curriculumIdentifier", curriculums));
       }
   
       if (StringUtils.isNotBlank(freeText)) {

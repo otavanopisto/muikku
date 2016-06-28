@@ -101,4 +101,9 @@ public interface Workspace extends SchoolDataEntity {
   @IndexId
   public String getSearchId();
 
+  @IndexField (
+    toId = true
+  )
+  public String getCurriculumIdentifier();
+  
 }
