@@ -99,6 +99,13 @@ public class ElasticSearchProvider implements SearchProvider {
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults) {
+    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, start, maxResults, null);
+  }
+  
+  @Override
+  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+      Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
+      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults, Collection<String> fields) {
     try {
       text = sanitizeSearchString(text);
 
@@ -210,7 +217,11 @@ public class ElasticSearchProvider implements SearchProvider {
         .setTypes("User")
         .setFrom(start)
         .setSize(maxResults);
-
+      
+      if (!isEmptyCollection(fields)) {
+        requestBuilder.addFields(fields.toArray(new String[0]));
+      }
+      
       SearchResponse response = requestBuilder
           .setQuery(filteredQuery)
           .addSort("_score", SortOrder.DESC)
