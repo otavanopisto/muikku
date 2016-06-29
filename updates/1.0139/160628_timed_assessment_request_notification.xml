@@ -6,4 +6,10 @@
         sent datetime not null,
         primary key (id)
     )</sql>
+  <sql>create table NoPassedCoursesNotification (
+        id bigint not null auto_increment,
+        studentIdentifier varchar(255) not null,
+        sent datetime not null,
+        primary key (id)
+    )</sql>
 </update>
