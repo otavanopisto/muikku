@@ -35,10 +35,12 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 @Singleton
 @ApplicationScoped
 public class AssessmentRequestNotificationStrategy extends AbstractTimedNotificationStrategy {
+
   
-  private static final int firstResult = 0;
-  private static final int maxResults = 10;
-  private static final int days = 60;
+  private static final int FIRST_RESULT = 0;
+  private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.assesmentrequest.maxresults", "20"));
+  private static final int NOTIFICATION_THRESHOLD_DAYS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.assesmentrequest.notificationthreshold", "60"));
+  private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.assesmentrequest.checkfreq", "1800000"));
   
   @Inject
   private AssesmentRequestNotificationController assesmentRequestNotificationController;
@@ -66,7 +68,7 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
   
   @Override
   public long getDuration() {
-    return 10000l;
+    return NOTIFICATION_CHECK_FREQ;
   }
   
   @Override
@@ -81,14 +83,14 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
       return;
     }
     
-    Date since = new DateTime().minusDays(days).toDate();
+    Date since = new DateTime().minusDays(NOTIFICATION_THRESHOLD_DAYS).toDate();
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = assesmentRequestNotificationController.listNotifiedSchoolDataIdentifiersAfter(since);
-    SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudentIds(groups, firstResult + offset, maxResults, studentIdentifierAlreadyNotified, since);
+    SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, since);
     
-    if (searchResult.getFirstResult() + maxResults >= searchResult.getTotalHitCount()) {
+    if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
       offset = 0;
     } else {
-      offset += maxResults;
+      offset += MAX_RESULTS;
     }
     
     for (SchoolDataIdentifier studentIdentifier : getStudentIdentifiersWithoutAssesmentRequests(searchResult, since)) {
