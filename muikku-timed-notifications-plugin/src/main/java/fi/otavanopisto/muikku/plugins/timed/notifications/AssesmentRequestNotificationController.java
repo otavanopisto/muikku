@@ -35,7 +35,7 @@ public class AssesmentRequestNotificationController {
   
   public SearchResult searchActiveStudentIds(Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
     SearchProvider searchProvider = getProvider("elastic-search");
-    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, firstResult, maxResults, Collections.singleton("id"), excludeSchoolDataIdentifiers, startedStudiesBefore); //TODO: search only ids
+    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, firstResult, maxResults, Collections.singleton("id"), excludeSchoolDataIdentifiers, startedStudiesBefore);
   }
   
   public AssesmentRequestNotification createAssesmentRequestNotification(SchoolDataIdentifier studentIdentifier){
