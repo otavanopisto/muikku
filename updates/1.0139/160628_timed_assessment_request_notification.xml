@@ -18,4 +18,10 @@
         sent datetime not null,
         primary key (id)
     )</sql>
+    <sql>create table RequestedAssessmentSupplementationNotification (
+        id bigint not null auto_increment,
+        studentIdentifier varchar(255) not null,
+        workspaceIdentifier varchar(255) not null,
+        primary key (id)
+    )</sql>
 </update>
