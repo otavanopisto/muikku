@@ -8,8 +8,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.AssesmentRequestNotification;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.AssesmentRequestNotification_;
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesNotification;
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesNotification_;
 

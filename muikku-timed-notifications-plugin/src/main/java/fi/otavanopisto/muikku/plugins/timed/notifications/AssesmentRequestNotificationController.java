@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
@@ -29,9 +28,6 @@ public class AssesmentRequestNotificationController {
   
   @Inject
   private AssessmentRequestNotificationDAO assessmentRequestNotificationDAO;
-  
-  @Inject
-  private Logger logger;
   
   public SearchResult searchActiveStudentIds(Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
     SearchProvider searchProvider = getProvider("elastic-search");

@@ -14,7 +14,6 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.plugins.timed.notifications.dao.StudyTimeNotificationDAO;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesNotification;
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotification;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.SearchProvider;
