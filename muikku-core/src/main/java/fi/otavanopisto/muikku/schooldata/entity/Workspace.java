@@ -31,6 +31,14 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
       }
     ),
     @IndexableFieldOption (
+      name = "curriculumIdentifier",
+      type = "multi_field",
+      multiFields = {
+        @IndexableFieldMultiField(name = "curriculumIdentifier", type="string", index = "analyzed"),
+        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+      }
+    ),
+    @IndexableFieldOption (
       name = "workspaceTypeId",
       type = "multi_field",
       multiFields = {
@@ -104,6 +112,5 @@ public interface Workspace extends SchoolDataEntity {
   @IndexField (
     toId = true
   )
-  public String getCurriculumIdentifier();
-  
+  public SchoolDataIdentifier getCurriculumIdentifier();
 }

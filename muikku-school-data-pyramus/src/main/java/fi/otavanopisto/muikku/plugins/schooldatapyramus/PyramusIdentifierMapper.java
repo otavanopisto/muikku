@@ -343,8 +343,12 @@ public class PyramusIdentifierMapper {
     return NumberUtils.createLong(identifier);
   }
 
-  public String getCurriculumIdentifier(Long curriculumId) {
-    return curriculumId == null ? null : String.valueOf(curriculumId);
+  public SchoolDataIdentifier getCurriculumIdentifier(Long pyramusCurriculumId) {
+    return pyramusCurriculumId == null ? null : new SchoolDataIdentifier(String.valueOf(pyramusCurriculumId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+  }
+
+  public Long getPyramusCurriculumId(String curriculumIdentifier) {
+    return NumberUtils.createLong(curriculumIdentifier);
   }
   
 }

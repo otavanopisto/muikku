@@ -290,7 +290,7 @@ public class ElasticSearchProvider implements SearchProvider {
       List<String> subjects, 
       List<String> identifiers, 
       List<SchoolDataIdentifier> educationTypes, 
-      List<String> curriculums, 
+      List<SchoolDataIdentifier> curriculumIdentifiers, 
       String freeText, 
       List<WorkspaceAccess> accesses, 
       SchoolDataIdentifier accessUser, 
@@ -356,12 +356,17 @@ public class ElasticSearchProvider implements SearchProvider {
         filters.add(FilterBuilders.termsFilter("educationTypeIdentifier.untouched", educationTypeIds));
       }
       
-      if (identifiers != null) {
-        filters.add(FilterBuilders.termsFilter("identifier", identifiers));
+      if (curriculumIdentifiers != null && !curriculumIdentifiers.isEmpty()) {
+        List<String> curriculumIds = new ArrayList<>(curriculumIdentifiers.size());
+        for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
+          curriculumIds.add(curriculumIdentifier.toId());
+        }
+        
+        filters.add(FilterBuilders.termsFilter("curriculumIdentifier.untouched", curriculumIds));
       }
   
-      if (curriculums != null && !curriculums.isEmpty()) {
-        filters.add(FilterBuilders.termsFilter("curriculumIdentifier", curriculums));
+      if (identifiers != null) {
+        filters.add(FilterBuilders.termsFilter("identifier", identifiers));
       }
   
       if (StringUtils.isNotBlank(freeText)) {

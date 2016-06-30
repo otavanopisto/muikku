@@ -16,12 +16,30 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          this._hasEvaluationFees = results[0];
-          var educationTypes = results[1];
-          
-          renderDustTemplate('coursepicker/coursepicker_educationtype_filters.dust', { educationTypes: educationTypes }, $.proxy(function (text) {
-            this.element.find('.cp-filters').html(text);
-          }, this));
+          this._hasEvaluationFees = results.evaluationFees;
+          var educationTypes = results.educationTypes;
+          var curriculums = results.curriculums;
+          var defaultCurriculum = undefined;
+
+          async.series([
+              $.proxy(function (callback) {
+                renderDustTemplate('coursepicker/coursepicker_educationtype_filters.dust', { educationTypes: educationTypes }, $.proxy(function (text) {
+                  callback(null, $(text));
+                }, this))
+              }, this),
+    
+              $.proxy(function (callback) {
+                renderDustTemplate('coursepicker/coursepicker_curriculum_filters.dust', { curriculums: curriculums, defaultCurriculum: defaultCurriculum }, $.proxy(function (text) {
+                  callback(null, $(text));
+                }, this))
+                callback();
+              }, this)
+            ],
+            $.proxy(function (err, results) {
+              this.element.find('.cp-filters').append(results[0]);
+              this.element.find('.cp-filters').append(results[1]);
+            }, this)
+          );
           
           this.element.on('change', ".cp-category-dropdown", $.proxy(this._onCategoryChange, this));
           this.element.on('keyup', "input[name='coursePickerSearch']", $.proxy(this._onSearchKeyUp, this));
@@ -32,6 +50,7 @@
           this.element.on("click", ".cp-course-tour-button", $.proxy(this._onTourButtonClick, this));
           this.element.on("click", ".cp-course-attend-button", $.proxy(this._onAttendButtonClick, this));
           this.element.on("click", ".cp-education-type-filter", $.proxy(this._onEducationTypeFilterClick, this));
+          this.element.on("click", ".cp-curriculum-filter", $.proxy(this._onCurriculumFilterClick, this));
           
           this._reloadWorkspaces();
         }
@@ -63,10 +82,22 @@
       this._reloadWorkspaces();
     },
     
+    curriculums: function (curriculums) {
+      this._curriculums = curriculums||[];
+      
+      this._reloadWorkspaces();
+    },
+    
     _load: function (callback) {
-      async.parallel([this._createResolveEvaluationFees(), this._createEducationTypesLoad()], function (err, results) {
-        callback(err, results);
-      }); 
+      async.parallel({
+          evaluationFees: this._createResolveEvaluationFees(), 
+          educationTypes: this._createEducationTypesLoad(),
+          curriculums: this._createCurriculumsLoad()
+        }, 
+        function (err, results) {
+          callback(err, results);
+        }
+      ); 
     },
     
     _createResolveEvaluationFees: function () {
@@ -91,6 +122,14 @@
       }, this);
     },
     
+    _createCurriculumsLoad: function () {
+      return $.proxy(function (callback) {
+        mApi().coursepicker.curriculums
+          .read()
+          .callback(callback);
+      }, this);
+    },
+    
     _reloadWorkspaces: function () {
       this._firstResult = 0;
       this.element.find('#coursesList').empty();
@@ -109,7 +148,8 @@
         search: this._search,
         myWorkspaces: this._categoryId == 'te' ||  this._categoryId == 'my',
         includeUnpublished: this._categoryId == 'te',
-        educationTypes: this._educationTypes
+        educationTypes: this._educationTypes,
+        curriculums: this._curriculums
       };
       
       mApi().coursepicker.workspaces
@@ -252,6 +292,21 @@
         var typeId = filterElement.attr('data-id');
         this.educationTypes([typeId]);
       }
+    },
+    _onCurriculumFilterClick: function (event) {
+      var clickedCurriculum = $(event.target).closest("li").toggleClass("selected");
+      var curriculumOptions = $(event.target).closest('.cp-filters-ul').find("li");
+      var selectedCurriculums = [];
+      
+      curriculumOptions.each(function () {
+        var curriculumLi = $(this);
+        if (curriculumLi.hasClass('selected')) {
+          var curriculumId = curriculumLi.find(".cp-curriculum-filter").attr("data-id");
+          selectedCurriculums.push(curriculumId);
+        }
+      });
+
+      this.curriculums(selectedCurriculums);
     }
   });
 
