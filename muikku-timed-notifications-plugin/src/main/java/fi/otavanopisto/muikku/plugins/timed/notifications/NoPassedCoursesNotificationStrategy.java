@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
@@ -22,14 +25,13 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
+@Startup
+@Singleton
+@ApplicationScoped
 public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificationStrategy{
 
   private static final int FIRST_RESULT = 0;
@@ -94,10 +96,10 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("locale", studentLocale);
         templateModel.put("localeHelper", jadeLocaleHelper);
-        String notificationContent = renderNotificationTemplate("assessment-request-notification", templateModel);
+        String notificationContent = renderNotificationTemplate("no-passed-courses-notification", templateModel);
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.subject"),
+          localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.subject"),
           notificationContent,
           studentEntity
         );
@@ -136,7 +138,7 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
   
   private Collection<Long> getGroups(){
     
-    String groupsString = pluginSettingsController.getPluginSetting("timed-notifications", "assesment-request-notification.groups");
+    String groupsString = pluginSettingsController.getPluginSetting("timed-notifications", "no-passed-courses-notification.groups");
     if (StringUtils.isBlank(groupsString)) {
       this.active = false;
       logger.log(Level.WARNING, "Disabling timed noPassedCourses notifications because no groups were configured as targets");
