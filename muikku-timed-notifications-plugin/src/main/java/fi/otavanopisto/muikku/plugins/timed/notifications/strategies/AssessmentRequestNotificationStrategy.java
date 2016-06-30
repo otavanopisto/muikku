@@ -37,7 +37,6 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 @Singleton
 @ApplicationScoped
 public class AssessmentRequestNotificationStrategy extends AbstractTimedNotificationStrategy {
-
   
   private static final int FIRST_RESULT = 0;
   private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.assesmentrequest.maxresults", "20"));
