@@ -22,11 +22,13 @@ if [[ $release = "true" ]]; then
   echo Releasing
   mvn -B release:prepare release:perform --settings ~/.m2/mySettings.xml
   popd
-  echo Merging changes back to devel
+  echo Merging changes back to devel and replacing releases to SNAPSHOTS
   git checkout -B devel
   git pull
   git merge master
   mvn versions:use-latest-snapshots -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
+  git add .
+  git commit -m "Updated latest snapshot releases"
   git push --set-upstream origin devel
 fi;
 
