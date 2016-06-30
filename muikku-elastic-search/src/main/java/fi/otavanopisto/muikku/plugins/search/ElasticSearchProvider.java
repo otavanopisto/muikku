@@ -100,7 +100,7 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
+      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore, Date studyTimeEndsBefore){
     try {
       text = sanitizeSearchString(text);
 
@@ -142,6 +142,10 @@ public class ElasticSearchProvider implements SearchProvider {
       
       if (startedStudiesBefore != null ) {
         filters.add(FilterBuilders.rangeFilter("studyStartDate").lt(startedStudiesBefore.getTime()));
+      }
+      
+      if(studyTimeEndsBefore != null) {
+        filters.add(FilterBuilders.rangeFilter("studyTimeEnd").lt(studyTimeEndsBefore.getTime()));
       }
       
       if (archetypes != null) {
@@ -258,6 +262,13 @@ public class ElasticSearchProvider implements SearchProvider {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
     }
+  }
+  
+  @Override
+  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+      Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
+      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
+    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
   }
   
   @Override
