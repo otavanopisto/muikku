@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.timed.notifications;
+package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,28 +25,34 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
+import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Startup
 @Singleton
 @ApplicationScoped
-public class AssessmentRequestNotificationStrategy extends AbstractTimedNotificationStrategy {
+public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificationStrategy{
 
-  
   private static final int FIRST_RESULT = 0;
-  private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.assesmentrequest.maxresults", "20"));
-  private static final int NOTIFICATION_THRESHOLD_DAYS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.assesmentrequest.notificationthreshold", "60"));
-  private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.assesmentrequest.checkfreq", "1800000"));
+  private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.maxresults", "20"));
+  private static final int NOTIFICATION_THRESHOLD_DAYS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.notificationthreshold", "300"));
+  private static final int MIN_PASSED_COURSES = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.notificationthreshold", "5"));
+  private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.nopassedcourses.checkfreq", "1800000"));
   
   @Inject
-  private AssesmentRequestNotificationController assesmentRequestNotificationController;
+  private NoPassedCoursesNotificationController noPassedCoursesNotificationController;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private NotificationController notificationController;
   
   @Inject
   private LocaleController localeController;
@@ -55,27 +61,18 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
   private JadeLocaleHelper jadeLocaleHelper;
   
   @Inject
-  private NotificationController notificationController;
-  
-  @Inject
-  private GradingController gradingController;
-  
-  @Inject
-  private PluginSettingsController pluginSettingsController;
-  
-  @Inject
   private Logger logger;
-  
-  @Override
-  public long getDuration() {
-    return NOTIFICATION_CHECK_FREQ;
-  }
   
   @Override
   public boolean isActive(){
     return active;
   }
   
+  @Override
+  public long getDuration() {
+    return NOTIFICATION_CHECK_FREQ;
+  }
+
   @Override
   public void sendNotifications() {
     Collection<Long> groups = getGroups();
@@ -84,8 +81,8 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
     }
     
     Date since = new DateTime().minusDays(NOTIFICATION_THRESHOLD_DAYS).toDate();
-    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = assesmentRequestNotificationController.listNotifiedSchoolDataIdentifiersAfter(since);
-    SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, since);
+    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = noPassedCoursesNotificationController.listNotifiedSchoolDataIdentifiersAfter(since);
+    SearchResult searchResult = noPassedCoursesNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, since);
     
     if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
       offset = 0;
@@ -93,7 +90,7 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
       offset += MAX_RESULTS;
     }
     
-    for (SchoolDataIdentifier studentIdentifier : getStudentIdentifiersWithoutAssesmentRequests(searchResult, since)) {
+    for (SchoolDataIdentifier studentIdentifier : getStudentIdentifiersWithoutPassedCourses(searchResult, since)) {
       
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
@@ -101,39 +98,22 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("locale", studentLocale);
         templateModel.put("localeHelper", jadeLocaleHelper);
-        String notificationContent = renderNotificationTemplate("assessment-request-notification", templateModel);
+        String notificationContent = renderNotificationTemplate("no-passed-courses-notification", templateModel);
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.subject"),
+          localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.subject"),
           notificationContent,
           studentEntity
         );
-        assesmentRequestNotificationController.createAssesmentRequestNotification(studentIdentifier);
+        noPassedCoursesNotificationController.createNoPassedCoursesNotification(studentIdentifier);
       } else {
         logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
       }
     }
-  }
-  
-  private Collection<Long> getGroups(){
-    String groupsString = pluginSettingsController.getPluginSetting("timed-notifications", "assesment-request-notification.groups");
-    if (StringUtils.isBlank(groupsString)) {
-      this.active = false;
-      logger.log(Level.WARNING, "Disabling timed assessment request notifications because no groups were configured as targets");
-      return Collections.emptyList();
-    }
     
-    Collection<Long> groups = new ArrayList<>();
-    String[] groupSplit = groupsString.split(",");
-    for (String group : groupSplit) {
-      if (NumberUtils.isNumber(group)) {
-        groups.add(NumberUtils.createLong(group));
-      }
-    }
-    return groups;
   }
   
-  private List<SchoolDataIdentifier> getStudentIdentifiersWithoutAssesmentRequests(SearchResult searchResult, Date since){
+  private List<SchoolDataIdentifier> getStudentIdentifiersWithoutPassedCourses(SearchResult searchResult, Date since){
     List<SchoolDataIdentifier> studentIdentifiers = new ArrayList<>();
     for (Map<String, Object> result : searchResult.getResults()) {
       String studentId = (String) result.get("id");
@@ -149,17 +129,35 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
         logger.severe(String.format("Could not process user found from search index with id %s", studentId));
         continue;
       }
-
-      List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listStudentAssessmentRequestsSince(studentIdentifier, since);
-      
-      if (assessmentRequests.isEmpty()){
+     
+      if (noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, since) < MIN_PASSED_COURSES) {
         studentIdentifiers.add(studentIdentifier);
       }
+      
     }
     return studentIdentifiers;
   }
   
+  private Collection<Long> getGroups(){
+    
+    String groupsString = pluginSettingsController.getPluginSetting("timed-notifications", "no-passed-courses-notification.groups");
+    if (StringUtils.isBlank(groupsString)) {
+      this.active = false;
+      logger.log(Level.WARNING, "Disabling timed noPassedCourses notifications because no groups were configured as targets");
+      return Collections.emptyList();
+    }
+    
+    Collection<Long> groups = new ArrayList<>();
+    String[] groupSplit = groupsString.split(",");
+    for (String group : groupSplit) {
+      if (NumberUtils.isNumber(group)) {
+        groups.add(NumberUtils.createLong(group));
+      }
+    }
+    return groups;
+    
+  }
+  
   private int offset = 0;
   private boolean active = true;
-
 }

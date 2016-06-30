@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.timed.notifications;
+package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
 public interface TimedNotificationStrategy {
   public long getDuration();

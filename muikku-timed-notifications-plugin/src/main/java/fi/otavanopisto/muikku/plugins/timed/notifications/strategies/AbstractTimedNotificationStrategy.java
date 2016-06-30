@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.timed.notifications;
+package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
 import java.io.IOException;
 import java.util.Map;
@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import de.neuland.jade4j.JadeConfiguration;
 import de.neuland.jade4j.exceptions.JadeException;
 import fi.otavanopisto.muikku.jade.JadeController;
+import fi.otavanopisto.muikku.plugins.timed.notifications.TimedNotificationsJadeTemplateLoader;
 
 public abstract class AbstractTimedNotificationStrategy implements TimedNotificationStrategy{
   
