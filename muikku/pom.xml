@@ -383,6 +383,17 @@
     </profile>
     
     <profile>
+      <id>timed-notifications-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>timed-notifications-plugin</artifactId>
+          <version>1.1.39-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
       <id>developer-tools</id>
       <dependencies>
         <dependency>

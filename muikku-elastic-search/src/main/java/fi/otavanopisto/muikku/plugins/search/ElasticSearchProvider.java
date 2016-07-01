@@ -4,6 +4,8 @@ import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +100,7 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults) {
+      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore, Date studyTimeEndsBefore){
     try {
       text = sanitizeSearchString(text);
 
@@ -130,12 +132,28 @@ public class ElasticSearchProvider implements SearchProvider {
         }
       }
       
+      if (excludeSchoolDataIdentifiers != null) {
+        IdsFilterBuilder excludeIdsFilterBuilder = FilterBuilders.idsFilter("User");
+        for (SchoolDataIdentifier excludeSchoolDataIdentifier : excludeSchoolDataIdentifiers) {
+          excludeIdsFilterBuilder.addIds(String.format("%s/%s", excludeSchoolDataIdentifier.getIdentifier(), excludeSchoolDataIdentifier.getDataSource()));
+        }
+        filters.add(FilterBuilders.notFilter(excludeIdsFilterBuilder));
+      }
+      
+      if (startedStudiesBefore != null ) {
+        filters.add(FilterBuilders.rangeFilter("studyStartDate").lt(startedStudiesBefore.getTime()));
+      }
+      
+      if(studyTimeEndsBefore != null) {
+        filters.add(FilterBuilders.rangeFilter("studyTimeEnd").lt(studyTimeEndsBefore.getTime()));
+      }
+      
       if (archetypes != null) {
         List<String> archetypeNames = new ArrayList<>(archetypes.size());
         for (EnvironmentRoleArchetype archetype : archetypes) {
           archetypeNames.add(archetype.name().toLowerCase());
         }
-        
+
         filters.add(FilterBuilders.inFilter("archetype", archetypeNames.toArray(new String[0]))); 
       }
       
@@ -210,7 +228,11 @@ public class ElasticSearchProvider implements SearchProvider {
         .setTypes("User")
         .setFrom(start)
         .setSize(maxResults);
-
+      
+      if (!isEmptyCollection(fields)) {
+        requestBuilder.addFields(fields.toArray(new String[0]));
+      }
+      
       SearchResponse response = requestBuilder
           .setQuery(filteredQuery)
           .addSort("_score", SortOrder.DESC)
@@ -222,6 +244,12 @@ public class ElasticSearchProvider implements SearchProvider {
       SearchHit[] results = response.getHits().getHits();
       for (SearchHit hit : results) {
         Map<String, Object> hitSource = hit.getSource();
+        if(hitSource == null){
+          hitSource = new HashMap<>();
+          for(String key : hit.getFields().keySet()){
+            hitSource.put(key, hit.getFields().get(key).getValue().toString());
+          }
+        }
         hitSource.put("indexType", hit.getType());
         searchResults.add(hitSource);
       }
@@ -234,6 +262,27 @@ public class ElasticSearchProvider implements SearchProvider {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
     }
+  }
+  
+  @Override
+  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+      Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
+      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
+    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
+  }
+  
+  @Override
+  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+      Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
+      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults) {
+    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, start, maxResults, null);
+  }
+  
+  @Override
+  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+      Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
+      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults, Collection<String> fields) {
+    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, start, maxResults, fields, null, null);
   }
   
   private Set<Long> getActiveWorkspaces() {
