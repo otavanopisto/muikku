@@ -143,6 +143,21 @@ public class AnnouncementController {
     return listActiveByUserGroupEntities(userGroupEntities);
   }
   
+  public List<Announcement> listAllActiveEnvironmentAnnouncementsAndWorkspaceAnnouncementsByTargetedUserEntity(UserEntity targetedUserEntity){
+    List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(targetedUserEntity);
+    List<Announcement> result = new ArrayList<>();
+    result.addAll(listActiveEnvironmentAnnouncements());
+    result.addAll(listActiveByWorkspaceEntities(workspaceEntities));
+    
+    Collections.sort(result, new Comparator<Announcement>() {
+      public int compare(Announcement o1, Announcement o2) {
+        return o2.getStartDate().compareTo(o1.getStartDate());
+      }
+    });
+    
+    return result;
+  }
+  
   public List<Announcement> listActiveEnvironmentAndWorkspaceAnnouncementsByTargetedUserEntity(UserEntity targetedUserEntity) {
     List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserEntity(targetedUserEntity);
     List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(targetedUserEntity);
