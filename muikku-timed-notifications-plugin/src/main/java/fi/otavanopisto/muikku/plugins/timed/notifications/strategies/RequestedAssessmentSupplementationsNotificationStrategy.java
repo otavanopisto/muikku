@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -133,7 +134,8 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
           
           if (workspaceAssessments != null && !workspaceAssessments.isEmpty()) {
             WorkspaceAssessment assessment = workspaceAssessments.get(0); //TODO: loop and find latest
-            if (assessment.getDate().before(new DateTime().minusDays(NOTIFICATION_THRESHOLD_DAYS).toDate())) {
+            Date assessmentDate = assessment.getDate();
+            if (assessmentDate != null && assessmentDate.before(new DateTime().minusDays(NOTIFICATION_THRESHOLD_DAYS).toDate())) {
               GradingScale gradingScale = gradingController.findGradingScale(assessment.getGradingScaleSchoolDataSource(), assessment.getGradingScaleIdentifier());
               GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, assessment.getGradeSchoolDataSource(), assessment.getGradeIdentifier());
               
@@ -142,11 +144,15 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
                   WorkspaceAssessmentRequest latestAssesmentRequest = null;
                   List<WorkspaceAssessmentRequest> studentAssesmentRequests = gradingController.listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
                   for (WorkspaceAssessmentRequest assessmentRequest : studentAssesmentRequests) {
-                    if (latestAssesmentRequest == null || latestAssesmentRequest.getDate().before(assessmentRequest.getDate())) {
-                      latestAssesmentRequest = assessmentRequest;
+                    Date assessmentRequestDate = assessmentRequest.getDate();
+                    if (assessmentRequestDate != null) {
+                      if (latestAssesmentRequest == null || latestAssesmentRequest.getDate().before(assessmentRequestDate)) {
+                        latestAssesmentRequest = assessmentRequest;
+                      }
                     }
                   }
-                  if (latestAssesmentRequest == null || latestAssesmentRequest.getDate().before(assessment.getDate())) {
+                  
+                  if (latestAssesmentRequest == null || latestAssesmentRequest.getDate().before(assessmentDate)) {
                     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
                     Workspace workspace = workspaceController.findWorkspace(workspaceIdentifier);
                     
