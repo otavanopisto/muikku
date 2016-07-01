@@ -312,7 +312,7 @@
       }
     },
     _onCurriculumFilterClick: function (event) {
-      var clickedCurriculum = $(event.target).closest("li").toggleClass("selected");
+      $(event.target).closest("li").toggleClass("selected");
       var curriculumOptions = $(event.target).closest('.cp-filters-ul').find("li");
       var selectedCurriculums = [];
       
