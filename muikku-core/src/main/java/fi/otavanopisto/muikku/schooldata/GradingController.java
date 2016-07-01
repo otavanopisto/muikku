@@ -186,7 +186,8 @@ public class GradingController {
   public List<WorkspaceAssessmentRequest> listStudentAssessmentRequestsSince(SchoolDataIdentifier studentIdentifier, Date date) {
     List<WorkspaceAssessmentRequest> result = new ArrayList<>();
     for (WorkspaceAssessmentRequest workspaceAssessmentRequest : listStudentAssessmentRequests(studentIdentifier)) {
-      if (workspaceAssessmentRequest.getDate().after(date)) {
+      Date workspaceAssessmentRequestDate = workspaceAssessmentRequest.getDate();
+      if (workspaceAssessmentRequestDate != null && workspaceAssessmentRequest.getDate().after(date)) {
         result.add(workspaceAssessmentRequest);
       }
     }
