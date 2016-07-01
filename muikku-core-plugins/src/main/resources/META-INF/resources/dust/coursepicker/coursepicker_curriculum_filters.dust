@@ -3,7 +3,7 @@
     <div class="mf-list-title"><span>{#localize key="plugin.coursepicker.filters.curriculum"/}</span></div>
     <ul class="mf-list-content cp-filters-ul"> 
       {#curriculums}
-        <li id="{type}-{id}">
+        <li id="{type}-{id}"{@eq key=defaultCurriculum value=identifier}class="selected"{/eq}>
           <a class="cp-curriculum-filter" data-id="{identifier}">
             <span>{name}</span>
           </a></li>    

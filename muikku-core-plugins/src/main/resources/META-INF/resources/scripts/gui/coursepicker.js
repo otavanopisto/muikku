@@ -19,8 +19,11 @@
           this._hasEvaluationFees = results.evaluationFees;
           var educationTypes = results.educationTypes;
           var curriculums = results.curriculums;
-          var defaultCurriculum = undefined;
+          var defaultCurriculum = results.userCurriculum;
 
+          if (defaultCurriculum)
+            this._curriculums = [ defaultCurriculum ];
+          
           async.series([
               $.proxy(function (callback) {
                 renderDustTemplate('coursepicker/coursepicker_educationtype_filters.dust', { educationTypes: educationTypes }, $.proxy(function (text) {
@@ -92,7 +95,8 @@
       async.parallel({
           evaluationFees: this._createResolveEvaluationFees(), 
           educationTypes: this._createEducationTypesLoad(),
-          curriculums: this._createCurriculumsLoad()
+          curriculums: this._createCurriculumsLoad(),
+          userCurriculum: this._createFindUserCurriculum()
         }, 
         function (err, results) {
           callback(err, results);
@@ -127,6 +131,20 @@
         mApi().coursepicker.curriculums
           .read()
           .callback(callback);
+      }, this);
+    },
+    
+    _createFindUserCurriculum: function () {
+      return $.proxy(function (callback) {
+        if (!MUIKKU_LOGGED_USER) {
+          callback(null, false);
+        } else {
+          mApi().user.users.basicinfo
+            .read(MUIKKU_LOGGED_USER)
+            .callback($.proxy(function (err, basicInfo) {
+              callback(err, basicInfo && basicInfo.curriculumIdentifier);
+            }, this));
+        }
       }, this);
     },
     
