@@ -304,9 +304,34 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   public static Student mockStudent(Long personId, Long studentId, String firstName, String lastName, String email, List<String> tags, Map<String, String> variables, List<String> payloads, DateTime studyStartDate, DateTime studyEndDate) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-    Student student = new Student(studentId, personId, firstName, lastName, null, null, null, null, null, null, null, null,
-      null, null, null, (long) 1, null, null,
-      false, studyStartDate, studyEndDate, null, null, variables, tags, false);
+    Student student = new Student(
+        studentId,
+        personId,
+        firstName,
+        lastName, 
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        (long) 1,
+        null,
+        null,
+        null,
+        false,
+        studyStartDate,
+        studyEndDate,
+        null,
+        null,
+        variables,
+        tags,
+        false);
     
     String studentJson = objectMapper.writeValueAsString(student);
     
@@ -436,11 +461,36 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     DateTime begin = new DateTime(2000, 1, 1, 0, 0, 0, 0);
     DateTime end = new DateTime(2050, 1, 1, 0, 0, 0, 0);
 
-    Course course = new Course(id, "testCourse", created, created, "test course for testing", false, 1, 
-      (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
-      (double) 15, (double) 45, (double) 45, end, (long) 1,
-      (long) 1, (long) 1, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-      null, null);
+    Course course = new Course(
+        id,
+        "testCourse",
+        created,
+        created,
+        "test course for testing",
+        false,
+        1, 
+       (long) 25,
+       begin,
+       end,
+       "test extension",
+       (double) 15,
+       (double) 45,
+       (double) 45,       
+       (double) 15,
+       (double) 45,
+       (double) 45,
+       end,
+       (long) 1,
+       (long) 1,
+       (long) 1,
+       null,
+       (double) 45,
+       (long) 1,
+       (long) 1,
+       (long) 1,
+       (long) 1,
+       null,
+       null);
   
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String courseJson = objectMapper.writeValueAsString(course);
