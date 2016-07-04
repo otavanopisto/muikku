@@ -36,6 +36,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       waitAndClick(".icon-announcer");
       waitAndClick(".an-new-announcement");
       
+      waitForPresent(".cke_wysiwyg_frame");
       waitForPresent("*[name='endDate']");
       clearElement("*[name='endDate']");
       sendKeys("*[name='endDate']", "21.12.2025");
