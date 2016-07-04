@@ -235,6 +235,11 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>evaluation-plugin-persistence</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>timed-notifications-plugin-persistence</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
