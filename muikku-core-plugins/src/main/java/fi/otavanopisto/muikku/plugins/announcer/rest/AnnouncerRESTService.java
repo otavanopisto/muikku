@@ -243,7 +243,11 @@ public class AnnouncerRESTService extends PluginRESTService {
       if (onlyActive) {
         if (onlyMine) {
           UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
-          announcements = announcementController.listActiveEnvironmentAndWorkspaceAnnouncementsByTargetedUserEntity(currentUserEntity);
+          if (sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
+            announcements = announcementController.listAllActiveEnvironmentAnnouncementsAndWorkspaceAnnouncementsByTargetedUserEntity(currentUserEntity); //TODO: maybe a bit bad practice since query was "onlyMine"
+          } else {
+            announcements = announcementController.listActiveEnvironmentAndWorkspaceAnnouncementsByTargetedUserEntity(currentUserEntity);
+          }
         } else {
           announcements = announcementController.listActiveAnnouncements();
         }

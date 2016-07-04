@@ -45,19 +45,68 @@ public class TestUtilities {
   public static Student studentFromMockStudent(MockStudent mockStudent) {
     Map<String, String> variables = null;
     List<String> tags = null;
-    Student student = new Student(mockStudent.getId(), mockStudent.getPersonId(), mockStudent.getFirstName(), mockStudent.getLastName(), 
-      null, null, null, null, null, null, null, null,
-      null, null, mockStudent.getStudyEndTime(), mockStudent.getStudyProgrammeId(), null, null,
-      false, mockStudent.getStudyStartDate(), null, null, null, variables, tags, false);
+    Student student = new Student(
+        mockStudent.getId(),
+        mockStudent.getPersonId(),
+        mockStudent.getFirstName(),
+        mockStudent.getLastName(), 
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        mockStudent.getStudyEndTime(),
+        mockStudent.getStudyProgrammeId(),
+        null,
+        null,
+        null,
+        false,
+        mockStudent.getStudyStartDate(),
+        null,
+        null,
+        null,
+        variables,
+        tags,
+        false);
     return student;
   }
   
   public static Course courseFromMockCourse(MockCourse mockCourse) {
-    Course course = new Course(mockCourse.getId(), mockCourse.getName(), mockCourse.getCreated(), mockCourse.getCreated(), mockCourse.getDescription(), false, 1, 
-      (long) 25, mockCourse.getBegin(), mockCourse.getEnd(), "test extension", (double) 15, (double) 45, (double) 45,
-      (double) 15, (double) 45, (double) 45, mockCourse.getEnd(), (long) 1,
-      (long) 1, (long) 1, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-      null, null);
+    Course course = new Course(
+        mockCourse.getId(),
+        mockCourse.getName(),
+        mockCourse.getCreated(),
+        mockCourse.getCreated(),
+        mockCourse.getDescription(),
+        false,
+        1, 
+       (long) 25,
+       mockCourse.getBegin(),
+       mockCourse.getEnd(),
+       "test extension",
+       (double) 15,
+       (double) 45,
+       (double) 45,
+       (double) 15,
+       (double) 45,
+       (double) 45,
+       mockCourse.getEnd(),
+       (long) 1,
+       (long) 1,
+       (long) 1,
+       null,
+       (double) 45,
+       (long) 1,
+       (long) 1,
+       (long) 1,
+       (long) 1, 
+       null,
+       null);
     
     return course;
   }

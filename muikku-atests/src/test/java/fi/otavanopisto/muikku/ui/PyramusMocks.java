@@ -115,7 +115,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     Person person = mockPerson(1l, birthday, "030545-3453", fi.otavanopisto.pyramus.rest.model.Sex.MALE, 1l);
     
     Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null,
-      null, null, null, (long) 1, null, null,
+      null, null, null, (long) 1, null, null, null,
       false, null, null, null, null, variables, tags, false);
     
     String studentJson = objectMapper.writeValueAsString(student);
@@ -150,7 +150,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     Person person2 = mockPerson(5l, birthday2, "021092-2112", fi.otavanopisto.pyramus.rest.model.Sex.MALE, 5l);
     
     Student student2 = new Student((long) 5, (long) 5, "Second", "User", null, null, null, null, null, null, null, null,
-      null, null, null, (long) 1, null, null,
+      null, null, null, (long) 1, null, null, null,
       false, null, null, null, null, variables, tags, false);
     
     String student2Json = objectMapper.writeValueAsString(student2);
@@ -580,7 +580,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     Course course = new Course(id, name, created, created, description, false, 1, 
       (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
       (double) 15, (double) 45, (double) 45, end, (long) 1,
-      (long) 1, (long) 1, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
+      (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
       null, null);
   
     String courseJson = objectMapper.writeValueAsString(course);
