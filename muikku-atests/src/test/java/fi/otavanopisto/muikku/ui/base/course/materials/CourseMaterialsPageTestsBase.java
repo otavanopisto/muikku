@@ -1128,9 +1128,85 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }    
-
+  
   @Test
-  public void courseMaterialLicenseOverrideTest() throws Exception {
+  public void courseMaterialLicenseOverrideCC010Test() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+          "1.0 Testimateriaali", "text/html;editor=CKEditor", 
+          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+          "EXERCISE");
+      
+      try {
+        navigate(String.format("/workspace/%s/materials-management", workspace.getUrlName()), true);
+        waitForPresent(".page-license");
+        click(".page-license");
+        waitForPresent(".materials-management-page-license div select");
+        waitForClickable(".materials-management-page-license div select");
+        selectOption(".materials-management-page-license div select", "cc0-1.0");
+        waitAndClick(".save-page-license");
+        waitAndClick(String.format("#page-%d .publish-page", htmlMaterial1.getId()));
+        waitAndClick(".ui-dialog-buttonset .publish-button");
+        waitForPresent(".page-license");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format(".material-license", htmlMaterial1.getId()));
+        assertTextIgnoreCase(String.format(".material-license", htmlMaterial1.getId()), "https://creativecommons.org/publicdomain/zero/1.0/");
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
+  }
+  
+  @Test
+  public void courseMaterialLicenseOverrideCC4Test() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+          "1.0 Testimateriaali", "text/html;editor=CKEditor", 
+          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+          "EXERCISE");
+      
+      try {
+        navigate(String.format("/workspace/%s/materials-management", workspace.getUrlName()), true);
+        waitForPresent(".page-license");
+        click(".page-license");
+        waitForPresent(".materials-management-page-license div select");
+        waitForClickable(".materials-management-page-license div select");
+        selectOption(".materials-management-page-license div select", "cc-4.0");
+        waitAndClick(".save-page-license");
+        waitAndClick(String.format("#page-%d .publish-page", htmlMaterial1.getId()));
+        waitAndClick(".ui-dialog-buttonset .publish-button");
+        waitForPresent(".page-license");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format(".material-license", htmlMaterial1.getId()));
+        assertTextIgnoreCase(String.format(".material-license", htmlMaterial1.getId()), "https://creativecommons.org/licenses/by-sa/4.0");
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
+  }
+  
+  @Test
+  public void courseMaterialLicenseOverrideCC3Test() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
@@ -1167,4 +1243,43 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   }
   
+  @Test
+  public void courseMaterialLicenseOverrideLinkTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    try {
+      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+          "1.0 Testimateriaali", "text/html;editor=CKEditor", 
+          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+          "EXERCISE");
+      
+      try {
+        navigate(String.format("/workspace/%s/materials-management", workspace.getUrlName()), true);
+        waitForPresent(".page-license");
+        click(".page-license");
+        waitForPresent(".materials-management-page-license div select");
+        waitForClickable(".materials-management-page-license div select");
+        selectOption(".materials-management-page-license div select", "link");
+        waitAndSendKeys("input[name=\"license\"]", "www.test.com");
+        waitAndClick(".save-page-license");
+        waitAndClick(String.format("#page-%d .publish-page", htmlMaterial1.getId()));
+        waitAndClick(".ui-dialog-buttonset .publish-button");
+        waitForPresent(".page-license");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format(".material-license", htmlMaterial1.getId()));
+        assertTextIgnoreCase(String.format(".material-license", htmlMaterial1.getId()), "www.test.com");
+      } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+      }
+      
+    } finally {
+      deleteWorkspace(workspace.getId());
+    }
+  }
+
 }
