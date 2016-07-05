@@ -17,10 +17,10 @@ public class TimedNotificationsPluginDescriptor implements PluginDescriptor, Loc
   public void init() {
   }
 
-	@Override
-	public String getName() {
-		return "timed-notifications";
-	}
+  @Override
+  public String getName() {
+    return "timed-notifications";
+  }
 
   @Override
   public List<LocaleBundle> getLocaleBundles() {

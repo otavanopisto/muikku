@@ -42,6 +42,7 @@ public class NoPassedCoursesNotification {
   @Column (nullable=false)
   private String studentIdentifier;
   
+  @NotNull
   @Temporal (TemporalType.TIMESTAMP)
   @Column (nullable = false)
   private Date sent;

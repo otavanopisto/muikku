@@ -52,11 +52,9 @@ public class AssesmentRequestNotificationController {
   }
   
   private SearchProvider getProvider(String name) {
-    Iterator<SearchProvider> i = searchProviders.iterator();
-    while (i.hasNext()) {
-      SearchProvider provider = i.next();
-      if (name.equals(provider.getName())) {
-        return provider;
+    for (SearchProvider searchProvider : searchProviders) {
+      if (name.equals(searchProvider.getName())) {
+        return searchProvider;
       }
     }
     return null;
