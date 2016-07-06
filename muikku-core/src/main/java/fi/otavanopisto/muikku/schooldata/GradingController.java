@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.schooldata;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -171,6 +172,26 @@ public class GradingController {
 
   public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String schoolDataSource, String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     return gradingSchoolDataController.listWorkspaceAssessmentRequests(schoolDataSource, workspaceIdentifier, studentIdentifier);
+  }
+  
+  public List<WorkspaceAssessmentRequest> listStudentAssessmentRequests(SchoolDataIdentifier studentIdentifier) {
+    try {
+      return gradingSchoolDataController.listAssessmentRequestsByStudent(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+    } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+      logger.log(Level.SEVERE, String.format("Failed to list student assessment requests for student %s", studentIdentifier.toId()), e);
+    }
+    return Collections.emptyList();
+  }
+  
+  public List<WorkspaceAssessmentRequest> listStudentAssessmentRequestsSince(SchoolDataIdentifier studentIdentifier, Date date) {
+    List<WorkspaceAssessmentRequest> result = new ArrayList<>();
+    for (WorkspaceAssessmentRequest workspaceAssessmentRequest : listStudentAssessmentRequests(studentIdentifier)) {
+      Date workspaceAssessmentRequestDate = workspaceAssessmentRequest.getDate();
+      if (workspaceAssessmentRequestDate != null && workspaceAssessmentRequest.getDate().after(date)) {
+        result.add(workspaceAssessmentRequest);
+      }
+    }
+    return result;
   }
   
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
