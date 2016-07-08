@@ -59,7 +59,11 @@ public class CommunicatorController {
 
   private String clean(String html) {
     Document doc = Jsoup.parseBodyFragment(html);
-    doc = new Cleaner(Whitelist.relaxed().addAttributes("a", "target")).clean(doc);
+    doc = new Cleaner(
+            Whitelist.relaxed()
+              .addAttributes("a", "target")
+              .addAttributes("img", "width", "height", "style")
+          ).clean(doc);
     doc.outputSettings().escapeMode(EscapeMode.xhtml);
     return doc.body().html();
   }
