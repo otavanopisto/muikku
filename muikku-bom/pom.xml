@@ -36,6 +36,10 @@
 
 		<nekohtml.version>1.9.22</nekohtml.version>
 
+    <!-- Jade -->
+    
+    <jade4j.version>0.4.2</jade4j.version>
+
 		<!-- Muikku -->
 
 		<muikku.version>1.1.41-SNAPSHOT</muikku.version>
@@ -50,6 +54,11 @@
 		
 		<!--  Mail -->
 		<mail-api.version>1.5.4</mail-api.version>
+		
+		<!--  Tests -->
+		<cdi-unit.version>3.1.0</cdi-unit.version>
+		<rest-assured.version>2.3.4</rest-assured.version>
+		
 	</properties>
 
 	<dependencyManagement>
@@ -79,11 +88,11 @@
 				<version>${commons-collections.version}</version>
 			</dependency>
 
-            <dependency>
-              <groupId>commons-validator</groupId>
-              <artifactId>commons-validator</artifactId>
-              <version>${commons-validator.version}</version>
-            </dependency>
+      <dependency>
+        <groupId>commons-validator</groupId>
+        <artifactId>commons-validator</artifactId>
+        <version>${commons-validator.version}</version>
+      </dependency>
 
 			<!-- Jackson -->
 
@@ -140,6 +149,14 @@
 				<artifactId>nekohtml</artifactId>
 				<version>${nekohtml.version}</version>
 			</dependency>
+
+      <!-- Jade -->
+
+      <dependency>
+        <groupId>de.neuland-bfi</groupId>
+        <artifactId>jade4j</artifactId>
+        <version>${jade4j.version}</version>
+      </dependency>
 
 			<!-- Muikku -->
 
@@ -220,6 +237,18 @@
         <artifactId>evaluation-plugin-rest-model</artifactId>
         <version>${muikku.version}</version>
       </dependency>
+      
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>timed-notifications-plugin</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>timed-notifications-plugin-persistence</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
 
 			<!-- Coops -->
 			<dependency>
@@ -247,7 +276,19 @@
 			<dependency>
 				<groupId>com.jayway.restassured</groupId>
 				<artifactId>rest-assured</artifactId>
-				<version>2.3.4</version>
+				<version>${rest-assured.version}</version>
+			</dependency>
+
+			<dependency>
+			  <groupId>org.jglue.cdi-unit</groupId>
+			  <artifactId>cdi-unit</artifactId>
+			  <version>${cdi-unit.version}</version>
+			  <exclusions>
+          <exclusion>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+          </exclusion>
+        </exclusions>
 			</dependency>
 
 			<!-- Mail API -->

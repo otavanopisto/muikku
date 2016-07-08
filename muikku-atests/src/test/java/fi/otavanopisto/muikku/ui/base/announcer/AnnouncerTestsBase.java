@@ -31,15 +31,19 @@ public class AnnouncerTestsBase extends AbstractUITest {
         maximizeWindow();
         navigate("/announcer", true);
         waitAndClick(".an-new-announcement");
+        
+        waitForPresent(".cke_wysiwyg_frame");
         waitForPresent("*[name='endDate']");
         clearElement("*[name='endDate']");
         sendKeys("*[name='endDate']", "21.12.2025");
+        
         sendKeys(".mf-textfield-subject", "Test title");
         click(".mf-form-header");
         waitForPresent("#ui-datepicker-div");
         waitForNotVisible("#ui-datepicker-div");
         addTextToCKEditor("Announcer test announcement");
         waitAndClick(".mf-toolbar input[name='send']");
+        
         waitForPresent(".an-announcement-topic");
         assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
         assertTextIgnoreCase(".an-announcement-content>p", "Announcer test announcement"); 

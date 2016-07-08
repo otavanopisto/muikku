@@ -106,6 +106,13 @@
       <artifactId>joda-time</artifactId>
     </dependency>
 
+    <!-- Jade -->
+
+    <dependency>
+      <groupId>de.neuland-bfi</groupId>
+      <artifactId>jade4j</artifactId>
+    </dependency>
+
     <!-- Muikku -->
 
     <dependency>
