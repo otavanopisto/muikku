@@ -1,29 +1,30 @@
 package fi.otavanopisto.muikku.plugins.communicator.model;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 public class CommunicatorMessageAttachment {
-
-  /**
-   * Returns internal unique id
-   * 
-   * @return Internal unique id
-   */
+  
   public Long getId() {
     return id;
   }
-  
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
   public String getContentType() {
     return contentType;
   }
@@ -32,44 +33,31 @@ public class CommunicatorMessageAttachment {
     this.contentType = contentType;
   }
 
-  public byte[] getData() {
-    return data;
+  public byte[] getContent() {
+    return content;
   }
 
-  public void setData(byte[] data) {
-    this.data = data;
-  }
-
-  public CommunicatorMessage getCommunicatorMessage() {
-    return communicatorMessage;
-  }
-
-  public void setCommunicatorMessage(CommunicatorMessage communicatorMessage) {
-    this.communicatorMessage = communicatorMessage;
-  }
-
-  public Date getCreated() {
-    return created;
-  }
-
-  public void setCreated(Date created) {
-    this.created = created;
+  public void setContent(byte[] content) {
+    this.content = content;
   }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
   
-  @ManyToOne
-  private CommunicatorMessage communicatorMessage;
-  
-  private String contentType;
-  
-  @Column (length=1073741824)
-  private byte[] data;
+  @NotNull
+  @NotEmpty
+  @Column (nullable=false, unique=true)
+  private String name;
   
   @NotNull
-  @Column (nullable=false)
-  @Temporal (value=TemporalType.TIMESTAMP)
-  private Date created;
+  @NotEmpty
+  @Column (nullable = false)
+  private String contentType;
+  
+  @NotNull
+  @Column (nullable = false)
+  @Lob
+  private byte[] content;
+
 }

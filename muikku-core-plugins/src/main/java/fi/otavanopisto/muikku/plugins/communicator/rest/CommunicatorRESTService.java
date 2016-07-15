@@ -19,9 +19,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.TagController;
@@ -35,10 +41,12 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageAttachment;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
@@ -74,6 +82,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private CommunicatorController communicatorController;
+  
+  @Inject
+  private CommunicatorAttachmentController communicatorAttachmentController;
   
   @Inject
   private UserEntityController userEntityController;
@@ -791,6 +802,34 @@ public class CommunicatorRESTService extends PluginRESTService {
     return Response.ok(
       result
     ).build();
+  }
+  
+  @GET
+  @Path("/attachment/{ATTACHMENTNAME}")
+  @RESTPermit(handling = Handling.UNSECURED)
+  public Response getMessageAttachment(@PathParam ("ATTACHMENTNAME") String attachmentName, @Context Request request) {
+    if(StringUtils.isBlank(attachmentName)){
+      return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+    CommunicatorMessageAttachment communicatorMessageAttachment = communicatorAttachmentController.findByName(attachmentName);
+    if(communicatorMessageAttachment == null){
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    EntityTag tag = new EntityTag(communicatorMessageAttachment.getName());
+    ResponseBuilder builder = request.evaluatePreconditions(tag);
+    if (builder != null) {
+      return builder.build();
+    }
+
+    CacheControl cacheControl = new CacheControl();
+    cacheControl.setMustRevalidate(true);
+    
+    return Response.ok(communicatorMessageAttachment.getContent())
+        .cacheControl(cacheControl)
+        .tag(tag)
+        .type(communicatorMessageAttachment.getContentType())
+        .build();
   }
   
   private boolean hasCommunicatorMessageAccess(CommunicatorMessage communicatorMessage) {
