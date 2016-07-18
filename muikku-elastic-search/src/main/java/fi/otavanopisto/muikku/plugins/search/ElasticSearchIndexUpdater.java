@@ -11,11 +11,11 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.lang3.StringUtils;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
+import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.node.Node;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +38,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   public void init() {
     Builder settings = nodeBuilder().settings();
     settings.put("cluster.routing.allocation.disk.watermark.high", "99%");
+    settings.put("path.home", "./");
 
     node = nodeBuilder()
       .settings(settings)

@@ -163,8 +163,8 @@
      <!-- RESTEasy -->
      
     <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>jaxrs-api</artifactId>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -238,25 +238,6 @@
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>elastic-search-plugin</artifactId>
           <version>1.1.41-SNAPSHOT</version>
-        </dependency>
-        
-        <!-- 
-            FIXME: 
-            Lucene versions need to be overridden because 
-            Wildfly bom specifies lucene versions 3.6.2 which does 
-            not work with elastic search
-        -->
-
-        <dependency>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-core</artifactId>
-          <version>4.10.4</version>
-        </dependency>
-        
-        <dependency>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-memory</artifactId>
-          <version>4.10.4</version>
         </dependency>
       </dependencies>
     </profile>

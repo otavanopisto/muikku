@@ -11,7 +11,7 @@
 	<properties>
 		<!-- WildFly -->
 
-		<wildfly-spec-api.version>8.1.0.Final</wildfly-spec-api.version>
+		<wildfly-spec-api.version>10.0.0.Final</wildfly-spec-api.version>
 
 		<!-- Commons -->
 
@@ -20,10 +20,9 @@
         <commons-validator.version>1.5.0</commons-validator.version>
 
 		<!-- Jackson -->
-
-		<jackson-datatype-joda.version>2.3.0</jackson-datatype-joda.version>
-		<jackson-jaxrs-json-provider.version>2.3.0</jackson-jaxrs-json-provider.version>
-
+		
+		<jackson.version>2.8.0</jackson.version>
+		
 		<!-- Scribe -->
 
 		<scribe.version>1.3.5</scribe.version>
@@ -35,6 +34,7 @@
 		<!-- Neko -->
 
 		<nekohtml.version>1.9.22</nekohtml.version>
+
 
     <!-- Jade -->
     
@@ -99,13 +99,37 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
 				<artifactId>jackson-datatype-joda</artifactId>
-				<version>${jackson-datatype-joda.version}</version>
+				<version>${jackson.version}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.fasterxml.jackson.jaxrs</groupId>
 				<artifactId>jackson-jaxrs-json-provider</artifactId>
-				<version>${jackson-jaxrs-json-provider.version}</version>
+				<version>${jackson.version}</version>
+			</dependency>
+			
+			<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-joda</artifactId>
+		    <version>${jackson.version}</version>
+			</dependency>
+			
+			<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>${jackson.version}</version>
+			</dependency>
+			
+			<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>${jackson.version}</version>
+			</dependency>
+			
+			<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-annotations</artifactId>
+		    <version>${jackson.version}</version>
 			</dependency>
 
 			<!-- Scribe -->
@@ -149,6 +173,7 @@
 				<artifactId>nekohtml</artifactId>
 				<version>${nekohtml.version}</version>
 			</dependency>
+
 
       <!-- Jade -->
 
