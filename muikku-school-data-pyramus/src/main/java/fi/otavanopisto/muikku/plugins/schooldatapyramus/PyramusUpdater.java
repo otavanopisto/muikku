@@ -18,7 +18,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
+import org.threeten.bp.ZonedDateTime;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;
@@ -637,16 +637,16 @@ public class PyramusUpdater {
       return false;  
     }
     
-    DateTime studyStartDate = student.getStudyStartDate();
-    DateTime studyEndDate = student.getStudyEndDate();
+    ZonedDateTime studyStartDate = student.getStudyStartDate();
+    ZonedDateTime studyEndDate = student.getStudyEndDate();
     
     if (studyStartDate == null && studyEndDate == null) {
       // It's a never ending study programme
       return true;
     }
     
-    boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(System.currentTimeMillis());
-    boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(System.currentTimeMillis());
+    boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(ZonedDateTime.now());
+    boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(ZonedDateTime.now());
     
     return startedStudies && !finishedStudies;
   }

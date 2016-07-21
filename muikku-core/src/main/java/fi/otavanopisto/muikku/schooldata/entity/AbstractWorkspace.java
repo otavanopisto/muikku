@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.Date;
 
-import org.joda.time.DateTime;
+import org.threeten.bp.ZonedDateTime;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
@@ -14,7 +14,7 @@ public abstract class AbstractWorkspace implements Workspace {
   public AbstractWorkspace(String identifier, String name, String nameExtension, String viewLink,
       SchoolDataIdentifier workspaceTypeId, String courseIdentifierIdentifier, String description,
       String subjectIdentifier, SchoolDataIdentifier educationTypeIdentifier, Date modified, Double length, String lengthUnitIdentifier,
-      DateTime beginDate, DateTime endDate, boolean archived, boolean evaluationFeeApplicable) {
+      ZonedDateTime beginDate, ZonedDateTime endDate, boolean archived, boolean evaluationFeeApplicable) {
     super();
     this.identifier = identifier;
     this.name = name;
@@ -113,22 +113,22 @@ public abstract class AbstractWorkspace implements Workspace {
   }
   
   @Override
-  public DateTime getBeginDate() {
+  public ZonedDateTime getBeginDate() {
     return beginDate;
   }
   
   @Override
-  public void setBeginDate(DateTime beginDate) {
+  public void setBeginDate(ZonedDateTime beginDate) {
     this.beginDate = beginDate; 
   }
   
   @Override
-  public DateTime getEndDate() {
+  public ZonedDateTime getEndDate() {
     return endDate;
   }
   
   @Override
-  public void setEndDate(DateTime endDate) {
+  public void setEndDate(ZonedDateTime endDate) {
     this.endDate = endDate;
   }
   
@@ -159,8 +159,8 @@ public abstract class AbstractWorkspace implements Workspace {
   private Date modified;
   private Double length;
   private String lengthUnitIdentifier;
-  private DateTime beginDate;
-  private DateTime endDate;
+  private ZonedDateTime beginDate;
+  private ZonedDateTime endDate;
   private boolean archived;
   private boolean evaluationFeeApplicable;
 }

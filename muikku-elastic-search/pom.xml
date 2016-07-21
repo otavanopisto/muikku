@@ -15,7 +15,7 @@
 	<description>Muikku Elasic Search plugin</description>
 
 	<properties>
-		<elasticsearch.version>2.1.1</elasticsearch.version>
+		<elasticsearch.version>2.1.2</elasticsearch.version>
 	</properties>
   
   <dependencies>
@@ -45,8 +45,8 @@
     <!-- Jackson -->
     
     <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-joda</artifactId>
+	    <groupId>com.github.joschi.jackson</groupId>
+	    <artifactId>jackson-datatype-threetenbp</artifactId>
     </dependency> 
 
     <dependency>
@@ -57,18 +57,22 @@
     
     <!-- Elastic Search -->
 
-
-    <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
-      <version>${elasticsearch.version}</version>
-    </dependency>
+		<dependency>
+		    <groupId>org.elasticsearch</groupId>
+		    <artifactId>elasticsearch</artifactId>
+		    <version>2.1.2</version>
+		</dependency>
     
     <!-- Muikku -->
 
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>plugin</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>core</artifactId>
     </dependency>
     
 	</dependencies> 

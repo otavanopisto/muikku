@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
-import org.joda.time.DateTime;
+import org.threeten.bp.ZonedDateTime;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -11,7 +11,7 @@ public class PyramusTransferCredit extends AbstractTransferCredit {
   public PyramusTransferCredit() {
   }
   
-  public PyramusTransferCredit(SchoolDataIdentifier identifier, SchoolDataIdentifier studentIdentifier, DateTime date,
+  public PyramusTransferCredit(SchoolDataIdentifier identifier, SchoolDataIdentifier studentIdentifier, ZonedDateTime date,
       SchoolDataIdentifier gradeIdentifier, SchoolDataIdentifier gradingScaleIdentifier, String verbalAssessment, SchoolDataIdentifier assessorIdentifier,
       String courseName, Integer courseNumber, Double length, SchoolDataIdentifier lengthUnitIdentifier,
       SchoolDataIdentifier schoolIdentifier, SchoolDataIdentifier subjectIdentifier) {

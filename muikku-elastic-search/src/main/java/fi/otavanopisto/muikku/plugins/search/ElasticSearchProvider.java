@@ -9,8 +9,9 @@ import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
 import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -31,14 +32,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.Settings.Builder;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.IdsQueryBuilder;
-import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.sort.SortOrder;
-import org.joda.time.DateTime;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.ChronoUnit;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
@@ -59,7 +63,7 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public void init() {
-    Builder settings = nodeBuilder().settings();
+    /*Builder settings = nodeBuilder().settings();
     settings.put("cluster.routing.allocation.disk.watermark.high", "99%");
     settings.put("path.home", "./");
     
@@ -68,13 +72,25 @@ public class ElasticSearchProvider implements SearchProvider {
       .local(true)
       .node();
     
-    elasticClient = node.client();
+    elasticClient = node.client();*/
+    
+    Settings settings = Settings.settingsBuilder()
+        .put("cluster.name", "belvain-elasticsearch").build();
+    
+    try {
+      elasticClient = TransportClient.builder().settings(settings).build()
+          .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
+    } catch (UnknownHostException e) {
+      logger.log(Level.SEVERE, "Failed to connect to elasticsearch cluster", e);
+      return;
+    }
+    
   }
   
   @Override
   public void deinit() {
     elasticClient.close();
-    node.close();
+    //node.close();
   }
   
   private boolean isEmptyCollection(Collection<?> c) {
@@ -264,9 +280,9 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   private Set<Long> getActiveWorkspaces() {
-    DateTime now = new DateTime();
-    DateTime low = now.minus(now.getMillisOfDay());
-    DateTime high = low.plusDays(1).minus(1); 
+    ZonedDateTime now = ZonedDateTime.now();
+    ZonedDateTime low = now.with(ChronoField.MILLI_OF_DAY, 0);
+    ZonedDateTime high = low.plusDays(1).minus(1, ChronoUnit.MILLIS); 
     
     BoolQueryBuilder query = boolQuery();
     
@@ -276,8 +292,8 @@ public class ElasticSearchProvider implements SearchProvider {
           .must(existsQuery("beginDate"))
           .must(existsQuery("endDate")))
         .should(boolQuery()
-            .must(rangeQuery("beginDate").lte(low.getMillis()))
-            .must(rangeQuery("endDate").gte(high.getMillis())));
+          .must(rangeQuery("beginDate").lte(low.toInstant().toEpochMilli()))
+          .must(rangeQuery("endDate").gte(high.toInstant().toEpochMilli())));
 
     SearchResponse response = elasticClient
       .prepareSearch("muikku")
@@ -578,6 +594,6 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   private Client elasticClient;
-  private Node node;
+  //private Node node;
 
 }

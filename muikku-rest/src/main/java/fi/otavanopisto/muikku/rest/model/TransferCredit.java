@@ -1,16 +1,16 @@
 package fi.otavanopisto.muikku.rest.model;
 
-import org.joda.time.DateTime;
+import org.threeten.bp.ZonedDateTime;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.joda.ser.DateTimeSerializer;
+import com.fasterxml.jackson.datatype.threetenbp.ser.ZonedDateTimeSerializer;
 
 public class TransferCredit {
 
   public TransferCredit() {
   }
 
-  public TransferCredit(String identifier, String studentIdentifier, DateTime date, String gradeIdentifier,
+  public TransferCredit(String identifier, String studentIdentifier, ZonedDateTime date, String gradeIdentifier,
       String gradingScaleIdentifier, String verbalAssessment, String assessorIdentifier, String courseName,
       Integer courseNumber, Double length, String lengthUnitIdentifier, String schoolIdentifier, String subjectIdentifier) {
     super();
@@ -45,11 +45,11 @@ public class TransferCredit {
     this.studentIdentifier = studentIdentifier;
   }
 
-  public DateTime getDate() {
+  public ZonedDateTime getDate() {
     return date;
   }
 
-  public void setDate(DateTime date) {
+  public void setDate(ZonedDateTime date) {
     this.date = date;
   }
 
@@ -136,8 +136,8 @@ public class TransferCredit {
   private String identifier;
   private String studentIdentifier;
   
-  @JsonSerialize(using=DateTimeSerializer.class)
-  private DateTime date;
+  @JsonSerialize(using=ZonedDateTimeSerializer.class)
+  private ZonedDateTime date;
   
   private String gradeIdentifier;
   private String gradingScaleIdentifier;

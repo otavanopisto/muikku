@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.plugins.search;
 
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
-
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -15,18 +15,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.Settings.Builder;
-import org.elasticsearch.node.Node;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.threeten.bp.ZonedDateTime;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import fi.otavanopisto.muikku.search.IndexableEntityVault;
 import fi.otavanopisto.muikku.search.SearchIndexUpdater;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
+import fi.otavanopisto.muikku.utils.MuikkuDateTimeStampDeserializer;
+import fi.otavanopisto.muikku.utils.MuikkuDateTimestampSerializer;
 
 @ApplicationScoped
 public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
@@ -36,7 +39,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
 
   @Override
   public void init() {
-    Builder settings = nodeBuilder().settings();
+   /* Builder settings = nodeBuilder().settings();
     settings.put("cluster.routing.allocation.disk.watermark.high", "99%");
     settings.put("path.home", "./");
 
@@ -45,8 +48,18 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
       .local(true)
       .node();
     
-    elasticClient = node.client();
+    elasticClient = node.client();*/
+    Settings settings = Settings.settingsBuilder()
+        .put("cluster.name", "belvain-elasticsearch").build();
     
+    try {
+      elasticClient = TransportClient.builder().settings(settings).build()
+          .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9301));
+    } catch (UnknownHostException e) {
+      logger.log(Level.SEVERE, "Failed to connect to elasticsearch cluster", e);
+      return;
+    }
+        
     if (!indexExists()) {
       createIndex();      
     }
@@ -207,14 +220,16 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   @Override
   public void deinit() {
     elasticClient.close();
-    node.close();
+    //node.close();
   }
 
   @Override
   public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
-    ObjectMapper mapper = new ObjectMapper()
-      .registerModule(new JodaModule())
-      .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper mapper = new ObjectMapper();
+    SimpleModule module = new SimpleModule();
+    module.addSerializer(new MuikkuDateTimestampSerializer(ZonedDateTime.class));
+    module.addDeserializer(ZonedDateTime.class, new MuikkuDateTimeStampDeserializer(ZonedDateTime.class));
+    mapper.registerModule(module);
     
     String json;
     try {
@@ -239,6 +254,6 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   }
 
   private Client elasticClient;
-  private Node node;
+  //private Node node;
 
 }

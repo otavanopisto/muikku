@@ -1,12 +1,12 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
-import org.joda.time.DateTime;
+import org.threeten.bp.ZonedDateTime;
 
 public abstract class AbstractUser implements User {
   
   public AbstractUser(String identifier, String firstName, String lastName, String displayName,
       String studyProgrammeName, String nationality, String language, String municipality, String school,
-      DateTime studyStartDate, DateTime studyEndDate, DateTime studyTimeEnd, boolean hidden, 
+      ZonedDateTime studyStartDate, ZonedDateTime studyEndDate, ZonedDateTime studyTimeEnd, boolean hidden, 
       boolean startedStudies, boolean finishedStudies, boolean active, boolean evaluationFees) {
     super();
     this.identifier = identifier;
@@ -105,29 +105,29 @@ public abstract class AbstractUser implements User {
   }
 
   @Override
-  public DateTime getStudyStartDate() {
+  public ZonedDateTime getStudyStartDate() {
     return studyStartDate;
   }
 
-  public void setStudyStartDate(DateTime studyStartDate) {
+  public void setStudyStartDate(ZonedDateTime studyStartDate) {
     this.studyStartDate = studyStartDate;
   }
   
   @Override
-  public DateTime getStudyEndDate() {
+  public ZonedDateTime getStudyEndDate() {
     return this.studyEndDate;
   }
   
-  public void setStudyEndDate(DateTime studyEndDate) {
+  public void setStudyEndDate(ZonedDateTime studyEndDate) {
     this.studyEndDate = studyEndDate;
   }
 
   @Override
-  public DateTime getStudyTimeEnd() {
+  public ZonedDateTime getStudyTimeEnd() {
     return studyTimeEnd;
   }
 
-  public void setStudyTimeEnd(DateTime studyTimeEnd) {
+  public void setStudyTimeEnd(ZonedDateTime studyTimeEnd) {
     this.studyTimeEnd = studyTimeEnd;
   }
 
@@ -181,9 +181,9 @@ public abstract class AbstractUser implements User {
   private String language;
   private String municipality;
   private String school;
-  private DateTime studyStartDate;
-  private DateTime studyEndDate;
-  private DateTime studyTimeEnd;
+  private ZonedDateTime studyStartDate;
+  private ZonedDateTime studyEndDate;
+  private ZonedDateTime studyTimeEnd;
   private boolean hidden;
   private boolean startedStudies;
   private boolean finishedStudies;

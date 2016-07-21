@@ -39,6 +39,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.threeten.bp.DateTimeUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.Flag;
@@ -350,9 +351,9 @@ public class UserRESTService extends AbstractRESTService {
     }
     
     String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true); 
-    Date studyStartDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
-    Date studyEndDate = user.getStudyEndDate() != null ? user.getStudyEndDate().toDate() : null;
-    Date studyTimeEnd = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;
+    Date studyStartDate = user.getStudyStartDate() != null ? DateTimeUtils.toDate(user.getStudyStartDate().toInstant()) : null;
+    Date studyEndDate = user.getStudyEndDate() != null ? DateTimeUtils.toDate(user.getStudyEndDate().toInstant()) : null;
+    Date studyTimeEnd = user.getStudyTimeEnd() != null ? DateTimeUtils.toDate(user.getStudyTimeEnd().toInstant()) : null;
     
     Student student = new Student(
         studentIdentifier.toId(), 
@@ -1063,8 +1064,8 @@ public class UserRESTService extends AbstractRESTService {
 		
 		String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true); 
 		
-		Date startDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
-		Date endDate = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;
+		Date startDate = user.getStudyStartDate() != null ? DateTimeUtils.toDate(user.getStudyStartDate().toInstant()) : null;
+		Date endDate = user.getStudyTimeEnd() != null ? DateTimeUtils.toDate(user.getStudyTimeEnd().toInstant()) : null;
 		
 		return new fi.otavanopisto.muikku.rest.model.User(userEntity.getId(),
 				user.getFirstName(), user.getLastName(), hasImage,

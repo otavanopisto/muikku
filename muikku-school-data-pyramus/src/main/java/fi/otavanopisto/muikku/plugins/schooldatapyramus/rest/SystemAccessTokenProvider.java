@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
+import org.threeten.bp.ZonedDateTime;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
@@ -43,12 +43,12 @@ public class SystemAccessTokenProvider {
       AccessToken createdAccessToken = restClient.createAccessToken(client, authCode);
       accessToken = createdAccessToken.getAccessToken();
       refreshToken = createdAccessToken.getRefreshToken();
-      accessTokenExpires = new DateTime().plusSeconds(createdAccessToken.getExpiresIn());
+      accessTokenExpires = ZonedDateTime.now().plusSeconds(createdAccessToken.getExpiresIn());
     } else {
-      if ((accessTokenExpires == null) || (System.currentTimeMillis() > accessTokenExpires.getMillis())) {
+      if ((accessTokenExpires == null) || (System.currentTimeMillis() > accessTokenExpires.toInstant().toEpochMilli())) {
         AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, refreshToken);
         accessToken = refreshedAccessToken.getAccessToken();
-        accessTokenExpires = new DateTime().plusSeconds(refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK);
+        accessTokenExpires = ZonedDateTime.now().plusSeconds(refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK);
       }
     }
 
@@ -57,6 +57,6 @@ public class SystemAccessTokenProvider {
   
   private String accessToken;
   private String refreshToken;
-  private DateTime accessTokenExpires;
+  private ZonedDateTime accessTokenExpires;
   private String authCode;
 }

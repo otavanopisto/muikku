@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
+import org.threeten.bp.ZonedDateTime;
 
 import fi.otavanopisto.muikku.calendar.CalendarEvent;
 import fi.otavanopisto.muikku.calendar.CalendarEventAttendee;
@@ -79,7 +79,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   }
 
   @Override
-  public List<CalendarEvent> listEvents(DateTime minTime, DateTime maxTime, String... calendarId) throws CalendarServiceException {
+  public List<CalendarEvent> listEvents(ZonedDateTime minTime, ZonedDateTime maxTime, String... calendarId) throws CalendarServiceException {
     return calendarClient.listEvents(minTime, maxTime, calendarId);
   }
 

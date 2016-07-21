@@ -12,7 +12,8 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.joda.time.DateTime;
+import org.threeten.bp.DateTimeUtils;
+import org.threeten.bp.ZonedDateTime;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
@@ -115,8 +116,8 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public User createEntity(fi.otavanopisto.pyramus.rest.model.Student student, fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme,
-      String nationality, String language, String municipality, String school, DateTime studyStartDate, DateTime studyEndDate,
-      DateTime studyTimeEnd, boolean hidden) {
+      String nationality, String language, String municipality, String school, ZonedDateTime studyStartDate, ZonedDateTime studyEndDate,
+      ZonedDateTime studyTimeEnd, boolean hidden) {
     StringBuilder displayName = new StringBuilder();
 
     displayName.append(student.getFirstName()).append(' ').append(student.getLastName());
@@ -127,8 +128,8 @@ public class PyramusSchoolDataEntityFactory {
       displayName.append(String.format(" (%s)", studyProgrammeName));
     }
     
-    boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(System.currentTimeMillis());
-    boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(System.currentTimeMillis());
+    boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(ZonedDateTime.now());
+    boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(ZonedDateTime.now());
     boolean active = studyStartDate == null && studyEndDate == null ? true : startedStudies && !finishedStudies;
     
     return new PyramusUser(
@@ -269,7 +270,7 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
 
-    DateTime modified = course.getLastModified();
+    ZonedDateTime modified = course.getLastModified();
     if (modified == null) {
       modified = course.getCreated();
     }
@@ -300,7 +301,7 @@ public class PyramusSchoolDataEntityFactory {
         course.getDescription(),
         identifierMapper.getSubjectIdentifier(course.getSubjectId()), 
         educationTypeIdentifier,
-        modified.toDate(), 
+        DateTimeUtils.toDate(modified.toInstant()), 
         course.getLength(), 
         identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
         course.getBeginDate(), 
@@ -331,7 +332,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
         identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
         gradeIdentifier.getIdentifier(), gradingScaleIdentifier.getIdentifier(),
-        courseAssessment.getVerbalAssessment(), courseAssessment.getDate().toDate());
+        courseAssessment.getVerbalAssessment(), DateTimeUtils.toDate(courseAssessment.getDate().toInstant()));
   }
 
   public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments) {
@@ -354,7 +355,7 @@ public class PyramusSchoolDataEntityFactory {
     
     return new PyramusWorkspaceAssessmentRequest(courseAssessmentRequest.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
-        courseAssessmentRequest.getRequestText(), courseAssessmentRequest.getCreated().toDate());
+        courseAssessmentRequest.getRequestText(), DateTimeUtils.toDate(courseAssessmentRequest.getCreated().toInstant()));
   }
 
   public List<WorkspaceAssessmentRequest> createEntity(CourseAssessmentRequest... courseAssessmentRequests) {

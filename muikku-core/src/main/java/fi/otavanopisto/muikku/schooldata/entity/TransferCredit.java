@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
-import org.joda.time.DateTime;
+import org.threeten.bp.ZonedDateTime;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
@@ -10,7 +10,7 @@ public interface TransferCredit extends SchoolDataEntity {
 
   public SchoolDataIdentifier getStudentIdentifier();
 
-  public DateTime getDate();
+  public ZonedDateTime getDate();
 
   public SchoolDataIdentifier getGradeIdentifier();
 
