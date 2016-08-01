@@ -14,13 +14,12 @@
     border-top-left-radius:3px;
     border-bottom-left-radius:3px;
     background-color:#52b050;
-    border-top:1px solid #73c071;
-    border-left:1px solid #73c071;
-    border-bottom:1px solid #73c071;
+    border:1px solid #73c071;
     font-size:1.1em;
     background: rgb(107,187,105);
     @include gradient-top-bottom(rgba(107,187,105,1),rgba(76,163,74,1),#52b050);
     position:relative;
+    @include buttonShadow;
     
     &:before {
       position:absolute;

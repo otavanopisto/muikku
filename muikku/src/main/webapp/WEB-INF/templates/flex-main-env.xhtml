@@ -26,30 +26,39 @@
               </div>
             </div>
           </div>
-        </ui:fragment>
-        <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-          <div class="login">
-            <div class="bt-generic icon-signout bt-login">
-              <a jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
-                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
-              </a>
-            </div>
-            <div class="bt-generic icon-forgotpassword bt-forgotpassword">
-              <div>
-                <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+          <div class="language">
+            <h:form>
+              <div class="language-container">
+                <ui:repeat value="#{i18n.languages}" var="locale">
+                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
+                </ui:repeat>
               </div>
-            </div> 
+            </h:form>
           </div>
         </ui:fragment>
-        <div class="language">
-          <h:form>
-            <div class="language-container">
-              <ui:repeat value="#{i18n.languages}" var="locale">
-                <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
-              </ui:repeat>
-            </div>
-          </h:form>
-        </div>
+        <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+          <div class="loginbox-container">
+	          <div class="login">
+	            <div class="bt-generic icon-signout bt-login">
+	              <a jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+	                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
+	              </a>
+	            </div>
+	          </div>
+		        <div class="language">
+		          <h:form>
+		            <div class="language-container">
+		              <ui:repeat value="#{i18n.languages}" var="locale">
+		                <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
+		              </ui:repeat>
+		            </div>
+		          </h:form>
+		        </div>
+	          <div class="forgotpassword-link-container">
+	            <a href="#" class="forgotpassword-link">#{i18n.text['plugin.forgotpassword.forgotLink']}</a>
+	          </div>
+          </div>
+        </ui:fragment>
       </div>
     </header>
   </ui:define>
