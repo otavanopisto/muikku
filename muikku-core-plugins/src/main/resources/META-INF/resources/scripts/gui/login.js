@@ -48,7 +48,7 @@
   }
   
   $(document).on('click', '.forgotpassword-link', function (event, data) {
-	  event.preventDefault,
+	event.preventDefault();
     confirmForgotpasswordRequest();
   });
 
