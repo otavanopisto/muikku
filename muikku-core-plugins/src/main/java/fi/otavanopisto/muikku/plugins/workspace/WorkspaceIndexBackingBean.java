@@ -75,6 +75,7 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
 
     if (workspaceEntity == null) {
+      logger.info("No permission to access unpublished workspace");
       return NavigationRules.NOT_FOUND;
     }
 
@@ -84,7 +85,8 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     
     if (!published) {
       if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
-        return NavigationRules.NOT_FOUND;
+          logger.info("No permission to access unpublished workspace");
+    	  return NavigationRules.NOT_FOUND;
       }
     }
 

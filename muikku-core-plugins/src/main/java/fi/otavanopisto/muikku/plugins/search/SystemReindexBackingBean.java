@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.search;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -36,8 +37,14 @@ public class SystemReindexBackingBean {
   @Inject
   private SessionController sessionController;
   
+  @Inject
+  private Logger logger;
+  
 	@RequestAction
 	public String init() {
+     
+      logger.severe("entering SystemReindexBackingBean.init");
+		
 	  if (sessionController.hasPermission(MuikkuPermissions.ADMIN, null)) {
       List<Task> tasks = null;
       
