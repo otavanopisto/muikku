@@ -500,7 +500,7 @@ div[class*="wi-dock-static-navi"] {
   margin-top:10px;
   
   .loginWidgetButton {
-    @include buttonShadow;
+    @include button-shadow;
   }
   
 }
