@@ -250,9 +250,8 @@
     },
     
     _searchTargetGroups: function (term, callback) {
-      var inputs = $("#msgTargetGroupsContainer").find("input[name='userGroupEntityIds']");
-      var existingIds = new Array();
-
+	  var inputs = $("#msgTargetGroupsContainer").find("input[name='userGroupEntityIds']");
+	  var existingIds = new Array();
 	  if(inputs.length > 0){
 	    for(var i = 0; i < inputs.length; i++) {
 	      existingIds.push($(inputs[i]).val()); 
