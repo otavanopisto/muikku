@@ -17,7 +17,14 @@
         this._appendDetails(type, this.element.attr('data-' + type), this.element.attr('data-' + type + '-url'));
       }, this));
 
-      this.element.closest('figure').css('max-width', this.element.attr('width'));
+      if (this.element.width() > 0) {
+    	this.element.closest('figure').css('max-width', this.element.width());
+      } else if (this.element.hasAttribute('width')) {
+    	this.element.closest('figure').css('max-width', this.element.attr('width'));
+      } else if (this.element.css('width')) {
+    	this.element.closest('figure').css('max-width', this.element.css('width'));
+      }
+      
     },
     
     _appendDetails: function (type, text, url) {
