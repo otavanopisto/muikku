@@ -6,6 +6,10 @@
    background-color:#fff;
   }
   
+  article{
+    box-shadow:none !important;
+  }
+  
   #staticNavigationWrapper{
     display:none;
   }
@@ -18,7 +22,7 @@
     display:none;
   }
  
- #workspaceMaterialsTOCWrapper{
+ #workspaceMaterialsTOCWrapper, #workspaceMaterialsReadingTOCWrapper{
    display:none;
  }
   
@@ -29,5 +33,7 @@
  .flex-row{
   display:block;
  }
+  
+  
   
 }
