@@ -1,27 +1,27 @@
 /* Print styles for materials */
 
-@media print{
+@media print {
   
-  body{
+  body {
    background-color:#fff;
    line-height:20px !important;
    font-size:15px !important;
    padding:0 !important;
   }
   
-  #header{
+  #header {
    display:none;
   }
   
-  #staticNavigationWrapper{
+  #staticNavigationWrapper {
     display:none;
   }
   
-  #footer{
+  #footer {
     display:none;
   }
   
- .flex-row{
+ .flex-row {
   display:block;
  }
   

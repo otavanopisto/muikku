@@ -1,25 +1,25 @@
 /* Print styles for materials */
 
-@media print{
+@media print {
   
-  body{
+  body {
    background-color:#fff;
    line-height:20px !important;
    font-size:15px !important;
    padding:0 !important;
   }
   
-  article{
+  article {
     box-shadow:none !important;
     padding-top:0 !important;
   }
   
-  section{  
-    h1{
+  section {  
+    h1 {
       font-size:34px;
      font-style:italic;
     }
-    h2{
+    h2 {
      font-size:30;
      padding:0;
      margin-bottom:10px !important;
@@ -27,27 +27,28 @@
     }
   } 
   
-  #staticNavigationWrapper{
+  #staticNavigationWrapper {
     display:none;
   }
   
-  #footer{
+  #footer {
     display:none;
   }
   
-  #workspaceNavigationWrapper{
+  #workspaceNavigationWrapper {
     display:none;
   }
  
- #workspaceMaterialsTOCWrapper, #workspaceMaterialsReadingTOCWrapper{
+ #workspaceMaterialsTOCWrapper,
+ #workspaceMaterialsReadingTOCWrapper {
    display:none;
  }
   
- #TOCContainer{
+ #TOCContainer {
    display:none;
  }  
  
- .flex-row{
+ .flex-row {
   display:block;
  }
   
