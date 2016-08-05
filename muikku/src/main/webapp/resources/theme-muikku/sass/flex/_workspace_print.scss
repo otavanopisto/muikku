@@ -1,0 +1,33 @@
+/* Print styles for materials */
+
+@media print{
+  
+  body{
+   background-color:#fff;
+  }
+  
+  #staticNavigationWrapper{
+    display:none;
+  }
+  
+  #footer{
+    display:none;
+  }
+  
+  #workspaceNavigationWrapper{
+    display:none;
+  }
+ 
+ #workspaceMaterialsTOCWrapper{
+   display:none;
+ }
+  
+ #TOCContainer{
+   display:none;
+ }  
+ 
+ .flex-row{
+  display:block;
+ }
+  
+}
