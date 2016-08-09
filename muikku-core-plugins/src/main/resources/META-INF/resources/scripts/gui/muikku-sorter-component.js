@@ -23,15 +23,19 @@
       },
       _buildUi: function() {
         var meta = this.options.meta;
+        
+        var orientation = meta.orientation;
+        var containerElement = orientation == 'horizontal' ? 'span' : 'div';
+        var axis = orientation == 'horizontal' ? 'x' : 'y';
 
         this.element.addClass('muikku-sorter-field');
         this.element.attr('id', meta.name);
         
-        var itemsContainer = $('<div>').addClass('muikku-sorter-items-container');
+        var itemsContainer = $('<' + containerElement + '>').addClass('muikku-sorter-items-container');
         
         var items = meta.items;
         for (var i = 0; i < items.length; i++) {
-          var item = $('<div>').addClass('muikku-sorter-item');
+          var item = $('<' + containerElement + '>').addClass('muikku-sorter-item');
           item.attr('data-item-id', items[i].id);
           item.text(items[i].name);
           itemsContainer.append(item);
@@ -42,6 +46,7 @@
         }
         if (!this.isReadonly()) {
           $(itemsContainer).sortable({
+            axis: axis,
             update: $.proxy(function (event, ui) {
               $(this.element).trigger('change');
             }, this)
@@ -117,9 +122,15 @@
           exampleDetails.append( 
             $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
           );
+          var orientation = this.options.meta.orientation;
           var correctString = '';
+          var delimiter = orientation == 'horizontal' ? ' ' : ', ';
           for (var i = 0; i < correctItems.length; i++) {
-            correctString += i == 0 ? correctItems[i].name : ', ' + correctItems[i].name; 
+            var value = correctItems[i].name;
+            if (i == 0 && orientation == 'horizontal') {
+              value = value.charAt(0).toUpperCase() + value.slice(1);
+            }
+            correctString += i == 0 ? value : delimiter + value; 
           }
           exampleDetails.append($('<span>').addClass('muikku-field-example').text(correctString));
           $(this.element).after(exampleDetails);
