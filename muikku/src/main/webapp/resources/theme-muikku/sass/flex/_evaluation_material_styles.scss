@@ -201,12 +201,11 @@ a {
 }
 
 ul {
-  list-style-type:disc;
   list-style-position:inside;
 }
 
 ol {
-   list-style-type:decimal;
+  list-style-type:decimal;
   list-style-position:inside;
 }
 
@@ -216,7 +215,6 @@ ol {
 
   li {
     margin:5px;
-/*       line-height:1.5em; */
   }
   
   ol {

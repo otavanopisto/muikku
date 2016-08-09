@@ -15,6 +15,7 @@ import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.schooldata.entity.CourseIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
+import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 
@@ -230,4 +231,46 @@ public class CourseMetaController {
 		return null;
 	}
 
+  /* Curriculum */
+
+  public Curriculum findCurriculum(SchoolDataIdentifier identifier) {
+    return findCurriculum(identifier.getDataSource(), identifier.getIdentifier());
+  }
+   
+  public Curriculum findCurriculum(String schoolDataSource, String identifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource != null) {
+      return findCurriculum(dataSource, identifier);
+    } else {
+      logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
+    }
+
+    return null;
+  }
+
+  public Curriculum findCurriculum(SchoolDataSource schoolDataSource, String identifier) {
+    CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      try {
+        return schoolDataBridge.findCurriculum(identifier);
+      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a educationType", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+    }
+  
+    return null;
+  }
+
+  public List<Curriculum> listCurriculums() {
+    List<Curriculum> result = new ArrayList<>();
+    
+    for (CourseMetaSchoolDataBridge courseMetaBridge : getCourseMetaBridges()) {
+      result.addAll(courseMetaBridge.listCurriculums());
+    }
+
+    return result;
+  }
+  
 }
