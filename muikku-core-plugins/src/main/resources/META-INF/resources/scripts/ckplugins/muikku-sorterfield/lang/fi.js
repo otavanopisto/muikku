@@ -5,6 +5,7 @@ CKEDITOR.plugins.setLang('muikku-sorterfield', 'fi', {
   propertiesDialogOrientation: 'Suunta',
   propertiesDialogVertical: 'Pysty',
   propertiesDialogHorizontal: 'Vaaka',
+  propertiesDialogCapitalize: 'Ensimmäinen termi isolla alkukirjaimella',
   propertiesDialogItems: 'Termit',
   propertiesMenu: 'Järjestelykentän ominaisuudet',
   propertiesDialogAddItemLink: 'Uusi termi',
