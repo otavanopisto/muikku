@@ -9,10 +9,9 @@ public class SorterFieldMeta extends FieldMeta {
   public SorterFieldMeta() {
   }
 
-  public SorterFieldMeta(String name, String orientation, Boolean capitalize, List<SorterFieldItemMeta> items) {
+  public SorterFieldMeta(String name, String orientation, List<SorterFieldItemMeta> items) {
     super(name);
     setOrientation(orientation);
-    setCapitalize(capitalize);
     setItems(items);
   }
   
@@ -48,16 +47,7 @@ public class SorterFieldMeta extends FieldMeta {
     return false;
   }
   
-  public Boolean getCapitalize() {
-    return capitalize;
-  }
-
-  public void setCapitalize(Boolean capitalize) {
-    this.capitalize = capitalize;
-  }
-
   private String orientation;
-  private Boolean capitalize;
   private List<SorterFieldItemMeta> items;
 
 }

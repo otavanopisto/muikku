@@ -192,14 +192,6 @@
               }
             },
             {
-              id: 'capitalize',
-              type: 'checkbox',
-              label: editor.lang['muikku-sorterfield'].propertiesDialogCapitalize,
-              setup: function(json) {
-                this.setValue(json.capitalize);
-              }
-            },
-            {
               id: 'items',
               type: 'muikkuSorterFieldItems',
               label: editor.lang['muikku-sorterfield'].propertiesDialogItems,
@@ -227,7 +219,6 @@
           contentJson.name = editor.createRandomMuikkuFieldName();
         }
         contentJson.orientation = this.getContentElement('tab-basic', 'orientation').getValue();
-        contentJson.capitalize = this.getContentElement('tab-basic', 'capitalize').getValue();
         contentJson.items = [];
         var itemsElement = this.getContentElement('tab-basic', 'items');
         var itemsUiElement = itemsElement.getElement();

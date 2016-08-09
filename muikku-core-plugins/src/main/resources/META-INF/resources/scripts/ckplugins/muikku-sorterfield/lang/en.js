@@ -5,7 +5,6 @@ CKEDITOR.plugins.setLang('muikku-sorterfield', 'en', {
   propertiesDialogOrientation: 'Orientation',
   propertiesDialogVertical: 'Vertical',
   propertiesDialogHorizontal: 'Horizontal',
-  propertiesDialogCapitalize: 'Capitalize First Item',
   propertiesDialogItems: 'Items',
   propertiesMenu: 'Sorting Field Settings',
   propertiesDialogAddItemLink: 'New Item',
