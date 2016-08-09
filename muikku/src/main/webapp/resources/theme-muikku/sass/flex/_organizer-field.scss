@@ -25,6 +25,7 @@
       line-height: 1;
       cursor: move;
       color: $taskBoxTextColor;
+      word-wrap: normal;
       
       &.term-in-use {
         background: $taskBoxEditedColor; 

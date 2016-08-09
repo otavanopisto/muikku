@@ -13,6 +13,7 @@ div.muikku-sorter-items-container {
     padding: 6px 8px;
     position: relative;
     line-height: 1;
+    word-wrap: normal;
     color: $taskBoxTextColor;
   
     &.ui-sortable-handle {
@@ -34,7 +35,6 @@ div.muikku-sorter-items-container {
 }
 
 span.muikku-sorter-items-container {
-	text-transform: capitalize;
 	position: relative;
   
   span.muikku-sorter-item {
@@ -47,6 +47,8 @@ span.muikku-sorter-items-container {
     position: relative;
     line-height: 1;
     word-wrap: normal;
+    color: $taskBoxTextColor;
+    display:inline-block;
     
     &:first-child {
       margin: 5px 3px 5px 0;
@@ -62,7 +64,6 @@ span.muikku-sorter-items-container {
     
     &:hover {
       background: $taskBoxHoverColor;
-      color: $taskBoxTextColor;
     }
     
     &.ui-sortable-helper {
