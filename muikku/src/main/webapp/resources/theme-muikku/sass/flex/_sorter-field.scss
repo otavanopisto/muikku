@@ -4,6 +4,10 @@
 
 div.muikku-sorter-items-container {
   
+  &.capitalize {
+    text-transform:capitalize;
+  }
+    
   div.muikku-sorter-item {
     border-radius: 3px;
     background: $taskBoxColor;
@@ -35,6 +39,10 @@ div.muikku-sorter-items-container {
 }
 
 span.muikku-sorter-items-container {
+	
+  &.capitalize {
+    text-transform:capitalize;
+  }
   
   span.muikku-sorter-item {
     border-radius: 3px;
