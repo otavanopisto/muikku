@@ -2,31 +2,73 @@
   
 }
 
-.muikku-sorter-items-container {
+div.muikku-sorter-items-container {
   
-  .muikku-sorter-item {
-    border-radius:3px;
-    background:#e1f7fc;
-    box-sizing:border-box;
-    font-size:16px;
-    margin:5px 0;
-    padding:6px 8px;
-    position:relative;
-    line-height:1;
+  div.muikku-sorter-item {
+    border-radius: 3px;
+    background: $taskBoxColor;
+    box-sizing: border-box;
+    font-size: 16px;
+    margin: 5px 0;
+    padding: 6px 8px;
+    position: relative;
+    line-height: 1;
+    color: $taskBoxTextColor;
   
     &.ui-sortable-handle {
-      cursor:move;
+      cursor: move;
     }
     
     &:hover {
-      background:#b1e8fe;
-      color:#000;
+      background: $taskBoxHoverColor;
     }
     
     &.ui-sortable-helper {
-      z-index:99;
-      background:#3dc7ff; 
-      color:#fff;
+      z-index: 99;
+      background: $selectedtaskBoxColor; 
+      color: $selectedTaskBoxTextColor;
+    }
+
+  }
+  
+}
+
+span.muikku-sorter-items-container {
+	text-transform: capitalize;
+	position: relative;
+  
+  span.muikku-sorter-item {
+    border-radius: 3px;
+    background: $taskBoxColor;
+    box-sizing: border-box;
+    font-size: 16px;
+    margin: 5px 3px;
+    padding: 6px 8px;
+    position: relative;
+    line-height: 1;
+    word-wrap: normal;
+    
+    &:first-child {
+      margin: 5px 3px 5px 0;
+    }
+    
+    &:last-child {
+      margin: 5px 0 5px 3px;
+    }
+  
+    &.ui-sortable-handle {
+      cursor: move;
+    }
+    
+    &:hover {
+      background: $taskBoxHoverColor;
+      color: $taskBoxTextColor;
+    }
+    
+    &.ui-sortable-helper {
+      z-index: 99;
+      background: $selectedtaskBoxColor; 
+      color: $selectedTaskBoxTextColor;
     }
 
   }
