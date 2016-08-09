@@ -39,6 +39,8 @@
         z-index: 99;
         background: $selectedtaskBoxColor; 
         color: $selectedTaskBoxTextColor;
+        padding: 6px 7px;
+        height: auto !important;
       }
       
     }

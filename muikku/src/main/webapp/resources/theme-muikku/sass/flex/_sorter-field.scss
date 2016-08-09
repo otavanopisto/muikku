@@ -51,7 +51,7 @@ span.muikku-sorter-items-container {
     display:inline-block;
     
     &:first-child {
-      margin: 5px 3px 5px 0;
+      margin: 5px 3px 5px 6px;
     }
     
     &:last-child {
@@ -70,6 +70,8 @@ span.muikku-sorter-items-container {
       z-index: 99;
       background: $selectedtaskBoxColor; 
       color: $selectedTaskBoxTextColor;
+      padding: 6px 7px;
+      height: auto !important;
     }
 
   }
