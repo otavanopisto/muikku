@@ -26,7 +26,6 @@
         
         var orientation = meta.orientation;
         var containerElement = orientation == 'horizontal' ? 'span' : 'div';
-        var axis = orientation == 'horizontal' ? 'x' : 'y';
 
         this.element.addClass('muikku-sorter-field');
         this.element.attr('id', meta.name);
@@ -46,7 +45,6 @@
         }
         if (!this.isReadonly()) {
           $(itemsContainer).sortable({
-            axis: axis,
             update: $.proxy(function (event, ui) {
               $(this.element).trigger('change');
             }, this)
