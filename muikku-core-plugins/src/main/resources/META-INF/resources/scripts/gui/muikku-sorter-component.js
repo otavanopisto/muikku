@@ -35,7 +35,7 @@
         var capitalize = meta.capitalize||false;
         if (capitalize) {
           itemsContainer.addClass('capitalize');
-        }
+        }        
         
         var items = meta.items;
         for (var i = 0; i < items.length; i++) {
