@@ -5,7 +5,11 @@
 div.muikku-sorter-items-container {
   
   &.capitalize {
-    text-transform:capitalize;
+    
+    > .muikku-sorter-item:first-child:first-letter {
+      text-transform:uppercase;
+    }
+    
   }
     
   div.muikku-sorter-item {
@@ -41,7 +45,11 @@ div.muikku-sorter-items-container {
 span.muikku-sorter-items-container {
 	
   &.capitalize {
-    text-transform:capitalize;
+    
+    > .muikku-sorter-item:first-child:first-letter {
+      text-transform:uppercase;
+    }
+    
   }
   
   span.muikku-sorter-item {
