@@ -27,15 +27,15 @@
         var orientation = meta.orientation;
         var containerElement = orientation == 'horizontal' ? 'span' : 'div';
         
-        var capitalize = meta.capitalize||false;
 
         this.element.addClass('muikku-sorter-field');
         this.element.attr('id', meta.name);
-        if (capitalize) {
-          this.element.addClass('capitalize');
-        }
         
         var itemsContainer = $('<' + containerElement + '>').addClass('muikku-sorter-items-container');
+        var capitalize = meta.capitalize||false;
+        if (capitalize) {
+          itemsContainer.addClass('capitalize');
+        }
         
         var items = meta.items;
         for (var i = 0; i < items.length; i++) {
