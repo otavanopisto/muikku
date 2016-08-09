@@ -32,6 +32,10 @@
         this.element.attr('id', meta.name);
         
         var itemsContainer = $('<' + containerElement + '>').addClass('muikku-sorter-items-container');
+        var capitalize = meta.capitalize||false;
+        if (capitalize) {
+          itemsContainer.addClass('capitalize');
+        }        
         
         var items = meta.items;
         for (var i = 0; i < items.length; i++) {
