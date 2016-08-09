@@ -45,6 +45,7 @@
         }
         if (!this.isReadonly()) {
           $(itemsContainer).sortable({
+            tolerance: 'pointer',
             update: $.proxy(function (event, ui) {
               $(this.element).trigger('change');
             }, this)
@@ -62,6 +63,7 @@
           $(itemsContainer).sortable("destroy");
         } else {
           $(itemsContainer).sortable({
+            tolerance: 'pointer',
             update: $.proxy(function (event, ui) {
               $(this.element).trigger("change");
             }, this)
