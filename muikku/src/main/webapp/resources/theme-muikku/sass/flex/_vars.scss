@@ -2,15 +2,19 @@
 $siteWidth:960px;
 
 /* Text Colors */
+$content:#2c2c2c;
 $header:#2c2c2c;
 $title:#000;
 $subTitle:#4e4e4e;
 $link:#4290ea;
 $formTitle: #5b5b5b;
+$footerText:#fff;
+$footerLink:#b3e9ff;
 
-/* Link */
+/* Links */
 $contextualLink:#0099ff;
 $contextualLinkHover:#006ab1; 
+$forgotPasswordLink:#fff;
 
 /* Forms */
 $formBorderColor:#dadada;
@@ -101,3 +105,17 @@ $category8:#6eb5cf;
 $category9:#ff0000;
 $category10:#0cff00;
 $category11:#000000;
+
+/* Assignment Colors */
+$taskBoxColor:#e1f7fc; /* Generic color for task field boxes to be used in background or borders */
+$taskBoxTextColor:#000;
+$taskBoxHoverColor:#b1e8fe; /* Generic hover color for task field boxes to be used in background or borders */
+$taskBoxEditedColor:#b1e8fe; /* Term in use or edited */
+$selectedtaskBoxColor:#3dc7ff; /* Generic selected color for task field boxes to be used in background or borders */
+$selectedTaskBoxTextColor:#fff;
+
+/* Assignment Colors - Connect Field specific */
+$CFfieldNumberBGColor:#fff; /* Connect Field's field number background color */
+$CFCorrectFieldNumberBGColor:#62c3eb; /* Connect Field's correct field number background color */
+$CFCorrectFieldNumberTextColor:#fff; /* Connect Field's correct field number text color */
+$CFPlaceHolderBGColor:f8f8f8;
