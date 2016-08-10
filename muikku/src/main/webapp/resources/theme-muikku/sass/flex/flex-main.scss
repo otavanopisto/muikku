@@ -8,6 +8,7 @@
 @import "_buttons";
 @import "_notif-queue";
 @import "_connectionlost";
+@import "_environment_print";
 
 html {
   height: 100%;
@@ -156,6 +157,19 @@ body {
     color: $forgotPasswordLink;
     font-weight: 400;
     text-shadow: 0 0 1px #000;
+  }
+  
+}
+  
+.forgotpassword-link-container {
+  clear:both;
+  text-align:right;
+  padding:5px 0 0;
+  
+  .forgotpassword-link {
+    color:#fff;
+    font-weight:400;
+    text-shadow:0 0 1px #000;
   }
   
 }

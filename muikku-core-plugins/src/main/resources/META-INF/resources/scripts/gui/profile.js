@@ -4,7 +4,7 @@
     var username = "";
     
     mApi({async: false}).userplugin.credentials.read().callback(function(err, result) {
-      username = result.username || "";
+      username = result ? result.username||'' : '';
     });
     
     renderDustTemplate('profile/profile-change-password.dust', { username: username }, $.proxy(function (text) {

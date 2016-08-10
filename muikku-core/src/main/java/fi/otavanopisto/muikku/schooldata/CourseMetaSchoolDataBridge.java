@@ -4,6 +4,7 @@ import java.util.List;
 
 import fi.otavanopisto.muikku.schooldata.entity.CourseIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
+import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 
@@ -38,4 +39,9 @@ public interface CourseMetaSchoolDataBridge {
 	/* CourseLengthUnit */
 
   public CourseLengthUnit findCourseLengthUnit(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  
+  /* Curriculum */
+  
+  public Curriculum findCurriculum(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public List<Curriculum> listCurriculums();
 }

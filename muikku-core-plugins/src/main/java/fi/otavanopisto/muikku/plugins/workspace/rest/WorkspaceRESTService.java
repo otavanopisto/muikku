@@ -283,6 +283,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("educationTypes") List<String> educationTypeIds,
+        @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("orderBy") List<String> orderBy,
@@ -377,7 +378,21 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
+      List<SchoolDataIdentifier> curriculums = null;
+      if (curriculumIds != null) {
+        curriculums = new ArrayList<>(curriculumIds.size());
+        for (String curriculumId : curriculumIds) {
+          SchoolDataIdentifier curriculumIdentifier = SchoolDataIdentifier.fromId(curriculumId);
+          if (curriculumIdentifier != null) {
+            curriculums.add(curriculumIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed curriculum identifier", curriculumId)).build();
+          }
+        }
+      }
+      
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
+          curriculums, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
