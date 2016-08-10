@@ -84,7 +84,7 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     
     if (!published) {
       if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
-        return NavigationRules.NOT_FOUND;
+    	  return NavigationRules.NOT_FOUND;
       }
     }
 
