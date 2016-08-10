@@ -1137,21 +1137,19 @@ body.evaluation {
 
   .evaluation-evaluate-modal {
     background: #fff;
-    font-family: 'Open Sans', Arial, sans-serif;
-    padding: 0;
-    border: none;
-    z-index: 9999;
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: #fff;
-    border-radius: 0;
     border: 1px solid #fff;
-    overflow: hidden;
+    border-radius: 0;
+    bottom: 0;
+    font-family: 'Open Sans', Arial, sans-serif;
+    left: 0;
     min-width: 990px;
+    overflow: hidden;
+    padding: 0;
+    position: fixed;
+    right: 0;
     text-transform: none;
+    top: 0;
+    z-index: 9999;
     
     &.assignment-evaluation-dialog {
     
