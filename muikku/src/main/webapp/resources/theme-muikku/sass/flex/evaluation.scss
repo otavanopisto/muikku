@@ -1213,48 +1213,45 @@ body.evaluation {
         }
         
         span.modal-title-workspace-name {
+          border-left: 1px solid #fff;
+          color: #c9e1f2;
           display: inline-block;
           font-size: 24px;
-          border-left: 1px solid #fff;
           padding: 0 0 0 20px;
-          color: #c9e1f2;
         }
         
       }
       
       .ui-dialog-titlebar-close {
+        background: transparent;
+        border: 0;
+        height: 56px;
         position: absolute;
         right: 0;
         top: 0;
-        border: 0;
-        background: transparent;
-        z-index: 999;
         width: 56px;
-        height: 56px;
+        z-index: 999;
         
         span {
           display: none;
         }
         
         &:before {
-          color: #fff;
           border-bottom-left-radius: 10px;
-          cursor: pointer;
-          content: "\e63b";
           color: #fff;
-          font-size: 30px;
-          font-weight: normal;
+          content: "\e63b";
+          cursor: pointer;
           font-family: 'muikku';
-          speak: none;
-          font-style: normal;
-          text-decoration: none;
-          font-variant: normal;
-          text-transform: none;
-          line-height: 1;
-          
-          /* Better Font Rendering =========== */
+          font-size: 30px;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
+          font-style: normal;
+          font-variant: normal;
+          font-weight: normal;
+          line-height: 1;
+          speak: none;
+          text-decoration: none;
+          text-transform: none;
         }
         
       }
@@ -1265,13 +1262,13 @@ body.evaluation {
      line-height: 1;
       
       label.muikku-file-input-field-file-label {
-        font-weight: 400 !important;
-        position: absolute;
-        margin-top: -35px;
-        margin-left: 10px;
-        color: #fff;
         font-size: 16px;
+        color: #fff;
+        font-weight: 400 !important;
         line-height: 27px;
+        margin-left: 10px;
+        margin-top: -35px;
+        position: absolute;
       }
       
     }
@@ -1289,24 +1286,24 @@ body.evaluation {
 
       .ui-dialog-buttonset {
         float: none;
-        position: elative;
-        text-align: right;
         padding: 0 30px 0 0;
+        position: relative;
+        text-align: right;
         
         button {
-          border-radius: 0;
           border: 0;
+          border-radius: 0;
           color: #fff;
+          float: none;
+          font-family: 'Open Sans', Arial, sans-serif;
+          font-size: 18px;
           font-weight: 400;
+          margin: 5px;
+          min-width: 90px;
+          outline: none;
           padding: 5px 15px;
           text-transform: uppercase;
-          margin: 5px;
-          outline: none;
-          font-family: 'Open Sans', Arial, sans-serif;
-          min-width: 90px;
-          font-size: 18px;
-          float: none;
-
+          
           span {
             padding: 0;
           }
