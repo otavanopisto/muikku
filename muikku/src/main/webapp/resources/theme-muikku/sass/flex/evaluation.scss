@@ -1170,19 +1170,19 @@ body.evaluation {
     }
     
     .ui-dialog-titlebar {
-      width: auto;
-      margin: 0 auto; 
-      font-weight: 300;
+      background: #657e90;
+      border: 0;
       color: #000;
       font-size: 28px;
-      text-transform: uppercase;
-      line-height: 1.3;
-      position: relative;
+      font-weight: 300;
       height: 40px;
-      border: 0;
-      background: #657e90;
+      line-height: 1.3;
+      margin: 0 auto; 
+      position: relative;
+      text-transform: uppercase;
       white-space: nowrap;
-      
+      width: auto;
+
       .ui-dialog-title {
         background-size: cover;
         color: #fff;
@@ -1201,17 +1201,15 @@ body.evaluation {
         }
         
         span.modal-title-student-name {
-          background-image: url("/gfx/default-user-picture.jpg");
-          background-position: left center;
-          background-repeat: no-repeat;
-          background-size: contain;
-	        color: #c9e1f2;
-          display: inline-block;
-          font-size: 24px;
-          margin: 0 20px 0 0;
-          padding: 0 0 0 40px;
-
-          
+					background-image: url("/gfx/default-user-picture.jpg");
+					background-position: left center;
+					background-repeat: no-repeat;
+					background-size: contain;
+					color: #c9e1f2;
+					display: inline-block;
+					font-size: 24px;
+					margin: 0 20px 0 0;
+					padding: 0 0 0 40px;
         }
         
         span.modal-title-workspace-name {
