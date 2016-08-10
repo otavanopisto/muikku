@@ -1185,31 +1185,33 @@ body.evaluation {
       
       .ui-dialog-title {
         background-size: cover;
-        display: inline-block;
-        position: absolute;
-        margin: 0;
-        top: 12px;
-        left: 10px;
         color: #fff;
+        display: inline-block;
+        left: 10px;
+        margin: 0;
+        position: absolute;
+        top: 12px;
         
         span.modal-title-workspace-evaluation,
         span.modal-title-assignment-evaluation {
           display: inline-block;
-          padding: 0 10px;
           font-size: 26px;
           margin: 0 50px 0 0;
+          padding: 0 10px;
         }
         
         span.modal-title-student-name {
-          font-size: 24px;
+          background-image: url("/gfx/default-user-picture.jpg");
+          background-position: left center;
+          background-repeat: no-repeat;
+          background-size: contain;
+	        color: #c9e1f2;
           display: inline-block;
+          font-size: 24px;
           margin: 0 20px 0 0;
           padding: 0 0 0 40px;
-          background-image: url("/gfx/default-user-picture.jpg");
-          background-repeat: no-repeat;
-          background-position: left center;
-          background-size: contain;
-          color: #c9e1f2;
+
+          
         }
         
         span.modal-title-workspace-name {
@@ -1243,8 +1245,8 @@ body.evaluation {
           cursor: pointer;
           font-family: 'muikku';
           font-size: 30px;
-          -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
           font-style: normal;
           font-variant: normal;
           font-weight: normal;
@@ -1262,8 +1264,8 @@ body.evaluation {
      line-height: 1;
       
       label.muikku-file-input-field-file-label {
-        font-size: 16px;
         color: #fff;
+        font-size: 16px;
         font-weight: 400 !important;
         line-height: 27px;
         margin-left: 10px;
