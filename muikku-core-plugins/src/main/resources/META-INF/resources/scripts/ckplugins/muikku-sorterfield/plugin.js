@@ -180,6 +180,26 @@
           id: 'tab-basic',
           elements: [
             {
+              id: 'orientation',
+              type: 'select',
+              label: editor.lang['muikku-sorterfield'].propertiesDialogOrientation,
+              items: [
+                [editor.lang['muikku-sorterfield'].propertiesDialogVertical, 'vertical'],
+                [editor.lang['muikku-sorterfield'].propertiesDialogHorizontal, 'horizontal']
+              ],
+              setup: function(json) {
+                this.setValue(json.orientation ? json.orientation : 'vertical');
+              }
+            },
+            {
+              id: 'capitalize',
+              type: 'checkbox',
+              label: editor.lang['muikku-sorterfield'].propertiesDialogCapitalize,
+              setup: function(json) {
+                this.setValue(json.capitalize);
+              }
+            },
+            {
               id: 'items',
               type: 'muikkuSorterFieldItems',
               label: editor.lang['muikku-sorterfield'].propertiesDialogItems,
@@ -206,6 +226,8 @@
         if (!contentJson.name) {
           contentJson.name = editor.createRandomMuikkuFieldName();
         }
+        contentJson.orientation = this.getContentElement('tab-basic', 'orientation').getValue();
+        contentJson.capitalize = this.getContentElement('tab-basic', 'capitalize').getValue();
         contentJson.items = [];
         var itemsElement = this.getContentElement('tab-basic', 'items');
         var itemsUiElement = itemsElement.getElement();

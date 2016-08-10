@@ -9,7 +9,7 @@
 }
 
 /* Generic Box shadow for Buttons */
-@mixin buttonShadow() {
+@mixin button-shadow() {
   box-shadow: 0 0 5px rgba(0,0,0,0.2); 
 }
 

@@ -9,8 +9,10 @@ public class SorterFieldMeta extends FieldMeta {
   public SorterFieldMeta() {
   }
 
-  public SorterFieldMeta(String name, List<SorterFieldItemMeta> items) {
+  public SorterFieldMeta(String name, String orientation, Boolean capitalize, List<SorterFieldItemMeta> items) {
     super(name);
+    setOrientation(orientation);
+    setCapitalize(capitalize);
     setItems(items);
   }
   
@@ -18,6 +20,14 @@ public class SorterFieldMeta extends FieldMeta {
   @JsonIgnore
   public String getType() {
     return "application/vnd.muikku.field.sorter";
+  }
+  
+  public String getOrientation() {
+    return orientation;
+  }
+
+  public void setOrientation(String orientation) {
+    this.orientation = orientation;
   }
 
   public List<SorterFieldItemMeta> getItems() {
@@ -38,6 +48,16 @@ public class SorterFieldMeta extends FieldMeta {
     return false;
   }
   
+  public Boolean getCapitalize() {
+    return capitalize;
+  }
+
+  public void setCapitalize(Boolean capitalize) {
+    this.capitalize = capitalize;
+  }
+
+  private String orientation;
+  private Boolean capitalize;
   private List<SorterFieldItemMeta> items;
 
 }
