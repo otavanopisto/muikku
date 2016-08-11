@@ -98,6 +98,7 @@ public class PyramusSchoolDataEntityFactory {
         null,
         null,
         null,
+        null,
         hidden,
         startedStudies,
         finishedStudies,
@@ -116,7 +117,7 @@ public class PyramusSchoolDataEntityFactory {
 
   public User createEntity(fi.otavanopisto.pyramus.rest.model.Student student, fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme,
       String nationality, String language, String municipality, String school, DateTime studyStartDate, DateTime studyEndDate,
-      DateTime studyTimeEnd, boolean hidden) {
+      DateTime studyTimeEnd, boolean hidden, String curriculumIdentifer) {
     StringBuilder displayName = new StringBuilder();
 
     displayName.append(student.getFirstName()).append(' ').append(student.getLastName());
@@ -141,6 +142,7 @@ public class PyramusSchoolDataEntityFactory {
         language,
         municipality,
         school,
+        curriculumIdentifer,
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
@@ -306,7 +308,8 @@ public class PyramusSchoolDataEntityFactory {
         course.getBeginDate(), 
         course.getEndDate(), 
         course.getArchived(), 
-        courseFeeApplicable);
+        courseFeeApplicable,
+        identifierMapper.getCurriculumIdentifier(course.getCurriculumId()));
   }
 
   public WorkspaceType createEntity(CourseType courseType) {

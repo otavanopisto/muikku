@@ -19,7 +19,7 @@
     color:#ffffff;
     cursor:pointer;
     @include buttonFontShadow;
-    @include buttonShadow;  
+    @include button-shadow;  
     background-color:#ed8e00;
     border:1px solid #d9e4e8;
     font-size:1em;
@@ -51,7 +51,7 @@
   color:#ffffff;
   cursor:pointer;
   @include buttonFontShadow;
-  @include buttonShadow;  
+  @include button-shadow;  
   background-color:#ed8e00;
   border:1px solid #d9e4e8;
   font-size:1em;

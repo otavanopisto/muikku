@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.search;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -18,14 +19,28 @@ public interface SearchProvider {
   public void deinit();
   
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults);
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, String freeText, List<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts);
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, String freeText, List<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts);
   
   public SearchResult searchWorkspaces(String searchTerm, int start, int maxResults);
 
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden, 
       int start, int maxResults);
-
+  
+  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
+      Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden, 
+      int start, int maxResults, Collection<String> fields);
+  
+  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
+      Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden, 
+      int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date studiesStartedBefore);
+  
+  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+      Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
+      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults, Collection<String> fields,
+      Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore,
+      Date studyTimeEndsBefore);
+  
   public class Sort {
     
     public Sort(String field, Order order) {
