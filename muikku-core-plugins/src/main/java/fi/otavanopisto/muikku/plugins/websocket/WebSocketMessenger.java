@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.websocket;
 
+import java.nio.channels.ClosedChannelException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +59,11 @@ public class WebSocketMessenger {
           }
         }
       }    
-    } catch (Exception e) {
+    }
+    catch (ClosedChannelException cce) {
+      // Channel already closed; ignore
+    }
+    catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to send WebSocket message", e);
     }
   }
@@ -69,12 +74,17 @@ public class WebSocketMessenger {
       ObjectMapper mapper = new ObjectMapper();
       String strMessage = mapper.writeValueAsString(message);
       Session session = sessions.get(ticket);
-      if(session == null){
+      if (session == null){
         logger.log(Level.SEVERE, "Session doesn't exist");
-      }else{
+      }
+      else{
         session.getBasicRemote().sendText(strMessage);
       }
-    } catch (Exception e) {
+    }
+    catch (ClosedChannelException cce) {
+      // Channel already closed; ignore
+    }
+    catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to send WebSocket message", e);
     }
   }
@@ -86,10 +96,12 @@ public class WebSocketMessenger {
       if (verifyTicket(ticket1)) {
         session.getUserProperties().put("UserId", ticket1.getUser());
         sessions.put(ticket, session);
-      } else {
+      }
+      else {
         try {
           session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Ticket could not be validated."));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
           // Closing failed, ignore
         }
       }
@@ -110,7 +122,6 @@ public class WebSocketMessenger {
       WebSocketTicket ticket = webSocketTicketController.findTicket(ticketId);
       if (ticket != null) {
         WebSocketMessage messageData = mapper.readValue(message, WebSocketMessage.class);
-        
         WebSocketMessageEvent event = new WebSocketMessageEvent(ticket.getTicket(), ticket.getUser(), messageData);
         webSocketMessageEvent.select(new MuikkuWebSocketEventLiteral(messageData.getEventType())).fire(event);
       } else {
