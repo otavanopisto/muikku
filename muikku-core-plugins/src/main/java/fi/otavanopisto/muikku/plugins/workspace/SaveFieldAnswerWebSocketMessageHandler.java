@@ -90,7 +90,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       }
       
       if (event.getUserEntityId() == null) {
-        logger.log(Level.SEVERE, "Missing user entity id");
+        logger.log(Level.SEVERE, String.format("Missing user entity id for ticket %s (field %s in workspace material %d)", event.getTicket(), message.getFieldName(), message.getWorkspaceMaterialId()));
         handleError("Missing user entity id", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
         return;
       }
