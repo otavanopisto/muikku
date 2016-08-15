@@ -108,7 +108,11 @@
           'coops-dmp' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/coops-dmp/0.1.1/plugin.min.js',
           'coops-sessionevents' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/coops-sessionevents/0.1.1/plugin.min.js',
           'audio': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/audio/1.0.0/',
- 
+          'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/',
+          'muikku-image-details': CONTEXTPATH + '/scripts/ckplugins/muikku-image-details/',
+          'muikku-word-definition': CONTEXTPATH + '/scripts/ckplugins/muikku-word-definition/',
+          'muikku-audio-defaults': CONTEXTPATH + '/scripts/ckplugins/muikku-audio-defaults/',
+          'muikku-image-target': CONTEXTPATH + '/scripts/ckplugins/muikku-image-target/'
         },
         extraPlugins : [
                        'oembed',
@@ -118,6 +122,11 @@
                        'coops-sessionevents', 
                        'audio',
                        'image2',
+                       'muikku-embedded',
+                       'muikku-image-details',
+                       'muikku-word-definition',
+                       'muikku-audio-defaults',
+                       'muikku-image-target',
                        'autogrow',
                        'uploadimage'],
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
