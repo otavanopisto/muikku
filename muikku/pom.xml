@@ -1,460 +1,455 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>muikku</artifactId>
-	<packaging>war</packaging>
-	<name>Muikku</name>
-	<description>Muikku Learning Environment</description>
-
-	<parent>
-		<groupId>fi.otavanopisto.muikku</groupId>
-		<artifactId>parent</artifactId>
-		<version>1.1.41-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-
-	<dependencies>
-
-		<!-- Servlet -->
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.servlet</groupId>
-			<artifactId>jboss-servlet-api_3.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- CDI -->
-
-		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.interceptor</groupId>
-			<artifactId>jboss-interceptors-api_1.2_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- EJB -->
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Transactions -->
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.transaction</groupId>
-			<artifactId>jboss-transaction-api_1.2_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- EL -->
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.el</groupId>
-			<artifactId>jboss-el-api_3.0_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Faces -->
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.faces</groupId>
-			<artifactId>jboss-jsf-api_2.2_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.sun.faces</groupId>
-			<artifactId>jsf-impl</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Rewrite -->
-
-		<dependency>
-			<groupId>org.ocpsoft.rewrite</groupId>
-			<artifactId>rewrite-servlet</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.ocpsoft.rewrite</groupId>
-			<artifactId>rewrite-integration-faces</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.ocpsoft.rewrite</groupId>
-			<artifactId>rewrite-integration-cdi</artifactId>
-		</dependency>
-
-		<!-- Hibernate -->
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-infinispan</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Jackson -->
-
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Commons -->
-
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- H2 -->
-
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- RESTEasy -->
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.ws.rs</groupId>
-			<artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jackson2-provider</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Muikku -->
-
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>core</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>plugin</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>rest</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>persistence</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>fi.otavanopisto</groupId>
-			<artifactId>webapp-permission</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>fi.otavanopisto.muikku</groupId>
-			<artifactId>core-plugins</artifactId>
-		</dependency>
-	</dependencies>
-
-	<profiles>
-		<profile>
-			<id>pyramus-plugins</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>muikku-school-data-pyramus</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>pyramus-oauth-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>elastic-search-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>elastic-search-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>dummy-mail-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>dummy-mail-bridge-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>jndi-mail-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>jndi-mail-bridge-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>mongo-log-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>mongo-log-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>google-calendar-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>google-calendar-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>atests-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>atests-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>h2db-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>h2db-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>google-oauth-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>google-oauth-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>facebook-oauth-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>facebook-oauth-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>calendar-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>calendar-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>evaluation-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>evaluation-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>deus-nex-machina-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>deus-nex-machina</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>timed-notifications-plugin</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>timed-notifications-plugin</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-		<profile>
-			<id>developer-tools</id>
-			<dependencies>
-				<dependency>
-					<groupId>fi.otavanopisto.muikku</groupId>
-					<artifactId>developer-tools</artifactId>
-					<version>1.1.41-SNAPSHOT</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-	</profiles>
-
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.jasig.maven</groupId>
-										<artifactId>sass-maven-plugin</artifactId>
-										<versionRange>[1.1.1,)</versionRange>
-										<goals>
-											<goal>update-stylesheets</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.jasig.maven</groupId>
-				<artifactId>sass-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>sassProcessSource</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>update-stylesheets</goal>
-						</goals>
-						<inherited>false</inherited>
-						<configuration>
-							<sassSourceDirectory>${basedir}/src/main/webapp/resources/theme-muikku/sass</sassSourceDirectory>
-							<destination>${project.build.directory}/${project.build.finalName}/resources/theme-muikku/css</destination>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<archive>
-						<manifestEntries>
-							<Dependencies>org.apache.commons.io,
-								org.apache.commons.collections, org.apache.commons.codec,
-								org.codehaus.jackson.jackson-core-asl,
-								org.codehaus.jackson.jackson-mapper-asl,
-								org.apache.httpcomponents, com.h2database.h2,
-								org.jboss.resteasy.resteasy-jackson2-provider</Dependencies>
-						</manifestEntries>
-					</archive>
-					<classifier>${classifier}</classifier>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>muikku</artifactId>
+  <packaging>war</packaging>
+  <name>Muikku</name>
+  <description>Muikku Learning Environment</description>
+
+  <parent>
+    <groupId>fi.otavanopisto.muikku</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.1.41-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <dependencies>
+
+    <!-- Servlet -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- CDI -->
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.interceptor</groupId>
+      <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- EJB -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Transactions -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.transaction</groupId>
+      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- EL -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.el</groupId>
+      <artifactId>jboss-el-api_3.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Faces -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.faces</groupId>
+      <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.faces</groupId>
+      <artifactId>jsf-impl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Rewrite -->
+
+    <dependency>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-servlet</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-integration-faces</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-integration-cdi</artifactId>
+    </dependency>
+
+    <!-- Hibernate -->
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-infinispan</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Jackson -->
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Commons -->
+
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- H2 -->
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- RESTEasy -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson2-provider</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Muikku -->
+
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>plugin</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>rest</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>persistence</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.otavanopisto</groupId>
+      <artifactId>webapp-permission</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>core-plugins</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>pyramus-plugins</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>muikku-school-data-pyramus</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>pyramus-oauth-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>elastic-search-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>elastic-search-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>dummy-mail-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>dummy-mail-bridge-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>jndi-mail-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>jndi-mail-bridge-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>mongo-log-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>mongo-log-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>google-calendar-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>google-calendar-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>atests-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>atests-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>h2db-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>h2db-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>google-oauth-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>google-oauth-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>facebook-oauth-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>facebook-oauth-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>calendar-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>calendar-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>evaluation-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>evaluation-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>deus-nex-machina-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>deus-nex-machina</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>timed-notifications-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>timed-notifications-plugin</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>developer-tools</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>developer-tools</artifactId>
+          <version>1.1.41-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+  </profiles>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.jasig.maven</groupId>
+                    <artifactId>sass-maven-plugin</artifactId>
+                    <versionRange>[1.1.1,)</versionRange>
+                    <goals>
+                      <goal>update-stylesheets</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.jasig.maven</groupId>
+        <artifactId>sass-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>sassProcessSource</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>update-stylesheets</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <sassSourceDirectory>${basedir}/src/main/webapp/resources/theme-muikku/sass</sassSourceDirectory>
+              <destination>${project.build.directory}/${project.build.finalName}/resources/theme-muikku/css</destination>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Dependencies>org.apache.commons.io,org.apache.commons.collections,org.apache.commons.codec,org.codehaus.jackson.jackson-core-asl,org.codehaus.jackson.jackson-mapper-asl,org.apache.httpcomponents,com.h2database.h2,org.jboss.resteasy.resteasy-jackson2-provider</Dependencies>
+            </manifestEntries>
+          </archive>
+          <classifier>${classifier}</classifier>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
