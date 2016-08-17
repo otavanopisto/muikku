@@ -52,7 +52,7 @@ public class WebLibFolderFinder extends AbstractClassFinder {
     
     for (File classFile : classFiles) {
       try {
-        String filePath = classFile.getAbsolutePath().substring(entryFile.getAbsolutePath().length() + 1);
+        String filePath = classFile.getAbsolutePath().substring(entryFile.getAbsolutePath().length() + 1).replace('\\','/');
         String className = getClassName(filePath);
         if (mustProcessClass(className)) {
           processClass(className, null, visitor);

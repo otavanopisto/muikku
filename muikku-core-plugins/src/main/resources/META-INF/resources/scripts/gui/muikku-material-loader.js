@@ -597,7 +597,8 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.sorter') {
-      var sorterField = $('<div>').muikkuSorterField({
+      var containerElement = data.meta.orientation == 'horizontal' ? 'span' : 'div';
+      var sorterField = $('<' + containerElement + '>').muikkuSorterField({
         pageElement: data.pageElement,
         fieldName: data.name,
         materialId: data.materialId,

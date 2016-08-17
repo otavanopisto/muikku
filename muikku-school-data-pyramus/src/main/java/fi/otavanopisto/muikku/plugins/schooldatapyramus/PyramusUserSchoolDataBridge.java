@@ -151,6 +151,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           hidden = person.getSecureInfo() != null ? person.getSecureInfo() : false;
       }
       
+      String curriculumIdentifier = student.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(student.getCurriculumId()).toId() : null;
+      
       users.add(entityFactory.createEntity(
           student,
           studyProgramme,
@@ -161,7 +163,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           student.getStudyStartDate(),
           student.getStudyEndDate(),
           student.getStudyTimeEnd(),
-          hidden));
+          hidden,
+          curriculumIdentifier));
     }
     
     return users;

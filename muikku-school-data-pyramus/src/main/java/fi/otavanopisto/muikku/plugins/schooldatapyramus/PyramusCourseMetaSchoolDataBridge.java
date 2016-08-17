@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCourseIdentifier;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCurriculum;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusEducationType;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSubject;
@@ -18,6 +19,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.entity.CourseIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
+import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.pyramus.rest.model.Course;
@@ -196,6 +198,33 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
     }
     
     return null;
+  }
+
+  @Override
+  public Curriculum findCurriculum(String identifier) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    Long curriculumId = pyramusIdentifierMapper.getPyramusCurriculumId(identifier);
+    fi.otavanopisto.pyramus.rest.model.Curriculum curriculum = pyramusClient.get("/common/curriculums/" + curriculumId, fi.otavanopisto.pyramus.rest.model.Curriculum.class);
+    if (curriculum != null) {
+      return new PyramusCurriculum(new SchoolDataIdentifier(identifier, getSchoolDataSource()), curriculum.getName());
+    }
+    
+    return null;
+  }
+
+  @Override
+  public List<Curriculum> listCurriculums() {
+    List<Curriculum> result = new ArrayList<>();
+    
+    fi.otavanopisto.pyramus.rest.model.Curriculum[] curriculums = pyramusClient.get("/common/curriculums?filterArchived=true", fi.otavanopisto.pyramus.rest.model.Curriculum[].class);
+    if (curriculums != null) {
+      for (fi.otavanopisto.pyramus.rest.model.Curriculum curriculum : curriculums) {
+        SchoolDataIdentifier identifier = pyramusIdentifierMapper.getCurriculumIdentifier(curriculum.getId());
+        result.add(new PyramusCurriculum(identifier, curriculum.getName())); 
+      }
+    }
+    
+    return result;
   }
 
 }

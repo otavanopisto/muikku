@@ -1,19 +1,19 @@
 .muikku-connect-field {
-  position:relative;
+  position: relative;
   @include flexbox;
-  flex-flow:row nowrap;
-  justify-content:space-between;
-  align-items:flex-start;
-  align-content:space-between;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-content: space-between;
 }
 
 .muikku-connect-field-counterparts,
 .muikku-connect-field-terms {
-	display:block;
+	display: block;
 	@include flex-grow(1);
 	@include flex-shrink(0);
 	@include flex-basis(48%);
-	position:relative;
+	position: relative;
 }
 
 .muikku-connect-field-gap {
@@ -23,124 +23,123 @@
 }
 
 .muikku-connect-field-number {
-  background:#fff;
-  border:1px solid #eee;
-  border-radius:20px;
-  color:#4c4c4c;
-  font-size:12px;
-  left:-10px;
-  line-height:12px;
-  margin:15px 0 0;
-  min-width:12px;
-  padding:5px;
-  position:absolute;
-  text-align:center;
-  z-index:11;
-  font-weight:400;
+  background: $CFfieldNumberBGColor;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  color: $taskBoxTextColor;
+  font-size: 12px;
+  left: -10px;
+  line-height: 12px;
+  margin: 15px 0 0;
+  min-width: 12px;
+  padding: 5px;
+  position: absolute;
+  text-align: center;
+  z-index: 11;
+  font-weight: 400;
 }
 
 .muikku-connect-field-correct-number {
-  background:#62c3eb;
-  border:1px solid #fff;
-  border-radius:20px;
-  color:#fff;
-  font-size:12px;
-  right:-10px;
-  line-height:12px;
-  margin:15px 0 0;
-  min-width:12px;
-  padding:5px;
-  position:absolute;
-  text-align:center;
-  z-index:11;
-  font-weight:400;
+  background: $CFCorrectFieldNumberBGColor;
+  border: 1px solid #fff;
+  border-radius: 20px;
+  color: $CFCorrectFieldNumberTextColor;
+  font-size: 12px;
+  right: -10px;
+  line-height: 12px;
+  margin: 15px 0 0;
+  min-width: 12px;
+  padding: 5px;
+  position: absolute;
+  text-align: center;
+  z-index: 11;
+  font-weight: 400;
 }
 
 .muikku-connect-field-counterpart,
 .muikku-connect-field-term {
-  position:relative;
+  position: relative;
   @include flexbox;
-  align-items:center;
-  padding:8px 15px;
-	background:#e1f7fc;
-	margin:0px 4px 8px 4px;
-	border-radius:3px;
-	transition:background 0.3s ease-in-out;
-	box-sizing:border-box;
-	height:56px;
-  line-height:20px;
-  font-size:16px;
-  transition:height 0.2s ease-in-out;
+  align-items: center;
+  padding: 8px 15px;
+	background: $taskBoxColor;
+	margin: 0px 4px 8px 4px;
+	border-radius: 3px;
+	transition: background 0.3s ease-in-out;
+	box-sizing: border-box;
+	height: 56px;
+  line-height: 20px;
+  font-size: 16px;
+  transition: height 0.2s ease-in-out;
+  color: $taskBoxTextColor;
   
   &:hover {
-    background:#b1e8fe;
-    color:#000;
+    background: $taskBoxHoverColor;
   }
   
   &.term-full-text,
   &.counterpart-full-text {
-    height:auto;
-    min-height:56px;
-    position:absolute;
-    left:0;
-    right:0;
-    z-index:9;
-    box-shadow:0 3px 3px rgba(0,0,0,0.2);
+    height: auto;
+    min-height: 56px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    box-shadow: 0 3px 3px rgba(0,0,0,0.2);
   }
   
 }
 
 .term-placeholder,
 .counterpart-placeholder {
-  height:56px;
-  padding:0;
-  margin:0px 4px 8px 4px;
+  height: 56px;
+  padding: 0;
+  margin: 0px 4px 8px 4px;
 }
 
 .muikku-connect-field-term {
-  justify-content:flex-end;  
-  text-align:right;
+  justify-content: flex-end;  
+  text-align: right;
 }
 
 .muikku-connect-field-counterpart {
-  justify-content:flex-start;
-  text-align:left;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 .ui-sortable-placeholder {
-  padding:8px 21px;
-  background:#e1f7fc;
-  margin:4px;
-  border-radius:3px;
-  background:#f8f8f8;
-  height:1.7em;
+  padding: 8px 21px;
+  margin: 4px;
+  border-radius: 3px;
+  background: $CFPlaceHolderBGColor;
+  height: 1.7em;
 }
 
 .muikku-connect-field-term {
-	cursor:pointer;
+	cursor: pointer;
 	
 	&.muikku-connect-field-edited {
-	  background:#b1e8fe;
+	  background: $taskBoxEditedColor;
 	}
 	
 	&.muikku-connect-field-term-selected {
-    background:#3dc7ff;
-    color:#fff;
-    font-weight:400;
+    background: $selectedtaskBoxColor;
+    color: #fff;
+    font-weight: 400;
 	}
 	
 }
 
 .muikku-connect-field-counterpart {
 	text-align: left;
-  cursor:pointer;
+  cursor: pointer;
 	
 	 &.muikku-connect-field-edited {
-     background:#b1e8fe;
+     background: $taskBoxEditedColor;
   }
   
   &.ui-sortable-helper {
-    cursor:grab;
+    cursor: grab;
   }
   
 }
