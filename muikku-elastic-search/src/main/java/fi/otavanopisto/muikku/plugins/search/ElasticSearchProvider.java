@@ -40,9 +40,9 @@ import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.sort.SortOrder;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ChronoUnit;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
@@ -75,7 +75,7 @@ public class ElasticSearchProvider implements SearchProvider {
     elasticClient = node.client();*/
     
     Settings settings = Settings.settingsBuilder()
-        .put("cluster.name", "belvain-elasticsearch").build();
+        .put("cluster.name", "elasticsearch_ilmoeuro").build();
     
     try {
       elasticClient = TransportClient.builder().settings(settings).build()
@@ -280,9 +280,9 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   private Set<Long> getActiveWorkspaces() {
-    ZonedDateTime now = ZonedDateTime.now();
-    ZonedDateTime low = now.with(ChronoField.MILLI_OF_DAY, 0);
-    ZonedDateTime high = low.plusDays(1).minus(1, ChronoUnit.MILLIS); 
+    OffsetDateTime now = OffsetDateTime.now();
+    OffsetDateTime low = now.with(ChronoField.MILLI_OF_DAY, 0);
+    OffsetDateTime high = low.plusDays(1).minus(1, ChronoUnit.MILLIS); 
     
     BoolQueryBuilder query = boolQuery();
     

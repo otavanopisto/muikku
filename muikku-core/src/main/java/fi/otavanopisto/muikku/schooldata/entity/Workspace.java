@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.Date;
 
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
@@ -61,13 +61,13 @@ public interface Workspace extends SchoolDataEntity {
 
   public void setDescription(String description);
 
-  public ZonedDateTime getBeginDate();
+  public OffsetDateTime getBeginDate();
   
-  public void setBeginDate(ZonedDateTime beginDate);
+  public void setBeginDate(OffsetDateTime beginDate);
 
-  public ZonedDateTime getEndDate();
+  public OffsetDateTime getEndDate();
   
-  public void setEndDate(ZonedDateTime endDate);
+  public void setEndDate(OffsetDateTime endDate);
 
   @IndexField (
     toId = true

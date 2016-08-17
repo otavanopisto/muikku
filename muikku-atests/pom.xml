@@ -62,13 +62,9 @@
       </exclusions> -->
     </dependency>
 
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!-- RestEasy -->
+    
+    <!--
     
     <dependency>
       <groupId>org.jboss.spec.javax.ws.rs</groupId>
@@ -87,6 +83,8 @@
       <artifactId>resteasy-jackson2-provider</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    -->
     
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -278,6 +276,11 @@
       <groupId>org.skyscreamer</groupId>
       <artifactId>jsonassert</artifactId>
       <version>1.2.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
   </dependencies>
 

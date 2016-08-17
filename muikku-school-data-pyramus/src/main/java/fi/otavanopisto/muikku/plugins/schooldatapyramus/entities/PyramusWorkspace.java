@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
 import java.util.Date;
 
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -17,7 +17,7 @@ public class PyramusWorkspace extends AbstractWorkspace {
   public PyramusWorkspace(String identifier, String name, String nameExtension, String viewLink,
       SchoolDataIdentifier workspaceTypeId, String courseIdentifierIdentifier, String description,
       String subjectIdentifier, SchoolDataIdentifier educationTypeIdentifier, Date modified, Double length,
-      String lengthUnitIdentifier, ZonedDateTime beginDate, ZonedDateTime endDate, boolean archived,
+      String lengthUnitIdentifier, OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived,
       boolean evaluationFeeApplicable) {
     super(identifier, name, nameExtension, viewLink, workspaceTypeId, courseIdentifierIdentifier, description,
         subjectIdentifier, educationTypeIdentifier, modified, length, lengthUnitIdentifier, beginDate, endDate, archived,

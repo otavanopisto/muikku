@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
@@ -89,7 +89,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-archive");
         waitAndClick(".archive-button");
         waitForPresentAndVisible(".workspace-students-listing-wrapper");
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         String payload = objectMapper.writeValueAsString(new WebhookStudentUpdatePayload(2l));
         TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
         reloadCurrentPage();
@@ -134,7 +134,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-unarchive");
         waitAndClick(".unarchive-button");
         waitForPresentAndVisible(".workspace-students-listing-wrapper");
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         String payload = objectMapper.writeValueAsString(new WebhookStudentUpdatePayload(2l));
         TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
         reloadCurrentPage();

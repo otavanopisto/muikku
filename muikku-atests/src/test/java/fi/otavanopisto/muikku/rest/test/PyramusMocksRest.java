@@ -15,7 +15,7 @@ import org.joda.time.DateTime;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import fi.otavanopisto.muikku.AbstractPyramusMocks;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
@@ -100,7 +100,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   private static void mockStudyProgrammes(List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     StudyProgrammeCategory spc = new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false);
     StudyProgramme sp = new StudyProgramme(1l, "test", "Test Study Programme", 1l, false);
@@ -134,7 +134,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
 
   public static void mockRoles(List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     CourseStaffMemberRole[] roles = { 
         new CourseStaffMemberRole(7l, "Opettaja"), 
@@ -177,7 +177,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     emails.add("testuser@example.com");
     WhoAmI whoAmI = new WhoAmI((long) 1, "Test", "User", emails);
 
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
 
@@ -207,7 +207,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     emails.add("teacher@example.com");
     WhoAmI whoAmI = new WhoAmI((long) 2, "Teacher", "User", emails);
 
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
 
@@ -237,7 +237,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     emails.add("admin@example.com");
     WhoAmI whoAmI = new WhoAmI((long) 4, "Admin", "User", emails);
 
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
 
@@ -249,7 +249,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }    
 
   private static Person mockPerson(Long personId, DateTime birthday, String socialSecurityNumber, Sex sex, Long defaultUserId) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Person person = new Person(personId, birthday, socialSecurityNumber, sex, false, "empty", defaultUserId);
     String personJson = objectMapper.writeValueAsString(person);
@@ -264,7 +264,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   private static StaffMember mockStaffMember(Long personId, Long staffMemberId, String firstName, String lastName, String email, UserRole role, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     StaffMember staffMember = new StaffMember(staffMemberId, personId, null, firstName, lastName, null, 
         role, tags, variables);
@@ -302,7 +302,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   public static Student mockStudent(Long personId, Long studentId, String firstName, String lastName, String email, List<String> tags, Map<String, String> variables, List<String> payloads, DateTime studyStartDate, DateTime studyEndDate) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     Student student = new Student(
         studentId,
@@ -365,7 +365,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   public static void mockUsers(List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     DateTime birthday = new DateTime(1990, 2, 2, 0, 0, 0, 0);
 
@@ -492,7 +492,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
        null,
        null);
   
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String courseJson = objectMapper.writeValueAsString(course);
     
     stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", id)))
@@ -537,7 +537,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
 
   public static void mockCommons() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     EducationType educationType = new EducationType((long) 1, "testEduType", "ET", false);
     String educationTypeJson = objectMapper.writeValueAsString(educationType);
@@ -595,7 +595,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   public static void mockUserGroups(List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     DateTime begin = new DateTime(2000, 1, 1, 0, 0, 0, 0);
     Long creatorId = 1l;
@@ -656,7 +656,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   public static void mockWorkspaceUsers(List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     Long courseId = 1l;
     Long teacherRoleId = 7l;
@@ -698,7 +698,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   private static void addPayload(List<String> payloads, Object obj) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     addPayload(payloads, objectMapper.writeValueAsString(obj));
   }

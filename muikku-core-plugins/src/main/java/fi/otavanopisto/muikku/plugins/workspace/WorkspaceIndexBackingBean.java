@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
-import org.threeten.bp.DateTimeUtils;
+
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -127,8 +127,8 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
         courseLengthSymbol = lengthUnit.getSymbol();
       }
       
-      beginDate = workspace.getBeginDate() != null ? DateTimeUtils.toDate(workspace.getBeginDate().toInstant()) : null;
-      endDate = workspace.getEndDate() != null ? DateTimeUtils.toDate(workspace.getEndDate().toInstant()) : null;
+      beginDate = workspace.getBeginDate() != null ? Date.from(workspace.getBeginDate().toInstant()) : null;
+      endDate = workspace.getEndDate() != null ? Date.from(workspace.getEndDate().toInstant()) : null;
       
       if (workspaceType != null) {
         this.workspaceType = workspaceType.getName();

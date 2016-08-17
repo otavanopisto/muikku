@@ -24,13 +24,11 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.ext.ContextResolver;
 
 import org.jboss.resteasy.client.jaxrs.cache.BrowserCacheFeature;
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-
-import fi.otavanopisto.muikku.utils.MuikkuDateDeserializer;
-import fi.otavanopisto.muikku.utils.MuikkuDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 @ApplicationScoped
 @Singleton
@@ -114,10 +112,7 @@ public class ClientPool {
     @Override
     public ObjectMapper getContext(Class<?> type) {
       ObjectMapper objectMapper = new ObjectMapper();
-      SimpleModule module = new SimpleModule();
-      module.addSerializer(new MuikkuDateSerializer(ZonedDateTime.class));
-      module.addDeserializer(ZonedDateTime.class, new MuikkuDateDeserializer(ZonedDateTime.class));
-      objectMapper.registerModule(module);
+      objectMapper.registerModule(new JSR310Module());
       
       return objectMapper;
     }
