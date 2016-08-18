@@ -155,21 +155,7 @@ body {
   
   .forgotpassword-link {
     color: $forgotPasswordLink;
-    font-weight: 400;
     text-shadow: 0 0 1px #000;
-  }
-  
-}
-  
-.forgotpassword-link-container {
-  clear:both;
-  text-align:right;
-  padding:5px 0 0;
-  
-  .forgotpassword-link {
-    color:#fff;
-    font-weight:400;
-    text-shadow:0 0 1px #000;
   }
   
 }
