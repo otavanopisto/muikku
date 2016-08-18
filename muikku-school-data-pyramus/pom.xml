@@ -137,13 +137,13 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.51-SNAPSHOT</version>
+      <version>0.7.53-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.51-SNAPSHOT</version>
+      <version>0.7.53-SNAPSHOT</version>
     </dependency>
 
     <!-- Muikku -->
