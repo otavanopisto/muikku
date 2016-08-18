@@ -127,12 +127,13 @@
           exampleDetails.append( 
             $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
           );
+          var capitalize = this.options.meta.capitalize;
           var orientation = this.options.meta.orientation;
           var correctString = '';
           var delimiter = orientation == 'horizontal' ? ' ' : ', ';
           for (var i = 0; i < correctItems.length; i++) {
             var value = correctItems[i].name;
-            if (i == 0 && orientation == 'horizontal') {
+            if (i == 0 && capitalize == true) {
               value = value.charAt(0).toUpperCase() + value.slice(1);
             }
             correctString += i == 0 ? value : delimiter + value; 
