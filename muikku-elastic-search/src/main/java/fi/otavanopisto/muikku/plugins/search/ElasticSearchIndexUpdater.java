@@ -46,12 +46,16 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
       .node();
     
     elasticClient = node.client();*/
+
+	String elasticClientClusterName = "elasticsearch_avukkonen";
+    logger.severe("Elastic client node name: "  +elasticClientClusterName);
+	  
     Settings settings = Settings.settingsBuilder()
-        .put("cluster.name", "belvain-elasticsearch").build();
+        .put("cluster.name", "elasticsearch_avukkonen").build();
     
     try {
       elasticClient = TransportClient.builder().settings(settings).build()
-          .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9301));
+          .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
     } catch (UnknownHostException e) {
       logger.log(Level.SEVERE, "Failed to connect to elasticsearch cluster", e);
       return;
