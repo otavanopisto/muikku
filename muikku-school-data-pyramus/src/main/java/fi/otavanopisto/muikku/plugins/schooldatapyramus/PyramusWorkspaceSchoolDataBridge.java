@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;

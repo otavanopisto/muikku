@@ -19,6 +19,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;

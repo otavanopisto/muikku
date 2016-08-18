@@ -4,7 +4,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -100,7 +101,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
   @Test
   public void workspaceAnnouncementVisibleInWorkspaceFrontpageTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Long courseId = 1l;
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
@@ -132,7 +133,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
   @Test
   public void workspaceAnnouncementReadingForStudentTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Long courseId = 1l;
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
@@ -155,7 +156,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       click(".workspace-announcement-title");
       waitForPresent("#announcements .announcement-article h2");
       assertTextIgnoreCase("#announcements .announcement-article h2", "Test title");
-      assertTextIgnoreCase("#announcements .announcement-article .article-datetime", "12.11.2015");
+      assertTextIgnoreCase("#announcements .announcement-article .article-OffsetDateTime", "12.11.2015");
       waitForPresent("#announcements .announcement-article .article-context");
       assertTextIgnoreCase("#announcements .announcement-article .article-context", "announcer test announcement");
     }finally{
@@ -169,7 +170,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
   @Test
   public void workspaceAnnouncementFrontpageListingForStudentTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Long courseId = 1l;
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();

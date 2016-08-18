@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.rest.types;
 import java.io.Serializable;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 public class DateTimeParameter implements Serializable {
   

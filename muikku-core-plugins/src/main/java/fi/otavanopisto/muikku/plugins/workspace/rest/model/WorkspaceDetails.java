@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.threetenbp.ser.OffsetDateTimeSerializer;

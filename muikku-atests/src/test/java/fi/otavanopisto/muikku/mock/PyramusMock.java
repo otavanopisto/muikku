@@ -15,7 +15,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -130,7 +133,7 @@ public class PyramusMock {
       
 //    TODO: CourseAssessments
       public Builder addStaffMembers(List<MockStaffMember> staffMembers) {
-        DateTime birthday = new DateTime(1990, 2, 2, 0, 0, 0, 0);
+        OffsetDateTime birthday = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         for(MockStaffMember mockStaffMember : staffMembers) {
           Person person = new Person(mockStaffMember.getPersonId(), birthday, mockStaffMember.getSocialSecurityNumber(), mockStaffMember.getSex(), false, "empty", mockStaffMember.getPersonId());
           pmock.persons.add(person);
@@ -140,7 +143,7 @@ public class PyramusMock {
       }
       
       public Builder addStaffMember(MockStaffMember mockStaffMember) {
-        DateTime birthday = new DateTime(1990, 2, 2, 0, 0, 0, 0);
+        OffsetDateTime birthday = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         Person person = new Person(mockStaffMember.getPersonId(), birthday, mockStaffMember.getSocialSecurityNumber(), mockStaffMember.getSex(), false, "empty", mockStaffMember.getPersonId());
         pmock.persons.add(person);
         pmock.staffMembers.add(mockStaffMember);
@@ -160,7 +163,7 @@ public class PyramusMock {
       }
 //      TODO: UserGroup mockings
       public Builder addStudentGroup(Long id, String name, String description, Long creatorId, boolean archived) {
-        DateTime date = new DateTime(2015, 2, 2, 0, 0, 0, 0);
+        OffsetDateTime date = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         List<String> tags = new ArrayList<>();
         pmock.studentGroups.add(new StudentGroup(id, name, description, date, creatorId, date, creatorId, date, tags, archived));
         return this;
