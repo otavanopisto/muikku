@@ -64,10 +64,8 @@
 
     <!-- RestEasy -->
     
-    <!--
-    
     <dependency>
-      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -84,8 +82,6 @@
       <scope>provided</scope>
     </dependency>
     
-    -->
-    
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
@@ -93,16 +89,15 @@
     </dependency>
 
     <!-- Jackson -->
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-joda</artifactId>
-    </dependency> 
+    
+    <!--
 
     <dependency>
       <groupId>com.fasterxml.jackson.jaxrs</groupId>
       <artifactId>jackson-jaxrs-json-provider</artifactId>
     </dependency>
+    
+    -->
 
     <dependency>
       <groupId>junit</groupId>
@@ -113,14 +108,14 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.51-SNAPSHOT</version>
+      <version>0.7.53-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.51-SNAPSHOT</version>
+      <version>0.7.53-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 

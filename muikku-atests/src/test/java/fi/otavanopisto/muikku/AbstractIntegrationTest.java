@@ -21,7 +21,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -234,8 +235,8 @@ public abstract class AbstractIntegrationTest {
     return new File(System.getProperty("it.test.file"));
   }
   
-  protected DateTime getDate(int year, int monthOfYear, int dayOfMonth) {
-    return new DateTime(year, monthOfYear, dayOfMonth, 0, 0, 0, 0);
+  protected OffsetDateTime getDate(int year, int monthOfYear, int dayOfMonth) {
+    return OffsetDateTime.of(year, monthOfYear, dayOfMonth, 0, 0, 0, 0, ZoneOffset.UTC);
   }
   
   protected RequestSpecification asAdmin() {

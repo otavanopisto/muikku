@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.calendar.CalendarEvent;
 import fi.otavanopisto.muikku.calendar.CalendarEventAttendee;
