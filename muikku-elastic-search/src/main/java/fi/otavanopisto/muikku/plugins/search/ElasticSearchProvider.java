@@ -322,11 +322,24 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
-    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, freeText, null, null, includeUnpublished, start, maxResults, null);
+    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, null, freeText, null, null, includeUnpublished, start, maxResults, null);
   }
   
   @Override
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypes, String freeText, List<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts) {
+  public SearchResult searchWorkspaces(
+      String schoolDataSource, 
+      List<String> subjects, 
+      List<String> identifiers, 
+      List<SchoolDataIdentifier> educationTypes, 
+      List<SchoolDataIdentifier> curriculumIdentifiers, 
+      String freeText, 
+      List<WorkspaceAccess> accesses, 
+      SchoolDataIdentifier accessUser, 
+      boolean includeUnpublished, 
+      int start, 
+      int maxResults, 
+      List<Sort> sorts) {
+    
     if (identifiers != null && identifiers.isEmpty()) {
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>());
     }
@@ -380,6 +393,15 @@ public class ElasticSearchProvider implements SearchProvider {
         query.must(termsQuery("educationTypeIdentifier.untouched", educationTypeIds));
       }
       
+      if (curriculumIdentifiers != null && !curriculumIdentifiers.isEmpty()) {
+        List<String> curriculumIds = new ArrayList<>(curriculumIdentifiers.size());
+        for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
+          curriculumIds.add(curriculumIdentifier.toId());
+        }
+        
+        query.must(termsQuery("curriculumIdentifier.untouched", curriculumIds));
+      }
+  
       if (identifiers != null) {
         query.must(termsQuery("identifier", identifiers));
       }

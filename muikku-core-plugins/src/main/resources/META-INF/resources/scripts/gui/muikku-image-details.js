@@ -17,7 +17,17 @@
         this._appendDetails(type, this.element.attr('data-' + type), this.element.attr('data-' + type + '-url'));
       }, this));
 
-      this.element.closest('figure').css('max-width', this.element.attr('width'));
+      var imageWidth = this.element.attr('width');
+      if (imageWidth && imageWidth > 0) {
+    	  this.element.closest('figure').css('max-width', imageWidth + 'px');
+    	  this.element.css('width', '');
+    	  this.element.css('height', '');
+      } else if (this.element.css('width')) {
+      	  this.element.closest('figure').css('max-width', this.element.css('width'));
+      } else if (this.element.width() > 0) {
+    	  this.element.closest('figure').css('max-width', this.element.width() + 'px');
+      }
+      
     },
     
     _appendDetails: function (type, text, url) {

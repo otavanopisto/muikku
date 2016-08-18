@@ -8,7 +8,7 @@ public abstract class AbstractUser implements User {
   public AbstractUser(String identifier, String firstName, String lastName, String displayName,
       String studyProgrammeName, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
-      boolean startedStudies, boolean finishedStudies, boolean active, boolean evaluationFees) {
+      boolean startedStudies, boolean finishedStudies, boolean active, boolean evaluationFees, String curriculumIdentifier) {
     super();
     this.identifier = identifier;
     this.firstName = firstName;
@@ -27,6 +27,7 @@ public abstract class AbstractUser implements User {
     this.startedStudies = startedStudies;
     this.finishedStudies = finishedStudies;
     this.evaluationFees = evaluationFees;
+    this.curriculumIdentifier = curriculumIdentifier;
   }
 
   @Override
@@ -173,6 +174,15 @@ public abstract class AbstractUser implements User {
     return evaluationFees;
   }
 
+  @Override
+  public String getCurriculumIdentifier() {
+    return curriculumIdentifier;
+  }
+
+  public void setCurriculumIdentifier(String curriculumIdentifier) {
+    this.curriculumIdentifier = curriculumIdentifier;
+  }
+
   private String identifier;
   private String firstName;
   private String lastName;
@@ -190,4 +200,5 @@ public abstract class AbstractUser implements User {
   private boolean finishedStudies;
   private boolean active;
   private boolean evaluationFees;
+  private String curriculumIdentifier;
 }

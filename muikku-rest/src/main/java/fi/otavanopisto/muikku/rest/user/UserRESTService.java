@@ -982,7 +982,7 @@ public class UserRESTService extends AbstractRESTService {
       // TODO: User image
       boolean hasImage = false;
       return Response
-          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees()))
+          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier()))
           .cacheControl(cacheControl)
           .tag(tag)
           .build();

@@ -18,6 +18,7 @@ public class PyramusUser extends AbstractUser implements User {
                      String language,
                      String municipality,
                      String school,
+                     String curriculumIdentifier,
                      OffsetDateTime studyStartDate,
                      OffsetDateTime studyEndDate,
                      OffsetDateTime studyTimeEnd,
@@ -42,7 +43,8 @@ public class PyramusUser extends AbstractUser implements User {
         startedStudies,
         finishedStudies,
         active,
-        studyProgrammeName != null && studyProgrammeName.startsWith("Internetix/"));
+        studyProgrammeName != null && studyProgrammeName.startsWith("Internetix/"),
+        curriculumIdentifier);
   }
 
   @Override

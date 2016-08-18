@@ -50,6 +50,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -130,12 +131,31 @@ public class CoursePickerRESTService extends PluginRESTService {
   private String baseUrl;
   
   @GET
+  @Path("/curriculums")
+  @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
+  public Response listCurriculums() {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      List<Curriculum> curriculums = courseMetaController.listCurriculums();
+      List<CoursePickerCurriculum> restCurriculums = new ArrayList<CoursePickerCurriculum>();
+      
+      for (Curriculum curriculum : curriculums)
+        restCurriculums.add(new CoursePickerCurriculum(curriculum.getIdentifier().toId(), curriculum.getName()));
+      
+      return Response.ok(restCurriculums).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+  
+  @GET
   @Path("/workspaces/")
   @RESTPermitUnimplemented
   public Response listWorkspaces(
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("educationTypes") List<String> educationTypeIds,
+        @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
@@ -207,7 +227,21 @@ public class CoursePickerRESTService extends PluginRESTService {
         }
       }
       
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
+      List<SchoolDataIdentifier> curriculumIdentifiers = null;
+      if (curriculumIds != null) {
+        curriculumIdentifiers = new ArrayList<>(curriculumIds.size());
+        for (String curriculumId : curriculumIds) {
+          SchoolDataIdentifier curriculumIdentifier = SchoolDataIdentifier.fromId(curriculumId);
+          if (curriculumIdentifier != null) {
+            curriculumIdentifiers.add(curriculumIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed curriculum identifier", curriculumId)).build();
+          }
+        }
+      }
+      
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes,
+          curriculumIdentifiers, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
       
       schoolDataBridgeSessionController.startSystemSession();
       try {
