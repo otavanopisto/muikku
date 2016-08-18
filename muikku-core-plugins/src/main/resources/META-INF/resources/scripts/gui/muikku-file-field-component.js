@@ -185,22 +185,25 @@
     },
     
     _removeFiles: function (files) {
-      if (this.options.supportRestore) {
-        files.addClass('muikku-file-input-field-file-removed');
-        files.find('.muikku-file-input-field-file-remove').hide();
-        files.find('.muikku-file-input-field-file-restore').show();
-      } else {
-        files.addClass('muikku-file-input-field-file-removed muikku-file-input-field-file-removed-permanently');
+      if (files && files.length) {
+        if (this.options.supportRestore) {
+          files.addClass('muikku-file-input-field-file-removed');
+          files.find('.muikku-file-input-field-file-remove').hide();
+          files.find('.muikku-file-input-field-file-restore').show();
+        } else {
+          files.addClass('muikku-file-input-field-file-removed muikku-file-input-field-file-removed-permanently');
+        }
+        this.element.trigger("change");
       }
-      
-      this.element.trigger("change");
     },
 
     _onFileUploadAdd : function(e, data) {
       this.element.closest('form').find('input[type="submit"]').attr('disabled', 'disabled');
 
       if (!this._multiple) {
-        this._removeFiles(this._uploaderContainer.find('.muikku-file-input-field-file'));
+        this._uploaderContainer.find('.muikku-file-input-field-file').each(function(index) {
+          $(this).addClass('muikku-file-input-field-file-removed muikku-file-input-field-file-removed-permanently');
+        });
       }
       
       var i, l;
