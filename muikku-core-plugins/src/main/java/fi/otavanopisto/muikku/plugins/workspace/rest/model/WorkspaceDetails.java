@@ -1,16 +1,16 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.threetenbp.ser.ZonedDateTimeSerializer;
+import com.fasterxml.jackson.datatype.threetenbp.ser.OffsetDateTimeSerializer;
 
 public class WorkspaceDetails {
 
   public WorkspaceDetails() {
   }
 
-  public WorkspaceDetails(String typeId, ZonedDateTime beginDate, ZonedDateTime endDate, String externalViewUrl) {
+  public WorkspaceDetails(String typeId, OffsetDateTime beginDate, OffsetDateTime endDate, String externalViewUrl) {
     super();
     this.typeId = typeId;
     this.beginDate = beginDate;
@@ -34,11 +34,11 @@ public class WorkspaceDetails {
     this.externalViewUrl = externalViewUrl;
   }
   
-  public ZonedDateTime getBeginDate() {
+  public OffsetDateTime getBeginDate() {
     return beginDate;
   }
   
-  public ZonedDateTime getEndDate() {
+  public OffsetDateTime getEndDate() {
     return endDate;
   }
 
@@ -46,9 +46,9 @@ public class WorkspaceDetails {
   
   private String externalViewUrl;
   
-  @JsonSerialize(using=ZonedDateTimeSerializer.class)
-  private ZonedDateTime beginDate;
+  @JsonSerialize(using=OffsetDateTimeSerializer.class)
+  private OffsetDateTime beginDate;
   
-  @JsonSerialize(using=ZonedDateTimeSerializer.class)
-  private ZonedDateTime endDate;
+  @JsonSerialize(using=OffsetDateTimeSerializer.class)
+  private OffsetDateTime endDate;
 }

@@ -212,7 +212,7 @@ public class GoogleCalendarClient {
     return result;
   }
 
-  public List<CalendarEvent> listEvents(org.threeten.bp.ZonedDateTime minTime, org.threeten.bp.ZonedDateTime maxTime, String... calendarId) throws CalendarServiceException {
+  public List<CalendarEvent> listEvents(java.time.OffsetDateTime minTime, java.time.OffsetDateTime maxTime, String... calendarId) throws CalendarServiceException {
     ArrayList<CalendarEvent> result = new ArrayList<>();
 
     for (String calId : calendarId) {

@@ -1,13 +1,13 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public abstract class AbstractWorkspaceUser implements WorkspaceUser {
 
   public AbstractWorkspaceUser(SchoolDataIdentifier identifier, SchoolDataIdentifier userIdentifier, SchoolDataIdentifier workspaceIdentifier,
-      SchoolDataIdentifier roleIdentifier, ZonedDateTime enrolmentTime) {
+      SchoolDataIdentifier roleIdentifier, OffsetDateTime enrolmentTime) {
     super();
     this.identifier = identifier;
     this.userIdentifier = userIdentifier;
@@ -37,7 +37,7 @@ public abstract class AbstractWorkspaceUser implements WorkspaceUser {
   }
   
   @Override
-  public ZonedDateTime getEnrolmentTime() {
+  public OffsetDateTime getEnrolmentTime() {
     return enrolmentTime;
   }
   
@@ -45,5 +45,5 @@ public abstract class AbstractWorkspaceUser implements WorkspaceUser {
   private SchoolDataIdentifier userIdentifier;
   private SchoolDataIdentifier workspaceIdentifier;
   private SchoolDataIdentifier roleIdentifier;
-  private ZonedDateTime enrolmentTime;
+  private OffsetDateTime enrolmentTime;
 }

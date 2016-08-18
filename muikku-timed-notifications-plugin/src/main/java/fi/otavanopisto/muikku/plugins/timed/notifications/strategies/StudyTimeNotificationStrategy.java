@@ -19,8 +19,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.threeten.bp.DateTimeUtils;
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
@@ -80,8 +79,8 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       return;
     }
     
-    Date studyTimeEnds = DateTimeUtils.toDate(ZonedDateTime.now().plusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT).toInstant());
-    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(DateTimeUtils.toDate(ZonedDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT).toInstant()));
+    Date studyTimeEnds = Date.from(OffsetDateTime.now().plusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT).toInstant());
+    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT).toInstant()));
     SearchResult searchResult = studyTimeLeftNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
     
     if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {

@@ -35,8 +35,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
-import org.threeten.bp.DateTimeUtils;
-import org.threeten.bp.ZonedDateTime;
+
+import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -284,6 +284,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("educationTypes") List<String> educationTypeIds,
+        @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("orderBy") List<String> orderBy,
@@ -378,7 +379,21 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
+      List<SchoolDataIdentifier> curriculums = null;
+      if (curriculumIds != null) {
+        curriculums = new ArrayList<>(curriculumIds.size());
+        for (String curriculumId : curriculumIds) {
+          SchoolDataIdentifier curriculumIdentifier = SchoolDataIdentifier.fromId(curriculumId);
+          if (curriculumIdentifier != null) {
+            curriculums.add(curriculumIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed curriculum identifier", curriculumId)).build();
+          }
+        }
+      }
+      
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
+          curriculums, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
@@ -617,7 +632,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(new WorkspaceDetails(typeId, workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
   }
   
-  private boolean isEqualDateTime(ZonedDateTime dateTime1, ZonedDateTime dateTime2) {
+  private boolean isEqualDateTime(OffsetDateTime dateTime1, OffsetDateTime dateTime2) {
     if (dateTime1 == dateTime2) {
       return true;
     }
@@ -915,7 +930,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     String firstName = user.getFirstName();
     String lastName = user.getLastName();
     String studyProgrammeName = user.getStudyProgrammeName();
-    ZonedDateTime enrolmentTime = workspaceUser.getEnrolmentTime();
+    OffsetDateTime enrolmentTime = workspaceUser.getEnrolmentTime();
     
     return new WorkspaceStudent(workspaceUser.getIdentifier().toId(), 
       userEntity != null ? userEntity.getId() : null, 
@@ -923,7 +938,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       firstName, 
       lastName, 
       studyProgrammeName,
-      enrolmentTime != null ? DateTimeUtils.toDate(enrolmentTime.toInstant()) : null,
+      enrolmentTime != null ? Date.from(enrolmentTime.toInstant()) : null,
       userArchived);
     
   }

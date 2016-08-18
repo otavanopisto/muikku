@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.Date;
 
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
@@ -27,6 +27,14 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
       type = "multi_field",
       multiFields = {
         @IndexableFieldMultiField(name = "educationTypeIdentifier", type="string", index = "analyzed"),
+        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+      }
+    ),
+    @IndexableFieldOption (
+      name = "curriculumIdentifier",
+      type = "multi_field",
+      multiFields = {
+        @IndexableFieldMultiField(name = "curriculumIdentifier", type="string", index = "analyzed"),
         @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
       }
     ),
@@ -61,13 +69,13 @@ public interface Workspace extends SchoolDataEntity {
 
   public void setDescription(String description);
 
-  public ZonedDateTime getBeginDate();
+  public OffsetDateTime getBeginDate();
   
-  public void setBeginDate(ZonedDateTime beginDate);
+  public void setBeginDate(OffsetDateTime beginDate);
 
-  public ZonedDateTime getEndDate();
+  public OffsetDateTime getEndDate();
   
-  public void setEndDate(ZonedDateTime endDate);
+  public void setEndDate(OffsetDateTime endDate);
 
   @IndexField (
     toId = true
@@ -101,4 +109,8 @@ public interface Workspace extends SchoolDataEntity {
   @IndexId
   public String getSearchId();
 
+  @IndexField (
+    toId = true
+  )
+  public SchoolDataIdentifier getCurriculumIdentifier();
 }

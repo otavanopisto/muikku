@@ -1,142 +1,143 @@
-@import "_vars.scss";
-@import "_styles.scss";
-@import "_custom-ckeditor-styles.scss";
-@import "_connect-field.scss";
-@import "_organizer-field.scss";
-@import "_sorter-field.scss";
-@import "_audio-field.scss";
-@import "_jquery.datepicker.scss";
-@import "_evaluation_material_styles.scss"; 
-@import "_correct_answers.scss"; 
-@import "_draft.scss";
-@import "_dialog.scss";
+@import "_vars";
+@import "_styles";
+@import "_custom-ckeditor-styles";
+@import "_connect-field";
+@import "_organizer-field";
+@import "_sorter-field";
+@import "_audio-field";
+@import "_file-field";
+@import "_jquery.datepicker";
+@import "_evaluation_material_styles"; 
+@import "_correct_answers"; 
+@import "_draft";
+@import "_dialog";
 
 body.evaluation {
-  background:none;
-  background-color:#f0f3f5;
-  background-image:url("/gfx/light-diagonal-strips.png");
-  padding:0.01em; /* Prevent margin collapsing  */
-  min-height:100%;
-  line-height:1.7em;
-  font-size:16px;
+  background: none;
+  background-color: #f0f3f5;
+  background-image: url("/gfx/light-diagonal-strips.png");
+  padding: 0.01em; /* Prevent margin collapsing  */
+  min-height: 100%;
+  line-height: 1.7em;
+  font-size: 16px;
 
   > .loading {
     background: #fff none repeat scroll 0 0;
-    bottom:0;
-    left:0;
-    opacity:0.8;
-    position:fixed;
-    right:0;
-    top:0;
-    z-index:9999;
+    bottom: 0;
+    left: 0;
+    opacity: 0.8;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 9999;
 
     &:before {
       @include generic-loader(50px); 
-      position:absolute;
-      top:50%;
-      left:50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
     }
 
   }
 
   .evaluation-navigation-wrapper { 
-    background:#7ed9ff;
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    height:50px;
-    box-sizing:border-box;
-    padding:5px;
-    box-shadow:0 4px 5px rgba(169,169,169,0.3);
+    background: #7ed9ff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    box-sizing: border-box;
+    padding: 5px;
+    box-shadow: 0 4px 5px rgba(169,169,169,0.3);
     z-index: 9999;
 
     .icon-navicon {
-      color:#fff;
-      font-size:30px;
-      display:inline-block;
-      padding:4px;
-      cursor:not-allowed;
+      color: #fff;
+      font-size: 30px;
+      display: inline-block;
+      padding: 4px;
+      cursor: not-allowed;
 
       span[class*="tt"] {
-         display:none;
+         display: none;
       }
 
     }
 
     .evaluation-workspacelisting-wrapper {
-      position:absolute;
-      left:50px;
-      top:0;
+      position: absolute;
+      left: 50px;
+      top: 0;
       @include flexbox();
-      flex-flow:row nowrap;
-      align-items:center;
-      height:45px;
-      padding:0 0 5px 10px;
-      cursor:pointer;
+      flex-flow: row nowrap;
+      align-items: center;
+      height: 45px;
+      padding: 0 0 5px 10px;
+      cursor: pointer;
 
       .evaluation-current-workspace {
-        color:#fff;
-        text-transform:uppercase;
-        font-size:30px;
-        font-weight:300;
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 30px;
+        font-weight: 300;
         @include flex(1 1 auto);
-        padding:1px 0 0 0;
+        padding: 1px 0 0;
       }
 
       .evaluation-select-workspace {
         @include flex(1 1 auto);
-        cursor:pointer;
-        padding:15px 10px 10px 10px;
+        cursor: pointer;
+        padding: 15px 10px 10px 10px;
 
         span.icon-arrow-down,
         span.icon-arrow-up {
-          color:#fff;
-          font-size:22px;
-          display:block;
+          color: #fff;
+          font-size: 22px;
+          display: block;
         }
 
       }
 
       .evaluation-available-workspaces {
-        color:#fff;
-        padding:0 10px;
-        box-sizing:border-box;
-        border-top:10px solid #8edeff;
-        border-bottom:10px solid #8edeff; 
-        border-bottom-left-radius:10px;
-        border-bottom-right-radius:10px;
-        background:#8edeff;
-        position:absolute;
-        clear:both;
-        display:block;
-        right:0;
-        left:0;
-        top:50px;
-        visibility:hidden; 
-        overflow:hidden;
-        opacity:0;
-        height:0;
-        box-shadow:0 10px 10px rgba(0, 0, 0, 0.1);
-        min-width:600px;
+        color: #fff;
+        padding: 0 10px;
+        box-sizing: border-box;
+        border-top: 10px solid #8edeff;
+        border-bottom: 10px solid #8edeff; 
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        background: #8edeff;
+        position: absolute;
+        clear: both;
+        display: block;
+        right: 0;
+        left: 0;
+        top: 50px;
+        visibility: hidden; 
+        overflow: hidden;
+        opacity: 0;
+        height: 0;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+        min-width: 600px;
 
         &.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
-          background-color:#fff;
+          background-color: #fff;
         }
 
         .evaluation-workspace-item {
-          padding:2px 5px;
-          border-radius:3px;
+          padding: 2px 5px;
+          border-radius: 3px;
 
           &:hover {
-            background:#7ad8ff;
+            background: #7ad8ff;
           }
 
           a {
-            color:#fff;
-            text-decoration:none;
-            text-transform:uppercase;
-            display:block;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            display: block;
           }
 
         }
@@ -146,111 +147,111 @@ body.evaluation {
     }
 
     .evaluation-filters {
-      position:absolute;
-      right:20px;
-      top:0;
-      padding:5px 0;
-      font-weight:300;
+      position: absolute;
+      right: 20px;
+      top: 0;
+      padding: 5px 0;
+      font-weight: 300;
 
       .evaluation-filter {
-        display:inline-block;
-        padding:0;
-        margin:0;
-        border-radius:3px;
-        border-left:1px solid #cfeefb;
-        cursor:pointer;
-        position:relative;
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+        border-radius: 3px;
+        border-left: 1px solid #cfeefb;
+        cursor: pointer;
+        position: relative;
 
         &:first-child {
-          border-left:none;
+          border-left: none;
         }
 
         .evaluation-flags {
 
           &.icon-flag:before {
-            color:#fff;
-            display:inline-block;
-            font-size:30px;
-            margin:0 5px;
-            padding:5px;
+            color: #fff;
+            display: inline-block;
+            font-size: 30px;
+            margin: 0 5px;
+            padding: 5px;
           }
 
         }
 
         .evaluation-flags-container {
-          display:none;
-          position:absolute;
-          right:0;
-          top:42px;
-          width:250px;
-          box-shadow:0 7px 15px rgba(0,0,0,0.3);
-          background:#fff;
-          border:1px solid #fff;
-          border-radius:5px;
+          display: none;
+          position: absolute;
+          right: 0;
+          top: 42px;
+          width: 250px;
+          box-shadow: 0 7px 15px rgba(0,0,0,0.3);
+          background: #fff;
+          border: 1px solid #fff;
+          border-radius: 5px;
 
           .evaluation-flag {
-            padding:6px 8px;
-            margin:1px 0;
-            border-radius:3px;
+            padding: 6px 8px;
+            margin: 1px 0;
+            border-radius: 3px;
 
             &.active {
-              background:#a9e6ff;
+              background: #a9e6ff;
 
               span {
-                color:#000;
+                color: #000;
               }
 
             }
 
             &.icon-flag:before {
-              background:#fff none repeat scroll 0 0;
-              border-radius:100%;
-              display:inline-block;
-              height:15px;
-              padding:5px;
-              text-align:center;
-              width:15px;
-              border-style:solid;
-              border-width:1px;
+              background: #fff none repeat scroll 0 0;
+              border-radius: 100%;
+              display: inline-block;
+              height: 15px;
+              padding: 5px;
+              text-align: center;
+              width: 15px;
+              border-style: solid;
+              border-width: 1px;
               border-color: attr(data-flag-color color);
             }
 
             span {
-              padding:5px;
-              font-family:'Open Sans', Arial, sans-serif;
-              color:#000;
-              font-weight:300;
-              vertical-align:top;
-              display:inline-block;
-              width:calc(100% - 37px);
+              padding: 5px;
+              font-family: 'Open Sans', Arial, sans-serif;
+              color: #000;
+              font-weight: 300;
+              vertical-align: top;
+              display: inline-block;
+              width: calc(100% - 37px);
             }
 
           }
 
           &:after, 
           &:before {
-            bottom:100%;
-            left:230px;
-            border:solid transparent;
-            content:" ";
-            height:0;
-            width:0;
-            position:absolute;
-            pointer-events:none;
+            bottom: 100%;
+            left: 230px;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
           }
 
           &:after {
-            border-color:rgba(255, 255, 255, 0);
-            border-bottom-color:#fff;
-            border-width:8px;
-            margin-left:-8px;
+            border-color: rgba(255, 255, 255, 0);
+            border-bottom-color: #fff;
+            border-width: 8px;
+            margin-left: -8px;
           }
 
           &:before {
-            border-color:rgba(0, 222, 255, 0);
-            border-bottom-color:#ffff;
-            border-width:8px;
-            margin-left:-8px;
+            border-color: rgba(0, 222, 255, 0);
+            border-bottom-color: #ffff;
+            border-width: 8px;
+            margin-left: -8px;
           }
 
         }
@@ -258,69 +259,69 @@ body.evaluation {
         .evaluation-search {
 
           &.icon-search:before {
-            color:#fff;
-            display:inline-block;
-            font-size:30px;
-            margin:0 5px;
-            padding:5px;
+            color: #fff;
+            display: inline-block;
+            font-size: 30px;
+            margin: 0 5px;
+            padding: 5px;
           }
 
         }
 
         .evaluation-search-container {
-          display:none;
-          position:absolute;
-          right:0;
-          top:42px;
-          width:310px;
-          box-shadow:0 7px 15px rgba(0,0,0,0.3);
-          background:#fff;
-          border:1px solid #fff;
-          border-radius:5px;
+          display: none;
+          position: absolute;
+          right: 0;
+          top: 42px;
+          width: 310px;
+          box-shadow: 0 7px 15px rgba(0,0,0,0.3);
+          background: #fff;
+          border: 1px solid #fff;
+          border-radius: 5px;
 
           &:after, 
           &:before {
-            bottom:100%;
-            left:292px;
-            border:solid transparent;
-            content:" ";
-            height:0;
-            width:0;
-            position:absolute;
-            pointer-events:none;
+            bottom: 100%;
+            left: 292px;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
           }
 
           &:after {
-            border-color:rgba(255, 255, 255, 0);
-            border-bottom-color:#fff;
-            border-width:8px;
-            margin-left:-8px;
+            border-color: rgba(255, 255, 255, 0);
+            border-bottom-color: #fff;
+            border-width: 8px;
+            margin-left: -8px;
           }
 
           &:before {
-            border-color:rgba(0, 222, 255, 0);
-            border-bottom-color:#ffff;
-            border-width:8px;
-            margin-left:-8px;
+            border-color: rgba(0, 222, 255, 0);
+            border-bottom-color: #ffff;
+            border-width: 8px;
+            margin-left: -8px;
           }
 
           input[type="text"] {
-            border:0;
-            font-size:22px;
-            font-weight:300;
-            color:#252525;
-            padding:10px;
-            margin:0;
-            outline:none;
-            box-shadow:none;
-            cursor:text;
-            font-family:'Open Sans', Arial, sans-serif;
+            border: 0;
+            font-size: 22px;
+            font-weight: 300;
+            color: #252525;
+            padding: 10px;
+            margin: 0;
+            outline: none;
+            box-shadow: none;
+            cursor: text;
+            font-family: 'Open Sans', Arial, sans-serif;
 
             &:focus,
             &:active,
             &:hover {
-              border:0;
-              box-shadow:none;
+              border: 0;
+              box-shadow: none;
             }
 
           }
@@ -328,18 +329,18 @@ body.evaluation {
         }
 
         label {
-          display:inline-block;
-          margin:0 0 0 15px;
-          font-weight:300;
-          cursor:pointer;
-          text-shadow:0 0 10px #fff;
+          display: inline-block;
+          margin: 0 0 0 15px;
+          font-weight: 300;
+          cursor: pointer;
+          text-shadow: 0 0 10px #fff;
         }
 
         input {
-          display:inline-block;
-          margin-right:10px;
-          margin:0 10px 0 0;
-          cursor:pointer;
+          display: inline-block;
+          margin-right: 10px;
+          margin: 0 10px 0 0;
+          cursor: pointer;
         }
 
       }
@@ -349,20 +350,20 @@ body.evaluation {
   }
 
   .evaluation-content-wrapper {
-    position:absolute;
-    top:50px;
-    left:0;
-    right:0;
-    bottom:0;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
     &.loading {
 
       &:before {
         @include generic-loader(50px);
-        position:absolute;
-        top:50%;
-        left:50%;
-        margin:-25px 0 0 -25px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -25px 0 0 -25px;
       }
 
     }
@@ -371,32 +372,32 @@ body.evaluation {
 
   .prevPage,
   .nextPage {
-    position:absolute;
-    top:0;
-    bottom:0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
     z-index: 9998;
-    border:0;
-    width:40px;
-    font-size:26px;
-    color:#aaaaaa;
-    cursor:pointer;
-    background:#eee;
-    outline:none;
-    transition:background 0.3s ease-in-out;
+    border: 0;
+    width: 40px;
+    font-size: 26px;
+    color: #aaaaaa;
+    cursor: pointer;
+    background: #eee;
+    outline: none;
+    transition: background 0.3s ease-in-out;
 
     &:hover {
-      color:#57abec;
-      background:#fff;
+      color: #57abec;
+      background: #fff;
     }
 
   }
 
   .prevPage {
-    left:0;
+    left: 0;
   }
 
   .nextPage {
-    right:0;
+    right: 0;
   }
 
   .evaluation-students {
@@ -407,30 +408,30 @@ body.evaluation {
     top: 0px;
     height: 150px;
     white-space: nowrap;
-    transition:margin 0.2s ease-in-out;
+    transition: margin 0.2s ease-in-out;
 
     .evaluation-no-students-found {
-      text-align:center;
-      font-weight:300;
-      font-size:20px;
-      font-style:italic;
-      position:absolute;
-      width:100%;
-      top:50%;
-      margin:-15px auto 0 auto;
-      height:30px;
-      text-align:center;
+      text-align: center;
+      font-weight: 300;
+      font-size: 20px;
+      font-style: italic;
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      margin:- 15px auto 0 auto;
+      height: 30px;
+      text-align: center;
     }
 
     .evaluation-student-wrapper {
-      width:160px;
-      height:130px;
-      box-sizing:border-box;
-      margin:10px;
-      display:inline-block;
-      text-align:center;
-      transition:opacity 1s ease-in-out, transform 1s ease-in-out;
-      position:relative;
+      width: 160px;
+      height: 130px;
+      box-sizing: border-box;
+      margin: 10px;
+      display: inline-block;
+      text-align: center;
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+      position: relative;
 
       &.evaluation-student-loaded {
         opacity: 1;
@@ -438,56 +439,56 @@ body.evaluation {
       }
 
       .workspace-student-joined-date {
-        position:absolute;
-        width:100%;
-        box-sizing:border-box;
-        padding:3px 4px;
-        background:#fff;
-        border-radius:3px;
-        line-height:1.3em;
-        white-space:normal;
-        top:0;
-        color:#000;
-        font-size:14px;
+        position :absolute;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 3px 4px;
+        background: #fff;
+        border-radius: 3px;
+        line-height: 1.3em;
+        white-space: normal;
+        top: 0;
+        color: #000;
+        font-size: 14px;
       }
 
       .workspace-evaluation-requested-date {
-        position:absolute;
-        width:100%;
-        box-sizing:border-box;
-        padding:3px 4px;
-        border-radius:3px;
-        line-height:1.3em;
-        white-space:normal;
-        top:27px;
-        background:#00ccff;
-        color:#fff;
-        font-size:14px;
+        position: absolute;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 3px 4px;
+        border-radius: 3px;
+        line-height: 1.3em;
+        white-space: normal;
+        top: 27px;
+        background: #00ccff;
+        color: #fff;
+        font-size: 14px;
       }
 
       .workspace-evaluated-date {
-        position:absolute;
-        width:100%;
-        box-sizing:border-box;
-        padding:3px 4px;
-        border-radius:3px;
-        line-height:1.3em;
-        white-space:normal;
-        top:54px;
-        background:#3cdd2a;
-        color:#fff;
-        font-size:14px;
+        position: absolute;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 3px 4px;
+        border-radius: 3px;
+        line-height: 1.3em;
+        white-space: normal;
+        top: 54px;
+        background: #3cdd2a;
+        color: #fff;
+        font-size: 14px;
       }
 
       /* Workspace has been evaluated by teacher */
       &.workspace-evaluated {
 
         .workspace-evaluated-date {
-          background:#3cdd2a;
+          background: #3cdd2a;
         }
 
         .evaluation-student-picture {
-          box-shadow:0 0 0 5px #3cdd2a;
+          box-shadow: 0 0 0 5px #3cdd2a;
         }
 
       }
@@ -496,7 +497,7 @@ body.evaluation {
       &.workspace-evaluation-requested {
 
         .evaluation-student-picture {
-          box-shadow:0 0 0 5px #0099ff;
+          box-shadow: 0 0 0 5px #0099ff;
         }
 
       }
@@ -505,11 +506,11 @@ body.evaluation {
       &.workspace-assessment-critical {
       
         .workspace-evaluation-requested-date {
-          background:#de5500;
+          background: #de5500;
         }
       
         .evaluation-student-picture {
-          box-shadow:0 0 0 5px #de0000;
+          box-shadow: 0 0 0 5px #de0000;
         }
       
       }
@@ -518,64 +519,64 @@ body.evaluation {
       &.workspace-reviewed-non-passing {
       
         .workspace-evaluated-date {
-          background:#ea7401;
+          background: #ea7401;
         }        
       
         .evaluation-student-picture {
-          box-shadow:0 0 0 5px #ea7401;
+          box-shadow: 0 0 0 5px #ea7401;
         }
     
       }
             
       .evaluation-student-picture {
-        width:120px;
-        height:120px;
-        margin:0 auto;  
-        box-sizing:border-box;
-        background-image:url("/gfx/default-user-picture.jpg");
-        background-size:cover;
-        border-radius:100%;
-        background-position:center center;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;  
+        box-sizing: border-box;
+        background-image: url("/gfx/default-user-picture.jpg");
+        background-size: cover;
+        border-radius: 100%;
+        background-position: center center;
       }
 
       .evaluation-student-name-plate {
-        cursor:pointer;
-        width:100%;
-        box-sizing:border-box;
-        background:#3a86bd;
-        color:#fff;
-        border-radius:3px;
-        white-space:normal;
-        position:absolute;
-        left:0;
-        right:0;
-        bottom:0;
-        line-height:22px;
-        transition:background 0.3s ease-in-out;
-        font-weight:300;
+        cursor: pointer;
+        width: 100%;
+        box-sizing: border-box;
+        background: #3a86bd;
+        color: #fff;
+        border-radius: 3px;
+        white-space: normal;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        line-height: 22px;
+        transition: background 0.3s ease-in-out;
+        font-weight: 300;
 
         .evaluation-student-name {
-          white-space:nowrap;
-          overflow:hidden;
-          text-overflow:ellipsis;
-          display:block;
-          text-align:left;
-          padding:2px 4px 0 4px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: block;
+          text-align: left;
+          padding: 2px 4px 0;
         }
 
         .evaluation-student-studyprogramme {
-          white-space:nowrap;
-          overflow:hidden;
-          text-overflow:ellipsis;
-          font-size:12px;
-          display:block;
-          font-style:italic;
-          text-align:left;
-          padding:0 4px 2px 4px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 12px;
+          display: block;
+          font-style: italic;
+          text-align: left;
+          padding: 0 4px 2px;
         }
 
         &:hover {
-          box-shadow:0 0 0 5px #c1e8ff;
+          box-shadow: 0 0 0 5px #c1e8ff;
         }
 
       }
@@ -592,28 +593,28 @@ body.evaluation {
     top: 150px;
     bottom: 0px;
     white-space: nowrap;
-    transition:margin 0.2s ease-in-out;
+    transition: margin 0.2s ease-in-out;
 
     .ps-scrollbar-y-rail,
     .ps-scrollbar-x-rail {
-      z-index:9;
+      z-index: 9;
     }
 
     .evaluation-assignment-wrapper {
-      width:160px;
-      box-sizing:border-box;
-      margin:10px;
-      display:inline-block;
-      text-align:center;
-      background:#fff;
-      opacity:0.4;
-      position:relative;
-      border-radius:3px;
+      width: 160px;
+      box-sizing: border-box;
+      margin: 10px;
+      display: inline-block;
+      text-align: center;
+      background: #fff;
+      opacity: 0.4;
+      position: relative;
+      border-radius: 3px;
       border-top:3px solid #fff;
-      box-shadow:0 0 10px 0px rgba(169, 169, 169, 0.2);
+      box-shadow: 0 0 10px 0px rgba(169, 169, 169, 0.2);
 
       &.assignment-pending {
-        opacity:0.1;
+        opacity: 0.1;
       }
 
       &.assignment-loading {
@@ -621,7 +622,7 @@ body.evaluation {
       }
 
       &:hover {
-        box-shadow:0 0 0 5px #c1e8ff;
+        box-shadow: 0 0 0 5px #c1e8ff;
       }
 
       &.assignment-unaswered {
@@ -634,8 +635,8 @@ body.evaluation {
       }
       
       &.assignment-submitted {
-        opacity:1;
-        cursor:pointer;
+        opacity: 1;
+        cursor: pointer;
         
         .evaluation-assignment-submitted-date {
 
@@ -644,127 +645,128 @@ body.evaluation {
       }
       
       &.assignment-evaluated {
-        opacity:1;
-        border-top:3px solid #3cdd2a;
-        cursor:pointer;
+        opacity: 1;
+        border-top: 3px solid #3cdd2a;
+        cursor: pointer;
         
         .evaluation-assignment-evaluated-date {
-          color:#1aa00b;
+          color: #1aa00b;
         }
         
         &:hover {
-          box-shadow:0 0 0 5px #b7fbc1;
+          box-shadow: 0 0 0 5px #b7fbc1;
         }
       }
       
       &.assignment-withdrawn {
-        border-top:3px solid #cb23c5;
-        cursor:pointer;
+        border-top: 3px solid #cb23c5;
+        cursor: pointer;
         
         .evaluation-assignment-evaluated-date {
-          color:#1aa00b;
+          color: #1aa00b;
         }
         
         &:hover {
-          box-shadow:0 0 0 5px #e69be3;
+          box-shadow: 0 0 0 5px #e69be3;
         }
       }
       
       
       &.assignment-reviewed-non-passing {
-        opacity:1;
-        border-top:3px solid #ea7401;
-        cursor:pointer;
+        opacity: 1;
+        border-top: 3px solid #ea7401;
+        cursor: pointer;
         
         .evaluation-assignment-evaluated-date {
-          color:#ea7401;
+          color: #ea7401;
         }
         
         &:hover {
-          box-shadow:0 0 0 5px #ffc58d;
+          box-shadow: 0 0 0 5px #ffc58d;
         }
       }
       
       .evaluation-assignment-submitted-date,
       .evaluation-assignment-evaluated-date {
-        width:100%;
-        box-sizing:border-box;
-        padding:2px 4px;
-        text-align:right;
-        min-height:1.7em;
-        font-size:14px;
-        line-height:1.3em;
-        white-space:normal;
-        font-size:12px;
-        margin:1px 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 2px 4px;
+        text-align: right;
+        min-height: 1.7em;
+        font-size: 14px;
+        line-height: 1.3em;
+        white-space: normal;
+        font-size: 12px;
+        margin: 1px 0;
       }
       
       .evaluation-assignment-title {
-        width:100%;
-        box-sizing:border-box;
-        padding:6px 4px;
-        font-size:14px;
-        line-height:1.3em;
-        white-space:normal;
-        border-top:1px solid #f2f2f2;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px 4px;
+        font-size: 14px;
+        line-height: 1.3em;
+        white-space: normal;
+        border-top: 1px solid #f2f2f2;
       }
     
     }
+    
   }
 
   .evaluation-evaluate-modal-wrapper {
-    position:absolute;
-    left:0;
-    top:56px;
-    bottom:0;
-    right:0;
-    padding:0;
-    margin:0;
-    border:0;;
-    overflow:hidden;
+    position: absolute;
+    left: 0;
+    top: 56px;
+    bottom: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    overflow: hidden;
 
     #evaluationStudentAssignmentWrapper {
-      padding:0 20px 0 10px;
-      min-width:500px;
-      position:absolute;
-      top:0;
-      right:50%;
-      bottom:3px;
-      left:10px;
+      padding: 0 20px 0 10px;
+      min-width: 500px;
+      position: absolute;
+      top: 0;
+      right: 50%;
+      bottom: 3px;
+      left: 10px;
       
       .evaluation-modal-student-wrapper {
         
         .evaluation-modal-workspace-info-wrapper {
-          padding:10px 20px;
-          font-size:13px;
-          background:#ebf7ff;
-          position:relative;
+          padding: 10px 20px;
+          font-size: 13px;
+          background: #ebf7ff;
+          position: relative;
           
           .evaluation-modal-workspace-title {
-            font-size:20px;
-            color:#000;
+            font-size: 20px;
+            color: #000;
           }
           
           .evaluation-modal-workspace-educationtype,
           .evaluation-modal-workspace-subject,
           .evaluation-modal-workspace-length {
-            text-transform:uppercase;
-            display:inline-block;
+            text-transform: uppercase;
+            display: inline-block;
           
             .title {
-              color:#727272;
-              display:inline-block;
-              margin:0 5px 0 0;
+              color: #727272;
+              display: inline-block;
+              margin: 0 5px 0 0;
             }
             
             .desc {
-              color:#000;
-              display:inline-block;
-              margin:0 10px 0 0;
+              color: #000;
+              display: inline-block;
+              margin: 0 10px 0 0;
             }
             
             .symbol {
-              text-transform:none;
+              text-transform: none;
             }
           
           }
@@ -776,79 +778,91 @@ body.evaluation {
           
           /* WORKSPACE EVALUATION */
           .evaluation-modal-workspace-assignment-wrapper {
-            margin:20px 0 0 0;
-            font-size:14px;
+            margin: 20px 0 0;
+            font-size: 14px;
             
             .evaluation-modal-workspace-single-assignment {
+            
               .evaluation-assignmentlist-wrapper {
+              
                 .evaluation-assignment-title-container {
+                
                   > h2 {
-                    border-left:5px solid $evaluatedAssignment;
+                    border-left: 5px solid $evaluatedAssignment;
                   }
+                  
                 }
+                
               }
+              
             }
             
             .evaluation-modal-workspace-single-exercise {
+            
               .evaluation-assignmentlist-wrapper {
+              
                 .evaluation-assignment-title-container {
+                
                   > h2 {
-                    border-left:5px solid $exerciseAssignment;
+                    border-left: 5px solid $exerciseAssignment;
                   }
+                  
                 }
+                
               }
+              
             }
             
             .evaluation-modal-workspace-single-assignment,
             .evaluation-modal-workspace-single-exercise {
-              border-bottom:2px solid #f9f9f9;
-              padding:0 0 15px 0;
-              margin:0 0 15px 0;
+              border-bottom: 2px solid #f9f9f9;
+              padding: 0 0 15px;
+              margin: 0 0 15px;
               
               .evaluation-assignmentlist-wrapper {
-                clear:both;
+                clear: both;
 
                 .evaluation-assignment-title-container {
-                  position:relative;
-                  margin:0;
-                  background:#fff;
-                  border-radius:3px;
-                  color:#000;
+                  position: relative;
+                  margin: 0;
+                  background: #fff;
+                  border-radius: 3px;
+                  color: #000;
                 
                   > h2 {
-                    font-size:20px;
-                    margin:0 120px 0 -5px; 
-                    padding:5px 125px 5px 10px;
-                    font-weight:300;
-                    margin:0;
-                    color:#000;
-                    cursor:pointer;
+                    font-size: 20px;
+                    margin: 0 120px 0 -5px; 
+                    padding: 5px 125px 5px 10px;
+                    font-weight: 300;
+                    margin: 0;
+                    color: #000;
+                    cursor: pointer;
                   }
                   
                   .evaluation-assignment-meta {
-                    position:absolute;
-                    max-width:150px;
-                    right:0;
-                    top:-6px;
-                    text-align:right;
-                    padding:0px 10px;
-                    white-space:nowrap;
+                    position: absolute;
+                    max-width: 150px;
+                    right: 0;
+                    top: -6px;
+                    text-align: right;
+                    padding: 0px 10px;
+                    white-space: nowrap;
                     
                     .evaluation-assignment-assessmentvalue,
                     .evaluation-assignment-assignmentdone {
-                      margin:4px 0 4px 0;
+                      margin: 4px 0 4px;
                     }
                     
                   }
                   
                   .evaluation-assignment-exercisedone {
-                    position:absolute;
-                    max-width:150px;
-                    right:0;
-                    top:0;
-                    text-align:right;
-                    padding:8px 10px;
-                    white-space:nowrap;
+                    position: absolute;
+                    max-width: 150px;
+                    right: 0;
+                    top: 0;
+                    text-align: right;
+                    padding: 8px 10px;
+                    white-space: nowrap;
                   }
 
                 }
@@ -856,32 +870,32 @@ body.evaluation {
                 .evaluation-assignment-content {
                 
                   h1,h2,h3,h4,h5,h6 {
-                    margin-top:1em;
+                    margin-top: 1em;
                   }
                   
                   .evaluation-assignment-literal-assessment {
-                    background:#d5ffd2;
-                    padding:8px 16px;
-                    border-radius:3px;
-                    margin:10px 0;
+                    background: #d5ffd2;
+                    padding: 8px 16px;
+                    border-radius: 3px;
+                    margin: 10px 0;
                     
                     &.no-literal-assessment {
-                      text-align:center;
-                      font-style:italic;
+                      text-align: center;
+                      font-style: italic;
                     }
                     
                   }
 
                   article {
-                    clear:both;
+                    clear: both;
                   }
                 
                   &[data-open-state="closed"] {
-                    display:none;
+                    display: none;
                   }
                 
                   &[data-open-state="open"] {
-                    display:block;
+                    display: block;
                   }
                 }
               
@@ -893,13 +907,13 @@ body.evaluation {
               
           /* ASSIGNMENT EVALUATION */
           .evaluation-modal-assignment-wrapper {
-            margin:20px 0 0 0;
-            font-size:14px;
+            margin: 20px 0 0;
+            font-size: 14px;
             
             .evaluation-modal-single-assignment {
               
               article {
-                clear:both;
+                clear: both;
               }
               
             }
@@ -914,34 +928,34 @@ body.evaluation {
           
             .evaluation-modal-workspace-journal-entries-title {
                border-left: 5px solid #016779;
-               color:#016779;
-               font-size:24px;
-               font-weight:300;
-               margin:20px 0;
-               padding:3px 0 3px 10px;
-               text-transform:uppercase;
+               color: #016779;
+               font-size: 24px;
+               font-weight: 300;
+               margin: 20px 0;
+               padding: 3px 0 3px 10px;
+               text-transform: uppercase;
              }
           
             .evaluation-modal-workspace-single-journal-entry {
-              box-sizing:border-box;
-              padding:8px 12px 20px;
-              border-bottom:2px solid #f9f9f9;
-              line-height:1.5em;
-              margin:8px 0;
-              position:relative;
+              box-sizing: border-box;
+              padding: 8px 12px 20px;
+              border-bottom: 2px solid #f9f9f9;
+              line-height: 1.5em;
+              margin: 8px 0;
+              position: relative;
             
               .evaluation-journal-entry-title {
-                font-weight:400;
-                font-size:18px;
-                margin:0 0 10px 0;
-                color:#00515f;
+                font-weight: 400;
+                font-size: 18px;
+                margin: 0 0 10px;
+                color: #00515f;
               }
               
               .evaluation-journal-entry-date {
-                position:absolute;
-                right:15px;
-                top:8px;
-                font-size:14px;
+                position: absolute;
+                right: 15px;
+                top: 8px;
+                font-size: 14px;
               }
               
               .evaluation-journal-entry-content {
@@ -959,54 +973,54 @@ body.evaluation {
     }
     
     #evaluationEvaluateFormWrapper {
-      position:absolute;
-      padding:0 10px;
-      min-width:400px;
-      background:#fff;
-      top:0;
-      bottom:0;
-      right:10px;
-      left:51%;
-      overflow:hidden;
-      z-index:10;
+      position: absolute;
+      padding: 0 10px;
+      min-width: 400px;
+      background: #fff;
+      top: 0;
+      bottom: 0;
+      right: 10px;
+      left: 51%;
+      overflow: hidden;
+      z-index: 10;
       
       header {
         overflow-x: hidden;
         overflow-y: auto;
-        max-height:100px;
-        padding:0 20px;
+        max-height: 100px;
+        padding: 0 20px;
       
         .evaluation-modal-evaluateForm-title {
-          width:auto;
-          margin:0 auto 0 auto; 
-          font-weight:300;
-          color:#000;
-          font-size:24px;
-          padding:20px 0 10px 0;
-          text-transform:uppercase;
-          line-height:1.3em;
-          position:relative;
+          width: auto;
+          margin: 0 auto; 
+          font-weight: 300;
+          color: #000;
+          font-size: 24px;
+          padding: 20px 0 10px;
+          text-transform: uppercase;
+          line-height: 1.3em;
+          position: relative;
         }
 
         .evaluation-modal-evaluateForm-meta-wrapper {
-          padding:0;
+          padding: 0;
 
           .meta-education-type,
           .meta-workspace {
-            padding:0px 20px 0 0;
-            text-transform:uppercase;
-            font-size:14px;
-            display:inline-block;
+            padding: 0px 20px 0 0;
+            text-transform: uppercase;
+            font-size: 14px;
+            display: inline-block;
 
             .title {
-              color:#727272;
-              display:inline-block;
-              margin:0 5px 0 0;
+              color: #727272;
+              display: inline-block;
+              margin: 0 5px 0 0;
             }
 
             .desc {
-              color:#000;
-              display:inline-block;
+              color: #000;
+              display: inline-block;
             }
 
           }
@@ -1016,31 +1030,31 @@ body.evaluation {
       }
 
       .evaluation-modal-removeWrapper {
-        position:absolute;
-        bottom:10px;
-        left:10px;
-        z-index:99;
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        z-index: 99;
 
         button.remove-evaluation {
-          border-radius:0;
-          border:0;
-          background:#de3211;
-          color:#fff;
-          font-weight:400;
-          padding:4px 15px;
-          text-transform:uppercase;
-          margin:5px;
-          outline:none;
-          font-family:'Open Sans', Arial, sans-serif;
-          min-width:90px;
-          font-size:16px;
-          float:none;
-          line-height:normal;
+          border-radius: 0;
+          border: 0;
+          background: #de3211;
+          color: #fff;
+          font-weight: 400;
+          padding: 4px 15px;
+          text-transform: uppercase;
+          margin: 5px;
+          outline: none;
+          font-family: 'Open Sans', Arial, sans-serif;
+          min-width: 90px;
+          font-size: 16px;
+          float: none;
+          line-height: normal;
 
           span {
-            display:block;
-            line-height:normal;
-            padding:0;
+            display: block;
+            line-height: normal;
+            padding: 0;
           }
 
         }
@@ -1048,50 +1062,50 @@ body.evaluation {
       }
 
       .evaluation-modal-evaluateForm-content {
-        padding:10px 20px 10px 2px;
-        position:absolute;
-        bottom:65px;
-        top:0;
-        right:10px;
-        left:10px;
-        border-bottom:1px solid #eee;
+        padding: 10px 20px 10px 2px;
+        position: absolute;
+        bottom: 65px;
+        top: 0;
+        right: 10px;
+        left: 10px;
+        border-bottom: 1px solid #eee;
 
         label {
-          text-transform:uppercase;
-          padding:0 0 3px 0;
-          font-weight:300;
-          font-size:16px;
-          display:block;
+          text-transform: uppercase;
+          padding: 0 0 3px;
+          font-weight: 300;
+          font-size: 16px;
+          display: block;
         }
         
         textarea,
         input[type="text"],
         select {
-          border:0;
-          border-radius:3px;
-          box-sizing:border-box;
-          border:5px solid #c3e6fb;
-          font-size:16px;
-          color:#000;
-          background:#fff;
-          outline:none;
-          transition:border 0.15s ease-in-out;
-          font-family:'Open Sans', Arial, sans-serif;
-          font-weight:300;
-          width:auto;
+          border: 0;
+          border-radius: 3px;
+          box-sizing: border-box;
+          border: 5px solid #c3e6fb;
+          font-size: 16px;
+          color: #000;
+          background: #fff;
+          outline: none;
+          transition: border 0.15s ease-in-out;
+          font-family: 'Open Sans', Arial, sans-serif;
+          font-weight: 300;
+          width: auto;
           
           &:hover,
           &:focus,
           &:active {
-            border:5px solid #9cd3f5;
-            background:#fff;
+            border: 5px solid #9cd3f5;
+            background: #fff;
           }
         }
 
         textarea {
-          width:100%;
-          height:200px;
-          padding:10px;
+          width: 100%;
+          height: 200px;
+          padding: 10px;
         }
       
         .evaluation-modal-evaluateForm-literal-eval-wrapper {
@@ -1099,20 +1113,20 @@ body.evaluation {
         }
         
         .evaluation-modal-evaluateForm-date-wrapper {
-          margin:10px 0;
+          margin: 10px 0;
           
         }
         
         .evaluation-modal-evaluateForm-grade-wrapper {
-          margin:10px 0;
+          margin: 10px 0;
         }
 
         .evaluation-modal-evaluateForm-basedOfPhenomenon-wrapper {
-          margin:10px 0;
+          margin: 10px 0;
         }
 
         .evaluation-modal-evaluateForm-valuer-wrapper {
-          margin:10px 0;
+          margin: 10px 0;
         }
 
       }
@@ -1122,27 +1136,25 @@ body.evaluation {
   }
 
   .evaluation-evaluate-modal {
-    background:#fff;
-    font-family:'Open Sans', Arial, sans-serif;
-    padding:0;
-    border:none;
-    z-index:9999;
-    position:fixed;
-    top:0;
-    right:0;
-    bottom:0;
-    left:0;
-    background:#fff;
-    border-radius:0;
-    border:1px solid #fff;
-    overflow:hidden;
-    min-width:990px;
-    text-transform:none;
+    background: #fff;
+    border: 1px solid #fff;
+    border-radius: 0;
+    bottom: 0;
+    font-family: 'Open Sans', Arial, sans-serif;
+    left: 0;
+    min-width: 990px;
+    overflow: hidden;
+    padding: 0;
+    position: fixed;
+    right: 0;
+    text-transform: none;
+    top: 0;
+    z-index: 9999;
     
     &.assignment-evaluation-dialog {
     
       .ui-dialog-titlebar {
-        background:#950589;
+        background: #950589;
       }
     
     }
@@ -1150,97 +1162,94 @@ body.evaluation {
     &.workspace-evaluation-dialog {
     
       .ui-dialog-titlebar {
-        background:#3a86bd;
+        background: #3a86bd;
       }
     
     }
     
     .ui-dialog-titlebar {
-      width:auto;
-      margin:0 auto 0 auto; 
-      font-weight:300;
-      color:#000;
-      font-size:28px;
-      text-transform:uppercase;
-      line-height:1.3;
-      position:relative;
-      height:40px;
-      border:0;
-      background:#657e90;
-      white-space:nowrap;
-      
+      background: #657e90;
+      border: 0;
+      color: #000;
+      font-size: 28px;
+      font-weight: 300;
+      height: 40px;
+      line-height: 1.3;
+      margin: 0 auto; 
+      position: relative;
+      text-transform: uppercase;
+      white-space: nowrap;
+      width: auto;
+
       .ui-dialog-title {
-        background-size:cover;
-        display:inline-block;
-        position:absolute;
-        margin:0;
-        top:12px;
-        left:10px;
-        color:#fff;
+        background-size: cover;
+        color: #fff;
+        display: inline-block;
+        left: 10px;
+        margin: 0;
+        position: absolute;
+        top: 12px;
         
         span.modal-title-workspace-evaluation,
         span.modal-title-assignment-evaluation {
-          display:inline-block;
-          padding:0 10px;
-          font-size:26px;
-          margin:0 50px 0 0;
+          display: inline-block;
+          font-size: 26px;
+          margin: 0 50px 0 0;
+          padding: 0 10px;
         }
         
         span.modal-title-student-name {
-          font-size:24px;
-          display:inline-block;
-          margin:0 20px 0 0;
-          padding:0 0 0 40px;
-          background-image:url("/gfx/default-user-picture.jpg");
-          background-repeat:no-repeat;
-          background-position:left center;
-          background-size:contain;
-          color:#c9e1f2;
+          background-image: url("/gfx/default-user-picture.jpg");
+          background-position: left center;
+          background-repeat: no-repeat;
+          background-size: contain;
+          color: #c9e1f2;
+          display: inline-block;
+          font-size: 24px;
+          margin: 0 20px 0 0;
+          padding: 0 0 0 40px;
         }
         
         span.modal-title-workspace-name {
-          display:inline-block;
-          font-size:24px;
-          border-left:1px solid #fff;
-          padding:0 0 0 20px;
-          color:#c9e1f2;
+          border-left: 1px solid #fff;
+          color: #c9e1f2;
+          display: inline-block;
+          font-size: 24px;
+          padding: 0 0 0 20px;
         }
         
       }
       
       .ui-dialog-titlebar-close {
-        position:absolute;
-        right:0;
-        top:0;
-        border:0;
-        background:transparent;
-        z-index:999;
-        width:56px;
-        height:56px;
+        background: transparent;
+        border: 0;
+        height: 56px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 56px;
+        z-index: 999;
         
         span {
-          display:none;
+          display: none;
         }
         
         &:before {
-          color:#fff;
-          border-bottom-left-radius:10px;
-          cursor:pointer;
+          border-bottom-left-radius: 10px;
+          color: #fff;
           content: "\e63b";
-          color:#fff;
-          font-size:30px;
-          font-weight:normal;
+          cursor: pointer;
           font-family: 'muikku';
-          speak: none;
-          font-style: normal;
-          text-decoration:none;
-          font-variant: normal;
-          text-transform: none;
-          line-height: 1;
-          
-          /* Better Font Rendering =========== */
-          -webkit-font-smoothing: antialiased;
+          font-size: 30px;
           -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          font-style: normal;
+          font-variant: normal;
+          font-weight: normal;
+          line-height: 1;
+          speak: none;
+          text-decoration: none;
+          text-transform: none;
         }
         
       }
@@ -1248,66 +1257,65 @@ body.evaluation {
     }
     
    .ui-dialog-content {
-     line-height:1;
+     line-height: 1;
       
       label.muikku-file-input-field-file-label {
-        font-weight:400 !important;
-        position:absolute;
-        margin-top:-35px;
-        margin-left:10px;
-        color:#fff;
-        font-size:16px;
-        line-height:27px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 400 !important;
+        line-height: 27px;
+        margin-left: 10px;
+        margin-top: -35px;
+        position: absolute;
       }
       
     }
     
     .ui-dialog-buttonpane {
-      border:0;
-      bottom:10px;
-      margin:0;
-      max-width:50%;
-      padding:0;
-      position:absolute;
-      right:0;
-      width:310px;
-      z-index:999;
+      border: 0;
+      bottom: 10px;
+      margin: 0;
+      max-width: 50%;
+      padding: 0;
+      position: absolute;
+      right: 0;
+      width: 310px;
+      z-index: 999;
 
       .ui-dialog-buttonset {
-        float:none;
-        position:relative;
-        text-align:right;
-        padding:0 30px 0 0;
+        float: none;
+        padding: 0 30px 0 0;
+        position: relative;
+        text-align: right;
         
         button {
-          border-radius:0;
-          border:0;
-          color:#fff;
-          font-weight:400;
-          padding:5px 15px;
-          text-transform:uppercase;
-          margin:5px;
-          outline:none;
-          font-family:'Open Sans', Arial, sans-serif;
-          min-width:90px;
-          font-size:18px;
-          float:none;
-
+          border: 0;
+          border-radius: 0;
+          color: #fff;
+          float: none;
+          font-family: 'Open Sans', Arial, sans-serif;
+          font-size: 18px;
+          font-weight: 400;
+          margin: 5px;
+          min-width: 90px;
+          outline: none;
+          padding: 5px 15px;
+          text-transform: uppercase;
+          
           span {
-            padding:0;
+            padding: 0;
           }
 
         }
         
         button.cancel-evaluation-button {
-          background:#7391a7;
+          background: #7391a7;
         }
         
         button.save-evaluation-button {
-          background:#27b91c;
+          background: #27b91c;
         }
 
-      
       }
       
     }

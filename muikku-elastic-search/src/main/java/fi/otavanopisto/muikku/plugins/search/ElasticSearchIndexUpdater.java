@@ -18,18 +18,15 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.threeten.bp.ZonedDateTime;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import fi.otavanopisto.muikku.search.IndexableEntityVault;
 import fi.otavanopisto.muikku.search.SearchIndexUpdater;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
-import fi.otavanopisto.muikku.utils.MuikkuDateTimeStampDeserializer;
-import fi.otavanopisto.muikku.utils.MuikkuDateTimestampSerializer;
 
 @ApplicationScoped
 public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
@@ -226,10 +223,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   @Override
   public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
     ObjectMapper mapper = new ObjectMapper();
-    SimpleModule module = new SimpleModule();
-    module.addSerializer(new MuikkuDateTimestampSerializer(ZonedDateTime.class));
-    module.addDeserializer(ZonedDateTime.class, new MuikkuDateTimeStampDeserializer(ZonedDateTime.class));
-    mapper.registerModule(module);
+    mapper.registerModule(new JSR310Module());
     
     String json;
     try {

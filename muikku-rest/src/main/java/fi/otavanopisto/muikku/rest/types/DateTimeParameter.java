@@ -2,19 +2,19 @@ package fi.otavanopisto.muikku.rest.types;
 
 import java.io.Serializable;
 
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 public class DateTimeParameter implements Serializable {
   
   private static final long serialVersionUID = 1L;
 
   public DateTimeParameter(String dateString) {
-    dateTime = ZonedDateTime.parse(dateString);
+    dateTime = OffsetDateTime.parse(dateString);
   }
   
-  public ZonedDateTime getDateTime() {
+  public OffsetDateTime getDateTime() {
     return dateTime;
   }
   
-  private final ZonedDateTime dateTime;
+  private final OffsetDateTime dateTime;
 }

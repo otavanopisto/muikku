@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
@@ -9,7 +9,7 @@ public abstract class AbstractTransferCredit implements TransferCredit {
   public AbstractTransferCredit() {
   }
   
-  public AbstractTransferCredit(SchoolDataIdentifier identifier, SchoolDataIdentifier studentIdentifier, ZonedDateTime date,
+  public AbstractTransferCredit(SchoolDataIdentifier identifier, SchoolDataIdentifier studentIdentifier, OffsetDateTime date,
       SchoolDataIdentifier gradeIdentifier, SchoolDataIdentifier gradingScaleIdentifier, String verbalAssessment, 
       SchoolDataIdentifier assessorIdentifier, String courseName, Integer courseNumber, Double length, 
       SchoolDataIdentifier lengthUnitIdentifier, SchoolDataIdentifier schoolIdentifier, SchoolDataIdentifier subjectIdentifier) {
@@ -40,7 +40,7 @@ public abstract class AbstractTransferCredit implements TransferCredit {
   }
 
   @Override
-  public ZonedDateTime getDate() {
+  public OffsetDateTime getDate() {
     return date;
   }
 
@@ -101,7 +101,7 @@ public abstract class AbstractTransferCredit implements TransferCredit {
     this.studentIdentifier = studentIdentifier;
   }
 
-  public void setDate(ZonedDateTime date) {
+  public void setDate(OffsetDateTime date) {
     this.date = date;
   }
 
@@ -148,7 +148,7 @@ public abstract class AbstractTransferCredit implements TransferCredit {
 
   private SchoolDataIdentifier identifier;
   private SchoolDataIdentifier studentIdentifier;
-  private ZonedDateTime date;
+  private OffsetDateTime date;
   private SchoolDataIdentifier gradeIdentifier;
   private SchoolDataIdentifier gradingScaleIdentifier;
   private String verbalAssessment;

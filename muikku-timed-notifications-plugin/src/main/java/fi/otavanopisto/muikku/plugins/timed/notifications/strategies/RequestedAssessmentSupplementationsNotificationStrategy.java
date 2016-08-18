@@ -19,8 +19,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.threeten.bp.DateTimeUtils;
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
@@ -136,7 +135,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
           if (workspaceAssessments != null && !workspaceAssessments.isEmpty()) {
             WorkspaceAssessment assessment = workspaceAssessments.get(0); //TODO: loop and find latest
             Date assessmentDate = assessment.getDate();
-            if (assessmentDate != null && assessmentDate.before(DateTimeUtils.toDate(ZonedDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant()))) {
+            if (assessmentDate != null && assessmentDate.before(Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant()))) {
               GradingScale gradingScale = gradingController.findGradingScale(assessment.getGradingScaleSchoolDataSource(), assessment.getGradingScaleIdentifier());
               GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, assessment.getGradeSchoolDataSource(), assessment.getGradeIdentifier());
               

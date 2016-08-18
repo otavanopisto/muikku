@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.calendar;
 
 import java.util.List;
 
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 public interface CalendarServiceProvider {
 
@@ -120,7 +120,7 @@ public interface CalendarServiceProvider {
    * @return a list of events from specified calendars within a specified time span
    * @throws CalendarServiceException when service provider reports an error
    */
-  public List<CalendarEvent> listEvents(ZonedDateTime minTime, ZonedDateTime maxTime, String... calendarId) throws CalendarServiceException;
+  public List<CalendarEvent> listEvents(OffsetDateTime minTime, OffsetDateTime maxTime, String... calendarId) throws CalendarServiceException;
 
   /**
    * Updates existing calendar event

@@ -45,14 +45,16 @@ CKEDITOR.dialog.add('muikkuWordDefinitionDialog', function (editor) {
             var ancestor = editor.getSelection().getCommonAncestor();
             if (ancestor) {
               var mark = ancestor.getAscendant('mark');
-              text = mark.getAttribute('data-muikku-word-definition');
-              if (text) {
-                editor.getSelection().selectElement(mark);
+              if (mark) {
+                text = mark.getAttribute('data-muikku-word-definition');
+                if (text) {
+                  editor.getSelection().selectElement(mark);
+                }
               }
             }
           }
 
-          this.setValue(text);
+          this.setValue(text||'');
         },
         commit: function(editor) {
           var removeStyle = new CKEDITOR.style({ 

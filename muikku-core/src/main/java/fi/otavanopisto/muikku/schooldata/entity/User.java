@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
@@ -41,11 +41,11 @@ public interface User extends SchoolDataEntity {
   @IndexId
   public String getSearchId();
 
-  public ZonedDateTime getStudyStartDate();
+  public OffsetDateTime getStudyStartDate();
 
-  public ZonedDateTime getStudyEndDate();
+  public OffsetDateTime getStudyEndDate();
   
-  public ZonedDateTime getStudyTimeEnd();
+  public OffsetDateTime getStudyTimeEnd();
 
   public boolean getHidden();
   
@@ -57,4 +57,5 @@ public interface User extends SchoolDataEntity {
   
   public boolean hasEvaluationFees();
   
+  public String getCurriculumIdentifier();
 }

@@ -20,7 +20,7 @@ import org.joda.time.DateTime;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.ListStubMappingsResult;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
@@ -77,7 +77,7 @@ public class PyramusMock {
 
       public Builder() {
 //        Some defaults for mocks
-        pmock.objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        pmock.objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         
         GradingScale gs = new GradingScale(1l, "Pass/Fail", "Passed or failed scale", false);
         List<Grade> grades = new ArrayList<>();

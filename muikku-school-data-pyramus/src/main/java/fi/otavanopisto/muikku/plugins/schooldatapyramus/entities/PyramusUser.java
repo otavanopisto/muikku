@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
-import org.threeten.bp.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.entity.AbstractUser;
@@ -17,9 +17,10 @@ public class PyramusUser extends AbstractUser implements User {
                      String language,
                      String municipality,
                      String school,
-                     ZonedDateTime studyStartDate,
-                     ZonedDateTime studyEndDate,
-                     ZonedDateTime studyTimeEnd,
+                     String curriculumIdentifier,
+                     OffsetDateTime studyStartDate,
+                     OffsetDateTime studyEndDate,
+                     OffsetDateTime studyTimeEnd,
                      boolean hidden,
                      boolean startedStudies, 
                      boolean finishedStudies, 
@@ -41,7 +42,8 @@ public class PyramusUser extends AbstractUser implements User {
         startedStudies,
         finishedStudies,
         active,
-        studyProgrammeName != null && studyProgrammeName.startsWith("Internetix/"));
+        studyProgrammeName != null && studyProgrammeName.startsWith("Internetix/"),
+        curriculumIdentifier);
   }
 
   @Override

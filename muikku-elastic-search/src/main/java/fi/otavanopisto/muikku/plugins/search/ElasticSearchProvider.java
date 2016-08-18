@@ -40,9 +40,9 @@ import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.sort.SortOrder;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.temporal.ChronoField;
-import org.threeten.bp.temporal.ChronoUnit;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
@@ -75,7 +75,7 @@ public class ElasticSearchProvider implements SearchProvider {
     elasticClient = node.client();*/
     
     Settings settings = Settings.settingsBuilder()
-        .put("cluster.name", "belvain-elasticsearch").build();
+        .put("cluster.name", "elasticsearch_ilmoeuro").build();
     
     try {
       elasticClient = TransportClient.builder().settings(settings).build()
@@ -280,9 +280,9 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   private Set<Long> getActiveWorkspaces() {
-    ZonedDateTime now = ZonedDateTime.now();
-    ZonedDateTime low = now.with(ChronoField.MILLI_OF_DAY, 0);
-    ZonedDateTime high = low.plusDays(1).minus(1, ChronoUnit.MILLIS); 
+    OffsetDateTime now = OffsetDateTime.now();
+    OffsetDateTime low = now.with(ChronoField.MILLI_OF_DAY, 0);
+    OffsetDateTime high = low.plusDays(1).minus(1, ChronoUnit.MILLIS); 
     
     BoolQueryBuilder query = boolQuery();
     
@@ -321,11 +321,24 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
-    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, freeText, null, null, includeUnpublished, start, maxResults, null);
+    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, null, freeText, null, null, includeUnpublished, start, maxResults, null);
   }
   
   @Override
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypes, String freeText, List<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts) {
+  public SearchResult searchWorkspaces(
+      String schoolDataSource, 
+      List<String> subjects, 
+      List<String> identifiers, 
+      List<SchoolDataIdentifier> educationTypes, 
+      List<SchoolDataIdentifier> curriculumIdentifiers, 
+      String freeText, 
+      List<WorkspaceAccess> accesses, 
+      SchoolDataIdentifier accessUser, 
+      boolean includeUnpublished, 
+      int start, 
+      int maxResults, 
+      List<Sort> sorts) {
+    
     if (identifiers != null && identifiers.isEmpty()) {
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>());
     }
@@ -379,6 +392,15 @@ public class ElasticSearchProvider implements SearchProvider {
         query.must(termsQuery("educationTypeIdentifier.untouched", educationTypeIds));
       }
       
+      if (curriculumIdentifiers != null && !curriculumIdentifiers.isEmpty()) {
+        List<String> curriculumIds = new ArrayList<>(curriculumIdentifiers.size());
+        for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
+          curriculumIds.add(curriculumIdentifier.toId());
+        }
+        
+        query.must(termsQuery("curriculumIdentifier.untouched", curriculumIds));
+      }
+  
       if (identifiers != null) {
         query.must(termsQuery("identifier", identifiers));
       }
