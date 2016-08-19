@@ -8,7 +8,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.mock.model.MockCourse;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
@@ -113,16 +114,16 @@ public class TestUtilities {
 
   public static CourseStudent courseStudentFromMockCourseStudent(MockCourseStudent mockCourseStudent) {
     CourseStudent courseStudent = new CourseStudent(mockCourseStudent.getId(), mockCourseStudent.getCourseId(), mockCourseStudent.getStudentId(),
-      new DateTime(2010, 2, 2, 0, 0, 0, 0), false, null, null, null, null, null);
+      OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), false, null, null, null, null, null);
     return courseStudent;
   }
 
-  public static DateTime toDate(int year, int month, int day) {
-    return new DateTime(year, month, day, 0, 0, 0, 0);
+  public static OffsetDateTime toDate(int year, int month, int day) {
+    return OffsetDateTime.of(year, month, day, 0, 0, 0, 0, ZoneOffset.UTC);
   }
   
-  public static DateTime getNextYear() {
-    DateTime result = new DateTime();
+  public static OffsetDateTime getNextYear() {
+    OffsetDateTime result = OffsetDateTime.now(ZoneOffset.UTC);
     return result.plusYears(1);
   }
   

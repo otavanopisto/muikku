@@ -1,16 +1,17 @@
 package fi.otavanopisto.muikku.mock.model;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 public class MockCourse {
   private long id;
   private String name;
-  private DateTime created;
+  private OffsetDateTime created;
   private String description;  
-  private DateTime begin;
-  private DateTime end;
+  private OffsetDateTime begin;
+  private OffsetDateTime end;
   
-  public MockCourse(long id, String name, DateTime created, String description, DateTime begin, DateTime end) {
+  public MockCourse(long id, String name, OffsetDateTime created, String description, OffsetDateTime begin, OffsetDateTime end) {
     super();
     this.id = id;
     this.name = name;
@@ -32,10 +33,10 @@ public class MockCourse {
   public void setId(long id) {
     this.id = id;
   }
-  public DateTime getCreated() {
+  public OffsetDateTime getCreated() {
     return created;
   }
-  public void setCreated(DateTime created) {
+  public void setCreated(OffsetDateTime created) {
     this.created = created;
   }
   public String getDescription() {
@@ -44,16 +45,16 @@ public class MockCourse {
   public void setDescription(String description) {
     this.description = description;
   }
-  public DateTime getBegin() {
+  public OffsetDateTime getBegin() {
     return begin;
   }
-  public void setBegin(DateTime begin) {
+  public void setBegin(OffsetDateTime begin) {
     this.begin = begin;
   }
-  public DateTime getEnd() {
+  public OffsetDateTime getEnd() {
     return end;
   }
-  public void setEnd(DateTime end) {
+  public void setEnd(OffsetDateTime end) {
     this.end = end;
   }
 }

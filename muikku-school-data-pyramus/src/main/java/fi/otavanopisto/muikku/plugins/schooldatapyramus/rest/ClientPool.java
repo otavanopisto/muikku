@@ -25,6 +25,7 @@ import javax.ws.rs.ext.ContextResolver;
 
 import org.jboss.resteasy.client.jaxrs.cache.BrowserCacheFeature;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;

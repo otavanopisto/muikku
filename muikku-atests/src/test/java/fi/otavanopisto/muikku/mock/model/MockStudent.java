@@ -1,13 +1,14 @@
 package fi.otavanopisto.muikku.mock.model;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.pyramus.rest.model.Sex;
 
 public class MockStudent extends MockLoggable{
 
-  public MockStudent(Long id, long personId, String firstName, String lastName, String email, long studyProgrammeId, DateTime birthday, String socialSecurityNumber, Sex sex,
-    DateTime studyStartDate, DateTime studyEndTime) {
+  public MockStudent(Long id, long personId, String firstName, String lastName, String email, long studyProgrammeId, OffsetDateTime birthday, String socialSecurityNumber, Sex sex,
+    OffsetDateTime studyStartDate, OffsetDateTime studyEndTime) {
     super();
     this.id = id;
     this.personId = personId;
@@ -59,10 +60,10 @@ public class MockStudent extends MockLoggable{
   public void setStudyProgrammeId(Long studyProgrammeId) {
     this.studyProgrammeId = studyProgrammeId;
   }
-  public DateTime getBirthday() {
+  public OffsetDateTime getBirthday() {
     return birthday;
   }
-  public void setBirthday(DateTime birthday) {
+  public void setBirthday(OffsetDateTime birthday) {
     this.birthday = birthday;
   }
   public String getSocialSecurityNumber() {
@@ -77,19 +78,19 @@ public class MockStudent extends MockLoggable{
   public void setSex(fi.otavanopisto.pyramus.rest.model.Sex sex) {
     this.sex = sex;
   }
-  public DateTime getStudyStartDate() {
+  public OffsetDateTime getStudyStartDate() {
     return studyStartDate;
   }
 
-  public void setStudyStartDate(DateTime studyStartDate) {
+  public void setStudyStartDate(OffsetDateTime studyStartDate) {
     this.studyStartDate = studyStartDate;
   }
 
-  public DateTime getStudyEndTime() {
+  public OffsetDateTime getStudyEndTime() {
     return studyEndTime;
   }
 
-  public void setStudyEndTime(DateTime studyEndTime) {
+  public void setStudyEndTime(OffsetDateTime studyEndTime) {
     this.studyEndTime = studyEndTime;
   }
   //  public List<Long> getCourses() {
@@ -105,11 +106,11 @@ public class MockStudent extends MockLoggable{
   private String lastName;
   private String email;
   private Long studyProgrammeId;
-  private DateTime birthday;
+  private OffsetDateTime birthday;
   private String socialSecurityNumber;
   private fi.otavanopisto.pyramus.rest.model.Sex sex;
-  private DateTime studyStartDate;
-  private DateTime studyEndTime;
+  private OffsetDateTime studyStartDate;
+  private OffsetDateTime studyEndTime;
 //  private List<Long> courses;
   
 }

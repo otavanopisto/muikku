@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 public abstract class AbstractUser implements User {
   
