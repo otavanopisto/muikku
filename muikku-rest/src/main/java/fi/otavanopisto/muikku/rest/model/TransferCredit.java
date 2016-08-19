@@ -1,10 +1,6 @@
 package fi.otavanopisto.muikku.rest.model;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.threetenbp.ser.OffsetDateTimeSerializer;
 
 public class TransferCredit {
 
@@ -136,10 +132,7 @@ public class TransferCredit {
 
   private String identifier;
   private String studentIdentifier;
-  
-  @JsonSerialize(using=OffsetDateTimeSerializer.class)
   private OffsetDateTime date;
-  
   private String gradeIdentifier;
   private String gradingScaleIdentifier;
   private String verbalAssessment;
