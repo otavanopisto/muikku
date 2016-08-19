@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 public class WorkspaceDetails {
 
@@ -41,9 +40,7 @@ public class WorkspaceDetails {
   }
 
   private String typeId;
-  
   private String externalViewUrl;
-  
   private OffsetDateTime beginDate;
   private OffsetDateTime endDate;
 }
