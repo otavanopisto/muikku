@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.calendar;
 import java.util.List;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 public interface CalendarServiceProvider {
 

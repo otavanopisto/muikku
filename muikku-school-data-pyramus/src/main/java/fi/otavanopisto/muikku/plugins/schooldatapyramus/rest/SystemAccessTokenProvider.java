@@ -11,6 +11,7 @@ import javax.ws.rs.client.Client;
 
 import org.apache.commons.lang3.StringUtils;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;

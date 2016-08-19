@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 import java.util.Date;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
