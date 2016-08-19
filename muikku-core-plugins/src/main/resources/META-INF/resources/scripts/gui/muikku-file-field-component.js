@@ -201,9 +201,7 @@
       this.element.closest('form').find('input[type="submit"]').attr('disabled', 'disabled');
 
       if (!this._multiple) {
-        this._uploaderContainer.find('.muikku-file-input-field-file').each(function(index) {
-          $(this).addClass('muikku-file-input-field-file-removed muikku-file-input-field-file-removed-permanently');
-        });
+        this._uploaderContainer.find('.muikku-file-input-field-file').addClass('muikku-file-input-field-file-removed muikku-file-input-field-file-removed-permanently');
       }
       
       var i, l;
