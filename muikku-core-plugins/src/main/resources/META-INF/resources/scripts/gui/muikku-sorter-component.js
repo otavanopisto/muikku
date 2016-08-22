@@ -65,7 +65,9 @@
         var itemsContainer = this.element.find('.muikku-sorter-items-container');
         if (readonly) {
           this.element.attr('data-disabled', 'true');
-          $(itemsContainer).sortable("destroy");
+          if ($(itemsContainer).sortable()) {
+            $(itemsContainer).sortable("destroy");
+          }
         } else {
           $(itemsContainer).sortable({
             tolerance: 'pointer',
