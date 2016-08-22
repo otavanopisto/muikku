@@ -45,9 +45,9 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
   private CommunicatorController communicatorController;
   
   @GET
-  @Path ("/signatures")
+  @Path ("/userLabels")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listUserMessageSignatures() throws AuthorizationException {
+  public Response listUserLabels() throws AuthorizationException {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
     List<CommunicatorUserLabel> userLabels = communicatorController.listUserLabelsByUserEntity(userEntity);
@@ -63,9 +63,9 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
   }
   
   @POST
-  @Path ("/signatures")
+  @Path ("/userLabels")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createUserMessageSignature(CommunicatorUserLabelRESTModel newUserLabel) throws AuthorizationException {
+  public Response createUserLabel(CommunicatorUserLabelRESTModel newUserLabel) throws AuthorizationException {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
     CommunicatorUserLabel userLabel = communicatorController.createUserLabel(newUserLabel.getName(), newUserLabel.getColor(), userEntity);
@@ -76,9 +76,9 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path ("/signatures/{USERLABELID}")
+  @Path ("/userLabels/{USERLABELID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getUserMessageSignature(
+  public Response getUserLabel(
       @PathParam ("USERLABELID") Long userLabelId
    ) throws AuthorizationException {
     CommunicatorUserLabel userLabel = communicatorController.findUserLabelById(userLabelId);
@@ -93,9 +93,9 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
   }
 
   @DELETE
-  @Path ("/signatures/{USERLABELID}")
+  @Path ("/userLabels/{USERLABELID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response deleteUserMessageSignature(
+  public Response deleteUserLabel(
       @PathParam ("USERLABELID") Long userLabelId
    ) throws AuthorizationException {
     CommunicatorUserLabel userLabel = communicatorController.findUserLabelById(userLabelId);
@@ -110,9 +110,9 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
   }
 
   @POST
-  @Path ("/signatures/{USERLABELID}")
+  @Path ("/userLabels/{USERLABELID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response editUserMessageSignature(
+  public Response editUserLabel(
       @PathParam ("USERLABELID") Long userLabelId,
       CommunicatorUserLabelRESTModel updatedUserLabel
    ) throws AuthorizationException {
