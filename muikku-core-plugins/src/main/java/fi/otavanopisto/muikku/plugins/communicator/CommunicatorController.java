@@ -24,6 +24,7 @@ import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageTemplateDAO;
+import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorUserLabelDAO;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
@@ -31,6 +32,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.security.Permit;
 import fi.otavanopisto.security.PermitContext;
 
@@ -54,6 +56,9 @@ public class CommunicatorController {
   @Inject
   private CommunicatorMessageSignatureDAO communicatorMessageSignatureDAO;
 
+  @Inject
+  private CommunicatorUserLabelDAO communicatorUserLabelDAO;
+  
   @Inject
   private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
 
@@ -258,6 +263,26 @@ public class CommunicatorController {
     return communicatorMessageIdDAO.listAll();
   }
 
+  /* User Label */
+  
+  public CommunicatorUserLabel createUserLabel(String name, Long color, UserEntity userEntity) {
+    return communicatorUserLabelDAO.create(name, color, userEntity);
+  }
+
+  public CommunicatorUserLabel findUserLabelById(Long id) {
+    return communicatorUserLabelDAO.findById(id);
+  }
+  
+  public List<CommunicatorUserLabel> listUserLabelsByUserEntity(UserEntity userEntity) {
+    return communicatorUserLabelDAO.listByUser(userEntity);
+  }
+  
+  public CommunicatorUserLabel updateUserLabel(CommunicatorUserLabel userLabel, String name, Long color) {
+    return communicatorUserLabelDAO.update(userLabel, name, color);
+  }
+
+  /* DELETE */
+  
   public void delete(CommunicatorMessage icm) {
     communicatorMessageDAO.delete(icm);
   }
@@ -270,4 +295,8 @@ public class CommunicatorController {
     communicatorMessageIdDAO.delete(id);
   }
   
+  public void delete(CommunicatorUserLabel communicatorUserLabel) {
+    communicatorUserLabelDAO.delete(communicatorUserLabel);
+  }
+
 }
