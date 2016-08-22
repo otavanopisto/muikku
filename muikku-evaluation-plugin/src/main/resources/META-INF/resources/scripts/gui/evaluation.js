@@ -1339,7 +1339,7 @@
     },
     
     _create : function() {
-      this._displayName = this.options.studentFirstName + ' ' + this.options.studentLastName;
+      this._displayName = this.options.studentLastName + ', ' + this.options.studentFirstName;
       this._studyProgrammeName = this.options.studentStudyProgrammeName;
       
       this.element.addClass('evaluation-student-wrapper');
