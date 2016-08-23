@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <createTables>
+    <table name="CommunicatorMessageIdLabel" primaryKeys="id">
+      <fields>
+        <field name="id" type="java.lang.Long" nullable="false" unique="false" />
+        <field name="userEntity_id" type="java.lang.Long" nullable="false" unique="false" />
+        <field name="communicatorMessageId_id" type="java.lang.Long" nullable="false" unique="false" />
+        <field name="label_id" type="java.lang.Long" nullable="false" unique="false" />
+      </fields>
+      <foreignKeys>
+        <key referencedColumns="id" columns="userEntity_id" referencedTable="UserEntity" name="FK_COMMUNICATORMESSAGEIDLABEL_USERENTITY"/>
+        <key referencedColumns="id" columns="communicatorMessageId_id" referencedTable="CommunicatorMessageId" name="FK_COMMUNICATORMESSAGEIDLABEL_MESSAGEID"/>
+        <key referencedColumns="id" columns="label_id" referencedTable="CommunicatorLabel" name="FK_COMMUNICATORMESSAGEIDLABEL_LABEL"/>
+      </foreignKeys>
+    </table>
+  </createTables>
+
+</update>
