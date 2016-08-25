@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +40,6 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.sort.SortOrder;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 
@@ -127,13 +125,15 @@ public class ElasticSearchProvider implements SearchProvider {
       }
       
       if (StringUtils.isNotBlank(text)) {
-        StringTokenizer tokenizer = new StringTokenizer(text, " ");
-
-        while (tokenizer.hasMoreTokens()) {
-          String token = tokenizer.nextToken();
-
-          for (String textField : textFields)
-            query.should(prefixQuery(textField, token));
+        String[] words = text.split(" ");
+        for (int i = 0; i < words.length; i++) {
+          if (StringUtils.isNotBlank(words[i])) {
+            BoolQueryBuilder fieldBuilder = boolQuery();
+            for (String textField : textFields) {
+              fieldBuilder.should(prefixQuery(textField, words[i]));
+            }
+            query.must(fieldBuilder);
+          }
         }
       }
       
@@ -405,21 +405,12 @@ public class ElasticSearchProvider implements SearchProvider {
   
       if (StringUtils.isNotBlank(freeText)) {
         String[] words = freeText.split(" ");
-        if (words.length == 1) {
-          query.should(boolQuery()
-              .must(prefixQuery("name", freeText))
-              .must(prefixQuery("description", freeText)));
-        }
-        else {
-          
-          BoolQueryBuilder nameQuery = boolQuery();
-          BoolQueryBuilder descQuery = boolQuery();
-          for (int i = 0; i < words.length; i++) {
-            nameQuery.must(prefixQuery("name", words[i]));
-            descQuery.must(prefixQuery("description", words[i]));
+        for (int i = 0; i < words.length; i++) {
+          if (StringUtils.isNotBlank(words[i])) {
+            query.must(boolQuery()
+                .should(prefixQuery("name", words[i]))
+                .should(prefixQuery("description", words[i])));
           }
-          query.should(nameQuery);
-          query.should(descQuery);
         }
       }
       
