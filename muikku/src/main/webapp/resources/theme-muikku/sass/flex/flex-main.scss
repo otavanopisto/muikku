@@ -82,7 +82,8 @@ body {
   opacity: 0.98;
   box-shadow: -5px 0 5px rgba(0, 0, 0, 0.2);
   z-index: 999;
-  min-width: 320px;
+  min-width: 310px;
+  padding:0 5px;
   
   .footer-custom-bg {
     background: #485c64;

@@ -365,6 +365,16 @@
           groupMessagingPermission: this.options.groupMessagingPermission
         }));
       
+      dialog.on('dialogReady', function(e) {
+        $(document.body).css({
+          paddingBottom: dialog.height() + 50 + 'px'
+        }).addClass('footerDialogOpen');
+      });
+      
+      dialog.on('dialogClose', function(e) {
+        $(document.body).removeClass('footerDialogOpen').removeAttr('style');
+      });
+      
       $('#socialNavigation')
         .empty()
         .append(dialog);
@@ -785,6 +795,7 @@
     
     _onCancelClick: function (event) {
       event.preventDefault();
+      this.element.trigger('dialogClose');
       this.element.remove();
     },
     
@@ -794,7 +805,8 @@
     },
     
     _onCKEditorReady: function (e) {
-      this.element.find('input[name="send"]').removeAttr('disabled'); 
+      this.element.find('input[name="send"]').removeAttr('disabled');
+      this.element.trigger('dialogReady');
     }
     
   });
