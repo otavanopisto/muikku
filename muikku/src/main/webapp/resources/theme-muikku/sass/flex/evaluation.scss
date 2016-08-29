@@ -832,7 +832,7 @@ body.evaluation {
                   > h2 {
                     font-size: 20px;
                     margin: 0 120px 0 -5px; 
-                    padding: 5px 125px 5px 10px;
+                    padding: 5px 170px 5px 10px;
                     font-weight: 300;
                     margin: 0;
                     color: #000;
@@ -914,6 +914,42 @@ body.evaluation {
               
               article {
                 clear: both;
+                
+                .evaluation-assignment-title-container {
+                  position: relative;
+                  margin: 0;
+                  background: #fff;
+                  border-radius: 3px;
+                  color: #000;
+                
+                  > h2 {
+                    font-size: 20px;
+                    margin: 0 120px 0 -5px; 
+                    padding: 5px 170px 5px 10px;
+                    font-weight: 300;
+                    margin: 0;
+                    color: #000;
+                    cursor: pointer;
+                  }
+                  
+                  .evaluation-assignment-meta {
+                    position: absolute;
+                    max-width: 150px;
+                    right: 0;
+                    top: -6px;
+                    text-align: right;
+                    padding: 0px 10px;
+                    white-space: nowrap;
+                    
+                    .evaluation-assignment-assessmentvalue,
+                    .evaluation-assignment-assignmentdone {
+                      margin: 4px 0 4px;
+                    }
+                    
+                  }
+                
+                }
+                
               }
               
             }
