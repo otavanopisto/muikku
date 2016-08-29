@@ -992,14 +992,12 @@
     },
     
     footerDialogReady: function() {
-    	this.element.addClass('hepokatti');
       $(document.body).css({
         paddingBottom: this.element.height() + 50 + 'px'
       }).addClass('footerDialogOpen');
     },
       
     footerDialogClose: function() {
-    	this.element.removeClass('hepokatti');
       $(document.body).removeClass('footerDialogOpen').removeAttr('style');
     }
     
