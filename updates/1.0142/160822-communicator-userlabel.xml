@@ -23,4 +23,7 @@
     </table>
   </createTables>
 
+  <sql>
+    alter table CommunicatorLabel modify id bigint(20) auto_increment;
+  </sql>
 </update>
