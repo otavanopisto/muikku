@@ -31,6 +31,7 @@
     <input type="hidden" name="userId" value="#{sessionBackingBean.loggedUserId}"/>
     <input type="hidden" name="areaPermissions" value="#{discussionBackingBean.areaPermissions}"/>  
     <div id="discussion">
+      <h2 class="main-functionality-page-title">#{i18n.text['plugin.forum.pageTitle']}</h2>
       <ui:insert name="mf-content-functions">
         <div class="mf-content-functions flex-row flex-align-items-center">
           <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-6 sm-flex-order-1 sm-flex-cell-first">
