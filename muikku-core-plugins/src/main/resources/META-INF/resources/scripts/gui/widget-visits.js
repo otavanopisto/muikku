@@ -83,14 +83,14 @@ $(document).ready(function() {
       }, function(text) {
         $('#visits').append($.parseHTML(text));
         
-        var is_xs = $(window).width() < 769;
-        if (!is_xs) {
-        	$('#visits').perfectScrollbar({
-          	wheelSpeed:3,
-            swipePropagation:false,
-            wheelPropagation:true
-          });
-        }
+				var is_xs = $(window).width() < 769;
+				if (!is_xs) {
+				  $('#visits').perfectScrollbar({
+				    wheelSpeed:3,
+				    swipePropagation:false,
+				    wheelPropagation:true
+				  });
+				}
       });
 
     }
