@@ -35,8 +35,13 @@
               {:else}
                 {created|formatDate} {created|formatTime}              
               {/threadLatestMessageDate}
-             </span>
-           </div>
+            </span>
+          </div>
+          <div>
+            {#labels}
+              <span class="LABEL" style="background-color: {colorHex}">{labelName}</span>
+            {/labels}
+          </div>
         </div>
 
       </div>

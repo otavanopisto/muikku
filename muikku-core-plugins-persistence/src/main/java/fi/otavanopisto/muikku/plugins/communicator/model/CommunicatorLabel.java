@@ -17,6 +17,10 @@ public class CommunicatorLabel {
     return id;
   }
   
+  public String getName() {
+    return null;
+  }
+  
   public Long getColor() {
   	return color;
   }

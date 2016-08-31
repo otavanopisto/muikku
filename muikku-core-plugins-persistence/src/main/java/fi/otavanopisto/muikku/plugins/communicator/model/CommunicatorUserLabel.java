@@ -20,6 +20,7 @@ public class CommunicatorUserLabel extends CommunicatorLabel implements ContextR
     this.userEntity = userEntity;
   }
 
+  @Override
   public String getName() {
     return name;
   }

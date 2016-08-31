@@ -6,11 +6,13 @@ public class CommunicatorMessageIdLabelRESTModel {
   public CommunicatorMessageIdLabelRESTModel() {
   }
   
-  public CommunicatorMessageIdLabelRESTModel(Long id, Long userEntityId, Long messageThreadId, Long labelId) {
+  public CommunicatorMessageIdLabelRESTModel(Long id, Long userEntityId, Long messageThreadId, Long labelId, String labelName, Long labelColor) {
     this.id = id;
     this.userEntityId = userEntityId;
     this.messageThreadId = messageThreadId;
     this.labelId = labelId;
+    this.labelName = labelName;
+    this.labelColor = labelColor;
   }
 
   public Long getId() {
@@ -45,8 +47,26 @@ public class CommunicatorMessageIdLabelRESTModel {
     this.labelId = labelId;
   }
 
+  public String getLabelName() {
+    return labelName;
+  }
+
+  public void setLabelName(String labelName) {
+    this.labelName = labelName;
+  }
+
+  public Long getLabelColor() {
+    return labelColor;
+  }
+
+  public void setLabelColor(Long labelColor) {
+    this.labelColor = labelColor;
+  }
+
   private Long id;
   private Long userEntityId;
   private Long messageThreadId;
   private Long labelId;
+  private String labelName;
+  private Long labelColor;
 }

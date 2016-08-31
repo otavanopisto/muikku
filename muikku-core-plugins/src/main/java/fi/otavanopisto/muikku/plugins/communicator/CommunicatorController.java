@@ -79,6 +79,10 @@ public class CommunicatorController {
     return doc.body().html();
   }
 
+  public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity, CommunicatorLabel label, Integer firstResult, Integer maxResults) {
+    return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity, label, firstResult, maxResults);
+  }
+
   public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
     return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity, firstResult, maxResults);
   }

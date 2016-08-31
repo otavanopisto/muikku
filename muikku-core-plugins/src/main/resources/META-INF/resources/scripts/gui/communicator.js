@@ -35,19 +35,33 @@
         async.parallel(recipientCalls, recipientsCallback);
       }
       
-      async.parallel([recipientBatchCall, countCall, senderCall], function (err, results) {
+      var labelsCall = function (labelsCallback) {
+        mApi().communicator.messages.labels
+          .read(item.communicatorMessageId)
+          .callback(labelsCallback);
+      }
+      
+      async.parallel([recipientBatchCall, countCall, senderCall, labelsCall], function (err, results) {
         if (err) {
           itemCallback(err);
         } else {
           var recipients = results[0];
           var count = results[1];
           var sender = results[2];
+          var labels = results[3];
+
+          var communicator = $(".communicator").communicator("instance");
+          
+          for (var i = 0, l = labels.length; i < l; i++) {
+            labels[i]["colorHex"] = communicator.colorIntToHex(labels[i].labelColor);
+          }
           
           itemCallback(null, {
             recipientCount: recipientCount,
             recipients: recipients,
             sender: sender,
-            count: count
+            count: count,
+            labels: labels
           });
         }
       });
@@ -67,8 +81,9 @@
     
   });
   
-  var CommunicatorInboxFolderController = function (options) {
+  var CommunicatorInboxFolderController = function (labelId, options) {
     this._super = CommunicatorFolderController.prototype;
+    this._labelId = labelId;
     CommunicatorFolderController.call(this, arguments); 
   };
   
@@ -87,11 +102,16 @@
     },
     
     loadItems: function (firstResult, maxResults, mainCallback) {
+      var params = {
+        firstResult: firstResult,
+        maxResults: maxResults
+      };
+      
+      if (this._labelId)
+        params.labelId = this._labelId;
+        
       mApi().communicator.items
-        .read({
-          firstResult: firstResult,
-          maxResults: maxResults
-        })
+        .read(params)
         .on('$', $.proxy(function (item, itemCallback) {
           this.loadItemDetails(item, function (err, details) {
             if (err) {
@@ -101,6 +121,7 @@
               item.recipientCount = details.recipientCount;
               item.recipients = details.recipients;
               item.messageCount = details.count;
+              item.labels = details.labels;
               itemCallback();
             }
           });
@@ -144,6 +165,7 @@
               item.recipientCount = details.recipientCount;
               item.recipients = details.recipients;
               item.messageCount = details.count;
+              item.labels = details.labels;
               itemCallback();
             }
           });
@@ -161,6 +183,7 @@
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
       this.element.on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
+      this.element.on('click', '.newLabelSubmit', $.proxy(this._onAddLabelClick, this));
       $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
     },
     
@@ -263,6 +286,16 @@
       
       this.element.closest('.communicator') 
         .communicator('loadThread', threadId);
+    },
+    
+    _onAddLabelClick: function (event) {
+      var communicator = $('.communicator').communicator("instance");
+      
+      var name = "Label #" + Math.round(Math.random() * 100);
+      var color = Math.round(Math.random() * 16777215);
+      var colorHex = communicator.colorIntToHex(color);
+      
+      communicator.createLabel(name, colorHex);
     }
     
   });
@@ -274,42 +307,50 @@
     },
     
     _create : function() {
-      this._folderControllers = {
-        'inbox': new CommunicatorInboxFolderController(),
-        'sent': new CommunicatorSentFolderController()
-      };
+      this.loadLabels($.proxy(
+        function (err, labels) {
+          this._folderControllers = {
+            'inbox': new CommunicatorInboxFolderController(),
+            'sent': new CommunicatorSentFolderController()
+          };
+          
+          $.each(labels, $.proxy(function (index, label) {
+            this.addLabelControl(label);
+          }, this));
 
-      var folderId;
-      var threadId;
-      
-      if (window.location.hash.length > 1) {
-        var hashParts = window.location.hash.substring(1).split('/');
-        if (hashParts.length > 0) {
-          folderId = hashParts[0];
-        }
+          var folderId;
+          var threadId;
+          
+          if (window.location.hash.length > 1) {
+            var hashParts = window.location.hash.substring(1).split('/');
+            if (hashParts.length > 0) {
+              folderId = hashParts[0];
+            }
 
-        if (hashParts.length > 1) {
-          threadId = hashParts[1];
+            if (hashParts.length > 1) {
+              threadId = hashParts[1];
+            }
+          }
+          
+          folderId = this._folderControllers[folderId] ? folderId : this.options.defaultFolderId;
+          
+          this.element.find('.cm-messages-container').communicatorMessages({
+            maxMessageCount: this.options.maxMessageCount,
+            folderId: folderId
+          });
+          
+          this.element.find('.cm-thread-container').communicatorThread();
+         
+          this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
+          this.element.on('click', '.communicator-folder', $.proxy(this._onCommunicatorFolderClick, this));
+          
+          if (threadId) {
+            this.loadThread(threadId);
+          } else {
+            this.loadFolder(folderId);
+          }
         }
-      }
-      
-      folderId = this._folderControllers[folderId] ? folderId : this.options.defaultFolderId;
-      
-      this.element.find('.cm-messages-container').communicatorMessages({
-        maxMessageCount: this.options.maxMessageCount,
-        folderId: folderId
-      });
-      
-      this.element.find('.cm-thread-container').communicatorThread();
-     
-      this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
-      this.element.on('click', '.communicator-folder', $.proxy(this._onCommunicatorFolderClick, this));
-      
-      if (threadId) {
-        this.loadThread(threadId);
-      } else {
-        this.loadFolder(folderId);
-      }
+      , this));
     },
     
     loadFolder: function (id) {
@@ -353,6 +394,101 @@
       this._removeThreads(threads, $.proxy(function () {
         this.reloadFolder();
       }, this));
+    },
+
+    createLabel: function (name, colorHex) {
+      var colorInt = this.hexToColorInt(colorHex);
+      var label = {
+        name: name,
+        color: colorInt
+      };
+      
+      mApi().communicator.userLabels.create(label).callback($.proxy(function (err, label) {
+        if (err) {
+          // TODO
+        } else {
+          this.addLabelControl(label);
+        }
+      }, this));
+    },
+    
+    updateLabel: function (id, name, colorHex) {
+      var colorInt = hexToColorInt(colorHex);
+      var label = {
+        id: id,
+        name: name,
+        color: colorInt
+      };
+      
+      mApi().communicator.userLabels.update(id, label).callback($.proxy(function (err, label) {
+        if (err) {
+          // TODO
+        } else {
+        }
+      }, this));
+    },
+
+    deleteLabel: function (id) {
+      mApi().communicator.userLabels.del(id).callback($.proxy(function (err, label) {
+        if (err) {
+          // TODO
+        } else {
+        }
+      }, this));
+    },
+    
+    loadLabels: function (callback) {
+      mApi().communicator.userLabels.read().callback($.proxy(function (err, results) {
+        callback(err, results);
+      }, this));
+    },
+    
+    addLabelControl: function (label) {
+      var labelId = label.id;
+      var labelName = label.name;
+      var labelColor = label.color;
+      
+      var labelControllerId = "label-" + label.id;
+      this._folderControllers[labelControllerId] = new CommunicatorInboxFolderController(label.id);
+      
+      var elem = $('<li class="communicator-folder" data-folder-type="label" data-folder-id="' + labelControllerId + '"><a href="#' + labelControllerId + '">' + labelName + '</a></li>');
+      
+      if (labelColor) {
+        elem.css({
+          'background-color': this.colorIntToHex(labelColor)
+        });
+      }
+      
+      this.element.find(".cm-categories ul").append(elem);
+    },
+    
+    colorIntToHex: function (color) {
+      var b = (color & 255).toString(16);
+      var g = ((color >> 8) & 255).toString(16);
+      var r = ((color >> 16) & 255).toString(16);
+
+      var rStr = r.length == 1 ? "0" + r : r;
+      var gStr = g.length == 1 ? "0" + g : g;
+      var bStr = b.length == 1 ? "0" + b : b;
+      
+      return "#" + rStr + gStr + bStr;
+    },
+    
+    hexToColorInt: function (hexColor) {
+      var r = 255;
+      var g = 255;
+      var b = 255;
+    
+      if (hexColor) {
+        if (hexColor.length == 7)
+          hexColor = hexColor.slice(1);
+        
+        r = parseInt(hexColor.slice(0, 2), 16);
+        g = parseInt(hexColor.slice(2, 4), 16);
+        b = parseInt(hexColor.slice(4, 6), 16);
+      }
+        
+      return (r << 16) + (g << 8) + b;
     },
     
     folderController: function (folderId) {

@@ -15,9 +15,12 @@ import javax.persistence.criteria.Root;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel_;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId_;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
@@ -68,6 +71,41 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), recipient.getId()),
         criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
+      )
+    );
+    
+    criteria.groupBy(threadJoin);
+    criteria.orderBy(criteriaBuilder.desc(
+      threadJoin.get(CommunicatorMessageId_.lastMessage)
+    ));
+    
+    TypedQuery<CommunicatorMessage> query = entityManager.createQuery(criteria);
+    
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
+    
+    return query.getResultList();
+  }
+  
+  public List<CommunicatorMessage> listFirstMessagesByRecipient(UserEntity recipient, CommunicatorLabel label, Integer firstResult, Integer maxResults) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessage> criteria = criteriaBuilder.createQuery(CommunicatorMessage.class);
+    Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
+    Join<CommunicatorMessageRecipient, CommunicatorMessage> messageJoin = root.join(CommunicatorMessageRecipient_.communicatorMessage);
+    Join<CommunicatorMessage, CommunicatorMessageId> threadJoin = messageJoin.join(CommunicatorMessage_.communicatorMessageId);
+    
+    Root<CommunicatorMessageIdLabel> labelRoot = criteria.from(CommunicatorMessageIdLabel.class);
+    
+    criteria.select(messageJoin);
+
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), recipient.getId()),
+        criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE),
+        threadJoin.in(labelRoot),
+        criteriaBuilder.equal(labelRoot.get(CommunicatorMessageIdLabel_.label), label)
       )
     );
     
