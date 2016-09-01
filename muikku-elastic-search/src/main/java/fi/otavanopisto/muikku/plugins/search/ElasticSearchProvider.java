@@ -66,17 +66,28 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public void init() {
-	String clusterName = pluginSettingsController.getPluginSetting("elastic-search", "clusterName");
-	if (clusterName == null) {
-		clusterName = "elasticsearch";
-	}
+    String clusterName = pluginSettingsController.getPluginSetting("elastic-search", "clusterName");
+    if (clusterName == null) {
+      clusterName = System.getProperty("elasticsearch.cluster.name");
+    }
+    if (clusterName == null) {
+      clusterName = "elasticsearch";
+    }
+    String portNumberProperty = System.getProperty("elasticsearch.node.port");
+    int portNumber;
+    if (portNumberProperty != null) {
+      portNumber = Integer.decode(portNumberProperty);
+    } else {
+      portNumber = 9300;
+    }
+
     Settings settings = Settings.settingsBuilder()
         .put("cluster.name", clusterName).build();
     
     try {
       elasticClient = TransportClient.builder().settings(settings).build()
-          .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
-    } catch (UnknownHostException e) {
+          .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), portNumber));
+   } catch (UnknownHostException e) {
       logger.log(Level.SEVERE, "Failed to connect to elasticsearch cluster", e);
       return;
     }

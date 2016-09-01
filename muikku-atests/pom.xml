@@ -305,6 +305,9 @@
         <it.browser>phantomjs</it.browser>
         <it.package>**</it.package>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
+        <elasticsearch.http.port>9201</elasticsearch.http.port>
+        <elasticsearch.node.port>9301</elasticsearch.node.port>
+        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
       </properties>
 
       <dependencies>
@@ -472,6 +475,42 @@
               </execution>
             </executions>
           </plugin>
+          
+          
+          <plugin>
+            <groupId>com.github.alexcojocaru</groupId>
+            <artifactId>elasticsearch-maven-plugin</artifactId>
+            <version>2.0</version>
+            <configuration>
+              <clusterName>${elasticsearch.cluster.name}</clusterName>
+              <tcpPort>${elasticsearch.node.port}</tcpPort>
+              <httpPort>${elasticsearch.http.port}</httpPort>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-elasticsearch</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>2.1.2</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+          
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
@@ -546,6 +585,8 @@
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/system-property=tests.running:add(value="true")</command>
+                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
@@ -628,6 +669,9 @@
         <it.platform />
         <it.package>**</it.package>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
+        <elasticsearch.http.port>9201</elasticsearch.http.port>
+        <elasticsearch.node.port>9301</elasticsearch.node.port>
+        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
       </properties>
 
       <dependencies>
@@ -750,6 +794,7 @@
             </executions>
           </plugin>
 
+
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>keytool-maven-plugin</artifactId>
@@ -809,6 +854,40 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>com.github.alexcojocaru</groupId>
+            <artifactId>elasticsearch-maven-plugin</artifactId>
+            <version>2.0</version>
+            <configuration>
+              <clusterName>${elasticsearch.cluster.name}</clusterName>
+              <tcpPort>${elasticsearch.node.port}</tcpPort>
+              <httpPort>${elasticsearch.http.port}</httpPort>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-elasticsearch</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>2.1.2</version>
+              </dependency>
+            </dependencies>
           </plugin>
 
           <plugin>
@@ -885,6 +964,8 @@
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/system-property=tests.running:add(value="true")</command>
+                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
@@ -967,6 +1048,9 @@
         <it.platform />
         <it.package>**</it.package>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
+        <elasticsearch.http.port>9201</elasticsearch.http.port>
+        <elasticsearch.node.port>9301</elasticsearch.node.port>
+        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
       </properties>
 
       <dependencies>
@@ -1149,6 +1233,41 @@
               </execution>
             </executions>
           </plugin>
+
+          <plugin>
+            <groupId>com.github.alexcojocaru</groupId>
+            <artifactId>elasticsearch-maven-plugin</artifactId>
+            <version>2.0</version>
+            <configuration>
+              <clusterName>${elasticsearch.cluster.name}</clusterName>
+              <tcpPort>${elasticsearch.node.port}</tcpPort>
+              <httpPort>${elasticsearch.http.port}</httpPort>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-elasticsearch</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>2.1.2</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
@@ -1223,6 +1342,8 @@
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/system-property=tests.running:add(value="true")</command>
+                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
@@ -1297,6 +1418,9 @@
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
+        <elasticsearch.http.port>9201</elasticsearch.http.port>
+        <elasticsearch.node.port>9301</elasticsearch.node.port>
+        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
       </properties>
 
       <dependencies>
@@ -1472,6 +1596,40 @@
           </plugin>
 
           <plugin>
+            <groupId>com.github.alexcojocaru</groupId>
+            <artifactId>elasticsearch-maven-plugin</artifactId>
+            <version>2.0</version>
+            <configuration>
+              <clusterName>${elasticsearch.cluster.name}</clusterName>
+              <tcpPort>${elasticsearch.node.port}</tcpPort>
+              <httpPort>${elasticsearch.http.port}</httpPort>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-elasticsearch</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>2.1.2</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
             <version>1.5.0</version>
@@ -1545,6 +1703,8 @@
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/system-property=tests.running:add(value="true")</command>
+                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
