@@ -506,7 +506,7 @@
               <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
-                <version>2.1.2</version>
+                <version>${elasticsearch.version}</version>
               </dependency>
             </dependencies>
           </plugin>
@@ -885,7 +885,7 @@
               <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
-                <version>2.1.2</version>
+                <version>${elasticsearch.version}</version>
               </dependency>
             </dependencies>
           </plugin>
@@ -1263,7 +1263,7 @@
               <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
-                <version>2.1.2</version>
+                <version>${elasticsearch.version}</version>
               </dependency>
             </dependencies>
           </plugin>
@@ -1624,7 +1624,7 @@
               <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
-                <version>2.1.2</version>
+                <version>${elasticsearch.version}</version>
               </dependency>
             </dependencies>
           </plugin>

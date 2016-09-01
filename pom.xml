@@ -88,7 +88,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<hibernate-jpamodelgen.version>4.3.6.Final</hibernate-jpamodelgen.version>
-    <findbugs.skip>true</findbugs.skip>
+        <findbugs.skip>true</findbugs.skip>
+        <elasticsearch.version>2.1.2</elasticsearch.version>
 	</properties>
 
 	<dependencyManagement>
