@@ -57,6 +57,8 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
     String expected = "{'id':1,'firstName':'Test','lastName':'User','hasImage':false}";
     JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
+  
+  /*
 
   @Test
   public void testSearchUsers() throws NoSuchFieldException {
@@ -178,5 +180,7 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
     String expected = "[{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@example.com'}]";
     JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
+  
+  */
 
 }
