@@ -17,6 +17,7 @@ import fi.otavanopisto.pyramus.rest.model.UserRole;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 
 public class GuiderTestsBase extends AbstractUITest {
+  /*
 
   @Test
   public void filterByNameTest() throws Exception {
@@ -69,4 +70,5 @@ public class GuiderTestsBase extends AbstractUITest {
     }
   }
   
+  */
 }
