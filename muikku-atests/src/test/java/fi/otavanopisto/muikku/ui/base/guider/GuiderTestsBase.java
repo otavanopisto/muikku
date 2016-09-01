@@ -17,8 +17,6 @@ import fi.otavanopisto.pyramus.rest.model.UserRole;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 
 public class GuiderTestsBase extends AbstractUITest {
-  /*
-
   @Test
   public void filterByNameTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
@@ -69,6 +67,4 @@ public class GuiderTestsBase extends AbstractUITest {
       deleteWorkspace(workspace.getId());
     }
   }
-  
-  */
 }
