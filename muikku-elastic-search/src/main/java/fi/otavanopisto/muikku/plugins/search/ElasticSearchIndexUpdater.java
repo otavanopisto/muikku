@@ -22,6 +22,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.search.IndexableEntityVault;
 import fi.otavanopisto.muikku.search.SearchIndexUpdater;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
@@ -33,6 +34,9 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
 
   @Inject
   private Logger logger;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
 
   @Override
   public void init() {
@@ -46,12 +50,12 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
       .node();
     
     elasticClient = node.client();*/
-
-	String elasticClientClusterName = "elasticsearch_avukkonen";
-    logger.severe("Elastic client node name: "  +elasticClientClusterName);
-	  
+	String clusterName = pluginSettingsController.getPluginSetting("elastic-search", "clusterName");
+	if (clusterName == null) {
+		clusterName = "elasticsearch";
+	}
     Settings settings = Settings.settingsBuilder()
-        .put("cluster.name", "elasticsearch_avukkonen").build();
+        .put("cluster.name", clusterName).build();
     
     try {
       elasticClient = TransportClient.builder().settings(settings).build()

@@ -377,8 +377,8 @@
 
           <plugin>
             <groupId>de.juplo</groupId>
-            <artifactId>hibernate4-maven-plugin</artifactId>
-            <version>1.0.5</version>
+            <artifactId>hibernate-maven-plugin</artifactId>
+            <version>2.0.0</version>
             <dependencies>
               <dependency>
                 <groupId>com.h2database</groupId>
@@ -387,8 +387,8 @@
               </dependency>
             </dependencies>
             <configuration>
-              <driverClassName>${it.jdbc.driver}</driverClassName>
-              <hibernateDialect>${it.hibernate.dialect}</hibernateDialect>
+              <driver>${it.jdbc.driver}</driver>
+              <dialect>${it.hibernate.dialect}</dialect>
               <url><![CDATA[${it.jdbc.url}]]></url>
               <username>${it.jdbc.username}</username>
               <password>${it.jdbc.password}</password>
@@ -400,22 +400,15 @@
                 <id>create-schema</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>create</goal>
                 </goals>
-                <configuration>
-                  <type>CREATE</type>
-                </configuration>
               </execution>
               <execution>
                 <id>drop-db-after-test</id>
                 <phase>post-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>drop</goal>
                 </goals>
-                <configuration>
-                  <type>DROP</type>
-                  <force>true</force>
-                </configuration>
               </execution>
             </executions>
           </plugin>
@@ -482,14 +475,14 @@
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.4.12</version>
+            <version>1.5.0</version>
             <configuration>
               <container>
-                <containerId>wildfly8x</containerId>
+                <containerId>wildfly10x</containerId>
                 <log>${project.basedir}/target/cargo.log</log>
                 <output>${project.basedir}/target/jboss.log</output>
                 <zipUrlInstaller>
-                  <url>http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip</url>
+                  <url>http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
                   <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
@@ -821,14 +814,14 @@
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.4.12</version>
+            <version>1.5.0</version>
             <configuration>
               <container>
-                <containerId>wildfly8x</containerId>
+                <containerId>wildfly10x</containerId>
                 <log>${project.basedir}/target/cargo.log</log>
                 <output>${project.basedir}/target/jboss.log</output>
                 <zipUrlInstaller>
-                  <url>http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip</url>
+                  <url>http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
                   <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
@@ -1159,14 +1152,14 @@
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.4.12</version>
+            <version>1.5.0</version>
             <configuration>
               <container>
-                <containerId>wildfly8x</containerId>
+                <containerId>wildfly10x</containerId>
                 <log>${project.basedir}/target/cargo.log</log>
                 <output>${project.basedir}/target/jboss.log</output>
                 <zipUrlInstaller>
-                  <url>http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip</url>
+                  <url>http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
                   <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
@@ -1481,14 +1474,14 @@
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.4.12</version>
+            <version>1.5.0</version>
             <configuration>
               <container>
-                <containerId>wildfly8x</containerId>
+                <containerId>wildfly10x</containerId>
                 <log>${project.basedir}/target/cargo.log</log>
                 <output>${project.basedir}/target/jboss.log</output>
                 <zipUrlInstaller>
-                  <url>http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip</url>
+                  <url>http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
                   <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>

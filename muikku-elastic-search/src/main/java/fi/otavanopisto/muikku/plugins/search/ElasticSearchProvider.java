@@ -45,6 +45,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -62,24 +63,19 @@ public class ElasticSearchProvider implements SearchProvider {
   @Inject
   private WorkspaceEntityController workspaceEntityController;
   
+  @Inject
+  private PluginSettingsController pluginSettingsController;
+  
   @Override
   public void init() {
-    /*Builder settings = nodeBuilder().settings();
-    settings.put("cluster.routing.allocation.disk.watermark.high", "99%");
-    settings.put("path.home", "./");
-    
-    node = nodeBuilder()
-      .settings(settings)
-      .local(true)
-      .node();
-    
-    elasticClient = node.client();*/
-    
-	String elasticClientClusterName = "elasticsearch_avukkonen";
-	logger.severe("Elastic client node name: "  +elasticClientClusterName);
-	  
+
+	String clusterName = pluginSettingsController.getPluginSetting("elastic-search", "clusterName");
+	if (clusterName == null) {
+		clusterName = "elasticsearch";
+	}
+	
     Settings settings = Settings.settingsBuilder()
-      .put("cluster.name", "elasticsearch_avukkonen").build();
+        .put("cluster.name", clusterName).build();
     try {
       elasticClient = TransportClient.builder().settings(settings).build()
           .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
