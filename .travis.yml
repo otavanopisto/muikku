@@ -102,7 +102,7 @@ after_failure:
 - if [ $use_sc = true ]; then killall sc; fi;
 #- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
 - pushd .;
-- cat muikku-atests/target/cargo/configurations/wildfly8x/log/server.log;
+- cat muikku-atests/target/cargo/configurations/wildfly10x/log/server.log;
 notifications:
   irc:
     channels:

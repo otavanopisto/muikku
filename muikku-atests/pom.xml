@@ -507,6 +507,11 @@
                 <artifactId>elasticsearch</artifactId>
                 <version>${elasticsearch.version}</version>
               </dependency>
+              <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.21</version>
+              </dependency>
             </dependencies>
           </plugin>
           
@@ -876,6 +881,11 @@
                 <artifactId>elasticsearch</artifactId>
                 <version>${elasticsearch.version}</version>
               </dependency>
+              <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.21</version>
+              </dependency>
             </dependencies>
           </plugin>
 
@@ -1237,6 +1247,11 @@
                 <artifactId>elasticsearch</artifactId>
                 <version>${elasticsearch.version}</version>
               </dependency>
+              <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.21</version>
+              </dependency>
             </dependencies>
           </plugin>
 
@@ -1588,6 +1603,11 @@
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
                 <version>${elasticsearch.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.21</version>
               </dependency>
             </dependencies>
           </plugin>
