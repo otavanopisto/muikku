@@ -395,8 +395,6 @@
               <url><![CDATA[${it.jdbc.url}]]></url>
               <username>${it.jdbc.username}</username>
               <password>${it.jdbc.password}</password>
-
-              <!-- <scanDependencies>compile,test</scanDependencies> -->
             </configuration>
             <executions>
               <execution>
@@ -415,6 +413,7 @@
               </execution>
             </executions>
           </plugin>
+
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>keytool-maven-plugin</artifactId>
@@ -751,8 +750,8 @@
 
           <plugin>
             <groupId>de.juplo</groupId>
-            <artifactId>hibernate4-maven-plugin</artifactId>
-            <version>1.0.5</version>
+            <artifactId>hibernate-maven-plugin</artifactId>
+            <version>2.0.0</version>
             <dependencies>
               <dependency>
                 <groupId>com.h2database</groupId>
@@ -761,39 +760,29 @@
               </dependency>
             </dependencies>
             <configuration>
-              <driverClassName>${it.jdbc.driver}</driverClassName>
-              <hibernateDialect>${it.hibernate.dialect}</hibernateDialect>
+              <driver>${it.jdbc.driver}</driver>
+              <dialect>${it.hibernate.dialect}</dialect>
               <url><![CDATA[${it.jdbc.url}]]></url>
               <username>${it.jdbc.username}</username>
               <password>${it.jdbc.password}</password>
-
-              <!-- <scanDependencies>compile,test</scanDependencies> -->
             </configuration>
             <executions>
               <execution>
                 <id>create-schema</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>create</goal>
                 </goals>
-                <configuration>
-                  <type>CREATE</type>
-                </configuration>
               </execution>
               <execution>
                 <id>drop-db-after-test</id>
                 <phase>post-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>drop</goal>
                 </goals>
-                <configuration>
-                  <type>DROP</type>
-                  <force>true</force>
-                </configuration>
               </execution>
             </executions>
           </plugin>
-
 
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
@@ -1129,8 +1118,8 @@
 
           <plugin>
             <groupId>de.juplo</groupId>
-            <artifactId>hibernate4-maven-plugin</artifactId>
-            <version>1.0.5</version>
+            <artifactId>hibernate-maven-plugin</artifactId>
+            <version>2.0.0</version>
             <dependencies>
               <dependency>
                 <groupId>com.h2database</groupId>
@@ -1139,40 +1128,23 @@
               </dependency>
             </dependencies>
             <configuration>
-              <driverClassName>${it.jdbc.driver}</driverClassName>
-              <hibernateDialect>${it.hibernate.dialect}</hibernateDialect>
+              <driver>${it.jdbc.driver}</driver>
+              <dialect>${it.hibernate.dialect}</dialect>
               <url><![CDATA[${it.jdbc.url}]]></url>
               <username>${it.jdbc.username}</username>
               <password>${it.jdbc.password}</password>
-
-              <!-- <scanDependencies>compile,test</scanDependencies> -->
             </configuration>
             <executions>
               <execution>
                 <id>create-schema</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>create</goal>
                 </goals>
-                <configuration>
-                  <type>CREATE</type>
-                </configuration>
               </execution>
-              <!--
-              <execution>
-                <id>drop-db-after-test</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>export</goal>
-                </goals>
-                <configuration>
-                  <type>DROP</type>
-                  <force>true</force>
-                </configuration>
-              </execution>
-              -->
             </executions>
           </plugin>
+
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>keytool-maven-plugin</artifactId>
@@ -1491,8 +1463,8 @@
 
           <plugin>
             <groupId>de.juplo</groupId>
-            <artifactId>hibernate4-maven-plugin</artifactId>
-            <version>1.0.5</version>
+            <artifactId>hibernate-maven-plugin</artifactId>
+            <version>2.0.0</version>
             <dependencies>
               <dependency>
                 <groupId>com.h2database</groupId>
@@ -1501,35 +1473,26 @@
               </dependency>
             </dependencies>
             <configuration>
-              <driverClassName>${it.jdbc.driver}</driverClassName>
-              <hibernateDialect>${it.hibernate.dialect}</hibernateDialect>
+              <driver>${it.jdbc.driver}</driver>
+              <dialect>${it.hibernate.dialect}</dialect>
               <url><![CDATA[${it.jdbc.url}]]></url>
               <username>${it.jdbc.username}</username>
               <password>${it.jdbc.password}</password>
-
-              <!-- <scanDependencies>compile,test</scanDependencies> -->
             </configuration>
             <executions>
               <execution>
                 <id>create-schema</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>create</goal>
                 </goals>
-                <configuration>
-                  <type>CREATE</type>
-                </configuration>
               </execution>
               <execution>
                 <id>drop-db-after-test</id>
                 <phase>post-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>drop</goal>
                 </goals>
-                <configuration>
-                  <type>DROP</type>
-                  <force>true</force>
-                </configuration>
               </execution>
             </executions>
           </plugin>
