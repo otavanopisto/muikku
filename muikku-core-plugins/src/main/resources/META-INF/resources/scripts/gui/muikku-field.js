@@ -600,7 +600,7 @@
       },
       readonly: false,
       saveTimeout: 300,
-      saveFailedTimeout: 1000,
+      saveFailedTimeout: 5000,
       trackChange: true,
       trackKeyUp: true
     },
@@ -722,7 +722,6 @@
     },
     _saveFailed: function() {
       $(document).connectionLostNotifier("notifyConnectionLost");
-      
     },
     _propagateChange: function () {
       $(this.element)
