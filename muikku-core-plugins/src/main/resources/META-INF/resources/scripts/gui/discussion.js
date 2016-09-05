@@ -71,33 +71,6 @@
       });
     },
     
-    loadThreadDetails: function(thread, callback) {
-      var tasks = [this._createUserInfoLoad(thread.creator), this._createLoadArea(thread.forumAreaId)];
-      
-      async.parallel(tasks, function (err, results) {
-        if (err) {
-          callback(err);
-        } else {
-          var user = results[0];
-          var area = results[1];
-          var d = new Date(thread.created);
-          var ud = new Date(thread.updated);          
-          // TODO: remove prettyDates...
-          callback(null, $.extend({}, thread, {
-            areaName: area.name,
-            creatorFullName: user.firstName + ' ' + user.lastName,
-            prettyDate: formatDate(d) + ' ' + formatTime(d),
-            prettyDateUpdated: formatDate(ud) + ' ' + formatTime(ud),
-            prettyDateModified: formatDate(ud) + ' ' + formatTime(ud),
-            userRandomNo: (user.id % 6) + 1,
-            nameLetter: user.firstName.substring(0,1),
-            isEdited: thread.lastModified == thread.created ? false : true,
-            canEdit: thread.creator === MUIKKU_LOGGED_USER_ID ? true : false
-          }));
-        }
-      });
-    },
-
     _createUserInfoLoad: function (userEntityId) {
       return $.proxy(function (callback) {
         this._loadUserInfo(userEntityId, callback);

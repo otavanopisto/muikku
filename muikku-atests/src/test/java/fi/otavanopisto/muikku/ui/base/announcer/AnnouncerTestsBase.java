@@ -135,7 +135,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         click("#announcementContextNavigation .gc-navigation-item a");
         waitForPresent(".announcement-article h2");
         assertTextIgnoreCase(".announcement-article h2", "Test title");
-        assertTextIgnoreCase(".announcement-article div.article-OffsetDateTime", "12.11.2015");
+        assertTextIgnoreCase(".announcement-article div.article-datetime", "12.11.2015");
         assertTextIgnoreCase(".announcement-article div.article-context", "announcer test announcement");
       }finally{
         deleteAnnouncements();

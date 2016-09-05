@@ -156,7 +156,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       click(".workspace-announcement-title");
       waitForPresent("#announcements .announcement-article h2");
       assertTextIgnoreCase("#announcements .announcement-article h2", "Test title");
-      assertTextIgnoreCase("#announcements .announcement-article .article-OffsetDateTime", "12.11.2015");
+      assertTextIgnoreCase("#announcements .announcement-article .article-datetime", "12.11.2015");
       waitForPresent("#announcements .announcement-article .article-context");
       assertTextIgnoreCase("#announcements .announcement-article .article-context", "announcer test announcement");
     }finally{
