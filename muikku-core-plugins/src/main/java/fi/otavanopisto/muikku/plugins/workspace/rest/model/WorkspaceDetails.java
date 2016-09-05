@@ -1,16 +1,13 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
-import org.joda.time.DateTime;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.joda.ser.DateTimeSerializer;
+import java.time.OffsetDateTime;
 
 public class WorkspaceDetails {
 
   public WorkspaceDetails() {
   }
 
-  public WorkspaceDetails(String typeId, DateTime beginDate, DateTime endDate, String externalViewUrl) {
+  public WorkspaceDetails(String typeId, OffsetDateTime beginDate, OffsetDateTime endDate, String externalViewUrl) {
     super();
     this.typeId = typeId;
     this.beginDate = beginDate;
@@ -34,21 +31,16 @@ public class WorkspaceDetails {
     this.externalViewUrl = externalViewUrl;
   }
   
-  public DateTime getBeginDate() {
+  public OffsetDateTime getBeginDate() {
     return beginDate;
   }
   
-  public DateTime getEndDate() {
+  public OffsetDateTime getEndDate() {
     return endDate;
   }
 
   private String typeId;
-  
   private String externalViewUrl;
-  
-  @JsonSerialize(using=DateTimeSerializer.class)
-  private DateTime beginDate;
-  
-  @JsonSerialize(using=DateTimeSerializer.class)
-  private DateTime endDate;
+  private OffsetDateTime beginDate;
+  private OffsetDateTime endDate;
 }

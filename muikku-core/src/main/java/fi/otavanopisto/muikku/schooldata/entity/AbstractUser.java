@@ -1,12 +1,13 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 public abstract class AbstractUser implements User {
   
   public AbstractUser(String identifier, String firstName, String lastName, String displayName,
       String studyProgrammeName, String nationality, String language, String municipality, String school,
-      DateTime studyStartDate, DateTime studyEndDate, DateTime studyTimeEnd, boolean hidden, 
+      OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
       boolean startedStudies, boolean finishedStudies, boolean active, boolean evaluationFees, String curriculumIdentifier) {
     super();
     this.identifier = identifier;
@@ -106,29 +107,29 @@ public abstract class AbstractUser implements User {
   }
 
   @Override
-  public DateTime getStudyStartDate() {
+  public OffsetDateTime getStudyStartDate() {
     return studyStartDate;
   }
 
-  public void setStudyStartDate(DateTime studyStartDate) {
+  public void setStudyStartDate(OffsetDateTime studyStartDate) {
     this.studyStartDate = studyStartDate;
   }
   
   @Override
-  public DateTime getStudyEndDate() {
+  public OffsetDateTime getStudyEndDate() {
     return this.studyEndDate;
   }
   
-  public void setStudyEndDate(DateTime studyEndDate) {
+  public void setStudyEndDate(OffsetDateTime studyEndDate) {
     this.studyEndDate = studyEndDate;
   }
 
   @Override
-  public DateTime getStudyTimeEnd() {
+  public OffsetDateTime getStudyTimeEnd() {
     return studyTimeEnd;
   }
 
-  public void setStudyTimeEnd(DateTime studyTimeEnd) {
+  public void setStudyTimeEnd(OffsetDateTime studyTimeEnd) {
     this.studyTimeEnd = studyTimeEnd;
   }
 
@@ -191,9 +192,9 @@ public abstract class AbstractUser implements User {
   private String language;
   private String municipality;
   private String school;
-  private DateTime studyStartDate;
-  private DateTime studyEndDate;
-  private DateTime studyTimeEnd;
+  private OffsetDateTime studyStartDate;
+  private OffsetDateTime studyEndDate;
+  private OffsetDateTime studyTimeEnd;
   private boolean hidden;
   private boolean startedStudies;
   private boolean finishedStudies;

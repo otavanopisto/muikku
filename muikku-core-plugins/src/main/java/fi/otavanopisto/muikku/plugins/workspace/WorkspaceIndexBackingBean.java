@@ -16,6 +16,7 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -126,8 +127,8 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
         courseLengthSymbol = lengthUnit.getSymbol();
       }
       
-      beginDate = workspace.getBeginDate() != null ? workspace.getBeginDate().toDate() : null;
-      endDate = workspace.getEndDate() != null ? workspace.getEndDate().toDate() : null;
+      beginDate = workspace.getBeginDate() != null ? Date.from(workspace.getBeginDate().toInstant()) : null;
+      endDate = workspace.getEndDate() != null ? Date.from(workspace.getEndDate().toInstant()) : null;
       
       if (workspaceType != null) {
         this.workspaceType = workspaceType.getName();

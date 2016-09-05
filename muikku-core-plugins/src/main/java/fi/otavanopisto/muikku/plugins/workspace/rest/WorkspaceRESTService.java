@@ -35,7 +35,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
+
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -631,7 +633,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(new WorkspaceDetails(typeId, workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink())).build();
   }
   
-  private boolean isEqualDateTime(DateTime dateTime1, DateTime dateTime2) {
+  private boolean isEqualDateTime(OffsetDateTime dateTime1, OffsetDateTime dateTime2) {
     if (dateTime1 == dateTime2) {
       return true;
     }
@@ -929,7 +931,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     String firstName = user.getFirstName();
     String lastName = user.getLastName();
     String studyProgrammeName = user.getStudyProgrammeName();
-    DateTime enrolmentTime = workspaceUser.getEnrolmentTime();
+    OffsetDateTime enrolmentTime = workspaceUser.getEnrolmentTime();
     
     return new WorkspaceStudent(workspaceUser.getIdentifier().toId(), 
       userEntity != null ? userEntity.getId() : null, 
@@ -937,7 +939,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       firstName, 
       lastName, 
       studyProgrammeName,
-      enrolmentTime != null ? enrolmentTime.toDate() : null,
+      enrolmentTime != null ? Date.from(enrolmentTime.toInstant()) : null,
       userArchived);
     
   }

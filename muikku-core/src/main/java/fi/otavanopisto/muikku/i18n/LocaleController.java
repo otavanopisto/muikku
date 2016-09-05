@@ -18,7 +18,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.codehaus.jackson.map.ObjectMapper;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ApplicationScoped
 public class LocaleController {

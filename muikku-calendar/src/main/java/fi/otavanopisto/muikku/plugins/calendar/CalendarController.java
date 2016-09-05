@@ -14,7 +14,8 @@ import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.calendar.Calendar;
 import fi.otavanopisto.muikku.calendar.CalendarEvent;
@@ -117,7 +118,7 @@ public class CalendarController {
     return provider.findEvent(calendar, eventId);
   }
 
-  public List<fi.otavanopisto.muikku.calendar.CalendarEvent> listCalendarEvents(UserCalendar userCalendar, DateTime timeMin, DateTime timeMax) throws CalendarServiceException {
+  public List<fi.otavanopisto.muikku.calendar.CalendarEvent> listCalendarEvents(UserCalendar userCalendar, OffsetDateTime timeMin, OffsetDateTime timeMax) throws CalendarServiceException {
     CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
 
     Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());

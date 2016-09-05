@@ -24,10 +24,12 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.ext.ContextResolver;
 
 import org.jboss.resteasy.client.jaxrs.cache.BrowserCacheFeature;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 @ApplicationScoped
 @Singleton
@@ -111,8 +113,7 @@ public class ClientPool {
     @Override
     public ObjectMapper getContext(Class<?> type) {
       ObjectMapper objectMapper = new ObjectMapper();
-      objectMapper.registerModule(new JodaModule());
-      objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+      objectMapper.registerModule(new JSR310Module());
       
       return objectMapper;
     }

@@ -10,7 +10,7 @@ import org.junit.Rule;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.ObjectMapperConfig;
@@ -47,7 +47,7 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
           @Override
           public com.fasterxml.jackson.databind.ObjectMapper create(Class cls, String charset) {
             com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            objectMapper.registerModule(new JodaModule());
+            objectMapper.registerModule(new JSR310Module());
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             return objectMapper;
           }
