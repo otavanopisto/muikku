@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.plugins.search;
 
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
-
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -11,17 +11,18 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.lang3.StringUtils;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
-import org.elasticsearch.node.Node;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.search.IndexableEntityVault;
 import fi.otavanopisto.muikku.search.SearchIndexUpdater;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
@@ -33,19 +34,48 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
 
   @Inject
   private Logger logger;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
 
   @Override
   public void init() {
-    Builder settings = nodeBuilder().settings();
+   /* Builder settings = nodeBuilder().settings();
     settings.put("cluster.routing.allocation.disk.watermark.high", "99%");
+    settings.put("path.home", "./");
 
     node = nodeBuilder()
       .settings(settings)
       .local(true)
       .node();
     
-    elasticClient = node.client();
+    elasticClient = node.client();*/
+    String clusterName = pluginSettingsController.getPluginSetting("elastic-search", "clusterName");
+    if (clusterName == null) {
+      clusterName = System.getProperty("elasticsearch.cluster.name");
+    }
+    if (clusterName == null) {
+      clusterName = "elasticsearch";
+    }
+    String portNumberProperty = System.getProperty("elasticsearch.node.port");
+    int portNumber;
+    if (portNumberProperty != null) {
+      portNumber = Integer.decode(portNumberProperty);
+    } else {
+      portNumber = 9300;
+    }
+
+    Settings settings = Settings.settingsBuilder()
+        .put("cluster.name", clusterName).build();
     
+    try {
+      elasticClient = TransportClient.builder().settings(settings).build()
+          .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), portNumber));
+    } catch (UnknownHostException e) {
+      logger.log(Level.SEVERE, "Failed to connect to elasticsearch cluster", e);
+      return;
+    }
+        
     if (!indexExists()) {
       createIndex();      
     }
@@ -206,14 +236,13 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   @Override
   public void deinit() {
     elasticClient.close();
-    node.close();
+    //node.close();
   }
 
   @Override
   public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
-    ObjectMapper mapper = new ObjectMapper()
-      .registerModule(new JodaModule())
-      .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JSR310Module());
     
     String json;
     try {
@@ -238,6 +267,6 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   }
 
   private Client elasticClient;
-  private Node node;
+  //private Node node;
 
 }

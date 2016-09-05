@@ -18,7 +18,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;
@@ -637,16 +638,16 @@ public class PyramusUpdater {
       return false;  
     }
     
-    DateTime studyStartDate = student.getStudyStartDate();
-    DateTime studyEndDate = student.getStudyEndDate();
+    OffsetDateTime studyStartDate = student.getStudyStartDate();
+    OffsetDateTime studyEndDate = student.getStudyEndDate();
     
     if (studyStartDate == null && studyEndDate == null) {
       // It's a never ending study programme
       return true;
     }
     
-    boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(System.currentTimeMillis());
-    boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(System.currentTimeMillis());
+    boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(OffsetDateTime.now());
+    boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(OffsetDateTime.now());
     
     return startedStudies && !finishedStudies;
   }

@@ -62,12 +62,6 @@
       </exclusions> -->
     </dependency>
 
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!-- RestEasy -->
     
     <dependency>
@@ -77,8 +71,8 @@
     </dependency>
     
     <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>jaxrs-api</artifactId>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -95,16 +89,15 @@
     </dependency>
 
     <!-- Jackson -->
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-joda</artifactId>
-    </dependency> 
+    
+    <!--
 
     <dependency>
       <groupId>com.fasterxml.jackson.jaxrs</groupId>
       <artifactId>jackson-jaxrs-json-provider</artifactId>
     </dependency>
+    
+    -->
 
     <dependency>
       <groupId>junit</groupId>
@@ -279,6 +272,11 @@
       <artifactId>jsonassert</artifactId>
       <version>1.2.3</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
   </dependencies>
 
   <profiles>
@@ -307,6 +305,9 @@
         <it.browser>phantomjs</it.browser>
         <it.package>**</it.package>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
+        <elasticsearch.http.port>9201</elasticsearch.http.port>
+        <elasticsearch.node.port>9301</elasticsearch.node.port>
+        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
       </properties>
 
       <dependencies>
@@ -379,8 +380,8 @@
 
           <plugin>
             <groupId>de.juplo</groupId>
-            <artifactId>hibernate4-maven-plugin</artifactId>
-            <version>1.0.5</version>
+            <artifactId>hibernate-maven-plugin</artifactId>
+            <version>2.0.0</version>
             <dependencies>
               <dependency>
                 <groupId>com.h2database</groupId>
@@ -389,38 +390,30 @@
               </dependency>
             </dependencies>
             <configuration>
-              <driverClassName>${it.jdbc.driver}</driverClassName>
-              <hibernateDialect>${it.hibernate.dialect}</hibernateDialect>
+              <driver>${it.jdbc.driver}</driver>
+              <dialect>${it.hibernate.dialect}</dialect>
               <url><![CDATA[${it.jdbc.url}]]></url>
               <username>${it.jdbc.username}</username>
               <password>${it.jdbc.password}</password>
-
-              <!-- <scanDependencies>compile,test</scanDependencies> -->
             </configuration>
             <executions>
               <execution>
                 <id>create-schema</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>create</goal>
                 </goals>
-                <configuration>
-                  <type>CREATE</type>
-                </configuration>
               </execution>
               <execution>
                 <id>drop-db-after-test</id>
                 <phase>post-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>drop</goal>
                 </goals>
-                <configuration>
-                  <type>DROP</type>
-                  <force>true</force>
-                </configuration>
               </execution>
             </executions>
           </plugin>
+
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>keytool-maven-plugin</artifactId>
@@ -481,17 +474,69 @@
               </execution>
             </executions>
           </plugin>
+          
+          
+          <plugin>
+            <groupId>com.github.alexcojocaru</groupId>
+            <artifactId>elasticsearch-maven-plugin</artifactId>
+            <version>2.0</version>
+            <configuration>
+              <clusterName>${elasticsearch.cluster.name}</clusterName>
+              <tcpPort>${elasticsearch.node.port}</tcpPort>
+              <httpPort>${elasticsearch.http.port}</httpPort>
+              <autoCreateIndex>true</autoCreateIndex>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>init-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>load</goal>
+                </goals>
+                <configuration>
+                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
+                </configuration>
+              </execution>
+              <execution>
+                <id>stop-elasticsearch</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.21</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+          
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.4.12</version>
+            <version>1.5.0</version>
             <configuration>
               <container>
-                <containerId>wildfly8x</containerId>
+                <containerId>wildfly10x</containerId>
                 <log>${project.basedir}/target/cargo.log</log>
                 <output>${project.basedir}/target/jboss.log</output>
                 <zipUrlInstaller>
-                  <url>http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip</url>
+                  <url>http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
                   <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
@@ -555,6 +600,8 @@
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/system-property=tests.running:add(value="true")</command>
+                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
@@ -637,6 +684,9 @@
         <it.platform />
         <it.package>**</it.package>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
+        <elasticsearch.http.port>9201</elasticsearch.http.port>
+        <elasticsearch.node.port>9301</elasticsearch.node.port>
+        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
       </properties>
 
       <dependencies>
@@ -716,8 +766,8 @@
 
           <plugin>
             <groupId>de.juplo</groupId>
-            <artifactId>hibernate4-maven-plugin</artifactId>
-            <version>1.0.5</version>
+            <artifactId>hibernate-maven-plugin</artifactId>
+            <version>2.0.0</version>
             <dependencies>
               <dependency>
                 <groupId>com.h2database</groupId>
@@ -726,35 +776,26 @@
               </dependency>
             </dependencies>
             <configuration>
-              <driverClassName>${it.jdbc.driver}</driverClassName>
-              <hibernateDialect>${it.hibernate.dialect}</hibernateDialect>
+              <driver>${it.jdbc.driver}</driver>
+              <dialect>${it.hibernate.dialect}</dialect>
               <url><![CDATA[${it.jdbc.url}]]></url>
               <username>${it.jdbc.username}</username>
               <password>${it.jdbc.password}</password>
-
-              <!-- <scanDependencies>compile,test</scanDependencies> -->
             </configuration>
             <executions>
               <execution>
                 <id>create-schema</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>create</goal>
                 </goals>
-                <configuration>
-                  <type>CREATE</type>
-                </configuration>
               </execution>
               <execution>
                 <id>drop-db-after-test</id>
                 <phase>post-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>drop</goal>
                 </goals>
-                <configuration>
-                  <type>DROP</type>
-                  <force>true</force>
-                </configuration>
               </execution>
             </executions>
           </plugin>
@@ -821,16 +862,66 @@
           </plugin>
 
           <plugin>
+            <groupId>com.github.alexcojocaru</groupId>
+            <artifactId>elasticsearch-maven-plugin</artifactId>
+            <version>2.0</version>
+            <configuration>
+              <clusterName>${elasticsearch.cluster.name}</clusterName>
+              <tcpPort>${elasticsearch.node.port}</tcpPort>
+              <httpPort>${elasticsearch.http.port}</httpPort>
+              <autoCreateIndex>true</autoCreateIndex>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>init-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>load</goal>
+                </goals>
+                <configuration>
+                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
+                </configuration>
+              </execution>
+              <execution>
+                <id>stop-elasticsearch</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.21</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.4.12</version>
+            <version>1.5.0</version>
             <configuration>
               <container>
-                <containerId>wildfly8x</containerId>
+                <containerId>wildfly10x</containerId>
                 <log>${project.basedir}/target/cargo.log</log>
                 <output>${project.basedir}/target/jboss.log</output>
                 <zipUrlInstaller>
-                  <url>http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip</url>
+                  <url>http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
                   <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
@@ -894,6 +985,8 @@
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/system-property=tests.running:add(value="true")</command>
+                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
@@ -976,6 +1069,9 @@
         <it.platform />
         <it.package>**</it.package>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
+        <elasticsearch.http.port>9201</elasticsearch.http.port>
+        <elasticsearch.node.port>9301</elasticsearch.node.port>
+        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
       </properties>
 
       <dependencies>
@@ -1054,8 +1150,8 @@
 
           <plugin>
             <groupId>de.juplo</groupId>
-            <artifactId>hibernate4-maven-plugin</artifactId>
-            <version>1.0.5</version>
+            <artifactId>hibernate-maven-plugin</artifactId>
+            <version>2.0.0</version>
             <dependencies>
               <dependency>
                 <groupId>com.h2database</groupId>
@@ -1064,40 +1160,23 @@
               </dependency>
             </dependencies>
             <configuration>
-              <driverClassName>${it.jdbc.driver}</driverClassName>
-              <hibernateDialect>${it.hibernate.dialect}</hibernateDialect>
+              <driver>${it.jdbc.driver}</driver>
+              <dialect>${it.hibernate.dialect}</dialect>
               <url><![CDATA[${it.jdbc.url}]]></url>
               <username>${it.jdbc.username}</username>
               <password>${it.jdbc.password}</password>
-
-              <!-- <scanDependencies>compile,test</scanDependencies> -->
             </configuration>
             <executions>
               <execution>
                 <id>create-schema</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>create</goal>
                 </goals>
-                <configuration>
-                  <type>CREATE</type>
-                </configuration>
               </execution>
-              <!--
-              <execution>
-                <id>drop-db-after-test</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>export</goal>
-                </goals>
-                <configuration>
-                  <type>DROP</type>
-                  <force>true</force>
-                </configuration>
-              </execution>
-              -->
             </executions>
           </plugin>
+
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>keytool-maven-plugin</artifactId>
@@ -1158,17 +1237,68 @@
               </execution>
             </executions>
           </plugin>
+
+          <plugin>
+            <groupId>com.github.alexcojocaru</groupId>
+            <artifactId>elasticsearch-maven-plugin</artifactId>
+            <version>2.0</version>
+            <configuration>
+              <clusterName>${elasticsearch.cluster.name}</clusterName>
+              <tcpPort>${elasticsearch.node.port}</tcpPort>
+              <httpPort>${elasticsearch.http.port}</httpPort>
+              <autoCreateIndex>true</autoCreateIndex>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>init-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>load</goal>
+                </goals>
+                <configuration>
+                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
+                </configuration>
+              </execution>
+              <execution>
+                <id>stop-elasticsearch</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.21</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.4.12</version>
+            <version>1.5.0</version>
             <configuration>
               <container>
-                <containerId>wildfly8x</containerId>
+                <containerId>wildfly10x</containerId>
                 <log>${project.basedir}/target/cargo.log</log>
                 <output>${project.basedir}/target/jboss.log</output>
                 <zipUrlInstaller>
-                  <url>http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip</url>
+                  <url>http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
                   <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
@@ -1232,6 +1362,8 @@
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/system-property=tests.running:add(value="true")</command>
+                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
@@ -1306,6 +1438,9 @@
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
+        <elasticsearch.http.port>9201</elasticsearch.http.port>
+        <elasticsearch.node.port>9301</elasticsearch.node.port>
+        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
       </properties>
 
       <dependencies>
@@ -1376,8 +1511,8 @@
 
           <plugin>
             <groupId>de.juplo</groupId>
-            <artifactId>hibernate4-maven-plugin</artifactId>
-            <version>1.0.5</version>
+            <artifactId>hibernate-maven-plugin</artifactId>
+            <version>2.0.0</version>
             <dependencies>
               <dependency>
                 <groupId>com.h2database</groupId>
@@ -1386,35 +1521,26 @@
               </dependency>
             </dependencies>
             <configuration>
-              <driverClassName>${it.jdbc.driver}</driverClassName>
-              <hibernateDialect>${it.hibernate.dialect}</hibernateDialect>
+              <driver>${it.jdbc.driver}</driver>
+              <dialect>${it.hibernate.dialect}</dialect>
               <url><![CDATA[${it.jdbc.url}]]></url>
               <username>${it.jdbc.username}</username>
               <password>${it.jdbc.password}</password>
-
-              <!-- <scanDependencies>compile,test</scanDependencies> -->
             </configuration>
             <executions>
               <execution>
                 <id>create-schema</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>create</goal>
                 </goals>
-                <configuration>
-                  <type>CREATE</type>
-                </configuration>
               </execution>
               <execution>
                 <id>drop-db-after-test</id>
                 <phase>post-integration-test</phase>
                 <goals>
-                  <goal>export</goal>
+                  <goal>drop</goal>
                 </goals>
-                <configuration>
-                  <type>DROP</type>
-                  <force>true</force>
-                </configuration>
               </execution>
             </executions>
           </plugin>
@@ -1481,16 +1607,66 @@
           </plugin>
 
           <plugin>
+            <groupId>com.github.alexcojocaru</groupId>
+            <artifactId>elasticsearch-maven-plugin</artifactId>
+            <version>2.0</version>
+            <configuration>
+              <clusterName>${elasticsearch.cluster.name}</clusterName>
+              <tcpPort>${elasticsearch.node.port}</tcpPort>
+              <httpPort>${elasticsearch.http.port}</httpPort>
+              <autoCreateIndex>true</autoCreateIndex>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>init-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>load</goal>
+                </goals>
+                <configuration>
+                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
+                </configuration>
+              </execution>
+              <execution>
+                <id>stop-elasticsearch</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.21</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.4.12</version>
+            <version>1.5.0</version>
             <configuration>
               <container>
-                <containerId>wildfly8x</containerId>
+                <containerId>wildfly10x</containerId>
                 <log>${project.basedir}/target/cargo.log</log>
                 <output>${project.basedir}/target/jboss.log</output>
                 <zipUrlInstaller>
-                  <url>http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip</url>
+                  <url>http://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
                   <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
@@ -1554,6 +1730,8 @@
                       <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/system-property=tests.running:add(value="true")</command>
+                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>

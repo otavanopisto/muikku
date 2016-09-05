@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>muikku</artifactId>
   <packaging>war</packaging>
@@ -74,19 +75,19 @@
       <artifactId>jsf-impl</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Rewrite -->
-    
+
     <dependency>
       <groupId>org.ocpsoft.rewrite</groupId>
       <artifactId>rewrite-servlet</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.ocpsoft.rewrite</groupId>
       <artifactId>rewrite-integration-faces</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.ocpsoft.rewrite</groupId>
       <artifactId>rewrite-integration-cdi</artifactId>
@@ -133,7 +134,7 @@
     </dependency>
 
     <!-- Commons -->
-    
+
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
@@ -151,20 +152,20 @@
       <artifactId>commons-codec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- H2 -->
-  
+
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>provided</scope>
     </dependency>
-    
-     <!-- RESTEasy -->
-     
+
+    <!-- RESTEasy -->
+
     <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>jaxrs-api</artifactId>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -201,7 +202,7 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>persistence</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>fi.otavanopisto</groupId>
       <artifactId>webapp-permission</artifactId>
@@ -230,7 +231,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>elastic-search-plugin</id>
       <dependencies>
@@ -239,28 +240,9 @@
           <artifactId>elastic-search-plugin</artifactId>
           <version>1.1.42-SNAPSHOT</version>
         </dependency>
-        
-        <!-- 
-            FIXME: 
-            Lucene versions need to be overridden because 
-            Wildfly bom specifies lucene versions 3.6.2 which does 
-            not work with elastic search
-        -->
-
-        <dependency>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-core</artifactId>
-          <version>4.10.4</version>
-        </dependency>
-        
-        <dependency>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-memory</artifactId>
-          <version>4.10.4</version>
-        </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>dummy-mail-plugin</id>
       <dependencies>
@@ -282,7 +264,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>mongo-log-plugin</id>
       <dependencies>
@@ -293,7 +275,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>google-calendar-plugin</id>
       <dependencies>
@@ -304,7 +286,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>atests-plugin</id>
       <dependencies>
@@ -315,7 +297,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>h2db-plugin</id>
       <dependencies>
@@ -326,7 +308,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>google-oauth-plugin</id>
       <dependencies>
@@ -337,7 +319,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>facebook-oauth-plugin</id>
       <dependencies>
@@ -348,7 +330,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>calendar-plugin</id>
       <dependencies>
@@ -359,7 +341,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>evaluation-plugin</id>
       <dependencies>
@@ -370,7 +352,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>deus-nex-machina-plugin</id>
       <dependencies>
@@ -381,7 +363,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>timed-notifications-plugin</id>
       <dependencies>
@@ -392,7 +374,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>developer-tools</id>
       <dependencies>
@@ -454,7 +436,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -462,7 +444,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Dependencies>org.apache.commons.io, org.apache.commons.collections, org.apache.commons.codec, org.codehaus.jackson.jackson-core-asl, org.codehaus.jackson.jackson-mapper-asl, org.apache.httpcomponents, com.h2database.h2, org.jboss.resteasy.resteasy-jackson2-provider</Dependencies>
+              <Dependencies>org.apache.commons.io,org.apache.commons.collections,org.apache.commons.codec,org.codehaus.jackson.jackson-core-asl,org.codehaus.jackson.jackson-mapper-asl,org.apache.httpcomponents,com.h2database.h2,org.jboss.resteasy.resteasy-jackson2-provider</Dependencies>
             </manifestEntries>
           </archive>
           <classifier>${classifier}</classifier>

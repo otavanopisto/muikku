@@ -54,11 +54,9 @@
             }, this));
         },
         "change-dates": function (callback) {
-          var beginDate = $('input[name="beginDate"]')
-            .datepicker('getDate');
+          var beginDate = $('input[name="beginDate"]').datepicker('getDate');
           
-          var endDate = $('input[name="endDate"]')
-            .datepicker('getDate');
+          var endDate = $('input[name="endDate"]').datepicker('getDate');
           
           mApi().workspace.workspaces.details
             .read(this._createdWorkspace.id)
@@ -66,11 +64,8 @@
               if (loadErr) {
                 callback(loadErr);
               } else {
-                var beginTime = beginDate ? beginDate.getTime() : null;
-                var endTime = endDate ? endDate.getTime() : null;
-                
-                workspaceDetails.beginDate = beginTime;
-                workspaceDetails.endDate = endTime;
+                workspaceDetails.beginDate = beginDate;
+                workspaceDetails.endDate = endDate;
                 
                 mApi().workspace.workspaces.details
                   .update(this._createdWorkspace.id, workspaceDetails)
@@ -117,7 +112,7 @@
         }, this));
         
         this.element.find('.date-field').each(function (index, dateField) {
-          var value = parseInt($(dateField).val());
+          var value = new Date($(dateField).val());
           $(dateField).val('');
           
           $(dateField).datepicker({
@@ -125,7 +120,7 @@
           });
           
           if (!isNaN(value)) {
-            $(dateField).datepicker('setDate', new Date(value));
+            $(dateField).datepicker('setDate', value);
           }
         });
         

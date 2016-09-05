@@ -2,20 +2,20 @@ package fi.otavanopisto.muikku.rest.types;
 
 import java.io.Serializable;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 public class DateTimeParameter implements Serializable {
   
   private static final long serialVersionUID = 1L;
 
   public DateTimeParameter(String dateString) {
-    dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime(dateString);
+    dateTime = OffsetDateTime.parse(dateString);
   }
   
-  public DateTime getDateTime() {
+  public OffsetDateTime getDateTime() {
     return dateTime;
   }
   
-  private final DateTime dateTime;
+  private final OffsetDateTime dateTime;
 }
