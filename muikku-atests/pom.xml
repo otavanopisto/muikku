@@ -484,6 +484,7 @@
               <clusterName>${elasticsearch.cluster.name}</clusterName>
               <tcpPort>${elasticsearch.node.port}</tcpPort>
               <httpPort>${elasticsearch.http.port}</httpPort>
+              <autoCreateIndex>true</autoCreateIndex>
             </configuration>
             <executions>
               <execution>
@@ -492,6 +493,16 @@
                 <goals>
                   <goal>start</goal>
                 </goals>
+              </execution>
+              <execution>
+                <id>init-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>load</goal>
+                </goals>
+                <configuration>
+                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
+                </configuration>
               </execution>
               <execution>
                 <id>stop-elasticsearch</id>
@@ -858,6 +869,7 @@
               <clusterName>${elasticsearch.cluster.name}</clusterName>
               <tcpPort>${elasticsearch.node.port}</tcpPort>
               <httpPort>${elasticsearch.http.port}</httpPort>
+              <autoCreateIndex>true</autoCreateIndex>
             </configuration>
             <executions>
               <execution>
@@ -866,6 +878,16 @@
                 <goals>
                   <goal>start</goal>
                 </goals>
+              </execution>
+              <execution>
+                <id>init-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>load</goal>
+                </goals>
+                <configuration>
+                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
+                </configuration>
               </execution>
               <execution>
                 <id>stop-elasticsearch</id>
@@ -1224,6 +1246,7 @@
               <clusterName>${elasticsearch.cluster.name}</clusterName>
               <tcpPort>${elasticsearch.node.port}</tcpPort>
               <httpPort>${elasticsearch.http.port}</httpPort>
+              <autoCreateIndex>true</autoCreateIndex>
             </configuration>
             <executions>
               <execution>
@@ -1232,6 +1255,16 @@
                 <goals>
                   <goal>start</goal>
                 </goals>
+              </execution>
+              <execution>
+                <id>init-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>load</goal>
+                </goals>
+                <configuration>
+                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
+                </configuration>
               </execution>
               <execution>
                 <id>stop-elasticsearch</id>
@@ -1581,6 +1614,7 @@
               <clusterName>${elasticsearch.cluster.name}</clusterName>
               <tcpPort>${elasticsearch.node.port}</tcpPort>
               <httpPort>${elasticsearch.http.port}</httpPort>
+              <autoCreateIndex>true</autoCreateIndex>
             </configuration>
             <executions>
               <execution>
@@ -1589,6 +1623,16 @@
                 <goals>
                   <goal>start</goal>
                 </goals>
+              </execution>
+              <execution>
+                <id>init-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>load</goal>
+                </goals>
+                <configuration>
+                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
+                </configuration>
               </execution>
               <execution>
                 <id>stop-elasticsearch</id>
