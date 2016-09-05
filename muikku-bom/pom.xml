@@ -123,12 +123,6 @@
 		    <version>${jackson.version}</version>
 			</dependency> 
 			
-			<dependency>
-			  <groupId>org.threeten</groupId>
-			  <artifactId>threetenbp</artifactId>
-			  <version>1.3.2</version>
-			</dependency>
-
 			<!-- Scribe -->
 
 			<dependency>
@@ -179,6 +173,7 @@
         <artifactId>jade4j</artifactId>
         <version>${jade4j.version}</version>
       </dependency>
+
 
 			<!-- Muikku -->
 
@@ -271,7 +266,7 @@
         <artifactId>timed-notifications-plugin-persistence</artifactId>
         <version>${muikku.version}</version>
       </dependency>
-
+      
 			<!-- Coops -->
 			<dependency>
 				<groupId>fi.foyt.coops</groupId>
