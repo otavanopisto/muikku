@@ -328,7 +328,12 @@
 }
 
 .mf-tool-container {
-  background:#0099ff none repeat scroll 0 0;
+  &.default{
+    background: #0099ff none repeat scroll 0 0;
+  }
+  &.special{
+    background: #72d200 none repeat scroll 0 0;
+  }
   border-radius:20px;
   display:inline-block;
   height:24px;

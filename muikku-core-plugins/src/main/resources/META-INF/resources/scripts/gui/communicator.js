@@ -180,7 +180,7 @@
       this._items = [];
       this._folderId = this.options.folderId;      
       $('.mf-controls-container').on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
-      $('.mf-controls-container').on('click', '.newLabelSubmit', $.proxy(this._onAddLabelClick, this));   
+      $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onAddLabelClick, this));   
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
       $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));

@@ -1,2 +1,9 @@
-   <div class="mf-items-tool icon-goback"></div>
-   <div class="mf-items-tool icon-delete"></div>   
+ <div class="mf-tool-container default cm-goback-container">
+   <div class="mf-tool icon-goback"></div>
+ </div>
+ <div class="mf-tool-container default cm-delete-message-container">
+   <div class="mf-tool icon-delete"></div>   
+ </div>
+
+
+
