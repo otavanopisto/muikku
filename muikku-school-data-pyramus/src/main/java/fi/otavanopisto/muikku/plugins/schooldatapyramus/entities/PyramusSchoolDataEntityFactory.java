@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
@@ -304,7 +305,7 @@ public class PyramusSchoolDataEntityFactory {
         course.getDescription(),
         identifierMapper.getSubjectIdentifier(course.getSubjectId()), 
         educationTypeIdentifier,
-        Date.from(modified.toInstant()), 
+        modified != null ? Date.from(modified.toInstant()) : null, 
         course.getLength(), 
         identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
         course.getBeginDate(), 
@@ -332,11 +333,16 @@ public class PyramusSchoolDataEntityFactory {
     SchoolDataIdentifier gradeIdentifier = identifierMapper.getGradeIdentifier(courseAssessment.getGradeId());
     SchoolDataIdentifier gradingScaleIdentifier = identifierMapper.getGradingScaleIdentifier(courseAssessment.getGradingScaleId());
     
+    Date courseAssessmentDate = null;
+    if (courseAssessment.getDate() != null) {
+      courseAssessmentDate = Date.from(courseAssessment.getDate().toInstant());
+    }
+    
     return new PyramusWorkspaceAssessment(courseAssessment.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
         identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
         gradeIdentifier.getIdentifier(), gradingScaleIdentifier.getIdentifier(),
-        courseAssessment.getVerbalAssessment(), Date.from(courseAssessment.getDate().toInstant()));
+        courseAssessment.getVerbalAssessment(), courseAssessmentDate);
   }
 
   public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments) {
@@ -357,9 +363,14 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
     
+    Date created = null;
+    if (courseAssessmentRequest.getCreated() != null) {
+      created = Date.from(courseAssessmentRequest.getCreated().toInstant());
+    }
+    
     return new PyramusWorkspaceAssessmentRequest(courseAssessmentRequest.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
-        courseAssessmentRequest.getRequestText(), Date.from(courseAssessmentRequest.getCreated().toInstant()));
+        courseAssessmentRequest.getRequestText(), created);
   }
 
   public List<WorkspaceAssessmentRequest> createEntity(CourseAssessmentRequest... courseAssessmentRequests) {
