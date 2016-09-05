@@ -77,7 +77,7 @@
     <module>muikku-timed-notifications-plugin-persistence</module>
 		<module>muikku</module>
     <module>muikku-developer-tools</module>
-		<!-- <module>muikku-atests</module> -->
+		<module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
     <module>muikku-atests-plugin-rest-model</module>
 	</modules>
@@ -88,7 +88,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<hibernate-jpamodelgen.version>4.3.6.Final</hibernate-jpamodelgen.version>
-    <findbugs.skip>true</findbugs.skip>
+        <findbugs.skip>true</findbugs.skip>
+        <elasticsearch.version>2.1.2</elasticsearch.version>
 	</properties>
 
 	<dependencyManagement>
@@ -167,6 +168,7 @@
 		</pluginManagement>
 
 		<plugins>
+		 	<!--
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
@@ -189,6 +191,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			-->
 		</plugins>
 	</build>
 

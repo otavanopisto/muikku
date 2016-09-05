@@ -1,0 +1,1 @@
+PUT:/_template/default_template:{"template" :"*", "settings":{"index":{"max_result_window":2147483647}}}
