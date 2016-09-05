@@ -22,6 +22,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.search.IndexableEntityVault;
 import fi.otavanopisto.muikku.search.SearchIndexUpdater;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
@@ -33,6 +34,9 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
 
   @Inject
   private Logger logger;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
 
   @Override
   public void init() {
@@ -46,12 +50,27 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
       .node();
     
     elasticClient = node.client();*/
+    String clusterName = pluginSettingsController.getPluginSetting("elastic-search", "clusterName");
+    if (clusterName == null) {
+      clusterName = System.getProperty("elasticsearch.cluster.name");
+    }
+    if (clusterName == null) {
+      clusterName = "elasticsearch";
+    }
+    String portNumberProperty = System.getProperty("elasticsearch.node.port");
+    int portNumber;
+    if (portNumberProperty != null) {
+      portNumber = Integer.decode(portNumberProperty);
+    } else {
+      portNumber = 9300;
+    }
+
     Settings settings = Settings.settingsBuilder()
-        .put("cluster.name", "belvain-elasticsearch").build();
+        .put("cluster.name", clusterName).build();
     
     try {
       elasticClient = TransportClient.builder().settings(settings).build()
-          .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9301));
+          .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), portNumber));
     } catch (UnknownHostException e) {
       logger.log(Level.SEVERE, "Failed to connect to elasticsearch cluster", e);
       return;
