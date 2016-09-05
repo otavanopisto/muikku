@@ -1,0 +1,2 @@
+ <div class="mf-items-tool icon-delete"></div>
+ <div class="mf-items-tool icon-announcer"><input type="button" class="newLabelSubmit" name="newLabelSubmit" value="Add label"/></div>

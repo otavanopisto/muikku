@@ -178,12 +178,11 @@
     _create : function() {
       this._firstItem = 0;
       this._items = [];
-      this._folderId = this.options.folderId;
-      
+      this._folderId = this.options.folderId;      
+      $('.mf-controls-container').on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
+      $('.mf-controls-container').on('click', '.newLabelSubmit', $.proxy(this._onAddLabelClick, this));   
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
-      this.element.on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
-      this.element.on('click', '.newLabelSubmit', $.proxy(this._onAddLabelClick, this));
       $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
     },
     
@@ -260,12 +259,12 @@
           }, this));
         }
       }, this));
-    },
-    
+    },  
     _onNewMessageReceived: function () {
       if (this._folderId == "inbox") {
         this._reload();
       }
+      
     },
     
     _onMoreClick: function (event) {
@@ -299,13 +298,38 @@
     }
     
   });
+  
+  $.widget("custom.messageTools", {
+	 options:{
+		  toolset : 'thread'
+	 },
+
+	 _create : function(){
+		   switch(this.options.toolset) {
+		    case 'message':
+		      var toolTemplate = 'communicator/communicator_tools_message.dust';
+		      this.loadTools(toolTemplate);
+		      break;
+		    default:
+          var toolTemplate = 'communicator/communicator_tools_thread.dust';		      
+          this.loadTools(toolTemplate);
+		   }
+		   
+
+	 },
+   loadTools: function(toolSet) {
+     renderDustTemplate(toolSet, {}, $.proxy(function (text) {
+       this.element.html(text);
+     }, this));
+   }
+  }); 
+  
 
   $.widget("custom.communicator", {
     
     options: {
       defaultFolderId: 'inbox'
     },
-    
     _create : function() {
       this.loadLabels($.proxy(
         function (err, labels) {
@@ -334,13 +358,14 @@
           
           folderId = this._folderControllers[folderId] ? folderId : this.options.defaultFolderId;
           
+    
+                 
           this.element.find('.cm-messages-container').communicatorMessages({
             maxMessageCount: this.options.maxMessageCount,
             folderId: folderId
           });
-          
-          this.element.find('.cm-thread-container').communicatorThread();
-         
+          $('.mf-controls-container').messageTools();          
+          this.element.find('.cm-thread-container').communicatorThread();       
           this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
           this.element.on('click', '.communicator-folder', $.proxy(this._onCommunicatorFolderClick, this));
           
@@ -358,6 +383,7 @@
       this._updateSelected(id);
       
       this.element.find('.cm-thread-container').hide();
+      $('.mf-controls-container').messageTools( 'loadTools', 'communicator/communicator_tools_thread.dust');       
       this.element.find('.cm-messages-container')
         .communicatorMessages('loadFolder', id)
         .show();
@@ -378,6 +404,7 @@
       this._updateSelected(folderId);
       
       this.element.find('.cm-messages-container').hide();
+      $('.mf-controls-container').messageTools( 'loadTools', 'communicator/communicator_tools_message.dust');     
       this.element.find('.cm-thread-container')
         .communicatorThread('loadThread', folderId, threadId)
         .show();
@@ -934,14 +961,13 @@
     }
     
   });
-  
   $.widget("custom.communicatorThread", {
     _create : function() {
+      var controls = $('.mf-controls-container');
       this._threadId = null;
-      
-      this.element.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
-      this.element.on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
-      this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));
+      controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
+      controls.on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
+      this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
     },
     
     loadThread: function (folderId, threadId, callback) {
