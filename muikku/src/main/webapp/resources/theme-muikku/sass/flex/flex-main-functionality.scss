@@ -326,7 +326,28 @@
   }
   
 }
-
+.mf-tool-action-container{  
+  a{
+    color:#72d200;    
+  }
+ padding:0 0 10px 20px;
+}
+.mf-tool-dialog {
+  position:absolute;
+  border:1px solid #dadada;
+  background-color:#fff;
+  z-index:99;
+  text-align:left;
+  
+  
+  input.filter {
+    font-size:12px;
+    border:1px solid #cccccc;
+    padding:7px;
+    margin:10px;
+    width:200px;
+  }
+}
 .mf-tool-container {
   &.default{
     background: #0099ff none repeat scroll 0 0;
@@ -356,6 +377,7 @@
     
   }
   
+
 } 
 
 .mf-tools-mobile {
