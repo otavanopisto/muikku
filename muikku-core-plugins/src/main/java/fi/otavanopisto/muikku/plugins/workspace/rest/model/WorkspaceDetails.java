@@ -1,10 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.threetenbp.ser.OffsetDateTimeSerializer;
 
 public class WorkspaceDetails {
 
@@ -44,12 +40,7 @@ public class WorkspaceDetails {
   }
 
   private String typeId;
-  
   private String externalViewUrl;
-  
-  @JsonSerialize(using=OffsetDateTimeSerializer.class)
   private OffsetDateTime beginDate;
-  
-  @JsonSerialize(using=OffsetDateTimeSerializer.class)
   private OffsetDateTime endDate;
 }
