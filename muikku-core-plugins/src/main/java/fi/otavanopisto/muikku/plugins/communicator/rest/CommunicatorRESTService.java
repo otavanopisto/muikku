@@ -404,6 +404,32 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
 
+  @POST
+  @Path ("/messages/{COMMUNICATORMESSAGEID}/markasunread")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response markAsUnRead( 
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
+      @QueryParam("messageIds") List<Long> messageIds) {
+    UserEntity user = sessionController.getLoggedUserEntity(); 
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId);
+    
+    for (CommunicatorMessageRecipient r : list) {
+      if ((messageIds != null) && (r.getCommunicatorMessage() != null)) {
+        if (!messageIds.isEmpty() && !messageIds.contains(r.getCommunicatorMessage().getId()))
+          continue;
+      }
+      
+      communicatorController.updateRead(r, false);
+    }
+    
+    return Response.ok(
+      
+    ).build();
+  }
+
   private List<Long> getMessageRecipientIdList(CommunicatorMessage msg) {
     List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(msg);
     List<Long> recipients = new ArrayList<Long>();
