@@ -462,6 +462,7 @@
       workspaceMaterialTitle: null,
       materialId: null,
       triggeringElement: null,
+      submitDate: null,
       ckeditor: {
         baseFloatZIndex: 99999,
         language: getLocale(),
@@ -707,6 +708,7 @@
           assessors: this.options.assessors,
           workspaceName: this.options.workspaceName,
           studentStudyProgrammeName: this.options.studentStudyProgrammeName,
+          submitDate: parseInt(this.options.submitDate),
           assignments: [{
             workspaceMaterialId: workspaceMaterialId,
             materialId: materialId,
@@ -1197,6 +1199,7 @@
       var studyProgrammeName = workspaceStudent.evaluationStudent('studyProgrammeName');
       var workspaceName = $('#evaluation').evaluation("workspaceName");
       var workspaceEntityId = $('#evaluation').evaluation("workspaceEntityId");
+      var submitDate = this.element.find('.evaluation-assignment-submitted-date').attr('data-submit-date');
       
       mApi().workspace.workspaces.staffMembers.read(workspaceEntityId, {orderBy: 'name'}).callback($.proxy(function (err, teachers) {
         if (err) {
@@ -1219,6 +1222,7 @@
                   studentAnswers: this._studentAnswers,
                   gradingScales: gradingScales,
                   assessors: assessors,
+                  submitDate: submitDate,
                   workspaceName: workspaceName,
                   studentStudyProgrammeName: studyProgrammeName,
                   workspaceMaterialId: this.options.workspaceMaterialId,
@@ -1300,7 +1304,8 @@
           this.element.addClass('assignment-submitted');
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)))
+              .attr('data-submit-date', reply.submitted);   
           }
         break;
         case 'WITHDRAWN':
@@ -1311,7 +1316,8 @@
           this.element.addClass('assignment-reviewed-non-passing');
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)))
+              .attr('data-submit-date', reply.submitted);
           }
         break;
         case 'PASSED':
@@ -1319,7 +1325,8 @@
           this.element.addClass('assignment-evaluated');
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)));   
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(reply.submitted)))
+              .attr('data-submit-date', reply.submitted);
           }
         break;
       }
