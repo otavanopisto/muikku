@@ -12,14 +12,14 @@ $(document).ready(function(){
         	workspaces:workspaces
         }, function (text) {
             $('#workspaces').append($.parseHTML(text));
-						var is_xs = $(window).width() < 769;
-						if (!is_xs) {
-							$('#workspaces').perfectScrollbar({
-						  	wheelSpeed:3,
-						    swipePropagation:false,
-						    wheelPropagation:true
-						  });
-						}
+            var is_xs = $(window).width() < 769;
+            if (!is_xs) {
+              $('#workspaces').perfectScrollbar({
+                wheelSpeed:3,
+                swipePropagation:false,
+                wheelPropagation:true
+              });
+            }
           });
         
     	}
