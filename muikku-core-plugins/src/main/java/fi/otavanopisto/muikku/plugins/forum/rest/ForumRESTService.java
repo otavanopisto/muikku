@@ -28,6 +28,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Whitelist;
 
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -385,10 +387,13 @@ public class ForumRESTService extends PluginRESTService {
     }
    
     if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_WRITE_ENVIRONMENT_MESSAGES)) {
+      Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Whitelist.relaxed().addAttributes("a", "target")));
+      message.outputSettings().escapeMode(EscapeMode.xhtml);
+      message.select("a[target]").attr("rel", "noopener noreferer");
       ForumThread thread = forumController.createForumThread(
           forumArea, 
           newThread.getTitle(),
-          Jsoup.clean(newThread.getMessage(), Whitelist.relaxed()), 
+          message.body().toString(), 
           newThread.getSticky(), 
           newThread.getLocked());
   
