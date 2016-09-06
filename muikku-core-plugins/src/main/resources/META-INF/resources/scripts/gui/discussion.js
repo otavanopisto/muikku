@@ -789,7 +789,6 @@
           } else {        
             $('.discussion').discussion('reloadAreas');
           }
-          
           this.element.remove();
         }, this));
       }
@@ -938,7 +937,10 @@
         CKEDITOR.plugins.addExternal(plugin, url);
         extraPlugins.push(plugin);
       }, this));
-    
+      
+      this.element.on('dialogReady', $.proxy(this.footerDialogReady, this));
+      this.element.on('dialogClose', $.proxy(this.footerDialogClose, this));
+      
       this.options.ckeditor.extraPlugins = extraPlugins.join(',');
     },
     
@@ -960,6 +962,16 @@
         }
       } catch (e) {
       }
+    },
+    
+    footerDialogReady: function() {
+      $(document.body).css({
+        paddingBottom: this.element.height() + 50 + 'px'
+      }).addClass('footerDialogOpen');
+    },
+      
+    footerDialogClose: function() {
+      $(document.body).removeClass('footerDialogOpen').removeAttr('style');
     }
     
   });
@@ -1016,6 +1028,7 @@
     
     _onCKEditorReady: function (event) {
       this.element.find('input[name="send"]').removeAttr('disabled'); 
+      this.element.trigger('dialogReady');
     },
     
     _onSendClick: function (event) {
@@ -1045,6 +1058,7 @@
             this.destroyEditor(true);
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newmessage'));
             $('.discussion').discussion('reloadArea');
+            this.element.trigger('dialogClose');
             this.element.remove();
           }
         }, this));
@@ -1053,6 +1067,7 @@
 
     _onCancelClick: function (event) {
       event.preventDefault();
+      this.element.trigger('dialogClose');
       this.element.remove();
     }
   });
@@ -1124,7 +1139,8 @@
     },
     
     _onCKEditorReady: function (event) {
-      this.element.find('input[name="send"]').removeAttr('disabled'); 
+      this.element.find('input[name="send"]').removeAttr('disabled');
+      this.element.trigger('dialogReady');
     },
     
     _onSendClick: function (event) {
@@ -1143,6 +1159,7 @@
             this.destroyEditor(true);
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newreply'));
             $('.discussion').discussion('reloadThread');
+            this.element.trigger('dialogClose');
             this.element.remove();
           }
         },this));
@@ -1151,6 +1168,7 @@
 
     _onCancelClick: function (event) {
       event.preventDefault();
+      this.element.trigger('dialogClose');
       this.element.remove();
     }
   });
@@ -1198,7 +1216,8 @@
     },
     
     _onCKEditorReady: function (event) {
-      this.element.find('input[name="send"]').removeAttr('disabled'); 
+      this.element.find('input[name="send"]').removeAttr('disabled');
+      this.element.trigger('dialogReady');
     },
     
     _onSendClick: function (event) {
@@ -1222,6 +1241,7 @@
           } else {
             this.destroyEditor(true);
             $('.discussion').discussion('reloadThread');
+            this.element.trigger('dialogClose');
             this.element.remove();
           }
         }, this));
@@ -1230,6 +1250,7 @@
 
     _onCancelClick: function (event) {
       event.preventDefault();
+      this.element.trigger('dialogClose');
       this.element.remove();
     }
   });
@@ -1295,6 +1316,7 @@
           } else {
             this.destroyEditor(true);
             $('.discussion').discussion('reloadThread');
+            this.element.trigger('dialogClose');
             this.element.remove();
           }
         }, this));
@@ -1303,6 +1325,7 @@
 
     _onCancelClick: function (event) {
       event.preventDefault();
+      this.element.trigger('dialogClose');
       this.element.remove();
     }
   });
