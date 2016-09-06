@@ -338,6 +338,7 @@
       
       this.element.find('.cm-messages-container').hide();
       this.element.find('.cm-thread-container')
+        .empty()
         .communicatorThread('loadThread', folderId, threadId)
         .show();
     },
@@ -814,7 +815,6 @@
   $.widget("custom.communicatorThread", {
     _create : function() {
       this._threadId = null;
-      
       this.element.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
       this.element.on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));
