@@ -34,6 +34,7 @@
     <input type="hidden" name="userId" value="#{sessionBackingBean.loggedUserId}"/>
     <input type="hidden" name="canListHiddenStudents" value="#{sessionBackingBean.hasEnvironmentPermission('LIST_HIDDEN_STUDENTS')}"/>  
     <div class="guider">
+      <h2 class="main-functionality-page-title">#{i18n.text['plugin.guider.pageTitle']}</h2>
       <ui:insert name="mf-content-functions">
         <div class="mf-content-functions flex-row flex-align-items-center">
 <!--           <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8 sm-flex-order-1 sm-flex-cell-first">                    -->

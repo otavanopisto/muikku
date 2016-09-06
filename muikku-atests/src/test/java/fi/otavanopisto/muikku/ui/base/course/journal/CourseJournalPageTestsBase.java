@@ -3,7 +3,8 @@ package fi.otavanopisto.muikku.ui.base.course.journal;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import org.junit.Test;
 
 import fi.otavanopisto.muikku.TestUtilities;
@@ -43,7 +44,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
   @Test
   public void courseJournalNewEntryForStudent() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
@@ -72,7 +73,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
   @Test
   public void courseJournalEntryAdded() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, new DateTime(1990, 2, 2, 0, 0, 0, 0), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();

@@ -15,8 +15,7 @@
 	<description>Muikku Elasic Search plugin</description>
 
 	<properties>
-		<elasticsearch.version>1.7.2</elasticsearch.version>
-    <lucene.version>4.10.4</lucene.version>
+		<elasticsearch.version>2.1.2</elasticsearch.version>
 	</properties>
   
   <dependencies>
@@ -44,12 +43,7 @@
     </dependency>
 
     <!-- Jackson -->
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-joda</artifactId>
-    </dependency> 
-
+    
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
@@ -61,31 +55,6 @@
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
       <version>${elasticsearch.version}</version>
-      
-      <exclusions>
-        <exclusion>
-          <artifactId>lucene-core</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-
-        <exclusion>
-          <artifactId>lucene-memory</artifactId>
-          <groupId>org.apache.lucene</groupId>
-        </exclusion>
-      </exclusions>
-      
-    </dependency>
-    
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-      <version>${lucene.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-memory</artifactId>
-      <version>${lucene.version}</version>
     </dependency>
     
     <!-- Muikku -->
@@ -95,6 +64,15 @@
       <artifactId>plugin</artifactId>
     </dependency>
     
-	</dependencies> 
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
 
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
+    
+	</dependencies> 
 </project>

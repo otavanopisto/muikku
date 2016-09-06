@@ -350,9 +350,9 @@ public class UserRESTService extends AbstractRESTService {
     }
     
     String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true); 
-    Date studyStartDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
-    Date studyEndDate = user.getStudyEndDate() != null ? user.getStudyEndDate().toDate() : null;
-    Date studyTimeEnd = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;
+    Date studyStartDate = user.getStudyStartDate() != null ? Date.from(user.getStudyStartDate().toInstant()) : null;
+    Date studyEndDate = user.getStudyEndDate() != null ? Date.from(user.getStudyEndDate().toInstant()) : null;
+    Date studyTimeEnd = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
     
     Student student = new Student(
         studentIdentifier.toId(), 
@@ -1063,8 +1063,8 @@ public class UserRESTService extends AbstractRESTService {
 		
 		String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true); 
 		
-		Date startDate = user.getStudyStartDate() != null ? user.getStudyStartDate().toDate() : null;
-		Date endDate = user.getStudyTimeEnd() != null ? user.getStudyTimeEnd().toDate() : null;
+		Date startDate = user.getStudyStartDate() != null ? Date.from(user.getStudyStartDate().toInstant()) : null;
+		Date endDate = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
 		
 		return new fi.otavanopisto.muikku.rest.model.User(userEntity.getId(),
 				user.getFirstName(), user.getLastName(), hasImage,

@@ -39,6 +39,7 @@
             readonly: this.options.readonly,
             answer: $.proxy(function (val) {
               if (val !== undefined) {
+                this._element.find('.muikku-connect-field-correct-number').remove();
                 this.pairs($.parseJSON(val));
               } else {
                 return JSON.stringify(this.pairs());
@@ -66,7 +67,7 @@
                 var counterPartElement = this._element.find('.muikku-connect-field-counterpart[data-field-value="' + pairs[term] + '"]');
                 termElement.removeClass('muikku-connect-field-wrong-answer muikku-connect-field-correct-answer');
                 counterPartElement.removeClass('muikku-connect-field-wrong-answer muikku-connect-field-correct-answer');
-                if (corrects[term] != pairs[term]) {
+                if (this.getCounterpartText(corrects[term]) != this.getCounterpartText(pairs[term])) {
                   termElement.addClass('muikku-connect-field-wrong-answer');
                   counterPartElement.addClass('muikku-connect-field-wrong-answer');
                   isCorrect = false;
@@ -227,6 +228,15 @@
         this._initialized = true;
       },
       
+      getCounterpartText: function(counterpart) {
+        var meta = this.options.meta;
+        for (var i = 0, l = meta.counterparts.length; i < l; i++) {
+          if (meta.counterparts[i].name == counterpart) {
+            return meta.counterparts[i].text;
+          }
+        }
+      },
+
       pairs: function(val) {
         if (val !== undefined) {
           var currentPairs = this.pairs();

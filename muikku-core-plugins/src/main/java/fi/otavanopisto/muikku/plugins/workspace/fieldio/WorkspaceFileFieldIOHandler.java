@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.workspace.fieldio;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -17,6 +18,9 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileField
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
 public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
+  
+  @Inject
+  private Logger logger;
 
   @Inject
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
@@ -54,6 +58,7 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
               
               if (StringUtils.isNotBlank(file.getOriginalId())) {
                 // original id exists, so we are updating an existing file
+                logger.info(String.format("Updating existing file answer %s (%s)", file.getId(), file.getName()));
                 WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(file.getOriginalId());
                 workspaceMaterialFieldAnswerController.updateWorkspaceMaterialFileFieldAnswerFileFileId(fieldAnswerFile, file.getId());
                 workspaceMaterialFieldAnswerController.updateWorkspaceMaterialFileFieldAnswerFileContentType(fieldAnswerFile, file.getContentType());
@@ -61,6 +66,7 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
                 workspaceMaterialFieldAnswerController.updateWorkspaceMaterialFileFieldAnswerFileContent(fieldAnswerFile, fileData);
               } else {
                 // original id not found, so it's a new file
+                logger.info(String.format("Creating new file answer %s (%s)", file.getId(), file.getName()));
                 workspaceMaterialFieldAnswerController.createWorkspaceMaterialFileFieldAnswerFile(fieldAnswer, fileData, file.getContentType(), file.getId(), file.getName());
               }
               
@@ -71,6 +77,7 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
             if (StringUtils.isNotBlank(file.getOriginalId())) {
               WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(file.getOriginalId());
               if (fieldAnswerFile != null) {
+                logger.info(String.format("Removing existing file answer %s (%s)", file.getOriginalId(), file.getName()));
                 workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
               }
             }

@@ -13,7 +13,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import fi.otavanopisto.pyramus.rest.model.StaffMember;
 import fi.otavanopisto.pyramus.rest.model.Student;
@@ -21,7 +21,7 @@ import fi.otavanopisto.pyramus.rest.model.Student;
 public class AbstractPyramusMocks {
 
   protected static void mockPersonStudens(Student[] students) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Map<Long, List<Student>> personStudents = new HashMap<>();
     
@@ -43,7 +43,7 @@ public class AbstractPyramusMocks {
   }
 
   protected static void mockPersonStaffMembers(StaffMember[] staffMembers) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Map<Long, List<StaffMember>> personStaffMembers = new HashMap<>();
     

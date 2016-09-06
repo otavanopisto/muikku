@@ -19,7 +19,8 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
@@ -80,7 +81,7 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
       return;
     }
     
-    Date since = new DateTime().minusDays(NOTIFICATION_THRESHOLD_DAYS).toDate();
+    Date since = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = noPassedCoursesNotificationController.listNotifiedSchoolDataIdentifiersAfter(since);
     SearchResult searchResult = noPassedCoursesNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, since);
     

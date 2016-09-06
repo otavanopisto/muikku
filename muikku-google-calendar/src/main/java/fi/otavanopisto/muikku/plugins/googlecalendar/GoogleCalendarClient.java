@@ -212,7 +212,7 @@ public class GoogleCalendarClient {
     return result;
   }
 
-  public List<CalendarEvent> listEvents(org.joda.time.DateTime minTime, org.joda.time.DateTime maxTime, String... calendarId) throws CalendarServiceException {
+  public List<CalendarEvent> listEvents(java.time.OffsetDateTime minTime, java.time.OffsetDateTime maxTime, String... calendarId) throws CalendarServiceException {
     ArrayList<CalendarEvent> result = new ArrayList<>();
 
     for (String calId : calendarId) {
@@ -220,8 +220,8 @@ public class GoogleCalendarClient {
         for (Event event : getClient()
                 .events()
                 .list(calId)
-                .setTimeMin(new DateTime(minTime.getMillis()))
-                .setTimeMax(new DateTime(maxTime.getMillis()))
+                .setTimeMin(minTime != null ? new DateTime(minTime.toInstant().toEpochMilli()) : null)
+                .setTimeMax(maxTime != null ? new DateTime(maxTime.toInstant().toEpochMilli()) : null)
                 .execute()
                 .getItems()) {
           result.add(toMuikkuEvent(calId, event));

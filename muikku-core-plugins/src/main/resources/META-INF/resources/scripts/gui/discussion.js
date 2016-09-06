@@ -71,33 +71,6 @@
       });
     },
     
-    loadThreadDetails: function(thread, callback) {
-      var tasks = [this._createUserInfoLoad(thread.creator), this._createLoadArea(thread.forumAreaId)];
-      
-      async.parallel(tasks, function (err, results) {
-        if (err) {
-          callback(err);
-        } else {
-          var user = results[0];
-          var area = results[1];
-          var d = new Date(thread.created);
-          var ud = new Date(thread.updated);          
-          // TODO: remove prettyDates...
-          callback(null, $.extend({}, thread, {
-            areaName: area.name,
-            creatorFullName: user.firstName + ' ' + user.lastName,
-            prettyDate: formatDate(d) + ' ' + formatTime(d),
-            prettyDateUpdated: formatDate(ud) + ' ' + formatTime(ud),
-            prettyDateModified: formatDate(ud) + ' ' + formatTime(ud),
-            userRandomNo: (user.id % 6) + 1,
-            nameLetter: user.firstName.substring(0,1),
-            isEdited: thread.lastModified == thread.created ? false : true,
-            canEdit: thread.creator === MUIKKU_LOGGED_USER_ID ? true : false
-          }));
-        }
-      });
-    },
-
     _createUserInfoLoad: function (userEntityId) {
       return $.proxy(function (callback) {
         this._loadUserInfo(userEntityId, callback);
@@ -816,7 +789,6 @@
           } else {        
             $('.discussion').discussion('reloadAreas');
           }
-          
           this.element.remove();
         }, this));
       }
@@ -965,7 +937,10 @@
         CKEDITOR.plugins.addExternal(plugin, url);
         extraPlugins.push(plugin);
       }, this));
-    
+      
+      this.element.on('dialogReady', $.proxy(this.footerDialogReady, this));
+      this.element.on('dialogClose', $.proxy(this.footerDialogClose, this));
+      
       this.options.ckeditor.extraPlugins = extraPlugins.join(',');
     },
     
@@ -987,6 +962,16 @@
         }
       } catch (e) {
       }
+    },
+    
+    footerDialogReady: function() {
+      $(document.body).css({
+        paddingBottom: this.element.height() + 50 + 'px'
+      }).addClass('footerDialogOpen');
+    },
+      
+    footerDialogClose: function() {
+      $(document.body).removeClass('footerDialogOpen').removeAttr('style');
     }
     
   });
@@ -1043,6 +1028,7 @@
     
     _onCKEditorReady: function (event) {
       this.element.find('input[name="send"]').removeAttr('disabled'); 
+      this.element.trigger('dialogReady');
     },
     
     _onSendClick: function (event) {
@@ -1072,6 +1058,7 @@
             this.destroyEditor(true);
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newmessage'));
             $('.discussion').discussion('reloadArea');
+            this.element.trigger('dialogClose');
             this.element.remove();
           }
         }, this));
@@ -1080,6 +1067,7 @@
 
     _onCancelClick: function (event) {
       event.preventDefault();
+      this.element.trigger('dialogClose');
       this.element.remove();
     }
   });
@@ -1151,7 +1139,8 @@
     },
     
     _onCKEditorReady: function (event) {
-      this.element.find('input[name="send"]').removeAttr('disabled'); 
+      this.element.find('input[name="send"]').removeAttr('disabled');
+      this.element.trigger('dialogReady');
     },
     
     _onSendClick: function (event) {
@@ -1170,6 +1159,7 @@
             this.destroyEditor(true);
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newreply'));
             $('.discussion').discussion('reloadThread');
+            this.element.trigger('dialogClose');
             this.element.remove();
           }
         },this));
@@ -1178,6 +1168,7 @@
 
     _onCancelClick: function (event) {
       event.preventDefault();
+      this.element.trigger('dialogClose');
       this.element.remove();
     }
   });
@@ -1225,7 +1216,8 @@
     },
     
     _onCKEditorReady: function (event) {
-      this.element.find('input[name="send"]').removeAttr('disabled'); 
+      this.element.find('input[name="send"]').removeAttr('disabled');
+      this.element.trigger('dialogReady');
     },
     
     _onSendClick: function (event) {
@@ -1249,6 +1241,7 @@
           } else {
             this.destroyEditor(true);
             $('.discussion').discussion('reloadThread');
+            this.element.trigger('dialogClose');
             this.element.remove();
           }
         }, this));
@@ -1257,6 +1250,7 @@
 
     _onCancelClick: function (event) {
       event.preventDefault();
+      this.element.trigger('dialogClose');
       this.element.remove();
     }
   });
@@ -1322,6 +1316,7 @@
           } else {
             this.destroyEditor(true);
             $('.discussion').discussion('reloadThread');
+            this.element.trigger('dialogClose');
             this.element.remove();
           }
         }, this));
@@ -1330,6 +1325,7 @@
 
     _onCancelClick: function (event) {
       event.preventDefault();
+      this.element.trigger('dialogClose');
       this.element.remove();
     }
   });

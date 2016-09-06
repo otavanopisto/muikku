@@ -2,7 +2,8 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.Date;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
@@ -14,7 +15,7 @@ public abstract class AbstractWorkspace implements Workspace {
   public AbstractWorkspace(String identifier, String name, String nameExtension, String viewLink,
       SchoolDataIdentifier workspaceTypeId, String courseIdentifierIdentifier, String description,
       String subjectIdentifier, SchoolDataIdentifier educationTypeIdentifier, Date modified, Double length, String lengthUnitIdentifier,
-      DateTime beginDate, DateTime endDate, boolean archived, boolean evaluationFeeApplicable, SchoolDataIdentifier curriculumIdentifier) {
+      OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, boolean evaluationFeeApplicable, SchoolDataIdentifier curriculumIdentifier) {
     super();
     this.identifier = identifier;
     this.name = name;
@@ -114,22 +115,22 @@ public abstract class AbstractWorkspace implements Workspace {
   }
   
   @Override
-  public DateTime getBeginDate() {
+  public OffsetDateTime getBeginDate() {
     return beginDate;
   }
   
   @Override
-  public void setBeginDate(DateTime beginDate) {
+  public void setBeginDate(OffsetDateTime beginDate) {
     this.beginDate = beginDate; 
   }
   
   @Override
-  public DateTime getEndDate() {
+  public OffsetDateTime getEndDate() {
     return endDate;
   }
   
   @Override
-  public void setEndDate(DateTime endDate) {
+  public void setEndDate(OffsetDateTime endDate) {
     this.endDate = endDate;
   }
   
@@ -165,8 +166,8 @@ public abstract class AbstractWorkspace implements Workspace {
   private Date modified;
   private Double length;
   private String lengthUnitIdentifier;
-  private DateTime beginDate;
-  private DateTime endDate;
+  private OffsetDateTime beginDate;
+  private OffsetDateTime endDate;
   private boolean archived;
   private boolean evaluationFeeApplicable;
   private SchoolDataIdentifier curriculumIdentifier;

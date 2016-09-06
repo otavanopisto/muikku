@@ -89,8 +89,8 @@
     </dependency>
     
     <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>jaxrs-api</artifactId>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -107,11 +107,6 @@
     </dependency>
 
     <!-- Jackson -->
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-joda</artifactId>
-    </dependency> 
 
     <dependency>
       <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -137,13 +132,13 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.51</version>
+      <version>0.7.53-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.51</version>
+      <version>0.7.53-SNAPSHOT</version>
     </dependency>
 
     <!-- Muikku -->
@@ -156,6 +151,11 @@
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>muikku-school-data-pyramus-persistence</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
     
   </dependencies>

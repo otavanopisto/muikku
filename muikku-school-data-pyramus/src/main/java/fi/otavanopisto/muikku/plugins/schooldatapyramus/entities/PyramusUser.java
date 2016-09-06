@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.entity.AbstractUser;
@@ -18,9 +19,9 @@ public class PyramusUser extends AbstractUser implements User {
                      String municipality,
                      String school,
                      String curriculumIdentifier,
-                     DateTime studyStartDate,
-                     DateTime studyEndDate,
-                     DateTime studyTimeEnd,
+                     OffsetDateTime studyStartDate,
+                     OffsetDateTime studyEndDate,
+                     OffsetDateTime studyTimeEnd,
                      boolean hidden,
                      boolean startedStudies, 
                      boolean finishedStudies, 

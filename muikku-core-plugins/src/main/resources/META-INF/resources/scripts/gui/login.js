@@ -8,30 +8,34 @@
         resizable: false,
         width: 460,
         dialogClass: "forgotpassword-dialog",
+        beforeClose: function(event, ui) {
+          $(this).dialog().remove();          
+        },
         buttons: [{
           'text': dialog.data('button-send-text'),
           'class': 'send-button',
           'click': function(event) {
             
             var emailField = $("#forgotpassword-email");
+            var email = emailField.val().trim();
             var dlog = $(this);
 
             if (emailField == 'invalid') {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.invalid"));  
-            } else if (emailField.val() == '') {
+            } else if (email == '') {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.required"));  
             } 
             
-            mApi({async: false}).forgotpassword.reset.read({ email: emailField.val() }).callback(function (err, response) {
+            mApi({async: false}).forgotpassword.reset.read({ email: email }).callback(function (err, response) {
               if (err) {
                 if (response.status == 404) {
-                  $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.noUserFound", emailField.val()));
+                  $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.noUserFound", email));
                 } else { // most likely 400 - bad request
                   $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.invalid"));  
                 } 
                 
               } else {
-                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.forgotPassword.forgotPasswordDialog.mailSent", emailField.val()));
+                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.forgotPassword.forgotPasswordDialog.mailSent", email));
                 dlog.dialog().remove();
               }
             });
@@ -48,7 +52,7 @@
   }
   
   $(document).on('click', '.forgotpassword-link', function (event, data) {
-	event.preventDefault();
+    event.preventDefault();
     confirmForgotpasswordRequest();
   });
 

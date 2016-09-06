@@ -338,6 +338,7 @@
       
       this.element.find('.cm-messages-container').hide();
       this.element.find('.cm-thread-container')
+        .empty()
         .communicatorThread('loadThread', folderId, threadId)
         .show();
     },
@@ -364,6 +365,16 @@
         .communicatorCreateMessageDialog($.extend(options||{}, {
           groupMessagingPermission: this.options.groupMessagingPermission
         }));
+      
+      dialog.on('dialogReady', function(e) {
+        $(document.body).css({
+          paddingBottom: dialog.height() + 50 + 'px'
+        }).addClass('footerDialogOpen');
+      });
+      
+      dialog.on('dialogClose', function(e) {
+        $(document.body).removeClass('footerDialogOpen').removeAttr('style');
+      });
       
       $('#socialNavigation')
         .empty()
@@ -785,6 +796,7 @@
     
     _onCancelClick: function (event) {
       event.preventDefault();
+      this.element.trigger('dialogClose');
       this.element.remove();
     },
     
@@ -794,7 +806,8 @@
     },
     
     _onCKEditorReady: function (e) {
-      this.element.find('input[name="send"]').removeAttr('disabled'); 
+      this.element.find('input[name="send"]').removeAttr('disabled');
+      this.element.trigger('dialogReady');
     }
     
   });
@@ -802,7 +815,6 @@
   $.widget("custom.communicatorThread", {
     _create : function() {
       this._threadId = null;
-      
       this.element.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
       this.element.on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));
