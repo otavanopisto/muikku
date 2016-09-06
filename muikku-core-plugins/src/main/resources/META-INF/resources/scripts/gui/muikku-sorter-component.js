@@ -112,10 +112,11 @@
         var correctItems = this.options.meta.items;
         var itemsContainer = $(this.element).find('.muikku-sorter-items-container')[0];
         for (var i = 0; i < correctItems.length; i++) {
-          var correctId = correctItems[i].id;
           var userId = userAnswer[i];
+          var userText = this._getItemText(userId); 
+          var correctText = correctItems[i].name;
           var itemElement = $(this.element).find('.muikku-sorter-item[data-item-id="' + userId + '"]')[0];
-          if (correctId == userId) {
+          if (correctText == userText) {
             result.correctAnswers++;
             $(itemElement).addClass('muikku-field-correct-answer');
           }
@@ -147,6 +148,15 @@
       },
       canCheckAnswer: function() {
         return true;
+      },
+      _getItemText: function(itemId) {
+        var items = this.options.meta.items;
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].id == itemId) {
+            return items[i].name;
+          }
+        }
+        return null;
       },
       _onBeforeAssignmentSubmit: function (event, data) {
         if (data.state == 'UNANSWERED') {
