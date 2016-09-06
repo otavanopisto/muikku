@@ -1,9 +1,8 @@
-{?items}
-  <div class="mf-items-toolbar flex-row"> 
-     <div class="mf-items-tool icon-delete"></div>
-     <div class="mf-items-tool"><input type="button" class="newLabelSubmit" name="newLabelSubmit" value="Add label"/></div>
-  </div>
-{/items}
+<!-- {?items} -->
+<!--   <div class="mf-items-toolbar flex-row">  -->
+
+<!--   </div> -->
+<!-- {/items} -->
 
 <div class="cm-messages-pages flex-row">
   {?items}
