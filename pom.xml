@@ -75,7 +75,7 @@
     <module>muikku-evaluation-plugin</module>
     <module>muikku-timed-notifications-plugin</module>
     <module>muikku-timed-notifications-plugin-persistence</module>
-		<module>muikku</module>
+    <module>muikku</module>
     <module>muikku-developer-tools</module>
 		<module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
