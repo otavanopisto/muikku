@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
 
@@ -21,6 +22,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketTicket;
 
 @ApplicationScoped
+@Transactional
 public class WebSocketMessenger {
   
   @Inject

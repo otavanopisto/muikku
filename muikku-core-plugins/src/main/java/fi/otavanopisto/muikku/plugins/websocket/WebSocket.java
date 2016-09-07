@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.websocket;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
@@ -12,7 +11,6 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint ("/ws/socket/{TICKET}")
-@Transactional
 public class WebSocket {
   
   @Inject
