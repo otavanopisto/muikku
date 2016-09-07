@@ -367,8 +367,6 @@
           });
           $('.mf-controls-container').messageTools();          
           this.element.on('click', '.mf-label-functions', $.proxy(this._onLabelMenuOpenClick, this));    
-          this.element.on('click', '.mf-label-function-edit', $.proxy(this._onLabelEditClick, this));  
-          this.element.on('click', '.mf-label-function-delete', $.proxy(this._onLabelDeleteClick, this));    
           this.element.find('.cm-thread-container').communicatorThread();       
           this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
           this.element.on('click', '.communicator-folder', $.proxy(this._onCommunicatorFolderClick, this));
@@ -444,7 +442,7 @@
     },
     
     updateLabel: function (id, name, colorHex) {
-      var colorInt = hexToColorInt(colorHex);
+      var colorInt = this.hexToColorInt(colorHex);
       var label = {
         id: id,
         name: name,
@@ -479,7 +477,8 @@
       var clickedMenu = $(event.target).closest("li").find('.mf-label-functions-menu');
       var menuPosition = $(event.target).closest("li").width() - 10;
       var menuState = clickedMenu.css('display') ;
-      
+      clickedMenu.on('click', '.mf-label-function-edit', $.proxy(this._onLabelEditClick, this));  
+      clickedMenu.on('click', '.mf-label-function-delete', $.proxy(this._onLabelDeleteClick, this));          
       clickedMenu.css('left', menuPosition);
       
       menus.hide();
@@ -488,19 +487,83 @@
         clickedMenu.show();       
       }else{
         clickedMenu.hide();   
+        
       }
     }, 
     
-    _onLabelEditClick : function(id,name,colorHex){
-      renderDustTemplate('communicator/communicator_label_edit.dust', {id, name, colorHex}, $.proxy(function(text) {
+    _onLabelEditClick : function(event) {
+      var folderId = $(event.target).closest("li").attr("data-folder-id");
+      var menus = $(event.target).closest("ul").find('.mf-label-functions-menu');      
+      var folderController = this._folderControllers[folderId];
+      var labelId = folderController._labelId;
+      
+      mApi().communicator.userLabels.read(labelId).callback($.proxy(function (err, results) {
+        var label = results;
+        
+        renderDustTemplate('communicator/communicator_label_edit.dust', label, $.proxy(function(text) {
+          this._dialog = $(text);      
+          $(this._dialog).dialog(
+            {
+              buttons : [ {
+                 'text' : 'Muokkaa',
+                 'class' : 'save-button',
+                 'click' : function() {
+                     
+                     var id = $(this).find("input").attr('data-id');
+                     var name = $(this).find("input").val();
+                     var color = $(this).find("input").attr('data-color');
+                     var communicator = $(".communicator").communicator("instance");
+                     var colorHex = communicator.colorIntToHex(color);
+                     
+                     communicator.updateLabel(id, name, colorHex);
+                     $(this).dialog('close');
+                     menus.hide();
+                  // TODO: REFRESH LABELS
+                 }
+              
+               }, 
+             
+               {
+                 'text' : 'Peruuta',
+                 'class' : 'cancel-button',
+                 'click' : function(){               
+                   $(this).dialog('close');
+                   menus.hide();
+               }
+             }           
+             ]
+            } 
+          );
+        
+        }));
+      }, this));
+ 
+    },
+    _onLabelDeleteClick : function(event){
+      var folderId = $(event.target).closest("li").attr("data-folder-id");
+      var menus = $(event.target).closest("ul").find('.mf-label-functions-menu');      
+      var folderController = this._folderControllers[folderId];
+      var labelId = folderController._labelId;      
+      var label = [];
+      
+      label.id = labelId;
+
+      renderDustTemplate('communicator/communicator_label_delete.dust', label, $.proxy(function(text) {
         this._dialog = $(text);      
         $(this._dialog).dialog(
           {
             buttons : [ {
                'text' : 'Muokkaa',
                'class' : 'save-button',
-               'click' : function(){alert(id, name);}
-  //                 $.proxy(this.updateLabel(id, name, colorHex), this)
+               'click' :  function() {
+                 
+                 var id = $(this).find("div").attr('data-id');
+                 var communicator = $(".communicator").communicator("instance");
+                 communicator.deleteLabel(id);
+                 $(this).dialog('close');
+                 menus.hide();
+              // TODO: REFRESH LABELS
+             }
              }, 
            
              {
@@ -515,10 +578,8 @@
           } 
         );
       
-      }));
-      
+      }));      
     },
-    _onLabelDeleteClick : function(){},
     addLabelControl: function (label) {
 
       this._folderControllers[ "label-" + label.id ] = new CommunicatorInboxFolderController(label.id);
