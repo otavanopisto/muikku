@@ -6,7 +6,7 @@
     <!--   <input type="button" class="newLabelSubmit" name="newLabelSubmit" value="Add label"/>  -->
   </div>
   <div class="mf-tool-dialog cm-label-dialog">
-    <div class="mf-tool-textfield-container cm-label-textfield-container"><input class="filter" type="text" name="searchLabels" placeholder="Hae tunnisteista, luo tunniste" /></div>
+    <div class="mf-tool-textfield-container cm-label-textfield-container"><input id="communicatorNewlabelField" class="filter" type="text" name="communicatorNewlabelField" placeholder="Hae tunnisteista, luo tunniste" /></div>
     <div class="mf-tool-action-container cm-label-action-container"><a id="newLabelSubmit" href="#">Luo tunniste</a></div>
     <!-- 
     <ul class="mf-tool-label-container">

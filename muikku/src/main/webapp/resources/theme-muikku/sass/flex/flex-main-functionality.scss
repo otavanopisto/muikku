@@ -76,6 +76,49 @@
   } 
   
 }
+.mf-label {
+  position:relative;
+}
+
+.mf-label-name {
+  
+}
+
+.mf-label-functions {
+  bottom: 0;
+  color: #dadada;
+  margin-top: 0;
+  padding: 9px 0 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index:99;
+  width: 25px;
+   > div{
+
+  }
+  &:hover{
+    color:#000;
+    }
+  }
+
+.mf-label-functions-menu {
+  background-color: #fff;
+  display: none;
+  font-size: 12px;
+  position: absolute;
+  top: 10px;
+  width: 150px;
+  z-index: 100;
+  div{
+    padding:5px 0 5px 5px;
+    &:hover{
+      background-color:#dadada;
+      
+    }
+    
+  }
+}
 
 .mf-dropdown {  
   position: relative;

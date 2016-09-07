@@ -1,0 +1,14 @@
+<li class="mf-label communicator-folder" data-folder-type="label" style="background-color:{hexColor}" data-folder-id="label-{id}">
+  <div class="mf-label-name">
+    <a href="#label-{id}">
+      <span>{name}</span>
+    </a>
+  </div>
+  <div class="mf-label-functions icon-arrow-down"> 
+  </div>
+  <div class="mf-label-functions-menu">
+    <div class="mf-label-function-edit">Muokkaa</div>
+    <div class="mf-label-function-delete">Poista</div>
+  </div>
+</li>
+

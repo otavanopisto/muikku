@@ -289,12 +289,14 @@
     
     _onAddLabelClick: function (event) {
       var communicator = $('.communicator').communicator("instance");
-      
-      var name = "Label #" + Math.round(Math.random() * 100);
+      var name =  $('#communicatorNewlabelField').val();
       var color = Math.round(Math.random() * 16777215);
       var colorHex = communicator.colorIntToHex(color);
-      
-      communicator.createLabel(name, colorHex);
+      if(name != ''){
+        communicator.createLabel(name, colorHex);
+      }else{
+        alert("TYHJÄ KENTTÄ!!!11!"); 
+      }
     }
     
   });
@@ -314,9 +316,8 @@
           var toolTemplate = 'communicator/communicator_tools_thread.dust';		      
           this.loadTools(toolTemplate);
 		   }
-		   
-
 	 },
+	 
    loadTools: function(toolSet) {
      renderDustTemplate(toolSet, {}, $.proxy(function (text) {
        this.element.html(text);
@@ -344,7 +345,7 @@
 
           var folderId;
           var threadId;
-          
+           
           if (window.location.hash.length > 1) {
             var hashParts = window.location.hash.substring(1).split('/');
             if (hashParts.length > 0) {
@@ -358,13 +359,16 @@
           
           folderId = this._folderControllers[folderId] ? folderId : this.options.defaultFolderId;
           
-    
+          this.element.on('click', '.mf-label-edit', $.proxy(this._onLabelEditClick, this));    
                  
           this.element.find('.cm-messages-container').communicatorMessages({
             maxMessageCount: this.options.maxMessageCount,
             folderId: folderId
           });
           $('.mf-controls-container').messageTools();          
+          this.element.on('click', '.mf-label-functions', $.proxy(this._onLabelMenuOpenClick, this));    
+          this.element.on('click', '.mf-label-function-edit', $.proxy(this._onLabelEditClick, this));  
+          this.element.on('click', '.mf-label-function-delete', $.proxy(this._onLabelDeleteClick, this));    
           this.element.find('.cm-thread-container').communicatorThread();       
           this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
           this.element.on('click', '.communicator-folder', $.proxy(this._onCommunicatorFolderClick, this));
@@ -470,23 +474,63 @@
       }, this));
     },
     
-    addLabelControl: function (label) {
-      var labelId = label.id;
-      var labelName = label.name;
-      var labelColor = label.color;
+    _onLabelMenuOpenClick : function(event){
+      var menus = $(event.target).closest("ul").find('.mf-label-functions-menu');
+      var clickedMenu = $(event.target).closest("li").find('.mf-label-functions-menu');
+      var menuPosition = $(event.target).closest("li").width() - 10;
+      var menuState = clickedMenu.css('display') ;
       
-      var labelControllerId = "label-" + label.id;
-      this._folderControllers[labelControllerId] = new CommunicatorInboxFolderController(label.id);
+      clickedMenu.css('left', menuPosition);
       
-      var elem = $('<li class="communicator-folder" data-folder-type="label" data-folder-id="' + labelControllerId + '"><a href="#' + labelControllerId + '">' + labelName + '</a></li>');
-      
-      if (labelColor) {
-        elem.css({
-          'background-color': this.colorIntToHex(labelColor)
-        });
+      menus.hide();
+
+      if(menuState == 'none'){
+        clickedMenu.show();       
+      }else{
+        clickedMenu.hide();   
       }
+    }, 
+    
+    _onLabelEditClick : function(id,name,colorHex){
+      renderDustTemplate('communicator/communicator_label_edit.dust', {id, name, colorHex}, $.proxy(function(text) {
+        this._dialog = $(text);      
+        $(this._dialog).dialog(
+          {
+            buttons : [ {
+               'text' : 'Muokkaa',
+               'class' : 'save-button',
+               'click' : function(){alert(id, name);}
+  //                 $.proxy(this.updateLabel(id, name, colorHex), this)
+             }, 
+           
+             {
+               'text' : 'Peruuta',
+               'class' : 'cancel-button',
+               'click' : function(){               
+                 $(this).dialog('close');
+               
+             }
+           }           
+           ]
+          } 
+        );
       
-      this.element.find(".cm-categories ul").append(elem);
+      }));
+      
+    },
+    _onLabelDeleteClick : function(){},
+    addLabelControl: function (label) {
+
+      this._folderControllers[ "label-" + label.id ] = new CommunicatorInboxFolderController(label.id);
+      
+      // Label has id, name, color
+      
+      label.hexColor = this.colorIntToHex(label.color);
+
+      renderDustTemplate('/communicator/communicator_label.dust', label, $.proxy(function (text) {
+        this.element.find(".cm-categories ul").append(text);
+      }, this));
+      
     },
     
     colorIntToHex: function (color) {

@@ -1,0 +1,6 @@
+<div class="mf-label-edit-dialog">
+  <div>Muokkaa tunnistetta</div>
+
+  <input type="text" value="{name}" data-id="{id}"/>
+ 
+</div>
