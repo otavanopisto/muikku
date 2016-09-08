@@ -179,12 +179,18 @@
       this._firstItem = 0;
       this._items = [];
       this._folderId = this.options.folderId;      
+            
       $('.mf-controls-container').on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
+      $('.mf-controls-container').on('click', '.cm-add-label-menu', $.proxy(this._onAddLabelMenuClick, this));         
       $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onAddLabelClick, this));   
+      
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
       $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
+      
     },
+    
+
     
     loadFolder: function (id) {
       this._folderId = id;
@@ -286,14 +292,56 @@
       this.element.closest('.communicator') 
         .communicator('loadThread', threadId);
     },
+
+    _onAddLabelMenuClick: function (event) {
+
+// Waiting, because Jquery Autocomplete is garbage
+      
+//      var labelObjs = $('.cm-categories').find('.mf-label');      
+//      
+//      var labels = [];
+//      
+//      $.each(labelObjs, function(key, value){
+//        var name= $(value).attr('data-folder-name');
+//        labels.push(name);
+//      });
+//      
+//      $("#communicatorNewlabelField").autocomplete({
+//        source: labels,
+//        search: function(event, ui){
+//
+//        },
+//        appendTo: (".junkyard")
+//      }).data("ui-autocomplete")._renderItem = function (ul, item) {
+//        var li = $("<li>")
+//        .text(item.label)
+//        .appendTo(".mf-tool-label-container");
+//         return li;
+//    }
+
+      $(event.target).closest('.mf-tool-container ').find('.cm-label-menu').toggle();
+    },    
     
     _onAddLabelClick: function (event) {
+      var labelObjs = $('.cm-categories').find('.mf-label');      
+      
+      var labels = [];
+      
+      $.each(labelObjs, function(key, value){
+        var name= $(value).attr('data-folder-name');
+        labels.push(name);
+      });      
       var communicator = $('.communicator').communicator("instance");
       var name =  $('#communicatorNewlabelField').val();
       var color = Math.round(Math.random() * 16777215);
       var colorHex = communicator.colorIntToHex(color);
       if(name != ''){
-        communicator.createLabel(name, colorHex);
+        if(labels.indexOf(name) == -1){
+          communicator.createLabel(name, colorHex);
+        }else{
+          alert("On jo"); 
+
+        }
       }else{
         alert("TYHJÄ KENTTÄ!!!11!"); 
       }
@@ -367,6 +415,8 @@
           });
           $('.mf-controls-container').messageTools();          
           this.element.on('click', '.mf-label-functions', $.proxy(this._onLabelMenuOpenClick, this));    
+          this.element.on('click', '.mf-label-function-edit', $.proxy(this._onLabelEditClick, this));  
+          this.element.on('click', '.mf-label-function-delete', $.proxy(this._onLabelDeleteClick, this));               
           this.element.find('.cm-thread-container').communicatorThread();       
           this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
           this.element.on('click', '.communicator-folder', $.proxy(this._onCommunicatorFolderClick, this));
@@ -476,9 +526,7 @@
       var menus = $(event.target).closest("ul").find('.mf-label-functions-menu');
       var clickedMenu = $(event.target).closest("li").find('.mf-label-functions-menu');
       var menuPosition = $(event.target).closest("li").width() - 10;
-      var menuState = clickedMenu.css('display') ;
-      clickedMenu.on('click', '.mf-label-function-edit', $.proxy(this._onLabelEditClick, this));  
-      clickedMenu.on('click', '.mf-label-function-delete', $.proxy(this._onLabelDeleteClick, this));          
+      var menuState = clickedMenu.css('display') ;     
       clickedMenu.css('left', menuPosition);
       
       menus.hide();
@@ -516,7 +564,7 @@
                      var colorHex = communicator.colorIntToHex(color);
                      
                      communicator.updateLabel(id, name, colorHex);
-                     $(this).dialog('close');
+                     $(this).dialog().remove();
                      menus.hide();
                   // TODO: REFRESH LABELS
                  }
@@ -527,7 +575,7 @@
                  'text' : 'Peruuta',
                  'class' : 'cancel-button',
                  'click' : function(){               
-                   $(this).dialog('close');
+                   $(this).dialog().remove();
                    menus.hide();
                }
              }           

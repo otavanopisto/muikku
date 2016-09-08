@@ -1,4 +1,4 @@
-<li class="mf-label communicator-folder" data-folder-type="label" style="background-color:{hexColor}" data-folder-id="label-{id}">
+<li class="mf-label communicator-folder" data-folder-type="label" style="background-color:{hexColor}" data-folder-name="{name}" data-folder-id="label-{id}">
   <div class="mf-label-name">
     <a href="#label-{id}">
       <span>{name}</span>

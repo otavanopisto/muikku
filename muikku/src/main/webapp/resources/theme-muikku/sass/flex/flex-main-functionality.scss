@@ -369,19 +369,31 @@
   }
   
 }
-.mf-tool-action-container{  
+
+.mf-arrow-up{
+  width: 0; 
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #fff;
+}
+
+
+.mf-tool-action-container {  
   a{
     color:#72d200;    
   }
  padding:0 0 10px 20px;
 }
-.mf-tool-dialog {
+
+
+.mf-tool-menu {
   position:absolute;
-  border:1px solid #dadada;
-  background-color:#fff;
+  display:none;
+  background-color:transparent;
   z-index:99;
   text-align:left;
-  
+  top:37px;
   
   input.filter {
     font-size:12px;
@@ -391,6 +403,12 @@
     width:200px;
   }
 }
+
+  
+.mf-tool-dialog-content {
+  background-color:#fff;
+}
+
 .mf-tool-container {
   &.default{
     background: #0099ff none repeat scroll 0 0;

@@ -2,19 +2,26 @@
    <div class="mf-tool cm-delete-message icon-delete"></div>
  </div>
  <div class="mf-tool-container special cm-delete-message-container">
-  <div class="mf-tool cm-add-label icon-announcer">
+  <div class="mf-tool cm-add-label-menu icon-announcer">
     <!--   <input type="button" class="newLabelSubmit" name="newLabelSubmit" value="Add label"/>  -->
   </div>
-  <div class="mf-tool-dialog cm-label-dialog">
-    <div class="mf-tool-textfield-container cm-label-textfield-container"><input id="communicatorNewlabelField" class="filter" type="text" name="communicatorNewlabelField" placeholder="Hae tunnisteista, luo tunniste" /></div>
-    <div class="mf-tool-action-container cm-label-action-container"><a id="newLabelSubmit" href="#">Luo tunniste</a></div>
-    <!-- 
-    <ul class="mf-tool-label-container">
-      <li class="mf-tool-label" id="label-1">Yks</li>
-      <li class="mf-tool-label" id="label-2">Kaks</li>
-      <li class="mf-tool-label" id="label-3">Kol</li>
-      <li class="mf-tool-label" id="label-4">Nel</li>      
-    </ul>
-     -->
+  <div class="mf-tool-menu cm-label-menu">
+    <div class="mf-arrow-up cm-label-menu-arrow"></div>
+    <div class="mf-tool-dialog-content">
+      <div class="mf-tool-textfield-container cm-label-textfield-container"><input id="communicatorNewlabelField" class="filter" type="text" name="communicatorNewlabelField" placeholder="Luo tunniste" /></div>
+      <div class="mf-tool-action-container cm-label-action-container"><a id="newLabelSubmit" href="#">Luo tunniste</a></div>
+      <div class="junkyard" style="display:none;">
+      
+      </div>
+      <ul class="mf-tool-label-container">
+            <!-- 
+        <li class="mf-tool-label" id="label-1">Yks</li>
+        <li class="mf-tool-label" id="label-2">Kaks</li>
+        <li class="mf-tool-label" id="label-3">Kol</li>
+        <li class="mf-tool-label" id="label-4">Nel</li>
+        -->      
+      </ul>
+       
+     </div>
   </div>
  </div>
