@@ -1,5 +1,5 @@
-<li class="mf-label communicator-folder" data-folder-type="label" style="background-color:{hexColor}" data-folder-name="{name}" data-folder-id="label-{id}">
-  <div class="mf-label-name">
+<li class="mf-label cm-folder " data-folder-type="label"  data-folder-name="{name}" data-folder-id="label-{id}">
+  <div class="mf-label-name cm-label-name icon-tag" style="color:{hexColor}">
     <a href="#label-{id}">
       <span>{name}</span>
     </a>

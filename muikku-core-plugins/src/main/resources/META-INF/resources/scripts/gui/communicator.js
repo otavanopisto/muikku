@@ -419,7 +419,7 @@
           this.element.on('click', '.mf-label-function-delete', $.proxy(this._onLabelDeleteClick, this));               
           this.element.find('.cm-thread-container').communicatorThread();       
           this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
-          this.element.on('click', '.communicator-folder', $.proxy(this._onCommunicatorFolderClick, this));
+          this.element.on('click', '.cm-folder', $.proxy(this._onCommunicatorFolderClick, this));
           
           if (threadId) {
             this.loadThread(threadId);
@@ -699,9 +699,9 @@
     },
     
     _updateSelected: function (id) {
-      this.element.find('.communicator-folder')
+      this.element.find('.cm-folder')
         .removeClass('selected');
-      this.element.find('.communicator-folder[data-folder-id="' + id + '"]')
+      this.element.find('.cm-folder[data-folder-id="' + id + '"]')
         .addClass('selected');
     },
     
@@ -730,7 +730,7 @@
     },
     
     _onCommunicatorFolderClick: function (event) {
-      var folderId = $(event.target).closest('.communicator-folder')
+      var folderId = $(event.target).closest('.cm-folder')
         .attr('data-folder-id');
       
       this.loadFolder(folderId);
