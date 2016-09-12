@@ -375,7 +375,7 @@
   a{
     color:#72d200;    
   }
- padding:0 0 10px 20px;
+  padding:0 0 10px 20px;
 }
 
 ul.mf-tool-label-container {
@@ -440,6 +440,11 @@ ul.mf-tool-label-container {
 }
 
 .mf-tool-container {
+  &.disabled{
+    background:$bgr1 none repeat scroll 0 0;
+    color:$bgr2;        
+  }
+  
   &.default{
     background: #0099ff none repeat scroll 0 0;
   }
