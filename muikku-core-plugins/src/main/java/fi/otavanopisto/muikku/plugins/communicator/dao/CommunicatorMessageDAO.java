@@ -104,7 +104,7 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), recipient.getId()),
         criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE),
-        threadJoin.in(labelRoot),
+        threadJoin.in(labelRoot.get(CommunicatorMessageIdLabel_.communicatorMessageId)),
         criteriaBuilder.equal(labelRoot.get(CommunicatorMessageIdLabel_.label), label)
       )
     );
