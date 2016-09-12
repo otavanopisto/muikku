@@ -37,7 +37,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -830,90 +829,84 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     List<WorkspaceStudent> result = new ArrayList<>();
     
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      if (studentIdentifiers != null) {
-        workspaceUsers = new ArrayList<>();
-        
-        for (SchoolDataIdentifier studentIdentifier : studentIdentifiers) {
-          WorkspaceUserEntity wue = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
-          if (wue == null) {
-            continue;
-          }
-  
-          if (!archived && wue.getArchived()) {
-            continue;
-          }
-  
-          WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(wue);
-          if (workspaceUser == null) {
-            continue;
-          }
-  
-          workspaceUsers.add(workspaceUser);
+    if (studentIdentifiers != null) {
+      workspaceUsers = new ArrayList<>();
+      
+      for (SchoolDataIdentifier studentIdentifier : studentIdentifiers) {
+        WorkspaceUserEntity wue = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
+        if (wue == null) {
+          continue;
         }
-      } else {
-        // Students via WorkspaceSchoolDataBridge
-        workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
+
+        if (!archived && wue.getArchived()) {
+          continue;
+        }
+
+        WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(wue);
+        if (workspaceUser == null) {
+          continue;
+        }
+
+        workspaceUsers.add(workspaceUser);
       }
-    
-      if (workspaceUsers == null || workspaceUsers.isEmpty()) {
-        return Response.noContent().build();
-      }
+    } else {
+      // Students via WorkspaceSchoolDataBridge
+      workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
+    }
   
-      Map<String, WorkspaceUserEntity> workspaceUserEntityMap = new HashMap<>();
-      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
-      for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-        workspaceUserEntityMap.put(new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier()).toId(), 
-            workspaceUserEntity);
-      }
+    if (workspaceUsers == null || workspaceUsers.isEmpty()) {
+      return Response.noContent().build();
+    }
+
+    Map<String, WorkspaceUserEntity> workspaceUserEntityMap = new HashMap<>();
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      workspaceUserEntityMap.put(new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier()).toId(), 
+          workspaceUserEntity);
+    }
+
+    if (maxResults != null && workspaceUsers.size() > maxResults) {
+      workspaceUsers.subList(maxResults, workspaceUsers.size() - 1).clear();
+    }
   
-      if (maxResults != null && workspaceUsers.size() > maxResults) {
-        workspaceUsers.subList(maxResults, workspaceUsers.size() - 1).clear();
-      }
-    
-      for (fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser : workspaceUsers) {
-        SchoolDataIdentifier workspaceUserIdentifier = workspaceUser.getIdentifier();
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityMap.get(workspaceUserIdentifier.toId());
+    for (fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser : workspaceUsers) {
+      SchoolDataIdentifier workspaceUserIdentifier = workspaceUser.getIdentifier();
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityMap.get(workspaceUserIdentifier.toId());
+      
+      boolean userArchived = workspaceUserEntity == null;
+      if ((archived == null) || (archived.equals(userArchived))) {
+        if (requestedAssessment != null) {
+          boolean hasAssessmentRequest = workspaceUserEntity != null && !assessmentRequestController.listByWorkspaceUser(workspaceUserEntity).isEmpty();
+          if (requestedAssessment != hasAssessmentRequest) {
+            continue;
+          }
+        }
         
-        boolean userArchived = workspaceUserEntity == null;
-        if ((archived == null) || (archived.equals(userArchived))) {
-          if (requestedAssessment != null) {
-            boolean hasAssessmentRequest = workspaceUserEntity != null && !assessmentRequestController.listByWorkspaceUser(workspaceUserEntity).isEmpty();
-            if (requestedAssessment != hasAssessmentRequest) {
-              continue;
-            }
+        if (assessed != null) {
+          boolean isAssessed = !gradingController.listWorkspaceAssessments(workspaceUser.getWorkspaceIdentifier(), workspaceUser.getUserIdentifier()).isEmpty();
+          if (assessed != isAssessed) {
+            continue;
           }
-          
-          if (assessed != null) {
-            boolean isAssessed = !gradingController.listWorkspaceAssessments(workspaceUser.getWorkspaceIdentifier(), workspaceUser.getUserIdentifier()).isEmpty();
-            if (assessed != isAssessed) {
-              continue;
-            }
-          }
-  
-          SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
-          User user = userController.findUserByIdentifier(userIdentifier);
-          
-          if (user != null) {
-            UserEntity userEntity = null;
-  
-            if (workspaceUserEntity != null) {
-              userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
-            } else {
-              userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());  
-            }
-            
-            result.add(createRestModel(userEntity, user, workspaceUser, userArchived));
+        }
+
+        SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
+        User user = userController.findUserByIdentifier(userIdentifier);
+        
+        if (user != null) {
+          UserEntity userEntity = null;
+
+          if (workspaceUserEntity != null) {
+            userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
           } else {
-            logger.log(Level.SEVERE, String.format("Could not find user for identifier %s", userIdentifier));
+            userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());  
           }
+          
+          result.add(createRestModel(userEntity, user, workspaceUser, userArchived));
+        } else {
+          logger.log(Level.SEVERE, String.format("Could not find user for identifier %s", userIdentifier));
         }
       }
     }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }    
 
     // Sorting
     if (StringUtils.equals(orderBy, "name")) {
