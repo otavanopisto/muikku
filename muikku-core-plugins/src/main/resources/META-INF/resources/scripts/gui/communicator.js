@@ -306,21 +306,21 @@
         $(".mf-tool-label-container").html(text);
       }, this));
       
-   // Waiting, because Jquery Autocomplete is garbage      
-//      
-//      $("#communicatorNewlabelField").autocomplete({
-//        source: labels,
-//        search: function(event, ui){
-//
-//        },
-//        appendTo: (".junkyard")
-//      }).data("ui-autocomplete")._renderItem = function (ul, item) {
-//        var li = $("<li>")
-//        .text(item.label)
-//        .appendTo(".mf-tool-label-container");
-//         return li;
-//    }
-
+      $('#communicatorNewlabelField').on('keyup', $.proxy(function (event) {
+        var filter = $(event.target).val().toLowerCase();
+        $('.mf-label-link').show();
+      
+        if (filter) {
+          $('.mf-label-link span').each(function (idx, element) {
+            var spanner = $(element);
+            if (!spanner.text().toLowerCase().contains(filter)) {
+              spanner.closest('.mf-label-link').hide();
+            }
+          });
+        }
+        
+      }, this));
+      
       $(event.target).closest('.mf-tool-container').find('.cm-label-menu').toggle();
     },    
 
