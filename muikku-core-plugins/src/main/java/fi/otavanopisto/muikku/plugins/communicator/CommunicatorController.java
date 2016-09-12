@@ -301,6 +301,11 @@ public class CommunicatorController {
     return communicatorMessageIdLabelDAO.findById(id);
   }
   
+  public CommunicatorMessageIdLabel findMessageIdLabel(UserEntity userEntity, CommunicatorMessageId messageId,
+      CommunicatorLabel label) {
+    return communicatorMessageIdLabelDAO.findBy(userEntity, messageId, label);
+  }
+
   public List<CommunicatorMessageIdLabel> listMessageIdLabelsByUserEntity(UserEntity userEntity, CommunicatorMessageId messageId) {
     return communicatorMessageIdLabelDAO.listByUserAndMessageId(userEntity, messageId);
   }
