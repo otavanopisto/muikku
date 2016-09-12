@@ -1,0 +1,3 @@
+<div class="mf-item-label cm-message-label icon-tag" style="color: {colorHex}; border-color:{colorHex}">
+  <span>{labelName}</span>
+</div>

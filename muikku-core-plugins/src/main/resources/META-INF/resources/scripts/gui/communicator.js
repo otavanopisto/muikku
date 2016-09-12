@@ -179,7 +179,7 @@
       this._firstItem = 0;
       this._items = [];
       this._folderId = this.options.folderId;      
-      $('.mf-controls-container').on('click', '.mf-label-link', $.proxy(this._onAddLabelClick, this));
+      $('.mf-controls-container').on('click', '.mf-label-link', $.proxy(this._onAddLabelToMessagesClick, this));
       $('.mf-controls-container').on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
       $('.mf-controls-container').on('click', '.cm-add-label-menu', $.proxy(this._onAddLabelMenuClick, this));         
       $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onCreateLabelClick, this));   
@@ -293,9 +293,6 @@
     },
 
     _onAddLabelMenuClick: function (event) {
-
-
-      
       var labelObjs = $('.cm-categories').find('.mf-label');      
       
       var labels = [];
@@ -307,10 +304,10 @@
         
         labels.push({name: n, id: i});
       });
+
       renderDustTemplate('communicator/communicator_label_link.dust', labels, $.proxy(function (text) {
-       $(".mf-tool-label-container").html(text);
+        $(".mf-tool-label-container").html(text);
       }, this));
-      
       
    // Waiting, because Jquery Autocomplete is garbage      
 //      
@@ -327,31 +324,44 @@
 //         return li;
 //    }
 
-      $(event.target).closest('.mf-tool-container ').find('.cm-label-menu').toggle();
+      $(event.target).closest('.mf-tool-container').find('.cm-label-menu').toggle();
     },    
 
-    _onAddLabelClick: function (event) {  
+    _onAddLabelToMessagesClick: function (event) {  
       var lId = $(event.target).closest('.mf-label-link').attr('data-label-id');
       var messageIds = [];
       var checkedMessageThreads = $('.cm-messages-pages').find('input[name="messageSelect"]:checked');
        
-      $.each(checkedMessageThreads, function(key, value){
+      $.each(checkedMessageThreads, function(key, value) {
         messageIds.push($(value).attr('value'));         
       });
-//        
-//       
-       var calls = $.map(messageIds, function (id) {
-         return function (callback) {
-           mApi().communicator.messages.labels.create(id, {labelId:lId});
-         };
-       })
-//       
-       async.series(calls, function(){
-         alert(messageIds);         
-       });
-       
 
-       
+      var calls = $.map(messageIds, function (id) {
+        return function (callback) {
+          mApi().communicator.messages.labels.create(id, {labelId: lId}).callback(callback);
+        };
+      });
+
+      async.series(calls, function(err, results) {
+        // [{"id":10,"userEntityId":2,"messageThreadId":1,"labelId":6,"labelName":"Label #26","labelColor":912464}]
+        
+        if (err) {
+          alert("Labelin lisäys kosahti");
+        } else {
+          if (results && results.length) {
+            $.map(results, function (label) {
+              var communicator = $(".communicator").communicator("instance");
+              var messageThreadElement = $('.cm-message[data-thread-id="' + label.messageThreadId + '"]');
+              
+              label["colorHex"] = communicator.colorIntToHex(label.labelColor);
+              
+              renderDustTemplate('communicator/communicator_item_label.dust', label, $.proxy(function (text) {
+                messageThreadElement.find('.cm-message-header-content-secondary').append($(text));
+              }, this));
+            });
+          }
+        }
+      });
     },
     
     _onCreateLabelClick: function (event) {
@@ -367,14 +377,13 @@
       var name =  $('#communicatorNewlabelField').val();
       var color = Math.round(Math.random() * 16777215);
       var colorHex = communicator.colorIntToHex(color);
-      if(name != ''){
-        if(labels.indexOf(name) == -1){
+      if (name != '') {
+        if (labels.indexOf(name) == -1) {
           communicator.createLabel(name, colorHex);
-        }else{
+        } else {
           alert("On jo"); 
-
         }
-      }else{
+      } else {
         alert("TYHJÄ KENTTÄ!!!11!"); 
       }
     }    
