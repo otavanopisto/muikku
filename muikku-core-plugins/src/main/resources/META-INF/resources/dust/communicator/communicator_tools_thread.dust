@@ -6,8 +6,8 @@
     <!--   <input type="button" class="newLabelSubmit" name="newLabelSubmit" value="Add label"/>  -->
   </div>
   <div class="mf-tool-menu cm-label-menu">
-    <div class="mf-arrow-up cm-label-menu-arrow"></div>
-    <div class="mf-tool-dialog-content">
+<!--     <div class="mf-arrow-up cm-label-menu-arrow"></div> -->
+    <div class="mf-tool-menu-content cm-label-menu-content">
       <div class="mf-tool-textfield-container cm-label-textfield-container"><input id="communicatorNewlabelField" class="filter" type="text" name="communicatorNewlabelField" placeholder="Kirjoita tunnisteen nimi" /></div>
       <div class="mf-tool-action-container cm-label-action-container"><a id="newLabelSubmit" href="#">Luo tunniste</a></div>
 <!--       <div class="junkyard" style="display:none;"> -->

@@ -159,10 +159,17 @@
   }
   
 } 
-.cm-label-menu-arrow{
-  margin-left:12px;
+
+
+.cm-label-menu-content{
+  &:before,
+  &:after {
+    left:18px;
+    
+  }
   
 }
+
 .cm-content { 
 
 }
