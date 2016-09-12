@@ -186,10 +186,7 @@
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
       $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
-      
     },
-    
-
     
     loadFolder: function (id) {
       this._folderId = id;
@@ -329,27 +326,33 @@
 
     _onAddLabelToMessagesClick: function (event) {  
       var lId = $(event.target).closest('.mf-label-link').attr('data-label-id');
-      var messageIds = [];
+      var addLabelChanges = [];
+      var removeLabelChanges = [];
       var checkedMessageThreads = $('.cm-messages-pages').find('input[name="messageSelect"]:checked');
        
       $.each(checkedMessageThreads, function(key, value) {
-        messageIds.push($(value).attr('value'));         
-      });
+        var inputElement = $(value);
+        var labelElement = inputElement.closest('.cm-message').find('.cm-message-label[data-label-id=' + lId + ']');
 
-      var calls = $.map(messageIds, function (id) {
-        return function (callback) {
-          mApi().communicator.messages.labels.create(id, {labelId: lId}).callback(callback);
-        };
-      });
-
-      async.series(calls, function(err, results) {
-        // [{"id":10,"userEntityId":2,"messageThreadId":1,"labelId":6,"labelName":"Label #26","labelColor":912464}]
+        var messageId = inputElement.attr('value');
+        var messageLabelId = labelElement.attr('data-message-label-id');        
         
-        if (err) {
-          alert("Labelin lisäys kosahti");
+        if (labelElement.length) {
+          mApi().communicator.messages.labels.del(messageId, messageLabelId).callback($.proxy(function (err, results) {
+            if (err) {
+              alert("Labelin poisto kosahti");
+            } else {
+              var communicator = $(".communicator").communicator("instance");
+              var messageThreadElement = $('.cm-message[data-thread-id="' + messageId + '"]');
+              var labelElement = messageThreadElement.find('.cm-message-label[data-label-id=' + lId + ']');
+              labelElement.remove();
+            }
+          }, this));
         } else {
-          if (results && results.length) {
-            $.map(results, function (label) {
+          mApi().communicator.messages.labels.create(messageId, { labelId: lId }).callback($.proxy(function (err, label) {
+            if (err) {
+              alert("Labelin lisäys kosahti");
+            } else {
               var communicator = $(".communicator").communicator("instance");
               var messageThreadElement = $('.cm-message[data-thread-id="' + label.messageThreadId + '"]');
               
@@ -358,8 +361,8 @@
               renderDustTemplate('communicator/communicator_item_label.dust', label, $.proxy(function (text) {
                 messageThreadElement.find('.cm-message-header-content-secondary').append($(text));
               }, this));
-            });
-          }
+            }
+          }, this));
         }
       });
     },
