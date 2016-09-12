@@ -79,6 +79,6 @@ public class WorkspaceMaterialFileFieldAnswerFile {
   
   @NotNull
   @NotEmpty
-  @Column (nullable = false)
+  @Column (nullable = false, unique = true)
   private String fileId;
 }
