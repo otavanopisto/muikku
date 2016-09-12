@@ -84,6 +84,26 @@
   
 }
 
+.mf-label-link {
+  cursor:pointer;
+  font-size:15px;
+  padding:5px 0 5px 0;
+  &:hover{
+    background-color:#eee;     
+  }
+
+  &.selected{
+    background-color:#72D200;
+    color:#fff;
+  }
+  > div{
+    &:before{
+      margin-left:10px;
+    }
+    
+  }
+}
+
 .mf-label-functions {
   bottom: 0;
   color: #dadada;
@@ -465,7 +485,7 @@ ul.mf-tool-label-container {
     cursor:pointer;
   }
     
-  div { 
+  > div { 
     &:before {
       font-size:23px;
       color:#fff;
