@@ -47,8 +47,28 @@ public class CommunicatorMessageIdLabelDAO extends CorePluginsDAO<CommunicatorMe
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  public CommunicatorMessageIdLabel findBy(UserEntity userEntity, CommunicatorMessageId messageId,
+      CommunicatorLabel label) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessageIdLabel> criteria = criteriaBuilder.createQuery(CommunicatorMessageIdLabel.class);
+    Root<CommunicatorMessageIdLabel> root = criteria.from(CommunicatorMessageIdLabel.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CommunicatorMessageIdLabel_.userEntity), userEntity.getId()),
+            criteriaBuilder.equal(root.get(CommunicatorMessageIdLabel_.communicatorMessageId), messageId),
+            criteriaBuilder.equal(root.get(CommunicatorMessageIdLabel_.label), label)
+        )
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
   @Override
   public void delete(CommunicatorMessageIdLabel communicatorUserLabel) {
     super.delete(communicatorUserLabel);
   }
+
 }

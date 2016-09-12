@@ -80,15 +80,19 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     CommunicatorLabel label = communicatorController.findUserLabelById(newLabel.getLabelId());
     
     if (canAccessLabel(userEntity, label)) {
-      CommunicatorMessageIdLabel userLabel = communicatorController.createMessageIdLabel(userEntity, messageId, label);
-  
-      return Response.ok(
-        toRESTModel(userLabel)
-      ).build();
+      CommunicatorMessageIdLabel userLabel = communicatorController.findMessageIdLabel(userEntity, messageId, label);
+      
+      if (userLabel == null) {
+        userLabel = communicatorController.createMessageIdLabel(userEntity, messageId, label);
+    
+        return Response.ok(
+          toRESTModel(userLabel)
+        ).build();
+      } else {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
     } else {
-      return Response.status(
-        Status.NOT_FOUND
-      ).build();
+      return Response.status(Status.NOT_FOUND).build();
     }
   }
   
