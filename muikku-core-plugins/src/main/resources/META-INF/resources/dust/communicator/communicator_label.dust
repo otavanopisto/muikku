@@ -7,8 +7,8 @@
   <div class="mf-label-functions icon-arrow-down"> 
   </div>
   <div class="mf-label-functions-menu">
-    <div class="mf-label-function-edit">Muokkaa</div>
-    <div class="mf-label-function-delete">Poista</div>
+    <div class="mf-label-function-edit">{#localize key="plugin.communicator.label.menu.edit"/}</div>
+    <div class="mf-label-function-delete">{#localize key="plugin.communicator.label.menu.remove"/}</div>
   </div>
 </li>
 

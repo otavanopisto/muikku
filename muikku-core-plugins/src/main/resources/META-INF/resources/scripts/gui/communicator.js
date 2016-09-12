@@ -384,10 +384,10 @@
         if (labels.indexOf(name) == -1) {
           communicator.createLabel(name, colorHex);
         } else {
-          alert("On jo"); 
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.alreadyexists"));
         }
       } else {
-        alert("TYHJÄ KENTTÄ!!!11!"); 
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.empty"));
       }
     }    
     
@@ -596,8 +596,10 @@
           this._dialog = $(text);      
           $(this._dialog).dialog(
             {
+              'title' : getLocaleText("plugin.communicator.label.edit.caption"),              
               buttons : [ {
-                 'text' : 'Muokkaa',
+
+                 'text' :  getLocaleText("plugin.communicator.label.edit.button.send"),
                  'class' : 'save-button',
                  'click' : function() {
                      
@@ -616,7 +618,7 @@
                }, 
              
                {
-                 'text' : 'Peruuta',
+                 'text' :  getLocaleText("plugin.communicator.label.edit.button.cancel"),
                  'class' : 'cancel-button',
                  'click' : function(){               
                    $(this).dialog().remove();
@@ -633,19 +635,23 @@
     },
     _onLabelDeleteClick : function(event){
       var folderId = $(event.target).closest("li").attr("data-folder-id");
+      var folderName = $(event.target).closest("li").attr("data-folder-name");
       var menus = $(event.target).closest("ul").find('.mf-label-functions-menu');      
       var folderController = this._folderControllers[folderId];
       var labelId = folderController._labelId;      
       var label = [];
       
       label.id = labelId;
-
+      label.name = folderName;
+      
       renderDustTemplate('communicator/communicator_label_delete.dust', label, $.proxy(function(text) {
         this._dialog = $(text);      
         $(this._dialog).dialog(
+            
           {
+            'title' : getLocaleText("plugin.communicator.label.remove.caption"),                          
             buttons : [ {
-               'text' : 'Muokkaa',
+               'text' : getLocaleText("plugin.communicator.label.remove.button.send"),
                'class' : 'save-button',
                'click' :  function() {
                  
@@ -659,7 +665,7 @@
              }, 
            
              {
-               'text' : 'Peruuta',
+               'text' : getLocaleText("plugin.communicator.label.edit.button.cancel"),
                'class' : 'cancel-button',
                'click' : function(){               
                  $(this).dialog('close');
