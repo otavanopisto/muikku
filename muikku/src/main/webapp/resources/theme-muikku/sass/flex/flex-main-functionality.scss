@@ -432,6 +432,8 @@ ul.mf-tool-label-container {
   background-color:#fff;
   margin-top:10px;
   position:relative;
+  border:1px solid #72D200;
+  border-radius: 3px;
   
   &:after, 
   &:before {
@@ -453,7 +455,7 @@ ul.mf-tool-label-container {
   
   &:before {
     border-color:rgba(0, 222, 255, 0);
-    border-bottom-color:#fdf4f4;
+    border-bottom-color:#72D200;
     border-width:8px;
     margin-left:-8px;
   }
