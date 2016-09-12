@@ -1,36 +1,42 @@
 .muikku-file-input-field-file {
   margin-top: 8px;
-  margin-bottom: 38px;
+  margin-bottom: 8px;
   position: relative;
 }
 
 .muikku-file-input-field-file-label {
-  font-weight:400;
-  position:absolute;
-  margin-top:-35px;
-  margin-left:10px;
-  color:#fff;
-  font-size:16px;
-  line-height:27px;
-  text-transform:none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 400;
+  height: 20px;
+  left: 5px;
+  line-height: 16px;
+  margin-bottom: 0;
+  margin-right: 0;
+  margin-top: 0;
+  padding: 5px;
+  position: absolute;
+  text-transform: none;
+  top: 0;
+  z-index: 99;
 }
 
 .muikku-file-input-field-file-progress-literal {
   color: #000;
-  position: absolute;
   z-index: 99;
   font-weight: 300;
   font-size: 12px;
   font-family:'Open Sans', Arial, sans-serif;
   text-transform:none;
-  right:5px;
+  text-align:right;
+  padding:0 5px 0 0;
 }
 
 .muikku-file-input-field-file-remove, .muikku-file-input-field-file-restore {
   display:block;
   text-decoration:none;
   position:absolute; 
-  margin-top:-30px;
+  top: 0;
   right: 10px;
   font-weight:400 !important;
   position: absolute;
@@ -39,10 +45,6 @@
 }
 
 .muikku-file-input-field-file-progress {
-  border:1px solid #f8f8f8;
-  box-shadow:0 0 5px rgba(0,0,0,0.05);
-  height:30px;
-  border-radius:0 !important;
   
   .ui-progressbar-value {
     background:#34acfd;
