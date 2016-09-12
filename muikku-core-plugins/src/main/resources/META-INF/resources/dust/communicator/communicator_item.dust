@@ -21,7 +21,13 @@
                  <span class="cm-message-sender-name" title="{sender.firstName} {sender.lastName}">{sender.firstName} {sender.lastName}</span>
                </div>
              {/sent}
-             <div class="cm-message-caption cm-message-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</div>
+             <div class="cm-message-caption cm-message-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}
+               {#labels}
+                <div class="mf-item-label cm-message-label icon-tag" style="color: {colorHex}; border-color:{colorHex}">
+                  <span>{labelName}</span>
+                 </div> 
+                {/labels}
+              </div>
            </div>
         </div>
         <div class="cm-message-additional no-margin-top no-margin-bottom">
@@ -38,9 +44,7 @@
             </span>
           </div>
           <div>
-            {#labels}
-              <span class="LABEL" style="background-color: {colorHex}">{labelName}</span>
-            {/labels}
+
           </div>
         </div>
 

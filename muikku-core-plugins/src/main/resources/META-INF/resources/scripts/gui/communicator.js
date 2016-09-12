@@ -179,11 +179,10 @@
       this._firstItem = 0;
       this._items = [];
       this._folderId = this.options.folderId;      
-            
+      $('.mf-controls-container').on('click', '.mf-label-link', $.proxy(this._onAddLabelClick, this));
       $('.mf-controls-container').on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
       $('.mf-controls-container').on('click', '.cm-add-label-menu', $.proxy(this._onAddLabelMenuClick, this));         
-      $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onAddLabelClick, this));   
-      
+      $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onCreateLabelClick, this));   
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
       $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
@@ -295,16 +294,25 @@
 
     _onAddLabelMenuClick: function (event) {
 
-// Waiting, because Jquery Autocomplete is garbage
+
       
-//      var labelObjs = $('.cm-categories').find('.mf-label');      
-//      
-//      var labels = [];
-//      
-//      $.each(labelObjs, function(key, value){
-//        var name= $(value).attr('data-folder-name');
-//        labels.push(name);
-//      });
+      var labelObjs = $('.cm-categories').find('.mf-label');      
+      
+      var labels = [];
+      
+      $.each(labelObjs, function(key, value){
+        var label = {};
+        var n = $(value).attr('data-folder-name');
+        var i = $(value).attr('data-label-id');
+        
+        labels.push({name: n, id: i});
+      });
+      renderDustTemplate('communicator/communicator_label_link.dust', labels, $.proxy(function (text) {
+       $(".mf-tool-label-container").html(text);
+      }, this));
+      
+      
+   // Waiting, because Jquery Autocomplete is garbage      
 //      
 //      $("#communicatorNewlabelField").autocomplete({
 //        source: labels,
@@ -321,8 +329,32 @@
 
       $(event.target).closest('.mf-tool-container ').find('.cm-label-menu').toggle();
     },    
+
+    _onAddLabelClick: function (event) {  
+      var lId = $(event.target).closest('.mf-label-link').attr('data-label-id');
+      var messageIds = [];
+      var checkedMessageThreads = $('.cm-messages-pages').find('input[name="messageSelect"]:checked');
+       
+      $.each(checkedMessageThreads, function(key, value){
+        messageIds.push($(value).attr('value'));         
+      });
+//        
+//       
+       var calls = $.map(messageIds, function (id) {
+         return function (callback) {
+           mApi().communicator.messages.labels.create(id, {labelId:lId});
+         };
+       })
+//       
+       async.series(calls, function(){
+         alert(messageIds);         
+       });
+       
+
+       
+    },
     
-    _onAddLabelClick: function (event) {
+    _onCreateLabelClick: function (event) {
       var labelObjs = $('.cm-categories').find('.mf-label');      
       
       var labels = [];
@@ -345,7 +377,7 @@
       }else{
         alert("TYHJÄ KENTTÄ!!!11!"); 
       }
-    }
+    }    
     
   });
   

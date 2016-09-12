@@ -1,0 +1,7 @@
+{#.}
+  <li class="mf-label-link" data-label-id="{id}">
+    <div class="mf-label-name cm-label-link-name icon-tag" style="color:{hexColor}">
+      <span>{name}</span>
+    </div>
+  </li>
+{/.}

@@ -386,6 +386,14 @@
  padding:0 0 10px 20px;
 }
 
+ul.mf-tool-label-container {
+  padding:0 0 20px 0;
+  margin-top:0;
+  
+  li{
+    list-style-type:none;
+  }
+}
 
 .mf-tool-menu {
   position:absolute;
@@ -607,7 +615,17 @@
   .content {
     padding:0 10px 10px 10px;
   }
-
+  .mf-item-label{
+    &:first-child{
+      margin-left:10px;
+    }
+    display:inline-block;
+    font-size:10px;
+    border:1px solid #ccc;
+    font-weight:600;
+    margin-right:3px;
+    padding:3px 5px;
+  }
   .mf-item-container {
     line-heigth:0.5em;
   }

@@ -17,4 +17,7 @@
     </table>
   </createTables>
 
+  <sql>
+    alter table CommunicatorMessageIdLabel modify id bigint(20) auto_increment;
+  </sql>
 </update>
