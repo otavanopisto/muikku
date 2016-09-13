@@ -584,14 +584,15 @@
     }, 
     
     _onLabelEditClick : function(event) {
+      var communicator = $('.communicator').communicator("instance");
       var folderId = $(event.target).closest("li").attr("data-folder-id");
       var menus = $(event.target).closest("ul").find('.mf-label-functions-menu');      
       var folderController = this._folderControllers[folderId];
       var labelId = folderController._labelId;
-      
+  
       mApi().communicator.userLabels.read(labelId).callback($.proxy(function (err, results) {
         var label = results;
-        
+        label.colorHex =  communicator.colorIntToHex(label.color);
         renderDustTemplate('communicator/communicator_label_edit.dust', label, $.proxy(function(text) {
           this._dialog = $(text);      
           $(this._dialog).dialog(
@@ -605,11 +606,9 @@
                      
                      var id = $(this).find("input").attr('data-id');
                      var name = $(this).find("input").val();
-                     var color = $(this).find("input").attr('data-color');
-                     var communicator = $(".communicator").communicator("instance");
-                     var colorHex = communicator.colorIntToHex(color);
-                     
-                     communicator.updateLabel(id, name, colorHex);
+                     var color = $(this).find("input[type='color']").val();
+                     var communicator = $(".communicator").communicator("instance");            
+                     communicator.updateLabel(id, name, color);
                      $(this).dialog().remove();
                      menus.hide();
                   // TODO: REFRESH LABELS
