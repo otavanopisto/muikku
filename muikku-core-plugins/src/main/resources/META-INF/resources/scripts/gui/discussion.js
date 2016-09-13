@@ -52,8 +52,8 @@
             var reply = replies[index];
 
             // TODO: remove pretty dates
-            var d = new Date(reply.created);
-            var ld = new Date(reply.lastModified);
+            var d = new Date(moment(reply.created));
+            var ld = new Date(moment(reply.lastModified));
             
             return {
               creatorFullName: user.firstName + ' ' + user.lastName,
