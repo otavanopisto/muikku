@@ -16,8 +16,8 @@
         } else {
           var user = results[0];
           var area = results[1];
-          var d = new Date(thread.created);
-          var ud = new Date(thread.updated);          
+          var d = new Date(moment(thread.created));
+          var ud = new Date(moment(thread.updated));          
           // TODO: remove prettyDates...
           callback(null, $.extend({}, thread, {
             areaName: area.name,
@@ -64,7 +64,7 @@
               userRandomNo: (user.id % 6) + 1,
               nameLetter: user.firstName.substring(0,1),
               isReply: reply.parentReplyId ? true : false,
-              replyParentTime: reply.parentReplyId ? formatDate(new Date(replyCreatedMap[reply.parentReplyId])) + ' ' + formatTime(new Date(replyCreatedMap[reply.parentReplyId])) : null
+              replyParentTime: reply.parentReplyId ? formatDate(new Date(moment(replyCreatedMap[reply.parentReplyId]))) + ' ' + formatTime(new Date(moment(replyCreatedMap[reply.parentReplyId]))) : null
             }; 
           }));
         }
