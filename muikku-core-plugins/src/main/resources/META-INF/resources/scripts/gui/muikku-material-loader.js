@@ -1250,6 +1250,11 @@
       });
     });
     
+    $(data.pageElement).find('table').each(function (table) {
+      tableWrapper = $('<div>').addClass('table-wrapper');
+      $(table).appendTo(tableWrapper);
+    });
+    
     if (jQuery().magnificPopup) {
       // Lazy loading with magnific popup
       $(data.pageElement).find('img.lazy').each(function (index, img) {
