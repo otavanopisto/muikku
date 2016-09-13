@@ -1250,8 +1250,10 @@
       });
     });
     
-    $(data.pageElement).find('table').each(function (table) {
-      tableWrapper = $('<div>').addClass('table-wrapper');
+    $(data.pageElement).find('table').each(function (index, table) {
+      var tableWrapper = $('<div>')
+        .addClass('table-wrapper')
+        .insertBefore(table);
       $(table).appendTo(tableWrapper);
     });
     

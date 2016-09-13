@@ -26,6 +26,12 @@
   z-index:999;
 }
 
+.table-wrapper {
+  max-width:100%;
+  overflow-x:auto;
+  
+}
+
 .textfield-wrapper {
   display:inline-block;
   position:relative;
