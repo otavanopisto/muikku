@@ -8,9 +8,9 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper.StudentGroupType;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -18,15 +18,12 @@ import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupUserDiscovere
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupUserRemovedEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupUserUpdatedEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserUpdatedEvent;
-import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.pyramus.rest.model.Student;
 
 @ApplicationScoped
 public class PyramusSchoolDataUserListener {
-  
-  @Inject
-  private UserEntityController userEntityController;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -36,6 +33,9 @@ public class PyramusSchoolDataUserListener {
 
   @Inject
   private PyramusIdentifierMapper identifierMapper;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
   private Event<SchoolDataUserGroupUserDiscoveredEvent> schoolDataUserGroupUserDiscoveredEvent;
@@ -100,28 +100,29 @@ public class PyramusSchoolDataUserListener {
           String userGroupIdentifier = identifierMapper.getStudyProgrammeIdentifier(pyramusStudyProgrammeId);
 
           boolean found = false;
-          boolean isActive = (!student.getArchived()) && (student.getStudyEndDate() == null);
+          boolean isActive = !student.getArchived() && student.getStudyEndDate() == null;
           
-          UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
           // Remove StudyProgrammeGroups
-          List<UserGroupUserEntity> userGroupUsers = userGroupEntityController.listUserGroupUsersByUser(userEntity);
+          UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
+              identifier.getDataSource(), identifier.getIdentifier());
+          List<UserGroupUserEntity> userGroupUsers = userGroupEntityController.listUserGroupUsersByUserSchoolDataIdentifier(userSchoolDataIdentifier);
           for (UserGroupUserEntity userGroupUser : userGroupUsers) {
             UserGroupEntity userGroup = userGroupUser.getUserGroupEntity();
             StudentGroupType studentGroupType = identifierMapper.getStudentGroupType(userGroup.getIdentifier());
             if (studentGroupType == StudentGroupType.STUDYPROGRAMME) {
-              if ((!isActive) || (!userGroup.getIdentifier().equals(userGroupIdentifier)))
+              boolean archived = Boolean.TRUE.equals(userGroupUser.getArchived());
+              if (!archived && !isActive) {
                 fireUserGroupUserRemoved(userGroupUser.getIdentifier(), userGroup.getIdentifier(), identifier.getIdentifier());
-              else
-                found = true;
+              }
+              else {
+                found = !archived;
+              }
             }
           }
           
-          if (!found) {
-            if (isActive) {
-              String userGroupUserIdentifier = identifierMapper.getStudyProgrammeStudentIdentifier(pyramusStudentId);
-              String userEntityIdentifier = identifier.getIdentifier();
-              fireUserGroupUserDiscovered(userGroupUserIdentifier, userGroupIdentifier, userEntityIdentifier);
-            }
+          if (!found && isActive) {
+            String userGroupUserIdentifier = identifierMapper.getStudyProgrammeStudentIdentifier(pyramusStudentId);
+            fireUserGroupUserDiscovered(userGroupUserIdentifier, userGroupIdentifier, identifier.getIdentifier());
           }
         }
       }
@@ -129,10 +130,9 @@ public class PyramusSchoolDataUserListener {
   }
   
   private void handlePyramusUserRemoved(SchoolDataIdentifier identifier) {
-    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
-    
-    // Remove StudyProgrammeGroups
-    List<UserGroupUserEntity> userGroupUsers = userGroupEntityController.listUserGroupUsersByUser(userEntity);
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
+        identifier.getDataSource(), identifier.getIdentifier());
+    List<UserGroupUserEntity> userGroupUsers = userGroupEntityController.listUserGroupUsersByUserSchoolDataIdentifier(userSchoolDataIdentifier);
     for (UserGroupUserEntity userGroupUser : userGroupUsers) {
       UserGroupEntity userGroup = userGroupUser.getUserGroupEntity();
       StudentGroupType studentGroupType = identifierMapper.getStudentGroupType(userGroup.getIdentifier());
@@ -142,11 +142,11 @@ public class PyramusSchoolDataUserListener {
     } 
   }
   
-  private void fireUserGroupUserDiscovered(String userGroupUserIdentifier, String userGroupIdentifier, String userEntityIdentifier) {
+  private void fireUserGroupUserDiscovered(String userGroupUserIdentifier, String userGroupIdentifier, String userIdentifier) {
     schoolDataUserGroupUserDiscoveredEvent.fire(new SchoolDataUserGroupUserDiscoveredEvent(
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier,
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier,
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userEntityIdentifier));
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
   }
 
   @SuppressWarnings("unused")
