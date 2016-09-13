@@ -1,7 +1,7 @@
  <div class="mf-tool-container default cm-delete-message-container">
    <div class="mf-tool cm-delete-message icon-delete"></div>
  </div>
- <div class="mf-tool-container special cm-delete-message-container">
+ <div class="mf-tool-container special cm-delete-message-container md-flex-hide sm-flex-hide">
   <div class="mf-tool cm-add-label-menu icon-tags">
   </div>
   <div class="mf-tool-menu cm-label-menu">

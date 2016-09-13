@@ -4,7 +4,7 @@
       <span>{name}</span>
     </a>
   </div>
-  <div class="mf-label-functions icon-arrow-down"> 
+  <div class="mf-label-functions icon-arrow-down md-flex-hide sm-flex-hide"> 
   </div>
   <div class="mf-label-functions-menu">
     <div class="mf-label-function-edit">{#localize key="plugin.communicator.label.menu.edit"/}</div>
