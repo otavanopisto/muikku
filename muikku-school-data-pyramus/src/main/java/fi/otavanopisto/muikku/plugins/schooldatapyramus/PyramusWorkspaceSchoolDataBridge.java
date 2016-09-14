@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,8 +12,6 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
@@ -92,13 +91,46 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       return null;
     }
     
-    course.setId(null);
-    course.setName(name);
-    course.setNameExtension(nameExtension);
-    course.setDescription(description);
-    course.setVariables(null);
+    List<String> copiedTags = null;
+    if (course.getTags() != null) {
+      copiedTags = new ArrayList<String>();
+      for (String tag : course.getTags()) {
+        copiedTags.add(tag);
+      }
+    }
     
-    Course createdCourse = pyramusClient.post("/courses/courses/", course);
+    Course courseCopy = new Course(
+        null, // copy has no id
+        name, // copy has new name
+        course.getCreated(),
+        course.getLastModified(),
+        description, // copy has new description
+        course.getArchived(),
+        course.getCourseNumber(),
+        course.getMaxParticipantCount(),
+        course.getBeginDate(),
+        course.getEndDate(),
+        nameExtension, // copy has new name extension
+        course.getLocalTeachingDays(),
+        course.getTeachingHours(),
+        course.getDistanceTeachingHours(),
+        course.getDistanceTeachingDays(),
+        course.getAssessingHours(),
+        course.getPlanningHours(),
+        course.getEnrolmentTimeEnd(),
+        course.getCreatorId(),
+        course.getLastModifierId(),
+        course.getSubjectId(),
+        course.getCurriculumId(),
+        course.getLength(),
+        course.getLengthUnitId(),
+        course.getModuleId(),
+        course.getStateId(),
+        course.getTypeId(),
+        null, // variables are not copied
+        copiedTags); // copy has its own tag list
+    
+    Course createdCourse = pyramusClient.post("/courses/courses/", courseCopy);
     if (createdCourse == null) {
       logger.severe(String.format("Failed to create new course based on course %d", pyramusCourseId));
       return null;

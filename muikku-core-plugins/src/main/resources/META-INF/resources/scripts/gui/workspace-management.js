@@ -23,6 +23,9 @@
     },
     
     _create: function () {
+      
+      this.element.on("click", ".copy-workspace-link", $.proxy(this._onCopyCourseClick, this));
+      
       var loader = $('<div>')
         .addClass('loading')
         .appendTo(this.element);
@@ -96,6 +99,14 @@
       }, this));
     },
     
+    _onCopyCourseClick: function (event) {
+      $('<div>')
+        .appendTo(document.body)
+        .workspaceCopyWizard({
+          workspaceEntityId: this.options.workspaceEntityId
+        });
+    },
+
     _addMaterialProducerElement: function (id, status, name) {
       $('<span>')
         .attr({
