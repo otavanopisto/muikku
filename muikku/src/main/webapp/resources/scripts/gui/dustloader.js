@@ -35,12 +35,12 @@ dust.onLoad = function(name, callback) {
 };
 
 dust.filters.formatDate = function(value) {
-  var d = new Date(value);
+  var d = new Date(moment(value));
   return formatDate(d);
 };
 
 dust.filters.formatTime = function(value) {
-  var d = new Date(value);
+  var d = new Date(moment(value));
   return formatTime(d);
 };
 

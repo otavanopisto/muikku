@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.websocket;
 
-import java.nio.channels.ClosedChannelException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,6 @@ import javax.websocket.Session;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.plugins.websocket.WebSocketTicket;
 
 @ApplicationScoped
 @Transactional
@@ -62,9 +60,6 @@ public class WebSocketMessenger {
         }
       }    
     }
-    catch (ClosedChannelException cce) {
-      // Channel already closed; ignore
-    }
     catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to send WebSocket message", e);
     }
@@ -76,15 +71,12 @@ public class WebSocketMessenger {
       ObjectMapper mapper = new ObjectMapper();
       String strMessage = mapper.writeValueAsString(message);
       Session session = sessions.get(ticket);
-      if (session == null){
+      if (session == null) {
         logger.log(Level.SEVERE, "Session doesn't exist");
       }
-      else{
+      else if (session.isOpen()) {
         session.getBasicRemote().sendText(strMessage);
       }
-    }
-    catch (ClosedChannelException cce) {
-      // Channel already closed; ignore
     }
     catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to send WebSocket message", e);

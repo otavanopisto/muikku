@@ -1131,6 +1131,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }    
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.SAFARI,
+      TestEnvironments.Browser.PHANTOMJS,
+    }
+  )
   public void courseMaterialLicenseOverrideCC010Test() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
@@ -1169,6 +1178,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.PHANTOMJS,
+      }
+    )
   public void courseMaterialLicenseOverrideCC4Test() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
@@ -1207,6 +1225,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.PHANTOMJS,
+      }
+    )
   public void courseMaterialLicenseOverrideCC3Test() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
@@ -1245,6 +1272,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.PHANTOMJS,
+      }
+    )
   public void courseMaterialLicenseOverrideLinkTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();

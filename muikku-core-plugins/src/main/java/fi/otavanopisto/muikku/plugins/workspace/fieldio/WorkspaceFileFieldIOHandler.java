@@ -2,7 +2,9 @@ package fi.otavanopisto.muikku.plugins.workspace.fieldio;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -40,51 +42,42 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
       fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialFileFieldAnswer(field, reply);
     }
     
-    if (files.length > 0) {
-      
-      // TODO: support for multiple files
-//      if (files.length != 1) {
-//        throw new WorkspaceFieldIOException("File field does not support multiple files");
-//      } 
-        
-      for (File file : files) {
-        try {
-          if (StringUtils.isNotBlank(file.getId())) {
-            if (!StringUtils.equals(file.getOriginalId(), file.getId())) {
-              byte[] fileData = TempFileUtils.getTempFileData(file.getId());
-              if (fileData == null) {
-                throw new WorkspaceFieldIOException("Temp file does not exist");
-              }
-              
-              if (StringUtils.isNotBlank(file.getOriginalId())) {
-                // original id exists, so we are updating an existing file
-                logger.info(String.format("Updating existing file answer %s (%s)", file.getId(), file.getName()));
-                WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(file.getOriginalId());
-                workspaceMaterialFieldAnswerController.updateWorkspaceMaterialFileFieldAnswerFileFileId(fieldAnswerFile, file.getId());
-                workspaceMaterialFieldAnswerController.updateWorkspaceMaterialFileFieldAnswerFileContentType(fieldAnswerFile, file.getContentType());
-                workspaceMaterialFieldAnswerController.updateWorkspaceMaterialFileFieldAnswerFileFileName(fieldAnswerFile, file.getName());
-                workspaceMaterialFieldAnswerController.updateWorkspaceMaterialFileFieldAnswerFileContent(fieldAnswerFile, fileData);
-              } else {
-                // original id not found, so it's a new file
-                logger.info(String.format("Creating new file answer %s (%s)", file.getId(), file.getName()));
-                workspaceMaterialFieldAnswerController.createWorkspaceMaterialFileFieldAnswerFile(fieldAnswer, fileData, file.getContentType(), file.getId(), file.getName());
-              }
-              
-              TempFileUtils.deleteTempFile(file.getId());
-            }
-          } else {
-            // original id exists but id does not, file has been removed
-            if (StringUtils.isNotBlank(file.getOriginalId())) {
-              WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(file.getOriginalId());
-              if (fieldAnswerFile != null) {
-                logger.info(String.format("Removing existing file answer %s (%s)", file.getOriginalId(), file.getName()));
-                workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
-              }
-            }
-          }
-        } catch (IOException e) {
-          throw new WorkspaceFieldIOException("Failed to retrieve file data", e);
+    List<WorkspaceMaterialFileFieldAnswerFile> currentFiles = workspaceMaterialFieldAnswerController.listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer(fieldAnswer);
+    Set<String> currentFileIds = new HashSet<String>();
+    for (WorkspaceMaterialFileFieldAnswerFile currentFile : currentFiles) {
+      currentFileIds.add(currentFile.getFileId());
+    }
+    
+    for (File file : files) {
+      try {
+        String fileId = file.getFileId();
+        if (StringUtils.isBlank(fileId)) {
+          throw new WorkspaceFieldIOException("Blank fileId");
         }
+        if (currentFileIds.contains(fileId)) {
+          // Existing file
+          currentFileIds.remove(fileId);
+        }
+        else {
+          // New file
+          byte[] fileData = TempFileUtils.getTempFileData(fileId);
+          if (fileData == null) {
+            throw new WorkspaceFieldIOException("Temp file does not exist");
+          }
+          logger.info(String.format("Creating new file answer %s (%s)", fileId, file.getName()));
+          workspaceMaterialFieldAnswerController.createWorkspaceMaterialFileFieldAnswerFile(fieldAnswer, fileData, file.getContentType(), fileId, file.getName());
+        }
+      } catch (IOException e) {
+        throw new WorkspaceFieldIOException("Failed to store file data", e);
+      }
+    }
+    
+    // Removed files
+    for (String removedId : currentFileIds) {
+      WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(removedId);
+      if (fieldAnswerFile != null) {
+        logger.info(String.format("Removing existing file answer %s (%s)", removedId, fieldAnswerFile.getFileName()));
+        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
       }
     }
   }
@@ -98,7 +91,7 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
     if (fieldAnswer != null) {
       List<WorkspaceMaterialFileFieldAnswerFile> answerFiles = workspaceMaterialFieldAnswerController.listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer(fieldAnswer);
       for (WorkspaceMaterialFileFieldAnswerFile answerFile : answerFiles) {
-        result.add(new File(null, answerFile.getFileId(), answerFile.getFileName(), answerFile.getContentType()));
+        result.add(new File(answerFile.getFileId(), answerFile.getFileName(), answerFile.getContentType()));
       }
     }
     
@@ -120,27 +113,18 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
     public File() {
     }
     
-    public File(String id, String originalId, String name, String contentType) {
-      this.id = id;
-      this.originalId = originalId;
+    public File(String fileId, String name, String contentType) {
+      this.fileId = fileId;
       this.name = name;
       this.contentType = contentType;
     }
 
-    public String getId() {
-      return id;
+    public String getFileId() {
+      return fileId;
     }
     
-    public void setId(String id) {
-      this.id = id;
-    }
-    
-    public String getOriginalId() {
-      return originalId;
-    }
-    
-    public void setOriginalId(String originalId) {
-      this.originalId = originalId;
+    public void setFileId(String fileId) {
+      this.fileId = fileId;
     }
     
     public String getContentType() {
@@ -159,8 +143,7 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
       this.name = name;
     }
     
-    private String id;
-    private String originalId;
+    private String fileId;
     private String name;
     private String contentType;
   }

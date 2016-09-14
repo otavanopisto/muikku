@@ -46,8 +46,6 @@
           this.element.find('*[name="published"][value="' + (workspace.published ? 'true' : 'false') + '"]').prop('checked', 'checked');
           this.element.find('*[name="access"][value="' + workspace.access + '"]').prop('checked', 'checked');
           this.element.find('*[name="workspaceNameExtension"]').val(workspace.nameExtension);
-          this.element.find('*[name="beginDate"]').val(details.beginDate);
-          this.element.find('*[name="endDate"]').val(details.endDate);
           this.element.find('.workspace-description').val(workspace.description);
           this.element.find('.default-material-license').val(workspace.materialDefaultLicense);
           
@@ -62,18 +60,21 @@
             }
           }, this));
           
-          this.element.find('.date-field').each(function (index, dateField) {
-            var value = parseInt($(dateField).val());
-            $(dateField).val('');
-            
-            $(dateField).datepicker({
-              "dateFormat": getLocaleText('datePattern')
-            });
-            
-            if (!isNaN(value)) {
-              $(dateField).datepicker('setDate', new Date(value));
-            }
+          var dateField = this.element.find('*[name="beginDate"]'); 
+          dateField.datepicker({
+            "dateFormat": getLocaleText('datePattern')
           });
+          if (details.beginDate) {
+            dateField.datepicker('setDate', new Date(moment(details.beginDate)));
+          }
+
+          dateField = this.element.find('*[name="endDate"]'); 
+          dateField.datepicker({
+            "dateFormat": getLocaleText('datePattern')
+          });
+          if (details.endDate) {
+            dateField.datepicker('setDate', new Date(moment(details.endDate))); 
+          }
           
           this.element.on('keydown', '.workspace-material-producer-add', $.proxy(this._onMaterialProducerKeyDown, this));
           this.element.on('click', '.workspace-material-producer-remove', $.proxy(this._onMaterialProducerRemoveClick, this));
@@ -193,11 +194,10 @@
               var beginDate = this.element.find('*[name="beginDate"]').datepicker('getDate');
               var endDate = this.element.find('*[name="endDate"]').datepicker('getDate');
               var typeId = this.element.find('.workspace-type').val();
-      
               mApi().workspace.workspaces.details
                 .update(this.options.workspaceEntityId, $.extend(details, {
-                  beginDate: beginDate != null ? beginDate.getTime() : null,
-                  endDate: endDate != null ? endDate.getTime() : null,
+                  beginDate: beginDate != null ? beginDate.toISOString() : null,
+                  endDate: endDate != null ? endDate.toISOString() : null,
                   typeId: typeId != null ? typeId : null
                 }))
                 .callback(function (err, updatedDetails) {
