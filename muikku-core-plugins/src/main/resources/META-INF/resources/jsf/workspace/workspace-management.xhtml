@@ -15,10 +15,12 @@
     <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/webshim/1.15.10/minified/polyfiller.js"></script>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-management.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-copy-wizard.js"/>
   </ui:define>
   
   <ui:define name="workspace-view-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-management.css"/>  
+    <link rel="stylesheet" type="text/css" href="/css/workspaces-copy-wizard.css"/>
   </ui:define>
 
   <ui:define name="grid-content">
@@ -31,6 +33,9 @@
           </div>
           <div class="workspace-management-container">
             <a href="#" target="_blank" class="external-view-url">#{i18n.text['plugin.workspace.management.viewInPyramus']}</a>
+            <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('COPY_WORKSPACE')}">
+              <a href="#" class="copy-workspace-link">#{i18n.text['plugin.workspace.management.copyWorkspace']}</a>
+            </ui:fragment>
           </div>
         </div>
       </section>
