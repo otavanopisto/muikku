@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,8 +36,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
-
-import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -1317,7 +1316,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           answers.add(answer);
         }
         
-        result.add(new WorkspaceCompositeReply(reply.getWorkspaceMaterial().getId(), reply.getState(), answers));
+        result.add(new WorkspaceCompositeReply(reply.getWorkspaceMaterial().getId(), reply.getId(), reply.getState(), answers));
       }
 
       if (result.isEmpty()) {

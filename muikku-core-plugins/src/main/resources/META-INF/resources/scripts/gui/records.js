@@ -75,7 +75,7 @@
                 var assessment = assessments && assessments.length == 1 ? assessments[0] : null;
                 if (assessment) {
                   var grade = this._getGrade(assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier);
-                  workspaceEntity.evaluated = formatDate(new Date(assessment.evaluated));
+                  workspaceEntity.evaluated = formatDate(new Date(moment(assessment.evaluated)));
                   workspaceEntity.verbalAssessment = assessment.verbalAssessment;
                   workspaceEntity.grade = grade.grade;
                   workspaceEntity.gradingScale = grade.scale;
@@ -119,7 +119,7 @@
             if (scaleSchoolDataSource && scaleIdentifier && gradeSchoolDataSource && gradeIdentifier) {
               var grade = this._getGrade(scaleSchoolDataSource, scaleIdentifier, gradeSchoolDataSource, gradeIdentifier);
               return $.extend(transferCredit, {
-                evaluated: formatDate(new Date(transferCredit.date)),
+                evaluated: formatDate(new Date(moment(transferCredit.date))),
                 grade: grade.grade,
                 gradingScale: grade.scale
               });
