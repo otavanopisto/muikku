@@ -291,19 +291,37 @@
 
     _onAddLabelMenuClick: function (event) {
       var labelObjs = $('.cm-categories').find('.mf-label');      
-      
       var labels = [];
+      var messagesLabels = [];
+      var labelOccurrances = {};
+      var checkedMessages = $('.cm-messages-pages').find('input[name="messageSelect"]:checked');
+      var checkedMessagesLabels = checkedMessages.closest('.cm-message-header').find('.mf-item-label');
+
+      
+      $.each(checkedMessagesLabels, function(key, label) {
+        var labelId = $(label).attr('data-label-id')
+        if( messagesLabels.indexOf(labelId) == -1){
+          messagesLabels.push(labelId);
+          labelOccurrances[labelId] = 1; 
+        }else{  
+          labelOccurrances[labelId]++;
+        }
+      });
       
       $.each(labelObjs, function(key, value){
         var label = {};
         var n = $(value).attr('data-folder-name');
         var i = $(value).attr('data-label-id');
+        var s = messagesLabels.indexOf(i) == -1 ? false : true; 
+        var sa =  labelOccurrances[i] == checkedMessages.length ? true : false;
+        labels.push({name: n, id: i, selected: s, inAll: sa });
         
-        labels.push({name: n, id: i});
       });
 
       renderDustTemplate('communicator/communicator_label_link.dust', labels, $.proxy(function (text) {
         $(".mf-tool-label-container").html(text);
+        
+        
         $('#communicatorNewlabelField').on('keyup', $.proxy(function (event) {
           var filter = $(event.target).val().toLowerCase();
           $('.mf-label-link').show();
@@ -326,7 +344,9 @@
     },    
 
     _onAddLabelToMessagesClick: function (event) {  
-      var lId = $(event.target).closest('.mf-label-link').attr('data-label-id');
+      var clickedLabel = $(event.target).closest('.mf-label-link');
+      var lId = $(clickedLabel).attr('data-label-id');
+      var isSelectedInAll = $(event.target).closest('.mf-label-link').hasClass('selected-in-all') ? true : false;
       var addLabelChanges = [];
       var removeLabelChanges = [];
       var checkedMessageThreads = $('.cm-messages-pages').find('input[name="messageSelect"]:checked');
@@ -339,16 +359,19 @@
         var messageLabelId = labelElement.attr('data-message-label-id');        
         
         if (labelElement.length) {
-          mApi().communicator.messages.labels.del(messageId, messageLabelId).callback($.proxy(function (err, results) {
-            if (err) {
-              alert("Labelin poisto kosahti");
-            } else {
-              var communicator = $(".communicator").communicator("instance");
-              var messageThreadElement = $('.cm-message[data-thread-id="' + messageId + '"]');
-              var labelElement = messageThreadElement.find('.cm-message-label[data-label-id=' + lId + ']');
-              labelElement.remove();
-            }
-          }, this));
+          if(isSelectedInAll == true){
+            mApi().communicator.messages.labels.del(messageId, messageLabelId).callback($.proxy(function (err, results) {
+              if (err) {
+                alert("Labelin poisto kosahti");
+              } else {
+                var communicator = $(".communicator").communicator("instance");
+                var messageThreadElement = $('.cm-message[data-thread-id="' + messageId + '"]');
+                var labelElement = messageThreadElement.find('.cm-message-label[data-label-id=' + lId + ']');
+                              
+                labelElement.remove();
+              }
+            }, this));
+          }
         } else {
           mApi().communicator.messages.labels.create(messageId, { labelId: lId }).callback($.proxy(function (err, label) {
             if (err) {
@@ -366,6 +389,14 @@
           }, this));
         }
       });
+      
+      if(isSelectedInAll === true){
+        $(clickedLabel).removeClass('selected-in-all');
+      }else{
+        $(clickedLabel).removeClass('selected').addClass('selected-in-all');       
+      }
+
+      
     },
     
     _onCreateLabelClick: function (event) {

@@ -92,10 +92,16 @@
     background-color:#eee;     
   }
 
-  &.selected{
+ &.selected{
+    background-color:#99eb36;
+    color:#fff;
+  }
+
+  &.selected-in-all{
     background-color:#72D200;
     color:#fff;
   }
+
   > div{
     &:before{
       margin-left:10px;
