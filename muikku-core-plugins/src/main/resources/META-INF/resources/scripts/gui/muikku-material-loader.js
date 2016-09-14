@@ -1169,13 +1169,13 @@
       var files = data.value ? $.parseJSON(data.value) : [];
       for (var i = 0, l = files.length; i < l; i++) {
         var file = files[i];
-        $(input).data('file-' + i + '.file-id', file.originalId);
-        $(input).data('file-' + i + '.filename', file.name);
-        $(input).data('file-' + i + '.content-type', file.contentType);
+        $(input).attr('data-file-' + i + '.file-id', file.fileId);
+        $(input).attr('data-file-' + i + '.filename', file.name);
+        $(input).attr('data-file-' + i + '.content-type', file.contentType);
       }
       
-      $(input).data({
-        'file-count': files.length
+      $(input).attr({
+        'data-file-count': files.length
       });
       
       $(object).replaceWith(input);

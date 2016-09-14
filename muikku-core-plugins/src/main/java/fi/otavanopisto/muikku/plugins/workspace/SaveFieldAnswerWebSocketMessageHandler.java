@@ -156,7 +156,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       try {
         workspaceMaterialFieldController.storeFieldValue(materialField, reply, message.getAnswer());
       } catch (WorkspaceFieldIOException e) {
-        logger.log(Level.SEVERE, "Could not store field value");
+        logger.log(Level.SEVERE, "Could not store field value", e);
         handleError("Could not store field value", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
         return;
       }

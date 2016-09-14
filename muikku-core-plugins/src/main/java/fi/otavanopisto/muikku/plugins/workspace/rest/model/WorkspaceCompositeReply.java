@@ -9,8 +9,9 @@ public class WorkspaceCompositeReply {
   public WorkspaceCompositeReply(){
   }
   
-  public WorkspaceCompositeReply(Long workspaceMaterialId, WorkspaceMaterialReplyState state, List<WorkspaceMaterialFieldAnswer> answers) {
+  public WorkspaceCompositeReply(Long workspaceMaterialId, Long workspaceMaterialReplyId, WorkspaceMaterialReplyState state, List<WorkspaceMaterialFieldAnswer> answers) {
     this.workspaceMaterialId = workspaceMaterialId;
+    this.workspaceMaterialReplyId = workspaceMaterialReplyId;
     this.state = state;
     this.answers = answers;
   }
