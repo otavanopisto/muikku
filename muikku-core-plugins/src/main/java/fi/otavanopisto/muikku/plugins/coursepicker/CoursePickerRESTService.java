@@ -263,7 +263,6 @@ public class CoursePickerRESTService extends PluginRESTService {
                 String description = (String) result.get("description");
                 boolean canSignup = getCanSignup(workspaceEntity);
                 boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
-                Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
                 String educationTypeId = (String) result.get("educationTypeIdentifier");
                 String educationTypeName = null;
                 
@@ -282,7 +281,7 @@ public class CoursePickerRESTService extends PluginRESTService {
                 }
   
                 if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, canSignup, canCopyWorkspace, isCourseMember));
+                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, canSignup, isCourseMember));
                 } else {
                   logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
@@ -351,7 +350,6 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     boolean canSignup = getCanSignup(workspaceEntity);
     boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
-    Boolean canCopyWorkspace = getCopyWorkspace(workspaceEntity);
     String educationTypeName = null;
     
     if (workspace.getWorkspaceTypeId() != null) {
@@ -361,7 +359,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       }
     }
     
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, canSignup, canCopyWorkspace, isCourseMember)).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, canSignup, isCourseMember)).build();
   }
   
   @POST
@@ -493,14 +491,6 @@ public class CoursePickerRESTService extends PluginRESTService {
       return false;
   }
   
-  private boolean getCopyWorkspace(WorkspaceEntity workspaceEntity) {
-    if (sessionController.isLoggedIn()) {
-      return sessionController.hasEnvironmentPermission(MuikkuPermissions.COPY_WORKSPACE);
-    } 
-    
-    return false;
-  }
-  
   private Long getWorkspaceStudentRoleId() {
     List<WorkspaceRoleEntity> workspaceStudentRoles = roleController.listWorkspaceRoleEntitiesByArchetype(WorkspaceRoleArchetype.STUDENT);
     if (workspaceStudentRoles.size() == 1) {
@@ -511,7 +501,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
   }
   
-  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, boolean canSignup, Boolean canCopyWorkspace, boolean isCourseMember) {
+  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, boolean canSignup, boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     return new CoursePickerWorkspace(
@@ -526,7 +516,6 @@ public class CoursePickerRESTService extends PluginRESTService {
         lastVisit, 
         educationTypeName,
         canSignup, 
-        canCopyWorkspace,
         isCourseMember);
   }
   

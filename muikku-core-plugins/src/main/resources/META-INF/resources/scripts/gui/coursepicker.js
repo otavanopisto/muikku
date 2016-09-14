@@ -48,7 +48,6 @@
           this.element.on('keyup', "input[name='coursePickerSearch']", $.proxy(this._onSearchKeyUp, this));
           this.element.on('keydown', "input[name='coursePickerSearch']", $.proxy(this._onSearchKeyDown, this));
           this.element.on("click", ".cp-page-link-load-more", $.proxy(this._onLoadMoreClick, this));
-          this.element.on("click", ".cp-course-copy-button", $.proxy(this._onCopyCourseClick, this));
           this.element.on("click", ".cp-course-details", $.proxy(this._onDetailsClick, this));
           this.element.on("click", ".cp-course-tour-button", $.proxy(this._onTourButtonClick, this));
           this.element.on("click", ".cp-course-attend-button", $.proxy(this._onAttendButtonClick, this));
@@ -245,18 +244,6 @@
       if (!$(event.target).closest('.cp-page-link-load-more').hasClass('disabled')) {
         this._loadMore();
       }
-    },
-    
-    _onCopyCourseClick: function (event) {
-      var workspaceEntityId = $(event.target)
-        .closest(".cp-course")
-        .find("input[name='workspaceId']").val();
-      
-      $('<div>')
-        .appendTo(document.body)
-        .workspaceCopyWizard({
-          workspaceEntityId: workspaceEntityId
-        });
     },
     
     _onDetailsClick: function (event) {

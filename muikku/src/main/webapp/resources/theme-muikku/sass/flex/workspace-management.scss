@@ -60,6 +60,32 @@ h2.workspace-management-generic-title {
   padding:0 20px 0 20px;
   margin:20px 0;
   position:relative;
+  
+  .external-view-url,
+  .copy-workspace-link {
+    background: #7391a7;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1;
+    margin: 0 5px;
+    outline: medium none;
+    padding: 6px 8px;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius:2px;
+  }
+  
+  .external-view-url {
+    background: #7391a7;
+  }
+  
+  .copy-workspace-link {
+    background: #00b8c8;
+  }
 
   img {
     width:100%;

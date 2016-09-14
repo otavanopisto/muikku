@@ -35,9 +35,6 @@
                   {#canSignup}
                     <div class="mf-item-tool-btn goto cp-course-attend-button"><span>{#localize key="plugin.coursepicker.course.signup" /}</span></div>
                   {/canSignup}
-                  {#canCopyWorkspace}
-                    <div class="mf-item-tool-btn wizard cp-course-copy-button"><span>{#localize key="plugin.coursepicker.course.copy" /}</span></div>
-                  {/canCopyWorkspace}
                 {/isLoggedIn}
               </div>
             </div>
