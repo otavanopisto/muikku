@@ -373,7 +373,7 @@
           if(isSelectedInAll == true){
             mApi().communicator.messages.labels.del(messageId, messageLabelId).callback($.proxy(function (err, results) {
               if (err) {
-                alert("Labelin poisto kosahti");
+                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.remove"));
               } else {
                 var communicator = $(".communicator").communicator("instance");
                 var messageThreadElement = $('.cm-message[data-thread-id="' + messageId + '"]');
@@ -386,7 +386,7 @@
         } else {
           mApi().communicator.messages.labels.create(messageId, { labelId: lId }).callback($.proxy(function (err, label) {
             if (err) {
-              alert("Labelin lisäys kosahti");
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.add"));
             } else {
               var communicator = $(".communicator").communicator("instance");
               var messageThreadElement = $('.cm-message[data-thread-id="' + label.messageThreadId + '"]');
