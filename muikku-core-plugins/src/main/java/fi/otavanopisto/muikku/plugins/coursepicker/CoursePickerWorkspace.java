@@ -19,7 +19,6 @@ public class CoursePickerWorkspace {
       Date lastVisit,
       String educationTypeName,
       boolean canSignup,
-      Boolean canCopyWorkspace,
       boolean isCourseMember) {
     super();
     this.id = id;
@@ -32,7 +31,6 @@ public class CoursePickerWorkspace {
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
     this.canSignup = canSignup;
-    this.canCopyWorkspace = canCopyWorkspace;
     this.isCourseMember = isCourseMember;
     this.educationTypeName = educationTypeName;
   }
@@ -117,14 +115,6 @@ public class CoursePickerWorkspace {
     this.canSignup = canSignup;
   }
   
-  public Boolean getCanCopyWorkspace() {
-    return canCopyWorkspace;
-  }
-  
-  public void setCanCopyWorkspace(Boolean canCopyWorkspace) {
-    this.canCopyWorkspace = canCopyWorkspace;
-  }
-
   public Boolean getIsCourseMember() {
     return isCourseMember;
   }
@@ -151,7 +141,6 @@ public class CoursePickerWorkspace {
   private Date lastVisit;
   private Boolean published;
   private Boolean canSignup;
-  private Boolean canCopyWorkspace;
   private Boolean isCourseMember;
   private String educationTypeName;
 }
