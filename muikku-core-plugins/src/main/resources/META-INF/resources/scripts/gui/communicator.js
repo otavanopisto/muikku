@@ -304,22 +304,23 @@
 
       renderDustTemplate('communicator/communicator_label_link.dust', labels, $.proxy(function (text) {
         $(".mf-tool-label-container").html(text);
-      }, this));
-      
-      $('#communicatorNewlabelField').on('keyup', $.proxy(function (event) {
-        var filter = $(event.target).val().toLowerCase();
-        $('.mf-label-link').show();
-      
-        if (filter) {
-          $('.mf-label-link span').each(function (idx, element) {
-            var spanner = $(element);
-            if (!spanner.text().toLowerCase().contains(filter)) {
-              spanner.closest('.mf-label-link').hide();
-            }
-          });
-        }
+        $('#communicatorNewlabelField').on('keyup', $.proxy(function (event) {
+          var filter = $(event.target).val().toLowerCase();
+          $('.mf-label-link').show();
         
+          if (filter) {
+            $('.mf-label-link span').each(function (idx, element) {
+              var spanner = $(element);
+              if (spanner.text().toLowerCase().indexOf(filter) == -1) {
+                spanner.closest('.mf-label-link').hide();
+              }
+            });
+          }
+          
+        }, this));        
       }, this));
+      
+
       
       $(event.target).closest('.mf-tool-container').find('.cm-label-menu').toggle();
     },    
