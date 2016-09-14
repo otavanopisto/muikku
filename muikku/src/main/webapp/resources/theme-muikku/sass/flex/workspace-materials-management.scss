@@ -159,22 +159,23 @@ body {
             }
             
             a {
-              text-decoration:none;
-              color:#2c2c2c;
-              display:block;
+              text-decoration: none;
+              color: #2c2c2c;
+              display: block;
               @include rounded(2px);
-              padding:2px 24px 2px 6px;
-              border-left:2px solid #e8f0f5;
+              padding: 2px 28px 2px 6px;
+              border-left: 2px solid #e8f0f5;
               
               &.assignment {
-                border-left:2px solid $evaluatedAssignment;
-                margin:1px 0 0 0;
+                border-left: 2px solid $evaluatedAssignment;
+                margin: 1px 0 0 0;
               }
               
               &.exercise {
-                border-left:2px solid $exerciseAssignment;
-                margin:1px 0 0 0;
+                border-left: 2px solid $exerciseAssignment;
+                margin: 1px 0 0 0;
               }
+              
             }
             
             &:hover,
@@ -189,6 +190,10 @@ body {
             
               .workspace-materials-toc-itemDragHandle {
                 opacity:1;
+              }
+              
+              .item-view-restricted {
+                display:none;
               }
             
             }
@@ -220,14 +225,23 @@ body {
             }
             
             .workspace-materials-toc-itemDragHandle {
-              opacity:0;
-              color:#ffffff;
-              cursor:grab;
-              font-size:14px;
-              padding:6px 8px 6px 8px;
-              position:absolute;
-              top:0px;
-              right:0px;
+              color: #ffffff;
+              cursor: grab;
+              font-size: 14px;
+              opacity: 0;
+              padding: 5px;
+              position: absolute;
+              right: 2px;
+              top: 0px;
+            }
+            
+            .item-view-restricted {
+              color: #da4a51;
+              font-size: 15px;
+              padding: 4px 2px;
+              position: absolute;
+              right: 5px;
+             top: 0px;
             }
 
           } 

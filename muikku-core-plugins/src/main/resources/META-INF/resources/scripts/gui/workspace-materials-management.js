@@ -975,6 +975,8 @@
               } else {
                 section.attr('data-view-restrict', result.viewRestrict);
                 this.close();
+                
+                toggleNodeViewRestrictionUi(section, result.viewRestrict);
               }
             }, this));
         }
@@ -1130,6 +1132,22 @@
         var section = tocElement.closest('.workspace-materials-toc-section');
         section.find('.workspace-materials-toc-item').removeClass('parent-hidden');
       }
+    }
+  }
+  
+  function toggleNodeViewRestrictionUi(node, viewRestrict) {
+    var workspaceMaterialId = node.attr('data-workspace-material-id');
+    var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+    if (viewRestrict == 'LOGGED_IN') {
+      tocElement
+        .parent()
+        .append($('<span>')
+          .addClass('icon-closed-material item-view-restricted'));
+    } else {
+      tocElement
+        .parent()
+        .find('span.icon-closed-material')
+        .remove();
     }
   }
   
@@ -2016,6 +2034,7 @@
            $('.notification-queue').notificationQueue('notification', 'error', readErr);
          } else {
            node.attr('data-view-restrict', material.viewRestrict);
+           toggleNodeViewRestrictionUi(node, material.viewRestrict);
          }
        });
   });
