@@ -310,11 +310,12 @@
       
       $.each(labelObjs, function(key, value){
         var label = {};
-        var n = $(value).attr('data-folder-name');
-        var i = $(value).attr('data-label-id');
-        var s = messagesLabels.indexOf(i) == -1 ? false : true; 
-        var sa =  labelOccurrances[i] == checkedMessages.length ? true : false;
-        labels.push({name: n, id: i, selected: s, inAll: sa });
+        var lName = $(value).attr('data-folder-name');
+        var lStyle = $(value).find('.cm-label-name').attr('style');
+        var lId = $(value).attr('data-label-id');
+        var lSelected = messagesLabels.indexOf(lId) == -1 ? false : true; 
+        var lAllSelected =  labelOccurrances[lId] == checkedMessages.length ? true : false;
+        labels.push({name: lName, id: lId, selected: lSelected, inAll: lAllSelected, style: lStyle });
         
       });
 
@@ -322,26 +323,36 @@
         $(".mf-tool-label-container").html(text);
         
         
-        $('#communicatorNewlabelField').on('keyup', $.proxy(function (event) {
-          var filter = $(event.target).val().toLowerCase();
-          $('.mf-label-link').show();
         
-          if (filter) {
-            $('.mf-label-link span').each(function (idx, element) {
-              var spanner = $(element);
-              if (spanner.text().toLowerCase().indexOf(filter) == -1) {
-                spanner.closest('.mf-label-link').hide();
-              }
-            });
-          }
-          
-        }, this));        
+        $('#communicatorNewlabelField').on('input', $.proxy(this._onLabelFilterInputChange, this));
       }, this));
       
-
-      
       $(event.target).closest('.mf-tool-container').find('.cm-label-menu').toggle();
-    },    
+    },
+    
+    _onLabelFilterInputChange: function (event) {
+      if (this._typingTimer) {
+        clearTimeout(this._typingTimer);
+      }
+      
+      this._typingTimer = setTimeout($.proxy(function() {
+        this._onLabelFilterInputChangeTimeout(event);
+      }, this), 500);
+    },
+    
+    _onLabelFilterInputChangeTimeout: function (event) {
+      var filter = $(event.target).val().toLowerCase();
+      $('.mf-label-link').show();
+    
+      if (filter) {
+        $('.mf-label-link span').each(function (idx, element) {
+          var spanner = $(element);
+          if (spanner.text().toLowerCase().indexOf(filter) == -1) {
+            spanner.closest('.mf-label-link').hide();
+          }
+        });
+      }
+    },
 
     _onAddLabelToMessagesClick: function (event) {  
       var clickedLabel = $(event.target).closest('.mf-label-link');
@@ -636,13 +647,14 @@
                  'class' : 'save-button',
                  'click' : function() {
                      
-                     var id = $(this).find("input").attr('data-id');
-                     var name = $(this).find("input").val();
+                     var id = $(this).find("input[type='text']").attr('data-id');
+                     var name = $(this).find("input[type='text']").val();
                      var color = $(this).find("input[type='color']").val();
                      var communicator = $(".communicator").communicator("instance");            
                      communicator.updateLabel(id, name, color);
                      $(this).dialog().remove();
                      menus.hide();
+                     
                   // TODO: REFRESH LABELS
                  }
               
