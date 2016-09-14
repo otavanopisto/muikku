@@ -95,11 +95,18 @@
  &.selected{
     background-color:#99eb36;
     color:#fff;
+    span{
+      color:#fff;
+    }
   }
 
   &.selected-in-all{
     background-color:#72D200;
     color:#fff;
+    span{
+      color:#fff;
+    }
+
   }
 
   > div{

@@ -1,6 +1,6 @@
 {#.}
   <li class="mf-label-link {?selected}selected{?inAll}-in-all{/inAll}{/selected}" data-label-id="{id}">
-    <div class="mf-label-name cm-label-link-name icon-tag" style="color:{hexColor}">
+    <div class="mf-label-name cm-label-link-name icon-tag" style="{style}">
       <span>{name}</span>
     </div>
   </li>
