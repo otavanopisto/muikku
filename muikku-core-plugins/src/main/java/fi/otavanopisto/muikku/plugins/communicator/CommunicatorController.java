@@ -329,6 +329,11 @@ public class CommunicatorController {
   }
   
   public void delete(CommunicatorUserLabel communicatorUserLabel) {
+    List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByLabel(communicatorUserLabel);
+    for (CommunicatorMessageIdLabel label : labels) {
+      delete(label);
+    }
+    
     communicatorUserLabelDAO.delete(communicatorUserLabel);
   }
 

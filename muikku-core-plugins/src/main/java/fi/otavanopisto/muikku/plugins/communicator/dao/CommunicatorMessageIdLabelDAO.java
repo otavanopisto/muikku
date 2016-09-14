@@ -13,6 +13,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel_;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 
 public class CommunicatorMessageIdLabelDAO extends CorePluginsDAO<CommunicatorMessageIdLabel> {
 	
@@ -47,6 +48,20 @@ public class CommunicatorMessageIdLabelDAO extends CorePluginsDAO<CommunicatorMe
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  public List<CommunicatorMessageIdLabel> listByLabel(CommunicatorUserLabel communicatorUserLabel) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessageIdLabel> criteria = criteriaBuilder.createQuery(CommunicatorMessageIdLabel.class);
+    Root<CommunicatorMessageIdLabel> root = criteria.from(CommunicatorMessageIdLabel.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.equal(root.get(CommunicatorMessageIdLabel_.label), communicatorUserLabel)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public CommunicatorMessageIdLabel findBy(UserEntity userEntity, CommunicatorMessageId messageId,
       CommunicatorLabel label) {
     EntityManager entityManager = getEntityManager(); 

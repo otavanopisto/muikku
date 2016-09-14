@@ -474,10 +474,19 @@
             'sent': new CommunicatorSentFolderController()
           };
           
-          $.each(labels, $.proxy(function (index, label) {
-            this.addLabelControl(label);
-          }, this));
-
+          if (err) {
+          } else {
+            var addLabelControlsCalls = $.map(labels, $.proxy(function(label) {
+              return $.proxy(function(callback) {
+                this.addLabelControl(label, callback);
+              }, this)
+            }, this));
+  
+            async.series(addLabelControlsCalls, $.proxy(function() {
+              this._sortLabels();
+            }, this));
+          }
+          
           var folderId;
           var threadId;
            
@@ -573,7 +582,9 @@
         if (err) {
           // TODO
         } else {
-          this.addLabelControl(label);
+          this.addLabelControl(label, $.proxy(function() {
+            this._sortLabels();
+          }, this));
         }
       }, this));
     },
@@ -590,6 +601,10 @@
         if (err) {
           // TODO
         } else {
+          var newColor = this.colorIntToHex(label.color);
+          this.element.find('.cm-categories').find('.mf-label[data-label-id="' + label.id + '"] span').text(label.name);
+          this.element.find('.cm-categories').find('.mf-label[data-label-id="' + label.id + '"] .mf-label-name').css({ color: newColor});
+          this._sortLabels();
         }
       }, this));
     },
@@ -599,6 +614,7 @@
         if (err) {
           // TODO
         } else {
+          this.element.find('.cm-categories').find('.mf-label[data-label-id="' + id + '"]').remove();
         }
       }, this));
     },
@@ -607,6 +623,19 @@
       mApi().communicator.userLabels.read().callback($.proxy(function (err, results) {
         callback(err, results);
       }, this));
+    },
+    
+    _sortLabels: function () {
+      var labelContainer = this.element.find('.cm-categories ul');
+      var labelItems = labelContainer.children('.mf-label');
+
+      labelItems.sort(function(a, b) {
+        return $(a).find("span").text().toUpperCase().localeCompare($(b).find("span").text().toUpperCase());
+      });
+
+      $.each(labelItems, function(idx, itm) {
+        labelContainer.append(itm);
+      });
     },
     
     _onLabelMenuOpenClick : function(event){
@@ -721,7 +750,7 @@
       
       }));      
     },
-    addLabelControl: function (label) {
+    addLabelControl: function (label, callback) {
 
       this._folderControllers[ "label-" + label.id ] = new CommunicatorInboxFolderController(label.id);
       
@@ -731,6 +760,10 @@
 
       renderDustTemplate('/communicator/communicator_label.dust', label, $.proxy(function (text) {
         this.element.find(".cm-categories ul").append(text);
+        
+        if (callback) {
+          callback();
+        }
       }, this));
       
     },
