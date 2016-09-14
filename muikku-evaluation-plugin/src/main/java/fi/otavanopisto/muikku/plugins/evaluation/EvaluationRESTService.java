@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -61,9 +59,6 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class EvaluationRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -2380108419567067263L;
-
-  @Inject
-  private Logger logger;
 
   @Inject
   private SessionController sessionController;
@@ -177,14 +172,19 @@ public class EvaluationRESTService extends PluginRESTService {
     Date evaluated = payload.getEvaluated();
     UserEntity student = userEntityController.findUserEntityByUserIdentifier(workspaceStudent.getUserIdentifier());
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-
-    if (student == null || workspace == null) {
-      logger.log(Level.SEVERE, "Missing workspace or student");
-    } else {
+    fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment assessment = gradingController.createWorkspaceAssessment(
+        workspaceStudent.getSchoolDataSource(),
+        workspaceStudent,
+        assessingUser,
+        grade,
+        payload.getVerbalAssessment(),
+        evaluated);
+    
+    if (student != null && workspace != null && assessment != null) {
       sendAssessmentNotification(payload, assessor, student, workspace);
     }
     
-    return Response.ok(createRestModel(workspaceEntity, gradingController.createWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated))).build();
+    return Response.ok(createRestModel(workspaceEntity, assessment)).build();
   }
   
   @GET
@@ -323,14 +323,19 @@ public class EvaluationRESTService extends PluginRESTService {
     Date evaluated = payload.getEvaluated();
     UserEntity student = userEntityController.findUserEntityByUserIdentifier(workspaceStudent.getUserIdentifier());
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-
-    if (student == null || workspace == null) {
-      logger.log(Level.SEVERE, "Missing workspace or student");
-    } else {
+    fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment assessment =  gradingController.updateWorkspaceAssessment(
+        workspaceAssesmentIdentifier,
+        workspaceStudent,
+        assessingUser,
+        grade,
+        payload.getVerbalAssessment(),
+        evaluated);
+    
+    if (student != null && workspace != null && assessment != null) {
       sendAssessmentNotification(payload, assessor, student, workspace);
     }
     
-    return Response.ok(createRestModel(workspaceEntity, gradingController.updateWorkspaceAssessment(workspaceAssesmentIdentifier, workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated))).build();
+    return Response.ok(createRestModel(workspaceEntity, assessment)).build();
   }
   
   @DELETE

@@ -100,7 +100,8 @@ public class UserIndexer {
         } else
           indexer.index(User.class.getSimpleName(), user);
       } else {
-        logger.warning("could not index user because user '" + identifier + '/' + dataSource +  "' could not be found");
+        logger.info(String.format("Removing user %s/%s from index", identifier, dataSource));
+        removeUser(dataSource, identifier);
       }
     } catch (Exception ex) {
       logger.log(Level.SEVERE, "Indexing of user identifier " + identifier + " failed.", ex);

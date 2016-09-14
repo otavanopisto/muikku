@@ -154,8 +154,8 @@ public class UserGroupEntityController {
     return userGroupUserEntityDAO.findById(userGroupUserId);
   }
 
-  public List<UserGroupUserEntity> listUserGroupUsersByUser(UserEntity userEntity) {
-    return userGroupUserEntityDAO.listByUserEntity(userEntity);
+  public List<UserGroupUserEntity> listUserGroupUsersByUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    return userGroupUserEntityDAO.listByUserSchoolDataIdentifier(userSchoolDataIdentifier);
   }
 
   public UserGroupUserEntity updateUserSchoolDataIdentifier(UserGroupUserEntity userGroupUserEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
