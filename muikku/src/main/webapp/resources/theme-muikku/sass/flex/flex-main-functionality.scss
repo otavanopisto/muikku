@@ -88,29 +88,29 @@
   cursor: pointer;
   font-size: 15px;
   padding: 5px 0 5px 0;
-  &:hover{
+  &:hover {
     background-color: #eee;     
   }
 
- &.selected{
+ &.selected {
     background-color: #99eb36;
     color: #fff;
-    span{
+    span {
       color: #fff;
     }
   }
 
-  &.selected-in-all{
+  &.selected-in-all {
     background-color: #72D200;
     color: #fff;
-    span{
+    span {
       color: #fff;
     }
 
   }
 
-  > div{
-    &:before{
+  > div {
+    &:before {
       margin-left: 10px;
     }
     
@@ -127,10 +127,10 @@
   top: 0;
   z-index: 99;
   width: 25px;
-   > div{
+   > div {
 
   }
-  &:hover{
+  &:hover {
     color: #000;
     }
   }
@@ -144,9 +144,9 @@
   top: 10px;
   width: 150px;
   z-index: 100;
-  div{
+  div {
     padding: 5px 0 5px 5px;
-    &:hover{
+    &:hover {
       background-color: #dadada;
       
     }
@@ -154,7 +154,7 @@
   }
 }
 
-.mf-label-edit-dialog{
+.mf-label-edit-dialog {
 
 }
 
@@ -676,21 +676,25 @@ ul.mf-tool-label-container {
     h3 {
       margin : 0 0 10px;
     }
+  
   }
 
   .content {
     padding: 0 10px 10px 10px;
   }
+
   .mf-item-label{
-    &:first-child{
-      margin-left: 10px;
-    }
     display: inline-block;
     font-size: 10px;
     border: 1px solid #ccc;
     font-weight: 600;
     margin-right: 3px;
     padding: 3px 5px;
+    
+    &:first-child{
+      margin-left: 10px;
+    }
+  
   }
 
   .mf-item-container {
@@ -763,7 +767,7 @@ ul.mf-tool-label-container {
       
   }
 
-  .mf-item-header-details{
+  .mf-item-header-details {
     display: inline-block;
     position: relative;
   }
