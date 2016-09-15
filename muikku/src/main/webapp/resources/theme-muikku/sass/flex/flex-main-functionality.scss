@@ -644,7 +644,7 @@ ul.mf-tool-label-container {
   font-weight: 400;
   font-size: 12px;
   
-  &:hover{
+  &:hover {
    text-decoration: underline;
   }
   
@@ -1042,7 +1042,6 @@ ul.mf-tool-label-container {
         }
         
         &.mf-textfield-subject {        
-
           
           &:focus {
             background-color: #eee;         
@@ -1228,6 +1227,7 @@ div[class*="-side-button-dropdown"] {
 }
 
 /* Categories */
+
 .mf-category-1-brd {
  border-left: 5px solid $category1;
 }
@@ -1273,45 +1273,45 @@ div[class*="-side-button-dropdown"] {
 }
 
 .mf-category-1-font {
- color: $category1;
+  color: $category1;
 }
 
 .mf-category-2-font {
- color: $category2;
+  color: $category2;
 }
 
 .mf-category-3-font {
- color: $category3;
+  color: $category3;
 }
 
 .mf-category-4-font {
- color: $category4;
+  color: $category4;
 }
 
 .mf-category-5-font {
- color: $category5;
+  color: $category5;
 }
 
 .mf-category-6-font {
- color: $category6;
+  color: $category6;
 }
 
 .mf-category-7-font {
- color: $category7;
+  color: $category7;
 }
 
 .mf-category-8-font {
- color: $category8;
+  color: $category8;
 }
 
 .mf-category-9-font {
- color: $category9;
+  color: $category9;
 }
 
 .mf-category-10-font {
- color: $category10;
+  color: $category10;
 }
 
 .mf-category-11-font {
- color: $category11;
+  color: $category11;
 }
