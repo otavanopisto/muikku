@@ -232,8 +232,8 @@
     color: #fff;
 
     a {
-      text-decoration: none;
       color: #fff;
+      text-decoration: none;
     }
 
   }
@@ -1149,7 +1149,7 @@ ul.mf-tool-label-container {
     color: #000;
     cursor: pointer;
     font-size: 1.5em;
-    padding: 0 10px 0 10px;
+    padding: 0 10px;
     &:not(:first-child){
       margin-left: 10px;
     }    
@@ -1184,14 +1184,14 @@ ul.mf-tool-label-container {
 }
 
 div[class*="-side-button-dropdown"] {
-  display: none;
-  width: 100%;
   background-color: #fff;
   border: 1px solid $brd;
-  z-index: 100;
-  position: absolute;
   box-sizing: border-box;
-  
+  display: none;
+  position: absolute;
+  width: 100%;
+  z-index: 100;
+
   ul {
     list-style-type: none;
     margin: 0;
@@ -1199,12 +1199,12 @@ div[class*="-side-button-dropdown"] {
   }  
   
   li {
-   font-size: 0.9em;   
+    font-size: 0.9em;   
 
    span {
+     cursor: pointer;
      display: block;
      padding: 5px;
-     cursor: pointer;
    }
     
    a {
