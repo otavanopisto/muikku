@@ -1140,16 +1140,16 @@ ul.mf-tool-label-container {
 
 .mf-items-toolbar {
   background-color: #fff;
-  padding: 5px;
   margin-bottom: 5px;
+  padding: 5px;
   
   .mf-items-tool {
-    padding: 0 10px 0 10px;
+    background-color: $bgr1;
     border: 1px solid $brd2;
-    background-color: $bgr1; 
-    font-size: 1.5em;
     color: #000;
     cursor: pointer;
+    font-size: 1.5em;
+    padding: 0 10px 0 10px;
     &:not(:first-child){
       margin-left: 10px;
     }    
@@ -1166,15 +1166,16 @@ ul.mf-tool-label-container {
 }
 
 .mf-paging-tool {
+
+  background: #36a3ce;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 18px;
   margin-left: auto;
   margin-right: auto;
-  background: #36a3ce;
-  cursor: pointer;
   padding: 6px 26px;
-  display: inline-block;
-  color: #fff;
-  font-size: 18px;
-
+  
   &.disabled {
     background: $bgr1;
     color: $bgr2;
