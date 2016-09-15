@@ -23,9 +23,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
@@ -67,9 +65,6 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
   @Inject
   private WorkspaceVisitController workspaceVisitController;
 
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
-
   @RequestAction
   public String init() {
     String urlName = getWorkspaceUrlName();
@@ -102,23 +97,10 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
     
     rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
 
-    workspaceBackingBean.setWorkspaceUrlName(urlName);
-    
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      if (workspace == null) {
-        logger.log(Level.SEVERE, String.format("Could not find workspace for workspace entity (%d)", workspaceEntity.getId()));
-        return NavigationRules.NOT_FOUND;
-      }
-      
-      workspaceName = workspace.getName();
-      workspaceNameExtension = workspace.getNameExtension();
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-      
     workspaceEntityId = workspaceEntity.getId();
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
+    workspaceName = workspaceBackingBean.getWorkspaceName();
+    workspaceNameExtension = workspaceBackingBean.getWorkspaceNameExtension();
     
     try {
       contentNodes = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false);

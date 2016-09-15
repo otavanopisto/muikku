@@ -18,9 +18,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 
 @Named
 @Stateful
@@ -39,9 +37,6 @@ public class WorkspaceHelpPageBackingBean extends AbstractWorkspaceBackingBean {
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
-
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   @Named
@@ -72,16 +67,9 @@ public class WorkspaceHelpPageBackingBean extends AbstractWorkspaceBackingBean {
       return NavigationRules.INTERNAL_ERROR;
     }
 
+    workspaceId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
-
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      workspaceId = workspaceEntity.getId();
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      workspaceName = workspace.getName();
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    workspaceName = workspaceBackingBean.getWorkspaceName();
 
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
 
