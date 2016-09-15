@@ -13,7 +13,9 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
@@ -39,6 +41,9 @@ public class WorkspaceBackingBean {
   
   @Inject
   private WorkspaceToolSettingsController workspaceToolSettingsController;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @PostConstruct
   public void init() {
@@ -96,6 +101,16 @@ public class WorkspaceBackingBean {
     else {
       this.assessmentState = null;
     }
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      if (workspace != null) {
+        this.workspaceName = workspace.getName();
+        this.workspaceNameExtension = workspace.getNameExtension();
+      }
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
 
   private WorkspaceEntity resolveWorkspaceEntity(String workspaceUrlName) {
@@ -139,8 +154,18 @@ public class WorkspaceBackingBean {
     return journalVisible;
   }
 
+  public String getWorkspaceName() {
+    return workspaceName;
+  }
+
+  public String getWorkspaceNameExtension() {
+    return workspaceNameExtension;
+  }
+
   private Long workspaceEntityId;
   private String workspaceUrlName;
+  private String workspaceName;
+  private String workspaceNameExtension;
   private boolean homeVisible;
   private boolean guidesVisible;
   private boolean materialsVisible;

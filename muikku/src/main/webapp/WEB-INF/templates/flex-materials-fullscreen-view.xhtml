@@ -8,6 +8,10 @@ xmlns:c="http://java.sun.com/jsp/jstl/core"
 xmlns:h="http://java.sun.com/jsf/html"
 template="flex-main.xhtml">
 
+  <ui:define name="title">
+    <title>#{workspaceBackingBean.workspaceName} - #{i18n.text['plugin.site.title']}</title>
+  </ui:define>
+
   <ui:define name="main-content">
     <div class="flex-grid">
     

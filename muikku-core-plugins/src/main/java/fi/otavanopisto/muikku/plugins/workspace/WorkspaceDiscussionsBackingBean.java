@@ -62,16 +62,13 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
       return NavigationRules.NOT_FOUND;
     }
     
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-
     if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity)) {
       return NavigationRules.ACCESS_DENIED;
     }
 
-    workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceEntityId = workspaceEntity.getId();
-
-    workspaceName = workspace.getName();
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
+    workspaceName = workspaceBackingBean.getWorkspaceName();
     
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     

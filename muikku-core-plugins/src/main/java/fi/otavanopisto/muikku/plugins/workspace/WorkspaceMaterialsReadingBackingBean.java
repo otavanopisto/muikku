@@ -87,21 +87,10 @@ public class WorkspaceMaterialsReadingBackingBean extends AbstractWorkspaceBacki
 
     rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
 
-    workspaceBackingBean.setWorkspaceUrlName(urlName);
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      if (workspace == null) {
-        logger.log(Level.SEVERE, String.format("Could not find workspace for workspace entity (%d)", workspaceEntity.getId()));
-        return NavigationRules.NOT_FOUND;
-      }
-      
-      workspaceName = workspace.getName();
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-    
     workspaceEntityId = workspaceEntity.getId();
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
+    workspaceName = workspaceBackingBean.getWorkspaceName();
+    
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
     
     try {

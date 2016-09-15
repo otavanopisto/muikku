@@ -76,10 +76,9 @@ public class WorkspaceMaterialUploadBackingBean extends AbstractWorkspaceBacking
       return "/error/not-found.jsf";
     }
 
-    workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceEntityId = workspaceEntity.getId();
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    workspaceName = workspace.getName();
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
+    workspaceName = workspaceBackingBean.getWorkspaceName();
 
     return null;
   }

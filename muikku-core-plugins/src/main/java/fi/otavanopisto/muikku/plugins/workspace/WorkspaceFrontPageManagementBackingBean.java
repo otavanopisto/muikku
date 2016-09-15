@@ -71,8 +71,7 @@ public class WorkspaceFrontPageManagementBackingBean extends AbstractWorkspaceBa
     rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    workspaceName = workspace.getName();
+    workspaceName = workspaceBackingBean.getWorkspaceName();
     
     try {
       WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
