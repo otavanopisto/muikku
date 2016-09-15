@@ -28,7 +28,7 @@
     </form>
   
     <div class="flex-row">
-      <h1 class="workspace-generic-view-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.journal.pageTitle']}</h1>
+      <h1 class="workspace-generic-view-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.journal.pageTitle']} - #{workspaceBackingBean.workspaceName}</h1>
     </div>
     
 		<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
