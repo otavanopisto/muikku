@@ -4,7 +4,7 @@
 
 	<groupId>fi.otavanopisto.muikku</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.1.42-SNAPSHOT</version>
+	<version>1.1.45-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku Parent</name>
 
@@ -75,7 +75,7 @@
     <module>muikku-evaluation-plugin</module>
     <module>muikku-timed-notifications-plugin</module>
     <module>muikku-timed-notifications-plugin-persistence</module>
-		<module>muikku</module>
+    <module>muikku</module>
     <module>muikku-developer-tools</module>
 		<module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
@@ -97,7 +97,7 @@
 			<dependency>
 				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>bom</artifactId>
-				<version>1.1.42-SNAPSHOT</version>
+				<version>1.1.45-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>

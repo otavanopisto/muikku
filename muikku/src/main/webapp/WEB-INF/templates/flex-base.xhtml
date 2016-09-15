@@ -8,7 +8,9 @@
   <f:view locale="#{sessionBackingBean.locale}">
   
     <head>
-      <ui:insert name="title"></ui:insert>
+      <ui:insert name="title">
+      <title>#{i18n.text['plugin.site.title']}</title>
+      </ui:insert>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <meta http-equiv="x-ua-compatible" content="ie=edge" />
       <meta content="width=device-width, initial-scale=1.0, minimun-scale=1" name="viewport" />
@@ -40,6 +42,9 @@
       </ui:fragment>
       
       <script defer="defer" type="text/javascript" jsf:name="/scripts/debug.js" jsf:rendered="#{sessionBackingBean.testsRunning}"/>
+      
+      <!-- Moment -->
+      <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/moment/2.10.6/moment-with-locales.min.js"/>    
       
       <!-- Notification Queue -->
       <script defer="defer" type="text/javascript" jsf:name="/scripts/notificationqueue/notificationqueue.js"/>

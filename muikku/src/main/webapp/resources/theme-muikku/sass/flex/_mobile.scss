@@ -5,6 +5,18 @@
     background-image:url('/gfx/light-diagonal-strips.png');
     background-repeat:repeat;
     background-color:#f0f3f5;
+    
+    &.footerDialogOpen {
+      padding-bottom:0px !important;
+      
+      footer#footer {
+        position:relative;
+        left:-5px;
+        right:-5px;
+      }
+      
+    }
+    
   }
   
   .box {

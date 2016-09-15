@@ -1,6 +1,16 @@
 <div class="evaluation-modal-single-assignment">
   <article data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-material-type="{type}" data-material-title="{title}" data-material-content="{html}" data-path="{path}" class="evaluation-assignment">
-   <h2>{title}</h2>
+    <div class="evaluation-assignment-title-container">
+      <h2>{title}</h2>
+      <div class="evaluation-assignment-meta">
+        <div class="evaluation-assignment-assignmentdone">
+          {?submitDate}
+            <span>{#localize key="plugin.evaluation.assignmentEvaluationDialog.assignmentDone"/} </span>
+            <span>({submitDate|formatDate}, {submitDate|formatTime})</span>
+          {/submitDate}
+        </div>
+      </div>
+    </div>
   </article>
   <div class="clear"></div>
 </div>

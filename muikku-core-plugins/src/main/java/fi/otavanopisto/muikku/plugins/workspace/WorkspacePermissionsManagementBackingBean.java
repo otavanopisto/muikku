@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -11,11 +12,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -36,11 +39,11 @@ import fi.otavanopisto.security.LoggedIn;
 @LoggedIn
 public class WorkspacePermissionsManagementBackingBean extends AbstractWorkspaceBackingBean {
 
-//  @Inject
-//  private Logger logger;
-
   @Parameter
   private String workspaceUrlName;
+  
+  @Inject
+  private Logger logger;
 
   @Inject
   private WorkspaceController workspaceController;
@@ -60,6 +63,9 @@ public class WorkspacePermissionsManagementBackingBean extends AbstractWorkspace
 
   @Inject
   private SessionController sessionController;
+
+  @Inject
+  private PluginSettingsController pluginSettingsController;
   
   @RequestAction
   public String init() {
@@ -83,23 +89,46 @@ public class WorkspacePermissionsManagementBackingBean extends AbstractWorkspace
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
     
-    things = new ArrayList<WorkspacePermissionsManagementBackingBean.UserGroupThing>();
+    userGroupBeans = new ArrayList<WorkspacePermissionsManagementBackingBean.UserGroupBean>();
 
     permissions = new ArrayList<Permission>();
     // TODO: atm we only support the sign up permission
     Permission permission = permissionController.findByName(MuikkuPermissions.WORKSPACE_SIGNUP);
     permissions.add(permission);
     
-    List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupEntities();
+    List<UserGroupEntity> userGroupEntities;
+    String permissionGroupIds = pluginSettingsController.getPluginSetting("workspace", "permission-group-ids");
+    if (permissionGroupIds == null) {
+      userGroupEntities = userGroupEntityController.listUserGroupEntities();
+    }
+    else {
+      userGroupEntities = new ArrayList<UserGroupEntity>();
+      String[] idArray = permissionGroupIds.split(",");
+      for (int i = 0; i < idArray.length; i++) {
+        Long groupId = NumberUtils.createLong(idArray[i]);
+        if (groupId != null) {
+          UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(groupId);
+          if (userGroupEntity == null) {
+            logger.warning(String.format("Missing group %d in plugin setting workspace.permission-group-ids", groupId));
+          }
+          else {
+            userGroupEntities.add(userGroupEntity);
+          }
+        }
+        else {
+          logger.warning(String.format("Malformatted plugin setting workspace.permission-group-ids %s", permissionGroupIds));
+        }
+      }
+    }
+
     for (UserGroupEntity userGroupEntity : userGroupEntities) {
       UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
-      
-      things.add(new UserGroupThing(userGroupEntity.getId(), userGroup.getName()));
+      userGroupBeans.add(new UserGroupBean(userGroupEntity.getId(), userGroup.getName()));
     }
     
-    Collections.sort(things, new Comparator<UserGroupThing>() {
+    Collections.sort(userGroupBeans, new Comparator<UserGroupBean>() {
       @Override
-      public int compare(UserGroupThing o1, UserGroupThing o2) {
+      public int compare(UserGroupBean o1, UserGroupBean o2) {
         return o1.getName().compareTo(o2.getName());
       }
     });
@@ -123,23 +152,22 @@ public class WorkspacePermissionsManagementBackingBean extends AbstractWorkspace
     return workspaceEntityId;
   }
 
-  public List<UserGroupThing> getUserGroups() {
-    return things;
+  public List<UserGroupBean> getUserGroups() {
+    return userGroupBeans;
   }
 
   public List<Permission> getPermissions() {
     return permissions;
   }
   
-  public boolean hasUserGroupPermission(UserGroupThing userGroup, Permission permission) {
+  public boolean hasUserGroupPermission(UserGroupBean userGroup, Permission permission) {
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroup.getId());
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(getWorkspaceEntityId());
-    
     return permissionController.hasWorkspaceGroupPermission(workspaceEntity, userGroupEntity, permission);
   }
   
-  public class UserGroupThing {
-    public UserGroupThing(Long id, String name) {
+  public class UserGroupBean {
+    public UserGroupBean(Long id, String name) {
       this.id = id;
       this.name = name;
     }
@@ -161,6 +189,6 @@ public class WorkspacePermissionsManagementBackingBean extends AbstractWorkspace
   
   private String workspaceName;
   private Long workspaceEntityId;
-  private List<UserGroupThing> things;
+  private List<UserGroupBean> userGroupBeans;
   private List<Permission> permissions;
 }

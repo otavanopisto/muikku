@@ -89,7 +89,7 @@
           
           var src = urlAttribute ? $(element).attr(urlAttribute) : null;
           if (src) {
-            var absolute = (src.indexOf('/') == 0) || (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+            var absolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) || (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
             if (!absolute) {
               if (src.lastIndexOf('/') == src.length - 1) {
                 $(element).attr(urlAttribute, this.options.baseUrl + '/' + material.path + src);
@@ -1169,13 +1169,13 @@
       var files = data.value ? $.parseJSON(data.value) : [];
       for (var i = 0, l = files.length; i < l; i++) {
         var file = files[i];
-        $(input).data('file-' + i + '.file-id', file.originalId);
-        $(input).data('file-' + i + '.filename', file.name);
-        $(input).data('file-' + i + '.content-type', file.contentType);
+        $(input).attr('data-file-' + i + '.file-id', file.fileId);
+        $(input).attr('data-file-' + i + '.filename', file.name);
+        $(input).attr('data-file-' + i + '.content-type', file.contentType);
       }
       
-      $(input).data({
-        'file-count': files.length
+      $(input).attr({
+        'data-file-count': files.length
       });
       
       $(object).replaceWith(input);
@@ -1248,6 +1248,13 @@
         meta: meta,
         readonly: data.readOnlyFields||false
       });
+    });
+    
+    $(data.pageElement).find('table').each(function (index, table) {
+      var tableWrapper = $('<div>')
+        .addClass('table-wrapper')
+        .insertBefore(table);
+      $(table).appendTo(tableWrapper);
     });
     
     if (jQuery().magnificPopup) {

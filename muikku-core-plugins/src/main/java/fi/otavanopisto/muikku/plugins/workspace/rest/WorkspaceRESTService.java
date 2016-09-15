@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,9 +36,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -752,7 +750,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
-    
+
     List<fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser> workspaceUsers = null;
     
     if (searchString != null) {
@@ -827,6 +825,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         studentIdentifiers = flaggedStudents;
       }
     }
+
+    List<WorkspaceStudent> result = new ArrayList<>();
     
     if (studentIdentifiers != null) {
       workspaceUsers = new ArrayList<>();
@@ -852,13 +852,10 @@ public class WorkspaceRESTService extends PluginRESTService {
       // Students via WorkspaceSchoolDataBridge
       workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
     }
-    
+  
     if (workspaceUsers == null || workspaceUsers.isEmpty()) {
       return Response.noContent().build();
     }
-
-    List<WorkspaceStudent> result = null;
-    result = new ArrayList<>();
 
     Map<String, WorkspaceUserEntity> workspaceUserEntityMap = new HashMap<>();
     List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntities(workspaceEntity);
@@ -1319,7 +1316,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           answers.add(answer);
         }
         
-        result.add(new WorkspaceCompositeReply(reply.getWorkspaceMaterial().getId(), reply.getState(), answers));
+        result.add(new WorkspaceCompositeReply(reply.getWorkspaceMaterial().getId(), reply.getId(), reply.getState(), answers));
       }
 
       if (result.isEmpty()) {

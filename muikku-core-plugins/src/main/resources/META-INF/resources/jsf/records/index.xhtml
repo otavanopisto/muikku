@@ -30,12 +30,19 @@
   <ui:define name="mf-controls-container">
   </ui:define>
     
-  <ui:define name="mf-content-area-instance">
-   <div class="tr-content-main flex-row" data-grades="#{transcriptofRecordsBackingBean.grades}">
-   </div>
-  </ui:define>
-
   <ui:define name="mf-content-functions">
+  </ui:define>
+  
+  <ui:define name="mf-content-master"> 
+    <div class="records">
+      <h2 class="main-functionality-page-title">#{i18n.text['plugin.records.pageTitle']}</h2>
+       <div class="mf-content-area flex-row">
+         <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+         <div class="tr-content-main flex-row" data-grades="#{transcriptofRecordsBackingBean.grades}">
+         </div>
+       </div>
+     </div>
+    </div>
   </ui:define>
 
 </ui:composition>
