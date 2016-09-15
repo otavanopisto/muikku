@@ -21,290 +21,284 @@
 }
 
 body {
-  font-size:16px;
+  font-size: 16px;
 } 
 
 #content  > section > article {
-  position:relative;
-  z-index:10;
-  min-width:0;
+  position: relative;
+  z-index: 10;
+  min-width: 0;
 
     & > h1 { /* Material's title */
-    position:relative;
-    z-index:12;
-    max-width:700px;
-    width:auto;
-    background:#fff;
-    margin:0 auto -30px auto; 
-    font-weight:300;
-    color:#000;
-    font-size:30px;
-    padding:20px;
-    text-transform:none;
-    line-height:1.3em;
+    position: relative;
+    z-index: 12;
+    max-width: 700px;
+    width: auto;
+    background: #fff;
+    margin: 0 auto -30px; 
+    font-weight: 300;
+    color: #000;
+    font-size: 30px;
+    padding: 20px;
+    text-transform: none;
+    line-height: 1.3em;
   }
   
 }
 
 .workspace-materials-view-page-section.material-view { /* <section> */
-  position:relative;
-  z-index:10;
+  position: relative;
+  z-index: 10;
   
   & > h2 { /* Section's title */
-    position:relative;
-    z-index:12;
-    max-width:700px;
-    width:auto;
-    margin:30px auto -30px auto; 
-    font-weight:300;
-    color:#000;
-    font-size:26px;
-    padding:10px 20px;
-    text-transform:none;
-    line-height:1.3em;
-    border:1px solid #fff;
-    background:#ddf5ff;
-    text-transform:uppercase;
+    position: relative;
+    z-index: 12;
+    max-width: 700px;
+    width: auto;
+    margin: 30px auto -30px; 
+    font-weight: 300;
+    color: #000;
+    font-size: 26px;
+    padding: 10px 20px;
+    text-transform: none;
+    line-height: 1.3em;
+    border: 1px solid #fff;
+    background: #ddf5ff;
+    text-transform: uppercase;
   }
   
   & > h3, > h4, > h5, > h6 { /* Alternative Section's titles */
-    position:relative;
-    z-index:13;
-    width:auto;
-    background:#fff;
-    margin:30px auto -30px auto; 
-    font-weight:300;
-    color:#000;
-    font-size:26px;
-    padding:10px 20px 10px 20px;
-    text-transform:none;
-    line-height:1.3em;
+    position: relative;
+    z-index: 13;
+    width: auto;
+    background: #fff;
+    margin: 30px auto -30px; 
+    font-weight: 300;
+    color: #000;
+    font-size: 26px;
+    padding: 10px 20px 10px 20px;
+    text-transform: none;
+    line-height: 1.3em;
   }
   
 }
 
 nav.workspace-materials-toc-wrapper {
-  background:#fff;
-  text-align:left;
-  font-family:'Open Sans', Arial, sans-serif;
-  text-shadow:none;
-  color:#000;
-  font-size:14px;
-  line-height:1.5em;
-  z-index:11;
-  position:fixed;
-  top:90px;
-  bottom:0;
-  width:290px;
+  background: #fff;
+  text-align: left;
+  font-family: 'Open Sans', Arial, sans-serif;
+  text-shadow: none;
+  color: #000;
+  font-size: 14px;
+  line-height: 1.5em;
+  z-index: 11;
+  position: fixed;
+  top: 90px;
+  bottom: 0;
+  width: 290px;
   
   &:hover > span {
-    display:none;
+    display: none;
   }
   
   ul, 
   li {
-    list-style:none;
-    margin:0;
-    padding:0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
   
-  .workspace-materials-toc-container {
-    position:relative;
-    height:100%;
+}
   
-    .workspace-materials-toc-title {
-      text-transform:uppercase;
-      margin:0;
-      padding:10px 12px;
-      font-size:19px;
-      color:#2c2c2c;
-      height:20px;
+.workspace-materials-toc-container {
+  position: relative;
+  height: 100%;
+
+  .workspace-materials-toc-title {
+    text-transform: uppercase;
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 19px;
+    color: #2c2c2c;
+    height: 20px;
+  }
+
+  .workspace-materials-toc-content-scrolling {
+    padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    position: absolute;
+    top: 40px;
+    bottom: 35px;
+  }
+    
+  .workspace-materials-toc-section {
+    margin: 0;
+    padding-top: 5px;
+    padding-bottom: 10px;
+  }
+  
+  .workspace-materials-toc-subtitle {
+    font-size: 15px;
+    padding: 2px 8px;
+    text-transform: uppercase;
+  }
+
+  .workspace-materials-toc-item {
+    font-weight: 300;
+    list-style: none;
+    position: relative;
+    word-wrap: break-word;
+    
+    &:first-child {
+      margin-top: 5px;
+      padding-top: 2px;
     }
-
-    .workspace-materials-toc-content-scrolling {
-      padding:4px;
-      width:100%;
-      box-sizing:border-box;
-      position:absolute;
-      top:40px;
-      bottom:35px;
+    
+    &.item-hidden {
+      opacity: 0.4;
+    }
+    
+    a {
+      border-left: 2px solid #fff;
+      border-radius: 2px;
+      color: #2c2c2c;
+      display: block;
+      margin: 1px 0;
+      padding: 2px 8px 2px 6px;
+      position: relative;
+      text-decoration: none;
       
-      .workspace-materials-toc-root {
+      &:hover,
+      &.active {
+        background: #596e7d;
+        color: #fff;
+      }
       
-        .workspace-materials-toc-section {
-          margin:0;
-          padding-top:5px;
-          padding-bottom:10px;
+      &.assignment {
+        border-left: 2px solid $evaluatedAssignment;
         
-          .workspace-materials-toc-subtitle {
-            text-transform:uppercase;
-            font-size:15px;
-            padding:2px 8px;
-          }
+        /* Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room */
+        &.submitted,
+        &.evaluated-passed,
+        &.evaluated-failed {
+          padding-right: 20px;
+        }
         
+      }
+      
+      &.exercise {
+        border-left: 2px solid $exerciseAssignment;
+        
+         /* Adjust link padding when exercise is "done" so icon has more room */
+         &.submitted {
+          padding-right: 20px;
         }
-
-        .workspace-materials-toc-item {
-          font-weight: 300;
-          list-style: none;
-          word-wrap: break-word;
-          position: relative;
-          
-          &:first-child {
-            margin-top:5px;
-            padding-top:2px;
-          }
-          
-          &.item-hidden {
-            opacity:0.4;
-          }
-          
-          a {
-            text-decoration:none;
-            color:#2c2c2c;
-            display:block;
-            border-radius:2px;
-            padding:2px 8px 2px 6px;
-            border-left:2px solid #fff;
-            margin:1px 0;
-            position:relative;
-            
-            &:hover,
-            &.active {
-              background:#596e7d;
-              color:#fff;
-            }
-            
-            &.assignment {
-              border-left:2px solid $evaluatedAssignment;
-              
-              /* Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room */
-              &.submitted,
-              &.evaluated-passed,
-              &.evaluated-failed {
-                padding-right:20px;
-              }
-              
-            }
-            
-            &.exercise {
-              border-left:2px solid $exerciseAssignment;
-              
-               /* Adjust link padding when exercise is "done" so icon has more room */
-               &.submitted {
-                padding-right:20px;
-              }
-              
-            }
-            
-            /* When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed" */
-            span.submitted,
-            span.evaluated-passed,
-            span.evaluated-failed {
-              color:#fff;
-              position:absolute;
-              right:3px;
-              top:5px;
-              display:block;
-              height:14px;
-              width:14px;
-              border-radius:100%;
-              border:1px solid #fff;
-              line-height:1;
-            }
-            
-            /* Color and icon for "done" assignment and exercise */
-            .submitted:before {
-              content: "\e639";
-              background:#0099ff;
-              font-size:10px;
-              height:10px;
-              width:10px;
-              padding:2px;
-              border-radius:100%;
-              font-family:'muikku' !important;
-              speak:none;
-              font-style:normal;
-              font-weight:normal;
-              font-variant:normal;
-              text-transform:none;
-              line-height:1;
-              -webkit-font-smoothing:antialiased;
-              -moz-osx-font-smoothing:grayscale;
-              position:absolute;
-              top:0;
-            }
-            
-            /* Color and icon for "evaluated-passed" assignment */
-            .evaluated-passed:before {
-              content:"\f164";
-              background:#1ec30c;
-              font-size:10px;
-              height:10px;
-              width:10px;
-              padding:2px;
-              border-radius:100%;
-              font-family:'muikku' !important;
-              speak:none;
-              font-style:normal;
-              font-weight:normal;
-              font-variant:normal;
-              text-transform:none;
-              line-height:1;
-              -webkit-font-smoothing:antialiased;
-              -moz-osx-font-smoothing:grayscale;
-              position:absolute;
-              top:0;
-            }
-            
-            /* Color and icon for "evaluated-failed" assignment */
-            .evaluated-failed:before {
-              content:"\f165";
-              background:#ea7401;
-              font-size:10px;
-              height:10px;
-              width:10px;
-              padding:2px;
-              border-radius:100%;
-              font-family:'muikku' !important;
-              speak:none;
-              font-style:normal;
-              font-weight:normal;
-              font-variant:normal;
-              text-transform:none;
-              line-height:1;
-              -webkit-font-smoothing:antialiased;
-              -moz-osx-font-smoothing:grayscale;
-              position:absolute;
-              top:0;
-            }
-            
-          }
-
-          .icon-closed-material {
-            color: #da4a51;
-            font-size: 15px;
-            padding: 4px 2px;
-            position: absolute;
-            right: 5px;
-            top: 0px;
-          }
-          
-                    
-          &.item-view-restricted {
-            
-            a {
-              padding: 2px 28px 2px 6px;
-            }
-
-          }
-
-        }
-
+        
+      }
+      
+      /* When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed" */
+      span.submitted,
+      span.evaluated-passed,
+      span.evaluated-failed {
+        border: 1px solid #fff;
+        border-radius: 100%;
+        color: #fff;
+        display: block;
+        height: 14px;
+        line-height: 1;
+        position: absolute;
+        right: 3px;
+        top: 5px;
+        width: 14px;
+      }
+      
+      /* Color and icon for "done" assignment and exercise */
+      .submitted:before {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: #0099ff;
+        border-radius: 100%;
+        content: "\e639";
+        font-family: 'muikku' !important;
+        font-style: normal;
+        font-size: 10px;
+        font-variant: normal;
+        font-weight: normal;
+        height: 10px;
+        line-height: 1;
+        padding: 2px;
+        position: absolute;
+        speak: none;
+        text-transform: none;
+        top: 0;
+        width: 10px;
+      }
+      
+      /* Color and icon for "evaluated-passed" assignment */
+      .evaluated-passed:before {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: #1ec30c;
+        border-radius: 100%;
+        content: "\f164";
+        font-family: 'muikku' !important;
+        font-size: 10px;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: normal;
+        height: 10px;
+        line-height: 1;
+        padding: 2px;
+        position: absolute;
+        speak: none;
+        text-transform: none;
+        top: 0;
+        width: 10px;
+      }
+      
+      /* Color and icon for "evaluated-failed" assignment */
+      .evaluated-failed:before {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: #ea7401;
+        border-radius: 100%;
+        content: "\f165";
+        font-family: 'muikku' !important;
+        font-size: 10px;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: normal;
+        height: 10px;
+        line-height: 1;
+        padding: 2px;
+        position: absolute;
+        speak: none;
+        text-transform: none;
+        top: 0;
+        width: 10px;
       }
       
     }
-  
+
+    .icon-closed-material {
+      color: #da4a51;
+      font-size: 15px;
+      padding: 4px 2px;
+      position: absolute;
+      right: 5px;
+      top: 0;
+    }
+    
+              
+    &.item-view-restricted {
+      
+      a {
+        padding: 2px 28px 2px 6px;
+      }
+
+    }
+
   }
 
 }
