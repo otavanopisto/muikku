@@ -25,14 +25,14 @@
 
 body {
   background: #8ba4b5;
-  padding: 0.01em; /* Prevent margin collapsing  */
+  padding: 0.01em; // Prevent margin collapsing  
   font-family: 'Open Sans', Arial, sans-serif;
   min-height: 100%;
   line-height: 1.7em;
   font-weight: 300;
   font-size: 16px;
   
-  /* WORKSPACE NAVIGATION - FULLSCREEN */
+  // WORKSPACE NAVIGATION - FULLSCREEN 
   div[class*='workspace-materials-full-screen-navi-button'] > a,
   div[class*='workspace-materials-full-screen-navi-button'] > span {
     cursor: pointer;
@@ -148,16 +148,16 @@ nav.workspace-waterials-reading-nav {
       
       &:hover {
         opacity: 0.7;
-        -ms-transform: rotate(10deg); /* IE 9 */
-        -webkit-transform: rotate(10deg); /* Chrome, Safari, Opera */
+        -ms-transform: rotate(10deg); // IE 9 
+        -webkit-transform: rotate(10deg); // Chrome, Safari, Opera 
         -moz-transform: rotate(10deg);
         transform: rotate(10deg);
       }
       
       &.selected {
         opacity: 1;
-        -ms-transform: rotate(25deg); /* IE 9 */
-        -webkit-transform: rotate(25deg); /* Chrome, Safari, Opera */
+        -ms-transform: rotate(25deg); // IE 9 
+        -webkit-transform: rotate(25deg); // Chrome, Safari, Opera 
         -moz-transform: rotate(25deg);
         transform: rotate(25deg);
       }
@@ -218,7 +218,7 @@ nav.workspace-waterials-reading-nav {
       &.assignment {
         border-left: 2px solid $evaluatedAssignment;
         
-        /* Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room */
+        // Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room 
         &.submitted,
         &.evaluated-passed,
         &.evaluated-failed {
@@ -230,14 +230,14 @@ nav.workspace-waterials-reading-nav {
       &.exercise {
         border-left: 2px solid $exerciseAssignment;
         
-         /* Adjust link padding when exercise is "done" so icon has more room */
+         // Adjust link padding when exercise is "done" so icon has more room 
          &.submitted {
           padding-right: 20px;
         }
         
       }
       
-      /* When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed" */
+      // When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed" 
       span.submitted,
       span.evaluated-passed,
       span.evaluated-failed {
@@ -253,8 +253,8 @@ nav.workspace-waterials-reading-nav {
         line-height: 1;
       }
       
-      /* Color and icon for "done" assignment and exercise */
-      .submitted:before {
+      // Color and icon for "done" assignment and exercise 
+      .submitted::before {
         content: "\e639";
         background: #0099ff;
         font-size: 10px;
@@ -275,8 +275,8 @@ nav.workspace-waterials-reading-nav {
         top: 0;
       }
       
-      /* Color and icon for "evaluated-passed" assignment */
-      .evaluated-passed:before {
+      // Color and icon for "evaluated-passed" assignment 
+      .evaluated-passed::before {
         content: "\f164";
         background: #1ec30c;
         font-size: 10px;
@@ -297,8 +297,8 @@ nav.workspace-waterials-reading-nav {
         top: 0;
       }
       
-      /* Color and icon for "evaluated-failed" assignment */
-      .evaluated-failed:before {
+      // Color and icon for "evaluated-failed" assignment 
+      .evaluated-failed::before {
         content: "\f165";
         background: #ea7401;
         font-size: 10px;
@@ -348,7 +348,7 @@ nav.workspace-waterials-reading-nav {
   margin: 0 auto;
   padding-left: 50px;
   
-  article > h1 { /* Material's title */
+  article > h1 { // Material's title 
     max-width: 655px;
     width: auto;
     background: #fff;
@@ -361,9 +361,9 @@ nav.workspace-waterials-reading-nav {
     line-height: 1.3em;
   }
   
-  .workspace-materials-view-page-section.material-reading-view { /* <section> */
+  .workspace-materials-view-page-section.material-reading-view { // <section> 
   
-    & > h2 { /* Section's title */
+    & > h2 { // Section's title 
       position: relative;
       z-index: 12;
       max-width: 655px;
@@ -378,7 +378,7 @@ nav.workspace-waterials-reading-nav {
       line-height: 1.3em;
     }
    
-    & > h3, & > h4, & > h5, & > h6 { /* Alternative Section's titles */
+    & > h3, & > h4, & > h5, & > h6 { // Alternative Section's titles 
       max-width: 655px;
       width: auto;
       background: #fff;
@@ -394,7 +394,7 @@ nav.workspace-waterials-reading-nav {
   
   }
 
-  .workspace-materials-view-page.material-reading-view { /* <article> */
+  .workspace-materials-view-page.material-reading-view { // <article> 
     background: #fff;
     box-shadow: $w-page-sc;
     margin: 30px auto;

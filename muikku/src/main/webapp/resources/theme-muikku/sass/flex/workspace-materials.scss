@@ -29,7 +29,7 @@ body {
   z-index: 10;
   min-width: 0;
 
-    & > h1 { /* Material's title */
+    & > h1 { // Material's title
     position: relative;
     z-index: 12;
     max-width: 700px;
@@ -46,11 +46,11 @@ body {
   
 }
 
-.workspace-materials-view-page-section.material-view { /* <section> */
+.workspace-materials-view-page-section.material-view { // <section>
   position: relative;
   z-index: 10;
   
-  & > h2 { /* Section's title */
+  & > h2 { // Section's title 
     position: relative;
     z-index: 12;
     max-width: 700px;
@@ -67,7 +67,7 @@ body {
     text-transform: uppercase;
   }
   
-  & > h3, > h4, > h5, > h6 { /* Alternative Section's titles */
+  & > h3, > h4, > h5, > h6 { // Alternative Section's titles 
     position: relative;
     z-index: 13;
     width: auto;
@@ -178,7 +178,7 @@ nav.workspace-materials-toc-wrapper {
       &.assignment {
         border-left: 2px solid $evaluatedAssignment;
         
-        /* Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room */
+        // Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room 
         &.submitted,
         &.evaluated-passed,
         &.evaluated-failed {
@@ -190,95 +190,95 @@ nav.workspace-materials-toc-wrapper {
       &.exercise {
         border-left: 2px solid $exerciseAssignment;
         
-         /* Adjust link padding when exercise is "done" so icon has more room */
+         // Adjust link padding when exercise is "done" so icon has more room
          &.submitted {
           padding-right: 20px;
         }
         
       }
-      
-      /* When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed" */
-      span.submitted,
-      span.evaluated-passed,
-      span.evaluated-failed {
-        border: 1px solid #fff;
-        border-radius: 100%;
-        color: #fff;
-        display: block;
-        height: 14px;
-        line-height: 1;
-        position: absolute;
-        right: 3px;
-        top: 5px;
-        width: 14px;
-      }
-      
-      /* Color and icon for "done" assignment and exercise */
-      .submitted:before {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        background: #0099ff;
-        border-radius: 100%;
-        content: "\e639";
-        font-family: 'muikku' !important;
-        font-style: normal;
-        font-size: 10px;
-        font-variant: normal;
-        font-weight: normal;
-        height: 10px;
-        line-height: 1;
-        padding: 2px;
-        position: absolute;
-        speak: none;
-        text-transform: none;
-        top: 0;
-        width: 10px;
-      }
-      
-      /* Color and icon for "evaluated-passed" assignment */
-      .evaluated-passed:before {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        background: #1ec30c;
-        border-radius: 100%;
-        content: "\f164";
-        font-family: 'muikku' !important;
-        font-size: 10px;
-        font-style: normal;
-        font-variant: normal;
-        font-weight: normal;
-        height: 10px;
-        line-height: 1;
-        padding: 2px;
-        position: absolute;
-        speak: none;
-        text-transform: none;
-        top: 0;
-        width: 10px;
-      }
-      
-      /* Color and icon for "evaluated-failed" assignment */
-      .evaluated-failed:before {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        background: #ea7401;
-        border-radius: 100%;
-        content: "\f165";
-        font-family: 'muikku' !important;
-        font-size: 10px;
-        font-style: normal;
-        font-variant: normal;
-        font-weight: normal;
-        height: 10px;
-        line-height: 1;
-        padding: 2px;
-        position: absolute;
-        speak: none;
-        text-transform: none;
-        top: 0;
-        width: 10px;
-      }
-      
+
+    }
+    
+    // When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed"
+    span.submitted,
+    span.evaluated-passed,
+    span.evaluated-failed {
+      border: 1px solid #fff;
+      border-radius: 100%;
+      color: #fff;
+      display: block;
+      height: 14px;
+      line-height: 1;
+      position: absolute;
+      right: 3px;
+      top: 5px;
+      width: 14px;
+    }
+    
+    // Color and icon for "done" assignment and exercise 
+    .submitted::before {
+      background: #0099ff;
+      border-radius: 100%;
+      content: "\e639";
+      font-family: 'muikku' !important;
+      font-style: normal;
+      font-size: 10px;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      font-variant: normal;
+      font-weight: normal;
+      height: 10px;
+      line-height: 1;
+      padding: 2px;
+      position: absolute;
+      speak: none;
+      text-transform: none;
+      top: 0;
+      width: 10px;
+    }
+    
+    // Color and icon for "evaluated-passed" assignment 
+    .evaluated-passed::before {
+      background: #1ec30c;
+      border-radius: 100%;
+      content: "\f164";
+      font-family: 'muikku' !important;
+      font-size: 10px;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      height: 10px;
+      line-height: 1;
+      padding: 2px;
+      position: absolute;
+      speak: none;
+      text-transform: none;
+      top: 0;
+      width: 10px;
+    }
+    
+    // Color and icon for "evaluated-failed" assignment 
+    .evaluated-failed::before {
+      background: #ea7401;
+      border-radius: 100%;
+      content: "\f165";
+      font-family: 'muikku' !important;
+      font-size: 10px;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      height: 10px;
+      line-height: 1;
+      padding: 2px;
+      position: absolute;
+      speak: none;
+      text-transform: none;
+      top: 0;
+      width: 10px;
     }
 
     .icon-closed-material {
