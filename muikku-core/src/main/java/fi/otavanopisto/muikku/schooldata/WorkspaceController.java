@@ -40,8 +40,6 @@ import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class WorkspaceController {
   
-  // TODO: Why not fi.otavanopisto.muikku.workspaces ?
-
   @Inject
   private Logger logger;
   
@@ -174,7 +172,7 @@ public class WorkspaceController {
   }
 
   public WorkspaceEntity findWorkspaceEntityByUrlName(String urlName) {
-    return workspaceEntityDAO.findByUrlName(urlName);
+    return workspaceEntityDAO.findByUrlNameAndArchived(urlName, Boolean.FALSE);
   }
 
   public WorkspaceEntity findWorkspaceEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {

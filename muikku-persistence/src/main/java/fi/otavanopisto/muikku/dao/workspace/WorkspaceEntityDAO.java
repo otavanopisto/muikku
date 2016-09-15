@@ -50,8 +50,8 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
     return getSingleResult( entityManager.createQuery(criteria) );
 	}
 
-	public WorkspaceEntity findByUrlName(String urlName) {
-		EntityManager entityManager = getEntityManager();
+  public WorkspaceEntity findByUrlName(String urlName) {
+    EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<WorkspaceEntity> criteria = criteriaBuilder.createQuery(WorkspaceEntity.class);
@@ -61,7 +61,24 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
       criteriaBuilder.equal(root.get(WorkspaceEntity_.urlName), urlName)
     );
    
-    return getSingleResult( entityManager.createQuery(criteria) );
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public WorkspaceEntity findByUrlNameAndArchived(String urlName, Boolean archived) {
+		EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceEntity> criteria = criteriaBuilder.createQuery(WorkspaceEntity.class);
+    Root<WorkspaceEntity> root = criteria.from(WorkspaceEntity.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(          
+        criteriaBuilder.equal(root.get(WorkspaceEntity_.urlName), urlName),
+        criteriaBuilder.equal(root.get(WorkspaceEntity_.archived), archived)
+      )
+    );
+   
+    return getSingleResult(entityManager.createQuery(criteria));
 	}
 
   public List<WorkspaceEntity> listByDataSource(SchoolDataSource dataSource) {
