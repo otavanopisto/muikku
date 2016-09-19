@@ -22,6 +22,10 @@
     <script defer="defer" type="text/javascript" src="/scripts/gui/socialnavigation.js"/> 
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/communicator.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/modernizr/3.3.1-inputtypes/modernizr.min.js"></script>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jscolor/2.0.4/jscolor.min.js"></script>    
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/color-polyfill.js"/>
+
   </ui:define>
   
   <ui:define name="main-functionality-styles">
@@ -54,10 +58,10 @@
           <div class="cm-content-main flex-row">
             <div class="lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-full sm-flex-order-1 cm-categories">
               <ul>
-                <li class="communicator-folder" data-folder-type="inbox" data-folder-id="inbox">
+                <li class="cm-folder cm-box icon-new-section" data-folder-type="inbox" data-folder-id="inbox">
                   <a href="#index">#{i18n.text['plugin.communicator.category.title.inbox']}</a>
                 </li>
-                <li class="communicator-folder" data-folder-type="sent" data-folder-id="sent">
+                <li class="cm-folder cm-box icon-new-section" data-folder-type="sent" data-folder-id="sent">
                   <a href="#sent">#{i18n.text['plugin.communicator.category.title.sent']}</a>
                 </li>
               </ul>
