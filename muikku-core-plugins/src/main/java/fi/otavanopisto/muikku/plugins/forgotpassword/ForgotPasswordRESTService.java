@@ -19,6 +19,7 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.user.UserPendingPasswordChange;
 import fi.otavanopisto.muikku.plugins.user.UserPendingPasswordChangeDAO;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -30,6 +31,7 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 @RequestScoped
 @Stateful
 @Produces ("application/json")
+@RestCatchSchoolDataExceptions
 public class ForgotPasswordRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -3009238121067011985L;

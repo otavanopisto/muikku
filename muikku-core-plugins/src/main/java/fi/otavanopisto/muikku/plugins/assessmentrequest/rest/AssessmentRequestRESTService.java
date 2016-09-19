@@ -27,8 +27,8 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestPermiss
 import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -41,6 +41,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Path("/assessmentrequest")
 @Produces("application/json")
 @Stateful
+@RestCatchSchoolDataExceptions
 public class AssessmentRequestRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 1L;
