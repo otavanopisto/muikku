@@ -49,6 +49,14 @@ public class CommunicatorMessageRecipient implements ContextReference {
     this.readByReceiver = readByReceiver;
   }
 
+  public Boolean getTrashedByReceiver() {
+    return trashedByReceiver;
+  }
+
+  public void setTrashedByReceiver(Boolean trashedByReceiver) {
+    this.trashedByReceiver = trashedByReceiver;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -61,9 +69,13 @@ public class CommunicatorMessageRecipient implements ContextReference {
 
   @NotNull
   @Column(nullable = false)
-  private Boolean readByReceiver = Boolean.FALSE;
+  private Boolean readByReceiver;
 
   @NotNull
   @Column(nullable = false)
-  private Boolean archivedByReceiver = Boolean.FALSE;
+  private Boolean trashedByReceiver;
+
+  @NotNull
+  @Column(nullable = false)
+  private Boolean archivedByReceiver;
 }

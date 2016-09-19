@@ -852,7 +852,7 @@
             
             renderDustTemplate('communicator/communicator_items_open.dust', data , $.proxy(function(text) {
               this.element.html(text);
-              mApi().communicator.messages.markasread.create(threadId).callback(function () {
+              mApi().communicator.items.markasread.create(threadId).callback(function () {
                 mApi().communicator.cacheClear();
                 $(document).trigger("Communicator:messageread");
               });    

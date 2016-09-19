@@ -27,7 +27,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.TagController;
@@ -130,7 +129,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       Date latestMessageDate = receivedItem.getCreated();
       
       List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(
-          user, receivedItem.getCommunicatorMessageId());
+          user, receivedItem.getCommunicatorMessageId(), false);
       
       for (CommunicatorMessageRecipient recipient : recipients) {
         hasUnreadMsgs = hasUnreadMsgs || Boolean.FALSE.equals(recipient.getReadByReceiver()); 
@@ -159,7 +158,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
-    communicatorController.archiveReceivedMessages(user, messageId);
+    communicatorController.trashAllThreadMessages(user, messageId);
     
     return Response.noContent().build();
   }
@@ -198,7 +197,46 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
-    communicatorController.archiveSentMessages(user, messageId);
+    communicatorController.trashSentMessages(user, messageId);
+    
+    return Response.noContent().build();
+  }
+  
+  @GET
+  @Path ("/trash")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listUserTrashItems(
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
+    UserEntity user = sessionController.getLoggedUserEntity(); 
+    List<CommunicatorMessage> trashItems = communicatorController.listTrashItems(user, firstResult, maxResults);
+
+    List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
+    
+    for (CommunicatorMessage msg : trashItems) {
+      String categoryName = msg.getCategory() != null ? msg.getCategory().getName() : null;
+      
+      result.add(new CommunicatorMessageRESTModel(
+          msg.getId(), msg.getCommunicatorMessageId().getId(), msg.getSender(), categoryName, 
+          msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), getMessageRecipientIdList(msg)));
+    }
+    
+    return Response.ok(
+      result
+    ).build();
+  }
+  
+  @DELETE
+  @Path ("/trash/{COMMUNICATORMESSAGEID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteTrashMessages(
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
+   ) throws AuthorizationException {
+    UserEntity user = sessionController.getLoggedUserEntity();
+    
+    CommunicatorMessageId threadId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    communicatorController.archiveTrashedMessages(user, threadId);
     
     return Response.noContent().build();
   }
@@ -238,7 +276,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
-    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, messageId);
+    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, messageId, false);
 
     List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
     
@@ -370,15 +408,35 @@ public class CommunicatorRESTService extends PluginRESTService {
   }
 
   @POST
-  @Path ("/messages/{COMMUNICATORMESSAGEID}/markasread")
+  @Path ("/items/{COMMUNICATORMESSAGEID}/markasread")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response markAsRead( 
+  public Response markInboxAsRead( 
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
-    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId);
+    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId, false);
+    
+    for (CommunicatorMessageRecipient r : list) {
+      communicatorController.updateRead(r, true);
+    }
+    
+    return Response.ok(
+      
+    ).build();
+  }
+
+  @POST
+  @Path ("/trash/{COMMUNICATORMESSAGEID}/markasread")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response markTrashAsRead( 
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
+    UserEntity user = sessionController.getLoggedUserEntity(); 
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId, true);
     
     for (CommunicatorMessageRecipient r : list) {
       communicatorController.updateRead(r, true);

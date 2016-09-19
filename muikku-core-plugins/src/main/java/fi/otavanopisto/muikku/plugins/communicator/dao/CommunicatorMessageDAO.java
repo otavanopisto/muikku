@@ -47,6 +47,8 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     msg.setContent(content);
     msg.setCreated(created);
     msg.setTags(tagIds);
+    msg.setArchivedBySender(false);
+    msg.setTrashedBySender(false);
     
     getEntityManager().persist(msg);
     
@@ -132,7 +134,7 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<CommunicatorMessage> listByRecipientAndMessageId(UserEntity user, CommunicatorMessageId communicatorMessageId) {
+  public List<CommunicatorMessage> listByRecipientAndMessageId(UserEntity user, CommunicatorMessageId communicatorMessageId, boolean trashed, boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -146,11 +148,14 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
         criteriaBuilder.treat(recipient.join(CommunicatorMessageRecipient_.communicatorMessage), CommunicatorMessage.class);
     criteria.select(CommunicatorMessage);
     criteria.where(
-            criteriaBuilder.and(
-                criteriaBuilder.equal(CommunicatorMessage.get(CommunicatorMessage_.id), recipientMessage.get(CommunicatorMessage_.id)),
-                criteriaBuilder.equal(recipientMessage.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId),
-                criteriaBuilder.equal(recipient.get(CommunicatorMessageRecipient_.recipient), user.getId()),
-                criteriaBuilder.equal(recipient.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)));
+        criteriaBuilder.and(
+            criteriaBuilder.equal(CommunicatorMessage.get(CommunicatorMessage_.id), recipientMessage.get(CommunicatorMessage_.id)),
+            criteriaBuilder.equal(recipientMessage.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId),
+            criteriaBuilder.equal(recipient.get(CommunicatorMessageRecipient_.recipient), user.getId()),
+            criteriaBuilder.equal(recipient.get(CommunicatorMessageRecipient_.trashedByReceiver), trashed),
+            criteriaBuilder.equal(recipient.get(CommunicatorMessageRecipient_.archivedByReceiver), archived)
+        )
+    );
     return entityManager.createQuery(criteria).getResultList();
   }
   
@@ -193,7 +198,7 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     return entityManager.createQuery(criteria).getSingleResult();
   }
 
-  public List<CommunicatorMessage> listBySenderAndMessageId(UserEntity sender, CommunicatorMessageId communicatorMessageId) {
+  public List<CommunicatorMessage> listBySenderAndMessageId(UserEntity sender, CommunicatorMessageId communicatorMessageId, boolean trashed, boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -205,15 +210,24 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId),
             criteriaBuilder.equal(root.get(CommunicatorMessage_.sender), sender.getId()),
-            criteriaBuilder.equal(root.get(CommunicatorMessage_.archivedBySender), Boolean.FALSE)
+            criteriaBuilder.equal(root.get(CommunicatorMessage_.trashedBySender), trashed),
+            criteriaBuilder.equal(root.get(CommunicatorMessage_.archivedBySender), archived)
         )
     );
     
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public CommunicatorMessage archiveSent(CommunicatorMessage msg) {
-    msg.setArchivedBySender(true);
+  public CommunicatorMessage updateTrashedBySender(CommunicatorMessage msg, boolean trashed) {
+    msg.setTrashedBySender(trashed);
+    
+    getEntityManager().persist(msg);
+    
+    return msg;
+  }
+
+  public CommunicatorMessage updateArchivedBySender(CommunicatorMessage msg, boolean archived) {
+    msg.setArchivedBySender(archived);
     
     getEntityManager().persist(msg);
     
