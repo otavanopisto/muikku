@@ -14,7 +14,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel_;
 
 public class CommunicatorUserLabelDAO extends CorePluginsDAO<CommunicatorUserLabel> {
 	
-  private static final long serialVersionUID = -7513353900590903561L;
+  private static final long serialVersionUID = -5030572490919278599L;
 
   public CommunicatorUserLabel create(String name, Long color, UserEntity userEntity) {
     CommunicatorUserLabel communicatorUserLabel = new CommunicatorUserLabel();
