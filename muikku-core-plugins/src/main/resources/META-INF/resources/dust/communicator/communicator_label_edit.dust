@@ -1,0 +1,4 @@
+<div class="mf-label-edit-dialog">
+  <input id="communicatorLabelColor" type="color" name="color" value="{colorHex}">
+  <input type="text" name="name" value="{name}" data-id="{id}" data-color="{color}"/>
+</div>

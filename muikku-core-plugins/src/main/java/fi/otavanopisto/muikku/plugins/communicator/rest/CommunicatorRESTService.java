@@ -27,7 +27,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.TagController;
@@ -45,6 +44,7 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentControl
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageAttachment;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
@@ -117,10 +117,25 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Path ("/items")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserCommunicatorItems(
+      @QueryParam("labelId") Long labelId,
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
-    UserEntity user = sessionController.getLoggedUserEntity(); 
-    List<CommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user, firstResult, maxResults);
+    UserEntity user = sessionController.getLoggedUserEntity();
+    CommunicatorLabel label;
+    
+    if (labelId != null) {
+      label = communicatorController.findUserLabelById(labelId);
+      if (label == null)
+        return Response.status(Status.NOT_FOUND).build();
+    }
+    else
+      label = null;
+      
+    List<CommunicatorMessage> receivedItems;
+    if (label != null)
+      receivedItems = communicatorController.listReceivedItems(user, label, firstResult, maxResults);
+    else
+      receivedItems = communicatorController.listReceivedItems(user, firstResult, maxResults);
 
     List<CommunicatorMessageItemRESTModel> result = new ArrayList<CommunicatorMessageItemRESTModel>();
     
@@ -382,6 +397,32 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     for (CommunicatorMessageRecipient r : list) {
       communicatorController.updateRead(r, true);
+    }
+    
+    return Response.ok(
+      
+    ).build();
+  }
+
+  @POST
+  @Path ("/messages/{COMMUNICATORMESSAGEID}/markasunread")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response markAsUnRead( 
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
+      @QueryParam("messageIds") List<Long> messageIds) {
+    UserEntity user = sessionController.getLoggedUserEntity(); 
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId);
+    
+    for (CommunicatorMessageRecipient r : list) {
+      if ((messageIds != null) && (r.getCommunicatorMessage() != null)) {
+        if (!messageIds.isEmpty() && !messageIds.contains(r.getCommunicatorMessage().getId()))
+          continue;
+      }
+      
+      communicatorController.updateRead(r, false);
     }
     
     return Response.ok(
