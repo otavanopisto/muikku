@@ -22,7 +22,6 @@ public class CommunicatorUserLabelDAO extends CorePluginsDAO<CommunicatorUserLab
     communicatorUserLabel.setName(name);
     communicatorUserLabel.setColor(color);
     communicatorUserLabel.setUserEntity(userEntity.getId());
-    communicatorUserLabel.setArchived(false);
     
     getEntityManager().persist(communicatorUserLabel);
     
@@ -37,10 +36,7 @@ public class CommunicatorUserLabelDAO extends CorePluginsDAO<CommunicatorUserLab
     Root<CommunicatorUserLabel> root = criteria.from(CommunicatorUserLabel.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(CommunicatorUserLabel_.userEntity), userEntity.getId()),
-            criteriaBuilder.equal(root.get(CommunicatorUserLabel_.archived), Boolean.FALSE)
-        )
+        criteriaBuilder.equal(root.get(CommunicatorUserLabel_.userEntity), userEntity.getId())
     );
     
     return entityManager.createQuery(criteria).getResultList();
@@ -49,14 +45,6 @@ public class CommunicatorUserLabelDAO extends CorePluginsDAO<CommunicatorUserLab
   public CommunicatorUserLabel update(CommunicatorUserLabel communicatorUserLabel, String name, Long color) {
     communicatorUserLabel.setName(name);
     communicatorUserLabel.setColor(color);
-    
-    getEntityManager().persist(communicatorUserLabel);
-    
-    return communicatorUserLabel;
-  }
-  
-  public CommunicatorUserLabel updateArchived(CommunicatorUserLabel communicatorUserLabel, Boolean archived) {
-    communicatorUserLabel.setArchived(archived);
     
     getEntityManager().persist(communicatorUserLabel);
     

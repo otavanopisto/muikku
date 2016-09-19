@@ -29,14 +29,6 @@ public class CommunicatorLabel {
   	this.color = color;
   }
 
-  public Boolean getArchived() {
-    return archived;
-  }
-
-  public void setArchived(Boolean archived) {
-    this.archived = archived;
-  }
-
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -44,8 +36,4 @@ public class CommunicatorLabel {
   @NotNull
   @Column(nullable = false)
   private Long color;
-  
-  @NotNull
-  @Column(nullable = false)
-  private Boolean archived;
 }

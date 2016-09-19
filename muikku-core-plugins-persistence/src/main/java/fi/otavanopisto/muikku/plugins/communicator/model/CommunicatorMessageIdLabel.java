@@ -7,10 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import fi.otavanopisto.security.ContextReference;
-
 @Entity
-public class CommunicatorMessageIdLabel implements ContextReference {
+public class CommunicatorMessageIdLabel {
 
   public Long getId() {
     return id;

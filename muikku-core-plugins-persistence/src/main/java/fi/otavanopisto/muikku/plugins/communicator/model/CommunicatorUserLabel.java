@@ -6,11 +6,9 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.otavanopisto.security.ContextReference;
-
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
-public class CommunicatorUserLabel extends CommunicatorLabel implements ContextReference {
+public class CommunicatorUserLabel extends CommunicatorLabel {
   
   public Long getUserEntity() {
     return userEntity;
