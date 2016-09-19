@@ -454,9 +454,7 @@
             <configuration>
               <webappSourceDir>${project.build.directory}/${project.build.finalName}</webappSourceDir>
               <cssSourceDir>resources/theme-muikku/css-exploded</cssSourceDir>
-              <cssSourceIncludes>
-                <include>*.css</include>
-              </cssSourceIncludes>
+              <cssSourceInclude>*.css</cssSourceInclude>
               <skipMerge>true</skipMerge>
             </configuration>
           </execution>
