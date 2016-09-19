@@ -6,7 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
-import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 
 @ApplicationScoped
 public class PyramusSchoolDataRolesUpdateScheduler implements PyramusUpdateScheduler {
@@ -21,7 +21,7 @@ public class PyramusSchoolDataRolesUpdateScheduler implements PyramusUpdateSched
    * @see fi.otavanopisto.muikku.plugins.schooldatapyramus.schedulers.PyramusUpdateScheduler#synchronizeWorkspaceUsers()
    */
   @Override
-  public void synchronize() throws UnexpectedSchoolDataBridgeException {
+  public void synchronize() throws SchoolDataBridgeInternalException {
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus roles");

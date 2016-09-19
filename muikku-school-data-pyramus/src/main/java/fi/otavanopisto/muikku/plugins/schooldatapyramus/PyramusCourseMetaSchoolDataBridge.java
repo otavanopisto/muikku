@@ -14,9 +14,8 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDa
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSubject;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.CourseMetaSchoolDataBridge;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.entity.CourseIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
@@ -41,34 +40,32 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
   }
 
   @Override
-  public Subject findSubject(String identifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public Subject findSubject(String identifier) {
     Long subjectId = pyramusIdentifierMapper.getPyramusSubjectId(identifier);
 
     return createSubjectEntity(pyramusClient.get("/common/subjects/" + subjectId, fi.otavanopisto.pyramus.rest.model.Subject.class));
   }
 
   @Override
-  public List<Subject> listSubjects() throws UnexpectedSchoolDataBridgeException {
+  public List<Subject> listSubjects() {
     fi.otavanopisto.pyramus.rest.model.Subject[] subjects = pyramusClient.get("/common/subjects/",
         fi.otavanopisto.pyramus.rest.model.Subject[].class);
     if (subjects == null) {
-      throw new UnexpectedSchoolDataBridgeException("Null response");
+      throw new SchoolDataBridgeInternalException("Null response");
     }
 
     return createSubjectEntities(subjects);
   }
 
   @Override
-  public CourseIdentifier findCourseIdentifier(String identifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public CourseIdentifier findCourseIdentifier(String identifier) {
     
     if (StringUtils.isBlank(identifier)) {
       return null;
     }
 
     if (identifier.indexOf("/") == -1)
-      throw new SchoolDataBridgeRequestException("Invalid CourseIdentifierId");
+      throw new SchoolDataBridgeInternalException("Invalid CourseIdentifierId");
     
     String[] idParts = identifier.split("/");
   
@@ -79,13 +76,13 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
   }
 
   @Override
-  public List<CourseIdentifier> listCourseIdentifiers() throws UnexpectedSchoolDataBridgeException {
+  public List<CourseIdentifier> listCourseIdentifiers() {
     List<CourseIdentifier> result = new ArrayList<>();
 
     fi.otavanopisto.pyramus.rest.model.Subject[] subjects = pyramusClient.get("/common/subjects/",
         fi.otavanopisto.pyramus.rest.model.Subject[].class);
     if (subjects == null) {
-      throw new UnexpectedSchoolDataBridgeException("Null response");
+      throw new SchoolDataBridgeInternalException("Null response");
     }
 
     // TODO Ugly workaround to Pyramus Course IDs
@@ -113,10 +110,9 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
   }
 
   @Override
-  public List<CourseIdentifier> listCourseIdentifiersBySubject(String subjectIdentifier)
-      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<CourseIdentifier> listCourseIdentifiersBySubject(String subjectIdentifier) {
     if (!StringUtils.isNumeric(subjectIdentifier)) {
-      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
     }
 
     // TODO Fix workaround
@@ -164,8 +160,7 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
   }
 
   @Override
-  public EducationType findEducationType(String identifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public EducationType findEducationType(String identifier) {
     Long educationTypeId = pyramusIdentifierMapper.getPyramusEducationTypeId(identifier);
     fi.otavanopisto.pyramus.rest.model.EducationType restEducationType = pyramusClient.get("/common/educationTypes/" + educationTypeId, fi.otavanopisto.pyramus.rest.model.EducationType.class);
     if (restEducationType != null) {
@@ -191,7 +186,7 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
   }
   
   @Override
-  public CourseLengthUnit findCourseLengthUnit(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public CourseLengthUnit findCourseLengthUnit(String identifier) {
     Long educationalTimeUnitId = pyramusIdentifierMapper.getPyramusEducationalTimeUnitId(identifier);
     if (educationalTimeUnitId != null) {
       return pyramusSchoolDataEntityFactory.getCourseLengthUnit(pyramusClient.get("/common/educationalTimeUnits/" + educationalTimeUnitId, fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit.class));
@@ -201,8 +196,7 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
   }
 
   @Override
-  public Curriculum findCurriculum(String identifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public Curriculum findCurriculum(String identifier) {
     Long curriculumId = pyramusIdentifierMapper.getPyramusCurriculumId(identifier);
     fi.otavanopisto.pyramus.rest.model.Curriculum curriculum = pyramusClient.get("/common/curriculums/" + curriculumId, fi.otavanopisto.pyramus.rest.model.Curriculum.class);
     if (curriculum != null) {

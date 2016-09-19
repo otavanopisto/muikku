@@ -21,43 +21,39 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 
 class GradingSchoolDataController { 
-	
-	// TODO: Caching 
-	// TODO: Events
-	
-	@Inject
-	private Logger logger;
-	
-	@Inject
-	@Any
-	private Instance<GradingSchoolDataBridge> gradingBridges;
+  
+  // TODO: Caching 
+  // TODO: Events
+  
+  @Inject
+  private Logger logger;
+  
+  @Inject
+  @Any
+  private Instance<GradingSchoolDataBridge> gradingBridges;
 
-	@Inject
-	private SchoolDataSourceDAO schoolDataSourceDAO;
-	
-	/* WorkspaceAssessment */
-	
-	public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
-	  SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-	  GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
+  @Inject
+  private SchoolDataSourceDAO schoolDataSourceDAO;
+  
+  /* WorkspaceAssessment */
+  
+  public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.createWorkspaceAssessment(
-            workspaceUserIdentifier,
-            workspaceUserSchoolDataSource,
-            workspaceIdentifier,
-            studentIdentifier,
-            assessingUserIdentifier, 
-            assessingUserSchoolDataSource, 
-            gradeIdentifier, 
-            gradeSchoolDataSource,
-            gradingScaleIdentifier, 
-            gradingScaleSchoolDataSource,
-            verbalAssessment, 
-            date);
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while create a workspace assessment", e);
-      }
+      return schoolDataBridge.createWorkspaceAssessment(
+          workspaceUserIdentifier,
+          workspaceUserSchoolDataSource,
+          workspaceIdentifier,
+          studentIdentifier,
+          assessingUserIdentifier, 
+          assessingUserSchoolDataSource, 
+          gradeIdentifier, 
+          gradeSchoolDataSource,
+          gradingScaleIdentifier, 
+          gradingScaleSchoolDataSource,
+          verbalAssessment, 
+          date);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
@@ -69,11 +65,7 @@ class GradingSchoolDataController {
       SchoolDataIdentifier workspaceAssesmentIdentifier) {
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(workspaceAssesmentIdentifier.getDataSource());
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.findWorkspaceAssessment(workspaceAssesmentIdentifier.getIdentifier(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a workspace assessment", e);
-      }
+      return schoolDataBridge.findWorkspaceAssessment(workspaceAssesmentIdentifier.getIdentifier(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
     } else {
       logger.log(Level.SEVERE, String.format("School Data Bridge could not be found for data source: %s", workspaceAssesmentIdentifier.getDataSource()));
     }
@@ -94,11 +86,7 @@ class GradingSchoolDataController {
   public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataSource schoolDataSource, String workspaceIdentifier, String studentIdentifier) {
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.listWorkspaceAssessments(workspaceIdentifier, studentIdentifier);
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspace assessments", e);
-      }
+      return schoolDataBridge.listWorkspaceAssessments(workspaceIdentifier, studentIdentifier);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
     }
@@ -110,24 +98,20 @@ class GradingSchoolDataController {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.updateWorkspaceAssessment(
-            identifier,
-            workspaceUserIdentifier,
-            workspaceUserSchoolDataSource,
-            workspaceIdentifier,
-            studentIdentifier,
-            assessingUserIdentifier, 
-            assessingUserSchoolDataSource, 
-            gradeIdentifier, 
-            gradeSchoolDataSource,
-            gradingScaleIdentifier,
-            gradingScaleSchoolDataSource,
-            verbalAssessment, 
-            date);
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while updating a workspace assessment", e);
-      }
+      return schoolDataBridge.updateWorkspaceAssessment(
+          identifier,
+          workspaceUserIdentifier,
+          workspaceUserSchoolDataSource,
+          workspaceIdentifier,
+          studentIdentifier,
+          assessingUserIdentifier, 
+          assessingUserSchoolDataSource, 
+          gradeIdentifier, 
+          gradeSchoolDataSource,
+          gradingScaleIdentifier,
+          gradingScaleSchoolDataSource,
+          verbalAssessment, 
+          date);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
@@ -168,115 +152,97 @@ class GradingSchoolDataController {
   
     return Collections.emptyList();
   }
-	
-	/* GradingScales */
-	
-	public GradingScale findGradingScale(SchoolDataSource schoolDataSource, String identifier) {
-		GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
-		if (schoolDataBridge != null) {
-			try {
-				return schoolDataBridge.findGradingScale(identifier);
-			} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-				logger.log(Level.SEVERE, "School Data Bridge reported a problem while findin a grading scale", e);
-			}
-		} else {
-  		logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
-		}
-	
-		return null;
+  
+  /* GradingScales */
+  
+  public GradingScale findGradingScale(SchoolDataSource schoolDataSource, String identifier) {
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      return schoolDataBridge.findGradingScale(identifier);
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+    }
+  
+    return null;
   }
 
-	public GradingScale findGradingScale(String schoolDataSource, String identifier) {
-		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-		if (dataSource != null) {
-			 return findGradingScale(dataSource, identifier);
-		} else {
-  		logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
-		}
+  public GradingScale findGradingScale(String schoolDataSource, String identifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource != null) {
+       return findGradingScale(dataSource, identifier);
+    } else {
+      logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
+    }
 
-		return null;
-	}
-	
-	public List<GradingScale> listGradingScales() {
-		// TODO: This method WILL cause performance problems, replace with something more sensible 
-		
-		List<GradingScale> result = new ArrayList<>();
-		
-		for (GradingSchoolDataBridge gradingBridge : getGradingBridges()) {
-			try {
-				result.addAll(gradingBridge.listGradingScales());
-			} catch (UnexpectedSchoolDataBridgeException e) {
-				logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing grading scales", e);
-			}
-		}
-		
-		return result;
-	}
-	
-	/* GradingScaleItems */
-	
-	public GradingScaleItem findGradingScaleItem(SchoolDataSource schoolDataSource, GradingScale gradingScale, String identifier) {
-		GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
-		if (schoolDataBridge != null) {
-			try {
-				return schoolDataBridge.findGradingScaleItem(gradingScale.getIdentifier(), identifier);
-			} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-				logger.log(Level.SEVERE, "School Data Bridge reported a problem while findin a grading scale item", e);
-			}
-		} else {
-  		logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
-		}
-	
-		return null;
+    return null;
+  }
+  
+  public List<GradingScale> listGradingScales() {
+    // TODO: This method WILL cause performance problems, replace with something more sensible 
+    
+    List<GradingScale> result = new ArrayList<>();
+    
+    for (GradingSchoolDataBridge gradingBridge : getGradingBridges()) {
+      try {
+        result.addAll(gradingBridge.listGradingScales());
+      } catch (SchoolDataBridgeInternalException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing grading scales", e);
+      }
+    }
+    
+    return result;
+  }
+  
+  /* GradingScaleItems */
+  
+  public GradingScaleItem findGradingScaleItem(SchoolDataSource schoolDataSource, GradingScale gradingScale, String identifier) {
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      return schoolDataBridge.findGradingScaleItem(gradingScale.getIdentifier(), identifier);
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+    }
+  
+    return null;
   }
 
-	public GradingScaleItem findGradingScaleItem(String schoolDataSource, GradingScale gradingScale, String identifier) {
-		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-		if (dataSource != null) {
-			 return findGradingScaleItem(dataSource, gradingScale, identifier);
-		} else {
-  		logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
-		}
+  public GradingScaleItem findGradingScaleItem(String schoolDataSource, GradingScale gradingScale, String identifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource != null) {
+       return findGradingScaleItem(dataSource, gradingScale, identifier);
+    } else {
+      logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
+    }
 
-		return null;
-	}
-	
-	public List<GradingScaleItem> listGradingScaleItems(GradingScale gradingScale) {
-		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(gradingScale.getSchoolDataSource());
-		if (schoolDataSource != null) {
-			GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
-			if (schoolDataBridge != null) {
-				try {
-					return schoolDataBridge.listGradingScaleItems(gradingScale.getIdentifier());
-				} catch (UnexpectedSchoolDataBridgeException e) {
-					logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing grading scale items", e);
-				} catch (SchoolDataBridgeRequestException e) {
-					logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing grading scale items", e);
-				}
-			} else {
-				logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource.getIdentifier());
-			}
-		}
+    return null;
+  }
+  
+  public List<GradingScaleItem> listGradingScaleItems(GradingScale gradingScale) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(gradingScale.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        return schoolDataBridge.listGradingScaleItems(gradingScale.getIdentifier());
+      } else {
+        logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource.getIdentifier());
+      }
+    }
 
-		return null;
-	}
-	
+    return null;
+  }
+  
   public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(String schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier,
-      String studentIdentifier, String requestText, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+      String studentIdentifier, String requestText, Date date) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.createWorkspaceAssessmentRequest(
-            workspaceUserIdentifier,
-            workspaceUserSchoolDataSource,
-            workspaceIdentifier,
-            studentIdentifier,
-            requestText, 
-            date);
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while create a workspace assessment", e);
-      }
+      return schoolDataBridge.createWorkspaceAssessmentRequest(
+          workspaceUserIdentifier,
+          workspaceUserSchoolDataSource,
+          workspaceIdentifier,
+          studentIdentifier,
+          requestText, 
+          date);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
@@ -284,16 +250,11 @@ class GradingSchoolDataController {
     return null;
   }
 
-  public WorkspaceAssessmentRequest findWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceIdentifier, String studentIdentifier)
-      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public WorkspaceAssessmentRequest findWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceIdentifier, String studentIdentifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.findWorkspaceAssessmentRequest(identifier, workspaceIdentifier, studentIdentifier);
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a workspace assessment", e);
-      }
+      return schoolDataBridge.findWorkspaceAssessmentRequest(identifier, workspaceIdentifier, studentIdentifier);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
@@ -301,15 +262,11 @@ class GradingSchoolDataController {
     return null;
   }
 
-  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String schoolDataSource, String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String schoolDataSource, String workspaceIdentifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.listWorkspaceAssessmentRequests(workspaceIdentifier);
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspace assessments", e);
-      }
+      return schoolDataBridge.listWorkspaceAssessmentRequests(workspaceIdentifier);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
@@ -317,15 +274,11 @@ class GradingSchoolDataController {
     return null;
   }
 
-  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String schoolDataSource, String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String schoolDataSource, String workspaceIdentifier, String studentIdentifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.listWorkspaceAssessmentRequests(workspaceIdentifier, studentIdentifier);
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspace assessments", e);
-      }
+      return schoolDataBridge.listWorkspaceAssessmentRequests(workspaceIdentifier, studentIdentifier);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
@@ -333,15 +286,11 @@ class GradingSchoolDataController {
     return null;
   }
 
-  public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String schoolDataSource, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String schoolDataSource, String studentIdentifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.listAssessmentRequestsByStudent(studentIdentifier);
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing student assessment requests", e);
-      }
+      return schoolDataBridge.listAssessmentRequestsByStudent(studentIdentifier);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
@@ -350,22 +299,18 @@ class GradingSchoolDataController {
   }
 
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
-      String workspaceIdentifier, String studentIdentifier, String requestText, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+      String workspaceIdentifier, String studentIdentifier, String requestText, Date date) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.updateWorkspaceAssessmentRequest(
-            identifier,
-            workspaceUserIdentifier,
-            workspaceUserSchoolDataSource,
-            workspaceIdentifier,
-            studentIdentifier,
-            requestText, 
-            date);
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while updating a workspace assessment request", e);
-      }
+      return schoolDataBridge.updateWorkspaceAssessmentRequest(
+          identifier,
+          workspaceUserIdentifier,
+          workspaceUserSchoolDataSource,
+          workspaceIdentifier,
+          studentIdentifier,
+          requestText, 
+          date);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
@@ -377,11 +322,7 @@ class GradingSchoolDataController {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
-      try {
-        schoolDataBridge.deleteWorkspaceAssessmentRequest(identifier, workspaceIdentifier, studentIdentifier);
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while updating a workspace assessment request", e);
-      }
+      schoolDataBridge.deleteWorkspaceAssessmentRequest(identifier, workspaceIdentifier, studentIdentifier);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
@@ -397,27 +338,27 @@ class GradingSchoolDataController {
     return getGradingBridge(dataSource);
   } 
 
-	private GradingSchoolDataBridge getGradingBridge(SchoolDataSource schoolDataSource) {
-		Iterator<GradingSchoolDataBridge> iterator = gradingBridges.iterator();
-		while (iterator.hasNext()) {
-			GradingSchoolDataBridge gradingSchoolDataBridge = iterator.next();
-			if (gradingSchoolDataBridge.getSchoolDataSource().equals(schoolDataSource.getIdentifier())) {
-				return gradingSchoolDataBridge;
-			}
-		}
-		
-		return null;
-	}
-	
-	private List<GradingSchoolDataBridge> getGradingBridges() {
-		List<GradingSchoolDataBridge> result = new ArrayList<>();
-		
-		Iterator<GradingSchoolDataBridge> iterator = gradingBridges.iterator();
-		while (iterator.hasNext()) {
-			result.add(iterator.next());
-		}
-		
-		return Collections.unmodifiableList(result);
-	}
+  private GradingSchoolDataBridge getGradingBridge(SchoolDataSource schoolDataSource) {
+    Iterator<GradingSchoolDataBridge> iterator = gradingBridges.iterator();
+    while (iterator.hasNext()) {
+      GradingSchoolDataBridge gradingSchoolDataBridge = iterator.next();
+      if (gradingSchoolDataBridge.getSchoolDataSource().equals(schoolDataSource.getIdentifier())) {
+        return gradingSchoolDataBridge;
+      }
+    }
+    
+    return null;
+  }
+  
+  private List<GradingSchoolDataBridge> getGradingBridges() {
+    List<GradingSchoolDataBridge> result = new ArrayList<>();
+    
+    Iterator<GradingSchoolDataBridge> iterator = gradingBridges.iterator();
+    while (iterator.hasNext()) {
+      result.add(iterator.next());
+    }
+    
+    return Collections.unmodifiableList(result);
+  }
 
 }

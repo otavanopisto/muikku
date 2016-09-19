@@ -27,9 +27,8 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestPermiss
 import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -119,13 +118,8 @@ public class AssessmentRequestRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).build();
       }
   
-      try {
-        List<WorkspaceAssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspace(workspaceEntity); 
-        return Response.ok(restModel(assessmentRequests)).build();
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "Couldn't list workspace assessment requests.", e);
-        return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-      }
+      List<WorkspaceAssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspace(workspaceEntity); 
+      return Response.ok(restModel(assessmentRequests)).build();
     }
   }
 

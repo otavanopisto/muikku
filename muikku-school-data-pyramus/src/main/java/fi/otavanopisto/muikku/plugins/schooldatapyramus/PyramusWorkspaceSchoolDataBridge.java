@@ -15,9 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
@@ -60,16 +59,16 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public Workspace createWorkspace(String name, String description, WorkspaceType type, String courseIdentifierIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public Workspace createWorkspace(String name, String description, WorkspaceType type, String courseIdentifierIdentifier) {
     if (StringUtils.isBlank(name)) {
-      throw new SchoolDataBridgeRequestException("Name is required");
+      throw new SchoolDataBridgeInternalException("Name is required");
     }
     
     if (name.length() > 255) {
-      throw new SchoolDataBridgeRequestException("Name maximum length is 255 characters");
+      throw new SchoolDataBridgeInternalException("Name maximum length is 255 characters");
     }
     
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
@@ -143,7 +142,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
   
   @Override
-  public Workspace findWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public Workspace findWorkspace(String identifier) {
     Long pyramusCourseId = identifierMapper.getPyramusCourseId(identifier);
     if (pyramusCourseId == null) {
       logger.severe(String.format("Workspace identifier %s is not valid", identifier));
@@ -154,10 +153,10 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public List<Workspace> listWorkspaces() throws UnexpectedSchoolDataBridgeException {
+  public List<Workspace> listWorkspaces() {
     Course[] courses = pyramusClient.get("/courses/courses/", Course[].class);
     if (courses == null) {
-      throw new UnexpectedSchoolDataBridgeException("Null response");
+      throw new SchoolDataBridgeInternalException("Null response");
     }
     
     List<Workspace> result = new ArrayList<Workspace>();
@@ -170,9 +169,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public List<Workspace> listWorkspacesByCourseIdentifier(String courseIdentifierIdentifier) throws UnexpectedSchoolDataBridgeException {
+  public List<Workspace> listWorkspacesByCourseIdentifier(String courseIdentifierIdentifier) {
     if (courseIdentifierIdentifier.indexOf("/") == -1)
-      throw new UnexpectedSchoolDataBridgeException("Invalid CourseIdentifierId");
+      throw new SchoolDataBridgeInternalException("Invalid CourseIdentifierId");
     
     String subjectId = courseIdentifierIdentifier.substring(0, courseIdentifierIdentifier.indexOf("/"));
     String courseNumber = courseIdentifierIdentifier.substring(courseIdentifierIdentifier.indexOf("/") + 1);
@@ -191,7 +190,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public Workspace updateWorkspace(Workspace workspace) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public Workspace updateWorkspace(Workspace workspace) {
     Long pyramusCourseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
     if (pyramusCourseId == null) {
       logger.severe(String.format("Workspace identifier %s is not valid", workspace.getIdentifier()));
@@ -224,34 +223,34 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public void removeWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public void removeWorkspace(String identifier) {
     if (!StringUtils.isNumeric(identifier)) {
-      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
     }
 
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public WorkspaceType findWorkspaceType(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public WorkspaceType findWorkspaceType(String identifier) {
     if (identifier == null) {
       return null;
     }
     
     if (!StringUtils.isNumeric(identifier)) {
-      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
     }
     
     return entityFactory.createEntity(pyramusClient.get("/courses/courseTypes/" + identifier, fi.otavanopisto.pyramus.rest.model.CourseType.class));
   }
   
   @Override
-  public List<WorkspaceType> listWorkspaceTypes() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<WorkspaceType> listWorkspaceTypes() {
     return entityFactory.createEntities(pyramusClient.get("/courses/courseTypes/", fi.otavanopisto.pyramus.rest.model.CourseType[].class));
   }
 
   @Override
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) {
     Long courseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
     Long studentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
     
@@ -261,9 +260,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
   
   @Override
-  public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier) throws UnexpectedSchoolDataBridgeException {
+  public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier) {
     if (!StringUtils.equals(workspaceIdentifier.getDataSource(), getSchoolDataSource())) {
-      throw new UnexpectedSchoolDataBridgeException("Invalid school data source");
+      throw new SchoolDataBridgeInternalException("Invalid school data source");
     }
     
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier.getIdentifier());
@@ -292,17 +291,17 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
   
   @Override
-  public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     
     CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
     if (staffMembers == null) {
-      throw new UnexpectedSchoolDataBridgeException("Null response");
+      throw new SchoolDataBridgeInternalException("Null response");
     }
     
     CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + courseId + "/students", CourseStudent[].class);
     if (courseStudents == null) {
-      throw new UnexpectedSchoolDataBridgeException("Null response");
+      throw new SchoolDataBridgeInternalException("Null response");
     }
     
     List<WorkspaceUser> result = entityFactory.createEntity(staffMembers);

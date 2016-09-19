@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
-import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 
 @ApplicationScoped
 public class PyramusSchoolDataStudyProgrammeMembersUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
@@ -26,7 +26,7 @@ public class PyramusSchoolDataStudyProgrammeMembersUpdateScheduler extends Pyram
     return "studyprogramme-members";
   }
   
-  public void synchronize() throws UnexpectedSchoolDataBridgeException {
+  public void synchronize() throws SchoolDataBridgeInternalException {
     int offset = getOffset();
     int count = 0;
     try {
