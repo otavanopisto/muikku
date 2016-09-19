@@ -6,7 +6,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 
 @ApplicationScoped
 public class PyramusSchoolDataStudyProgrammeUpdateScheduler implements PyramusUpdateScheduler {
@@ -18,7 +17,7 @@ public class PyramusSchoolDataStudyProgrammeUpdateScheduler implements PyramusUp
   private PyramusUpdater pyramusUpdater;
 
   @Override
-  public void synchronize() throws SchoolDataBridgeInternalException {
+  public void synchronize() {
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus studyprogrammes");
