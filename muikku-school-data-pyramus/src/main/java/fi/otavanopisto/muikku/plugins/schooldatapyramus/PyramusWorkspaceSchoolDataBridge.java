@@ -154,17 +154,13 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Override
   public List<Workspace> listWorkspaces() {
-    Course[] courses = pyramusClient.get("/courses/courses/", Course[].class);
-    if (courses == null) {
-      throw new SchoolDataBridgeInternalException("Null response");
-    }
-    
     List<Workspace> result = new ArrayList<Workspace>();
-    
-    for (Course course : courses) {
-      result.add(createWorkspaceEntity(course));
+    Course[] courses = pyramusClient.get("/courses/courses/", Course[].class);
+    if (courses != null) {
+      for (Course course : courses) {
+        result.add(createWorkspaceEntity(course));
+      }
     }
-    
     return result;
   }
 
@@ -295,14 +291,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     
     CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
-    if (staffMembers == null) {
-      throw new SchoolDataBridgeInternalException("Null response");
-    }
-    
     CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + courseId + "/students", CourseStudent[].class);
-    if (courseStudents == null) {
-      throw new SchoolDataBridgeInternalException("Null response");
-    }
     
     List<WorkspaceUser> result = entityFactory.createEntity(staffMembers);
     result.addAll(entityFactory.createEntity(courseStudents));

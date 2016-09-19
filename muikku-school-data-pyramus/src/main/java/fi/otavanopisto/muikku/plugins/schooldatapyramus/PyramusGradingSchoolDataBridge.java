@@ -66,10 +66,6 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 	@Override
 	public List<GradingScale> listGradingScales() {
 	  fi.otavanopisto.pyramus.rest.model.GradingScale[] gradingScales = pyramusClient.get("/common/gradingScales/?filterArchived=true", fi.otavanopisto.pyramus.rest.model.GradingScale[].class);
-    if (gradingScales == null) {
-      throw new SchoolDataBridgeInternalException("Null response");
-    }
-    
     return createGradingScaleEntities(gradingScales);
 	}
 
@@ -84,12 +80,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
 	@Override
 	public List<GradingScaleItem> listGradingScaleItems(String gradingScaleIdentifier) {
-
     Grade[] grades = pyramusClient.get("/common/gradingScales/" + gradingScaleIdentifier + "/grades", Grade[].class);
-    if (grades == null) {
-      throw new SchoolDataBridgeInternalException("Null response");
-    }
-    
     return createGradingScaleItemEntities(grades);
 	}
 
@@ -104,8 +95,10 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   private List<GradingScaleItem> createGradingScaleItemEntities(Grade[] grades) {
     List<GradingScaleItem> result = new ArrayList<>();
 
-    for (Grade g : grades)
-      result.add(createGradingScaleItemEntity(g));
+    if (grades != null) {
+      for (Grade g : grades)
+        result.add(createGradingScaleItemEntity(g));
+    }
       
     return result;
   }
@@ -121,8 +114,10 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   private List<GradingScale> createGradingScaleEntities(fi.otavanopisto.pyramus.rest.model.GradingScale[] gradingScales) {
     List<GradingScale> result = new ArrayList<>();
 
-    for (fi.otavanopisto.pyramus.rest.model.GradingScale g : gradingScales)
-      result.add(createGradingScaleEntity(g));
+    if (gradingScales != null) {
+      for (fi.otavanopisto.pyramus.rest.model.GradingScale g : gradingScales)
+        result.add(createGradingScaleEntity(g));
+    }
       
     return result;
   }

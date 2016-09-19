@@ -48,12 +48,7 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
 
   @Override
   public List<Subject> listSubjects() {
-    fi.otavanopisto.pyramus.rest.model.Subject[] subjects = pyramusClient.get("/common/subjects/",
-        fi.otavanopisto.pyramus.rest.model.Subject[].class);
-    if (subjects == null) {
-      throw new SchoolDataBridgeInternalException("Null response");
-    }
-
+    fi.otavanopisto.pyramus.rest.model.Subject[] subjects = pyramusClient.get("/common/subjects/", fi.otavanopisto.pyramus.rest.model.Subject[].class);
     return createSubjectEntities(subjects);
   }
 
@@ -78,34 +73,31 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
   @Override
   public List<CourseIdentifier> listCourseIdentifiers() {
     List<CourseIdentifier> result = new ArrayList<>();
-
-    fi.otavanopisto.pyramus.rest.model.Subject[] subjects = pyramusClient.get("/common/subjects/",
-        fi.otavanopisto.pyramus.rest.model.Subject[].class);
-    if (subjects == null) {
-      throw new SchoolDataBridgeInternalException("Null response");
-    }
-
-    // TODO Ugly workaround to Pyramus Course IDs
-
-    for (fi.otavanopisto.pyramus.rest.model.Subject subject : subjects) {
-      List<String> courseNumbers = new ArrayList<String>();
-      String identifier = subject.getId().toString();
-      Course[] courses = pyramusClient.get("/common/subjects/" + identifier + "/courses",
-          fi.otavanopisto.pyramus.rest.model.Course[].class);
-
-      for (Course course : courses) {
-        String courseNumber = course.getCourseNumber() != null ? course.getCourseNumber().toString() : "null";
-
-        if (!courseNumbers.contains(courseNumber))
-          courseNumbers.add(courseNumber);
-      }
-
-      for (String cn : courseNumbers) {
-        result.add(new PyramusCourseIdentifier(subject.getId().toString() + "/" + cn, subject.getCode(), subject
-            .getId().toString()));
+    fi.otavanopisto.pyramus.rest.model.Subject[] subjects = pyramusClient.get("/common/subjects/", fi.otavanopisto.pyramus.rest.model.Subject[].class);
+    if (subjects != null) {
+  
+      // TODO Ugly workaround to Pyramus Course IDs
+  
+      for (fi.otavanopisto.pyramus.rest.model.Subject subject : subjects) {
+        List<String> courseNumbers = new ArrayList<String>();
+        String identifier = subject.getId().toString();
+        Course[] courses = pyramusClient.get("/common/subjects/" + identifier + "/courses", fi.otavanopisto.pyramus.rest.model.Course[].class);
+  
+        if (courses != null) {
+          for (Course course : courses) {
+            String courseNumber = course.getCourseNumber() != null ? course.getCourseNumber().toString() : "null";
+    
+            if (!courseNumbers.contains(courseNumber))
+              courseNumbers.add(courseNumber);
+          }
+    
+          for (String cn : courseNumbers) {
+            result.add(new PyramusCourseIdentifier(subject.getId().toString() + "/" + cn, subject.getCode(), subject
+                .getId().toString()));
+          }
+        }
       }
     }
-
     return result;
   }
 
@@ -152,8 +144,10 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
   private List<Subject> createSubjectEntities(fi.otavanopisto.pyramus.rest.model.Subject[] subjects) {
     List<Subject> subs = new ArrayList<Subject>();
 
-    for (fi.otavanopisto.pyramus.rest.model.Subject s : subjects) {
-      subs.add(createSubjectEntity(s));
+    if (subjects != null) {
+      for (fi.otavanopisto.pyramus.rest.model.Subject s : subjects) {
+        subs.add(createSubjectEntity(s));
+      }
     }
 
     return subs;
