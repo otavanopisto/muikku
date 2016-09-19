@@ -145,37 +145,36 @@
 
       mApi().workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
         .on('$', $.proxy(function (workspaceMaterial, callback) {
-          // TODO: support for binary materials?
-          
-          mApi().materials.html.read(workspaceMaterial.materialId).callback($.proxy(function (htmlErr, htmlMaterial) {
-            if (htmlErr) {
-              $('.notification-queue').notificationQueue('notification', 'error', htmlErr);
-            } else {
-              mApi().workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterial.id, {
-                userEntityId: this.options.userEntityId
-              })
-              .callback($.proxy(function (evaluationsErr, evaluations) {
-                if (evaluationsErr) {
-                  $('.notification-queue').notificationQueue('notification', 'error', evaluationsErr);
-                } else { 
-                  var evaluation = evaluations && evaluations.length == 1 ? evaluations[0] : null;
-                  workspaceMaterial.material = htmlMaterial;
-                  if (evaluation) {
-                    var grade = this._grades[[evaluation.gradingScaleSchoolDataSource, evaluation.gradingScaleIdentifier, evaluation.gradeSchoolDataSource, evaluation.gradeIdentifier].join('-')];
-                    workspaceMaterial.verbalAssessment = evaluation.verbalAssessment;
-                    workspaceMaterial.grade = grade.grade;
-                    workspaceMaterial.gradingScale = grade.scale;
-                    workspaceMaterial.passing = grade.passing;
+          if (workspaceMaterial) {
+            mApi().materials.html.read(workspaceMaterial.materialId).callback($.proxy(function (htmlErr, htmlMaterial) {
+              if (htmlErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', htmlErr);
+              } else {
+                mApi().workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterial.id, {
+                  userEntityId: this.options.userEntityId
+                })
+                .callback($.proxy(function (evaluationsErr, evaluations) {
+                  if (evaluationsErr) {
+                    $('.notification-queue').notificationQueue('notification', 'error', evaluationsErr);
+                  } else { 
+                    var evaluation = evaluations && evaluations.length == 1 ? evaluations[0] : null;
+                    workspaceMaterial.material = htmlMaterial;
+                    if (evaluation) {
+                      var grade = this._grades[[evaluation.gradingScaleSchoolDataSource, evaluation.gradingScaleIdentifier, evaluation.gradeSchoolDataSource, evaluation.gradeIdentifier].join('-')];
+                      workspaceMaterial.verbalAssessment = evaluation.verbalAssessment;
+                      workspaceMaterial.grade = grade.grade;
+                      workspaceMaterial.gradingScale = grade.scale;
+                      workspaceMaterial.passing = grade.passing;
+                    }
+                    callback(); 
                   }
-                  this.element.removeClass('loading');
-                  callback(); 
-                }
-              }, this));
-            }
-          }, this));   
+                }, this));
+              }
+            }, this));
+          }
         }, this))
-      
         .callback($.proxy(function (err, assignments) {
+          this.element.removeClass('loading');
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
           } else {
