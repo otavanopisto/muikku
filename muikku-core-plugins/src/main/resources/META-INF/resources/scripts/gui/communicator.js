@@ -437,32 +437,32 @@
   });
   
   $.widget("custom.messageTools", {
-	 options:{
-		  toolset : 'thread'
-	 },
+    options : {
+      toolset : 'thread'
+    },
 
-	 _create : function(){
-		   switch(this.options.toolset) {
-		    case 'message':
-		      var toolTemplate = 'communicator/communicator_tools_message.dust';
-		      this.loadTools(toolTemplate);
-		      break;
-		    default:
-          var toolTemplate = 'communicator/communicator_tools_thread.dust';		      
+    _create : function(){
+      switch (this.options.toolset) {
+        case 'message':
+          var toolTemplate = 'communicator/communicator_tools_message.dust';
           this.loadTools(toolTemplate);
-		   }
-	 },
+        break;
+        
+        default:
+          var toolTemplate = 'communicator/communicator_tools_thread.dust';
+          this.loadTools(toolTemplate);
+      }
+    },
 	 
-   loadTools: function(toolSet) {
-     renderDustTemplate(toolSet, {}, $.proxy(function (text) {
-       this.element.html(text);
-     }, this));
-   }
+    loadTools: function(toolSet) {
+      renderDustTemplate(toolSet, {}, $.proxy(function (text) {
+        this.element.html(text);
+      }, this));
+    }
   }); 
   
 
   $.widget("custom.communicator", {
-    
     options: {
       defaultFolderId: 'inbox'
     },
@@ -581,7 +581,7 @@
       
       mApi().communicator.userLabels.create(label).callback($.proxy(function (err, label) {
         if (err) {
-          // TODO
+          $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           this.addLabelControl(label, $.proxy(function() {
             this._sortLabels();
@@ -600,7 +600,7 @@
       
       mApi().communicator.userLabels.update(id, label).callback($.proxy(function (err, label) {
         if (err) {
-          // TODO
+          $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           var newColor = this.colorIntToHex(label.color);
           this.element.find('.cm-categories').find('.mf-label[data-label-id="' + label.id + '"] span').text(label.name);
@@ -613,7 +613,7 @@
     deleteLabel: function (id) {
       mApi().communicator.userLabels.del(id).callback($.proxy(function (err, label) {
         if (err) {
-          // TODO
+          $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           this.element.find('.cm-categories').find('.mf-label[data-label-id="' + id + '"]').remove();
         }
@@ -664,45 +664,48 @@
       var labelId = folderController._labelId;
   
       mApi().communicator.userLabels.read(labelId).callback($.proxy(function (err, results) {
-        var label = results;
-        label.colorHex =  communicator.colorIntToHex(label.color);
-        renderDustTemplate('communicator/communicator_label_edit.dust', label, $.proxy(function(text) {
-          this._dialog = $(text);      
-          $(this._dialog).dialog(
-            {
-              'title' : getLocaleText("plugin.communicator.label.edit.caption"),              
-              buttons : [ {
-
-                 'text' :  getLocaleText("plugin.communicator.label.edit.button.send"),
-                 'class' : 'save-button',
-                 'click' : function() {
-                     
-                     var id = $(this).find("input[type='text']").attr('data-id');
-                     var name = $(this).find("input[type='text']").val();
-                     var color = $(this).find("input[type='color']").val();
-                     var communicator = $(".communicator").communicator("instance");            
-                     communicator.updateLabel(id, name, color);
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var label = results;
+          label.colorHex =  communicator.colorIntToHex(label.color);
+          renderDustTemplate('communicator/communicator_label_edit.dust', label, $.proxy(function(text) {
+            this._dialog = $(text);      
+            $(this._dialog).dialog(
+              {
+                'title' : getLocaleText("plugin.communicator.label.edit.caption"),              
+                buttons : [ {
+  
+                   'text' :  getLocaleText("plugin.communicator.label.edit.button.send"),
+                   'class' : 'save-button',
+                   'click' : function() {
+                       
+                       var id = $(this).find("input[type='text']").attr('data-id');
+                       var name = $(this).find("input[type='text']").val();
+                       var color = $(this).find("input[type='color']").val();
+                       var communicator = $(".communicator").communicator("instance");            
+                       communicator.updateLabel(id, name, color);
+                       $(this).dialog().remove();
+                       menus.hide();
+                       
+                    // TODO: REFRESH LABELS
+                   }
+                
+                 }, 
+               
+                 {
+                   'text' :  getLocaleText("plugin.communicator.label.edit.button.cancel"),
+                   'class' : 'cancel-button',
+                   'click' : function(){               
                      $(this).dialog().remove();
                      menus.hide();
-                     
-                  // TODO: REFRESH LABELS
                  }
-              
-               }, 
-             
-               {
-                 'text' :  getLocaleText("plugin.communicator.label.edit.button.cancel"),
-                 'class' : 'cancel-button',
-                 'click' : function(){               
-                   $(this).dialog().remove();
-                   menus.hide();
                }
-             }           
-             ]
-            } 
-          );
-        
-        }));
+               ]
+              } 
+            );
+          }));
+        }
       }, this));
  
     },

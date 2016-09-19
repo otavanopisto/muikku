@@ -79,7 +79,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
 
     CommunicatorLabel label = communicatorController.findUserLabelById(newLabel.getLabelId());
     
-    if (canAccessLabel(userEntity, label)) {
+    if ((label != null) && canAccessLabel(userEntity, label)) {
       CommunicatorMessageIdLabel userLabel = communicatorController.findMessageIdLabel(userEntity, messageId, label);
       
       if (userLabel == null) {
@@ -103,12 +103,10 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
       @PathParam ("LABELID") Long labelId
    ) throws AuthorizationException {
-//    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     CommunicatorMessageIdLabel label = communicatorController.findMessageIdLabelById(labelId);
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
     if (!canAccessLabel(userEntity, label.getLabel())) {
-//    if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, userLabel)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -123,12 +121,10 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
   public Response deleteUserLabel(
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
       @PathParam ("LABELID") Long userLabelId) throws AuthorizationException {
-//    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     CommunicatorMessageIdLabel label = communicatorController.findMessageIdLabelById(userLabelId);
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
     if (!canAccessLabel(userEntity, label.getLabel())) {
-//    if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, userLabel)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -137,30 +133,6 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
-//  @POST
-//  @Path ("/userLabels/{USERLABELID}")
-//  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-//  public Response editUserLabel(
-//      @PathParam ("USERLABELID") Long userLabelId,
-//      CommunicatorUserLabelRESTModel updatedUserLabel
-//   ) throws AuthorizationException {
-//    if (!updatedUserLabel.getId().equals(userLabelId)) {
-//      return Response.status(Response.Status.BAD_REQUEST).entity("Id is immutable").build();
-//    }
-//
-//    CommunicatorUserLabel userLabel = communicatorController.findUserLabelById(userLabelId);
-//
-//    if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, userLabel)) {
-//      return Response.status(Status.FORBIDDEN).build();
-//    }
-//    
-//    CommunicatorUserLabel editedUserLabel = communicatorController.updateUserLabel(userLabel, updatedUserLabel.getName(), updatedUserLabel.getColor());
-//
-//    return Response.ok(
-//      toRESTModel(editedUserLabel)
-//    ).build();
-//  }
-  
   @GET
   @Path ("/userLabels")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -203,7 +175,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     CommunicatorUserLabel userLabel = communicatorController.findUserLabelById(userLabelId);
     
-    if (canAccessLabel(userEntity, userLabel)) {
+    if ((userLabel != null) && canAccessLabel(userEntity, userLabel)) {
       return Response.ok(
         toRESTModel(userLabel)
       ).build();
@@ -221,7 +193,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     CommunicatorUserLabel userLabel = communicatorController.findUserLabelById(userLabelId);
 
-    if (canAccessLabel(userEntity, userLabel)) {
+    if ((userLabel != null) && canAccessLabel(userEntity, userLabel)) {
       communicatorController.delete(userLabel);
     
       return Response.noContent().build();
@@ -244,7 +216,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     CommunicatorUserLabel userLabel = communicatorController.findUserLabelById(userLabelId);
 
-    if (canAccessLabel(userEntity, userLabel)) {
+    if ((userLabel != null) && canAccessLabel(userEntity, userLabel)) {
       CommunicatorUserLabel editedUserLabel = communicatorController.updateUserLabel(userLabel, updatedUserLabel.getName(), updatedUserLabel.getColor());
 
       return Response.ok(
