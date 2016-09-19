@@ -86,8 +86,7 @@ public class WorkspacePermissionsManagementBackingBean extends AbstractWorkspace
     
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    workspaceName = workspace.getName();
+    workspaceName = workspaceBackingBean.getWorkspaceName();
     
     userGroupBeans = new ArrayList<WorkspacePermissionsManagementBackingBean.UserGroupBean>();
 

@@ -71,6 +71,10 @@ public class WorkspaceEntityController {
     return workspaceEntityDAO.findByUrlName(urlName);
   }
 
+  public WorkspaceEntity findWorkspaceByUrlNameAndArchived(String urlName, Boolean archived) {
+    return workspaceEntityDAO.findByUrlNameAndArchived(urlName, archived);
+  }
+
   public List<WorkspaceEntity> listWorkspaceEntities() {
     return workspaceEntityDAO.listAll();
   }

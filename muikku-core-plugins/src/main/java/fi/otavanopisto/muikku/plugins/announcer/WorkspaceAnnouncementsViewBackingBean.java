@@ -91,23 +91,10 @@ public class WorkspaceAnnouncementsViewBackingBean {
       }
     }
 
-    workspaceBackingBean.setWorkspaceUrlName(urlName);
-    
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      if (workspace == null) {
-        logger.log(Level.SEVERE, String.format("Could not find workspace for workspace entity (%d)", workspaceEntity.getId()));
-        return NavigationRules.NOT_FOUND;
-      }
-      
-      workspaceName = workspace.getName();
-      workspaceNameExtension = workspace.getNameExtension();
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-      
     workspaceEntityId = workspaceEntity.getId();
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
+    workspaceName = workspaceBackingBean.getWorkspaceName();
+    workspaceNameExtension = workspaceBackingBean.getWorkspaceNameExtension();
 
     if (announcementId != null) {
       currentAnnouncement = announcementController.findById(announcementId);
