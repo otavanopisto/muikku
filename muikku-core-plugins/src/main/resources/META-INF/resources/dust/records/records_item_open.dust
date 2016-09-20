@@ -47,14 +47,16 @@
       </div>
     </div>
     {?workspaceJournalEntries}
-      <div class="mf-item tr-tasklist flex-row">
-        <div class="topic lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><h3>Lokalisoi oppimispäiväkirjamerkinnät</h3></div>
+      <div class="mf-item tr-studydiaryentries flex-row">
+        <div class="topic lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><h3>{#localize key="plugin.records.studydiary.topic" /}</h3></div>
         <div class="content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
           <div class="flex-row">
             {#workspaceJournalEntries}
-              <p>{title}</p>
-              <p>{content}</p>
-              <p>{created}</p>
+              <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                <h3>{title}</h3>
+                <div class="tr-studydiary-entry-date">{created|formatDate} {created|formatTime}</div>
+                <div class="tr-studydiary-entry-content">{content|s}</div>
+              </div>
             {/workspaceJournalEntries}
           </div>
         </div>
