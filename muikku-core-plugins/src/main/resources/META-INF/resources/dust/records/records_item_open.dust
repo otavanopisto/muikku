@@ -45,7 +45,21 @@
           {/assignments}
           </div>
       </div>
-    </div>  
+    </div>
+    {?workspaceJournalEntries}
+      <div class="mf-item tr-tasklist flex-row">
+        <div class="topic lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><h3>Lokalisoi oppimispäiväkirjamerkinnät</h3></div>
+        <div class="content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+          <div class="flex-row">
+            {#workspaceJournalEntries}
+              <p>{title}</p>
+              <p>{content}</p>
+              <p>{created}</p>
+            {/workspaceJournalEntries}
+          </div>
+        </div>
+      </div>  
+    {/workspaceJournalEntries}
   </div>
 </div>  
 {:else}

@@ -41,6 +41,7 @@ import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -2097,55 +2098,66 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{WORKSPACEID}/journal")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listJournalEntries(
       @PathParam("WORKSPACEID") Long workspaceEntityId,
+      @QueryParam("userEntityId") Long userEntityId,
       @QueryParam("workspaceStudentId") String workspaceStudentId
   ) {
+    
+    // Workspace
+    
     List<WorkspaceJournalEntry> entries = new ArrayList<>();
     List<WorkspaceJournalEntryRESTModel> result = new ArrayList<>();
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+    
     UserEntity userEntity = sessionController.getLoggedUserEntity();
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
-      if (workspaceStudentId == null) {
-        entries = workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
-      } else {
-        return Response.status(Status.UNAUTHORIZED).entity("Only teachers may look at others' journal entries").build();
+    boolean canListAllEntries = sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
+    if (workspaceStudentId == null && userEntityId == null && canListAllEntries) {
+      entries = workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
+    }
+    else {
+      WorkspaceUserEntity workspaceUserEntity = null;
+      boolean allowListing = true;
+      if (userEntityId != null) {
+        // List by user entity; student may list their own, those with LIST_ALL_JOURNAL_ENTRIES anyone's  
+        if (!userEntityId.equals(userEntity.getId())) {
+          allowListing = canListAllEntries;
+        }
+        if (allowListing) {
+          workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntityIncludeArchived(workspaceEntity, userEntity); 
+          if (workspaceUserEntity == null) {
+            return Response.status(Status.NOT_FOUND).build();
+          }
+        }
+        else {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
-    } else {
-      if (workspaceStudentId == null) {
-        entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
-      } else {
+      else if (workspaceStudentId != null) {
+        // List by workspace student (school data)
         SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceStudentId);
         if (workspaceUserIdentifier == null) {
           return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
         }
-
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+        workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
         if (workspaceUserEntity == null) {
-          return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
+          return Response.status(Status.NOT_FOUND).build();
         }
-        if (workspaceUserEntity.getWorkspaceEntity().getId() != workspaceEntity.getId()) {
-          return Response.status(Status.BAD_REQUEST).entity("WorkspaceStudent points to wrong workspace").build();
+        if (!canListAllEntries) {
+          UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier(); 
+          UserEntity userEntityFromWorkspaceUser = userEntityController.findUserEntityByDataSourceAndIdentifier(
+              userSchoolDataIdentifier.getDataSource(),
+              userSchoolDataIdentifier.getIdentifier());
+          if (userEntityFromWorkspaceUser != null && !userEntity.getId().equals(userEntityFromWorkspaceUser.getId())) {
+            return Response.status(Status.FORBIDDEN).build();
+          }
         }
-
-        WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
-        SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
-        userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
-
-        if (userEntity == null) {
-          return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
-        }
-        
-        entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
       }
+      entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
     }
     
     for (WorkspaceJournalEntry entry : entries) {
