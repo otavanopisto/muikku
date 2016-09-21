@@ -178,20 +178,30 @@
         .callback($.proxy(function (err, assignments) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
-          } else {
-            renderDustTemplate('/records/records_item_open.dust', { 
-              assignments: assignments,
-              workspaceName : workspaceEntityName,
-              workspaceDescription : workspaceEntityDescription,
-              workspaceGrade: grade, 
-              workspaceGradingScale: gradingScale, 
-              passed: passed,
-              workspaceEvaluated: evaluated, 
-              workspaceVerbalAssessment: verbalAssessment
-            }, $.proxy(function(text) {
-              this._clear();
-              this.element.append(text);
-            }, this));
+          }
+          else {
+            mApi().workspace.workspaces.journal.read(workspaceEntityId, {userEntityId: this.options.userEntityId})
+              .callback($.proxy(function (err, journalEntries) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                }
+                else {
+                  renderDustTemplate('/records/records_item_open.dust', { 
+                    assignments: assignments,
+                    workspaceName : workspaceEntityName,
+                    workspaceDescription : workspaceEntityDescription,
+                    workspaceGrade: grade, 
+                    workspaceGradingScale: gradingScale, 
+                    passed: passed,
+                    workspaceEvaluated: evaluated, 
+                    workspaceVerbalAssessment: verbalAssessment,
+                    workspaceJournalEntries: journalEntries
+                  }, $.proxy(function(text) {
+                    this._clear();
+                    this.element.append(text);
+                  }, this));
+                }
+              }, this));
           }
         }, this));
     },
