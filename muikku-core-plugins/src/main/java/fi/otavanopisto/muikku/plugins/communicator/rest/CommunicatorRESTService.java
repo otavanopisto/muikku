@@ -357,6 +357,9 @@ public class CommunicatorRESTService extends PluginRESTService {
     if (StringUtils.isBlank(newMessage.getCategoryName())) {
       return Response.status(Status.BAD_REQUEST).entity("CategoryName missing").build();
     }
+
+    // Clean duplicates from recipient list
+    recipients = communicatorController.cleanDuplicateRecipients(recipients);
     
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
@@ -532,6 +535,9 @@ public class CommunicatorRESTService extends PluginRESTService {
       } else
         return Response.status(Status.BAD_REQUEST).build();
     }      
+    
+    // Clean duplicates from recipient list
+    recipients = communicatorController.cleanDuplicateRecipients(recipients);
     
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
