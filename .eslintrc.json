@@ -5,5 +5,9 @@
     "browser": true,
     "jquery": true
   },
-  "extends": "eslint:recommended"
+  "extends": "eslint:recommended",
+  "globals": {
+    "mApi": false,
+    "renderDustTemplate": false
+  }
 }
