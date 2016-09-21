@@ -2117,18 +2117,13 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     boolean canListAllEntries = sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
     if (workspaceStudentId == null && userEntityId == null && canListAllEntries) {
-      entries = workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
+      entries = workspaceJournalController.listEntries(workspaceEntity);
     }
     else {
-      WorkspaceUserEntity workspaceUserEntity = null;
-      boolean allowListing = true;
       if (userEntityId != null) {
         // List by user entity; student may list their own, those with LIST_ALL_JOURNAL_ENTRIES anyone's  
-        if (!userEntityId.equals(userEntity.getId())) {
-          allowListing = canListAllEntries;
-        }
-        if (allowListing) {
-          workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntityIncludeArchived(workspaceEntity, userEntity); 
+        if (canListAllEntries || userEntityId.equals(userEntity.getId())) {
+          WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntityIncludeArchived(workspaceEntity, userEntity); 
           if (workspaceUserEntity == null) {
             return Response.status(Status.NOT_FOUND).build();
           }
@@ -2143,7 +2138,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (workspaceUserIdentifier == null) {
           return Response.status(Status.BAD_REQUEST).entity("Invalid workspaceStudentId").build();
         }
-        workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
         if (workspaceUserEntity == null) {
           return Response.status(Status.NOT_FOUND).build();
         }
@@ -2152,7 +2147,10 @@ public class WorkspaceRESTService extends PluginRESTService {
           UserEntity userEntityFromWorkspaceUser = userEntityController.findUserEntityByDataSourceAndIdentifier(
               userSchoolDataIdentifier.getDataSource(),
               userSchoolDataIdentifier.getIdentifier());
-          if (userEntityFromWorkspaceUser != null && !userEntity.getId().equals(userEntityFromWorkspaceUser.getId())) {
+          if (userEntityFromWorkspaceUser == null) {
+            return Response.status(Status.NOT_FOUND).build();
+          }
+          if (!userEntity.getId().equals(userEntityFromWorkspaceUser.getId())) {
             return Response.status(Status.FORBIDDEN).build();
           }
         }
