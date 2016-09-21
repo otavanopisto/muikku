@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +37,7 @@ public class WebSocketMessenger {
   
   @PostConstruct
   public void init() {
-    sessions = new HashMap<>();
+    sessions = new ConcurrentHashMap<>();
   }
   
   public void sendMessage(String eventType, Object data, List<UserEntity> recipients) {
@@ -50,7 +51,7 @@ public class WebSocketMessenger {
       ObjectMapper mapper = new ObjectMapper();
       String strMessage = mapper.writeValueAsString(message);
       
-      for (Session session : new ArrayList<>(sessions.values())) {
+      for (Session session : sessions.values()) {
         if (session.isOpen()) {
           Long userId = (Long) session.getUserProperties().get("UserId");
   
@@ -105,7 +106,7 @@ public class WebSocketMessenger {
   }
 
   public void closeSession(Session session, String ticket) {
-    sessions.remove(session);
+    sessions.remove(ticket);
     webSocketTicketController.removeTicket(ticket);
   }
 
