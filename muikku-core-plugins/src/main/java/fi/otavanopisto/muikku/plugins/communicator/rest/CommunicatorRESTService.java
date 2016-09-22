@@ -359,7 +359,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     }
 
     // Clean duplicates from recipient list
-    recipients = communicatorController.cleanDuplicateRecipients(recipients);
+    communicatorController.cleanDuplicateRecipients(recipients);
     
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
@@ -537,7 +537,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     }      
     
     // Clean duplicates from recipient list
-    recipients = communicatorController.cleanDuplicateRecipients(recipients);
+    communicatorController.cleanDuplicateRecipients(recipients);
     
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());

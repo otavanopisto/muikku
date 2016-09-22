@@ -344,7 +344,7 @@ public class CommunicatorController {
    * @param userEntities
    * @return
    */
-  public List<UserEntity> cleanDuplicateRecipients(List<UserEntity> userEntities) {
+  public void cleanDuplicateRecipients(List<UserEntity> userEntities) {
     Set<Long> userIds = new HashSet<Long>(userEntities.size());
     
     for (int i = userEntities.size() - 1; i >= 0; i--) {
@@ -358,7 +358,5 @@ public class CommunicatorController {
       } else
         userEntities.remove(i);
     }
-    
-    return userEntities;
   }
 }
