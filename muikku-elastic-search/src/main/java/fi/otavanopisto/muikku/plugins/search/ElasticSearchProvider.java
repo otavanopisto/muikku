@@ -362,26 +362,24 @@ public class ElasticSearchProvider implements SearchProvider {
       }
       
       if (accesses != null) {
-        
+        BoolQueryBuilder accessQuery = boolQuery();
         for (WorkspaceAccess access : accesses) {
-          BoolQueryBuilder accessQuery = boolQuery();
           switch (access) {
             case LOGGED_IN:  
             case ANYONE:
-              accessQuery.must(termQuery("access", access));
+              accessQuery.should(termQuery("access", access));
             break;
             case MEMBERS_ONLY:
               IdsQueryBuilder idsQuery = idsQuery("Workspace");
               for (SchoolDataIdentifier userWorkspace : getUserWorkspaces(accessUser)) {
                 idsQuery.addIds(String.format("%s/%s", userWorkspace.getIdentifier(), userWorkspace.getDataSource()));
               }
-              accessQuery.must(idsQuery);
-              accessQuery.must(termQuery("access", access));
+              accessQuery.should(idsQuery);
+              accessQuery.should(termQuery("access", access));
             break;
           }
-          
-          query.should(accessQuery);
         }
+        query.must(accessQuery);
       }
       
       if (StringUtils.isNotBlank(schoolDataSource)) {
