@@ -1003,43 +1003,13 @@
       }, this);
     },
 
-    _loadRecipient: function (messageId, recipientId) {
-      return $.proxy(function (callback) {
-        mApi().communicator.communicatormessages.recipients.info
-          .read(messageId, recipientId).on('$', $.proxy(function(reply, replyCallback) {
-          console.log(reply);
-//          this._addRecipient('USER');
-          
-        }));    
-      }, this);
-    },
-    
-    
-//    _createRecipientLoad2: function (messageId) {
-//      return $.proxy(function (callback) {
-//        mApi().communicator.communicatormessages.read(messageId)
-//          .on('$', function(reply, replyCallback) {
-//            mApi().communicator.communicatormessages.sender
-//              .read(messageId)
-//              .callback(function(err, user) {
-//                reply.senderFullName = user.firstName + ' ' + user.lastName;
-//                reply.senderHasPicture = user.hasImage;                
-//                replyCallback();
-//
-//              });
-//          })
-//          .callback(callback);
-//      }, this);
-//    },    
-    
-    
     _load: function (callback) {
       var replyMessageId = this.options.replyMessageId;
       
       if(replyMessageId){
         mApi().communicator.communicatormessages.read(replyMessageId).callback($.proxy(function (err, message) {
           if (err) {
-            // tidi
+            $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
             var senderCall = function (senderCallback) {
               mApi().communicator.communicatormessages.sender
@@ -1094,41 +1064,6 @@
         
       }
       
-//      var taskIds = [];
-//      
-//      
-//      if (this.options.replyMessageId) {
-//        taskIds.push('replyMessage');
-//        tasks.push(this._createRecipientLoad(this.options.replyMessageId));
-//      } 
-      
-//      async.parallel(tasks, $.proxy(function (err, results) {
-//        var data = {};
-//          
-//        
-//        $.each(taskIds, function (taskIndex, taskId) {
-//          data[taskId] = results[taskIndex];
-//        });
-//        
-//        renderDustTemplate('/communicator/communicator_create_message.dust', data, $.proxy(function (text) {
-//          this.element.html(text);
-//          if (data.replyMessage) {
-//            this._addRecipient('USER', data.replyMessage.senderId, data.replyMessage.senderFullName);
-//  
-//              mApi().communicator.communicatormessages.recipients.info
-//             .read(data.replyMessage.id, data.replyMessage.recipientIds).on('$', $.proxy(function(reply, replyCallback){
-//               console.log(reply);
-////               this._addRecipient('USER');
-//               
-//             }));    
-//            
-//          }
-//
-//          if (callback) {
-//            callback();
-//          }
-//        }, this));
-//      }, this));
     },
     
     _addRecipient: function (type, id, label) {
