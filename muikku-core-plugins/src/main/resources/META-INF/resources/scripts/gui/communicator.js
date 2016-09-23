@@ -35,19 +35,33 @@
         async.parallel(recipientCalls, recipientsCallback);
       }
       
-      async.parallel([recipientBatchCall, countCall, senderCall], function (err, results) {
+      var labelsCall = function (labelsCallback) {
+        mApi().communicator.messages.labels
+          .read(item.communicatorMessageId)
+          .callback(labelsCallback);
+      }
+      
+      async.parallel([recipientBatchCall, countCall, senderCall, labelsCall], function (err, results) {
         if (err) {
           itemCallback(err);
         } else {
           var recipients = results[0];
           var count = results[1];
           var sender = results[2];
+          var labels = results[3];
+
+          var communicator = $(".communicator").communicator("instance");
+          
+          for (var i = 0, l = labels.length; i < l; i++) {
+            labels[i]["colorHex"] = communicator.colorIntToHex(labels[i].labelColor);
+          }
           
           itemCallback(null, {
             recipientCount: recipientCount,
             recipients: recipients,
             sender: sender,
-            count: count
+            count: count,
+            labels: labels
           });
         }
       });
@@ -67,8 +81,9 @@
     
   });
   
-  var CommunicatorInboxFolderController = function (options) {
+  var CommunicatorInboxFolderController = function (labelId, options) {
     this._super = CommunicatorFolderController.prototype;
+    this._labelId = labelId;
     CommunicatorFolderController.call(this, arguments); 
   };
   
@@ -87,11 +102,16 @@
     },
     
     loadItems: function (firstResult, maxResults, mainCallback) {
+      var params = {
+        firstResult: firstResult,
+        maxResults: maxResults
+      };
+      
+      if (this._labelId)
+        params.labelId = this._labelId;
+        
       mApi().communicator.items
-        .read({
-          firstResult: firstResult,
-          maxResults: maxResults
-        })
+        .read(params)
         .on('$', $.proxy(function (item, itemCallback) {
           this.loadItemDetails(item, function (err, details) {
             if (err) {
@@ -101,6 +121,7 @@
               item.recipientCount = details.recipientCount;
               item.recipients = details.recipients;
               item.messageCount = details.count;
+              item.labels = details.labels;
               itemCallback();
             }
           });
@@ -144,6 +165,7 @@
               item.recipientCount = details.recipientCount;
               item.recipients = details.recipients;
               item.messageCount = details.count;
+              item.labels = details.labels;
               itemCallback();
             }
           });
@@ -156,10 +178,12 @@
     _create : function() {
       this._firstItem = 0;
       this._items = [];
-      this._folderId = this.options.folderId;
-      
+      this._folderId = this.options.folderId;      
+      $('.mf-controls-container').on('click', '.mf-label-link', $.proxy(this._onAddLabelToMessagesClick, this));
+      $('.mf-controls-container').on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
+      $('.mf-controls-container').on('click', '.cm-add-label-menu', $.proxy(this._onAddLabelMenuClick, this));         
+      $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onCreateLabelClick, this));   
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
-      this.element.on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
       $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
     },
@@ -237,12 +261,12 @@
           }, this));
         }
       }, this));
-    },
-    
+    },  
     _onNewMessageReceived: function () {
       if (this._folderId == "inbox") {
         this._reload();
       }
+      
     },
     
     _onMoreClick: function (event) {
@@ -263,53 +287,243 @@
       
       this.element.closest('.communicator') 
         .communicator('loadThread', threadId);
-    }
+    },
+
+    _onAddLabelMenuClick: function (event) {
+      var labelObjs = $('.cm-categories').find('.mf-label');      
+      var labels = [];
+      var messagesLabels = [];
+      var labelOccurrances = {};
+      var checkedMessages = $('.cm-messages-pages').find('input[name="messageSelect"]:checked');
+      var checkedMessagesLabels = checkedMessages.closest('.cm-message-header').find('.mf-item-label');
+
+      
+      $.each(checkedMessagesLabels, function(key, label) {
+        var labelId = $(label).attr('data-label-id')
+        if( messagesLabels.indexOf(labelId) == -1){
+          messagesLabels.push(labelId);
+          labelOccurrances[labelId] = 1; 
+        }else{  
+          labelOccurrances[labelId]++;
+        }
+      });
+      
+      $.each(labelObjs, function(key, value){
+        var label = {};
+        var lName = $(value).attr('data-folder-name');
+        var lStyle = $(value).find('.cm-label-name').attr('style');
+        var lId = $(value).attr('data-label-id');
+        var lSelected = messagesLabels.indexOf(lId) == -1 ? false : true; 
+        var lAllSelected =  labelOccurrances[lId] == checkedMessages.length ? true : false;
+        labels.push({name: lName, id: lId, selected: lSelected, inAll: lAllSelected, style: lStyle });
+        
+      });
+
+      renderDustTemplate('communicator/communicator_label_link.dust', labels, $.proxy(function (text) {
+        $(".mf-tool-label-container").html(text);
+        
+        
+        
+        $('#communicatorNewlabelField').on('input', $.proxy(this._onLabelFilterInputChange, this));
+      }, this));
+      
+      $(event.target).closest('.mf-tool-container').find('.cm-label-menu').toggle();
+    },
+    
+    _onLabelFilterInputChange: function (event) {
+      if (this._typingTimer) {
+        clearTimeout(this._typingTimer);
+      }
+      
+      this._typingTimer = setTimeout($.proxy(function() {
+        this._onLabelFilterInputChangeTimeout(event);
+      }, this), 500);
+    },
+    
+    _onLabelFilterInputChangeTimeout: function (event) {
+      var filter = $(event.target).val().toLowerCase();
+      $('.mf-label-link').show();
+    
+      if (filter) {
+        $('.mf-label-link span').each(function (idx, element) {
+          var spanner = $(element);
+          if (spanner.text().toLowerCase().indexOf(filter) == -1) {
+            spanner.closest('.mf-label-link').hide();
+          }
+        });
+      }
+    },
+
+    _onAddLabelToMessagesClick: function (event) {  
+      var clickedLabel = $(event.target).closest('.mf-label-link');
+      var lId = $(clickedLabel).attr('data-label-id');
+      var isSelectedInAll = $(event.target).closest('.mf-label-link').hasClass('selected-in-all') ? true : false;
+      var addLabelChanges = [];
+      var removeLabelChanges = [];
+      var checkedMessageThreads = $('.cm-messages-pages').find('input[name="messageSelect"]:checked');
+       
+      $.each(checkedMessageThreads, function(key, value) {
+        var inputElement = $(value);
+        var labelElement = inputElement.closest('.cm-message').find('.cm-message-label[data-label-id=' + lId + ']');
+
+        var messageId = inputElement.attr('value');
+        var messageLabelId = labelElement.attr('data-message-label-id');        
+        
+        if (labelElement.length) {
+          if(isSelectedInAll == true){
+            mApi().communicator.messages.labels.del(messageId, messageLabelId).callback($.proxy(function (err, results) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.remove"));
+              } else {
+                var communicator = $(".communicator").communicator("instance");
+                var messageThreadElement = $('.cm-message[data-thread-id="' + messageId + '"]');
+                var labelElement = messageThreadElement.find('.cm-message-label[data-label-id=' + lId + ']');
+                              
+                labelElement.remove();
+              }
+            }, this));
+          }
+        } else {
+          mApi().communicator.messages.labels.create(messageId, { labelId: lId }).callback($.proxy(function (err, label) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.add"));
+            } else {
+              var communicator = $(".communicator").communicator("instance");
+              var messageThreadElement = $('.cm-message[data-thread-id="' + label.messageThreadId + '"]');
+              
+              label["colorHex"] = communicator.colorIntToHex(label.labelColor);
+              
+              renderDustTemplate('communicator/communicator_item_label.dust', label, $.proxy(function (text) {
+                messageThreadElement.find('.cm-message-header-content-secondary').append($(text));
+              }, this));
+            }
+          }, this));
+        }
+      });
+      
+      if(isSelectedInAll === true){
+        $(clickedLabel).removeClass('selected-in-all');
+      }else{
+        $(clickedLabel).removeClass('selected').addClass('selected-in-all');       
+      }
+
+      
+    },
+    
+    _onCreateLabelClick: function (event) {
+      var labelObjs = $('.cm-categories').find('.mf-label');      
+      
+      var labels = [];
+      
+      $.each(labelObjs, function(key, value){
+        var name= $(value).attr('data-folder-name');
+        labels.push(name);
+      });      
+      var communicator = $('.communicator').communicator("instance");
+      var name =  $('#communicatorNewlabelField').val();
+      var color = Math.round(Math.random() * 16777215);
+      var colorHex = communicator.colorIntToHex(color);
+      if (name != '') {
+        if (labels.indexOf(name) == -1) {
+          communicator.createLabel(name, colorHex);
+        } else {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.alreadyexists"));
+        }
+      } else {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.empty"));
+      }
+    }    
     
   });
+  
+  $.widget("custom.messageTools", {
+    options : {
+      toolset : 'thread'
+    },
+
+    _create : function(){
+      switch (this.options.toolset) {
+        case 'message':
+          var toolTemplate = 'communicator/communicator_tools_message.dust';
+          this.loadTools(toolTemplate);
+        break;
+        
+        default:
+          var toolTemplate = 'communicator/communicator_tools_thread.dust';
+          this.loadTools(toolTemplate);
+      }
+    },
+	 
+    loadTools: function(toolSet) {
+      renderDustTemplate(toolSet, {}, $.proxy(function (text) {
+        this.element.html(text);
+      }, this));
+    }
+  }); 
+  
 
   $.widget("custom.communicator", {
-    
     options: {
       defaultFolderId: 'inbox'
     },
-    
     _create : function() {
-      this._folderControllers = {
-        'inbox': new CommunicatorInboxFolderController(),
-        'sent': new CommunicatorSentFolderController()
-      };
+      this.loadLabels($.proxy(
+        function (err, labels) {
+          this._folderControllers = {
+            'inbox': new CommunicatorInboxFolderController(),
+            'sent': new CommunicatorSentFolderController()
+          };
+          
+          if (err) {
+          } else {
+            var addLabelControlsCalls = $.map(labels, $.proxy(function(label) {
+              return $.proxy(function(callback) {
+                this.addLabelControl(label, callback);
+              }, this)
+            }, this));
+  
+            async.series(addLabelControlsCalls, $.proxy(function() {
+              this._sortLabels();
+            }, this));
+          }
+          
+          var folderId;
+          var threadId;
+           
+          if (window.location.hash.length > 1) {
+            var hashParts = window.location.hash.substring(1).split('/');
+            if (hashParts.length > 0) {
+              folderId = hashParts[0];
+            }
 
-      var folderId;
-      var threadId;
-      
-      if (window.location.hash.length > 1) {
-        var hashParts = window.location.hash.substring(1).split('/');
-        if (hashParts.length > 0) {
-          folderId = hashParts[0];
+            if (hashParts.length > 1) {
+              threadId = hashParts[1];
+            }
+          }
+          
+          folderId = this._folderControllers[folderId] ? folderId : this.options.defaultFolderId;
+          
+          this.element.on('click', '.mf-label-edit', $.proxy(this._onLabelEditClick, this));    
+                 
+          this.element.find('.cm-messages-container').communicatorMessages({
+            maxMessageCount: this.options.maxMessageCount,
+            folderId: folderId
+          });
+          $('.mf-controls-container').messageTools();          
+          this.element.on('click', '.mf-label-functions', $.proxy(this._onLabelMenuOpenClick, this));    
+          this.element.on('click', '.mf-label-function-edit', $.proxy(this._onLabelEditClick, this));  
+          this.element.on('click', '.mf-label-function-delete', $.proxy(this._onLabelDeleteClick, this));               
+          this.element.find('.cm-thread-container').communicatorThread();       
+          this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
+          this.element.on('click', '.cm-folder', $.proxy(this._onCommunicatorFolderClick, this));
+          
+          if (threadId) {
+            this.loadThread(threadId);
+          } else {
+            this.loadFolder(folderId);
+          }
         }
-
-        if (hashParts.length > 1) {
-          threadId = hashParts[1];
-        }
-      }
-      
-      folderId = this._folderControllers[folderId] ? folderId : this.options.defaultFolderId;
-      
-      this.element.find('.cm-messages-container').communicatorMessages({
-        maxMessageCount: this.options.maxMessageCount,
-        folderId: folderId
-      });
-      
-      this.element.find('.cm-thread-container').communicatorThread();
-     
-      this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
-      this.element.on('click', '.communicator-folder', $.proxy(this._onCommunicatorFolderClick, this));
-      
-      if (threadId) {
-        this.loadThread(threadId);
-      } else {
-        this.loadFolder(folderId);
-      }
+      , this));
     },
     
     loadFolder: function (id) {
@@ -317,6 +531,7 @@
       this._updateSelected(id);
       
       this.element.find('.cm-thread-container').hide();
+      $('.mf-controls-container').messageTools( 'loadTools', 'communicator/communicator_tools_thread.dust');       
       this.element.find('.cm-messages-container')
         .communicatorMessages('loadFolder', id)
         .show();
@@ -337,6 +552,7 @@
       this._updateSelected(folderId);
       
       this.element.find('.cm-messages-container').hide();
+      $('.mf-controls-container').messageTools( 'loadTools', 'communicator/communicator_tools_message.dust');     
       this.element.find('.cm-thread-container')
         .empty()
         .communicatorThread('loadThread', folderId, threadId)
@@ -354,6 +570,235 @@
       this._removeThreads(threads, $.proxy(function () {
         this.reloadFolder();
       }, this));
+    },
+
+    createLabel: function (name, colorHex) {
+      var colorInt = this.hexToColorInt(colorHex);
+      var label = {
+        name: name,
+        color: colorInt
+      };
+      
+      mApi().communicator.userLabels.create(label).callback($.proxy(function (err, label) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this.addLabelControl(label, $.proxy(function() {
+            this._sortLabels();
+          }, this));
+        }
+      }, this));
+    },
+    
+    updateLabel: function (id, name, colorHex) {
+      var colorInt = this.hexToColorInt(colorHex);
+      var label = {
+        id: id,
+        name: name,
+        color: colorInt
+      };
+      
+      mApi().communicator.userLabels.update(id, label).callback($.proxy(function (err, label) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var newColor = this.colorIntToHex(label.color);
+          this.element.find('.cm-categories').find('.mf-label[data-label-id="' + label.id + '"] span').text(label.name);
+          this.element.find('.cm-categories').find('.mf-label[data-label-id="' + label.id + '"] .mf-label-name').css({ color: newColor});
+          this._sortLabels();
+        }
+      }, this));
+    },
+
+    deleteLabel: function (id) {
+      mApi().communicator.userLabels.del(id).callback($.proxy(function (err, label) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this.element.find('.cm-categories').find('.mf-label[data-label-id="' + id + '"]').remove();
+        }
+      }, this));
+    },
+    
+    loadLabels: function (callback) {
+      mApi().communicator.userLabels.read().callback($.proxy(function (err, results) {
+        callback(err, results);
+      }, this));
+    },
+    
+    _sortLabels: function () {
+      var labelContainer = this.element.find('.cm-categories ul');
+      var labelItems = labelContainer.children('.mf-label');
+
+      labelItems.sort(function(a, b) {
+        return $(a).find("span").text().toUpperCase().localeCompare($(b).find("span").text().toUpperCase());
+      });
+
+      $.each(labelItems, function(idx, itm) {
+        labelContainer.append(itm);
+      });
+    },
+    
+    _onLabelMenuOpenClick : function(event){
+      var menus = $(event.target).closest("ul").find('.mf-label-functions-menu');
+      var clickedMenu = $(event.target).closest("li").find('.mf-label-functions-menu');
+      var menuPosition = $(event.target).closest("li").width() - 10;
+      var menuState = clickedMenu.css('display') ;     
+      clickedMenu.css('left', menuPosition);
+      
+      menus.hide();
+
+      if(menuState == 'none'){
+        clickedMenu.show();       
+      }else{
+        clickedMenu.hide();   
+        
+      }
+    }, 
+    
+    _onLabelEditClick : function(event) {
+      var communicator = $('.communicator').communicator("instance");
+      var folderId = $(event.target).closest("li").attr("data-folder-id");
+      var menus = $(event.target).closest("ul").find('.mf-label-functions-menu');      
+      var folderController = this._folderControllers[folderId];
+      var labelId = folderController._labelId;
+  
+      mApi().communicator.userLabels.read(labelId).callback($.proxy(function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var label = results;
+          label.colorHex =  communicator.colorIntToHex(label.color);
+          renderDustTemplate('communicator/communicator_label_edit.dust', label, $.proxy(function(text) {
+            this._dialog = $(text);      
+            $(this._dialog).dialog(
+              {
+                'title' : getLocaleText("plugin.communicator.label.edit.caption"),              
+                buttons : [ {
+  
+                   'text' :  getLocaleText("plugin.communicator.label.edit.button.send"),
+                   'class' : 'save-button',
+                   'click' : function() {
+                       
+                       var id = $(this).find("input[type='text']").attr('data-id');
+                       var name = $(this).find("input[type='text']").val();
+                       var color = $(this).find("input[type='color']").val();
+                       var communicator = $(".communicator").communicator("instance");            
+                       communicator.updateLabel(id, name, color);
+                       $(this).dialog().remove();
+                       menus.hide();
+                       
+                    // TODO: REFRESH LABELS
+                   }
+                
+                 }, 
+               
+                 {
+                   'text' :  getLocaleText("plugin.communicator.label.edit.button.cancel"),
+                   'class' : 'cancel-button',
+                   'click' : function(){               
+                     $(this).dialog().remove();
+                     menus.hide();
+                 }
+               }
+               ]
+              } 
+            );
+          }));
+        }
+      }, this));
+ 
+    },
+    _onLabelDeleteClick : function(event){
+      var folderId = $(event.target).closest("li").attr("data-folder-id");
+      var folderName = $(event.target).closest("li").attr("data-folder-name");
+      var menus = $(event.target).closest("ul").find('.mf-label-functions-menu');      
+      var folderController = this._folderControllers[folderId];
+      var labelId = folderController._labelId;      
+      var label = [];
+      
+      label.id = labelId;
+      label.name = folderName;
+      
+      renderDustTemplate('communicator/communicator_label_delete.dust', label, $.proxy(function(text) {
+        this._dialog = $(text);      
+        $(this._dialog).dialog(
+            
+          {
+            'title' : getLocaleText("plugin.communicator.label.remove.caption"),                          
+            buttons : [ {
+               'text' : getLocaleText("plugin.communicator.label.remove.button.send"),
+               'class' : 'save-button',
+               'click' :  function() {
+                 
+                 var id = $(this).find("div").attr('data-id');
+                 var communicator = $(".communicator").communicator("instance");
+                 communicator.deleteLabel(id);
+                 $(this).dialog('close');
+                 menus.hide();
+              // TODO: REFRESH LABELS
+             }
+             }, 
+           
+             {
+               'text' : getLocaleText("plugin.communicator.label.edit.button.cancel"),
+               'class' : 'cancel-button',
+               'click' : function(){               
+                 $(this).dialog('close');
+               
+             }
+           }           
+           ]
+          } 
+        );
+      
+      }));      
+    },
+    addLabelControl: function (label, callback) {
+
+      this._folderControllers[ "label-" + label.id ] = new CommunicatorInboxFolderController(label.id);
+      
+      // Label has id, name, color
+      
+      label.hexColor = this.colorIntToHex(label.color);
+
+      renderDustTemplate('/communicator/communicator_label.dust', label, $.proxy(function (text) {
+        this.element.find(".cm-categories ul").append(text);
+        
+        if (callback) {
+          callback();
+        }
+      }, this));
+      
+    },
+    
+    colorIntToHex: function (color) {
+      var b = (color & 255).toString(16);
+      var g = ((color >> 8) & 255).toString(16);
+      var r = ((color >> 16) & 255).toString(16);
+
+      var rStr = r.length == 1 ? "0" + r : r;
+      var gStr = g.length == 1 ? "0" + g : g;
+      var bStr = b.length == 1 ? "0" + b : b;
+      
+      return "#" + rStr + gStr + bStr;
+    },
+    
+    hexToColorInt: function (hexColor) {
+      var r = 255;
+      var g = 255;
+      var b = 255;
+    
+      if (hexColor) {
+        if (hexColor.length == 7)
+          hexColor = hexColor.slice(1);
+        
+        r = parseInt(hexColor.slice(0, 2), 16);
+        g = parseInt(hexColor.slice(2, 4), 16);
+        b = parseInt(hexColor.slice(4, 6), 16);
+      }
+        
+      return (r << 16) + (g << 8) + b;
     },
     
     folderController: function (folderId) {
@@ -394,9 +839,9 @@
     },
     
     _updateSelected: function (id) {
-      this.element.find('.communicator-folder')
+      this.element.find('.cm-folder')
         .removeClass('selected');
-      this.element.find('.communicator-folder[data-folder-id="' + id + '"]')
+      this.element.find('.cm-folder[data-folder-id="' + id + '"]')
         .addClass('selected');
     },
     
@@ -425,7 +870,7 @@
     },
     
     _onCommunicatorFolderClick: function (event) {
-      var folderId = $(event.target).closest('.communicator-folder')
+      var folderId = $(event.target).closest('.cm-folder')
         .attr('data-folder-id');
       
       this.loadFolder(folderId);
@@ -811,13 +1256,13 @@
     }
     
   });
-  
   $.widget("custom.communicatorThread", {
     _create : function() {
+      var controls = $('.mf-controls-container');
       this._threadId = null;
-      this.element.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
-      this.element.on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
-      this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));
+      controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
+      controls.on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
+      this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
     },
     
     loadThread: function (folderId, threadId, callback) {

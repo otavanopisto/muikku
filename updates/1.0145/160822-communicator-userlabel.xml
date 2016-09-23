@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <createTables>
+    <table name="CommunicatorLabel" primaryKeys="id">
+      <fields>
+        <field name="id" type="java.lang.Long" nullable="false" unique="false" />
+        <field name="color" type="java.lang.Long" nullable="false" unique="false" />
+      </fields>
+    </table>
+
+    <table name="CommunicatorUserLabel" primaryKeys="id">
+      <fields>
+        <field name="id" type="java.lang.Long" nullable="false" unique="false" />
+        <field name="name" type="java.lang.String" nullable="false" unique="false" />
+        <field name="userEntity_id" type="java.lang.Long" nullable="false" unique="false" />
+      </fields>
+      <foreignKeys>
+        <key referencedColumns="id" columns="id" referencedTable="CommunicatorLabel" name="FK_COMMUNICATORUSERLABEL_COMMUNICATORLABEL"/>
+        <key referencedColumns="id" columns="userEntity_id" referencedTable="UserEntity" name="FK_COMMUNICATORUSERLABEL_USERENTITY"/>
+      </foreignKeys>
+    </table>
+  </createTables>
+
+  <sql>
+    alter table CommunicatorLabel modify id bigint(20) auto_increment;
+  </sql>
+</update>

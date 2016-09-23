@@ -5,24 +5,28 @@
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
 
         <div class="cm-message-header flex-row no-margin-top no-margin-bottom">
-           <div class="cm-message-select"><input type="checkbox"  name="messageSelect" value="{communicatorMessageId}" /></div>
-           <div class="cm-message-header-container">
-             {?sent}
-               {?recipients}
-                 <div class="cm-message-recipients cm-message-header-content-primary">
-                   <span>({recipientCount})</span>
-                   {#recipients}
-                     <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>
-                   {/recipients}
-                 </div>
-               {/recipients}
-             {:else}
-               <div class="cm-message-sender cm-message-header-content-primary">
-                 <span class="cm-message-sender-name" title="{sender.firstName} {sender.lastName}">{sender.firstName} {sender.lastName}</span>
-               </div>
-             {/sent}
-             <div class="cm-message-caption cm-message-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</div>
-           </div>
+          <div class="cm-message-select"><input type="checkbox"  name="messageSelect" value="{communicatorMessageId}" /></div>
+          <div class="cm-message-header-container">
+            {?sent}
+              {?recipients}
+                <div class="cm-message-recipients cm-message-header-content-primary">
+                  <span>({recipientCount})</span>
+                  {#recipients}
+                    <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>
+                  {/recipients}
+                </div>
+              {/recipients}
+            {:else}
+              <div class="cm-message-sender cm-message-header-content-primary">
+                <span class="cm-message-sender-name" title="{sender.firstName} {sender.lastName}">{sender.firstName} {sender.lastName}</span>
+              </div>
+            {/sent}
+            <div class="cm-message-caption cm-message-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}
+              {#labels}
+              	{>"communicator/communicator_item_label.dust"/}
+              {/labels}
+            </div>
+          </div>
         </div>
         <div class="cm-message-additional no-margin-top no-margin-bottom">
           <div class="cm-message-header-count flex-center">
@@ -35,8 +39,11 @@
               {:else}
                 {created|formatDate} {created|formatTime}              
               {/threadLatestMessageDate}
-             </span>
-           </div>
+            </span>
+          </div>
+          <div>
+
+          </div>
         </div>
 
       </div>

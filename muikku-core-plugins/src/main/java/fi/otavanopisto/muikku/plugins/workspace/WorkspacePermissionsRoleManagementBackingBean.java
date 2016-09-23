@@ -76,8 +76,7 @@ public class WorkspacePermissionsRoleManagementBackingBean extends AbstractWorks
     
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    workspaceName = workspace.getName();
+    workspaceName = workspaceBackingBean.getWorkspaceName();
 
     /**
      * View data

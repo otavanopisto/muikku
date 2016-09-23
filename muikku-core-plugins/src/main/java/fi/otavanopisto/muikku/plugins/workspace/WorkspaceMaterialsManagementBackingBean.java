@@ -18,7 +18,6 @@ import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
@@ -71,8 +70,7 @@ public class WorkspaceMaterialsManagementBackingBean extends AbstractWorkspaceBa
     rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    workspaceName = workspace.getName();
+    workspaceName = workspaceBackingBean.getWorkspaceName();
 
     try {
       contentNodes = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, true);

@@ -23,7 +23,6 @@
   
   <ui:define name="workspace-view-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-materials.css"/>  
-    <link rel="stylesheet" type="text/css" href="/css/muikku-file-field-component.css" /> 
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/lazyyt/1.0.1/lazyyt.css"/> 
     <link rel="StyleSheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/magnific-popup.min.css"/>
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
@@ -107,8 +106,11 @@
                               <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
                             </ui:fragment>
                             <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                              <li class="workspace-materials-toc-item" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
+                              <li class="workspace-materials-toc-item #{articleNode.viewRestricted eq true ? 'item-view-restricted' : ''}" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
                                 <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'assignment' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+                                <ui:fragment rendered="#{articleNode.viewRestricted eq true}">
+							                    <span class="icon-closed-material"></span>
+							                  </ui:fragment>
                               </li>
                             </ui:fragment>
                           </ui:repeat>
@@ -116,8 +118,11 @@
                       </li>
                     </ui:fragment>
                     <ui:fragment rendered="#{node.type ne 'folder'}">
-                      <li class="workspace-materials-toc-item" data-workspace-material-id="#{node.workspaceMaterialId}">
+                      <li class="workspace-materials-toc-item #{articleNode.viewRestricted eq true ? 'item-view-restricted' : ''}" data-workspace-material-id="#{node.workspaceMaterialId}">
                         <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'assignment' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
+                        <ui:fragment rendered="#{articleNode.viewRestricted eq true}">
+			                    <span class="icon-closed-material"></span>
+			                  </ui:fragment>
                       </li>
                     </ui:fragment>
                   </ui:repeat>

@@ -4,159 +4,159 @@
 
 
   
-  /* WORKSPACE SPECIFIC DISCUSSIONS OVERRIDES */
+/* WORKSPACE SPECIFIC DISCUSSIONS OVERRIDES */
+
+/* Generic styles need their own css-files */
+
+.workspace-generic-view-title {
+  background:#fff;
+  font-size:25px;
+  font-weight:300;
+  line-height:1;
+  margin:0;
+  padding:20px;
+  text-transform:uppercase;
+}
+
+
+/* Discussion header overrides */
+
+.di-content-main{
+  background-color: #fff;
   
-  /* Generic styles need their own css-files */
+}  
+.mf-content-functions {
+  background-color:#fff;
+  font-size:14px;
   
-  .workspace-generic-view-title {
-    background:#fff;
-    padding:20px;
-    margin:0;
-    font-size:25px;
-    font-weight:300;
-    text-transform:uppercase;
+  .mf-button-container {
+    background-color: transparent;
+    
+    .mf-primary-function { /* Overrides mainfunction button styles */
+      margin:0 0 0 15px;
+      box-shadow:none;
+      border:0px;
+      text-shadow:none;
+      background:#0099ff;
+      width:auto;
+      border-radius: 3px;
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 1em;
+      line-height: 1.3em;
+      text-transform: uppercase;       
+      padding: 12px; 
+      &.disabled{
+        background:#dadada;
+        color: #efefef;
+      }
+
+      span{
+
+        white-space: nowrap;
+      }
+    }
+    
+    .di-new-message-button {
+      font-weight:400;
+      
+    }
+    
   }
   
-  
-  /* Discussion header overrides */
-  
-  .di-content-main{
-    background-color: #fff;
-    
-  }  
-  .mf-content-functions {
+  .mf-view-container {
     background-color:#fff;
-    font-size:14px;
+    height:55px;
     
-    .mf-button-container {
-      background-color: transparent;
-      
-      .mf-primary-function { /* Overrides mainfunction button styles */
-        margin:0 0 0 15px;
-        box-shadow:none;
-        border:0px;
-        text-shadow:none;
-        background:#0099ff;
-        width:auto;
-        border-radius: 3px;
-        color: #ffffff;
-        cursor: pointer;
-        font-size: 1em;
-        line-height: 1.3em;
-        text-transform: uppercase;       
-        padding: 12px; 
-        &.disabled{
-          background:#dadada;
-          color: #efefef;
-        }
+    .di-browse-areas-container {
+      margin:0px 0 10px 0px;
+    }
+    
+    .di-new-area-container, .di-edit-area-container,
+    .di-delete-area-container {
+      margin:2px 0 0 5px;
+    }
+  }
 
-        span{
+}
 
-          white-space: nowrap;
-        }
-      }
-      
-      .di-new-message-button {
-        font-weight:400;
+/* Discussion areas overrides */
+.mf-content-area {
+  background-color: #fff;
+}
+
+/* Social navigation with New Message/Area and Answer Message */
+#socialNavigation.sn-container {
+
+  .di-message-create,
+  .di-area-create {
+  
+    .mf-content {
+    
+      .mf-fieldRow {
+        position:relative;
+        margin:2px 0 3px 0;
         
-      }
-      
-    }
-    
-    .mf-view-container {
-      background-color:#fff;
-      height:55px;
-      
-      .di-browse-areas-container {
-        margin:0px 0 10px 0px;
-      }
-      
-      .di-new-area-container, .di-edit-area-container,
-      .di-delete-area-container {
-        margin:2px 0 0 5px;
-      }
-    }
-  
-  }
-  
-  /* Discussion areas overrides */
-  .mf-content-area {
-    background-color: #fff;
-  }
-
-  /* Social navigation with New Message/Area and Answer Message */
-  #socialNavigation.sn-container {
-  
-    .di-message-create,
-    .di-area-create {
-    
-      .mf-content {
-      
-        .mf-fieldRow {
+        .mf-textfield {
           position:relative;
-          margin:2px 0 3px 0;
-          
-          .mf-textfield {
-            position:relative;
-            top:0;
-          
-            input[type="text"] {
-              border:2px solid #fff;
-              color:#000;
-              border-radius:3px;
-              padding:6px 8px;
-              line-height:1em;
-            }
-            
+          top:0;
+        
+          input[type="text"] {
+            border:2px solid #fff;
+            color:#000;
+            border-radius:3px;
+            padding:6px 8px;
+            line-height:1em;
           }
           
-          .mf-select {
-            position:relative;
-            top:0;
-          
-            select {
-              min-width:200px;
-              margin-left:5px;
-              
-              option {
-                padding:8px;
-              }
-            
-            }
-          
-          }
-          
-        }
-
-      }
-    
-      .mf-toolbar {
-      
-        input {
-          border-radius:0px;
-          border:0;
-          color:#fff;
-          font-weight:400;
-          text-transform:uppercase;
-          margin:5px;
-          outline:none;
-          font-family:'Open Sans', Arial, sans-serif;
-          min-width:90px;
-          padding:10px;
-          font-size:16px;
-        }
-      
-        input[name="send"] {
-          background:#27b91c;
         }
         
-        input[name="cancel"] {
-          background:#7391a7;
+        .mf-select {
+          position:relative;
+          top:0;
+        
+          select {
+            min-width:200px;
+            margin-left:5px;
+            
+            option {
+              padding:8px;
+            }
+          
+          }
+        
         }
+        
+      }
+
+    }
+  
+    .mf-toolbar {
+    
+      input {
+        border-radius:0px;
+        border:0;
+        color:#fff;
+        font-weight:400;
+        text-transform:uppercase;
+        margin:5px;
+        outline:none;
+        font-family:'Open Sans', Arial, sans-serif;
+        min-width:90px;
+        padding:10px;
+        font-size:16px;
+      }
+    
+      input[name="send"] {
+        background:#27b91c;
+      }
       
+      input[name="cancel"] {
+        background:#7391a7;
       }
     
     }
   
   }
-  
+
+}

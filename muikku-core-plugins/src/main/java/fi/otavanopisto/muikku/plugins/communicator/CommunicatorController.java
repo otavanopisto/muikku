@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.communicator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -21,16 +22,21 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageCategoryDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
+import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageIdLabelDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageTemplateDAO;
+import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorUserLabelDAO;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.security.Permit;
 import fi.otavanopisto.security.PermitContext;
 
@@ -55,6 +61,12 @@ public class CommunicatorController {
   private CommunicatorMessageSignatureDAO communicatorMessageSignatureDAO;
 
   @Inject
+  private CommunicatorUserLabelDAO communicatorUserLabelDAO;
+  
+  @Inject
+  private CommunicatorMessageIdLabelDAO communicatorMessageIdLabelDAO; 
+  
+  @Inject
   private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
 
   private String clean(String html) {
@@ -66,6 +78,10 @@ public class CommunicatorController {
           ).clean(doc);
     doc.outputSettings().escapeMode(EscapeMode.xhtml);
     return doc.body().html();
+  }
+
+  public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity, CommunicatorLabel label, Integer firstResult, Integer maxResults) {
+    return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity, label, firstResult, maxResults);
   }
 
   public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
@@ -258,6 +274,49 @@ public class CommunicatorController {
     return communicatorMessageIdDAO.listAll();
   }
 
+  /* User Label */
+  
+  public CommunicatorUserLabel createUserLabel(String name, Long color, UserEntity userEntity) {
+    return communicatorUserLabelDAO.create(name, color, userEntity);
+  }
+
+  public CommunicatorUserLabel findUserLabelById(Long id) {
+    return communicatorUserLabelDAO.findById(id);
+  }
+  
+  public List<CommunicatorUserLabel> listUserLabelsByUserEntity(UserEntity userEntity) {
+    return communicatorUserLabelDAO.listByUser(userEntity);
+  }
+  
+  public CommunicatorUserLabel updateUserLabel(CommunicatorUserLabel userLabel, String name, Long color) {
+    return communicatorUserLabelDAO.update(userLabel, name, color);
+  }
+
+  /* MessageIdLabel */
+  
+  public CommunicatorMessageIdLabel createMessageIdLabel(UserEntity userEntity, CommunicatorMessageId messageId, CommunicatorLabel label) {
+    return communicatorMessageIdLabelDAO.create(userEntity, messageId, label);
+  }
+
+  public CommunicatorMessageIdLabel findMessageIdLabelById(Long id) {
+    return communicatorMessageIdLabelDAO.findById(id);
+  }
+  
+  public CommunicatorMessageIdLabel findMessageIdLabel(UserEntity userEntity, CommunicatorMessageId messageId,
+      CommunicatorLabel label) {
+    return communicatorMessageIdLabelDAO.findBy(userEntity, messageId, label);
+  }
+
+  public List<CommunicatorMessageIdLabel> listMessageIdLabelsByUserEntity(UserEntity userEntity, CommunicatorMessageId messageId) {
+    return communicatorMessageIdLabelDAO.listByUserAndMessageId(userEntity, messageId);
+  }
+  
+  public void delete(CommunicatorMessageIdLabel messageIdLabel) {
+    communicatorMessageIdLabelDAO.delete(messageIdLabel);
+  }
+  
+  /* DELETE */
+  
   public void delete(CommunicatorMessage icm) {
     communicatorMessageDAO.delete(icm);
   }
@@ -270,4 +329,34 @@ public class CommunicatorController {
     communicatorMessageIdDAO.delete(id);
   }
   
+  public void delete(CommunicatorUserLabel communicatorUserLabel) {
+    List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByLabel(communicatorUserLabel);
+    for (CommunicatorMessageIdLabel label : labels) {
+      delete(label);
+    }
+    
+    communicatorUserLabelDAO.delete(communicatorUserLabel);
+  }
+
+  /**
+   * Cleans list of UserEntities so that there are no duplicates present. Returns the original list.
+   * 
+   * @param userEntities
+   * @return
+   */
+  public void cleanDuplicateRecipients(List<UserEntity> userEntities) {
+    Set<Long> userIds = new HashSet<Long>(userEntities.size());
+    
+    for (int i = userEntities.size() - 1; i >= 0; i--) {
+      if (userEntities.get(i) != null) {
+        Long userId = userEntities.get(i).getId();
+        
+        if (!userIds.contains(userId))
+          userIds.add(userId);
+        else
+          userEntities.remove(i);
+      } else
+        userEntities.remove(i);
+    }
+  }
 }

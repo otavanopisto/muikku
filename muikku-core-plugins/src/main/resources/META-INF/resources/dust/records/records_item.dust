@@ -9,16 +9,14 @@
      {/nameExtension}
     </div>
     <div class="mf-item-header-details tr-item-header-details lg-flex-cell-6 md-flex-cell-4 sm-flex-cell-3 flex-right">
-        {#grade}
-          <div class="tr-item-header-detail date sm-flex-hide"><span>{#localize key="plugin.records.workspace.evaluated" arg0=evaluated /}</span></div>
-          {?passed}
-            <div class="tr-item-header-detail grade passing" title="{gradingScale}"><span>{grade}</span></div>
-          {:else}
-            <div class="tr-item-header-detail grade non-passing" title="{gradingScale}"><span>{grade}</span></div>
-          {/passed}
-        {/grade}
-     </div>
+      {#grade}
+        <div class="tr-item-header-detail date sm-flex-hide"><span>{#localize key="plugin.records.workspace.evaluated" arg0=evaluated /}</span></div>
+        {?passed}
+          <div class="tr-item-header-detail grade passing" title="{gradingScale}"><span>{grade}</span></div>
+        {:else}
+          <div class="tr-item-header-detail grade non-passing" title="{gradingScale}"><span>{grade}</span></div>
+        {/passed}
+      {/grade}
     </div> 
   </div>
 </div>
- 
