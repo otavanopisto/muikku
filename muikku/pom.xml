@@ -431,31 +431,7 @@
             <inherited>false</inherited>
             <configuration>
               <sassSourceDirectory>${basedir}/src/main/webapp/resources/theme-muikku/sass</sassSourceDirectory>
-              <destination>${project.build.directory}/${project.build.finalName}/resources/theme-muikku/css-exploded</destination>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>com.samaxes.maven</groupId>
-        <artifactId>minify-maven-plugin</artifactId>
-        <configuration>
-          <charset>UTF-8</charset>
-          <nosuffix>true</nosuffix>
-          <webappTargetDir>${project.build.directory}/${project.build.finalName}/resources/theme-muikku/css</webappTargetDir>
-        </configuration>
-        <executions>
-          <execution>
-            <id>minify-css</id>
-            <goals>
-              <goal>minify</goal>
-            </goals>
-            <configuration>
-              <webappSourceDir>${project.build.directory}/${project.build.finalName}</webappSourceDir>
-              <cssSourceDir>resources/theme-muikku/css-exploded</cssSourceDir>
-              <cssSourceInclude>*.css</cssSourceInclude>
-              <skipMerge>true</skipMerge>
+              <destination>${project.build.directory}/${project.build.finalName}/resources/theme-muikku/css</destination>
             </configuration>
           </execution>
         </executions>
