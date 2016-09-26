@@ -1458,7 +1458,6 @@
       this._threadId = threadId;
       this._folderId = folderId;
       
-//<<<<<<< HEAD
       var communicator = $(".communicator").communicator("instance");
       var folderController = communicator.folderController(folderId);
       
@@ -1469,33 +1468,6 @@
           var data = $.map(messages, function (message) {
             return $.extend(message, {
               folderId: folderId
-//=======
-//      mApi().communicator.messages
-//        .read(threadId)
-//        .on("$", function (message, messageCallback) {
-//          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-//            if(err){
-//              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-//            }else{            
-//              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-//              message.senderFullName = user.firstName + ' ' + user.lastName;
-//              message.senderHasPicture = user.hasImage;
-//              message.caption = $('<div>').html(message.caption).text();
-//              message.content = message.content;
-//              
-//              messageCallback();
-//            }
-//          });
-//        })
-//        .callback($.proxy(function (err, messages) {
-//          if (err) {
-//            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-//          } else {
-//            var data = $.map(messages, function (message) {
-//              return $.extend(message, {
-//                folderId: folderId
-//              });
-//>>>>>>> devel
             });
           });
           
