@@ -219,45 +219,6 @@ public class CommunicatorRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path ("/trash")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listUserTrashItems(
-      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
-      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
-    UserEntity user = sessionController.getLoggedUserEntity(); 
-    List<CommunicatorMessage> trashItems = communicatorController.listTrashItems(user, firstResult, maxResults);
-
-    List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
-    
-    for (CommunicatorMessage msg : trashItems) {
-      String categoryName = msg.getCategory() != null ? msg.getCategory().getName() : null;
-      
-      result.add(new CommunicatorMessageRESTModel(
-          msg.getId(), msg.getCommunicatorMessageId().getId(), msg.getSender(), categoryName, 
-          msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), getMessageRecipientIdList(msg)));
-    }
-    
-    return Response.ok(
-      result
-    ).build();
-  }
-  
-  @DELETE
-  @Path ("/trash/{COMMUNICATORMESSAGEID}")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response deleteTrashMessages(
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
-   ) throws AuthorizationException {
-    UserEntity user = sessionController.getLoggedUserEntity();
-    
-    CommunicatorMessageId threadId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
-
-    communicatorController.archiveTrashedMessages(user, threadId);
-    
-    return Response.noContent().build();
-  }
-  
-  @GET
   @Path ("/receiveditemscount")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getReceivedItemsCount() {
@@ -318,7 +279,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
-    Long result = communicatorController.countMessagesByRecipientAndMessageId(user, messageId);
+    Long result = communicatorController.countMessagesByUserAndMessageId(user, messageId, false);
     
     return Response.ok(
       result
@@ -444,36 +405,16 @@ public class CommunicatorRESTService extends PluginRESTService {
   }
 
   @POST
-  @Path ("/trash/{COMMUNICATORMESSAGEID}/markasread")
+  @Path ("/items/{COMMUNICATORMESSAGEID}/markasunread")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response markTrashAsRead( 
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
-    UserEntity user = sessionController.getLoggedUserEntity(); 
-    
-    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
-
-    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId, true);
-    
-    for (CommunicatorMessageRecipient r : list) {
-      communicatorController.updateRead(r, true);
-    }
-    
-    return Response.ok(
-      
-    ).build();
-  }
-
-  @POST
-  @Path ("/messages/{COMMUNICATORMESSAGEID}/markasunread")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response markAsUnRead( 
+  public Response markInboxAsUnRead( 
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
       @QueryParam("messageIds") List<Long> messageIds) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
-    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId);
+    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId, false);
     
     for (CommunicatorMessageRecipient r : list) {
       if ((messageIds != null) && (r.getCommunicatorMessage() != null)) {
@@ -484,9 +425,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       communicatorController.updateRead(r, false);
     }
     
-    return Response.ok(
-      
-    ).build();
+    return Response.ok().build();
   }
 
   private List<Long> getMessageRecipientIdList(CommunicatorMessage msg) {
