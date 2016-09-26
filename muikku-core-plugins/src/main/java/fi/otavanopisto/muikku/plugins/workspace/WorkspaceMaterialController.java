@@ -970,7 +970,12 @@ public class WorkspaceMaterialController {
             else {
               iframe.setAttribute("data-url", iframe.getAttribute("src"));
               iframe.removeAttribute("src");
-              iframe.setAttribute("class", "lazyFrame");
+              if (iframe.hasAttribute("class")) {
+                iframe.setAttribute("class", iframe.getAttribute("class") + " lazyFrame");
+              }
+              else {
+                iframe.setAttribute("class", "lazyFrame");
+              }
             }
           }
 
