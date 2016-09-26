@@ -1293,6 +1293,7 @@
     }
         
     $(data.pageElement).find('.js-lazyyt').lazyYT();
+    $(data.pageElement).find('.lazyFrame').lazyFrame();
     
     $(data.pageElement).find('.ckeditor-field').muikkuRichMemoField();
     
