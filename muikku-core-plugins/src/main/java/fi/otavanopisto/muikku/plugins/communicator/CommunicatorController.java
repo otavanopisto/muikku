@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.communicator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -352,4 +353,25 @@ public class CommunicatorController {
     communicatorUserLabelDAO.delete(communicatorUserLabel);
   }
 
+  /**
+   * Cleans list of UserEntities so that there are no duplicates present. Returns the original list.
+   * 
+   * @param userEntities
+   * @return
+   */
+  public void cleanDuplicateRecipients(List<UserEntity> userEntities) {
+    Set<Long> userIds = new HashSet<Long>(userEntities.size());
+    
+    for (int i = userEntities.size() - 1; i >= 0; i--) {
+      if (userEntities.get(i) != null) {
+        Long userId = userEntities.get(i).getId();
+        
+        if (!userIds.contains(userId))
+          userIds.add(userId);
+        else
+          userEntities.remove(i);
+      } else
+        userEntities.remove(i);
+    }
+  }
 }
