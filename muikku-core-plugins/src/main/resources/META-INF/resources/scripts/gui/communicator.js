@@ -928,7 +928,7 @@
             instanceReady: $.proxy(this._onCKEditorReady, this)
           }
         }));
-        
+
         var autocomplete = this.element.find('input[name="recipient"]').autocomplete({
           open: function(event, ui) {
             $(event.target).perfectScrollbar({
@@ -986,40 +986,84 @@
               .read(messageId)
               .callback(function(err, user) {
                 reply.senderFullName = user.firstName + ' ' + user.lastName;
-                reply.senderHasPicture = user.hasImage;
+                reply.senderHasPicture = user.hasImage;                
                 replyCallback();
+
               });
           })
           .callback(callback);
       }, this);
     },
-    
-    _load: function (callback) {
-      var taskIds = [];
-      var tasks = [];
-      
-      if (this.options.replyMessageId) {
-        taskIds.push('replyMessage');
-        tasks.push(this._createRecipientLoad(this.options.replyMessageId));
-      } 
-      
-      async.parallel(tasks, $.proxy(function (err, results) {
-        var data = {};
-        $.each(taskIds, function (taskIndex, taskId) {
-          data[taskId] = results[taskIndex];
-        });
-        
-        renderDustTemplate('/communicator/communicator_create_message.dust', data, $.proxy(function (text) {
-          this.element.html(text);
-          if (data.replyMessage) {
-            this._addRecipient('USER', data.replyMessage.senderId, data.replyMessage.senderFullName);
-          }
 
-          if (callback) {
+    _loadSender: function (messageId) {
+      return $.proxy(function (callback) {
+        mApi().communicator.communicatormessages.sender
+          .read(messageId)
+          .callback(callback);
+      }, this);
+    },
+
+    _load: function (callback) {
+      var replyMessageId = this.options.replyMessageId;
+      
+      if(replyMessageId){
+        mApi().communicator.communicatormessages.read(replyMessageId).callback($.proxy(function (err, message) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            var senderCall = function (senderCallback) {
+              mApi().communicator.communicatormessages.sender
+                .read(replyMessageId)
+                .callback(senderCallback);
+            }
+            var recipientCalls = $.map(message.recipientIds, function (recipientId) {
+              return function (callback) {
+                mApi().communicator.communicatormessages.recipients.info
+                  .read(replyMessageId, recipientId)
+                  .callback(callback);
+              };
+            });
+  
+            var recipientBatchCall = function (recipientsCallback) {
+              async.parallel(recipientCalls, recipientsCallback);
+            }                      
+
+            async.parallel([senderCall, recipientBatchCall], $.proxy(function (err, results) {
+              var sender = results[0];
+              sender.senderFullName = sender.firstName  + " " + sender.lastName;
+              var recipients = results[1];
+
+              renderDustTemplate('/communicator/communicator_create_message.dust', message, $.proxy(function (text) {
+                this.element.html(text);
+                if(message.senderId === MUIKKU_LOGGED_USER_ID){                 
+                  $.each(recipients,  $.proxy(function (index, recipient) {
+                    recipient.recipientFullName = recipient.firstName + " " + recipient.lastName;
+                    
+                    if(recipient.id != sender.id){
+                     this._addRecipient('USER', recipient.id, recipient.recipientFullName);
+                    }
+                    
+                  }, this));
+                }
+                this._addRecipient('USER', sender.id, sender.senderFullName);                            
+                
+                if(callback){
+                  callback();
+                }
+              }, this));
+            }, this));
+          }
+        }, this));
+      }else{
+        renderDustTemplate('/communicator/communicator_create_message.dust', {}, $.proxy(function (text) {
+          this.element.html(text);
+          if(callback){
             callback();
           }
         }, this));
-      }, this));
+        
+      }
+      
     },
     
     _addRecipient: function (type, id, label) {
@@ -1281,6 +1325,7 @@
               message.senderHasPicture = user.hasImage;
               message.caption = $('<div>').html(message.caption).text();
               message.content = message.content;
+              
               messageCallback();
             }
           });
