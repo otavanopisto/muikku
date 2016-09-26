@@ -69,7 +69,7 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
 
     int materialSize = material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContent().length : material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml().length() : 0;
     String eTag = DigestUtils.md5Hex(material.getTitle() + ':' + material.getId() + ':' + materialSize + ':' + material.getVersion());
-
+    
     response.setHeader("ETag", eTag);
     String ifNoneMatch = request.getHeader("If-None-Match");
     if (!StringUtils.equals(ifNoneMatch, eTag)) {
@@ -91,8 +91,10 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
           }
           if (ranges.isEmpty()) {
             for (String part : range.substring(6).split(",")) {
-              int start = NumberUtils.toInt(StringUtils.substringBefore(part, "-"));
-              int end = NumberUtils.toInt(StringUtils.substringAfter(part, "-"));
+              String startStr = StringUtils.substringBefore(part, "-");
+              String endStr = StringUtils.substringAfter(part, "-");
+              int start = NumberUtils.isDigits(startStr) ? NumberUtils.toInt(startStr) : -1;
+              int end = NumberUtils.isDigits(endStr) ? NumberUtils.toInt(endStr) : -1;
               if (start == -1) {
                 start = data.length - end;
                 end = data.length - 1;
