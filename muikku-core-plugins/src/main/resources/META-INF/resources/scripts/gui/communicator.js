@@ -340,9 +340,11 @@
       this._folderId = this.options.folderId;      
       $('.mf-controls-container').on('click', '.mf-label-link', $.proxy(this._onAddLabelToMessagesClick, this));
       $('.mf-controls-container').on('click', '.cm-delete-thread', $.proxy(this._onDeleteClick, this));
+      $('.mf-controls-container').on('click', '.cm-mark-unread-thread', $.proxy(this._onMarkUnreadClick, this));
       $('.mf-controls-container').on('click', '.cm-add-label-menu', $.proxy(this._onAddLabelMenuClick, this));         
       $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onCreateLabelClick, this));
-      $('.mf-controls-container').on('click', '.cm-mark-unread', $.proxy(this._onMarkUnreadClick, this));
+      
+      this.element.on('change', 'input[name="messageSelect"]', $.proxy(this._onThreadSelectionChange, this));
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
       $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
@@ -436,12 +438,18 @@
     },
     
     _onDeleteClick: function (event) {
+      if ($(event.target).closest(".mf-tool-container").hasClass("disabled"))
+        return;
+      
       var selectedThreads = this._getSelectedThreads();
       this.element.closest('.communicator') 
         .communicator('deleteThreads', selectedThreads);
     },
     
     _onMarkUnreadClick: function (event) {
+      if ($(event.target).closest(".mf-tool-container").hasClass("disabled"))
+        return;
+      
       var selectedThreads = this._getSelectedThreads();
       this.element.closest('.communicator') 
         .communicator('markUnreadThreads', selectedThreads);
@@ -455,6 +463,18 @@
         .communicator('loadThread', threadId);
     },
 
+    _onThreadSelectionChange: function (event) {
+      var selectedThreads = this._getSelectedThreads();
+      var communicatorElement = this.element.closest(".communicator");
+      if (selectedThreads.length === 0) {
+        communicatorElement.find(".cm-delete-thread").closest(".mf-tool-container").addClass("disabled");
+        communicatorElement.find(".cm-mark-unread-thread").closest(".mf-tool-container").addClass("disabled");
+      } else {
+        communicatorElement.find(".cm-delete-thread").closest(".mf-tool-container").removeClass("disabled");
+        communicatorElement.find(".cm-mark-unread-thread").closest(".mf-tool-container").removeClass("disabled");
+      }
+    },
+    
     _onAddLabelMenuClick: function (event) {
       var labelObjs = $('.cm-categories').find('.mf-label');      
       var labels = [];
@@ -463,7 +483,6 @@
       var checkedMessages = $('.cm-messages-pages').find('input[name="messageSelect"]:checked');
       var checkedMessagesLabels = checkedMessages.closest('.cm-message-header').find('.mf-item-label');
 
-      
       $.each(checkedMessagesLabels, function(key, label) {
         var labelId = $(label).attr('data-label-id')
         if( messagesLabels.indexOf(labelId) == -1){
@@ -1495,6 +1514,8 @@
       this._threadId = null;
       controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
       controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
+      controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
+
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
     },
     
@@ -1537,6 +1558,17 @@
     _onDeleteClick: function () {
       this.element.closest('.communicator') 
         .communicator('deleteThread', this._folderId, this._threadId);
+    },
+    
+    _onMarkUnreadClick: function (event) {
+      var threads = [
+          {
+            folderId: this._folderId,
+            id: this._threadId
+          }
+      ];
+      this.element.closest('.communicator') 
+        .communicator('markUnreadThreads', threads);
     },
     
     _onReplyClick: function (event) {
