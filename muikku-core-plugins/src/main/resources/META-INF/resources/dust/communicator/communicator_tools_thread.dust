@@ -15,6 +15,6 @@
     </div>
    </div>
    <div class="mf-tool-container special cm-mark-unread-container">
-     <div title="{#localize key="plugin.communicator.tool.title.unread"/}" class="mf-tool cm-mark-unread icon-message-unread"></div>
+     <div title="{#localize key="plugin.communicator.tool.title.unread"/}" class="mf-tool cm-mark-unread-thread icon-message-unread"></div>
    </div>
   </div> 
