@@ -82,6 +82,11 @@
     },
     
     markAsRead: function (threadId, callback) {
+      callback();
+    },
+    
+    markAsUnread: function (threadId, callback) {
+      callback();
     },
 
     superApply: function (method) {
@@ -163,6 +168,9 @@
     },
     markAsRead: function (threadId, callback) {
       mApi().communicator.items.markasread.create(threadId).callback(callback);    
+    },
+    markAsUnread: function (threadId, callback) {
+      mApi().communicator.items.markasunread.create(threadId).callback(callback);    
     }
   });
   
@@ -235,6 +243,10 @@
     },
     
     markAsRead: function (threadId, callback) {
+      callback();
+    },
+    markAsUnread: function (threadId, callback) {
+      callback();
     }
     
   });
@@ -314,6 +326,9 @@
     
     markAsRead: function (threadId, callback) {
       mApi().communicator.trash.markasread.create(threadId).callback(callback);    
+    },
+    markAsUnread: function (threadId, callback) {
+      mApi().communicator.trash.markasunread.create(threadId).callback(callback);    
     }
     
   });
@@ -326,7 +341,8 @@
       $('.mf-controls-container').on('click', '.mf-label-link', $.proxy(this._onAddLabelToMessagesClick, this));
       $('.mf-controls-container').on('click', '.cm-delete-thread', $.proxy(this._onDeleteClick, this));
       $('.mf-controls-container').on('click', '.cm-add-label-menu', $.proxy(this._onAddLabelMenuClick, this));         
-      $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onCreateLabelClick, this));   
+      $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onCreateLabelClick, this));
+      $('.mf-controls-container').on('click', '.cm-mark-unread', $.proxy(this._onMarkUnreadClick, this));
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
       $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
@@ -423,6 +439,12 @@
       var selectedThreads = this._getSelectedThreads();
       this.element.closest('.communicator') 
         .communicator('deleteThreads', selectedThreads);
+    },
+    
+    _onMarkUnreadClick: function (event) {
+      var selectedThreads = this._getSelectedThreads();
+      this.element.closest('.communicator') 
+        .communicator('markUnreadThreads', selectedThreads);
     },
     
     _onMessageHeaderClick: function (event) {
@@ -717,6 +739,24 @@
       }, this));
     },
 
+    markUnreadThreads: function (threads) {
+      var calls = $.map(threads, $.proxy(function (thread) {
+        return $.proxy(function (callback) {
+          this._folderControllers[thread.folderId].markAsUnread(thread.id, callback);
+        }, this);
+      }, this));
+      
+      async.series(calls, $.proxy(function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          mApi().communicator.cacheClear();
+          $(document).trigger("Communicator:messageread");
+          this.reloadFolder();
+        }
+      }, this));
+    },
+    
     createLabel: function (name, colorHex) {
       var colorInt = this.hexToColorInt(colorHex);
       var label = {
@@ -1151,7 +1191,7 @@
     _load: function (callback) {
       var replyMessageId = this.options.replyMessageId;
       
-      if(replyMessageId){
+      if (replyMessageId) {
         mApi().communicator.communicatormessages.read(replyMessageId).callback($.proxy(function (err, message) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
