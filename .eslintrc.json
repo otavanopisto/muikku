@@ -11,6 +11,7 @@
     "mApi": false,
     "renderDustTemplate": false,
     "getLocaleText": false,
-    "MUIKKU_LOGGED_USER_ID": false
+    "MUIKKU_LOGGED_USER_ID": false,
+    "MUIKKU_LOGGEDIN": false
   }
 }
