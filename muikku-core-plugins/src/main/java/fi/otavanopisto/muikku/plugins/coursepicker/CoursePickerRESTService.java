@@ -45,6 +45,7 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
+import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.RoleController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -72,6 +73,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @RequestScoped
 @Stateful
 @Produces ("application/json")
+@RestCatchSchoolDataExceptions
 public class CoursePickerRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -7027696842893383409L;

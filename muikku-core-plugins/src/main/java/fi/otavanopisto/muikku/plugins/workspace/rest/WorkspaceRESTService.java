@@ -81,6 +81,7 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudent;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
@@ -106,6 +107,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Stateful
 @Produces("application/json")
 @Path ("/workspace")
+@RestCatchSchoolDataExceptions
 public class WorkspaceRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -5286350366083446537L;

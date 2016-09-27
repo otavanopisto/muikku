@@ -12,7 +12,6 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
-import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
 @ApplicationScoped
@@ -37,7 +36,7 @@ public class PyramusSchoolDataUserGroupUsersUpdateScheduler extends PyramusDataS
     return "usergroup-users";
   }
   
-  public void synchronize() throws UnexpectedSchoolDataBridgeException {
+  public void synchronize() {
     int offset = getOffset();
     int count = 0;
     try {

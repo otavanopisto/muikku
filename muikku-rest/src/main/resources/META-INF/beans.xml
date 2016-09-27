@@ -8,5 +8,6 @@
   <class>fi.otavanopisto.security.LoggedInInterceptor</class>
   <class>fi.otavanopisto.security.PermitInterceptor</class>
   <class>fi.otavanopisto.security.rest.AuthorizedResourceInterceptor</class>
+  <class>fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptionsInterceptor</class>
  </interceptors>
 </beans>

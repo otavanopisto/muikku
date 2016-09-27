@@ -52,6 +52,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
+import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -69,6 +70,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @RequestScoped
 @Stateful
 @Produces ("application/json")
+@RestCatchSchoolDataExceptions
 public class CommunicatorRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 5020674196438210604L;

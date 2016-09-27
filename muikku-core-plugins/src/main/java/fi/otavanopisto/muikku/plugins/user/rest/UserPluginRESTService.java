@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -21,6 +22,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 @RequestScoped
 @Stateful
 @Produces ("application/json")
+@RestCatchSchoolDataExceptions
 public class UserPluginRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -3009238121067011985L;
