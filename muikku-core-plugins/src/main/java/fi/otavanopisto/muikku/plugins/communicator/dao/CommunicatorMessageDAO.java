@@ -277,7 +277,7 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
     Join<CommunicatorMessageRecipient, CommunicatorMessage> msgJoin = root.join(CommunicatorMessageRecipient_.communicatorMessage);
 
-    criteria.select(criteriaBuilder.count(root));
+    criteria.select(criteriaBuilder.countDistinct(msgJoin));
     
     criteria.where(
         criteriaBuilder.or(
