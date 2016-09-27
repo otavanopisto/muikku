@@ -38,7 +38,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Produces ("application/json")
 public class CommunicatorTrashRESTService extends PluginRESTService {
 
-  private static final long serialVersionUID = 5020674196438210604L;
+  private static final long serialVersionUID = 8518983552343926644L;
 
   @Inject
   @BaseUrl
