@@ -71,7 +71,7 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<CommunicatorMessageRecipient> listByUserAndRead(UserEntity user, boolean read) {
+  public List<CommunicatorMessageRecipient> listByUserAndRead(UserEntity user, boolean read, boolean trashed) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -83,6 +83,7 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), user.getId()),
             criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.readByReceiver), read),
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.trashedByReceiver), trashed),
             criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
         )
     );

@@ -225,7 +225,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getReceivedItemsCount() {
     UserEntity user = sessionController.getLoggedUserEntity(); 
-    List<CommunicatorMessageRecipient> receivedItems = communicatorController.listReceivedItemsByUserAndRead(user, false);
+    List<CommunicatorMessageRecipient> receivedItems = communicatorController.listReceivedItemsByUserAndRead(user, false, false);
 
     // TODO could be more elegant, i presume
     
