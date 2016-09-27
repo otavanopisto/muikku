@@ -20,10 +20,9 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDa
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGroup;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusRestClientUnauthorizedException;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
@@ -78,9 +77,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public User createUser(String firstName, String lastName)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public User createUser(String firstName, String lastName) {
     return null;
   }
 
@@ -184,9 +181,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public User findActiveUser(String identifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public User findActiveUser(String identifier) {
     Long studentId = identifierMapper.getPyramusStudentId(identifier);
     if (studentId != null) {
       Student student = findPyramusStudent(studentId);
@@ -212,13 +207,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return entityFactory.createEntity(staffMember);
     }
 
-    throw new SchoolDataBridgeRequestException("Malformed user identifier");
+    throw new SchoolDataBridgeInternalException("Malformed user identifier");
   }
 
   @Override
-  public User findUser(String identifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public User findUser(String identifier) {
     Long studentId = identifierMapper.getPyramusStudentId(identifier);
     if (studentId != null) {
       Student student = findPyramusStudent(studentId);
@@ -231,13 +224,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return staffMember == null ? null : entityFactory.createEntity(staffMember);
     }
 
-    throw new SchoolDataBridgeRequestException("Malformed user identifier");
+    throw new SchoolDataBridgeInternalException("Malformed user identifier");
   }
 
   @Override
-  public List<User> listUsersByEmail(String email)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public List<User> listUsersByEmail(String email) {
     Map<Long, User> userMap = new HashMap<Long, User>();
     Long personId = null;
 
@@ -267,7 +258,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public List<User> listUsers() throws UnexpectedSchoolDataBridgeException {
+  public List<User> listUsers() throws SchoolDataBridgeInternalException {
     List<User> result = new ArrayList<User>();
     result.addAll(createStudentEntities(pyramusClient.get("/students/students", Student[].class)));
     result.addAll(entityFactory.createEntity(pyramusClient.get("/staff/members", StaffMember[].class)));
@@ -275,45 +266,36 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public User updateUser(User user) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public User updateUser(User user) {
     if (!StringUtils.isNumeric(user.getIdentifier())) {
-      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
     }
 
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public void removeUser(String identifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public void removeUser(String identifier) {
     if (!NumberUtils.isNumber(identifier)) {
-      throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
     }
 
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public UserEmail createUserEmail(String userIdentifier, String address)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  public UserEmail createUserEmail(String userIdentifier, String address) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
 
   }
 
   @Override
-  public UserEmail findUserEmail(String identifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  public UserEmail findUserEmail(String identifier) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public List<UserEmail> listUserEmailsByUserIdentifier(String userIdentifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public List<UserEmail> listUserEmailsByUserIdentifier(String userIdentifier) {
     
     Email[] emails = null;
     
@@ -347,79 +329,58 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public UserEmail updateUserEmail(UserEmail userEmail)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  public UserEmail updateUserEmail(UserEmail userEmail) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public void removeUserEmail(String identifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  public void removeUserEmail(String identifier) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
   public UserImage createUserImage(String userIdentifier, String contentType,
-      byte[] content) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+      byte[] content) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public UserImage findUserImage(String identifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  public UserImage findUserImage(String identifier) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public List<UserImage> listUserImagesByUserIdentifier(String userIdentifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  public List<UserImage> listUserImagesByUserIdentifier(String userIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public UserImage updateUserImage(UserImage userImage)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  public UserImage updateUserImage(UserImage userImage) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public void removeUserImage(String identifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  public void removeUserImage(String identifier) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public UserProperty getUserProperty(String userIdentifier, String key)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  public UserProperty getUserProperty(String userIdentifier, String key) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public UserProperty setUserProperty(String userIdentifier, String key,
-      String value) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  public UserProperty setUserProperty(String userIdentifier, String key, String value) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public List<UserProperty> listUserPropertiesByUser(String userIdentifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+  public List<UserProperty> listUserPropertiesByUser(String userIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
-  public Role findRole(String identifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public Role findRole(String identifier) {
     UserRole pyramusUserRole = identifierMapper.getPyramusUserRole(identifier);
     if (pyramusUserRole != null) {
       return entityFactory.createEntity(pyramusUserRole);
@@ -427,7 +388,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     String id = identifierMapper.getPyramusCourseRoleId(identifier);
     if (StringUtils.isBlank(id)) {
-      throw new SchoolDataBridgeRequestException("Malformed role identifier");
+      throw new SchoolDataBridgeInternalException("Malformed role identifier");
     }
 
     if ("STUDENT".equals(id)) {
@@ -438,7 +399,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public List<Role> listRoles() throws UnexpectedSchoolDataBridgeException {
+  public List<Role> listRoles() {
     List<Role> result = new ArrayList<>();
 
     result.addAll(entityFactory.createEntity(UserRole.values()));
@@ -449,9 +410,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public Role findUserEnvironmentRole(String userIdentifier)
-      throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public Role findUserEnvironmentRole(String userIdentifier) {
     Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
     if (studentId != null) {
       Student student = pyramusClient.get("/students/students/" + studentId,
@@ -466,11 +425,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return staffMember != null ? entityFactory.createEntity(staffMember.getRole()) : null;
     }
 
-    throw new SchoolDataBridgeRequestException("Malformed user identifier");
+    throw new SchoolDataBridgeInternalException("Malformed user identifier");
   }
   
   @Override
-  public UserGroup findUserGroup(String identifier) throws SchoolDataBridgeRequestException {
+  public UserGroup findUserGroup(String identifier) {
     switch (identifierMapper.getStudentGroupType(identifier)) {
       case STUDENTGROUP:
         Long userGroupId = identifierMapper.getPyramusStudentGroupId(identifier);
@@ -490,7 +449,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       break;
     }
     
-    throw new SchoolDataBridgeRequestException("Malformed group identifier");
+    throw new SchoolDataBridgeInternalException("Malformed group identifier");
   }
 
   @Override
@@ -499,7 +458,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public GroupUser findGroupUser(String groupIdentifier, String identifier) throws SchoolDataBridgeRequestException {
+  public GroupUser findGroupUser(String groupIdentifier, String identifier) {
     switch(identifierMapper.getStudentGroupType(groupIdentifier)) {
       case STUDENTGROUP:
         Long userGroupId = identifierMapper.getPyramusStudentGroupId(groupIdentifier);
@@ -536,11 +495,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       break;
     }
 
-    throw new SchoolDataBridgeRequestException("Malformed group identifier");
+    throw new SchoolDataBridgeInternalException("Malformed group identifier");
   }
 
   @Override
-  public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) throws SchoolDataBridgeRequestException {
+  public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) {
     switch (identifierMapper.getStudentGroupType(groupIdentifier)) {
       case STUDENTGROUP:
         Long userGroupId = identifierMapper.getPyramusStudentGroupId(groupIdentifier);
@@ -551,10 +510,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       
       // TODO: Studyprogramme groups, Pyramus needs endpoint to list students by studyprogramme - too costly to implement it otherwise
       case STUDYPROGRAMME:
-        throw new SchoolDataBridgeRequestException("PyramusUserSchoolDataBridge.listGroupUsersByGroup - not implemented");
+        throw new SchoolDataBridgeInternalException("PyramusUserSchoolDataBridge.listGroupUsersByGroup - not implemented");
     }
 
-    throw new SchoolDataBridgeRequestException("Malformed group identifier");
+    throw new SchoolDataBridgeInternalException("Malformed group identifier");
   }
   
 
@@ -602,13 +561,12 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword)
-      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword) {
     
     Long personId = getPersonId(userIdentifier);
     
     if (personId == null) {
-      throw new SchoolDataBridgeRequestException("Malformed user identifier");
+      throw new SchoolDataBridgeInternalException("Malformed user identifier");
     }
     
     try {
@@ -626,9 +584,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier) {
     if (!StringUtils.equals(userIdentifier.getDataSource(), getSchoolDataSource())) {
-      throw new SchoolDataBridgeRequestException(String.format("Could not list email addresses for user from school data source %s", userIdentifier.getDataSource()));
+      throw new SchoolDataBridgeInternalException(String.format("Could not list email addresses for user from school data source %s", userIdentifier.getDataSource()));
     }
     
     Address[] addresses = null;
@@ -658,11 +616,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier)
-      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier) {
     
     if (!StringUtils.equals(userIdentifier.getDataSource(), getSchoolDataSource())) {
-      throw new SchoolDataBridgeRequestException(String.format("Could not list phone numbers for user from school data source %s", userIdentifier.getDataSource()));
+      throw new SchoolDataBridgeInternalException(String.format("Could not list phone numbers for user from school data source %s", userIdentifier.getDataSource()));
     }
     
     PhoneNumber[] phoneNumbers = null;
@@ -713,12 +670,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public String findUsername(String userIdentifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public String findUsername(String userIdentifier) {
     Long personId = getPersonId(userIdentifier);
     
     if (personId == null)
-      throw new SchoolDataBridgeRequestException("Malformed user identifier");
+      throw new SchoolDataBridgeInternalException("Malformed user identifier");
     
     try {
       UserCredentials userCredentials = pyramusClient.get("/persons/persons/" + personId + "/credentials", UserCredentials.class);

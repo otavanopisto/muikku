@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,8 +20,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
@@ -30,9 +29,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.RequestedAssessmentSupplementationsNotificationController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
@@ -141,43 +138,39 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
               GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, assessment.getGradeSchoolDataSource(), assessment.getGradeIdentifier());
               
               if (!grade.isPassingGrade()) {  
-                try {
-                  WorkspaceAssessmentRequest latestAssesmentRequest = null;
-                  List<WorkspaceAssessmentRequest> studentAssesmentRequests = gradingController.listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
-                  for (WorkspaceAssessmentRequest assessmentRequest : studentAssesmentRequests) {
-                    Date assessmentRequestDate = assessmentRequest.getDate();
-                    if (assessmentRequestDate != null) {
-                      if (latestAssesmentRequest == null || latestAssesmentRequest.getDate().before(assessmentRequestDate)) {
-                        latestAssesmentRequest = assessmentRequest;
-                      }
+                WorkspaceAssessmentRequest latestAssesmentRequest = null;
+                List<WorkspaceAssessmentRequest> studentAssesmentRequests = gradingController.listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
+                for (WorkspaceAssessmentRequest assessmentRequest : studentAssesmentRequests) {
+                  Date assessmentRequestDate = assessmentRequest.getDate();
+                  if (assessmentRequestDate != null) {
+                    if (latestAssesmentRequest == null || latestAssesmentRequest.getDate().before(assessmentRequestDate)) {
+                      latestAssesmentRequest = assessmentRequest;
                     }
                   }
+                }
+                
+                if (latestAssesmentRequest == null || latestAssesmentRequest.getDate().before(assessmentDate)) {
+                  UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+                  Workspace workspace = workspaceController.findWorkspace(workspaceIdentifier);
                   
-                  if (latestAssesmentRequest == null || latestAssesmentRequest.getDate().before(assessmentDate)) {
-                    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
-                    Workspace workspace = workspaceController.findWorkspace(workspaceIdentifier);
+                  if (studentEntity != null && workspace != null) {
+                    Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
+                    Map<String, Object> templateModel = new HashMap<>();
+                    templateModel.put("workspaceName", workspace.getName());
+                    templateModel.put("locale", studentLocale);
+                    templateModel.put("localeHelper", jadeLocaleHelper);
+                    String notificationContent = renderNotificationTemplate("requested-assessment-supplementation-notification", templateModel);
+                    notificationController.sendNotification(
+                      localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
+                      localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.subject"),
+                      notificationContent,
+                      studentEntity
+                    );
                     
-                    if (studentEntity != null && workspace != null) {
-                      Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-                      Map<String, Object> templateModel = new HashMap<>();
-                      templateModel.put("workspaceName", workspace.getName());
-                      templateModel.put("locale", studentLocale);
-                      templateModel.put("localeHelper", jadeLocaleHelper);
-                      String notificationContent = renderNotificationTemplate("requested-assessment-supplementation-notification", templateModel);
-                      notificationController.sendNotification(
-                        localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
-                        localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.subject"),
-                        notificationContent,
-                        studentEntity
-                      );
-                      
-                      requestedAssessmentSupplementationsNotificationController.createRequestedAssessmentSupplementationNotification(studentIdentifier, workspaceIdentifier);
-                    } else {
-                      logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity or workspace was not found", studentIdentifier.toId()));
-                    }
+                    requestedAssessmentSupplementationsNotificationController.createRequestedAssessmentSupplementationNotification(studentIdentifier, workspaceIdentifier);
+                  } else {
+                    logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity or workspace was not found", studentIdentifier.toId()));
                   }
-                } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-                  logger.log(Level.SEVERE, "Error sending notification", e);
                 }
               }
             }

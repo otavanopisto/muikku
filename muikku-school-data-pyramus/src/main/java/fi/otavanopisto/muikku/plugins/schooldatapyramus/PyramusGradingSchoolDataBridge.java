@@ -1,5 +1,9 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -10,20 +14,14 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScale;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScaleItem;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.GradingSchoolDataBridge;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -57,41 +55,32 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
 	@Override
-	public GradingScale findGradingScale(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public GradingScale findGradingScale(String identifier) {
 		if (!NumberUtils.isNumber(identifier)) {
-			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+			throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
 		}
 
     return createGradingScaleEntity(pyramusClient.get("/common/gradingScales/" + identifier, fi.otavanopisto.pyramus.rest.model.GradingScale.class));
 	}
 
 	@Override
-	public List<GradingScale> listGradingScales() throws UnexpectedSchoolDataBridgeException {
+	public List<GradingScale> listGradingScales() {
 	  fi.otavanopisto.pyramus.rest.model.GradingScale[] gradingScales = pyramusClient.get("/common/gradingScales/?filterArchived=true", fi.otavanopisto.pyramus.rest.model.GradingScale[].class);
-    if (gradingScales == null) {
-      throw new UnexpectedSchoolDataBridgeException("Null response");
-    }
-    
     return createGradingScaleEntities(gradingScales);
 	}
 
 	@Override
-	public GradingScaleItem findGradingScaleItem(String gradingScaleIdentifier, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public GradingScaleItem findGradingScaleItem(String gradingScaleIdentifier, String identifier) {
 		if (!NumberUtils.isNumber(identifier) || !NumberUtils.isNumber(gradingScaleIdentifier)) {
-			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+			throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
 		}
 
     return createGradingScaleItemEntity(pyramusClient.get("/common/gradingScales/" + gradingScaleIdentifier + "/grades/" + identifier, fi.otavanopisto.pyramus.rest.model.Grade.class));
 	}
 
 	@Override
-	public List<GradingScaleItem> listGradingScaleItems(String gradingScaleIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-
+	public List<GradingScaleItem> listGradingScaleItems(String gradingScaleIdentifier) {
     Grade[] grades = pyramusClient.get("/common/gradingScales/" + gradingScaleIdentifier + "/grades", Grade[].class);
-    if (grades == null) {
-      throw new UnexpectedSchoolDataBridgeException("Null response");
-    }
-    
     return createGradingScaleItemEntities(grades);
 	}
 
@@ -106,8 +95,10 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   private List<GradingScaleItem> createGradingScaleItemEntities(Grade[] grades) {
     List<GradingScaleItem> result = new ArrayList<>();
 
-    for (Grade g : grades)
-      result.add(createGradingScaleItemEntity(g));
+    if (grades != null) {
+      for (Grade g : grades)
+        result.add(createGradingScaleItemEntity(g));
+    }
       
     return result;
   }
@@ -123,16 +114,17 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   private List<GradingScale> createGradingScaleEntities(fi.otavanopisto.pyramus.rest.model.GradingScale[] gradingScales) {
     List<GradingScale> result = new ArrayList<>();
 
-    for (fi.otavanopisto.pyramus.rest.model.GradingScale g : gradingScales)
-      result.add(createGradingScaleEntity(g));
+    if (gradingScales != null) {
+      for (fi.otavanopisto.pyramus.rest.model.GradingScale g : gradingScales)
+        result.add(createGradingScaleEntity(g));
+    }
       
     return result;
   }
 
   @Override
   public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier,
-      String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date)
-      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+      String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
     
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
     Long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
@@ -185,7 +177,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
   @Override
-  public WorkspaceAssessment findWorkspaceAssessment(String identifier, String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public WorkspaceAssessment findWorkspaceAssessment(String identifier, String workspaceIdentifier, String studentIdentifier) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     Long id = identifierMapper.getPyramusCourseAssessmentId(identifier);
@@ -211,7 +203,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
       String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment,
-      Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+      Date date) {
 
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
     Long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
@@ -269,8 +261,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
   @Override
-  public List<WorkspaceAssessment> listWorkspaceAssessments(String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public List<WorkspaceAssessment> listWorkspaceAssessments(String workspaceIdentifier, String studentIdentifier) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     if (courseId == null || studentId == null) {
@@ -310,7 +301,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(String workspaceUserIdentifier,
       String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String requestText,
-      Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+      Date date) {
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
@@ -326,7 +317,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
   @Override
   public WorkspaceAssessmentRequest findWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier,
-      String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+      String studentIdentifier) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     Long id = Long.parseLong(identifier);
@@ -340,7 +331,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
   @Override
-  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     if (courseId == null) {
       logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
@@ -351,7 +342,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
   @Override
   public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier,
-      String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+      String studentIdentifier) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     if (courseId == null) {
@@ -366,7 +357,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
   @Override
-  public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String studentIdentifier) {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     if (studentId == null) {
       logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
@@ -378,7 +369,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier,
       String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
-      String requestText, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+      String requestText, Date date) {
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
@@ -409,7 +400,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
   @Override
-  public void deleteWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public void deleteWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier, String studentIdentifier) {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     if (courseId == null) {

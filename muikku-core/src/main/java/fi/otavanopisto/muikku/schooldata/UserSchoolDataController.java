@@ -47,13 +47,7 @@ public class UserSchoolDataController {
   public User createUser(SchoolDataSource schoolDataSource, String firstName, String lastName) {
     UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
     if (userBridge != null) {
-      try {
-        return userBridge.createUser(firstName, lastName);
-      } catch (SchoolDataBridgeRequestException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while creating an user", e);
-      } catch (UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while creating an user", e);
-      }
+      return userBridge.createUser(firstName, lastName);
     }
 
     return null;
@@ -62,13 +56,7 @@ public class UserSchoolDataController {
   public User findUser(SchoolDataSource schoolDataSource, String userIdentifier) {
     UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.findUser(userIdentifier);
-      } catch (SchoolDataBridgeRequestException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while find a user", e);
-      } catch (UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while find a user", e);
-      }
+      return schoolDataBridge.findUser(userIdentifier);
     }
 
     return null;
@@ -86,13 +74,7 @@ public class UserSchoolDataController {
   public User findActiveUser(SchoolDataSource schoolDataSource, String identifier) {
     UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.findActiveUser(identifier);
-      } catch (SchoolDataBridgeRequestException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while find an active user", e);
-      } catch (UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while find an active user", e);
-      }
+      return schoolDataBridge.findActiveUser(identifier);
     }
 
     return null;
@@ -106,7 +88,7 @@ public class UserSchoolDataController {
     for (UserSchoolDataBridge userBridge : getUserBridges()) {
       try {
         result.addAll(userBridge.listUsers());
-      } catch (UnexpectedSchoolDataBridgeException e) {
+      } catch (SchoolDataBridgeInternalException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing users", e);
       }
     }
@@ -133,13 +115,7 @@ public class UserSchoolDataController {
     List<User> result = new ArrayList<User>();
 
     for (UserSchoolDataBridge userBridge : getUserBridges()) {
-      try {
-        result.addAll(userBridge.listUsersByEmail(email));
-      } catch (SchoolDataBridgeRequestException e) {
-        logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing users by email", e);
-      } catch (UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing users by email", e);
-      }
+      result.addAll(userBridge.listUsersByEmail(email));
     }
 
     return result;
@@ -198,11 +174,7 @@ public class UserSchoolDataController {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
-        try {
-          return schoolDataBridge.listUserEmailsByUserIdentifier(user.getIdentifier());
-        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user emails", e);
-        }
+        return schoolDataBridge.listUserEmailsByUserIdentifier(user.getIdentifier());
       }
     }
 
@@ -214,11 +186,7 @@ public class UserSchoolDataController {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
-        try {
-          return schoolDataBridge.listUserEmailsByUserIdentifier(userIdentifier.getIdentifier());
-        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user emails", e);
-        }
+        return schoolDataBridge.listUserEmailsByUserIdentifier(userIdentifier.getIdentifier());
       }
     }
 
@@ -228,11 +196,7 @@ public class UserSchoolDataController {
   public UserEmail findUserEmail(SchoolDataSource schoolDataSource, String identifier) {
     UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.findUserEmail(identifier);
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user emails", e);
-      }
+      return schoolDataBridge.findUserEmail(identifier);
     }
 
     return null;
@@ -243,13 +207,7 @@ public class UserSchoolDataController {
   public Role findRole(SchoolDataSource schoolDataSource, String identifier) {
     UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
     if (userBridge != null) {
-      try {
-        return userBridge.findRole(identifier);
-      } catch (SchoolDataBridgeRequestException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a role", e);
-      } catch (UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a role", e);
-      }
+      return userBridge.findRole(identifier);
     } else {
       logger.severe("Could not find userBridge for school data source " + schoolDataSource.getIdentifier());
     }
@@ -261,11 +219,7 @@ public class UserSchoolDataController {
     List<Role> result = new ArrayList<>();
 
     for (UserSchoolDataBridge userBridge : getUserBridges()) {
-      try {
-        result.addAll(userBridge.listRoles());
-      } catch (UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing users", e);
-      }
+      result.addAll(userBridge.listRoles());
     }
 
     return result;
@@ -276,11 +230,7 @@ public class UserSchoolDataController {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
-        try {
-          return schoolDataBridge.findUserEnvironmentRole(user.getIdentifier());
-        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user emails", e);
-        }
+        return schoolDataBridge.findUserEnvironmentRole(user.getIdentifier());
       }
     }
 
@@ -293,11 +243,7 @@ public class UserSchoolDataController {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
-        try {
-          return schoolDataBridge.findUserGroup(identifier);
-        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while finding user group", e);
-        }
+        return schoolDataBridge.findUserGroup(identifier);
       }
     }
     return null;
@@ -307,11 +253,7 @@ public class UserSchoolDataController {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
-        try {
-          return schoolDataBridge.listUserGroups();
-        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user groups", e);
-        }
+        return schoolDataBridge.listUserGroups();
       }
     }
     return null;
@@ -323,11 +265,7 @@ public class UserSchoolDataController {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
-        try {
-          return schoolDataBridge.findGroupUser(groupIdentifier, identifier);
-        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while finding group user", e);
-        }
+        return schoolDataBridge.findGroupUser(groupIdentifier, identifier);
       }
     }
     return null;
@@ -338,11 +276,7 @@ public class UserSchoolDataController {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
-        try {
-          return schoolDataBridge.listGroupUsersByGroup(userGroup.getIdentifier());
-        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing group users", e);
-        }
+        return schoolDataBridge.listGroupUsersByGroup(userGroup.getIdentifier());
       }
     }
     return null;
@@ -353,11 +287,7 @@ public class UserSchoolDataController {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
-        try {
-          return schoolDataBridge.listUserAddresses(userIdentifier);
-        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user addresses", e);
-        }
+        return schoolDataBridge.listUserAddresses(userIdentifier);
       }
     }
     
@@ -369,11 +299,7 @@ public class UserSchoolDataController {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
-        try {
-          return schoolDataBridge.listUserPhoneNumbers(userIdentifier);
-        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user phone numbers", e);
-        }
+        return schoolDataBridge.listUserPhoneNumbers(userIdentifier);
       }
     }
     
@@ -393,15 +319,7 @@ public class UserSchoolDataController {
   }
 
   private User findUserByIdentifier(UserSchoolDataBridge userBridge, String identifier) {
-    try {
-      return userBridge.findUser(identifier);
-    } catch (SchoolDataBridgeRequestException e) {
-      logger.log(Level.SEVERE, "SchoolDataBridge reported an error while finding user", e);
-    } catch (UnexpectedSchoolDataBridgeException e) {
-      logger.log(Level.SEVERE, "SchoolDataBridge reported an error while finding user", e);
-    }
-
-    return null;
+    return userBridge.findUser(identifier);
   }
 
   private List<UserSchoolDataBridge> getUserBridges() {
@@ -420,14 +338,7 @@ public class UserSchoolDataController {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
-        try {
-          return schoolDataBridge.findUsername(user.getIdentifier());
-        } catch (SchoolDataBridgeUnauthorizedException surr) {
-          logger.log(Level.WARNING, "Unauthorized error while updateUserCredentials", surr);
-          throw surr;
-        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while findUsername", e);
-        }
+        return schoolDataBridge.findUsername(user.getIdentifier());
       }
     }
     
@@ -439,14 +350,7 @@ public class UserSchoolDataController {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
-        try {
-          schoolDataBridge.updateUserCredentials(user.getIdentifier(), oldPassword, newUsername, newPassword);
-        } catch (SchoolDataBridgeUnauthorizedException surr) {
-          logger.log(Level.WARNING, "Unauthorized error while updateUserCredentials", surr);
-          throw surr;
-        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while updateUserCredentials", e);
-        } 
+        schoolDataBridge.updateUserCredentials(user.getIdentifier(), oldPassword, newUsername, newPassword);
       }
     }
 	}
@@ -454,14 +358,7 @@ public class UserSchoolDataController {
   public String requestPasswordResetByEmail(SchoolDataSource schoolDataSource, String email) throws SchoolDataBridgeUnauthorizedException {
     UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.requestPasswordResetByEmail(email);
-      } catch (SchoolDataBridgeUnauthorizedException surr) {
-        logger.log(Level.WARNING, "Unauthorized error while requestPasswordResetByEmail", surr);
-        throw surr;
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "SchoolDataBridge reported an error while requestPasswordResetByEmail", e);
-      }
+      return schoolDataBridge.requestPasswordResetByEmail(email);
     }
     
     return null;
@@ -470,14 +367,7 @@ public class UserSchoolDataController {
   public boolean confirmResetPassword(SchoolDataSource schoolDataSource, String resetCode, String newPassword) throws SchoolDataBridgeUnauthorizedException {
     UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
     if (schoolDataBridge != null) {
-      try {
-        return schoolDataBridge.confirmResetPassword(resetCode, newPassword);
-      } catch (SchoolDataBridgeUnauthorizedException surr) {
-        logger.log(Level.WARNING, "Unauthorized error while confirmResetPassword", surr);
-        throw surr;
-      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-        logger.log(Level.SEVERE, "SchoolDataBridge reported an error while confirmResetPassword", e);
-      }
+      return schoolDataBridge.confirmResetPassword(resetCode, newPassword);
     }
     
     return false;

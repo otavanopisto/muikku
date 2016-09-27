@@ -20,17 +20,15 @@ public interface GradingSchoolDataBridge {
 
   /* GradingScales */
 
-  public GradingScale findGradingScale(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public GradingScale findGradingScale(String identifier);
 
-  public List<GradingScale> listGradingScales() throws UnexpectedSchoolDataBridgeException;
+  public List<GradingScale> listGradingScales() throws SchoolDataBridgeInternalException;
 
   /* GradingScaleItems */
 
-  public GradingScaleItem findGradingScaleItem(String gradingScaleIdentifier, String identifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException;
+  public GradingScaleItem findGradingScaleItem(String gradingScaleIdentifier, String identifier);
 
-  public List<GradingScaleItem> listGradingScaleItems(String gradingScaleIdentifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException;
+  public List<GradingScaleItem> listGradingScaleItems(String gradingScaleIdentifier);
 
   /* Workspace Assessments */
 
@@ -57,7 +55,7 @@ public interface GradingSchoolDataBridge {
    */
   public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String WorkspaceIdentifier,
       String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource,
-      String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+      String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date);
 
   /**
    * Finds a workspace assessment
@@ -68,8 +66,7 @@ public interface GradingSchoolDataBridge {
    *          school data source of workspace assessment
    * @return found workspace assessment or null of non found
    */
-  public WorkspaceAssessment findWorkspaceAssessment(String identifier, String WorkspaceIdentifier, String studentIdentifier)
-      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public WorkspaceAssessment findWorkspaceAssessment(String identifier, String WorkspaceIdentifier, String studentIdentifier);
 
   /**
    * Lists workspace assesments by workspace and student
@@ -80,7 +77,7 @@ public interface GradingSchoolDataBridge {
    *        identifier of student
    * @return list of workspace assessments (empty if not found)
    */
-  public List<WorkspaceAssessment> listWorkspaceAssessments(String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public List<WorkspaceAssessment> listWorkspaceAssessments(String workspaceIdentifier, String studentIdentifier);
   
   /**
    * Updates a workspace assessment
@@ -109,27 +106,26 @@ public interface GradingSchoolDataBridge {
    */
   public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
       String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier,
-      String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+      String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date);
 
   public void deleteWorkspaceAssessment(SchoolDataIdentifier workspaceIdentifier,
       SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier workspaceAssesmentIdentifier);
 
   public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier,
-      String studentIdentifier, String requestText, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+      String studentIdentifier, String requestText, Date date);
 
-  public WorkspaceAssessmentRequest findWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier, String studentIdentifier)
-      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public WorkspaceAssessmentRequest findWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier, String studentIdentifier);
 
-  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier);
 
-  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier, String studentIdentifier);
 
-  public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String studentIdentifier);
   
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
-      String workspaceIdentifier, String studentIdentifier, String requestText, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+      String workspaceIdentifier, String studentIdentifier, String requestText, Date date);
 
-  public void deleteWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public void deleteWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier, String studentIdentifier);
   
   public List<TransferCredit> listStudentTransferCredits(SchoolDataIdentifier studentIdentifier);
 

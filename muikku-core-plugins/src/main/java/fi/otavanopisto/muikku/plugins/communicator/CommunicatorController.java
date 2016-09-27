@@ -81,19 +81,23 @@ public class CommunicatorController {
   }
 
   public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity, CommunicatorLabel label, Integer firstResult, Integer maxResults) {
-    return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity, label, firstResult, maxResults);
+    return communicatorMessageDAO.listThreadsInInbox(userEntity, label, firstResult, maxResults);
   }
 
   public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
-    return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity, firstResult, maxResults);
+    return communicatorMessageDAO.listThreadsInInbox(userEntity, null, firstResult, maxResults);
   }
   
   public List<CommunicatorMessage> listSentItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
-    return communicatorMessageDAO.listFirstMessagesBySender(userEntity, firstResult, maxResults);
+    return communicatorMessageDAO.listThreadsInSent(userEntity, firstResult, maxResults);
   }
 
   public List<CommunicatorMessageRecipient> listReceivedItemsByUserAndRead(UserEntity userEntity, boolean read) {
     return communicatorMessageRecipientDAO.listByUserAndRead(userEntity, read);
+  }
+  
+  public List<CommunicatorMessage> listTrashItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
+    return communicatorMessageDAO.listThreadsInTrash(userEntity, firstResult, maxResults);
   }
   
   public CommunicatorMessageCategory persistCategory(String category) {
@@ -113,7 +117,7 @@ public class CommunicatorController {
     CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), category, caption, clean(content), new Date(), tags);
 
     for (UserEntity recipient : recipients) {
-      communicatorMessageRecipientDAO.create(message, recipient.getId());
+      communicatorMessageRecipientDAO.create(message, recipient);
       communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
     }
     
@@ -122,10 +126,6 @@ public class CommunicatorController {
 
   public CommunicatorMessageId findCommunicatorMessageId(Long communicatorMessageId) {
     return communicatorMessageIdDAO.findById(communicatorMessageId);
-  }
-
-  public List<CommunicatorMessage> listInboxMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
-    return communicatorMessageDAO.listMessagesByRecipientAndMessageId(user, messageId);
   }
 
   public CommunicatorMessage findCommunicatorMessageById(Long communicatorMessageId) {
@@ -140,12 +140,12 @@ public class CommunicatorController {
     return communicatorMessageRecipientDAO.listByMessage(communicatorMessage);
   }
 
-  public List<CommunicatorMessageRecipient> listCommunicatorMessageRecipientsByUserAndMessage(UserEntity user, CommunicatorMessageId messageId) {
-    return communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId);
+  public List<CommunicatorMessageRecipient> listCommunicatorMessageRecipientsByUserAndMessage(UserEntity user, CommunicatorMessageId messageId, boolean trashed) {
+    return communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId, trashed, false);
   }
 
-  public Long countMessagesByRecipientAndMessageId(UserEntity recipient, CommunicatorMessageId communicatorMessageId) {
-    return communicatorMessageDAO.countMessagesByRecipientAndMessageId(recipient, communicatorMessageId);
+  public Long countMessagesByUserAndMessageId(UserEntity user, CommunicatorMessageId communicatorMessageId, boolean inTrash) {
+    return communicatorMessageDAO.countMessagesByUserAndMessageId(user, communicatorMessageId, inTrash);
   }
   
   @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
@@ -198,19 +198,34 @@ public class CommunicatorController {
     return communicatorMessageTemplateDAO.create(name, content, user);
   }
 
-  public void archiveReceivedMessages(UserEntity user, CommunicatorMessageId messageId) {
-    List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId);
-    
-    for (CommunicatorMessageRecipient recipient : received) {
-      communicatorMessageRecipientDAO.archiveRecipient(recipient);
+  public void trashSentMessages(UserEntity user, CommunicatorMessageId messageId) {
+    List<CommunicatorMessage> sentMessages = communicatorMessageDAO.listMessagesInSentThread(user, messageId, false, false);
+    for (CommunicatorMessage message : sentMessages) {
+      communicatorMessageDAO.updateTrashedBySender(message, true);
     }
   }
 
-  public void archiveSentMessages(UserEntity user, CommunicatorMessageId messageId) {
-    List<CommunicatorMessage> sent = communicatorMessageDAO.listBySenderAndMessageId(user, messageId);
+  public void trashAllThreadMessages(UserEntity user, CommunicatorMessageId messageId) {
+    List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId, false, false);
+    for (CommunicatorMessageRecipient recipient : received) {
+      communicatorMessageRecipientDAO.updateTrashedByReceiver(recipient, true);
+    }
+    
+    List<CommunicatorMessage> sentMessages = communicatorMessageDAO.listMessagesInSentThread(user, messageId, false, false);
+    for (CommunicatorMessage message : sentMessages) {
+      communicatorMessageDAO.updateTrashedBySender(message, true);
+    }
+  }
 
+  public void archiveTrashedMessages(UserEntity user, CommunicatorMessageId threadId) {
+    List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, threadId, true, false);
+    for (CommunicatorMessageRecipient recipient : received) {
+      communicatorMessageRecipientDAO.updateArchivedByReceiver(recipient, true);
+    }
+    
+    List<CommunicatorMessage> sent = communicatorMessageDAO.listMessagesInSentThread(user, threadId, true, false);
     for (CommunicatorMessage msg : sent) {
-      communicatorMessageDAO.archiveSent(msg);
+      communicatorMessageDAO.updateArchivedBySender(msg, true);
     }
   }
 
@@ -221,7 +236,7 @@ public class CommunicatorController {
    * @param messageId
    * @return
    */
-  public List<CommunicatorMessage> listMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
+  public List<CommunicatorMessage> listMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId, Boolean trashed) {
     Set<CommunicatorMessage> result = new TreeSet<>(new Comparator<CommunicatorMessage>() {
       @Override
       public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
@@ -237,8 +252,8 @@ public class CommunicatorController {
       }
     });
     
-    result.addAll(communicatorMessageDAO.listBySenderAndMessageId(user, messageId));
-    result.addAll(communicatorMessageDAO.listByRecipientAndMessageId(user, messageId));
+    result.addAll(communicatorMessageDAO.listMessagesInSentThread(user, messageId, trashed, false));
+    result.addAll(communicatorMessageDAO.listMessagesInThread(user, messageId, trashed, false));
     
     return new ArrayList<>(result);
   }
