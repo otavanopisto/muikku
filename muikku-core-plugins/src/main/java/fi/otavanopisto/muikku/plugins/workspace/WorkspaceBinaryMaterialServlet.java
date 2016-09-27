@@ -80,7 +80,6 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
         
         // Byte range support
         
-        Range full = new Range(0, data.length - 1, data.length);
         List<Range> ranges = new ArrayList<Range>();
         String range = request.getHeader("Range");
         if (range != null) {
@@ -89,26 +88,24 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
             return;
           }
-          if (ranges.isEmpty()) {
-            for (String part : range.substring(6).split(",")) {
-              String startStr = StringUtils.substringBefore(part, "-");
-              String endStr = StringUtils.substringAfter(part, "-");
-              int start = NumberUtils.isDigits(startStr) ? NumberUtils.toInt(startStr) : -1;
-              int end = NumberUtils.isDigits(endStr) ? NumberUtils.toInt(endStr) : -1;
-              if (start == -1) {
-                start = data.length - end;
-                end = data.length - 1;
-              }
-              else if (end == -1 || end > data.length - 1) {
-                end = data.length - 1;
-              }
-              if (start > end) {
-                response.setHeader("Content-Range", "bytes */" + data.length);
-                response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
-                return;
-              }
-              ranges.add(new Range(start, end, data.length));
+          for (String part : range.substring(6).split(",")) {
+            String startStr = StringUtils.substringBefore(part, "-");
+            String endStr = StringUtils.substringAfter(part, "-");
+            int start = NumberUtils.isDigits(startStr) ? NumberUtils.toInt(startStr) : -1;
+            int end = NumberUtils.isDigits(endStr) ? NumberUtils.toInt(endStr) : -1;
+            if (start == -1) {
+              start = data.length - end;
+              end = data.length - 1;
             }
+            else if (end == -1 || end > data.length - 1) {
+              end = data.length - 1;
+            }
+            if (start > end) {
+              response.setHeader("Content-Range", "bytes */" + data.length);
+              response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+              return;
+            }
+            ranges.add(new Range(start, end, data.length));
           }
         }
 
@@ -116,12 +113,11 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
         response.setContentType(binaryMaterial.getContentType());
 
         try {
-          if (ranges.isEmpty() || ranges.get(0) == full) {
+          if (ranges.isEmpty()) {
             // Entire file
-            Range r = full;
             if (serveContent) {
-              response.setHeader("Content-Length", String.valueOf(r.length));
-              response.getOutputStream().write(data, r.start, r.length);
+              response.setHeader("Content-Length", String.valueOf(data.length));
+              response.getOutputStream().write(data);
             }
           }
           else if (ranges.size() == 1) {
