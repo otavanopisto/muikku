@@ -149,9 +149,7 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
       communicatorController.updateRead(r, true);
     }
     
-    return Response.ok(
-      
-    ).build();
+    return Response.noContent().build();
   }
 
   @POST
@@ -175,7 +173,7 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
       communicatorController.updateRead(r, false);
     }
     
-    return Response.ok().build();
+    return Response.noContent().build();
   }
 
   private List<Long> getMessageRecipientIdList(CommunicatorMessage msg) {
