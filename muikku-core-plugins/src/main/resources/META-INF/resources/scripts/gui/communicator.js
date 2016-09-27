@@ -19,11 +19,9 @@
         };
       });
       
-      var countCall = function (countCallback) {
-        mApi().communicator.messages.messagecount
-          .read(item.communicatorMessageId)
-          .callback(countCallback);
-      };
+      var countCall = $.proxy(function (countCallback) {
+        this.readThreadMessageCount(item.communicatorMessageId, countCallback);
+      }, this);
       
       var senderCall = function (senderCallback) {
         mApi().communicator.communicatormessages.sender
@@ -71,10 +69,21 @@
       throw Error("loadItems not implemented");
     },
     
+    loadThread: function (threadId, firstResult, maxResults, callback) {
+      throw Error("loadThread not implemented");
+    },
+    
     removeItems: function (ids, callback) {
       throw Error("removeItem not implemented");
     },
+
+    readThreadMessageCount: function (communicatorMessageId, callback) {
+      throw Error("readThreadMessageCount not implemented");
+    },
     
+    markAsRead: function (threadId, callback) {
+    },
+
     superApply: function (method) {
       CommunicatorFolder.prototype[method].call(this, Array.prototype.slice.call(arguments, 1));  
     }
@@ -127,8 +136,34 @@
           });
         }, this))
         .callback(mainCallback);
+    },
+    loadThread: function (threadId, firstResult, maxResults, callback) {
+      mApi().communicator.messages
+        .read(threadId)
+        .on("$", function (message, messageCallback) {
+          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+            if(err){
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+            }else{            
+              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+              message.senderFullName = user.firstName + ' ' + user.lastName;
+              message.senderHasPicture = user.hasImage;
+              message.caption = $('<div>').html(message.caption).text();
+              message.content = message.content;
+              messageCallback();
+            }
+          });
+        })
+        .callback(callback);
+    },
+    readThreadMessageCount: function (communicatorMessageId, callback) {
+      mApi().communicator.messages.messagecount
+        .read(communicatorMessageId)
+        .callback(callback);
+    },
+    markAsRead: function (threadId, callback) {
+      mApi().communicator.items.markasread.create(threadId).callback(callback);    
     }
-  
   });
   
   var CommunicatorSentFolderController = function (options) {
@@ -171,7 +206,116 @@
           });
         }, this))
         .callback(mainCallback);
+    },
+
+    loadThread: function (threadId, firstResult, maxResults, callback) {
+      mApi().communicator.messages
+        .read(threadId)
+        .on("$", function (message, messageCallback) {
+          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+            if(err){
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+            }else{            
+              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+              message.senderFullName = user.firstName + ' ' + user.lastName;
+              message.senderHasPicture = user.hasImage;
+              message.caption = $('<div>').html(message.caption).text();
+              message.content = message.content;
+              messageCallback();
+            }
+          });
+        })
+        .callback(callback);
+    },
+    
+    readThreadMessageCount: function (communicatorMessageId, callback) {
+      mApi().communicator.messages.messagecount
+        .read(communicatorMessageId)
+        .callback(callback);
+    },
+    
+    markAsRead: function (threadId, callback) {
     }
+    
+  });
+
+  var CommunicatorTrashFolderController = function (options) {
+    this._super = CommunicatorFolderController.prototype;
+    CommunicatorFolderController.call(this, arguments); 
+  };
+  
+  $.extend(CommunicatorTrashFolderController.prototype, CommunicatorFolderController.prototype, {
+    
+    removeItems: function (ids, callback) {
+      var calls = $.map(ids, function (id) {
+        return function (callback) {
+          mApi().communicator.trash
+            .del(id)
+            .callback(callback);
+        };
+      })
+      
+      async.series(calls, callback);
+    },
+    
+    loadItems: function (firstResult, maxResults, mainCallback) {
+      var params = {
+        firstResult: firstResult,
+        maxResults: maxResults
+      };
+      
+      if (this._labelId)
+        params.labelId = this._labelId;
+        
+      mApi().communicator.trash
+        .read(params)
+        .on('$', $.proxy(function (item, itemCallback) {
+          this.loadItemDetails(item, function (err, details) {
+            if (err) {
+              itemCallback(err);
+            } else {
+              item.sender = details.sender;
+              item.recipientCount = details.recipientCount;
+              item.recipients = details.recipients;
+              item.messageCount = details.count;
+              item.labels = details.labels;
+              itemCallback();
+            }
+          });
+        }, this))
+        .callback(mainCallback);
+    },
+  
+    loadThread: function (threadId, firstResult, maxResults, callback) {
+      mApi().communicator.trash
+        .read(threadId)
+        .on("$", function (message, messageCallback) {
+          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+            if(err){
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+            }else{            
+              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+              message.senderFullName = user.firstName + ' ' + user.lastName;
+              message.senderHasPicture = user.hasImage;
+              message.caption = $('<div>').html(message.caption).text();
+              message.content = message.content;
+              messageCallback();
+            }
+          });
+        })
+        .callback(callback);
+    },
+    
+    readThreadMessageCount: function (communicatorMessageId, callback) {
+      mApi().communicator.trash.messagecount
+        .read(communicatorMessageId)
+        .callback(callback);
+    },
+    
+    markAsRead: function (threadId, callback) {
+      mApi().communicator.trash.markasread.create(threadId).callback(callback);    
+    }
+    
   });
   
   $.widget("custom.communicatorMessages", {
@@ -471,7 +615,8 @@
         function (err, labels) {
           this._folderControllers = {
             'inbox': new CommunicatorInboxFolderController(),
-            'sent': new CommunicatorSentFolderController()
+            'sent': new CommunicatorSentFolderController(),
+            'trash': new CommunicatorTrashFolderController()
           };
           
           if (err) {
@@ -1298,8 +1443,8 @@
       this.element.find('input[name="send"]').removeAttr('disabled');
       this.element.trigger('dialogReady');
     }
-    
   });
+  
   $.widget("custom.communicatorThread", {
     _create : function() {
       var controls = $('.mf-controls-container');
@@ -1313,41 +1458,30 @@
       this._threadId = threadId;
       this._folderId = folderId;
       
-      mApi().communicator.messages
-        .read(threadId)
-        .on("$", function (message, messageCallback) {
-          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-            if(err){
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-            }else{            
-              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-              message.senderFullName = user.firstName + ' ' + user.lastName;
-              message.senderHasPicture = user.hasImage;
-              message.caption = $('<div>').html(message.caption).text();
-              message.content = message.content;
-              
-              messageCallback();
-            }
-          });
-        })
-        .callback($.proxy(function (err, messages) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-          } else {
-            var data = $.map(messages, function (message) {
-              return $.extend(message, {
-                folderId: folderId
-              });
+      var communicator = $(".communicator").communicator("instance");
+      var folderController = communicator.folderController(folderId);
+      
+      folderController.loadThread(threadId, 0, 0, $.proxy(function (err, messages) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+        } else {
+          var data = $.map(messages, function (message) {
+            return $.extend(message, {
+              folderId: folderId
             });
+          });
+          
+          renderDustTemplate('communicator/communicator_items_open.dust', data, $.proxy(function(text) {
+            this.element.html(text);
             
-            renderDustTemplate('communicator/communicator_items_open.dust', data , $.proxy(function(text) {
-              this.element.html(text);
-              mApi().communicator.messages.markasread.create(threadId).callback(function () {
-                mApi().communicator.cacheClear();
-                $(document).trigger("Communicator:messageread");
-              });    
-           }, this));
-         }         
+            var communicator = $(".communicator").communicator("instance");
+            var folderController = communicator.folderController(folderId);
+            folderController.markAsRead(threadId, function () {
+              mApi().communicator.cacheClear();
+              $(document).trigger("Communicator:messageread");
+            });    
+          }, this));
+        }         
       }, this));
     },
     
@@ -1370,9 +1504,9 @@
         .communicator('newMessageDialog', {
           replyThreadId: this._threadId, 
           replyMessageId: messageId 
-        });
+        }
+      );
     }
-    
   });
   
   $(document).ready(function() {

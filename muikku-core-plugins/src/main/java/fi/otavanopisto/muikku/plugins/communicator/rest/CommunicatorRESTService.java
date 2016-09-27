@@ -147,7 +147,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       Date latestMessageDate = receivedItem.getCreated();
       
       List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(
-          user, receivedItem.getCommunicatorMessageId());
+          user, receivedItem.getCommunicatorMessageId(), false);
       
       for (CommunicatorMessageRecipient recipient : recipients) {
         hasUnreadMsgs = hasUnreadMsgs || Boolean.FALSE.equals(recipient.getReadByReceiver()); 
@@ -176,7 +176,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
-    communicatorController.archiveReceivedMessages(user, messageId);
+    communicatorController.trashAllThreadMessages(user, messageId);
     
     return Response.noContent().build();
   }
@@ -215,7 +215,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
-    communicatorController.archiveSentMessages(user, messageId);
+    communicatorController.trashSentMessages(user, messageId);
     
     return Response.noContent().build();
   }
@@ -255,7 +255,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
-    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, messageId);
+    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, messageId, false);
 
     List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
     
@@ -281,7 +281,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
-    Long result = communicatorController.countMessagesByRecipientAndMessageId(user, messageId);
+    Long result = communicatorController.countMessagesByUserAndMessageId(user, messageId, false);
     
     return Response.ok(
       result
@@ -390,15 +390,15 @@ public class CommunicatorRESTService extends PluginRESTService {
   }
 
   @POST
-  @Path ("/messages/{COMMUNICATORMESSAGEID}/markasread")
+  @Path ("/items/{COMMUNICATORMESSAGEID}/markasread")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response markAsRead( 
+  public Response markInboxAsRead( 
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
-    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId);
+    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId, false);
     
     for (CommunicatorMessageRecipient r : list) {
       communicatorController.updateRead(r, true);
@@ -410,16 +410,16 @@ public class CommunicatorRESTService extends PluginRESTService {
   }
 
   @POST
-  @Path ("/messages/{COMMUNICATORMESSAGEID}/markasunread")
+  @Path ("/items/{COMMUNICATORMESSAGEID}/markasunread")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response markAsUnRead( 
+  public Response markInboxAsUnRead( 
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
       @QueryParam("messageIds") List<Long> messageIds) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
-    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId);
+    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId, false);
     
     for (CommunicatorMessageRecipient r : list) {
       if ((messageIds != null) && (r.getCommunicatorMessage() != null)) {
@@ -430,9 +430,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       communicatorController.updateRead(r, false);
     }
     
-    return Response.ok(
-      
-    ).build();
+    return Response.ok().build();
   }
 
   private List<Long> getMessageRecipientIdList(CommunicatorMessage msg) {
