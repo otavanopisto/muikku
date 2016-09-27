@@ -1178,7 +1178,11 @@
               sender.senderFullName = sender.firstName  + " " + sender.lastName;
               var recipients = results[1];
 
-              renderDustTemplate('/communicator/communicator_create_message.dust', message, $.proxy(function (text) {
+              var data = {
+                replyMessage: message
+              };
+              
+              renderDustTemplate('/communicator/communicator_create_message.dust', data, $.proxy(function (text) {
                 this.element.html(text);
                 if(message.senderId === MUIKKU_LOGGED_USER_ID){                 
                   $.each(recipients,  $.proxy(function (index, recipient) {
