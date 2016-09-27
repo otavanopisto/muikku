@@ -180,7 +180,7 @@
       this._items = [];
       this._folderId = this.options.folderId;      
       $('.mf-controls-container').on('click', '.mf-label-link', $.proxy(this._onAddLabelToMessagesClick, this));
-      $('.mf-controls-container').on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
+      $('.mf-controls-container').on('click', '.cm-delete-thread', $.proxy(this._onDeleteClick, this));
       $('.mf-controls-container').on('click', '.cm-add-label-menu', $.proxy(this._onAddLabelMenuClick, this));         
       $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onCreateLabelClick, this));   
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
@@ -1261,7 +1261,7 @@
       var controls = $('.mf-controls-container');
       this._threadId = null;
       controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
-      controls.on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
+      controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
     },
     

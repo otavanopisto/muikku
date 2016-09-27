@@ -494,13 +494,16 @@ ul.mf-tool-label-container {
     background: #72d200 none repeat scroll 0 0;
   }
 
-  border-radius: 20px;
-  display: inline-block;
-  height: 24px;
-  margin: 0 0 0 10px;
-  padding: 6px 0;
-  text-align: center;
-  width: 37px;
+  &.button{
+    padding:5px 10px 5px 10px;
+    border:1px solid $brd2;
+    background-color:#72d200; 
+    display:inline-block;    
+    color:#fff;
+    cursor:pointer;  
+    width:auto;
+  }
+
   &.toolset-1 {
     background: #72d200 none repeat scroll 0 0;  
   }
@@ -514,8 +517,15 @@ ul.mf-tool-label-container {
       font-size: 23px;
       color: #fff;
     }
-    
   }
+  border-radius: 20px;
+  display: inline-block;
+  height: 24px;
+  margin: 0 0 0 10px;
+  padding: 6px 0;
+  text-align: center;
+  width: 37px;
+
 
 } 
 
