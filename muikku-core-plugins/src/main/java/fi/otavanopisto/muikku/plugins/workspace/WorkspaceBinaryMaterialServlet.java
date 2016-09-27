@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
@@ -34,12 +37,19 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
   public void init() throws ServletException {
     super.init();
   }
-  
+
+  @Override
+  protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    process(request, response, false);
+  }
+
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    // TODO: Security
-    // TODO: Cache
+    process(request, response, true);
+  }
 
+  private void process(HttpServletRequest request, HttpServletResponse response, boolean serveContent)
+      throws ServletException, IOException {
     String workspaceUrl = request.getParameter("workspaceUrlName");
     String materialPath = request.getParameter("workspaceMaterialUrlName");
 
@@ -56,23 +66,86 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
     }
 
     Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
-    
-    int materialSize = material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContent().length : material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml().length() : 0; 
-    String eTag = DigestUtils.md5Hex(material.getTitle() + ':' + material.getId() + ':' + materialSize + ':' + material.getVersion()); 
-    
-    String ifNoneMatch = request.getHeader("If-None-Match");
+
+    int materialSize = material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContent().length : material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml().length() : 0;
+    String eTag = DigestUtils.md5Hex(material.getTitle() + ':' + material.getId() + ':' + materialSize + ':' + material.getVersion());
     
     response.setHeader("ETag", eTag);
-
+    String ifNoneMatch = request.getHeader("If-None-Match");
     if (!StringUtils.equals(ifNoneMatch, eTag)) {
       response.setStatus(HttpServletResponse.SC_OK);
       if (material instanceof BinaryMaterial) {
         BinaryMaterial binaryMaterial = (BinaryMaterial) material;
         byte[] data = binaryMaterial.getContent();
-        response.setContentLength(data.length);
+        
+        // Byte range support
+        
+        List<Range> ranges = new ArrayList<Range>();
+        String range = request.getHeader("Range");
+        if (range != null) {
+          if (!range.matches("^bytes=\\d*-\\d*(,\\d*-\\d*)*$")) {
+            response.setHeader("Content-Range", "bytes */" + data.length);
+            response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+            return;
+          }
+          for (String part : range.substring(6).split(",")) {
+            String startStr = StringUtils.substringBefore(part, "-");
+            String endStr = StringUtils.substringAfter(part, "-");
+            int start = NumberUtils.isDigits(startStr) ? NumberUtils.toInt(startStr) : -1;
+            int end = NumberUtils.isDigits(endStr) ? NumberUtils.toInt(endStr) : -1;
+            if (start == -1) {
+              start = data.length - end;
+              end = data.length - 1;
+            }
+            else if (end == -1 || end > data.length - 1) {
+              end = data.length - 1;
+            }
+            if (start > end) {
+              response.setHeader("Content-Range", "bytes */" + data.length);
+              response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+              return;
+            }
+            ranges.add(new Range(start, end, data.length));
+          }
+        }
+
+        response.setHeader("Accept-Ranges", "bytes");
         response.setContentType(binaryMaterial.getContentType());
+
         try {
-          response.getOutputStream().write(data);
+          if (ranges.isEmpty()) {
+            // Entire file
+            if (serveContent) {
+              response.setHeader("Content-Length", String.valueOf(data.length));
+              response.getOutputStream().write(data);
+            }
+          }
+          else if (ranges.size() == 1) {
+            // Single byte range
+            Range r = ranges.get(0);
+            response.setHeader("Content-Range", String.format("bytes %d-%d/%d", r.start, r.end, r.total));
+            response.setHeader("Content-Length", String.valueOf(r.length));
+            response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+            if (serveContent) {
+              response.getOutputStream().write(data, r.start, r.length);
+            }
+          }
+          else {
+            // Multiple byte ranges
+            response.setContentType("multipart/byteranges; boundary=MULTIPART_BYTERANGES");
+            response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+            if (serveContent) {
+              for (Range r : ranges) {
+                response.getOutputStream().println();
+                response.getOutputStream().println("--MULTIPART_BYTERANGES");
+                response.getOutputStream().println(String.format("Content-Type: %s", binaryMaterial.getContentType()));
+                response.getOutputStream().println(String.format("Content-Range: bytes %d-%d/%d", r.start, r.end, r.total));
+                response.getOutputStream().write(data, r.start, r.length);
+              }
+              response.getOutputStream().println();
+              response.getOutputStream().println("--MULTIPART_BYTERANGES--");
+            }
+          }
         }
         finally {
           response.getOutputStream().flush();
@@ -89,11 +162,23 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
         finally {
           response.getOutputStream().flush();
         }
-      }  
-    }
-    else {
+      }
+    } else {
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
     }
+  }
+
+  protected class Range {
+    public Range(int start, int end, int total) {
+      this.start = start;
+      this.end = end;
+      this.length = end - start + 1;
+      this.total = total;
+    }
+    int start;
+    int end;
+    int length;
+    int total;
   }
 
 }
