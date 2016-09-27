@@ -481,11 +481,7 @@ ul.mf-tool-label-container {
 }
 
 .mf-tool-container {
-  &.disabled {
-    background: $bgr1 none repeat scroll 0 0;
-    color: $bgr2;        
-  }
-  
+
   &.default {
     background: #0099ff none repeat scroll 0 0;
   }
@@ -503,6 +499,11 @@ ul.mf-tool-label-container {
     cursor:pointer;  
     width:auto;
   }
+  &.disabled {
+    background: $bgr1 none repeat scroll 0 0;
+    color: $bgr2;        
+  }
+    
 
   &.toolset-1 {
     background: #72d200 none repeat scroll 0 0;  
