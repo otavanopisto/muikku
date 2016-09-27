@@ -207,7 +207,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return entityFactory.createEntity(staffMember);
     }
 
-    throw new SchoolDataBridgeInternalException("Malformed user identifier");
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", identifier));
   }
 
   @Override
@@ -224,7 +224,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return staffMember == null ? null : entityFactory.createEntity(staffMember);
     }
 
-    throw new SchoolDataBridgeInternalException("Malformed user identifier");
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", identifier));
   }
 
   @Override
@@ -425,7 +425,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return staffMember != null ? entityFactory.createEntity(staffMember.getRole()) : null;
     }
 
-    throw new SchoolDataBridgeInternalException("Malformed user identifier");
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
   
   @Override
@@ -449,7 +449,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       break;
     }
     
-    throw new SchoolDataBridgeInternalException("Malformed group identifier");
+    throw new SchoolDataBridgeInternalException(String.format("Malformed group identifier %s", identifier));
   }
 
   @Override
@@ -566,7 +566,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     Long personId = getPersonId(userIdentifier);
     
     if (personId == null) {
-      throw new SchoolDataBridgeInternalException("Malformed user identifier");
+      throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
     }
     
     try {
@@ -674,7 +674,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     Long personId = getPersonId(userIdentifier);
     
     if (personId == null)
-      throw new SchoolDataBridgeInternalException("Malformed user identifier");
+      throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
     
     try {
       UserCredentials userCredentials = pyramusClient.get("/persons/persons/" + personId + "/credentials", UserCredentials.class);
