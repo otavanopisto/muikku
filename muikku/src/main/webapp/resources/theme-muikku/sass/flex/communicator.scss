@@ -191,49 +191,54 @@
 }
 
 .cm-message {
-  margin:0 0 5px 0;
-  min-width:300px;
-  box-sizing:border-box;
+  box-sizing: border-box;
+  margin: 0 0 5px;
+  min-width: 300px;
+
   
   .cm-message-details {
-    cursor:default; /* Override mf-item-details */
+    cursor: default; /* Override mf-item-details */
   }
   
   .cm-message-details-container {
-    background-color:#fff;
-    position:relative;
+    background-color: #fff;
+    position: relative;
     
     .cm-message-header {
-      box-sizing:border-box;
-    
+      box-sizing: border-box;
+      word-break: break-all;
+      word-wrap: break-word;
+      
       .cm-message-select {
-        display:inline-block;
-        margin:0 0 0 5px;
-        position:relative;
+        display: inline-block;
+        margin: 0 0 0 5px;
+        position: relative;
       }
       
       .cm-message-header-container {
-        position:relative;
-        width:calc(100% - 25px);
-        box-sizing:border-box;
-        display:inline-block;
-        cursor:pointer;
-      
+        box-sizing: border-box;
+        cursor: pointer;
+        display: inline-block; 
+        position: relative;
+        width: calc(100% - 25px);
+             
         .cm-message-sender-name {
-          overflow:hidden;
-          text-overflow:ellipsis;
-          white-space:nowrap;
-          color:#000;
-          max-width:calc(100% - 135px);
-          margin:0 0 0 5px;
-          vertical-align:bottom;
-          font-weight:400;
-          height:1.5em;
-          box-sizing:border-box;
+          box-sizing: border-box;
+          color: #000;
+          font-weight: 400;
+          height: 1.5em;
+          margin: 0 0 0 5px;
+          max-width: calc(100% - 135px);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: bottom;
+          white-space: nowrap;
         }
             
         .cm-message-caption {
-          margin:0 0 0 5px;
+          margin: 0 0 0 5px;
+          word-break: break-all;
+          word-wrap: break-word;
         }
       
       }

@@ -3,7 +3,12 @@
         <div class="cm-message-details-container flex-row">       
           <div class="mf-item-description cm-message-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
             <div class="cm-message-details-sender">
-              <div class="mf-item-header-content-primary cm-message-header-content-primary">{senderFullName}</div>        
+              <div class="mf-item-header-content-primary cm-message-header-content-primary">
+                <span>{senderFullName}</span>
+                {#recipients}
+                  <span class="icon-arrow-right" data-recipient-id="{recipientFullName}"></span>
+                {/recipients}
+              </div>        
               <div class="mf-item-header-content-secondary cm-message-header-content-secondary">{created|formatDate} {created|formatTime}</div>    
             </div>
             <div class="cm-message-header">{caption}</div>
@@ -12,7 +17,9 @@
               <div class="cm-message-content-tools">
                 <div class="cm-message-content-tools-container">
                   {^isOwner}
-                    <div id="{id}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>Vastaa viestiin</span></div>
+                    <div id="{id}" data-recipients="{recipientIds}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>{#localize key="plugin.communicator.reply"/}</span></div>                    
+                  {:else}
+                    <div id="{id}" data-recipients="{recipientIds}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>{#localize key="plugin.communicator.reply"/}</span></div>
                   {/isOwner}
                 </div>
                 <div class="cm-message-content-tools-reply-container"></div>

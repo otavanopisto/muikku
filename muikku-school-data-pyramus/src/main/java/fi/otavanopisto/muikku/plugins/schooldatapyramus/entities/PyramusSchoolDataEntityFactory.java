@@ -227,8 +227,10 @@ public class PyramusSchoolDataEntityFactory {
   public List<WorkspaceUser> createEntity(CourseStaffMember... staffMembers) {
     List<WorkspaceUser> result = new ArrayList<>();
 
-    for (CourseStaffMember staffMember : staffMembers) {
-      result.add(createEntity(staffMember));
+    if (staffMembers != null) {
+      for (CourseStaffMember staffMember : staffMembers) {
+        result.add(createEntity(staffMember));
+      }
     }
 
     return result;

@@ -25,10 +25,6 @@ import fi.otavanopisto.muikku.events.ContextInitializedEvent;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 
 @Singleton
-//@AccessTimeout (
-//  value = 30,
-//  unit = TimeUnit.SECONDS
-//)
 public class PyramusScheduler {
 
   private static final int INITIAL_TIMEOUT = 1000 * 180; // 180 sec
@@ -79,7 +75,6 @@ public class PyramusScheduler {
     }
   }
   
-//  @Schedule(minute = "*/1", hour = "*", persistent = false)
   public void synchronizePyramusData() {
     if (!SchoolDataPyramusPluginDescriptor.SCHEDULERS_ACTIVE) {
       return;
@@ -105,7 +100,7 @@ public class PyramusScheduler {
         running = true;
         updateScheduler.synchronize();
       } catch (Exception ex) {
-        logger.log(Level.SEVERE, "synchronization failed.", ex);
+        logger.log(Level.SEVERE, "Synchronization failed", ex);
       } finally {
         running = false;
       }

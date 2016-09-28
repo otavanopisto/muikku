@@ -967,6 +967,16 @@ public class WorkspaceMaterialController {
               Node iframeParent = iframe.getParentNode();
               iframeParent.replaceChild(youtubeDiv, iframe);
             }
+            else {
+              iframe.setAttribute("data-url", iframe.getAttribute("src"));
+              iframe.removeAttribute("src");
+              if (iframe.hasAttribute("class")) {
+                iframe.setAttribute("class", iframe.getAttribute("class") + " lazyFrame");
+              }
+              else {
+                iframe.setAttribute("class", "lazyFrame");
+              }
+            }
           }
 
           StringWriter writer = new StringWriter();

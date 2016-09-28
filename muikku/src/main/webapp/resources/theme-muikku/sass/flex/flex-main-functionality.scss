@@ -481,10 +481,13 @@ ul.mf-tool-label-container {
 }
 
 .mf-tool-container {
-  &.disabled {
-    background: $bgr1 none repeat scroll 0 0;
-    color: $bgr2;        
-  }
+  border-radius: 20px;
+  display: inline-block;
+  height: 24px;
+  margin: 0 0 0 10px;
+  padding: 6px 0;
+  text-align: center;
+  width: 37px;
   
   &.default {
     background: #0099ff none repeat scroll 0 0;
@@ -494,13 +497,22 @@ ul.mf-tool-label-container {
     background: #72d200 none repeat scroll 0 0;
   }
 
-  border-radius: 20px;
-  display: inline-block;
-  height: 24px;
-  margin: 0 0 0 10px;
-  padding: 6px 0;
-  text-align: center;
-  width: 37px;
+  &.button {
+    background-color: #72d200; 
+    border: 1px solid $brd2;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;    
+    padding: 5px 10px;  
+    width: auto;
+  }
+  
+  &.disabled {
+    background: $bgr1 none repeat scroll 0 0;
+    color: $bgr2;        
+  }
+    
+
   &.toolset-1 {
     background: #72d200 none repeat scroll 0 0;  
   }
@@ -514,9 +526,7 @@ ul.mf-tool-label-container {
       font-size: 23px;
       color: #fff;
     }
-    
   }
-
 } 
 
 .mf-tools-mobile {

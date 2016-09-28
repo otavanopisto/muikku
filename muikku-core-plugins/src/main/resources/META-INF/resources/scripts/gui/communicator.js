@@ -19,11 +19,9 @@
         };
       });
       
-      var countCall = function (countCallback) {
-        mApi().communicator.messages.messagecount
-          .read(item.communicatorMessageId)
-          .callback(countCallback);
-      };
+      var countCall = $.proxy(function (countCallback) {
+        this.readThreadMessageCount(item.communicatorMessageId, countCallback);
+      }, this);
       
       var senderCall = function (senderCallback) {
         mApi().communicator.communicatormessages.sender
@@ -71,10 +69,26 @@
       throw Error("loadItems not implemented");
     },
     
+    loadThread: function (threadId, firstResult, maxResults, callback) {
+      throw Error("loadThread not implemented");
+    },
+    
     removeItems: function (ids, callback) {
       throw Error("removeItem not implemented");
     },
+
+    readThreadMessageCount: function (communicatorMessageId, callback) {
+      throw Error("readThreadMessageCount not implemented");
+    },
     
+    markAsRead: function (threadId, callback) {
+      callback();
+    },
+    
+    markAsUnread: function (threadId, callback) {
+      callback();
+    },
+
     superApply: function (method) {
       CommunicatorFolder.prototype[method].call(this, Array.prototype.slice.call(arguments, 1));  
     }
@@ -127,8 +141,37 @@
           });
         }, this))
         .callback(mainCallback);
+    },
+    loadThread: function (threadId, firstResult, maxResults, callback) {
+      mApi().communicator.messages
+        .read(threadId)
+        .on("$", function (message, messageCallback) {
+          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+            if(err){
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+            }else{            
+              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+              message.senderFullName = user.firstName + ' ' + user.lastName;
+              message.senderHasPicture = user.hasImage;
+              message.caption = $('<div>').html(message.caption).text();
+              message.content = message.content;
+              messageCallback();
+            }
+          });
+        })
+        .callback(callback);
+    },
+    readThreadMessageCount: function (communicatorMessageId, callback) {
+      mApi().communicator.messages.messagecount
+        .read(communicatorMessageId)
+        .callback(callback);
+    },
+    markAsRead: function (threadId, callback) {
+      mApi().communicator.items.markasread.create(threadId).callback(callback);    
+    },
+    markAsUnread: function (threadId, callback) {
+      mApi().communicator.items.markasunread.create(threadId).callback(callback);    
     }
-  
   });
   
   var CommunicatorSentFolderController = function (options) {
@@ -171,7 +214,123 @@
           });
         }, this))
         .callback(mainCallback);
+    },
+
+    loadThread: function (threadId, firstResult, maxResults, callback) {
+      mApi().communicator.messages
+        .read(threadId)
+        .on("$", function (message, messageCallback) {
+          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+            if(err){
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+            }else{            
+              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+              message.senderFullName = user.firstName + ' ' + user.lastName;
+              message.senderHasPicture = user.hasImage;
+              message.caption = $('<div>').html(message.caption).text();
+              message.content = message.content;
+              messageCallback();
+            }
+          });
+        })
+        .callback(callback);
+    },
+    
+    readThreadMessageCount: function (communicatorMessageId, callback) {
+      mApi().communicator.messages.messagecount
+        .read(communicatorMessageId)
+        .callback(callback);
+    },
+    
+    markAsRead: function (threadId, callback) {
+      callback();
+    },
+    markAsUnread: function (threadId, callback) {
+      callback();
     }
+    
+  });
+
+  var CommunicatorTrashFolderController = function (options) {
+    this._super = CommunicatorFolderController.prototype;
+    CommunicatorFolderController.call(this, arguments); 
+  };
+  
+  $.extend(CommunicatorTrashFolderController.prototype, CommunicatorFolderController.prototype, {
+    
+    removeItems: function (ids, callback) {
+      var calls = $.map(ids, function (id) {
+        return function (callback) {
+          mApi().communicator.trash
+            .del(id)
+            .callback(callback);
+        };
+      })
+      
+      async.series(calls, callback);
+    },
+    
+    loadItems: function (firstResult, maxResults, mainCallback) {
+      var params = {
+        firstResult: firstResult,
+        maxResults: maxResults
+      };
+      
+      if (this._labelId)
+        params.labelId = this._labelId;
+        
+      mApi().communicator.trash
+        .read(params)
+        .on('$', $.proxy(function (item, itemCallback) {
+          this.loadItemDetails(item, function (err, details) {
+            if (err) {
+              itemCallback(err);
+            } else {
+              item.sender = details.sender;
+              item.recipientCount = details.recipientCount;
+              item.recipients = details.recipients;
+              item.messageCount = details.count;
+              item.labels = details.labels;
+              itemCallback();
+            }
+          });
+        }, this))
+        .callback(mainCallback);
+    },
+  
+    loadThread: function (threadId, firstResult, maxResults, callback) {
+      mApi().communicator.trash
+        .read(threadId)
+        .on("$", function (message, messageCallback) {
+          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+            if(err){
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+            }else{            
+              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+              message.senderFullName = user.firstName + ' ' + user.lastName;
+              message.senderHasPicture = user.hasImage;
+              message.caption = $('<div>').html(message.caption).text();
+              message.content = message.content;
+              messageCallback();
+            }
+          });
+        })
+        .callback(callback);
+    },
+    
+    readThreadMessageCount: function (communicatorMessageId, callback) {
+      mApi().communicator.trash.messagecount
+        .read(communicatorMessageId)
+        .callback(callback);
+    },
+    
+    markAsRead: function (threadId, callback) {
+      mApi().communicator.trash.markasread.create(threadId).callback(callback);    
+    },
+    markAsUnread: function (threadId, callback) {
+      mApi().communicator.trash.markasunread.create(threadId).callback(callback);    
+    }
+    
   });
   
   $.widget("custom.communicatorMessages", {
@@ -180,9 +339,12 @@
       this._items = [];
       this._folderId = this.options.folderId;      
       $('.mf-controls-container').on('click', '.mf-label-link', $.proxy(this._onAddLabelToMessagesClick, this));
-      $('.mf-controls-container').on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
+      $('.mf-controls-container').on('click', '.cm-delete-thread', $.proxy(this._onDeleteClick, this));
+      $('.mf-controls-container').on('click', '.cm-mark-unread-thread', $.proxy(this._onMarkUnreadClick, this));
       $('.mf-controls-container').on('click', '.cm-add-label-menu', $.proxy(this._onAddLabelMenuClick, this));         
-      $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onCreateLabelClick, this));   
+      $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onCreateLabelClick, this));
+      
+      this.element.on('change', 'input[name="messageSelect"]', $.proxy(this._onThreadSelectionChange, this));
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
       $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
@@ -276,9 +438,21 @@
     },
     
     _onDeleteClick: function (event) {
+      if ($(event.target).closest(".mf-tool-container").hasClass("disabled"))
+        return;
+      
       var selectedThreads = this._getSelectedThreads();
       this.element.closest('.communicator') 
         .communicator('deleteThreads', selectedThreads);
+    },
+    
+    _onMarkUnreadClick: function (event) {
+      if ($(event.target).closest(".mf-tool-container").hasClass("disabled"))
+        return;
+      
+      var selectedThreads = this._getSelectedThreads();
+      this.element.closest('.communicator') 
+        .communicator('markUnreadThreads', selectedThreads);
     },
     
     _onMessageHeaderClick: function (event) {
@@ -289,6 +463,18 @@
         .communicator('loadThread', threadId);
     },
 
+    _onThreadSelectionChange: function (event) {
+      var selectedThreads = this._getSelectedThreads();
+      var communicatorElement = this.element.closest(".communicator");
+      if (selectedThreads.length === 0) {
+        communicatorElement.find(".cm-delete-thread").closest(".mf-tool-container").addClass("disabled");
+        communicatorElement.find(".cm-mark-unread-thread").closest(".mf-tool-container").addClass("disabled");
+      } else {
+        communicatorElement.find(".cm-delete-thread").closest(".mf-tool-container").removeClass("disabled");
+        communicatorElement.find(".cm-mark-unread-thread").closest(".mf-tool-container").removeClass("disabled");
+      }
+    },
+    
     _onAddLabelMenuClick: function (event) {
       var labelObjs = $('.cm-categories').find('.mf-label');      
       var labels = [];
@@ -297,7 +483,6 @@
       var checkedMessages = $('.cm-messages-pages').find('input[name="messageSelect"]:checked');
       var checkedMessagesLabels = checkedMessages.closest('.cm-message-header').find('.mf-item-label');
 
-      
       $.each(checkedMessagesLabels, function(key, label) {
         var labelId = $(label).attr('data-label-id')
         if( messagesLabels.indexOf(labelId) == -1){
@@ -471,7 +656,8 @@
         function (err, labels) {
           this._folderControllers = {
             'inbox': new CommunicatorInboxFolderController(),
-            'sent': new CommunicatorSentFolderController()
+            'sent': new CommunicatorSentFolderController(),
+            'trash': new CommunicatorTrashFolderController()
           };
           
           if (err) {
@@ -572,6 +758,24 @@
       }, this));
     },
 
+    markUnreadThreads: function (threads) {
+      var calls = $.map(threads, $.proxy(function (thread) {
+        return $.proxy(function (callback) {
+          this._folderControllers[thread.folderId].markAsUnread(thread.id, callback);
+        }, this);
+      }, this));
+      
+      async.series(calls, $.proxy(function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          mApi().communicator.cacheClear();
+          $(document).trigger("Communicator:messageread");
+          this.reloadFolder();
+        }
+      }, this));
+    },
+    
     createLabel: function (name, colorHex) {
       var colorInt = this.hexToColorInt(colorHex);
       var label = {
@@ -928,7 +1132,7 @@
             instanceReady: $.proxy(this._onCKEditorReady, this)
           }
         }));
-        
+
         var autocomplete = this.element.find('input[name="recipient"]').autocomplete({
           open: function(event, ui) {
             $(event.target).perfectScrollbar({
@@ -986,40 +1190,88 @@
               .read(messageId)
               .callback(function(err, user) {
                 reply.senderFullName = user.firstName + ' ' + user.lastName;
-                reply.senderHasPicture = user.hasImage;
+                reply.senderHasPicture = user.hasImage;                
                 replyCallback();
+
               });
           })
           .callback(callback);
       }, this);
     },
-    
-    _load: function (callback) {
-      var taskIds = [];
-      var tasks = [];
-      
-      if (this.options.replyMessageId) {
-        taskIds.push('replyMessage');
-        tasks.push(this._createRecipientLoad(this.options.replyMessageId));
-      } 
-      
-      async.parallel(tasks, $.proxy(function (err, results) {
-        var data = {};
-        $.each(taskIds, function (taskIndex, taskId) {
-          data[taskId] = results[taskIndex];
-        });
-        
-        renderDustTemplate('/communicator/communicator_create_message.dust', data, $.proxy(function (text) {
-          this.element.html(text);
-          if (data.replyMessage) {
-            this._addRecipient('USER', data.replyMessage.senderId, data.replyMessage.senderFullName);
-          }
 
-          if (callback) {
+    _loadSender: function (messageId) {
+      return $.proxy(function (callback) {
+        mApi().communicator.communicatormessages.sender
+          .read(messageId)
+          .callback(callback);
+      }, this);
+    },
+
+    _load: function (callback) {
+      var replyMessageId = this.options.replyMessageId;
+      
+      if (replyMessageId) {
+        mApi().communicator.communicatormessages.read(replyMessageId).callback($.proxy(function (err, message) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            var senderCall = function (senderCallback) {
+              mApi().communicator.communicatormessages.sender
+                .read(replyMessageId)
+                .callback(senderCallback);
+            }
+            var recipientCalls = $.map(message.recipientIds, function (recipientId) {
+              return function (callback) {
+                mApi().communicator.communicatormessages.recipients.info
+                  .read(replyMessageId, recipientId)
+                  .callback(callback);
+              };
+            });
+  
+            var recipientBatchCall = function (recipientsCallback) {
+              async.parallel(recipientCalls, recipientsCallback);
+            }                      
+
+            async.parallel([senderCall, recipientBatchCall], $.proxy(function (err, results) {
+              var sender = results[0];
+              sender.senderFullName = sender.firstName  + " " + sender.lastName;
+              var recipients = results[1];
+
+              var data = {
+                replyMessage: message
+              };
+              
+              renderDustTemplate('/communicator/communicator_create_message.dust', data, $.proxy(function (text) {
+                this.element.html(text);
+                if(message.senderId === MUIKKU_LOGGED_USER_ID){                 
+                  $.each(recipients,  $.proxy(function (index, recipient) {
+                    recipient.recipientFullName = recipient.firstName + " " + recipient.lastName;
+                    
+                    if(recipient.id != sender.id){
+                     this._addRecipient('USER', recipient.id, recipient.recipientFullName);
+                    }
+                    
+                  }, this));
+                }
+                this._addRecipient('USER', sender.id, sender.senderFullName);                            
+                
+                if(callback){
+                  callback();
+                }
+              }, this));
+            }, this));
+          }
+        }, this));
+      }else{
+        renderDustTemplate('/communicator/communicator_create_message.dust', {}, $.proxy(function (text) {
+          this.element.html(text);
+          if(callback){
             callback();
           }
         }, this));
-      }, this));
+        
+      }
+      
     },
     
     _addRecipient: function (type, id, label) {
@@ -1254,14 +1506,16 @@
       this.element.find('input[name="send"]').removeAttr('disabled');
       this.element.trigger('dialogReady');
     }
-    
   });
+  
   $.widget("custom.communicatorThread", {
     _create : function() {
       var controls = $('.mf-controls-container');
       this._threadId = null;
       controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
-      controls.on('click', '.icon-delete', $.proxy(this._onDeleteClick, this));
+      controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
+      controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
+
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
     },
     
@@ -1269,40 +1523,30 @@
       this._threadId = threadId;
       this._folderId = folderId;
       
-      mApi().communicator.messages
-        .read(threadId)
-        .on("$", function (message, messageCallback) {
-          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-            if(err){
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-            }else{            
-              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-              message.senderFullName = user.firstName + ' ' + user.lastName;
-              message.senderHasPicture = user.hasImage;
-              message.caption = $('<div>').html(message.caption).text();
-              message.content = message.content;
-              messageCallback();
-            }
-          });
-        })
-        .callback($.proxy(function (err, messages) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-          } else {
-            var data = $.map(messages, function (message) {
-              return $.extend(message, {
-                folderId: folderId
-              });
+      var communicator = $(".communicator").communicator("instance");
+      var folderController = communicator.folderController(folderId);
+      
+      folderController.loadThread(threadId, 0, 0, $.proxy(function (err, messages) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+        } else {
+          var data = $.map(messages, function (message) {
+            return $.extend(message, {
+              folderId: folderId
             });
+          });
+          
+          renderDustTemplate('communicator/communicator_items_open.dust', data, $.proxy(function(text) {
+            this.element.html(text);
             
-            renderDustTemplate('communicator/communicator_items_open.dust', data , $.proxy(function(text) {
-              this.element.html(text);
-              mApi().communicator.messages.markasread.create(threadId).callback(function () {
-                mApi().communicator.cacheClear();
-                $(document).trigger("Communicator:messageread");
-              });    
-           }, this));
-         }         
+            var communicator = $(".communicator").communicator("instance");
+            var folderController = communicator.folderController(folderId);
+            folderController.markAsRead(threadId, function () {
+              mApi().communicator.cacheClear();
+              $(document).trigger("Communicator:messageread");
+            });    
+          }, this));
+        }         
       }, this));
     },
     
@@ -1316,6 +1560,17 @@
         .communicator('deleteThread', this._folderId, this._threadId);
     },
     
+    _onMarkUnreadClick: function (event) {
+      var threads = [
+          {
+            folderId: this._folderId,
+            id: this._threadId
+          }
+      ];
+      this.element.closest('.communicator') 
+        .communicator('markUnreadThreads', threads);
+    },
+    
     _onReplyClick: function (event) {
       var messageId = $(event.target)
         .closest('.cm-message')
@@ -1325,9 +1580,9 @@
         .communicator('newMessageDialog', {
           replyThreadId: this._threadId, 
           replyMessageId: messageId 
-        });
+        }
+      );
     }
-    
   });
   
   $(document).ready(function() {
