@@ -4,8 +4,9 @@
     <ul class="mf-list-content gt-filters"> 
       {#data}
         <li class="mf-label" id="{type}-{id}">
-          <div class="mf-label-functions icon-arrow-down md-flex-hide sm-flex-hide"> 
-          </div>
+          {@eq key=type value="flag"}
+            <div class="mf-label-functions icon-arrow-down md-flex-hide sm-flex-hide"></div>
+          {/eq}
           <a class="gt-filter-link" data-type="{type}" data-id="{id}">
             {?color}
               <span class="{iconClass}" style="color: {color}"></span>
