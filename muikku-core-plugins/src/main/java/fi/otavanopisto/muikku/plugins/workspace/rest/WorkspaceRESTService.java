@@ -2123,15 +2123,17 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     else {
       if (userEntityId != null) {
-        // List by user entity; student may list their own, those with LIST_ALL_JOURNAL_ENTRIES anyone's  
-        if (canListAllEntries || userEntityId.equals(userEntity.getId())) {
-          WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntityIncludeArchived(workspaceEntity, userEntity); 
-          if (workspaceUserEntity == null) {
-            return Response.status(Status.NOT_FOUND).build();
+        // List by user entity (Muikku)
+        if (!userEntityId.equals(userEntity.getId())) {
+          if (canListAllEntries) {
+            userEntity = userEntityController.findUserEntityById(userEntityId);
+            if (userEntity == null) {
+              return Response.status(Status.NOT_FOUND).build();
+            }
           }
-        }
-        else {
-          return Response.status(Status.FORBIDDEN).build();
+          else {
+            return Response.status(Status.FORBIDDEN).build();
+          }
         }
       }
       else if (workspaceStudentId != null) {
@@ -2144,17 +2146,20 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (workspaceUserEntity == null) {
           return Response.status(Status.NOT_FOUND).build();
         }
+        UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier(); 
+        UserEntity userEntityFromWorkspaceUser = userEntityController.findUserEntityByDataSourceAndIdentifier(
+            userSchoolDataIdentifier.getDataSource(),
+            userSchoolDataIdentifier.getIdentifier());
+        if (userEntityFromWorkspaceUser == null) {
+          return Response.status(Status.NOT_FOUND).build();
+        }
         if (!canListAllEntries) {
-          UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier(); 
-          UserEntity userEntityFromWorkspaceUser = userEntityController.findUserEntityByDataSourceAndIdentifier(
-              userSchoolDataIdentifier.getDataSource(),
-              userSchoolDataIdentifier.getIdentifier());
-          if (userEntityFromWorkspaceUser == null) {
-            return Response.status(Status.NOT_FOUND).build();
-          }
           if (!userEntity.getId().equals(userEntityFromWorkspaceUser.getId())) {
             return Response.status(Status.FORBIDDEN).build();
           }
+        }
+        else {
+          userEntity = userEntityFromWorkspaceUser;
         }
       }
       entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
