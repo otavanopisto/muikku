@@ -21,6 +21,8 @@
       this._loadFilters($.proxy(function () {
         this.filters(this._filters);
         this.element.on('click', '.gt-filter-link', $.proxy(this._onFilterLink, this));
+        this.element.on('click', '.mf-label-functions', $.proxy(this._onFilterMenuLink, this));
+      
       }, this));
     },
     
@@ -72,6 +74,25 @@
       }
     },
     
+    _onFilterMenuLink: function (event) {
+      var element = $(event.target).closest('li');
+      var menu = $(element).find('.gt-flag-functions-menu');
+      var menus = $(element).closest('ul').find('.gt-flag-functions-menu');
+      var menuPosition = $(element).width() - 10;
+      var menuState = menu.css('display') ;     
+      
+      menu.css('left', menuPosition);
+      
+      menus.hide();
+
+      if(menuState == 'none'){
+        menu.show();       
+      }else{
+        menu.hide();   
+        
+      }
+    },
+
     _onFilterLink: function (event) {
       var element = $(event.target).closest('.gt-filter-link');
       if (element.hasClass('selected')) {
@@ -79,7 +100,7 @@
       } else {
         this.addFilter(element.attr('data-type'), element.attr('data-id'));
       }
-    },
+    },    
     
     _loadFilters: function (callback) {
       async.parallel([ this._loadFlags,this._loadWorkspaces], $.proxy(function(err, filters){

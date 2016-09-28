@@ -3,7 +3,9 @@
     <div class="mf-list-title"><span>{title}</span></div>
     <ul class="mf-list-content gt-filters"> 
       {#data}
-        <li id="{type}-{id}">
+        <li class="mf-label" id="{type}-{id}">
+          <div class="mf-label-functions icon-arrow-down md-flex-hide sm-flex-hide"> 
+          </div>
           <a class="gt-filter-link" data-type="{type}" data-id="{id}">
             {?color}
               <span class="{iconClass}" style="color: {color}"></span>
@@ -11,8 +13,12 @@
               <span class="{iconClass}"></span>
             {/color}
             <span>{name}{?nameExtension} ({nameExtension}){/nameExtension}</span>
-          </a></li>    
-        </li>    
+          </a>
+          <div class="mf-label-functions-menu gt-flag-functions-menu">
+            <div class="mf-label-function-edit gt-flag-function-edit">{#localize key="plugin.communicator.label.menu.edit"/}</div>
+            <div class="mf-label-function-delete gt-flag-function-delete">{#localize key="plugin.communicator.label.menu.remove"/}</div>
+          </div>            
+         </li>    
       {/data}
     </ul>
   {/data}
