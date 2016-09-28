@@ -1,9 +1,11 @@
- <div class="mf-tool-container default cm-goback-container">
-   <div class="mf-tool icon-goback"></div>
- </div>
- <div class="mf-tool-container default cm-delete-message-container">
-   <div class="mf-tool icon-delete"></div>   
- </div>
-
-
-
+  <div class="flex-row flex-align-items-center">
+    <div class="mf-tool-container default cm-goback-container">
+     <div title="{#localize key="plugin.communicator.tool.title.goback"/}" class="mf-tool icon-goback"></div>
+    </div>
+    <div class="mf-tool-container default cm-delete-message-container">
+     <div title="{#localize key="plugin.communicator.tool.title.delete"/}" class="mf-tool cm-delete-message icon-delete"></div>   
+    </div>
+    <div class="mf-tool-container special cm-mark-unread-container">
+     <div title="{#localize key="plugin.communicator.tool.title.unread"/}" class="mf-tool cm-mark-unread-message icon-message-unread"></div>
+    </div>
+  </div> 

@@ -225,7 +225,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getReceivedItemsCount() {
     UserEntity user = sessionController.getLoggedUserEntity(); 
-    List<CommunicatorMessageRecipient> receivedItems = communicatorController.listReceivedItemsByUserAndRead(user, false);
+    List<CommunicatorMessageRecipient> receivedItems = communicatorController.listReceivedItemsByUserAndRead(user, false, false);
 
     // TODO could be more elegant, i presume
     
@@ -404,9 +404,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       communicatorController.updateRead(r, true);
     }
     
-    return Response.ok(
-      
-    ).build();
+    return Response.noContent().build();
   }
 
   @POST
@@ -430,7 +428,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       communicatorController.updateRead(r, false);
     }
     
-    return Response.ok().build();
+    return Response.noContent().build();
   }
 
   private List<Long> getMessageRecipientIdList(CommunicatorMessage msg) {

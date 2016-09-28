@@ -92,8 +92,8 @@ public class CommunicatorController {
     return communicatorMessageDAO.listThreadsInSent(userEntity, firstResult, maxResults);
   }
 
-  public List<CommunicatorMessageRecipient> listReceivedItemsByUserAndRead(UserEntity userEntity, boolean read) {
-    return communicatorMessageRecipientDAO.listByUserAndRead(userEntity, read);
+  public List<CommunicatorMessageRecipient> listReceivedItemsByUserAndRead(UserEntity userEntity, boolean read, boolean trashed) {
+    return communicatorMessageRecipientDAO.listByUserAndRead(userEntity, read, trashed);
   }
   
   public List<CommunicatorMessage> listTrashItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
