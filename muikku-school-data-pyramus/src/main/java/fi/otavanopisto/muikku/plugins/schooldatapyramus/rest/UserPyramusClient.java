@@ -110,29 +110,26 @@ class UserPyramusClient implements PyramusClient, Serializable {
     }
   }
   
-  private String getAccessToken() {
+  private synchronized String getAccessToken() {
     fi.otavanopisto.muikku.session.AccessToken accessToken = sessionController.getOAuthAccessToken("pyramus");
-    
-    if(accessToken == null){
+    if (accessToken == null){
       return null;
     }
-    
-    Client client = obtainClient();
-    try {
-      Date expires = accessToken.getExpires();   
-      if(expires.before(new Date())){
+    Date expires = accessToken.getExpires();   
+    if(expires.before(new Date())){
+      Client client = obtainClient();
+      try {
         AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, accessToken.getRefreshToken());
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());
         calendar.add(Calendar.SECOND, (refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK));
         sessionController.addOAuthAccessToken("pyramus", calendar.getTime(), refreshedAccessToken.getAccessToken(), refreshedAccessToken.getRefreshToken());
         return refreshedAccessToken.getAccessToken();
+      } finally {
+        releaseClient(client);
       }
-      
-      return accessToken.getToken();
-    } finally {
-      releaseClient(client);
     }
+    return accessToken.getToken();
   }
   
   private Client obtainClient() {

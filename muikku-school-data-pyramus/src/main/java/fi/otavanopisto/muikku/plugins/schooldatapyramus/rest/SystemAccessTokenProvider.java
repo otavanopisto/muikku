@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.rest;
 
+import java.time.OffsetDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,8 +11,6 @@ import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 
 import org.apache.commons.lang3.StringUtils;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
@@ -39,20 +38,17 @@ public class SystemAccessTokenProvider {
     }
   }
   
-  public String getAccessToken(PyramusRestClient restClient, Client client) {
+  public synchronized String getAccessToken(PyramusRestClient restClient, Client client) {
     if (accessToken == null) {
       AccessToken createdAccessToken = restClient.createAccessToken(client, authCode);
       accessToken = createdAccessToken.getAccessToken();
       refreshToken = createdAccessToken.getRefreshToken();
       accessTokenExpires = OffsetDateTime.now().plusSeconds(createdAccessToken.getExpiresIn());
-    } else {
-      if ((accessTokenExpires == null) || (System.currentTimeMillis() > accessTokenExpires.toInstant().toEpochMilli())) {
-        AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, refreshToken);
-        accessToken = refreshedAccessToken.getAccessToken();
-        accessTokenExpires = OffsetDateTime.now().plusSeconds(refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK);
-      }
+    } else if (accessTokenExpires == null || System.currentTimeMillis() > accessTokenExpires.toInstant().toEpochMilli()) {
+      AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, refreshToken);
+      accessToken = refreshedAccessToken.getAccessToken();
+      accessTokenExpires = OffsetDateTime.now().plusSeconds(refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK);
     }
-
     return accessToken;
   }
   
