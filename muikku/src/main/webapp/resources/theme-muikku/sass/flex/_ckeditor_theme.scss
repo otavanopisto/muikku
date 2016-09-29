@@ -3,6 +3,41 @@
   box-shadow:none !important;
   border-radius:5px;
   
+  &[data-readonly="readonly"] {
+  
+    .cke_inner {
+      background: #fcfcfc !important;
+      border: 2px dotted #eaeaea !important;
+      box-shadow: none !important;
+      color: #7c7c7c !important;
+      
+      &:hover {
+        border: 2px dotted #eee;
+        box-shadow: none;
+        color: #555555 !important;
+        
+        .cke_top {
+          background: #eaeaea;
+        }
+        
+        .cke_bottom {
+          border-top:1px solid #eaeaea;
+        }
+        
+      }
+      
+      .cke_top {
+        background: #eaeaea;
+      }
+      
+      .cke_bottom {
+        border-top:1px solid #eaeaea;
+      }
+      
+    }
+
+  }
+  
   .cke_inner { /* CKE top, content and bottom wrapper */
     border: 2px solid #abdbed;
     box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
