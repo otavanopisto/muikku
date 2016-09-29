@@ -60,10 +60,10 @@ select {
 }
 
 input[checked="checked"] {
-  box-shadow: 0 0 0 3px #7bb7fa;
+  box-shadow: 0 0 0 3px rgba(123,183,250,0.5);
   
   &:hover {
-    box-shadow: 0 0 0 3px #7bb7fa;
+    box-shadow: 0 0 0 3px rgba(123,183,250,0.5);
   }
   
 }

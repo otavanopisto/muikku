@@ -108,6 +108,41 @@ select {
   
 }
 
+/* Radio button and Check box wrapper Span */
+span.radiobutton-horizontal,
+span.checkbox-horizontal {
+
+  > span {
+    display: inline-block;
+    
+    label {
+      font-weight: 300 !important;
+      font-size: 14px !important;
+      display: inline !important;
+    }
+    
+  }
+
+}
+
+span.radiobutton-vertical,
+span.checkbox-vertical {
+  display: inline-block;
+  vertical-align: middle;
+  
+  > span {
+    display: block;
+    
+    label {
+      font-weight: 300 !important;
+      font-size: 14px !important;
+      display: inline !important;
+    }
+    
+  }
+  
+}
+
 label {
   display: inline;
   font-weight: 400;
