@@ -44,11 +44,11 @@ body {
   width: 100%;
 }
 
-/* Navigation Icons tooltip */
 [class^="icon-"] span, [class*=" icon-"] span {
   display: inline-block;
   font-family: 'Open Sans', Arial, sans-serif !important;
   padding-left: 4px;
+  vertical-align: top;
 }
 
 [class^="icon-"], [class*=" icon-"] {
