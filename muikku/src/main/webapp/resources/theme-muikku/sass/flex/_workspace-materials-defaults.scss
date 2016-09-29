@@ -195,15 +195,14 @@ select {
   }
   
   &[disabled="disabled"] {
-    background: #fcfcfc !important;
-    border: 2px dotted #eaeaea !important;
-    box-shadow: none !important;
-    color: #7c7c7c !important;
+    border: 2px solid #cae1fc;
+    box-shadow: 0 0 0px 3px rgba(202,225,252,0.15);
+    color: #7c7c7c;
     
     &:hover {
-      border: 2px dotted #eee;
-      box-shadow: none;
-      color: #555555 !important;
+      border: 2px solid #cae1fc;
+      box-shadow: 0 0 0px 3px rgba(202,225,252,0.15);
+      color: #7c7c7c;
     }
 
   }
@@ -256,12 +255,17 @@ input[type="checkbox"] {
     
   &[disabled="disabled"] {
   
-    &:hover {
-      box-shadow: 0 0 1px 3px rgba(234,234,234,0.15);
-    }
-    
     &:checked {
-      box-shadow: 0 0 1px 3px rgba(234,234,234,1);
+      box-shadow: 0 0 1px 3px rgba(202,225,252,0.85);
+      
+      &:hover {
+        box-shadow: 0 0 1px 3px rgba(202,225,252,0.85);
+      }
+      
+    }
+  
+    &:hover {
+      box-shadow: 0 0 1px 3px rgba(215,215,215,0.15);
     }
   
   }
