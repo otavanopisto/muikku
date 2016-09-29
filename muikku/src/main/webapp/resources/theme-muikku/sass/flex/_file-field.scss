@@ -26,30 +26,30 @@
   z-index: 99;
   font-weight: 300;
   font-size: 12px;
-  font-family:'Open Sans', Arial, sans-serif;
-  text-transform:none;
-  text-align:right;
-  padding:0 5px 0 0;
+  font-family: 'Open Sans', Arial, sans-serif;
+  text-transform: none;
+  text-align: right;
+  padding: 0 5px 0 0;
 }
 
 .muikku-file-input-field-file-remove, .muikku-file-input-field-file-restore {
-  display:block;
-  text-decoration:none;
-  position:absolute; 
+  display: block;
+  text-decoration: none;
+  position: absolute; 
   top: 0;
   right: 10px;
-  font-weight:400 !important;
+  font-weight: 400 !important;
   position: absolute;
-  color:#fff !important;
-  font-size:14px;
+  color: #fff !important;
+  font-size: 14px;
 }
 
 .muikku-file-input-field-file-progress {
   
   .ui-progressbar-value {
-    background:#34acfd;
-    height:30px;
-    border-radius:0 !important;
+    background: #34acfd;
+    height: 30px;
+    border-radius: 0 !important;
   }
 
 }
@@ -65,9 +65,8 @@
 .muikku-file-input-field-file-uploader-container {
   position: relative;
   padding: 20px;
-  margin: 0 10px;
   background: #fff;
-  border: 1px solid #eee;
+  border: 2px solid #abdbed;
   transition: border,box-shadow 0.1s,0.2s ease-in-out;
   outline: none;
   box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
@@ -76,17 +75,17 @@
   color: #186089;
   
   &:hover {
-    border:1px solid #97bfed;
-    box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+    border: 2px solid #8dd6f1;
+    box-shadow: 0 0 0px 3px rgba(202,225,252,0.75);
   }
   
   a {
-    color:#fff !important;
-    text-decoration:none;
-    font-size:14px;
+    color: #fff !important;
+    text-decoration: none;
+    font-size: 14px;
     
     &:hover {
-      text-decoration:underline;
+      text-decoration: underline;
     }
     
   }
@@ -94,20 +93,20 @@
 }
 
 .muikku-file-input-field-file-uploader-container input[type="file"] {
-  width:100%;
-  height:100%;
-  display:block;
-  opacity:0;
-  position:absolute;
-  top:0px;
-  left:0px;
-  right:0px;
-  bottom:0px;
-  cursor:pointer;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
   
   /* Fix for Chrome upload file field display issue */
   &::-webkit-file-upload-button {
-    width: 0;
+    width: 0px;
     padding: 0;
     margin: 0;
     -webkit-appearance: none;
@@ -129,5 +128,5 @@
 }
 
 .muikku-file-input-field-file-removed .muikku-file-input-field-file-label {
-  text-decoration:line-through;
+  text-decoration: line-through;
 }
