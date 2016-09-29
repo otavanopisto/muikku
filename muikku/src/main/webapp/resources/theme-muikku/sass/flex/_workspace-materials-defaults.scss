@@ -162,6 +162,7 @@ textarea {
       box-shadow: none !important;
       color: #555555 !important;
     }
+    
   }
   
   &:focus,
@@ -194,12 +195,17 @@ select {
   }
   
   &[disabled="disabled"] {
-  
+    background: #fcfcfc !important;
+    border: 2px dotted #eaeaea !important;
+    box-shadow: none !important;
+    color: #7c7c7c !important;
+    
     &:hover {
-      border: 2px solid #abdbed;
-      box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+      border: 2px dotted #eee;
+      box-shadow: none;
+      color: #555555 !important;
     }
-  
+
   }
 
   option {
@@ -251,11 +257,11 @@ input[type="checkbox"] {
   &[disabled="disabled"] {
   
     &:hover {
-      box-shadow: 0 0 1px 3px rgba(215,215,215,0.15);
+      box-shadow: 0 0 1px 3px rgba(234,234,234,0.15);
     }
     
     &:checked {
-      box-shadow: 0 0 1px 3px rgba(202,225,252,0.85);
+      box-shadow: 0 0 1px 3px rgba(234,234,234,1);
     }
   
   }
