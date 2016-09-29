@@ -38,7 +38,7 @@ public class SystemAccessTokenProvider {
     }
   }
   
-  public synchronized String getAccessToken(PyramusRestClient restClient, Client client) {
+  public String getAccessToken(PyramusRestClient restClient, Client client) {
     if (accessToken == null) {
       AccessToken createdAccessToken = restClient.createAccessToken(client, authCode);
       accessToken = createdAccessToken.getAccessToken();

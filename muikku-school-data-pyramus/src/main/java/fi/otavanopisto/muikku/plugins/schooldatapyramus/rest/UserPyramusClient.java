@@ -5,8 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import javax.ejb.Lock;
-import javax.ejb.LockType;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
@@ -18,7 +16,6 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusUs
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 
-@Lock(LockType.WRITE)
 @SessionScoped
 @PyramusUser
 class UserPyramusClient implements PyramusClient, Serializable {
@@ -110,7 +107,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
     }
   }
   
-  private synchronized String getAccessToken() {
+  private String getAccessToken() {
     fi.otavanopisto.muikku.session.AccessToken accessToken = sessionController.getOAuthAccessToken("pyramus");
     if (accessToken == null){
       return null;
@@ -119,12 +116,24 @@ class UserPyramusClient implements PyramusClient, Serializable {
     if(expires.before(new Date())){
       Client client = obtainClient();
       try {
-        AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, accessToken.getRefreshToken());
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.SECOND, (refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK));
-        sessionController.addOAuthAccessToken("pyramus", calendar.getTime(), refreshedAccessToken.getAccessToken(), refreshedAccessToken.getRefreshToken());
-        return refreshedAccessToken.getAccessToken();
+        synchronized (this) {
+          accessToken = sessionController.getOAuthAccessToken("pyramus");
+          if (accessToken == null){
+            return null;
+          }
+          expires = accessToken.getExpires();
+          if (expires.before(new Date())) {
+            AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, accessToken.getRefreshToken());
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.SECOND, (refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK));
+            sessionController.addOAuthAccessToken("pyramus", calendar.getTime(), refreshedAccessToken.getAccessToken(), refreshedAccessToken.getRefreshToken());
+            return refreshedAccessToken.getAccessToken();
+          }
+          else {
+            return accessToken.getToken();
+          }
+        }
       } finally {
         releaseClient(client);
       }
