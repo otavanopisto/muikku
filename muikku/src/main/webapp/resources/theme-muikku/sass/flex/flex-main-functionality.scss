@@ -697,12 +697,18 @@ ul.mf-tool-label-container {
   }
 
   .mf-item-label {
+    border: 1px solid #ccc;
+    border-radius: 3px;
     display: inline-block;
     font-size: 10px;
-    border: 1px solid #ccc;
     font-weight: 600;
-    margin-right: 3px;
-    padding: 3px 5px;
+    margin-right: 5px;
+    padding: 0 5px;
+    
+    span {
+      color: #4c4c4c;
+      vertical-align: top;
+    }
     
     &:first-child {
       margin-left: 10px;
