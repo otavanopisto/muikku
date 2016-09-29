@@ -110,6 +110,14 @@ public class CommunicatorMessage implements ContextReference {
     }
   }
   
+  public Boolean getTrashedBySender() {
+    return trashedBySender;
+  }
+
+  public void setTrashedBySender(Boolean trashedBySender) {
+    this.trashedBySender = trashedBySender;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -141,7 +149,11 @@ public class CommunicatorMessage implements ContextReference {
   
   @NotNull
   @Column(nullable = false)
-  private Boolean archivedBySender = Boolean.FALSE;
+  private Boolean archivedBySender;
+  
+  @NotNull
+  @Column(nullable = false)
+  private Boolean trashedBySender;
   
   @ElementCollection
   @CollectionTable (name="communicatormessage_tags", joinColumns=@JoinColumn(name="communicatorMessage_id"))

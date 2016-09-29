@@ -15,6 +15,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
+import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -24,6 +25,7 @@ import fi.otavanopisto.security.rest.RESTPermit;
 @Stateful
 @Produces("application/json")
 @Path ("/guider")
+@RestCatchSchoolDataExceptions
 public class GuiderRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -5286350366083446537L;

@@ -7,51 +7,55 @@
 }  
   
 .ui-autocomplete {
-  position:absolute !important;
-  top:20px !important;
-  right:0 !important;
-  left:0 !important;
+  position: absolute !important;
+  top: 20px !important;
+  right: 0 !important;
+  left: 0 !important;
+  
   .ui-menu-item {
+  
     &[data-existing="true"] {
-      color:#aaa;
-      font-style:italic;
-      cursor:default;
+      color: #aaa;
+      font-style: italic;
+      cursor: default;
     }
+    
   }
+  
 }
 
 .cm-message-create-body {
   
   .cm-message-recipients {
-    position:relative;  
+    position: relative;  
   }
   
   .cm-message-recipient {
-    cursor:pointer;
-    margin-top:0 !important;
-    display:inline-block;
+    cursor: pointer;
+    margin-top: 0 !important;
+    display: inline-block;
         
     &:not(:first-child) {
-      margin-top:0 !important;
+      margin-top: 0 !important;
     }
     
    .cm-message-tool {
-     padding:0 10px 0 10px;
-     border:1px solid $brd2;
-     color:#000;
-     cursor:pointer;
+     padding: 0 10px;
+     border: 1px solid $brd2;
+     color: #000;
+     cursor: pointer;
     }   
 
   }
   
   .cm-message-recipient-name {
-    margin-top:0 !important;
-    font-family:inherit;
+    margin-top: 0 !important;
+    font-family: inherit;
     margin-left: 10px;
     padding: 9px 0;
 
     &:before {
-      margin-right:5px;
+      margin-right: 5px;
       font-family: 'muikku';      
     }     
 
@@ -59,7 +63,7 @@
     &.user {
 
       &:before {
-        color:orange;
+        color: orange;
       }     
         
     }
@@ -67,7 +71,7 @@
     &.usergroup {
 
       &:before {
-        color:green;
+        color: green;
       }
            
     }
@@ -75,16 +79,16 @@
     &.workspace {
 
       &:before {
-         color:blue;
+         color: blue;
       }     
     
     }     
     
     &:hover {   
-      color:red;
+      color: red;
       
       &:before {
-       color:red;
+        color: red;
       }
       
     } 
@@ -92,64 +96,70 @@
   }  
    
   .cm-message-recipient-remove {
-    background-color:$bgr2;
-    margin-top:0 !important;
+    background-color: $bgr2;
+    margin-top: 0 !important;
   }
 
 }
 
-.cm-box{
-  a{
-   font-family: "Open Sans",Arial,sans-serif;
+.cm-box {
+  
+  a {
+    font-family: "Open Sans",Arial,sans-serif;
   }
-  &::before{
-    margin-left:5px;
-    color:#dadada;
+  
+  &::before {
+    margin-left: 5px;
+    color: #dadada;
   }
   
 }
-.cm-label-name{
-  &::before{
-    margin-left:5px;
+
+.cm-label-name {
+  
+  &::before {
+    margin-left: 5px;
   }
-  a{
-    margin-left:5px;
-    
+  
+  a {
+    margin-left: 5px;
   }
+  
 }
+
 .cm-categories {
-  background-color:#fff;
+  background-color: #fff;
    
   ul {
     list-style-type: none;
-    padding:0;
-    margin:0;
+    padding: 0;
+    margin: 0;
      
     li {
       border-bottom: 1px solid $brd1;
       border-left: 5px solid #fff;
        
       a {
-        font-weight:300;
-        text-decoration:none;
-        height:30px;
-        color:#000;
-        display:inline-block;
-        box-sizing:border-box;
+        font-weight: 300;
+        text-decoration: none;
+        height: 30px;
+        color: #000;
+        display: inline-block;
+        box-sizing: border-box;
         padding-top: 8px;      
       }
             
       &:hover {
-        border-left:5px solid $brd1;     
-        cursor:pointer;   
+        border-left: 5px solid $brd1;     
+        cursor: pointer;   
       } 
       
       &.selected {
-        background-color:$bgr3;
-        border-left:5px solid $brd2;
+        background-color: $bgr3;
+        border-left: 5px solid $brd2;
         
         a {
-          font-weight:normal;
+          font-weight: normal;
         }
         
       }
@@ -161,11 +171,11 @@
 } 
 
 
-.cm-label-menu-content{
+.cm-label-menu-content {
+  
   &:before,
   &:after {
     left:18px;
-    
   }
   
 }
@@ -177,7 +187,7 @@
 .cm-messages-container {
 
   &.loading {
-    padding:20px;
+    padding: 20px;
   
     &:after {
       @include generic-loader(50px);
@@ -186,54 +196,65 @@
       margin-right: auto;
       display: block;
     }
+    
   }
   
 }
 
 .cm-message {
-  margin:0 0 5px 0;
-  min-width:300px;
-  box-sizing:border-box;
+  border-left: 1px solid #fff;
+  box-sizing: border-box;
+  margin: 0 0 5px;
+  min-width: 300px;
   
   .cm-message-details {
-    cursor:default; /* Override mf-item-details */
+    cursor: default; /* Override mf-item-details */
   }
   
   .cm-message-details-container {
-    background-color:#fff;
-    position:relative;
+    background-color: #fff;
+    position: relative;
     
     .cm-message-header {
-      box-sizing:border-box;
-    
+      box-sizing: border-box;
+      word-break: break-all;
+      word-wrap: break-word;
+      
       .cm-message-select {
-        display:inline-block;
-        margin:0 0 0 5px;
-        position:relative;
+        display: inline-block;
+        margin: 0 0 0 5px;
+        position: relative;
       }
       
       .cm-message-header-container {
-        position:relative;
-        width:calc(100% - 25px);
-        box-sizing:border-box;
-        display:inline-block;
-        cursor:pointer;
-      
+        box-sizing: border-box;
+        cursor: pointer;
+        display: inline-block; 
+        position: relative;
+        width: calc(100% - 25px);
+             
         .cm-message-sender-name {
-          overflow:hidden;
-          text-overflow:ellipsis;
-          white-space:nowrap;
-          color:#000;
-          max-width:calc(100% - 135px);
-          margin:0 0 0 5px;
-          vertical-align:bottom;
-          font-weight:400;
-          height:1.5em;
-          box-sizing:border-box;
+          box-sizing: border-box;
+          color: #000;
+          font-weight: 400;
+          height: 1.5em;
+          margin: 0 0 0 5px;
+          max-width: calc(100% - 135px);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: bottom;
+          white-space: nowrap;
         }
             
         .cm-message-caption {
-          margin:0 0 0 5px;
+          margin: 0 0 0 5px;
+          word-break: break-all;
+          word-wrap: break-word;
+          
+          .cm-message-label {
+            border: 0;
+          }
+          
         }
       
       }
@@ -241,27 +262,27 @@
     }
     
     .cm-message-additional {
-      position:absolute;
-      right:5px;
-      top:5px;
-      width:130px;
-      text-align:right;
-      background:#fff;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      width: 130px;
+      text-align: right;
+      background: #fff;
       
       .cm-message-latest {
-        display:inline-block;
+        display: inline-block;
       }
        
       .cm-message-header-count {
-        margin:0 5px 0 0;
-        display:inline-block;
+        margin: 0 5px 0 0;
+        display: inline-block;
         
         .cm-message-replies {
-          font-weight:600;
-          width:100%;
-          background-color:$hlBgr;
-          text-align:center;
-          padding:5px;
+          font-weight: 600;
+          width: 100%;
+          background-color: $hlBgr;
+          text-align: center;
+          padding: 5px;
         }
         
       }
@@ -273,20 +294,22 @@
   }
 
   &.unread {
-    font-weight:600;
+    border-left: 1px solid #0099ff;
+    font-weight: 400;
+    
   }
   
   .cm-message-view {
-    border-radius:4px;  
-    margin-bottom:10px;
-    min-height:50px;
-    padding:5px;   
+    border-radius: 4px;  
+    margin-bottom: 10px;
+    min-height: 50px;
+    padding: 5px;   
   }
  
   .cm-message-options-container {
-    display:inline-block;
-    box-sizing:border-box;
-    vertical-align:top;
+    display: inline-block;
+    box-sizing: border-box;
+    vertical-align: top;
   } 
    
   .cm-message-content {
@@ -294,7 +317,7 @@
     .cm-message-content-text {
    
       p {
-        margin:1em 0;
+        margin: 1em 0;
       }
    
     }  
@@ -302,59 +325,59 @@
   }
   
   .cm-message-content-tools {
-    padding:10px 0;  
+    padding: 10px 0;  
   }
   
   .cm-message-tools, 
   .cm-viewmessagethread-tools {
-    padding:0;
-    height:40px;
+    padding: 0;
+    height: 40px;
   }
   
   .cm-message-tool {
-    padding:0 10px 0 10px;
-    border:1px solid $brd2;
-    background-color:$bgr1; 
-    display:inline-block;
-    color:#000;
-    cursor:pointer;
+    padding: 0 10px;
+    border: 1px solid $brd2;
+    background-color: $bgr1; 
+    display: inline-block;
+    color: #000;
+    cursor: pointer;
     
     &:not(:first-child) {
-      margin-left:10px;
+      margin-left: 10px;
     }
     
   }
 
   .cm-message-reply {
-    padding:5px 5px 5px 10px;
-    background-color:#fff;    
+    padding: 5px 5px 5px 10px;
+    background-color: #fff;    
   }
   
   .cm-message-recipients {
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    color:#000;
-    display:inline-block;
-    max-width:calc(100% - 170px);
-    margin:0 0 0 5px;
-    vertical-align:bottom;
-    font-weight:400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #000;
+    display: inline-block;
+    max-width: calc(100% - 170px);
+    margin: 0 0 0 5px;
+    vertical-align: bottom;
+    font-weight: 400;
     
     .cm-message-recipient-name {
-      padding:0 5px;
+      padding: 0 5px;
     }
   }
 
  .cm-message-selected-recipients {
-   padding:5px;
-   background-color:#fff;
+   padding: 5px;
+   background-color: #fff;
    
    span {
-     display:inline-block;
+     display: inline-block;
     
      &:not(:first-child) {
-       margin-left:10px;
+       margin-left: 10px;
      }
     
    }
@@ -364,18 +387,18 @@
 /* When the message is open */  
   
   &.open {
-    border-left:5px solid orange;   
-    padding-left:10px;
+    border-left: 5px solid orange;   
+    padding-left: 10px;
      
     .cm-message-details {
-      max-height:none;
+      max-height: none;
     }
      
     &.owner {
-      border-left:5px solid $brd2; 
+      border-left: 5px solid $brd2; 
        
       h3 {
-        color:#dadada;
+        color: #dadada;
       }
        
     }       
@@ -383,40 +406,37 @@
     .cm-user-picture {
 
       &.default {
-          background-imageurl:("/gfx/default-user-picture.jpg");
-          background-size:100%;
-          border: 2px solid #fff;
-          border-radius: 40px;
-          box-shadow: 0 0 0 2px #00deff;
-          margin: 2px;
+        background-image:url("/gfx/default-user-picture.jpg");
+        background-size: 100%;
+        border: 2px solid #fff;
+        border-radius: 40px;
+        box-shadow: 0 0 0 2px #00deff;
+        margin: 2px;
       }
      
       &.reply-recipient {
-        display:inline-block;
-        height:20px;
-        width:20px;
+        display: inline-block;
+        height: 20px;
+        width: 20px;
       }
      
     }  
     
     .cm-message-details-sender {
-      position:relative;
+      position: relative;
     
       .cm-message-header-content-secondary {
-        position:absolute;
-        right:10px;
-        top:0;
+        position: absolute;
+        right: 10px;
+        top: 0;
       }
       
       .cm-message-header-content-primary {
-        font-weight:400;
+        font-weight: 400;
       } 
     
     } 
-      
-      
-   
+
   }
 
 }
-

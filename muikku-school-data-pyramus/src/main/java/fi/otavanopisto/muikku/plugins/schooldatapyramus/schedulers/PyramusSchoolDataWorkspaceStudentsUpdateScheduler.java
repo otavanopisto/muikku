@@ -11,7 +11,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
-import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 
 @ApplicationScoped
@@ -34,7 +33,7 @@ public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler extends PyramusDa
   }
 
   @Override
-  public void synchronize() throws UnexpectedSchoolDataBridgeException {
+  public void synchronize() {
     int offset = getOffset();    
     int count = 0;
     try {

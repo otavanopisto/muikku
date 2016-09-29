@@ -18,6 +18,8 @@ import javax.ws.rs.core.Response;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 
 @Dependent
 class PyramusRestClient implements Serializable {
@@ -39,13 +41,6 @@ class PyramusRestClient implements Serializable {
   }
   
   public <T> T post(Client client, String accssToken, String path, Entity<?> entity, Class<T> type) {
-    
-    String blockOutgoing = System.getProperty("muikku.schoolDataPyramus.blockOutgoing", "false");
-    
-    if ("true".equals(blockOutgoing)) {
-      throw new RuntimeException("Outgoing school-data-pyramus traffic blocked");
-    }
-    
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
@@ -60,13 +55,6 @@ class PyramusRestClient implements Serializable {
   @SuppressWarnings("unchecked")
   public <T> T post(Client client, String accssToken, String path, T entity) {
     WebTarget target = client.target(url + path);
-
-    String blockOutgoing = System.getProperty("muikku.schoolDataPyramus.blockOutgoing", "false");
-    
-    if ("true".equals(blockOutgoing)) {
-      throw new RuntimeException("Outgoing school-data-pyramus traffic blocked");
-    }
-
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
     Response response = request.post(Entity.entity(entity, MediaType.APPLICATION_JSON));
@@ -78,13 +66,6 @@ class PyramusRestClient implements Serializable {
   }
   
   public <T> T put(Client client, String accssToken, String path, Entity<?> entity, Class<T> type) {
-    
-    String blockOutgoing = System.getProperty("muikku.schoolDataPyramus.blockOutgoing", "false");
-    
-    if ("true".equals(blockOutgoing)) {
-      throw new RuntimeException("Outgoing school-data-pyramus traffic blocked");
-    }
-    
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
@@ -99,13 +80,6 @@ class PyramusRestClient implements Serializable {
   @SuppressWarnings("unchecked")
   public <T> T put(Client client, String accssToken, String path, T entity) {
     WebTarget target = client.target(url + path);
-
-    String blockOutgoing = System.getProperty("muikku.schoolDataPyramus.blockOutgoing", "false");
-    
-    if ("true".equals(blockOutgoing)) {
-      throw new RuntimeException("Outgoing school-data-pyramus traffic blocked");
-    }
-
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
     Response response = request.put(Entity.entity(entity, MediaType.APPLICATION_JSON));
@@ -126,7 +100,8 @@ class PyramusRestClient implements Serializable {
     try {
       return createResponse(response, type, path);
     } catch (Throwable t) {
-      logger.log(Level.SEVERE, "Pyramus GET-request into " + path + " failed", t);
+      // TODO Remove catch once Pyramus 403 issue is resolved   
+      logger.log(Level.SEVERE, String.format("Pyramus GET request into %s failed", path), t);
       return null;
     } finally {
       response.close();
@@ -135,27 +110,26 @@ class PyramusRestClient implements Serializable {
 
   public void delete(Client client, String accssToken, String path) {
     WebTarget target = client.target(url + path);
-
-    String blockOutgoing = System.getProperty("muikku.schoolDataPyramus.blockOutgoing", "false");
-    
-    if ("true".equals(blockOutgoing)) {
-      throw new RuntimeException("Outgoing school-data-pyramus traffic blocked");
-    }
-
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
     Response response = request.delete();
 
-    switch (response.getStatus()) {
-      case 200:
-      case 204:
-      case 404:
-      break;
-      
-      case 403:
-        throw new PyramusRestClientUnauthorizedException(String.format("Received http error %d when requesting %s", response.getStatus(), path));
-      default:
-        throw new RuntimeException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
+    try {
+      switch (response.getStatus()) {
+        case 200:
+        case 204:
+        case 404:
+        break;
+        case 403:
+          logger.warning(String.format("Pyramus DELETE for path %s unauthorized (%d)", path, response.getStatus()));
+          throw new SchoolDataBridgeUnauthorizedException(String.format("Received http error %d when requesting %s", response.getStatus(), path));
+        default:
+          logger.warning(String.format("Pyramus DELETE for path %s failed (%d)", path, response.getStatus()));
+          throw new SchoolDataBridgeInternalException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
+      }
+    }
+    finally {
+      response.close();
     }
   }
   
@@ -201,11 +175,13 @@ class PyramusRestClient implements Serializable {
           return null;
         }
       case 403:
-        throw new PyramusRestClientUnauthorizedException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
+        logger.warning(String.format("Pyramus call for path %s unauthorized (%d)", path, response.getStatus()));
+        throw new SchoolDataBridgeUnauthorizedException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
       case 404:
         return null;
       default:
-        throw new RuntimeException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
+        logger.warning(String.format("Pyramus call for path %s failed (%d)", path, response.getStatus()));
+        throw new SchoolDataBridgeInternalException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
     }
   }
   

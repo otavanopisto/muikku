@@ -10,38 +10,31 @@ import fi.otavanopisto.muikku.schooldata.entity.Subject;
 
 public interface CourseMetaSchoolDataBridge {
 	
-	/**
-	 * Returns school data source identifier
-	 * 
-	 * @return school data source identifier
-	 */
 	public String getSchoolDataSource();
 	
 	/* Subjects */
 	
-	public Subject findSubject(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
-	
-	public List<Subject> listSubjects() throws UnexpectedSchoolDataBridgeException;
+	public Subject findSubject(String identifier);
+	public List<Subject> listSubjects();
 	
 	/* CourseIdentifier */
 
-	public CourseIdentifier findCourseIdentifier(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
-
-	public List<CourseIdentifier> listCourseIdentifiers() throws UnexpectedSchoolDataBridgeException;
-
-	public List<CourseIdentifier> listCourseIdentifiersBySubject(String subjectIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+	public CourseIdentifier findCourseIdentifier(String identifier);
+	public List<CourseIdentifier> listCourseIdentifiers();
+	public List<CourseIdentifier> listCourseIdentifiersBySubject(String subjectIdentifier);
 	
 	/* EducationType */
 	
-	public EducationType findEducationType(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+	public EducationType findEducationType(String identifier);
 	public List<EducationType> listEducationTypes();
   
 	/* CourseLengthUnit */
 
-  public CourseLengthUnit findCourseLengthUnit(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public CourseLengthUnit findCourseLengthUnit(String identifier);
   
   /* Curriculum */
   
-  public Curriculum findCurriculum(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public Curriculum findCurriculum(String identifier);
   public List<Curriculum> listCurriculums();
+
 }

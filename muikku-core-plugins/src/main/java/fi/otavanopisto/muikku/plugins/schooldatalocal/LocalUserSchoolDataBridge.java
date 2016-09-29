@@ -23,9 +23,8 @@ import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.UnexpectedSchoolDataBridgeException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRoleArchetype;
@@ -57,18 +56,18 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public User createUser(String firstName, String lastName) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public User createUser(String firstName, String lastName) {
 		if (StringUtils.isBlank(firstName)) {
-			throw new SchoolDataBridgeRequestException("firstName is required");
+			throw new SchoolDataBridgeInternalException("firstName is required");
 		}
 		
 		if (StringUtils.isBlank(lastName)) {
-			throw new SchoolDataBridgeRequestException("lastName is required");
+			throw new SchoolDataBridgeInternalException("lastName is required");
 		}
 		
 		User userImpl = toLocalUserImpl(localUserSchoolDataController.createUser(firstName, lastName));
 		if (userImpl == null) {
-			throw new UnexpectedSchoolDataBridgeException("Failed to create local user");
+			throw new SchoolDataBridgeInternalException("Failed to create local user");
 		}
 		
 		return userImpl;
@@ -78,9 +77,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public User findUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public User findUser(String identifier) {
 		if (!StringUtils.isNumeric(identifier)) {
-			throw new SchoolDataBridgeRequestException("identifier is invalid");
+			throw new SchoolDataBridgeInternalException("identifier is invalid");
 		}
 		
 		return toLocalUserImpl(localUserSchoolDataController.findUser(identifier));
@@ -90,7 +89,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
    * {@inheritDoc}
    */
   @Override
-  public User findActiveUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public User findActiveUser(String identifier) {
     return findUser(identifier);
   }
 
@@ -98,7 +97,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<User> listUsersByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public List<User> listUsersByEmail(String email) {
 	  LocalUser user = localUserSchoolDataController.findUserByEmail(email);
 	  if (user == null) {
 	    return Collections.emptyList();
@@ -111,7 +110,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<User> listUsers() throws UnexpectedSchoolDataBridgeException {
+	public List<User> listUsers() {
 		List<User> result = new ArrayList<>();
 		
 		for (LocalUser localUser : localUserSchoolDataController.listUsers()) {
@@ -119,7 +118,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 			if (user != null) {
 			  result.add(user);
 			} else {
-				throw new UnexpectedSchoolDataBridgeException("Unexpected error occured while listing LocalUsers");
+				throw new SchoolDataBridgeInternalException("Unexpected error occured while listing LocalUsers");
 			}
 		}
 		
@@ -130,13 +129,13 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public User updateUser(User user) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public User updateUser(User user) {
 		if (StringUtils.isNotBlank(user.getFirstName())) {
-			throw new SchoolDataBridgeRequestException("firstName is required");
+			throw new SchoolDataBridgeInternalException("firstName is required");
 		}
 		
 		if (StringUtils.isNotBlank(user.getLastName())) {
-			throw new SchoolDataBridgeRequestException("lastName is required");
+			throw new SchoolDataBridgeInternalException("lastName is required");
 		}
 		
 		LocalUser localUser = localUserSchoolDataController.findUser(user.getIdentifier());
@@ -146,19 +145,19 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   		return toLocalUserImpl(localUser);
 		}
 		
-		throw new UnexpectedSchoolDataBridgeException("Unexpected error occured while creating LocalUser");
+		throw new SchoolDataBridgeInternalException("Unexpected error occured while creating LocalUser");
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void removeUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public void removeUser(String identifier) {
 		LocalUser localUser = localUserSchoolDataController.findUser(identifier);
 		if (localUser != null) {
 			localUserSchoolDataController.removeUser(localUser);
 		} else {
-			throw new SchoolDataBridgeRequestException("Failed to remove user because it does not exist");
+			throw new SchoolDataBridgeInternalException("Failed to remove user because it does not exist");
 		}
 	}
 	
@@ -166,9 +165,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEmail createUserEmail(String userIdentifier, String address) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public UserEmail createUserEmail(String userIdentifier, String address) {
 		if (!StringUtils.isNumeric(userIdentifier)) {
-			throw new SchoolDataBridgeRequestException("userIdentifier is invalid");
+			throw new SchoolDataBridgeInternalException("userIdentifier is invalid");
 		}
 		
 		UserEmail userEmail = toLocalUserEmailImpl(localUserSchoolDataController.createUserEmail(userIdentifier, address));
@@ -176,16 +175,16 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 		  return userEmail;
 		}
 		
-		throw new UnexpectedSchoolDataBridgeException("Unexpected error occured while creating LocalUserEmail");
+		throw new SchoolDataBridgeInternalException("Unexpected error occured while creating LocalUserEmail");
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEmail findUserEmail(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public UserEmail findUserEmail(String identifier) {
 		if (!StringUtils.isNumeric(identifier)) {
-			throw new SchoolDataBridgeRequestException("identifier is invalid");
+			throw new SchoolDataBridgeInternalException("identifier is invalid");
 		}
 		
 		return toLocalUserEmailImpl(localUserSchoolDataController.findUserEmail(identifier));
@@ -195,9 +194,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<UserEmail> listUserEmailsByUserIdentifier(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public List<UserEmail> listUserEmailsByUserIdentifier(String userIdentifier) {
 		if (!StringUtils.isNumeric(userIdentifier)) {
-			throw new SchoolDataBridgeRequestException("userIdentifier is invalid");
+			throw new SchoolDataBridgeInternalException("userIdentifier is invalid");
 		}
 
 		List<UserEmail> result = new ArrayList<>();
@@ -208,7 +207,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 			if (emailImpl != null) {
 				result.add(emailImpl);
 			} else {
-				throw new UnexpectedSchoolDataBridgeException("Unexpected error occured while listing LocalUserEmails");
+				throw new SchoolDataBridgeInternalException("Unexpected error occured while listing LocalUserEmails");
 			}
 		}
 		
@@ -219,18 +218,18 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEmail updateUserEmail(UserEmail userEmail) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		throw new UnexpectedSchoolDataBridgeException("Unexpected error occured while updating LocalUserEmail");
+	public UserEmail updateUserEmail(UserEmail userEmail) {
+		throw new SchoolDataBridgeInternalException("Unexpected error occured while updating LocalUserEmail");
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void removeUserEmail(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public void removeUserEmail(String identifier) {
 		LocalUserEmail localUserEmail = localUserSchoolDataController.findUserEmail(identifier);
 		if (localUserEmail == null) {
-			throw new SchoolDataBridgeRequestException("UserEmail can not be removed because it does not exist");
+			throw new SchoolDataBridgeInternalException("UserEmail can not be removed because it does not exist");
 		}
 		
 		localUserSchoolDataController.removeUserEmail(localUserEmail);
@@ -240,9 +239,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserImage createUserImage(String userIdentifier, String contentType, byte[] content) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public UserImage createUserImage(String userIdentifier, String contentType, byte[] content) {
 		if (!StringUtils.isNumeric(userIdentifier)) {
-			throw new SchoolDataBridgeRequestException("userIdentifier is invalid");
+			throw new SchoolDataBridgeInternalException("userIdentifier is invalid");
 		}
 
 		UserImage userImage = toLocalUserImageImpl(localUserSchoolDataController.createUserImage(userIdentifier, contentType, content));
@@ -250,16 +249,16 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 			return userImage;
 		}
 		
-		throw new UnexpectedSchoolDataBridgeException("Unexpected error occured while creating LocalUserImage");
+		throw new SchoolDataBridgeInternalException("Unexpected error occured while creating LocalUserImage");
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserImage findUserImage(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public UserImage findUserImage(String identifier) {
 		if (!StringUtils.isNumeric(identifier)) {
-			throw new SchoolDataBridgeRequestException("identifier is invalid");
+			throw new SchoolDataBridgeInternalException("identifier is invalid");
 		}
 
 		return toLocalUserImageImpl(localUserSchoolDataController.findUserImage(identifier));
@@ -269,7 +268,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<UserImage> listUserImagesByUserIdentifier(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public List<UserImage> listUserImagesByUserIdentifier(String userIdentifier) {
 		List<UserImage> result = new ArrayList<>();
 		
 		List<LocalUserImage> images = localUserSchoolDataController.listUserImagesByUserIdentifier(userIdentifier);
@@ -278,7 +277,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 			if (userImage != null) {
 			  result.add(userImage);
 			} else {
-				throw new UnexpectedSchoolDataBridgeException("Unexpected error occured while listing LocalUserImages");
+				throw new SchoolDataBridgeInternalException("Unexpected error occured while listing LocalUserImages");
 			}
 		}
 		
@@ -289,23 +288,23 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserImage updateUserImage(UserImage userImage) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public UserImage updateUserImage(UserImage userImage) {
 		UserImage image = toLocalUserImageImpl(localUserSchoolDataController.updateUserImage(userImage.getIdentifier(), userImage.getContentType(), userImage.getContent()));
 		if (image != null) {
 			return image;
 		}
 		
-		throw new UnexpectedSchoolDataBridgeException("Unexpected error occured while updating LocalUserImage");
+		throw new SchoolDataBridgeInternalException("Unexpected error occured while updating LocalUserImage");
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void removeUserImage(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public void removeUserImage(String identifier) {
 		LocalUserImage localUserImage = localUserSchoolDataController.findUserImage(identifier);
 		if (localUserImage == null) {
-			throw new SchoolDataBridgeRequestException("UserImage can not be removed because it does not exist");
+			throw new SchoolDataBridgeInternalException("UserImage can not be removed because it does not exist");
 		}
 		
 		localUserSchoolDataController.removeUserImage(localUserImage);		
@@ -315,9 +314,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserProperty setUserProperty(String userIdentifier, String key, String value) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public UserProperty setUserProperty(String userIdentifier, String key, String value) {
 		if (!StringUtils.isNumeric(userIdentifier)) {
-			throw new SchoolDataBridgeRequestException("userIdentifier is invalid");
+			throw new SchoolDataBridgeInternalException("userIdentifier is invalid");
 		}
 
 		LocalUserProperty userProperty = localUserSchoolDataController.findUserPropertyByUserAndKey(userIdentifier, key);
@@ -337,9 +336,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserProperty getUserProperty(String userIdentifier, String key) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public UserProperty getUserProperty(String userIdentifier, String key) {
 		if (!StringUtils.isNumeric(userIdentifier)) {
-			throw new SchoolDataBridgeRequestException("userIdentifier is invalid");
+			throw new SchoolDataBridgeInternalException("userIdentifier is invalid");
 		}
 
 		LocalUserProperty userProperty = localUserSchoolDataController.findUserPropertyByUserAndKey(userIdentifier, key);
@@ -354,9 +353,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<UserProperty> listUserPropertiesByUser(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public List<UserProperty> listUserPropertiesByUser(String userIdentifier) {
 		if (!StringUtils.isNumeric(userIdentifier)) {
-			throw new SchoolDataBridgeRequestException("userIdentifier is invalid");
+			throw new SchoolDataBridgeInternalException("userIdentifier is invalid");
 		}
 
 		List<UserProperty> result = new ArrayList<>();
@@ -375,7 +374,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Role> listRoles() throws UnexpectedSchoolDataBridgeException {
+	public List<Role> listRoles() throws SchoolDataBridgeInternalException {
 		List<Role> result = new ArrayList<>();
 		
 		List<RoleEntity> roleEntities = localUserSchoolDataController.listCoreRoleEntities();
@@ -390,9 +389,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Role findRole(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public Role findRole(String identifier) {
 		if (!StringUtils.isNumeric(identifier)) {
-			throw new SchoolDataBridgeRequestException("identifier is invalid");
+			throw new SchoolDataBridgeInternalException("identifier is invalid");
 		}
 
 		RoleEntity roleEntity = localUserSchoolDataController.findCoreRoleEntityByIdentifier(identifier);
@@ -402,17 +401,17 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Role findUserEnvironmentRole(String userIdentifier) throws SchoolDataBridgeRequestException ,UnexpectedSchoolDataBridgeException {
+	public Role findUserEnvironmentRole(String userIdentifier) {
 		LocalUser user = localUserSchoolDataController.findUser(userIdentifier);
 		if (user == null) {
-			throw new SchoolDataBridgeRequestException("User not found");
+			throw new SchoolDataBridgeInternalException("User not found");
 		}
 		
 		Long roleId = user.getRoleId();
 		if (roleId != null) {
 			RoleEntity roleEntity = localUserSchoolDataController.findCoreRoleEntityById(roleId);
 			if (roleEntity == null) {
-				throw new UnexpectedSchoolDataBridgeException("User role could not be found");
+				throw new SchoolDataBridgeInternalException("User role could not be found");
 			}
 			
 		  return toLocalRoleEntity(roleEntity);
@@ -480,66 +479,58 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public UserGroup findUserGroup(String identifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public UserGroup findUserGroup(String identifier) {
     // TODO implement
     return null;
   }
 
   @Override
-  public List<UserGroup> listUserGroups() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<UserGroup> listUserGroups() {
     // TODO implement
     return null;
   }
 
-  public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword)
-      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword) {
     // TODO Auto-generated method stub
   }
 
   @Override
-  public String requestPasswordResetByEmail(String email) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public String requestPasswordResetByEmail(String email) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public GroupUser findGroupUser(String groupIdentifier, String identifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public GroupUser findGroupUser(String groupIdentifier, String identifier) {
     // TODO implement
     return null;
   }
 
   @Override
-  public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) {
     // TODO implement
     return null;
   }
   
-  public boolean confirmResetPassword(String resetCode, String newPassword) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public boolean confirmResetPassword(String resetCode, String newPassword) {
     // TODO Auto-generated method stub
     return false;
   }
 
   @Override
-  public String findUsername(String identifier) throws SchoolDataBridgeRequestException,
-      UnexpectedSchoolDataBridgeException {
+  public String findUsername(String identifier) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier) {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier)
-      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier) {
     // TODO Auto-generated method stub
     return null;
   }
