@@ -1,6 +1,7 @@
  <div class="flex-row flex-align-items-center">
    <div class="mf-tool-container default disabled cm-delete-message-container">
      <div title="{#localize key="plugin.communicator.tool.title.delete"/}" class="mf-tool cm-delete-thread icon-delete"></div>
+     <div classs="gaggi"></div>
    </div>
    <div class="mf-tool-container special cm-add-label-container md-flex-hide sm-flex-hide">
     <div title="{#localize key="plugin.communicator.tool.title.labels"/}" class="mf-tool cm-add-label-menu icon-tags">
