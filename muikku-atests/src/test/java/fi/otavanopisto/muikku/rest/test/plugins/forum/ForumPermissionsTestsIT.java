@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import com.jayway.restassured.response.Response;
 
-import static org.hamcrest.core.Is.is;
 import fi.otavanopisto.muikku.AbstractRESTTest;
 import fi.otavanopisto.muikku.plugins.forum.rest.ForumAreaRESTModel;
 
