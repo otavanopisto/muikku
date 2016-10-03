@@ -9,10 +9,6 @@ input[type="password"] {
   padding: 5px;     
   @extend .co-input-textfield-blur;
   &:hover {@extend .co-input-textfield-blur-hover;}
-  &:focus {
-    @extend .co-input-textfield-blur-focus;
-    @include formElementFocusShadow(rgba(0, 153, 255,0.4));
-  }
   width:100%;
   box-sizing:border-box;
   -moz-box-sizing:border-box;
@@ -57,10 +53,6 @@ div[class*="form-container"] input{
 textarea {
   @extend .co-input-textfield-blur;
   &:hover {@extend .co-textarea-blur-hover;}
-  &:focus {
-    @extend .co-textarea-blur-focus;
-    @include formElementFocusShadow(rgba(0, 153, 255,0.4));
-  }
   @include rounded(4px);
   width:25em; /* Default width */
   height:8em; /* Deafult height */

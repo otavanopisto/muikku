@@ -30,6 +30,7 @@
       }
     },
     _create : function() {
+      this._readonly = false;
       if (this.options.ckeditor.externalPlugins) {
         $.each(this.options.ckeditor.externalPlugins, function (name, path) {
           CKEDITOR.plugins.addExternal(name, path);
@@ -40,6 +41,24 @@
       
       this._editor = CKEDITOR.replace(this.element[0], this.options.ckeditor);
       this._editor.on('contentChange', $.proxy(this._onContentChange, this));
+      this._editor.on('instanceReady', $.proxy(this._onInstanceReady, this));
+    },
+
+    setReadOnly: function (readonly) {
+      this._readonly = readonly;
+      if (this._editor.container) {
+        this._editor.setReadOnly(readonly);
+        if (this._readonly){
+          $(this._editor.container.$).attr('data-readonly', 'readonly');
+        } else {
+          $(this._editor.container.$).removeAttr('data-readonly');
+        }
+        
+      }
+    },
+
+    _onInstanceReady: function (event, data) {
+      this.setReadOnly(this._readonly);
     },
     
     _onContentChange: function (event, data) {
