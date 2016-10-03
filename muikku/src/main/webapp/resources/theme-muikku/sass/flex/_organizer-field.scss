@@ -1,5 +1,15 @@
 .muikku-organizer-field {
   
+  &[disabled="disabled"] {
+    opacity: 0.5;
+    cursor: default;
+    
+    .muikku-terms-data .muikku-term {
+      cursor: default;
+    }
+    
+  }
+  
 }
 
 .muikku-terms-container {
@@ -70,7 +80,7 @@
   }
   
   .muikku-category {
-    border: 3px solid $taskBoxColor;
+    border: 2px solid $taskBoxColor;
     border-radius: 3px;
     box-sizing: border-box;
     width: 100%;

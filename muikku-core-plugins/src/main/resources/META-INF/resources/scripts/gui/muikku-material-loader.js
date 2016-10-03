@@ -436,6 +436,11 @@
             } else {
               $(this.element).removeAttr('readonly');
             } 
+            
+            if ($(this.element).hasClass('ckeditor-field')) {
+              $(this.element).muikkuRichMemoField('setReadOnly', readonly);
+            }
+            
           },
           canCheckAnswer: function() {
             return false;
