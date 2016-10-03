@@ -623,7 +623,7 @@
   
   $.widget("custom.messageTools", {
     options : {
-      value : 'thread'
+      value : 'none'
     },
     _create : function(){
       this.toolset(this.options.value);
@@ -637,10 +637,11 @@
         case 'message':
           var toolTemplate = 'communicator/communicator_tools_message.dust';
           this._loadTools(toolTemplate);
-        break;
-        default:
+          break;
+        case 'thread':
           var toolTemplate = 'communicator/communicator_tools_thread.dust';
           this._loadTools(toolTemplate);
+          break;
       }      
     },
     
