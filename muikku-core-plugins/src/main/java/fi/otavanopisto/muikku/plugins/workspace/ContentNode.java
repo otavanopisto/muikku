@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.workspace;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 
@@ -11,7 +12,7 @@ public class ContentNode {
   public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       Long parentId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path,
-      String license, String producers, boolean viewRestricted) {
+      String license, String producers, MaterialViewRestrict viewRestrict, boolean viewRestricted) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -28,6 +29,7 @@ public class ContentNode {
     this.publishedRevision = publishedRevision;
     this.path = path;
     this.license = license;
+    this.viewRestrict = viewRestrict;
     this.viewRestricted = viewRestricted;
     this.producers = producers;
   }
@@ -148,6 +150,14 @@ public class ContentNode {
     return producers;
   }
   
+  public MaterialViewRestrict getViewRestrict() {
+    return viewRestrict;
+  }
+
+  public void setViewRestrict(MaterialViewRestrict viewRestrict) {
+    this.viewRestrict = viewRestrict;
+  }
+
   private String title;
   private String type;
   private List<ContentNode> children;
@@ -163,6 +173,7 @@ public class ContentNode {
   private Long publishedRevision;
   private String path;
   private String license;
+  private MaterialViewRestrict viewRestrict;
   private boolean viewRestricted;
   private String producers;
 }

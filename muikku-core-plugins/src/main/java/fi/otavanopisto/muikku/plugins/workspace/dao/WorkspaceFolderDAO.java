@@ -9,6 +9,7 @@ import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolderType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
@@ -17,7 +18,7 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
 
   private static final long serialVersionUID = 9095130166469638314L;
 
-  public WorkspaceFolder create(WorkspaceNode parent, String title, String urlName, Integer orderNumber, Boolean hidden, WorkspaceFolderType folderType) {
+  public WorkspaceFolder create(WorkspaceNode parent, String title, String urlName, Integer orderNumber, Boolean hidden, WorkspaceFolderType folderType, MaterialViewRestrict viewRestrict) {
     WorkspaceFolder workspaceFolder = new WorkspaceFolder();
     workspaceFolder.setParent(parent);
     workspaceFolder.setUrlName(urlName);
@@ -25,6 +26,7 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
     workspaceFolder.setTitle(title);
     workspaceFolder.setOrderNumber(orderNumber);
     workspaceFolder.setHidden(hidden);
+    workspaceFolder.setViewRestrict(viewRestrict);
     return persist(workspaceFolder);
   }
 
@@ -73,6 +75,11 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
     return persist(workspaceFolder); 
   }
   
+  public WorkspaceFolder updateViewRestrict(WorkspaceFolder workspaceFolder, MaterialViewRestrict viewRestrict) {
+    workspaceFolder.setViewRestrict(viewRestrict);
+    return persist(workspaceFolder); 
+  }
+
   public WorkspaceFolder updateDefaultMaterial(WorkspaceFolder workspaceFolder, WorkspaceNode defaultMaterial) {
     workspaceFolder.setDefaultMaterial(defaultMaterial);
     return persist(workspaceFolder);

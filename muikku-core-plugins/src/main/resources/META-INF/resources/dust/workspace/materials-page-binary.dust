@@ -1,15 +1,20 @@
 <h2>{title}</h2>
-{@select key=binaryType}
-  {@eq value="image" type="string"}  
-    <img src="{@contextPath/}/rest/materials/binary/{data.id}/content"/>
-  {/eq}
-  {@eq value="pdf" type="string"}  
-    <div class="lazyPdf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text="{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}"/>
-  {/eq}
-  {@eq value="flash" type="string"}  
-    <div class="lazySwf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text="{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}"/>
-  {/eq}
-  {@eq value="unknown" type="string"}
-    <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}</a>
-  {/eq}
-{/select}
+{@eq key=viewRestricted value="true"}
+  <p>ELIKÄS {viewRestricted}</p>
+  <p class="content-view-restricted-message">{#localize key="plugin.workspace.materialViewRestricted"/}</p>
+{:else}
+  {@select key=binaryType}
+    {@eq value="image" type="string"}  
+      <img src="{@contextPath/}/rest/materials/binary/{data.id}/content"/>
+    {/eq}
+    {@eq value="pdf" type="string"}  
+      <div class="lazyPdf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text="{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}"/>
+    {/eq}
+    {@eq value="flash" type="string"}  
+      <div class="lazySwf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text="{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}"/>
+    {/eq}
+    {@eq value="unknown" type="string"}
+      <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}</a>
+    {/eq}
+  {/select}
+{/eq}

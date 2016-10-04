@@ -27,6 +27,7 @@
       var workspaceMaterialId = $(pageElement).attr('data-workspace-material-id');
       var materialId = $(pageElement).attr('data-material-id');
       var parentIds = []; // TODO needed anymore?
+      var viewRestricted = $(pageElement).attr('data-view-restricted')
 
       try {
         var material = {
@@ -112,7 +113,7 @@
         
         if (this._getRenderMode('html') == 'dust') {
           material.html = parsed.html();
-          renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material, hidden: pageElement.hasClass('item-hidden') }, $.proxy(function (text) {
+          renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material, hidden: pageElement.hasClass('item-hidden'), viewRestricted: viewRestricted }, $.proxy(function (text) {
             $(pageElement).empty().append(text);
             $(document).trigger('afterHtmlMaterialRender', {
               pageElement: pageElement,
@@ -148,6 +149,7 @@
       var materialId = $(page).attr('data-material-id');
       var materialType = $(page).attr('data-material-type');
       var materialTitle = $(page).attr('data-material-title');
+      var viewRestricted = $(page).attr('data-view-restricted');
       switch (materialType) {
         case 'html':
           $(page).muikkuMaterialPage({
@@ -156,7 +158,7 @@
           this._loadHtmlMaterial($(page), fieldAnswers);
         break;
         case 'folder':
-          renderDustTemplate(this.options.dustTemplate, { id: workspaceMaterialId, workspaceMaterialId: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), data: { title: $(page).attr('data-material-title') } }, $.proxy(function (text) {
+          renderDustTemplate(this.options.dustTemplate, {id: workspaceMaterialId, workspaceMaterialId: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), viewRestricted: viewRestricted, data: { title: $(page).attr('data-material-title') } }, $.proxy(function (text) {
             $(this).html(text);
             $.waypoints('refresh');
           }, page));
@@ -192,7 +194,8 @@
                 title: materialTitle,
                 type: materialType,
                 binaryType: binaryType,
-                data: result
+                data: result,
+                viewRestricted: viewRestricted
               }, $.proxy(function (text) {
                 $(this).html(text);
                 // PDF and SWF lazy loading 
