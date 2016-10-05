@@ -10,7 +10,6 @@
     loadItemDetails: function (item, itemCallback) {
       var recipientIds = item.recipientIds||[];
       var recipientCount = recipientIds.length;
-      
       var recipientCalls = $.map(recipientIds.slice(0, 5), function (recipientId) {
         return function (callback) {
           mApi().communicator.communicatormessages.recipients.info
@@ -146,6 +145,7 @@
       mApi().communicator.messages
         .read(threadId)
         .on("$", function (message, messageCallback) {
+          
           mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
             if(err){
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
@@ -155,6 +155,8 @@
               message.senderHasPicture = user.hasImage;
               message.caption = $('<div>').html(message.caption).text();
               message.content = message.content;
+
+              
               messageCallback();
             }
           });
@@ -1524,8 +1526,6 @@
       
       var communicator = $(".communicator").communicator("instance");
       var folderController = communicator.folderController(folderId);
-
-      
       
       folderController.loadThread(threadId, 0, 0, $.proxy(function (err, messages) {
         if (err) {
