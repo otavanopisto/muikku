@@ -58,6 +58,14 @@ public class SaveFieldAnswerWebSocketMessage {
     this.workspaceMaterialId = workspaceMaterialId;
   }
 
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
   private String answer;
   private String embedId;
   private Long materialId;
@@ -65,4 +73,5 @@ public class SaveFieldAnswerWebSocketMessage {
   private String originTicket;
   private Long workspaceMaterialId;
   private Long workspaceEntityId;
+  private Long userEntityId;
 }
