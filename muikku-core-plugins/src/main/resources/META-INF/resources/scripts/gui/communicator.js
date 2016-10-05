@@ -10,7 +10,6 @@
     loadItemDetails: function (item, itemCallback) {
       var recipientIds = item.recipientIds||[];
       var recipientCount = recipientIds.length;
-      
       var recipientCalls = $.map(recipientIds.slice(0, 5), function (recipientId) {
         return function (callback) {
           mApi().communicator.communicatormessages.recipients.info
@@ -1601,7 +1600,6 @@
       controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
       controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
       controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
-
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
     },
     
@@ -1617,9 +1615,24 @@
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
         } else {
           var data = $.map(messages, function (message) {
+//            var rfns = [];
+//
+//            $.each(message.recipientIds, function(index, recipientId){
+//              mApi().communicator.communicatormessages.recipients.info
+//              .read(message.id, recipientId)
+//              .callback(function(err, recipient){
+//                var rfn = recipient.firstName + ' ' + recipient.lastName;  
+//                rfns.push(rfn);
+//              });
+//             });
+//            
+//            
             return $.extend(message, {
               folderId: folderId
+//              recipientFullNames : rfns   
             });
+//            
+//
           });
           
           renderDustTemplate('communicator/communicator_items_open.dust', data, $.proxy(function(text) {
