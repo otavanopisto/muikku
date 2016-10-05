@@ -65,6 +65,42 @@
       });
     },
     
+    loadMessageDetails: function (message, messageDetailsCallback) {
+      var recipientIds = item.recipientIds || [];
+      
+      var recipientCalls = $.map(recipientIds, function (recipientId) {
+        return function (callback) {
+          mApi().communicator.communicatormessages.recipients.info
+            .read(item.id, recipientId)
+            .callback(callback);
+        };
+      });
+      
+      var senderCall = function (senderCallback) {
+        mApi().communicator.communicatormessages.sender
+          .read(item.id)
+          .callback(senderCallback);
+      };
+      
+      var recipientBatchCall = function (recipientsCallback) {
+        async.parallel(recipientCalls, recipientsCallback);
+      }
+      
+      async.parallel([recipientBatchCall, senderCall], function (err, results) {
+        if (err) {
+          messageDetailsCallback(err);
+        } else {
+          var recipients = results[0];
+          var sender = results[1];
+          
+          messageDetailsCallback(null, {
+            recipients: recipients,
+            sender: sender
+          });
+        }
+      });
+    },
+    
     loadItems: function (firstResult, maxResults, mainCallback) {
       throw Error("loadItems not implemented");
     },
@@ -146,18 +182,34 @@
       mApi().communicator.messages
         .read(threadId)
         .on("$", function (message, messageCallback) {
-          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-            if(err){
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-            }else{            
+          this.loadMessageDetails(message, function (err, details) {
+            if (err) {
+              itemCallback(err);
+            } else {
+              message.sender = details.sender;
+              message.recipients = details.recipients;
+
               message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-              message.senderFullName = user.firstName + ' ' + user.lastName;
-              message.senderHasPicture = user.hasImage;
+              message.senderFullName = details.sender.firstName + ' ' + details.sender.lastName;
+              message.senderHasPicture = details.sender.hasImage;
               message.caption = $('<div>').html(message.caption).text();
-              message.content = message.content;
+              
               messageCallback();
             }
           });
+          
+//          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+//            if(err){
+//              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+//            } else {            
+//              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+//              message.senderFullName = user.firstName + ' ' + user.lastName;
+//              message.senderHasPicture = user.hasImage;
+//              message.caption = $('<div>').html(message.caption).text();
+//              message.content = message.content;
+//              messageCallback();
+//            }
+//          });
         })
         .callback(callback);
     },
@@ -220,18 +272,35 @@
       mApi().communicator.messages
         .read(threadId)
         .on("$", function (message, messageCallback) {
-          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-            if(err){
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-            }else{            
+          
+          this.loadMessageDetails(message, function (err, details) {
+            if (err) {
+              itemCallback(err);
+            } else {
+              message.sender = details.sender;
+              message.recipients = details.recipients;
+
               message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-              message.senderFullName = user.firstName + ' ' + user.lastName;
-              message.senderHasPicture = user.hasImage;
+              message.senderFullName = details.sender.firstName + ' ' + details.sender.lastName;
+              message.senderHasPicture = details.sender.hasImage;
               message.caption = $('<div>').html(message.caption).text();
-              message.content = message.content;
+              
               messageCallback();
             }
           });
+          
+//          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+//            if(err){
+//              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+//            }else{            
+//              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+//              message.senderFullName = user.firstName + ' ' + user.lastName;
+//              message.senderHasPicture = user.hasImage;
+//              message.caption = $('<div>').html(message.caption).text();
+//              message.content = message.content;
+//              messageCallback();
+//            }
+//          });
         })
         .callback(callback);
     },
@@ -302,18 +371,35 @@
       mApi().communicator.trash
         .read(threadId)
         .on("$", function (message, messageCallback) {
-          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-            if(err){
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-            }else{            
+          
+          this.loadMessageDetails(message, function (err, details) {
+            if (err) {
+              itemCallback(err);
+            } else {
+              message.sender = details.sender;
+              message.recipients = details.recipients;
+
               message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-              message.senderFullName = user.firstName + ' ' + user.lastName;
-              message.senderHasPicture = user.hasImage;
+              message.senderFullName = details.sender.firstName + ' ' + details.sender.lastName;
+              message.senderHasPicture = details.sender.hasImage;
               message.caption = $('<div>').html(message.caption).text();
-              message.content = message.content;
+              
               messageCallback();
             }
           });
+          
+//          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
+//            if(err){
+//              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
+//            }else{            
+//              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+//              message.senderFullName = user.firstName + ' ' + user.lastName;
+//              message.senderHasPicture = user.hasImage;
+//              message.caption = $('<div>').html(message.caption).text();
+//              message.content = message.content;
+//              messageCallback();
+//            }
+//          });
         })
         .callback(callback);
     },
