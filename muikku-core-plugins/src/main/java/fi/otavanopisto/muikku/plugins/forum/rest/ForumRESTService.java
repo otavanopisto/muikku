@@ -331,6 +331,11 @@ public class ForumRESTService extends PluginRESTService {
     }
     
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES)) {
+      if (Boolean.TRUE.equals(updThread.getSticky()) || Boolean.TRUE.equals(updThread.getLocked())) {
+        if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+
       forumController.updateForumThread(forumThread, 
           updThread.getTitle(),
           updThread.getMessage(),
@@ -387,6 +392,11 @@ public class ForumRESTService extends PluginRESTService {
     }
    
     if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_WRITE_ENVIRONMENT_MESSAGES)) {
+      if (Boolean.TRUE.equals(newThread.getSticky()) || Boolean.TRUE.equals(newThread.getLocked())) {
+        if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+      
       Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Whitelist.relaxed().addAttributes("a", "target")));
       message.outputSettings().escapeMode(EscapeMode.xhtml);
       message.select("a[target]").attr("rel", "noopener noreferer");

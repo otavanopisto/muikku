@@ -68,6 +68,8 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceName = workspaceBackingBean.getWorkspaceName();
+
+    lockStickyPermission = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity);
     
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
@@ -104,8 +106,13 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     return areaPermissions;
   }
   
+  public Boolean getLockStickyPermission() {
+    return lockStickyPermission;
+  }
+  
   private Long workspaceEntityId;
   private String areaPermissions;
+  private Boolean lockStickyPermission;
 
   public static class AreaPermission {
     
