@@ -205,6 +205,21 @@ nav.workspace-waterials-reading-nav {
   font-size: 15px;
   padding: 2px 8px;
   font-weight: 400;
+  position: relative;
+  
+  .icon-closed-material {
+    color: #da4a51;
+    font-size: 15px;
+    padding: 4px 2px;
+    position: absolute;
+    right: 5px;
+    top: 1px;
+  }
+  
+  &.item-view-restricted {
+    padding: 2px 28px 2px 8px;
+  }
+  
 }
 
 // TOC DOCUMENT <li>
@@ -346,7 +361,7 @@ nav.workspace-waterials-reading-nav {
     padding: 4px 2px;
     position: absolute;
     right: 5px;
-    top: 0;
+    top: 1px;
   }
   
   &.item-view-restricted {
