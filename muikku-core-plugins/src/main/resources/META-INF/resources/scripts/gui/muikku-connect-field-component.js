@@ -176,7 +176,6 @@
                 .html($(counterpart).html())
                 .next('.counterpart-placeholder')
                 .remove();
-              var target = $(e.target);
               this._swapElements(this.options.meta.selectedTerm, $(e.target).closest('.muikku-connect-field-counterpart'));
             }
           }, this));
