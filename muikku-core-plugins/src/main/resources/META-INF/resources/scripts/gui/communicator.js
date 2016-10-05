@@ -183,7 +183,7 @@
         .on("$", $.proxy(function (message, messageCallback) {
           this.loadMessageDetails(message, function (err, details) {
             if (err) {
-              itemCallback(err);
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
             } else {
               message.sender = details.sender;
               message.recipients = details.recipients;
@@ -261,7 +261,7 @@
           
           this.loadMessageDetails(message, function (err, details) {
             if (err) {
-              itemCallback(err);
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
             } else {
               message.sender = details.sender;
               message.recipients = details.recipients;
@@ -347,7 +347,7 @@
           
           this.loadMessageDetails(message, function (err, details) {
             if (err) {
-              itemCallback(err);
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
             } else {
               message.sender = details.sender;
               message.recipients = details.recipients;
