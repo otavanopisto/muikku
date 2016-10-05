@@ -89,7 +89,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
         return;
       }
       
-      if (event.getUserEntityId() == null) {
+      if (message.getUserEntityId() == null) {
         logger.log(Level.SEVERE, String.format("Missing user entity id for ticket %s (field %s in workspace material %d)", event.getTicket(), message.getFieldName(), message.getWorkspaceMaterialId()));
         handleError("Missing user entity id", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
         return;
@@ -102,7 +102,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
         return;
       }
       
-      UserEntity userEntity = userEntityController.findUserEntityById(event.getUserEntityId());
+      UserEntity userEntity = userEntityController.findUserEntityById(message.getUserEntityId());
       if (userEntity == null) {
         logger.log(Level.SEVERE, "Could not find user");
         handleError("Could not find user", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
