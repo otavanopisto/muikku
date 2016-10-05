@@ -178,6 +178,7 @@
   $(document).ready(function() {
     $('#discussion').discussion({
       areaPermissions: $.parseJSON($('input[name="areaPermissions"]').val()),
+      lockStickyPermission: $.parseJSON($('input[name="lockStickyPermission"]').val()),
       ioController: new EnvironmentDiscussionIOController()
     });
     

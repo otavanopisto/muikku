@@ -255,6 +255,7 @@
     newMessageDialog: function (options) {
       var dialog = $('<div>')
         .discussionNewMessageDialog($.extend({
+          lockStickyPermission: this.options.lockStickyPermission,
           ioController: this.options.ioController
         }, options||{}));
       
@@ -277,6 +278,7 @@
     editMessageDialog: function (options) {
       var dialog = $('<div>')
         .discussionEditMessageDialog($.extend({
+          lockStickyPermission: this.options.lockStickyPermission,
           ioController: this.options.ioController
         }, options||{}));
       
@@ -973,7 +975,6 @@
     footerDialogClose: function() {
       $(document.body).removeClass('footerDialogOpen').removeAttr('style');
     }
-    
   });
   
   $.widget("custom.discussionNewMessageDialog", $.custom.discussionAbstractMessageDialog, {
@@ -996,9 +997,14 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          var areas = results[0];
+//          var areas = results[0];
+
+          var parameters = {
+              areas: results[0],
+              lockStickyPermission: this.options.lockStickyPermission
+          };
           
-          renderDustTemplate('/discussion/discussion_create_message.dust', areas, $.proxy(function (text) {
+          renderDustTemplate('/discussion/discussion_create_message.dust', parameters, $.proxy(function (text) {
             this.element.html(text);
             
             if (this.options.areaId) {
@@ -1198,11 +1204,13 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          renderDustTemplate('/discussion/discussion_edit_message.dust', thread, $.proxy(function (text) {
+          var parameters = {
+              thread: thread,
+              lockStickyPermission: this.options.lockStickyPermission
+          };
+          
+          renderDustTemplate('/discussion/discussion_edit_message.dust', parameters, $.proxy(function (text) {
             this.element.html(text);
-            
-            this.element.find("input[name='sticky']").prop('checked', thread.sticky);
-            this.element.find("input[name='locked']").prop('checked', thread.locked);
             
             this._messageEditor = CKEDITOR.replace(this.element.find('textarea[name="message"]')[0], $.extend(this.options.ckeditor, {
               draftKey: 'discussion-edit-message-' + this.options.areaId + '-' + this.options.threadId,
