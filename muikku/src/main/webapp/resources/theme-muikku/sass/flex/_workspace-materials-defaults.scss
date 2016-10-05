@@ -491,8 +491,7 @@ figure.image {
   .icon-copyright {
     display:block;
     
-    
-    &:before {
+    &::before {
       cursor:pointer;
       font-size:26px;
       line-height:1;
