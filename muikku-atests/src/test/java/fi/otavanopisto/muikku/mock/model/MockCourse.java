@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.mock.model;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 public class MockCourse {
   private long id;

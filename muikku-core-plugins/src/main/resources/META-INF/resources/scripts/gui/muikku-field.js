@@ -704,7 +704,8 @@
           'materialId': this.materialId(),
           'fieldName':this.fieldName(),
           'workspaceEntityId': workspaceEntityId,
-          'workspaceMaterialId': workspaceMaterialId
+          'workspaceMaterialId': workspaceMaterialId,
+          'userEntityId': MUIKKU_LOGGED_USER_ID
         }));
         
         if (this._saveFailedTimeoutId == null) {
