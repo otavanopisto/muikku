@@ -1235,7 +1235,10 @@
           return;
         }
         
-        this.options.ioController.updateThread(this.options.areaId, this.options.threadId, title, message, $.proxy(function(err, result) {
+        var sticky = false;
+        var locked = false;
+        
+        this.options.ioController.updateThread(this.options.areaId, this.options.threadId, title, message, sticky, locked, $.proxy(function(err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {

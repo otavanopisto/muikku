@@ -85,7 +85,7 @@
         .callback(callback);
     },
     
-    updateThread: function (areaId, threadId, title, message, callback) {
+    updateThread: function (areaId, threadId, title, message, sticky, locked, callback) {
       mApi().workspace.workspaces.forumAreas.threads
         .read(this.options.workspaceEntityId, areaId, threadId)
         .callback($.proxy(function(getErr, thread) {
@@ -94,7 +94,9 @@
           } else {
             thread = $.extend(thread, {
               title: title,
-              message: message
+              message: message,
+              sticky: sticky,
+              locked: locked
             });
             
             mApi().workspace.workspaces.forumAreas.threads
