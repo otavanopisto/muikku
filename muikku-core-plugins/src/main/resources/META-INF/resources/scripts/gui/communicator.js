@@ -65,19 +65,19 @@
     },
     
     loadMessageDetails: function (message, messageDetailsCallback) {
-      var recipientIds = item.recipientIds || [];
+      var recipientIds = message.recipientIds || [];
       
       var recipientCalls = $.map(recipientIds, function (recipientId) {
         return function (callback) {
           mApi().communicator.communicatormessages.recipients.info
-            .read(item.id, recipientId)
+            .read(message.id, recipientId)
             .callback(callback);
         };
       });
       
       var senderCall = function (senderCallback) {
         mApi().communicator.communicatormessages.sender
-          .read(item.id)
+          .read(message.id)
           .callback(senderCallback);
       };
       
@@ -180,7 +180,7 @@
     loadThread: function (threadId, firstResult, maxResults, callback) {
       mApi().communicator.messages
         .read(threadId)
-        .on("$", function (message, messageCallback) {
+        .on("$", $.proxy(function (message, messageCallback) {
           this.loadMessageDetails(message, function (err, details) {
             if (err) {
               itemCallback(err);
@@ -188,7 +188,7 @@
               message.sender = details.sender;
               message.recipients = details.recipients;
 
-              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+              message.isOwner = MUIKKU_LOGGED_USER_ID === details.sender.id;
               message.senderFullName = details.sender.firstName + ' ' + details.sender.lastName;
               message.senderHasPicture = details.sender.hasImage;
               message.caption = $('<div>').html(message.caption).text();
@@ -196,20 +196,7 @@
               messageCallback();
             }
           });
-          
-//          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-//            if(err){
-//              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-//            } else {            
-//              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-//              message.senderFullName = user.firstName + ' ' + user.lastName;
-//              message.senderHasPicture = user.hasImage;
-//              message.caption = $('<div>').html(message.caption).text();
-//              message.content = message.content;
-//              messageCallback();
-//            }
-//          });
-        })
+        }, this))
         .callback(callback);
     },
     readThreadMessageCount: function (communicatorMessageId, callback) {
@@ -270,7 +257,7 @@
     loadThread: function (threadId, firstResult, maxResults, callback) {
       mApi().communicator.messages
         .read(threadId)
-        .on("$", function (message, messageCallback) {
+        .on("$", $.proxy(function (message, messageCallback) {
           
           this.loadMessageDetails(message, function (err, details) {
             if (err) {
@@ -279,7 +266,7 @@
               message.sender = details.sender;
               message.recipients = details.recipients;
 
-              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+              message.isOwner = MUIKKU_LOGGED_USER_ID === details.sender.id;
               message.senderFullName = details.sender.firstName + ' ' + details.sender.lastName;
               message.senderHasPicture = details.sender.hasImage;
               message.caption = $('<div>').html(message.caption).text();
@@ -287,20 +274,7 @@
               messageCallback();
             }
           });
-          
-//          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-//            if(err){
-//              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-//            }else{            
-//              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-//              message.senderFullName = user.firstName + ' ' + user.lastName;
-//              message.senderHasPicture = user.hasImage;
-//              message.caption = $('<div>').html(message.caption).text();
-//              message.content = message.content;
-//              messageCallback();
-//            }
-//          });
-        })
+        }, this))
         .callback(callback);
     },
     
@@ -369,7 +343,7 @@
     loadThread: function (threadId, firstResult, maxResults, callback) {
       mApi().communicator.trash
         .read(threadId)
-        .on("$", function (message, messageCallback) {
+        .on("$", $.proxy(function (message, messageCallback) {
           
           this.loadMessageDetails(message, function (err, details) {
             if (err) {
@@ -378,7 +352,7 @@
               message.sender = details.sender;
               message.recipients = details.recipients;
 
-              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
+              message.isOwner = MUIKKU_LOGGED_USER_ID === details.sender.id;
               message.senderFullName = details.sender.firstName + ' ' + details.sender.lastName;
               message.senderHasPicture = details.sender.hasImage;
               message.caption = $('<div>').html(message.caption).text();
@@ -386,20 +360,7 @@
               messageCallback();
             }
           });
-          
-//          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-//            if(err){
-//              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-//            }else{            
-//              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-//              message.senderFullName = user.firstName + ' ' + user.lastName;
-//              message.senderHasPicture = user.hasImage;
-//              message.caption = $('<div>').html(message.caption).text();
-//              message.content = message.content;
-//              messageCallback();
-//            }
-//          });
-        })
+        }, this))
         .callback(callback);
     },
     
@@ -1615,24 +1576,9 @@
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
         } else {
           var data = $.map(messages, function (message) {
-//            var rfns = [];
-//
-//            $.each(message.recipientIds, function(index, recipientId){
-//              mApi().communicator.communicatormessages.recipients.info
-//              .read(message.id, recipientId)
-//              .callback(function(err, recipient){
-//                var rfn = recipient.firstName + ' ' + recipient.lastName;  
-//                rfns.push(rfn);
-//              });
-//             });
-//            
-//            
             return $.extend(message, {
               folderId: folderId
-//              recipientFullNames : rfns   
             });
-//            
-//
           });
           
           renderDustTemplate('communicator/communicator_items_open.dust', data, $.proxy(function(text) {
