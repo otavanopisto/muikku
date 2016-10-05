@@ -1,3 +1,4 @@
+{#thread}
 <div class="mf-form di-newmessage-form-container flex-row">
   <div class="di-message-create lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
     <form onsubmit="return false;">
@@ -8,16 +9,16 @@
             <div class="mf-textfield lg-flex-cell-9 md-flex-cell-9 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2">{#localize key="plugin.discussion.createmessage.title"/}</span>
-                <input required="required" type="text" value="{thread.title}" class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14" name="title" maxlength="255"></input>
+                <input required="required" type="text" value="{title}" class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14" name="title" maxlength="255"></input>
                 
-                <span {@eq key=lockStickyPermission value="false" type="boolean"}display:none{/eq}>sticky: <input type="checkbox" name="sticky" {@eq key=thread.sticky value="true" type="boolean"}checked="checked"{/eq} /></span>
-                <span {@eq key=lockStickyPermission value="false" type="boolean"}display:none{/eq}>locked: <input type="checkbox" name="locked" {@eq key=thread.locked value="true" type="boolean"}checked="checked"{/eq} /></span>
+                <span {@eq key=lockStickyPermission value="false" type="boolean"}style="display:none"{/eq}>sticky: <input type="checkbox" name="sticky" {@eq key=sticky value="true" type="boolean"}checked="checked"{/eq} /></span>
+                <span {@eq key=lockStickyPermission value="false" type="boolean"}style="display:none"{/eq}>locked: <input type="checkbox" name="locked" {@eq key=locked value="true" type="boolean"}checked="checked"{/eq} /></span>
               </div>
             </div>    
           </div>
           <div class="mf-form-row flex-row">
             <div class="di-message-new-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-               <textarea id="textContent" name="message">{thread.message}</textarea>
+               <textarea id="textContent" name="message">{message}</textarea>
             </div>
            </div> 
           </div>
@@ -30,3 +31,4 @@
     </form>
   </div>
 </div>
+{/thread}

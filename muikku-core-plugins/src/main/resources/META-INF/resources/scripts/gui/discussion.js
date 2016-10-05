@@ -997,8 +997,6 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-//          var areas = results[0];
-
           var parameters = {
               areas: results[0],
               lockStickyPermission: this.options.lockStickyPermission
