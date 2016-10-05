@@ -1,8 +1,6 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public interface WorkspaceUser extends SchoolDataEntity {

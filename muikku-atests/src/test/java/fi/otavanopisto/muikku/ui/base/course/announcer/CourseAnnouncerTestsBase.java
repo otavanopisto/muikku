@@ -1,9 +1,6 @@
 package fi.otavanopisto.muikku.ui.base.course.announcer;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.junit.Test;

@@ -11,6 +11,16 @@
           if (url) {
             $(this.element).removeAttr('data-url');
             $(this.element).attr('src', url);
+            if (window.OPEN_FRAMES === undefined) {
+              window.OPEN_FRAMES = [];
+            }
+            window.OPEN_FRAMES.push(this.element);
+            while (window.OPEN_FRAMES.length > 4) {
+              var frame = window.OPEN_FRAMES.shift();
+              url = $(frame).attr('src');
+              $(frame).attr('data-url', url);
+              $(frame).removeAttr('src');
+            }        
           }
         } 
       }, this), {
@@ -23,6 +33,13 @@
           if (url) {
             $(this.element).removeAttr('data-url');
             $(this.element).attr('src', url);
+            window.OPEN_FRAMES.unshift(this.element);
+            while (window.OPEN_FRAMES.length > 4) {
+              var frame = window.OPEN_FRAMES.pop();
+              url = $(frame).attr('src');
+              $(frame).attr('data-url', url);
+              $(frame).removeAttr('src');
+            }        
           }
         } 
       }, this), {

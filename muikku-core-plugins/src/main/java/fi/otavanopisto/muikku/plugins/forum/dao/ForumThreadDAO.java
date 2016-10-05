@@ -155,7 +155,7 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
         )
     );
 
-    criteria.orderBy(criteriaBuilder.desc(root.get(ForumThread_.updated)));
+    criteria.orderBy(criteriaBuilder.desc(root.get(ForumThread_.sticky)), criteriaBuilder.desc(root.get(ForumThread_.updated)));
     
     TypedQuery<ForumThread> query = entityManager.createQuery(criteria);
     
