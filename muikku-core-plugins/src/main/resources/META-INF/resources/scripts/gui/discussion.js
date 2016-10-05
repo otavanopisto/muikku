@@ -1048,8 +1048,8 @@
           return;
         }
 
-        var sticky = this.element.find('*[name="sticky"]').val() == 'true';
-        var locked = this.element.find('*[name="locked"]').val() == 'true';
+        var sticky = this.element.find("input[name='sticky']").prop("checked");
+        var locked = this.element.find("input[name='locked']").prop("checked");
         
         this.options.ioController.createThread(forumAreaId, title, message, sticky, locked, $.proxy(function(err, result) {
           if (err) {
@@ -1200,6 +1200,10 @@
         } else {
           renderDustTemplate('/discussion/discussion_edit_message.dust', thread, $.proxy(function (text) {
             this.element.html(text);
+            
+            this.element.find("input[name='sticky']").prop('checked', thread.sticky);
+            this.element.find("input[name='locked']").prop('checked', thread.locked);
+            
             this._messageEditor = CKEDITOR.replace(this.element.find('textarea[name="message"]')[0], $.extend(this.options.ckeditor, {
               draftKey: 'discussion-edit-message-' + this.options.areaId + '-' + this.options.threadId,
               on: {
@@ -1224,6 +1228,9 @@
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
         var title = this.element.find('*[name="title"]').val();
+        var sticky = this.element.find("input[name='sticky']").prop("checked");
+        var locked = this.element.find("input[name='locked']").prop("checked");
+        
         if (!title && !title.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.notitle'));
           return;
@@ -1234,9 +1241,6 @@
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nomessage'));
           return;
         }
-        
-        var sticky = false;
-        var locked = false;
         
         this.options.ioController.updateThread(this.options.areaId, this.options.threadId, title, message, sticky, locked, $.proxy(function(err, result) {
           if (err) {

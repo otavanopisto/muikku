@@ -2,8 +2,6 @@
   <div class="di-message-create lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
     <form onsubmit="return false;">
       <div class="mf-form-header flex-row"><h3>{#localize key="plugin.discussion.reply.edit.topic"/}</h3></div>
-      <input type="hidden" name="sticky" value="false" />
-      <input type="hidden" name="locked" value="false" />
       <div class="mf-content flex-row">
         <div class="di-message-new-body lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
           <div class="mf-form-row flex-row flex-align-items-center">
@@ -11,6 +9,9 @@
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2">{#localize key="plugin.discussion.createmessage.title"/}</span>
                 <input required="required" type="text" value="{title}" class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14" name="title" maxlength="255"></input>
+                
+                <span>sticky: <input type="checkbox" name="sticky" /></span>
+                <span>locked: <input type="checkbox" name="locked" /></span>
               </div>
             </div>    
           </div>
