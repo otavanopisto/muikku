@@ -1,8 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatalocal.entities;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
 import fi.otavanopisto.muikku.plugins.schooldatalocal.LocalUserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.AbstractUser;
 import fi.otavanopisto.muikku.schooldata.entity.User;

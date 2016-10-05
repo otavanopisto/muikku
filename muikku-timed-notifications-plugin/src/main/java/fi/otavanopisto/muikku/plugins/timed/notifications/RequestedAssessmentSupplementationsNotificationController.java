@@ -2,8 +2,6 @@ package fi.otavanopisto.muikku.plugins.timed.notifications;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;

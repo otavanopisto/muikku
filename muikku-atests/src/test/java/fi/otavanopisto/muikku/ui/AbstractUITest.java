@@ -6,7 +6,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.awt.Robot;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,11 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.Path;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jboss.netty.util.ThreadNameDeterminer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;

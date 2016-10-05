@@ -5,6 +5,19 @@
   justify-content: space-between;
   align-items: flex-start;
   align-content: space-between;
+  
+  &[disabled="disabled"] {
+    opacity: 0.5;
+    cursor: default !important;
+    
+    .muikku-connect-field-counterpart:hover,
+    .muikku-connect-field-term:hover {
+      background: $taskBoxColor;
+      cursor: default;
+    }
+    
+  }
+  
 }
 
 .muikku-connect-field-counterparts,

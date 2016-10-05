@@ -219,7 +219,7 @@
             var fieldAnswers = {};
             
             $.each(replies||[], $.proxy(function (index, reply) {
-              if (reply && reply.answers.length) {
+              if (reply) {
                 for (var i = 0, l = reply.answers.length; i < l; i++) {
                   var answer = reply.answers[i];
                   var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
@@ -439,6 +439,11 @@
             } else {
               $(this.element).removeAttr('readonly');
             } 
+            
+            if ($(this.element).hasClass('ckeditor-field')) {
+              $(this.element).muikkuRichMemoField('setReadOnly', readonly);
+            }
+            
           },
           canCheckAnswer: function() {
             return false;

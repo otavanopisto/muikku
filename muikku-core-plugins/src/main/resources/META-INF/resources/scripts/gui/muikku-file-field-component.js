@@ -257,6 +257,7 @@
       this._readonly = readonly;
       if (readonly) {
         $(this._uploader).attr("disabled", "disabled");
+        $(this._uploader).closest(".muikku-file-input-field-file-uploader-container").attr("data-readonly", "readonly");
         if ($(this._uploaderContainer).find('.muikku-file-input-field-file:visible').length > 0) {
           $(this._uploaderContainer).find('.muikku-file-input-field-description').hide();
           
@@ -267,6 +268,7 @@
       }
       else {
         $(this._uploader).removeAttr("disabled");
+        $(this._uploader).closest(".muikku-file-input-field-file-uploader-container").removeAttr("data-readonly");
         $(this._uploaderContainer).find('.muikku-file-input-field-description').html(getLocaleText('plugin.workspace.fileField.fieldHint'))
         $(this._uploaderContainer).find('.muikku-file-input-field-description').show();
         $(this._uploaderContainer).find('.muikku-file-input-field-file-remove').show();
