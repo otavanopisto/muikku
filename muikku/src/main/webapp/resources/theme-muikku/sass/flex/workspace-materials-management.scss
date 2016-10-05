@@ -187,7 +187,7 @@ nav.workspace-waterials-management-nav {
     padding: 2px 24px 2px 8px;
     text-decoration: none;
     color: #2c2c2c;
-    display: inline-block;
+    display: block;
   }
   
   .workspace-materials-toc-sectionDragHandle {
@@ -209,6 +209,10 @@ nav.workspace-waterials-management-nav {
       opacity: 1;
     }
     
+    .item-view-restricted {
+      display: none;
+    }
+    
   }
 
   &.item-hidden {
@@ -217,6 +221,15 @@ nav.workspace-waterials-management-nav {
   
   &.parent-hidden {
     opacity: 0.4;
+  }
+  
+  .item-view-restricted {
+    color: #da4a51;
+    font-size: 15px;
+    padding: 4px 2px;
+    position: absolute;
+    right: 5px;
+    top: 0;
   }
   
 }
@@ -522,7 +535,7 @@ nav.workspace-waterials-management-nav {
 
 }
 
-// DOCUMENT CONTROLS
+// DOCUMENT & SECTION CONTROLS
 .workspace-materials-management-view-page-controls { 
   position: absolute;
   top: 0;
@@ -543,7 +556,7 @@ nav.workspace-waterials-management-nav {
     height: 41px;
   }
   
-  // Main rules for document control icons
+  // Main rules for document & section control icons
   a {
     color: #fff;
     font-size: 21px;
@@ -575,8 +588,9 @@ nav.workspace-waterials-management-nav {
     display: none;
   }
   
-  // View restriction icon
-  a.page-view-restrict {
+  // View restriction icons
+  a.page-view-restrict,
+  a.folder-view-restrict {
     background: #62eba9;   
     border-radius: 100%; 
     border: 1px solid #fff;  
@@ -644,7 +658,7 @@ nav.workspace-waterials-management-nav {
 
   }
 
-  // Custom overrides for document control icons
+  // Custom overrides for document & section control icons
   a.change-assignment::before,
   a.correct-answers::before {
     position: relative;
@@ -661,7 +675,8 @@ nav.workspace-waterials-management-nav {
     width: 29px;
   }
   
-  a.page-view-restrict {
+  a.page-view-restrict,
+  a.folder-view-restrict {
     width: 29px;
     height: 29px;
   }
@@ -712,7 +727,7 @@ nav.workspace-waterials-management-nav {
     box-shadow: 0 0 0 5px rgba(148,183,208,0.95);
   }
   
-  // When document view is restricted
+  // When document's view is restricted
   &[data-view-restrict="LOGGED_IN"] a.page-view-restrict {
     background: #da4a51;
     border-radius: 100%;
@@ -1007,13 +1022,24 @@ nav.workspace-waterials-management-nav {
   box-shadow: 0 0 0 0 rgba(148,183,208,0.95);
   padding: 70px 20px 30px;
   word-wrap: break-word;
-  line-height: 1.3em;
   font-size: 18px;
   color: #38393a;
   text-transform: uppercase;
   
   &.item-hidden {
     opacity: 0.4;
+  }
+  
+  // When section's view is restricted
+  &[data-view-restrict="LOGGED_IN"] a.folder-view-restrict {
+    background: #da4a51;
+    border-radius: 100%;
+    border: 1px solid #fff;
+    
+    &::before {
+      padding: 4px 5px 5px;
+    }
+    
   }
   
   .page-content {
