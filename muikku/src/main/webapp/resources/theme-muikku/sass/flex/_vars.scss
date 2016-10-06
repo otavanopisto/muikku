@@ -92,7 +92,6 @@ $bgr4 : #f9f9f9;
 /* Highlighted background */
 $hlBgr: #fff8c1;
 
-
 /* Category - Colors */
 $category1:#0099ff;
 $category2:#ff9900;
@@ -119,3 +118,6 @@ $CFfieldNumberBGColor:#fff; /* Connect Field's field number background color */
 $CFCorrectFieldNumberBGColor:#62c3eb; /* Connect Field's correct field number background color */
 $CFCorrectFieldNumberTextColor:#fff; /* Connect Field's correct field number text color */
 $CFPlaceHolderBGColor:f8f8f8;
+
+/* Workspace Reading View Document */
+$document-shadow: 0 15px 15px rgba(105, 108, 128, 0.3);

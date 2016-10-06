@@ -1,71 +1,71 @@
 .ui-widget-overlay {
-  background:#000;
-  opacity:0.5;
+  background: #000;
+  opacity: 0.5;
 }
 
 .ui-dialog {
-  box-shadow:0 0 80px rgba(0,0,0,0.4);
-  background:#fff;
+  box-shadow: 0 0 80px rgba(0,0,0,0.4);
+  background: #fff;
   font-family:'Open Sans', Arial, sans-serif;
-  font-size:16px;
-  font-weight:300;
-  padding:0;
-  text-transform:uppercase;
-  border:none;
-  z-index:9999;
-  max-width:100%;
-  min-width:320px;
+  font-size: 16px;
+  font-weight: 300;
+  padding: 0;
+  text-transform: uppercase;
+  border: none;
+  z-index: 9999;
+  max-width: 100%;
+  min-width: 320px;
   
   &.ui-corner-all {
-    border-radius:0px;
+    border-radius: 0;
   }
   
   .ui-dialog-titlebar {
-    border:0px;
-    background:#7391a7;
-    color:#fff;
-    border-radius:0px;
-    padding:8px 36px 8px 12px;
-    font-weight:400;
-    line-height:1.5em;
+    border: 0px;
+    background: #7391a7;
+    color: #fff;
+    border-radius: 0;
+    padding: 8px 36px 8px 12px;
+    font-weight: 400;
+    line-height: 1.5em;
     
     &.ui-draggable-handle {
-      cursor:move;
+      cursor: move;
     }
     
     .ui-dialog-title {
-      margin:0;
-      font-size:18px;
-      width:100%;
-      font-weight:300;
+      margin: 0;
+      font-size: 18px;
+      width: 100%;
+      font-weight: 300;
     }
     
     .ui-dialog-titlebar-close {
-      background:#7391a7;
-      border-radius:0px;
-      border:0px;
-      width:24px;
-      margin:0;
-      font-size:22px;
-      height:22px;
-      position:absolute;
-      right:12px;
-      top:7px;
-      cursor:pointer;
+      background: #7391a7;
+      border-radius: 0;
+      border: 0;
+      width: 24px;
+      margin: 0;
+      font-size: 22px;
+      height: 22px;
+      position: absolute;
+      right: 12px;
+      top: 7px;
+      cursor: pointer;
       
       span {
-        display:none;
+        display: none;
       }
       
       &:before {
         content: "\e63b";
-        color:#fff;
-        font-size:22px;
-        font-weight:normal;
+        color: #fff;
+        font-size: 22px;
+        font-weight: normal;
         font-family: 'muikku';
         speak: none;
         font-style: normal;
-        text-decoration:none;
+        text-decoration: none;
         font-variant: normal;
         text-transform: none;
         line-height: 1;
@@ -78,50 +78,50 @@
   }
   
   .ui-dialog-content {
-    margin:10px 0 0 0;
-    line-height:1.5em;
-    padding:0.5em 1em;
-    overflow:auto;
-    position:relative;
-    color:#362b36;
+    margin: 10px 0 0;
+    line-height: 1.5em;
+    padding: 0.5em 1em;
+    overflow: auto;
+    position: relative;
+    color: #362b36;
     
     label {
-      font-weight:400;
-      font-size:16px;
-      margin:5px 0 0 0;
-      display:block;
-      padding:5px 5px 5px 0;
+      font-weight: 400;
+      font-size: 16px;
+      margin: 5px 0 0;
+      display: block;
+      padding: 5px 5px 5px 0;
     }
     
     textarea {
-      padding:4px 8px;
-      box-sizing:border-box;
+      padding: 4px 8px;
+      box-sizing: border-box;
     }
     
   }
   
   .ui-dialog-buttonpane {
-    border:0;
-    background:transparent;
-    padding:0px 10px 10px 10px;
-    margin:10px 0 0 0;
+    border: 0;
+    background: transparent;
+    padding: 0 10px 10px;
+    margin: 10px 0 0;
     
     .ui-dialog-buttonset {
-      float:none;
-      position:relative;
-      text-align:right;
+      float: none;
+      position: relative;
+      text-align: right;
     
       button {
-        border-radius:0px;
-        border:0;
-        color:#fff;
-        font-weight:400;
-        text-transform:uppercase;
-        margin:5px;
-        outline:none;
-        font-family:'Open Sans', Arial, sans-serif;
-        min-width:90px;
-        cursor:pointer;
+        border-radius: 0;
+        border: 0;
+        color: #fff;
+        font-weight: 400;
+        text-transform: uppercase;
+        margin: 5px;
+        outline: none;
+        font-family: 'Open Sans', Arial, sans-serif;
+        min-width: 90px;
+        cursor: pointer;
         display: inline-block;
         line-height: normal;
         overflow: visible;
@@ -131,22 +131,22 @@
         vertical-align: middle;
         
         &[disabled="disabled"] {
-          opacity:0.2;
-          cursor:default;
+          opacity: 0.2;
+          cursor: default;
         }
         
         span {
-          padding:0.4em 1em;
-          display:block;
-          line-height:normal;
-          font-size:16px;
+          padding: 0.4em 1em;
+          display: block;
+          line-height: normal;
+          font-size: 16px;
         }
       }
       
       button.delete-button,
       button.confirm-button,
       button.remove-button {
-        background:#de3211; /* RED */
+        background: #de3211;
       }
       
       button.publish-button,
@@ -155,17 +155,17 @@
       button.create-button,
       button.save-evaluation-button,
       button.unarchive-button {
-        background:#27b91c; /* GREEN */
+        background: #27b91c;
       }
       
       button.revert-button,
       button.archive-button,
       button.cancel-evaluation-button {
-        background:#f6a930; /* ORANGE */
+        background: #f6a930;
       }
       
       button.cancel-button {
-        background:#7391a7; /* GRAYISH BLUE */
+        background: #7391a7;
       }
     
     }

@@ -3,6 +3,27 @@
  text-shadow: 0 0 15px $col; 
 }
 
+/* Rounding *Corners */
+@mixin rounded-top-left($val) {
+  border-top-left-radius: $val;
+}
+
+@mixin rounded-bottom-left($val) {
+  border-bottom-left-radius: $val;
+}
+
+@mixin rounded-top-right($val) {
+  border-top-right-radius: $val;
+}
+
+@mixin rounded-bottom-right($val) {
+  border-bottom-right-radius: $val;
+}
+
+@mixin rounded($val) {
+  border-radius: $val;
+}
+
 /* Generic Text Shadow for Buttons */
 @mixin buttonFontShadow() {
   text-shadow: 0 0 1px rgba(0,0,0,0.5);

@@ -432,7 +432,7 @@ nav.workspace-waterials-reading-nav {
 // DOCUMENT
 .workspace-materials-view-page.material-reading-view {
   background: #fff;
-  box-shadow: $w-page-sc;
+  box-shadow: $document-shadow;
   margin: 30px auto;
   max-width: 655px;
   padding: 10px 20px;
@@ -454,7 +454,7 @@ nav.workspace-waterials-reading-nav {
 // SECTION
 .workspace-materials-view-page.material-reading-view.folder {
   background: #fff;
-  box-shadow: $w-page-sc;
+  box-shadow: $document-shadow;
   color: #38393a;
   line-height: 1.3em;
   max-width: 700px;
