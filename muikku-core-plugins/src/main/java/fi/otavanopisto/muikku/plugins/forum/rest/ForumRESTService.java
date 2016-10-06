@@ -331,7 +331,8 @@ public class ForumRESTService extends PluginRESTService {
     }
     
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES)) {
-      if (Boolean.TRUE.equals(updThread.getSticky()) || Boolean.TRUE.equals(updThread.getLocked())) {
+      // User needs permission to change the value of these parameters
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLocked().equals(updThread.getLocked())) {
         if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
           return Response.status(Status.BAD_REQUEST).build();
       }

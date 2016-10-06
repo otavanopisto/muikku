@@ -392,7 +392,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
     
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_EDIT_WORKSPACE_MESSAGES, workspaceEntity)) {
-      if (Boolean.TRUE.equals(updThread.getSticky()) || Boolean.TRUE.equals(updThread.getLocked())) {
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLocked().equals(updThread.getLocked())) {
         if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
           return Response.status(Status.BAD_REQUEST).build();
       }

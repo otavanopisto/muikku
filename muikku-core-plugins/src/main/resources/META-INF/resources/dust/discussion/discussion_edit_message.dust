@@ -10,9 +10,10 @@
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2">{#localize key="plugin.discussion.createmessage.title"/}</span>
                 <input required="required" type="text" value="{title}" class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14" name="title" maxlength="255"></input>
-                
-                <span {@eq key=lockStickyPermission value="false" type="boolean"}style="display:none"{/eq}>sticky: <input type="checkbox" name="sticky" {@eq key=sticky value="true" type="boolean"}checked="checked"{/eq} /></span>
-                <span {@eq key=lockStickyPermission value="false" type="boolean"}style="display:none"{/eq}>locked: <input type="checkbox" name="locked" {@eq key=locked value="true" type="boolean"}checked="checked"{/eq} /></span>
+                {@eq key=lockStickyPermission value="true" type="boolean"}
+                  <span>sticky: <input type="checkbox" name="sticky" {@eq key=sticky value="true" type="boolean"}checked="checked"{/eq} /></span>
+                  <span>locked: <input type="checkbox" name="locked" {@eq key=locked value="true" type="boolean"}checked="checked"{/eq} /></span>
+                {/eq}
               </div>
             </div>    
           </div>

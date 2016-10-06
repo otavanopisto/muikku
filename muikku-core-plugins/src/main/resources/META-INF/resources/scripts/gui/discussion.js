@@ -1052,10 +1052,13 @@
           return;
         }
 
-       
+        var sticky = false;
+        var locked = false;
         
-        var sticky = this.element.find("input[name='sticky']").prop("checked") ? true : false;
-        var locked = this.element.find("input[name='locked']").prop("checked") ? true : false;
+        if (this.options.lockStickyPermission) {
+          sticky = this.element.find("input[name='sticky']").prop("checked") ? true : false;
+          locked = this.element.find("input[name='locked']").prop("checked") ? true : false;
+        }
         
         this.options.ioController.createThread(forumAreaId, title, message, sticky, locked, $.proxy(function(err, result) {
           if (err) {
@@ -1236,8 +1239,17 @@
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
         var title = this.element.find('*[name="title"]').val();
-        var sticky = this.element.find("input[name='sticky']").prop("checked");
-        var locked = this.element.find("input[name='locked']").prop("checked");
+        
+//        var sticky = false;
+//        var locked = false;
+//        
+//        if (this.options.lockStickyPermission) {
+//          sticky = this.element.find("input[name='sticky']").prop("checked") ? true : false;
+//          locked = this.element.find("input[name='locked']").prop("checked") ? true : false;
+//        } else {
+//          sticky = this.element.find("input[name='sticky']").val() == "1";
+//          locked = this.element.find("input[name='locked']").val() == "1";
+//        }
         
         if (!title && !title.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.notitle'));
@@ -1250,14 +1262,28 @@
           return;
         }
         
-        this.options.ioController.updateThread(this.options.areaId, this.options.threadId, title, message, sticky, locked, $.proxy(function(err, result) {
+        this.options.ioController.loadThread(this.options.areaId, this.options.threadId, $.proxy(function(err, thread) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
-            this.destroyEditor(true);
-            $('.discussion').discussion('reloadThread');
-            this.element.trigger('dialogClose');
-            this.element.remove();
+            var sticky = thread.sticky;
+            var locked = thread.locked;
+            
+            if (this.options.lockStickyPermission) {
+              sticky = this.element.find("input[name='sticky']").prop("checked") ? true : false;
+              locked = this.element.find("input[name='locked']").prop("checked") ? true : false;
+            }
+          
+            this.options.ioController.updateThread(this.options.areaId, this.options.threadId, title, message, sticky, locked, $.proxy(function(err, result) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                this.destroyEditor(true);
+                $('.discussion').discussion('reloadThread');
+                this.element.trigger('dialogClose');
+                this.element.remove();
+              }
+            }, this));
           }
         }, this));
       }

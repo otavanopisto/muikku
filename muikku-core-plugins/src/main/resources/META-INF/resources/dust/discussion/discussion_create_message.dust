@@ -21,7 +21,7 @@
               </select>
             </div>    
           </div>
-          {@eq key=lockStickyPermission value="false" type="boolean"}          
+          {@eq key=lockStickyPermission value="true" type="boolean"}          
             <div class="mf-form-row flex-row">
               <div class="mf-form-element lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
                 <div class="mf-form-element-subcontainer">
