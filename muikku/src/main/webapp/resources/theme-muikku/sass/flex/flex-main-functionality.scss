@@ -1023,12 +1023,12 @@ ul.mf-tool-label-container {
     color: #000;
     border-radius: 3px;
     background-color: #fff;
-    
-    .mf-form-element-subcontainer-item {
-      padding: 5px;
-    }
   }
 
+  .mf-form-element-subcontainer-item {
+    padding: 5px;
+  }
+    
   .mf-textfield-title {
     color: $formTitle;
     flex-shrink: 0;
@@ -1083,13 +1083,11 @@ ul.mf-tool-label-container {
   
     select {        
       width: 100%;
-      
-      option {
-        padding: 8px;
-      }
-    
     }
-  
+
+    option {
+      padding: 8px;
+    }  
   }
 }
 
