@@ -501,16 +501,15 @@ figure.image {
   .icon-copyright {
     display: block;
     
-    
-    &:before {
-      cursor: pointer;
-      font-size: 26px;
-      line-height: 1;
-      color: #fff;
-      background: #0099ff;
-      border-radius: 100%;
-      float: right;
-      margin: 0 5px 0 0;
+    &::before {
+      cursor:pointer;
+      font-size:26px;
+      line-height:1;
+      color:#fff;
+      background:#0099ff;
+      border-radius:100%;
+      float:right;
+      margin:0 5px 0 0;
     }
     
     .image-details-container {

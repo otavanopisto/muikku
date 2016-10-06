@@ -75,9 +75,14 @@ public class UserIndexer {
         if ((archetype != null) && (userEntity != null)) {
           SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
           
+          boolean isDefaultIdentifier = (userEntity.getDefaultIdentifier() != null && userEntity.getDefaultSchoolDataSource() != null) ?
+              userEntity.getDefaultIdentifier().equals(user.getIdentifier()) && 
+              userEntity.getDefaultSchoolDataSource().getIdentifier().equals(user.getSchoolDataSource()) : false;
+          
           Map<String, Object> extra = new HashMap<>();
           extra.put("archetype", archetype);
           extra.put("userEntityId", userEntity.getId());
+          extra.put("isDefaultIdentifier", isDefaultIdentifier);
           
           Set<Long> workspaceEntityIds = new HashSet<Long>();
           Set<Long> userGroupIds = new HashSet<Long>();
