@@ -1,7 +1,7 @@
-.cke { /* CKE Wrapper */
-  border:1px solid #fff !important;
-  box-shadow:none !important;
-  border-radius:5px;
+.cke {
+  border: 1px solid #fff !important;
+  box-shadow: none !important;
+  border-radius: 5px;
   
   &[data-readonly="readonly"] {
   
@@ -21,7 +21,7 @@
         }
         
         .cke_bottom {
-          border-top:1px solid #eaeaea;
+          border-top: 1px solid #eaeaea;
         }
         
       }
@@ -31,7 +31,7 @@
       }
       
       .cke_bottom {
-        border-top:1px solid #eaeaea;
+        border-top: 1px solid #eaeaea;
       }
       
     }
@@ -55,35 +55,35 @@
     }
   
     .cke_top {
-      border:0;
-      box-shadow:none;
-      background:#abdbed;
-      background-image:none;
-      padding:8px 8px 4px 8px;
-      border-bottom:0;
+      border: 0;
+      box-shadow: none;
+      background: #abdbed;
+      background-image: none;
+      padding: 8px 8px 4px;
+      border-bottom: 0;
       transition: background 0.1s,0.2s ease-in-out;
       
       .cke_toolbar {
-        display:block;
-        margin:2px 0;
+        display: block;
+        margin: 2px 0;
       
         .cke_toolgroup {
-          border:1px solid #fff;
-          background:#fff;
-          background-image:none;
+          border: 1px solid #fff;
+          background: #fff;
+          background-image: none;
           
           a:hover {
-            border-radius:3px;
-            background:#9ed7ff;
-            box-shadow:none;
-            border:0;
+            border-radius: 3px;
+            background: #9ed7ff;
+            box-shadow: none;
+            border: 0;
           }
           
           a.cke_button_on {
-              background:#9ed7ff;
-              background-image:none;
-              box-shadow:none;
-              border:0;
+              background: #9ed7ff;
+              background-image: none;
+              box-shadow: none;
+              border: 0;
             }
           
         }
@@ -93,41 +93,42 @@
           &.cke_combo_off {
           
             a.cke_combo_button {
-              background:#fff;
-              background-image:none;
-              box-shadow:none;
-              border:1px solid #fff;
+              background: #fff;
+              background-image: none;
+              box-shadow: none;
+              border: 1px solid #fff;
               
               &:hover {
-                background:#9ed7ff;
+                background: #9ed7ff;
               }
               
             }
+            
           }
           
           &.cke_combo_on {
           
             a.cke_combo_button {
-              background:#9ed7ff;
-              background-image:none;
-              box-shadow:none;
-              border:1px solid #fff
+              background: #9ed7ff;
+              background-image: none;
+              box-shadow: none;
+              border: 1px solid #fff
             }
+            
           }
+          
         }
         
       }
       
-      
-      
     }
     
     .cke_bottom {
-      border:0;
-      box-shadow:none;
-      background:#fff;
-      background-image:none;
-      border-top:1px solid #abdbed;
+      border: 0;
+      box-shadow: none;
+      background: #fff;
+      background-image: none;
+      border-top: 1px solid #abdbed;
     }
   
   }

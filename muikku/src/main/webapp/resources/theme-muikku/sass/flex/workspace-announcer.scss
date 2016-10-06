@@ -2,14 +2,14 @@
 @import "_styles.scss";
 
 .workspace-generic-view-title {
-  background:#fff;
-  padding:20px;
-  margin:0;
+  background: #fff;
+  padding: 20px;
+  margin: 0;
 }
 
 .workspace-announcer-content-wrapper {
-  padding:20px;
-  background:#fff;
+  padding: 20px;
+  background: #fff;
 }
 
 .an-announcements {
@@ -23,7 +23,7 @@
     width: 286px;
 
     &:nth-child(3n+3) {
-      margin-right:0;
+      margin-right: 0;
     }
     
     &.ACTIVE {
@@ -31,15 +31,15 @@
     }
     
     &.ENDED {
-      opacity:0.5;
+      opacity: 0.5;
     }
     
     &.UPCOMING {
     
       .an-announcement-dates {
-        background:#69cff9;
-        color:#fff;
-        font-weight:600;
+        background: #69cff9;
+        color: #fff;
+        font-weight: 600;
       }
       
     }
@@ -52,16 +52,14 @@
   
 }
 
-  /* Announcer areas overrides */
-
 input[type="text"]{
   box-shadow : none;
-  width:100%;
+  width: 100%;
   margin: 4px 0;
 }
   
   .mf-item{
-    box-shadow : 1px 10px 12px rgba(216, 230, 235, 0.50)
+    box-shado: 1px 10px 12px rgba(216, 230, 235, 0.50)
   }  
   
   .mf-content-area {
@@ -70,7 +68,7 @@ input[type="text"]{
     .di-no-messages {
     
       h3 {
-        font-weight:300;
+        font-weight: 300;
       }
     
     }
@@ -80,93 +78,97 @@ input[type="text"]{
   .mf-toolbar {
   
     input {
-      border-radius:0;
-      border:0;
-      color:#fff;
-      font-weight:400;
-      text-transform:uppercase;
-      margin:5px;
-      outline:none;
-      font-family:'Open Sans', Arial, sans-serif;
-      min-width:90px;
-      padding:10px;
-      font-size:16px;
+      border-radius: 0;
+      border: 0;
+      color: #fff;
+      font-weight: 400;
+      text-transform: uppercase;
+      margin: 5px;
+      outline: none;
+      font-family:' Open Sans', Arial, sans-serif;
+      min-width: 90px;
+      padding: 10px;
+      font-size: 16px;
     }
   
     input[name="send"] {
-      background:#27b91c;
+      background: #27b91c;
     }
     
     input[name="cancel"] {
-      background:#7391a7;
+      background: #7391a7;
     }
   
   }
   .mf-content-functions {
-    background-color:#fff;
-    font-size:14px;
+    background-color: #fff;
+    font-size: 14px;
     
     .mf-button-container {
       background-color: transparent;
       
       .mf-primary-function { /* Overrides mainfunction button styles */
-        margin:0 0 0 15px;
-        box-shadow:none;
-        border:0;
-        text-shadow:none;
-        background:#0099ff;
-        width:auto;
+        margin: 0 0 0 15px;
+        box-shadow: none;
+        border: 0;
+        text-shadow: none;
+        background: #0099ff;
+        width: auto;
         border-radius: 3px;
         color: #ffffff;
         cursor: pointer;
         font-size: 1em;
         line-height: 1.3em;
         text-transform: uppercase;       
-        padding: 12px; 
-        &.disabled{
-          background:#dadada;
+        padding: 12px;
+         
+        &.disabled {
+          background: #dadada;
           color: #efefef;
         }
 
-        span{
-
+        span {
           white-space: nowrap;
         }
+        
       }
       
       .di-new-message-button {
-        font-weight:400;
-        
+        font-weight: 400;
       }
       
     }
     
     .mf-view-container {
-      background-color:#fff;
-      height:55px;
+      background-color: #fff;
+      height: 55px;
       
       .di-browse-areas-container {
-        margin:0 0 10px;
+        margin: 0 0 10px;
       }
       
-      .di-new-area-container, .di-edit-area-container,
+      .di-new-area-container, 
+      .di-edit-area-container,
       .di-delete-area-container {
-        margin:2px 0 0 5px;
+        margin: 2px 0 0 5px;
       }
+      
     } 
     
     .mf-view-container {
-      background-color:#fff;
-      height:55px;
+      background-color: #fff;
+      height: 55px;
       
       .di-browse-areas-container {
-        margin:0 0 10px;
+        margin: 0 0 10px;
       }
       
-      .di-new-area-container, .di-edit-area-container,
+      .di-new-area-container,
+      .di-edit-area-container,
       .di-delete-area-container {
-        margin:2px 0 0 5px;
+        margin: 2px 0 0 5px;
       }
+      
     }
   
   }  

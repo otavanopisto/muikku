@@ -1,83 +1,83 @@
 @media screen and  (max-width: 1099px) {
   
-  /* WORKSPACE NAVIGATION CONTAINER */
+  // WORKSPACE NAVIGATION CONTAINER
   #workspaceNavigationWrapper {
-    display:none;
+    display: none;
   }
   
-  /* WORKSPACE NAVIGATION BUBLE CONTAINER */
+  // WORKSPACE NAVIGATION BUBLE CONTAINER
   #workspaceNavigationWrapperBuble {
-    display:block;
-    background:#36b497;
-    border:2px solid #fff;
-    border-radius:100%;
-    box-shadow:0 0 10px rgba(0,0,0,0.3);
-    position:fixed;
-    z-index:99;
-    top:97px;
-    left:12px;
-    cursor:pointer;
-    text-align:center;
+    display: block;
+    background: #36b497;
+    border: 2px solid #fff;
+    border-radius: 100%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    position: fixed;
+    z-index: 99;
+    top: 97px;
+    left: 12px;
+    cursor: pointer;
+    text-align: center;
     transition: top 0.3s ease-in-out, left 0.3s ease-in-out;
     
     .icon-navicon {
-      padding:6px;
-      color:#fff;
-      margin:4px;
-      font-size:32px;
-      position:relative;
-      background:transparent;
+      padding: 6px;
+      color: #fff;
+      margin: 4px;
+      font-size: 32px;
+      position: relative;
+      background: transparent;
       
       .navmore-container {
-        display:none;
-        position:absolute;
-        left:50px;
-        top:-4px;
-        background:transparent;
-        border-radius:3px;
-        text-align:left;
-        box-shadow:0 3px 5px rgba(0,0,0,0.3);
+        display: none;
+        position: absolute;
+        left: 50px;
+        top: -4px;
+        background: transparent;
+        border-radius: 3px;
+        text-align: left;
+        box-shadow: 0 3px 5px rgba(0,0,0,0.3);
         
-        &:after {
-          right:100%;
-          top:26px;
-          border:solid transparent;
-          content:" ";
-          height:0;
-          width:0;
-          position:absolute;
-          pointer-events:none;
-          border-color:rgba(76, 102, 105, 0);
-          border-right-color:#4c6669;
-          border-width:8px;
-          margin-top:-8px;
+        &::after {
+          right: 100%;
+          top: 26px;
+          border: solid transparent;
+          content: " ";
+          height: 0;
+          width: 0;
+          position: absolute;
+          pointer-events: none;
+          border-color: rgba(76, 102, 105, 0);
+          border-right-color: #4c6669;
+          border-width: 8px;
+          margin-top: -8px;
         }
         
         .navmore-management-links {
-          padding:10px;
-          background:#4c6669;
-          border-top-left-radius:3px;
-          border-top-right-radius:3px;
+          padding: 10px;
+          background: #4c6669;
+          border-top-left-radius: 3px;
+          border-top-right-radius: 3px;
           
           .workspace-management-item {
             
             a {
-              color:#fff;
-              font-size:18px;
-              text-transform:uppercase;
-              white-space:nowrap;
-              font-weight:300;
-              display:block;
-              padding:10px;
-              border-radius:3px;
-              text-decoration:none;
+              color: #fff;
+              font-size: 18px;
+              text-transform: uppercase;
+              white-space: nowrap;
+              font-weight: 300;
+              display: block;
+              padding: 10px;
+              border-radius: 3px;
+              text-decoration: none;
               
               span {
-                font-size:16px;
+                font-size: 16px;
               }
               
               &:hover {
-                background:#547d82;
+                background: #547d82;
               }
               
             }
@@ -87,30 +87,30 @@
         }
         
         .navmore-student-links {
-          padding:10px;
-          background:#36b497;
-          border-bottom-left-radius:3px;
-          border-bottom-right-radius:3px;
+          padding: 10px;
+          background: #36b497;
+          border-bottom-left-radius: 3px;
+          border-bottom-right-radius: 3px;
           
           .workspace-student-item {
             
             a {
-              color:#fff;
-              font-size:18px;
-              text-transform:uppercase;
-              white-space:nowrap;
-              font-weight:300;
-              display:block;
-              padding:10px;
-              border-radius:3px;
-              text-decoration:none;
+              color: #fff;
+              font-size: 18px;
+              text-transform: uppercase;
+              white-space: nowrap;
+              font-weight: 300;
+              display: block;
+              padding: 10px;
+              border-radius: 3px;
+              text-decoration: none;
               
               span {
-                font-size:16px;
+                font-size: 16px;
               }
               
               &:hover {
-                background:#56ccb1;
+                background: #56ccb1;
               }
               
             }
@@ -120,38 +120,38 @@
         }
         
         .navmore-evaluation-links {
-          margin-top:3px;
-          padding:0;
-          background:#36b497;
-          border-radius:3px;
-          box-shadow:0 1px 5px rgba(0,0,0,0.3);
+          margin-top: 3px;
+          padding: 0;
+          background: #36b497;
+          border-radius: 3px;
+          box-shadow: 0 1px 5px rgba(0,0,0,0.3);
           
           .workspace-evaluation-item {
-            padding:5px;
+            padding: 5px;
           
             &.workspace-dock-navi-button-evaluation {
-              width:auto;
-              margin:0;
+              width: auto;
+              margin: 0;
               
               a {
-                width:auto;
+                width: auto;
               }
               
             }
             
             a {
-              color:#fff;
-              font-size:18px;
-              text-transform:uppercase;
-              white-space:nowrap;
-              font-weight:300;
-              display:block;
-              padding:10px;
-              border-radius:3px;
-              text-decoration:none;
+              color: #fff;
+              font-size: 18px;
+              text-transform: uppercase;
+              white-space: nowrap;
+              font-weight: 300;
+              display: block;
+              padding: 10px;
+              border-radius: 3px;
+              text-decoration: none;
               
               span {
-                font-size:16px;
+                font-size: 16px;
               }
               
             }
@@ -161,28 +161,28 @@
         }
         
         .navmore-fullscreenreading-links {
-          padding:10px;
-          background:#288fcd;
+          padding: 10px;
+          background: #288fcd;
           
           .workspace-fullscreenreading-item {
             
             a {
-              color:#fff;
-              font-size:18px;
-              text-transform:uppercase;
-              white-space:nowrap;
-              font-weight:300;
-              display:block;
-              padding:10px;
-              border-radius:3px;
-              text-decoration:none;
+              color: #fff;
+              font-size: 18px;
+              text-transform: uppercase;
+              white-space: nowrap;
+              font-weight: 300;
+              display: block;
+              padding: 10px;
+              border-radius: 3px;
+              text-decoration: none;
               
               span {
-                font-size:16px;
+                font-size: 16px;
               }
               
               &:hover {
-                background:#1a75ac;
+                background: #1a75ac;
               }
               
             }
@@ -196,10 +196,10 @@
     }
     
     &:hover {
-      box-shadow:none;
+      box-shadow: none;
     
       .navmore-container {
-        display:block;
+        display: block;
       }
       
     }

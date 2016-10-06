@@ -1,18 +1,18 @@
 @media screen and (max-width: 767px) {
 
   body {
-    padding:60px 5px 54px 5px;
-    background-image:url('/gfx/light-diagonal-strips.png');
-    background-repeat:repeat;
-    background-color:#f0f3f5;
+    padding: 60px 5px 54px 5px;
+    background-image: url('/gfx/light-diagonal-strips.png');
+    background-repeat: repeat;
+    background-color: #f0f3f5;
     
     &.footerDialogOpen {
-      padding-bottom:0 !important;
+      padding-bottom: 0 !important;
       
       footer#footer {
-        position:relative;
-        left:-5px;
-        right:-5px;
+        position: relative;
+        left: -5px;
+        right: -5px;
       }
       
     }
@@ -20,130 +20,130 @@
   }
   
   .box {
-    padding:10px;
+    padding: 10px;
   }
   
   #helpdesk {
-    margin:-4px 0 0 0;
-    font-size:13px;
+    margin: -4px 0 0;
+    font-size: 13px;
   }
   
   #guides {
-    margin:0 0 -4px 0;
+    margin: 0 0 -4px;
   }
   
   main.content {
-    margin:20px 0 20px 0;
+    margin: 20px 0;
   }
     
   
   #staticNavigationWrapper {
-    height:60px;
-    position:fixed;
-    left:0;
-    top:0;
-    right:0;
+    height: 60px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
   }
   
   #staticNavigation {
-    height:50px;
-    padding:5px 10px;
-    box-shadow:0 2px 2px rgba(0,0,0,0.2);
+    height: 50px;
+    padding: 5px 10px;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.2);
   }
   
   .static-navigation-bg {
-    background:#32acf6 url("/gfx/mobile-navigation-background.png");
-    background-position:30% top;
-    opacity:1;
-    border:0;
+    background: #32acf6 url("/gfx/mobile-navigation-background.png");
+    background-position: 30% top;
+    opacity: 1;
+    border: 0;
   }
   
   div[class*="dock-static-navi"] {
   
     &:hover {
-      border:0;
+      border: 0;
     }
   
   }
   
   div[class*='dock-static-navi-button'] > a, 
   div[class*='dock-dynamic-navi-button'] > a {
-    font-size:35px;
-    padding:7px 5px 2px 5px;
-    height:35px;
+    font-size: 35px;
+    padding: 7px 5px 2px 5px;
+    height: 35px;
   }
   
   .navmore-container {
-    display:none;
+    display: none;
   }
   
   div.dock-static-navi-button-navimore {
-   float:right;
-   margin-right:0;
+   float: right;
+   margin-right: 0;
    
    &:hover {
-     border:0;
+     border: 0;
    }
    
   }
   
   /* Navigation More Icon Wrapper */
   div[class*='dock-static-navi-button'] > div {
-    font-size:35px;
-    padding:7px 5px 20px;
-    height:35px;
-    cursor:pointer;
+    font-size: 35px;
+    padding: 7px 5px 20px;
+    height: 35px;
+    cursor: pointer;
 
     &:hover {
       
       /* Navigation More Container */
       .navmore-container {
-        display:block;
-        padding:0;
-        background:#fff;
-        box-shadow:-5px 5px 5px rgba(0, 0, 0, 0.1);
-        min-height:100vh;
-        position:fixed;
-        right:0;
-        top:61px;
-        cursor:default;
+        display: block;
+        padding: 0;
+        background: #fff;
+        box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.1);
+        min-height: 100vh;
+        position: fixed;
+        right: 0;
+        top: 61px;
+        cursor: default;
         
         div[class*="dock-static-navi"] {
-          margin:5px 0;
-          display:block;
-          float:none;
+          margin: 5px 0;
+          display: block;
+          float: none;
           
           > a {
-            padding:5px;
-            font-size:18px;
-            height:1em;
-            color:#416c7c;
-            text-shadow:none;
-            display:block;
-            padding:10px 20px 10px 10px;
+            padding: 5px;
+            font-size: 18px;
+            height: 1em;
+            color: #416c7c;
+            text-shadow: none;
+            display: block;
+            padding: 10px 20px 10px 10px;
             
             &:hover,
             &:focus,
             &:active {
-              background:#c5eaf8;
+              background: #c5eaf8;
             }
             
             &.icon-user {
-              font-size:16px;
+              font-size: 16px;
             }
             
             > span {
-              text-transform:uppercase;
-              font-size:16px;
-              color:#5c5c5c;
-              display:inline-block;
-              vertical-align:top;
-              padding:0 0 0 10px;
-              font-weight:300;
+              text-transform: uppercase;
+              font-size: 16px;
+              color: #5c5c5c;
+              display: inline-block;
+              vertical-align: top;
+              padding: 0 0 0 10px;
+              font-weight: 300;
             }
           
            &:hover {
-             text-shadow:none;
+             text-shadow: none;
            }
           
           }
@@ -158,41 +158,40 @@
   
   .login,
   .forgot-password {
-    float:none;
-    display:inline-block;
-    margin:0;
-    width:100%;
+    float: none;
+    display: inline-block;
+    margin: 0;
+    width: 100%;
   }
   
   .bt-generic.bt-login,
   .bt-generic.bt-forgotpassword {
-    font-size:1em;
-    padding:0;
-    float:none;
-    width:100%;
-    text-align:center;
-    border-radius:2px;
+    font-size: 1em;
+    padding: 0;
+    float: none;
+    width: 100%;
+    text-align: center;
+    border-radius: 2px;
   }
   
   .bt-generic.bt-login a,
   .bt-generic.bt-forgotpassword span {
-    padding:10px;
-    text-decoration:none;
-    display:inline-block;
+    padding: 10px;
+    text-decoration: none;
+    display: inline-block;
     
   }
  
-  /* Main Functionality Left Top Button */
   .bt-main-functionality  {
   
     span:first-child {
-      font-size:13px;
-      padding:8px 6px;
+      font-size: 13px;
+      padding: 8px 6px;
     }
     
     .bt-main-functionality-decoration {
-      padding:3px 1px;
-      font-size:2em;
+      padding: 3px 1px;
+      font-size: 2em;
     }
   
   } 
@@ -200,32 +199,29 @@
   input[type="text"],
   input[type="password"],
   textarea {   
-    font-size:14px;     
+    font-size: 14px;     
   }
   
-  /* Main Functionality - HAS TO BE IMPORTANT */
   .mf-content-functions {
-    background:none !important;
+    background: none !important;
   }
   
   .mf-content-area {
-    background:none !important;
+    background: none !important;
     
     .mf-item {
-      margin:0 0 5px 0 !important;
+      margin: 0 0 5px !important;
     }
     
   }
   
-  /* Records */
-  
   .tr-item-header-detail.grade {
-    height:15px;
-    padding:0 !important;
-    width:6px;
+    height: 15px;
+    padding: 0 !important;
+    width: 6px;
     
     > span {
-      display:none;
+      display: none;
     }
     
   }
@@ -235,19 +231,19 @@
     .ui-dialog {
     
       .ui-dialog-titlebar.ui-widget-header {
-        padding:10px 50px 10px 10px;
+        padding: 10px 50px 10px 10px;
       
        .ui-dialog-title {
-          font-size:20px;
-          font-weight:400;
+          font-size: 20px;
+          font-weight: 400;
         }
         
         .ui-dialog-titlebar-close {
-          width:30px;
-          height:30px;
+          width: 30px;
+          height: 30px;
         
           &:before {
-            font-size:30px;
+            font-size: 30px;
           }
         
         }
@@ -255,10 +251,10 @@
       }
       
       .ui-dialog-content.ui-widget-content {
-        margin:10px auto;
+        margin: 10px auto;
     
         .cp-course-description {
-          max-height:5em;
+          max-height: 5em;
         }
       
       }
@@ -266,7 +262,7 @@
       .ui-dialog-buttonpane.ui-widget-content {
       
         .ui-dialog-buttonset {
-          text-align:center;
+          text-align: center;
         }
         
       }
@@ -275,28 +271,26 @@
     
   }
   
-  /* Communicator */
-  
   .cm-message {
   
     .cm-message-details {
     
       .cm-message-latest,
       .cm-message-header-content-secondary {
-        font-size:13px;
+        font-size: 13px;
       }
       
       .cm-message-header-count {
-        margin:0 5px 0 0;
-        display:inline-block;
+        margin: 0 5px 0 0;
+        display: inline-block;
         
         .cm-message-replies {
-          font-weight:400;
-          width:100%;
-          background-color:$hlBgr;
-          text-align:center;
-          padding:2px;
-          font-size:13px;
+          font-weight: 400;
+          width: 100%;
+          background-color: $hlBgr;
+          text-align: center;
+          padding: 2px;
+          font-size: 13px;
         }
         
       }

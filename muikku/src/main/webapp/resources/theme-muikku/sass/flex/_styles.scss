@@ -48,13 +48,13 @@
 /* Form element - HOVER */
 @mixin elementHover($rgba) {
   box-shadow: 0 0 0 3px $rgba; 
-  border-color:#fff;
+  border-color: #fff;
 }
 
 /* Form element - FOCUS */
 @mixin elementFocus($rgba) {
   box-shadow: 0 0 0 3px $rgba; 
-  border-color:#fff;
+  border-color: #fff;
 }
 
 @mixin fadeRight(){
@@ -67,38 +67,38 @@
 }
 
 @mixin generic-loader($size) {
-  -webkit-animation:generic-loader 1.0s infinite linear;
-  -moz-animation:generic-loader 1.0s infinite linear;
-  animation:generic-loader 1.0s infinite linear;
+  -webkit-animation: generic-loader 1.0s infinite linear;
+  -moz-animation: generic-loader 1.0s infinite linear;
+  animation: generic-loader 1.0s infinite linear;
   content: "\e900";
   font-family: 'muikku' !important;
-  speak:none;
-  font-style:normal;
-  font-weight:normal;
-  font-variant:normal;
-  text-transform:none;
-  line-height:1;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  height:$size;
-  width:$size;
-  font-size:$size;
-  color:#7ed9ff;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: $size;
+  width: $size;
+  font-size: $size;
+  color: #7ed9ff;
 }
 
 /* Workspace Navigation Tooltip Transitions */
 @mixin workspaceTooltipTransition($pr1,$trd1,$tf1) {
-  -webkit-transition-property:$pr1;
-  -webkit-transition-duration:$trd1;
-  -webkit-transition-timing-function:$tf1;
-  -moz-transition-property:$pr1;
-  -moz-transition-duration:$trd1;
-  -moz-transition-timing-function:$tf1;
-  -o-transition-property:$pr1;
-  -o-transition-duration:$trd1;
-  -o-transition-timing-function:$tf1; 
-  transition-property:$pr1;
-  transition-duration:$trd1;
+  -webkit-transition-property: $pr1;
+  -webkit-transition-duration: $trd1;
+  -webkit-transition-timing-function: $tf1;
+  -moz-transition-property: $pr1;
+  -moz-transition-duration: $trd1;
+  -moz-transition-timing-function: $tf1;
+  -o-transition-property: $pr1;
+  -o-transition-duration: $trd1;
+  -o-transition-timing-function: $tf1; 
+  transition-property: $pr1;
+  transition-duration: $trd1;
   transition-timing-function: $tf1;
 }
 
@@ -112,38 +112,38 @@ user-select: none;
 }
 
 @mixin flexbox() {
-  display:-webkit-box; 
-  display:-moz-box;
-  display:-ms-flexbox;
-  display:-webkit-flex;
-  display:flex;
+  display: -webkit-box; 
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
 }
 
 @mixin flex-grow($value) {
-  -webkit-flex-grow:$value;
-  -moz-flex-grow:$value;
-  -ms-flex-grow:$value;
-  flex-grow:$value;
+  -webkit-flex-grow: $value;
+  -moz-flex-grow: $value;
+  -ms-flex-grow: $value;
+  flex-grow: $value;
 }
 
 @mixin flex-shrink($value) {
-  -webkit-flex-shrink:$value;
-  -moz-flex-shrink:$value;
-  -ms-flex-shrink:$value;
-  flex-shrink:$value;
+  -webkit-flex-shrink: $value;
+  -moz-flex-shrink: $value;
+  -ms-flex-shrink: $value;
+  flex-shrink: $value;
 }
 
 @mixin flex-basis($value) {
-  -webkit-flex-basis:$value;
-  -moz-flex-basis:$value;
-  -ms-flex-basis:$value;
-  flex-basis:$value;
+  -webkit-flex-basis: $value;
+  -moz-flex-basis: $value;
+  -ms-flex-basis: $value;
+  flex-basis: $value;
 }
 
 @mixin flex($values) {
-  -webkit-box-flex:$values;
-  -moz-box-flex:$values;
-  -webkit-flex:$values;
-  -ms-flex:$values;
-  flex:$values;
+  -webkit-box-flex: $values;
+  -moz-box-flex: $values;
+  -webkit-flex: $values;
+  -ms-flex: $values;
+  flex: $values;
 }
