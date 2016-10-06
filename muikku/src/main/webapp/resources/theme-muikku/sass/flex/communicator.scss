@@ -237,7 +237,8 @@
       box-sizing: border-box;
       word-break: break-all;
       word-wrap: break-word;
-      
+      font-weight: 600;
+      margin-top: 10px;      
       .cm-message-select {
         display: inline-block;
         margin: 0 0 0 5px;
@@ -451,6 +452,8 @@
       
       .cm-message-header-content-primary {
         font-weight: 400;
+        max-width:80%;
+        
       } 
     
     } 
