@@ -778,6 +778,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             (Collection<SchoolDataIdentifier>) null,
             Boolean.FALSE,
             Boolean.FALSE,
+            false,
             0,
             maxResults != null ? maxResults : Integer.MAX_VALUE);
         

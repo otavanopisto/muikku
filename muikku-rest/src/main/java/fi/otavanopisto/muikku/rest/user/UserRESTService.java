@@ -260,7 +260,7 @@ public class UserRESTService extends AbstractRESTService {
       String[] fields = new String[] { "firstName", "lastName" };
 
       SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, firstResult, maxResults);
+          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, false, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
       boolean hasImage = false;
@@ -797,7 +797,8 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("myUserGroups") Boolean myUserGroups,
 			@QueryParam("workspaceIds") List<Long> workspaceIds,
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
-			@QueryParam("archetype") String archetype) {
+			@QueryParam("archetype") String archetype,
+			@DefaultValue ("false") @QueryParam("onlyDefaultUsers") Boolean onlyDefaultUsers) {
 	  
 	  // TODO: Add new endpoint for listing staff members and deprecate this.
 	  
@@ -859,6 +860,7 @@ public class UserRESTService extends AbstractRESTService {
 			    null, 
 			    false,
 			    false,
+			    onlyDefaultUsers,
 			    firstResult, 
 			    maxResults);
 			
@@ -1021,6 +1023,7 @@ public class UserRESTService extends AbstractRESTService {
           workspaceFilters, 
           userIdentifiers, 
           false, 
+          false,
           false,
           firstResult, 
           maxResults);

@@ -46,7 +46,7 @@ span.muikku-field-examples {
 // WHEN TASK FIELD HAS NO CORRECT ANSWERS SET - EVALUATION ONLY
 select {
   background: #fff;
-  border: 3px solid #c9e0fb;
+  border: 2px solid #abdbed;
   transition: border,box-shadow 0.1s,0.2s ease-in-out;
   outline: none;
   color: #0061a2;
@@ -60,10 +60,10 @@ select {
 }
 
 input[checked="checked"] {
-  box-shadow: 0 0 0 3px #7bb7fa;
+  box-shadow: 0 0 0 3px rgba(123,183,250,0.5);
   
   &:hover {
-    box-shadow: 0 0 0 3px #7bb7fa;
+    box-shadow: 0 0 0 3px rgba(123,183,250,0.5);
   }
   
 }
@@ -73,12 +73,12 @@ input[type="text"].muikku-field-correct-answer,
 textarea.muikku-field-correct-answer,
 select.muikku-field-correct-answer {
   box-shadow: 0 0 1px 3px rgba(0,255,42,0.3);
-  border: 3px solid #00ff2a;
+  border: 2px solid #00ff2a;
   border-radius: 3px;
   
   &:hover {
     box-shadow: 0 0 2px 3px rgba(0,255,42,0.3);
-    border: 3px solid #00ff2a;
+    border: 2px solid #00ff2a;
   }
   
 }
@@ -87,12 +87,12 @@ select.muikku-field-correct-answer {
 input[type="text"].muikku-field-incorrect-answer,
 textarea.muikku-field-incorrect-answer,
 select.muikku-field-incorrect-answer {
-  border: 3px solid #f64e4e;
+  border: 2px solid #f64e4e;
   box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
   border-radius: 3px;
   
   &:hover {
-    border: 3px solid #f64e4e;
+    border: 2px solid #f64e4e;
     box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
   }
   
@@ -141,35 +141,35 @@ div.muikku-organizer-field {
   
   .muikku-category.muikku-field-correct-answer {
     box-shadow: 0 0 1px 3px rgba(0,255,42,0.3);
-    border: 3px solid #00ff2a;
+    border: 2px solid #00ff2a;
     border-radius: 3px;
     
     &:hover {
       box-shadow: 0 0 2px 3px rgba(0,255,42,0.3);
-      border: 3px solid #00ff2a;
+      border: 2px solid #00ff2a;
     }
     
   }
   
   .muikku-category.muikku-field-semi-correct-answer {
     box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
-    border: 3px solid #dab33d;
+    border: 2px solid #dab33d;
     border-radius: 3px;
     
     &:hover {
       box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
-      border: 3px solid #dab33d;
+      border: 2px solid #dab33d;
     }
     
   }
   
   .muikku-category.muikku-field-incorrect-answer {
-    border: 3px solid #f64e4e;
+    border: 2px solid #f64e4e;
     box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
     border-radius: 3px;
     
     &:hover {
-      border: 3px solid #f64e4e;
+      border: 2px solid #f64e4e;
       box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
     }
 
@@ -182,35 +182,35 @@ div.muikku-organizer-field {
   
   .muikku-sorter-items-container.muikku-field-correct-answer {
     box-shadow: 0 0 1px 3px rgba(0,255,42,0.3);
-    border: 3px solid #00ff2a;
+    border: 2px solid #00ff2a;
     border-radius: 3px;
     
     &:hover {
       box-shadow: 0 0 2px 3px rgba(0,255,42,0.3);
-      border: 3px solid #00ff2a;
+      border: 2px solid #00ff2a;
     }
     
   }
   
   .muikku-sorter-items-container.muikku-field-semi-correct-answer {
     box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
-    border: 3px solid #dab33d;
+    border: 2px solid #dab33d;
     border-radius: 3px;
     
     &:hover {
       box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
-      border: 3px solid #dab33d;
+      border: 2px solid #dab33d;
     }
     
   }
   
   .muikku-sorter-items-container.muikku-field-incorrect-answer {
-    border: 3px solid #f64e4e;
+    border: 2px solid #f64e4e;
     box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
     border-radius: 3px;
     
     &:hover {
-      border: 3px solid #f64e4e;
+      border: 2px solid #f64e4e;
       box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
     }
 
@@ -269,12 +269,12 @@ span.muikku-field-incorrect-answer {
   input[type="checkbox"].muikku-field-correct-answer-override,
   input[type="radio"].muikku-field-correct-answer-override {
     box-shadow: 0 0 1px 3px rgba(0,255,42,0.9);
-    border: 3px solid #00ff2a;
+    border: 2px solid #00ff2a;
     border-radius: 3px;
     
     &:hover {
       box-shadow: 0 0 1px 3px rgba(0,255,42,0.9);
-      border: 3px solid #00ff2a;
+      border: 2px solid #00ff2a;
     }
   
   }

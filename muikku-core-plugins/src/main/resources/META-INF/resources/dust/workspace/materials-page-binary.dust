@@ -1,6 +1,5 @@
 <h2>{title}</h2>
 {@eq key=viewRestricted value="true"}
-  <p>ELIKÄS {viewRestricted}</p>
   <p class="content-view-restricted-message">{#localize key="plugin.workspace.materialViewRestricted"/}</p>
 {:else}
   {@select key=binaryType}

@@ -3,8 +3,6 @@ package fi.otavanopisto.muikku.schooldata.entity;
 import java.util.Date;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
 import fi.otavanopisto.muikku.search.annotations.IndexId;

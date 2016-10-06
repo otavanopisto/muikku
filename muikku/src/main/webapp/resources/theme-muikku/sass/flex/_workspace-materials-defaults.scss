@@ -66,7 +66,7 @@ input[type="text"],
 input[type="url"] {
   width: auto;
   height: auto;
-  border: 3px solid #c9e0fb;
+  border: 2px solid #abdbed;
   border-radius: 3px;
   display: inline-block;
   padding: 4px 8px;
@@ -81,12 +81,12 @@ input[type="url"] {
   
   &[readonly="readonly"] {
     background: #fcfcfc !important;
-    border: 3px dotted #eaeaea !important;
+    border: 2px dotted #eaeaea !important;
     box-shadow: none !important;
     color: #7c7c7c !important;
     
     &:hover {
-      border: 3px dotted #eee;
+      border: 2px dotted #eee;
       box-shadow: none;
       color: #555555 !important;
     }
@@ -95,7 +95,7 @@ input[type="url"] {
   
   &:focus,
   &:hover {
-    border: 3px solid #97bfed;
+    border: 2px solid #8dd6f1;
     box-shadow: 0 0 0px 3px rgba(202,225,252,0.75);
     
     span.muikku-text-field-hint {
@@ -141,7 +141,7 @@ input[type="url"] {
 // TEXTAREA OVERRIDES
 textarea {
   height: auto;
-  border: 3px solid #c9e0fb;
+  border: 2px solid #abdbed;
   border-radius: 3px;
   display: inline-block;
   padding: 4px 8px;
@@ -159,20 +159,21 @@ textarea {
   
   &[readonly="readonly"] {
     background: #fcfcfc !important;
-    border: 3px dotted #eaeaea !important;
+    border: 2px dotted #eaeaea !important;
     box-shadow: none !important;
     color: #7c7c7c !important;
     
     &:hover {
-      border: 3px dotted #eee !important;
+      border: 2px dotted #eee !important;
       box-shadow: none !important;
       color: #555555 !important;
     }
+    
   }
   
   &:focus,
   &:hover {
-    border: 3px solid #97bfed;
+    border: 2px solid #8dd6f1;
     box-shadow: 0 0 0px 3px rgba(202,225,252,0.75);
   }
 
@@ -181,7 +182,7 @@ textarea {
 // SELECT & OPTION OVERRIDES */
 select {
   background: #fff;
-  border: 3px solid #c9e0fb;
+  border: 2px solid #abdbed;
   transition: border,box-shadow 0.1s,0.2s ease-in-out;
   outline: none;
   color: #0061a2;
@@ -195,21 +196,25 @@ select {
   
   &:focus,
   &:hover {
-    border: 3px solid #97bfed;
+    border: 2px solid #8dd6f1;
     box-shadow: 0 0 0px 3px rgba(202,225,252,0.85);
   }
   
   &[disabled="disabled"] {
-  
+    border: 2px solid #cae1fc;
+    box-shadow: 0 0 0px 3px rgba(202,225,252,0.15);
+    color: #7c7c7c;
+    
     &:hover {
-      border: 3px solid #c9e0fb;
-      box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+      border: 2px solid #cae1fc;
+      box-shadow: 0 0 0px 3px rgba(202,225,252,0.15);
+      color: #7c7c7c;
     }
-  
+
   }
 
   option {
-    background: #ffffff;
+    background: #fff;
     font-weight: 300;
     padding: 4px 8px;
   }
@@ -258,12 +263,17 @@ input[type="checkbox"] {
     
   &[disabled="disabled"] {
   
-    &:hover {
-      box-shadow: 0 0 1px 3px rgba(215,215,215,0.15);
-    }
-    
     &:checked {
       box-shadow: 0 0 1px 3px rgba(202,225,252,0.85);
+      
+      &:hover {
+        box-shadow: 0 0 1px 3px rgba(202,225,252,0.85);
+      }
+      
+    }
+  
+    &:hover {
+      box-shadow: 0 0 1px 3px rgba(215,215,215,0.15);
     }
   
   }
@@ -276,11 +286,11 @@ textarea,
 select {
 
   &.muikku-field-unsaved {
-    border: 3px solid #e4e630;
+    border: 2px solid #e4e630;
     box-shadow: 0 0 1px 3px rgba(202,225,252,0.25);
     
     &:hover {
-      border: 3px solid #e4e630;
+      border:2px solid #e4e630;
     }
   }
   
@@ -290,11 +300,11 @@ select {
   }
 
   &.muikku-field-saved {
-    border: 3px solid #9cf3c7;
+    border: 2px solid #9cf3c7;
     box-shadow: 0 0 1px 3px rgba(202,225,252,0.25);
     
     &:hover {
-      border: 3px solid #9cf3c7;
+      border: 2px solid #9cf3c7;
     }
     
   }
@@ -385,6 +395,11 @@ p, h1, h2, h3, h4, h5, h6 {
   word-wrap: break-word;
 }
 
+label,select,option,input,textarea {
+  font-weight: 400;
+  font-size: 14px;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
 }
@@ -465,7 +480,7 @@ mark[data-muikku-word-definition] {
   font-size: 14px;
 }
 
-// This is single material page
+// DOCUMENT
 .workspace-materials-view-page.material-view { 
   padding: 10px 20px;
   margin: 30px auto;
@@ -732,7 +747,7 @@ sup {
     
   span.muikku-field-examples {
     border-radius: 3px;
-    padding: px;
+    padding: 3px;
     width: auto;
     background: #e2ffe2;
     font-style: italic;

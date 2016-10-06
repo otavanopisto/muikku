@@ -218,10 +218,8 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("hideWorkspaceAnnouncements") @DefaultValue("false") boolean hideWorkspaceAnnouncements,
       @QueryParam("workspaceEntityId") Long workspaceEntityId
   ) {
-    if (!onlyActive) {
-      if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
-        return Response.status(Status.FORBIDDEN).entity("You're not allowed to list unarchived announcements").build();
-      }
+    if (!onlyActive && workspaceEntityId == null && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
+      return Response.status(Status.FORBIDDEN).entity("You're not allowed to list unarchived announcements").build();
     }
     
     List<Announcement> announcements = null;

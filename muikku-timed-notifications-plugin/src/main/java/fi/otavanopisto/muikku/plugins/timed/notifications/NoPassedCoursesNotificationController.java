@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
@@ -43,7 +42,8 @@ public class NoPassedCoursesNotificationController {
   
   public SearchResult searchActiveStudentIds(Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
     SearchProvider searchProvider = getProvider("elastic-search");
-    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, firstResult, maxResults, Collections.singleton("id"), excludeSchoolDataIdentifiers, startedStudiesBefore);
+    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, false, 
+        firstResult, maxResults, Collections.singleton("id"), excludeSchoolDataIdentifiers, startedStudiesBefore);
   }
   
   public int countPassedCoursesByStudentIdentifierSince(SchoolDataIdentifier studentIdentifier, Date since){

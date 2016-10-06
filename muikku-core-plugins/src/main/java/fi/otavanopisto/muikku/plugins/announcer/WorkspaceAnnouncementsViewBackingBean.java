@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.announcer;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -23,7 +22,6 @@ import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceBackingBean;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 
