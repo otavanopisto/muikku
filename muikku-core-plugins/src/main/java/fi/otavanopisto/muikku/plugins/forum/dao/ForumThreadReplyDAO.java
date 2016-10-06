@@ -68,23 +68,38 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
   }
   
   public List<ForumThreadReply> listByForumThread(ForumThread forumThread) {
-    return listByForumThread(forumThread, null, null);
+    return listByForumThread(forumThread, false);
+  }
+  
+  public List<ForumThreadReply> listByForumThread(ForumThread forumThread, boolean includeArchived) {
+    return listByForumThread(forumThread, null, null, includeArchived);
   }
   
   public List<ForumThreadReply> listByForumThread(ForumThread forumThread, Integer firstResult, Integer maxResults) {
-    EntityManager entityManager = getEntityManager(); 
+    return listByForumThread(forumThread, null, null, false);
+  }
+  
+  public List<ForumThreadReply> listByForumThread(ForumThread forumThread, Integer firstResult, Integer maxResults, boolean includeArchived) {
+    EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<ForumThreadReply> criteria = criteriaBuilder.createQuery(ForumThreadReply.class);
     Root<ForumThreadReply> root = criteria.from(ForumThreadReply.class);
     Join<ForumThreadReply, ForumThreadReply> parent = root.join(ForumThreadReply_.parentReply, JoinType.LEFT);
     criteria.select(root);
-    criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(ForumThreadReply_.thread), forumThread),
-            criteriaBuilder.equal(root.get(ForumThreadReply_.archived), Boolean.FALSE)
-        )
-    );
+    
+    if (!includeArchived) {
+      criteria.where(
+          criteriaBuilder.and(
+              criteriaBuilder.equal(root.get(ForumThreadReply_.thread), forumThread),
+              criteriaBuilder.equal(root.get(ForumThreadReply_.archived), Boolean.FALSE)
+          )
+      );
+    } else {
+      criteria.where(
+        criteriaBuilder.equal(root.get(ForumThreadReply_.thread), forumThread)
+      );
+    }
     
     criteria.orderBy(
     		criteriaBuilder.asc(

@@ -8,12 +8,11 @@ import org.junit.Test;
 
 import com.jayway.restassured.response.Response;
 
-import fi.otavanopisto.muikku.AbstractRESTTest;
 import fi.otavanopisto.muikku.plugins.forum.rest.ForumAreaRESTModel;
 import fi.otavanopisto.muikku.plugins.forum.rest.ForumThreadRESTModel;
 import fi.otavanopisto.muikku.plugins.forum.rest.ForumThreadReplyRESTModel;
 
-public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
+public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
 
   private Long forumAreaId = null;
   private Long threadId = null;
@@ -60,9 +59,9 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
   
   @After
   public void after() {
-    asAdmin().delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, replyId);
-    asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, threadId);
-    asAdmin().delete("/forum/areas/{ID}?permanent=true", forumAreaId);
+    permanentDeleteThreadReply(forumAreaId, threadId, replyId);
+    permanentDeleteThread(forumAreaId, threadId);
+    permanentDeleteArea(forumAreaId);
   }
   
   @Test
@@ -78,7 +77,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
     
-    asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThread(forumAreaId, new Long(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -94,7 +93,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
     
-    asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThread(forumAreaId, new Long(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -110,7 +109,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
     
-    asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThread(forumAreaId, new Long(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -126,7 +125,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
     
-    asAdmin().delete("/forum/areas/{ID}/threads/{ID2}?permanent=true", forumAreaId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThread(forumAreaId, new Long(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -142,8 +141,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
     
-    asAdmin()
-      .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThreadReply(forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
   }
 
   @Test
@@ -159,8 +157,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
     
-    asAdmin()
-      .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThreadReply(forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
   }
 
   @Test
@@ -176,8 +173,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
     
-    asAdmin()
-      .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThreadReply(forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
   }
 
   @Test
@@ -193,8 +189,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
     
-    asAdmin()
-      .delete("/forum/areas/{ID}/threads/{ID2}/replies/{ID3}?permanent=true", forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteThreadReply(forumAreaId, threadId, new Long(response.body().jsonPath().getInt("id")));
   }
   
   @Test
