@@ -195,10 +195,10 @@
 
 
 .di-content-main { 
-   .di-reply{
+   .di-reply {
     
     } 
-    .di-reply-reply{
+    .di-reply-reply {
       border-left:30px solid #fbfbfb;
     } 
   .di-message {
@@ -218,7 +218,7 @@
        
         >span {
           cursor:pointer;
-          &.title{
+          &.title {
             &:hover {
               text-decoration:underline; 
             }
@@ -247,7 +247,7 @@
           }
         }
       }      
-      .di-message-meta-creator{
+      .di-message-meta-creator {
         font-size:11px;
         font-weight:600;
       }
@@ -261,16 +261,16 @@
           margin-top:4px;
         }
         
-        .di-message-area-name-text{
+        .di-message-area-name-text {
           padding-left:5px;
         }
         
       }
-       .di-message-time{
+       .di-message-time {
          font-size:12px;
          overflow:hidden;
        }      
-      .di-message-replies span{
+      .di-message-replies span {
         background-color: #fff8c1;
         display: inline-block;
         font-weight: 600;
@@ -355,32 +355,32 @@
       .di-message-details {
           font-size: 22px;
           font-weight: 300;
-          &.di-message-details-reply{
+          &.di-message-details-reply {
             font-size:18px;
           }
-          > span{          
-            &:not(:first-child){
+          > span {          
+            &:not(:first-child) {
             margin-left:10px;            
             }
-            &.di-reply-title-date{
-              &:before{
+            &.di-reply-title-date {
+              &:before {
                content: "-";
                margin-right:5px;
                color:#000;
               }
             }
           }
-          .di-reply-to-decor{
+          .di-reply-to-decor {
             color:#108201;
             font-size: 15px;
             margin-left: 30px !important;
             margin-right: 31px;           
           }
-          .di-reply-to-decor-content{
+          .di-reply-to-decor-content {
 
           }
 
-          .di-reply-to-title{}             
+          .di-reply-to-title {}             
       }
 
       .di-message-title {
@@ -397,14 +397,14 @@
           font-weight:300;
          
      }      
-    .di-message-content-info{
+    .di-message-content-info {
       font-size:12px;
       color:#a4a4a4;
       font-weight:600;
       text-align:center;
       margin-right:10px;
-      > span{          
-        &:not(:first-child){
+      > span {          
+        &:not(:first-child) {
           margin-left:10px;            
         }
       }
