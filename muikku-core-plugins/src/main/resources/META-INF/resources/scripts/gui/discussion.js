@@ -1052,8 +1052,10 @@
           return;
         }
 
-        var sticky = this.element.find("input[name='sticky']").prop("checked");
-        var locked = this.element.find("input[name='locked']").prop("checked");
+       
+        
+        var sticky = this.element.find("input[name='sticky']").prop("checked") ? true : false;
+        var locked = this.element.find("input[name='locked']").prop("checked") ? true : false;
         
         this.options.ioController.createThread(forumAreaId, title, message, sticky, locked, $.proxy(function(err, result) {
           if (err) {

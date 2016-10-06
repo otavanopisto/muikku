@@ -1011,12 +1011,10 @@ ul.mf-tool-label-container {
       margin-left: 5px;
     }
     
-    .mf-textfield {
+    .mf-form-element, .mf-textfield {
       position: relative;
       top: 0;
-     
-      
-      .mf-textfield-subcontainer {
+      .mf-form-element-subcontainer, .mf-textfield-subcontainer {
         border: 2px solid #fff;
         color: #000;
         border-radius: 3px;

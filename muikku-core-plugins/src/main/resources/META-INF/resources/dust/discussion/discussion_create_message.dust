@@ -9,9 +9,6 @@
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2">{#localize key="plugin.discussion.createmessage.title"/}</span>
                 <input required="required" type="text" value="" class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14" name="title" maxlength="255"></input>
-
-                <span {@eq key=lockStickyPermission value="false" type="boolean"}style="display:none"{/eq}>sticky: <input type="checkbox" name="sticky" /></span>
-                <span {@eq key=lockStickyPermission value="false" type="boolean"}style="display:none"{/eq}>locked: <input type="checkbox" name="locked" /></span>
               </div>
             </div>    
             <div id="areaSelect" class="mf-select lg-flex-cell-7 md-flex-cell-7 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
@@ -24,6 +21,16 @@
               </select>
             </div>    
           </div>
+          {@eq key=lockStickyPermission value="false" type="boolean"}          
+            <div class="mf-form-row flex-row">
+              <div class="mf-form-element lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                <div class="mf-form-element-subcontainer">
+                  <span>sticky: <input type="checkbox" name="sticky" /></span>
+                  <span>locked: <input type="checkbox" name="locked" /></span>
+                </div>            
+              </div>            
+            </div>
+          {/eq}
           <div class="mf-form-row flex-row">
             <div class="di-message-new-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
                <textarea required="required" id="textContent" name="message"></textarea>
