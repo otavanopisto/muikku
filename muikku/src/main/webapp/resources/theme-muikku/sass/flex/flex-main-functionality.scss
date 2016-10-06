@@ -1020,6 +1020,10 @@ ul.mf-tool-label-container {
         border-radius: 3px;
         background-color: #fff;
         
+        .mf-form-element-subcontainer-item{
+          padding:5px;
+        }
+        
         .mf-textfield-title {
           color: $formTitle;
           flex-shrink: 0;
