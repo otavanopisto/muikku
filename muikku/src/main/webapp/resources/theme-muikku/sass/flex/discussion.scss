@@ -118,22 +118,22 @@
     width: 25px;
     &.default {
       &.usr-1 {      
-       background-color:$category1;
+        background-color:$category1;
       }     
       &.usr-2 {
-       background-color:$category2;      
+        background-color:$category2;      
       }     
       &.usr-3 {
-       background-color:$category3;      
+        background-color:$category3;      
       }     
       &.usr-4 {
-       background-color:$category4;      
+        background-color:$category4;      
       }
       &.usr-5 {
-       background-color:$category5;      
+        background-color:$category5;      
       }             
       &.usr-6 {
-       background-color:$category6;      
+        background-color:$category6;      
       }             
     }
 } 
@@ -145,16 +145,16 @@
   text-align: center;
   
   &:hover {
-   text-decoration:none;
+    text-decoration:none;
   }
   
   &.pinned {
-   color:#149000;
+    color:#149000;
    
   }
 
   &.locked {
-   color:#c92d2d;
+    color:#c92d2d;
   }
   
 }
