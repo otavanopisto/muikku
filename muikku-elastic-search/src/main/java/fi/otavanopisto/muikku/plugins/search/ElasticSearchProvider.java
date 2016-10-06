@@ -124,7 +124,9 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore, Date studyTimeEndsBefore){
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, 
+      Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, 
+      Date startedStudiesBefore, Date studyTimeEndsBefore) {
     try {
       text = sanitizeSearchString(text);
 
@@ -132,6 +134,10 @@ public class ElasticSearchProvider implements SearchProvider {
       
       if (!Boolean.TRUE.equals(includeHidden)) {
         query.mustNot(termQuery("hidden", true));
+      }
+      
+      if (Boolean.TRUE.equals(onlyDefaultUsers)) {
+        query.must(termQuery("isDefaultIdentifier", true));
       }
       
       if (StringUtils.isNotBlank(text)) {
@@ -269,22 +275,25 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
-    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
+    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
+        onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
   }
   
   @Override
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults) {
-    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, start, maxResults, null);
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults) {
+    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
+        onlyDefaultUsers, start, maxResults, null);
   }
   
   @Override
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, int start, int maxResults, Collection<String> fields) {
-    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, start, maxResults, fields, null, null);
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields) {
+    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
+        onlyDefaultUsers, start, maxResults, fields, null, null);
   }
   
   private Set<Long> getActiveWorkspaces() {

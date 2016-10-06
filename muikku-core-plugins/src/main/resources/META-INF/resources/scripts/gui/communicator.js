@@ -1380,7 +1380,7 @@
       
       return $.proxy(function (callback) {
         mApi().user.users
-          .read({ 'searchString' : term })
+          .read({ 'searchString' : term, 'onlyDefaultUsers': true })
           .callback(function(err, results) {
             if (err) {
               callback(err);
@@ -1395,7 +1395,7 @@
                   category: getLocaleText("plugin.communicator.users"),
                   label : label,
                   id: result.id,
-                  type : "USER",
+                  type: "USER",
                   img: result.hasImage ? "/picture?userId=" + result.id : null,
                   existing: existingUserIds.indexOf(result.id) != -1
                 };
