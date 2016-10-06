@@ -390,7 +390,7 @@
         }   
       }
 
-     .di-message-details > span{
+     .di-message-details > span {
      
         &:not(:first-child) {
          margin-left: 10px;            
@@ -413,9 +413,9 @@
 
 
       .di-message-content-text  {
+        font-weight: 300;
         margin-left: 10px;
         margin-right: 10px;
-        font-weight: 300;
        }      
      
       .di-message-content-info {
