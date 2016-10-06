@@ -82,13 +82,16 @@
   div{
    display:inline-block;
   }
-  .di-user-picture{
-    font-size: 14px;
-    height: 14px;
-    line-height: 1;
-    padding: 5px;
-    text-align: center;
-    width: 14px;  
+  .di-user-picture-container {
+    text-align:center;
+    .di-user-picture{
+      font-size: 14px;
+      height: 14px;
+      line-height: 1;
+      padding: 5px;
+      text-align: center;
+      width: 14px;  
+    }
   }
   .di-user-name{
     color: #000;
@@ -108,6 +111,7 @@
     padding: 5px;
     line-height:1;
     text-align: center;
+    margin: 0 auto;    
     width: 25px;
     &.default {
       &.usr-1 {      
@@ -130,6 +134,22 @@
       }             
     }
 } 
+
+.di-message-state {
+  display: inline-block;
+  font-size: 15px;
+  margin-left: 6px;
+  text-align: center;
+
+  &.pinned {
+   color:#149000;
+  }
+
+  &.locked {
+   color:#c92d2d;
+  }
+  
+}
 
 .di-search-result-content{
     color: #8e8e8e;
@@ -166,6 +186,9 @@
   }
 
 }
+
+
+
 .di-content-main { 
    .di-reply{
     
@@ -180,7 +203,7 @@
     
                      
     &.closed {
-      
+          
     .di-message-meta-topic {
         color:#0099ff;
         line-height:1em;
