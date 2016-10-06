@@ -1240,17 +1240,6 @@
       if (form.checkValidity()) {
         var title = this.element.find('*[name="title"]').val();
         
-//        var sticky = false;
-//        var locked = false;
-//        
-//        if (this.options.lockStickyPermission) {
-//          sticky = this.element.find("input[name='sticky']").prop("checked") ? true : false;
-//          locked = this.element.find("input[name='locked']").prop("checked") ? true : false;
-//        } else {
-//          sticky = this.element.find("input[name='sticky']").val() == "1";
-//          locked = this.element.find("input[name='locked']").val() == "1";
-//        }
-        
         if (!title && !title.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.notitle'));
           return;

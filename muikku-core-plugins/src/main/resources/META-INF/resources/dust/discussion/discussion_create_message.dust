@@ -7,7 +7,6 @@
           <div class="mf-form-row flex-row flex-align-items-center">
             <div class="mf-textfield lg-flex-cell-9 md-flex-cell-9 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
-<!--                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2">{#localize key="plugin.discussion.createmessage.title"/}</span> -->
                 <input required="required" type="text" value="" placeholder="{#localize key="plugin.discussion.createmessage.title"/}" class="mf-textfield-subject lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" name="title" maxlength="255"></input>
               </div>
             </div>    
