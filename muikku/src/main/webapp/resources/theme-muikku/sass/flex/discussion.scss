@@ -140,9 +140,14 @@
   font-size: 15px;
   margin-left: 6px;
   text-align: center;
-
+  
+  &:hover {
+   text-decoration:none;
+  }
+  
   &.pinned {
    color:#149000;
+   
   }
 
   &.locked {
@@ -213,9 +218,11 @@
        
         >span {
           cursor:pointer;
-          &:hover {
-            text-decoration:underline; 
-          }
+          &.title{
+            &:hover {
+              text-decoration:underline; 
+            }
+         }
         }
       }      
       .di-message-meta-content {

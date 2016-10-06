@@ -4,7 +4,7 @@
       <div class="di-user-picture default usr-{userRandomNo}">{nameLetter}</div> 
     </div>  
     <div class="di-message-meta lg-flex-cell-6 md-flex-cell-5 sm-flex-cell-9" >
-      <div class="di-message-meta-topic flex-row"><span title="{#localize key="plugin.discussion.titleText.title"/}">{title}</span>{?sticky}<span class="di-message-state pinned icon-pin"></span>{/sticky}{?locked}<span class="di-message-state locked icon-lock"></span>{/locked}</div>
+      <div class="di-message-meta-topic flex-row"><span class="title" title="{#localize key="plugin.discussion.titleText.title"/}">{title}</span>{?sticky}<span class="di-message-state pinned icon-pin"></span>{/sticky}{?locked}<span class="di-message-state locked icon-lock"></span>{/locked}</div>
       <div class="di-message-meta-content flex-row"><span title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</span></div>
       <div class="di-message-meta-creator flex-row"><span title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName} - {prettyDate}</span></div>
     </div>
