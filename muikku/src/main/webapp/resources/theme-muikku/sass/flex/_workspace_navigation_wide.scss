@@ -154,9 +154,9 @@ div[class*='workspace-dock-navi-button'] > span {
     height:16px;
     font-weight:300;
     position:absolute;
-    top:0px;
+    top:0;
     left:-4500px;
-    width:0px;
+    width:0;
     color:#fff;
     text-transform:uppercase;
     padding:13px 15px 15px 14px;
@@ -249,8 +249,8 @@ div.workspace-dock-navi-button-workspace-management > div.icon-cogs {
     background:#1a2122;
     border-top-left-radius:3px;
     border-bottom-left-radius:3px;
-    border-top-right-radius:0px;
-    border-bottom-right-radius:0px;
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
 
     .navmore-container {
       display:block;

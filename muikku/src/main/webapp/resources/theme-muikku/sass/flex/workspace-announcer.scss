@@ -80,7 +80,7 @@ input[type="text"]{
   .mf-toolbar {
   
     input {
-      border-radius:0px;
+      border-radius:0;
       border:0;
       color:#fff;
       font-weight:400;
@@ -112,7 +112,7 @@ input[type="text"]{
       .mf-primary-function { /* Overrides mainfunction button styles */
         margin:0 0 0 15px;
         box-shadow:none;
-        border:0px;
+        border:0;
         text-shadow:none;
         background:#0099ff;
         width:auto;
@@ -146,7 +146,7 @@ input[type="text"]{
       height:55px;
       
       .di-browse-areas-container {
-        margin:0px 0 10px 0px;
+        margin:0 0 10px;
       }
       
       .di-new-area-container, .di-edit-area-container,
@@ -160,7 +160,7 @@ input[type="text"]{
       height:55px;
       
       .di-browse-areas-container {
-        margin:0px 0 10px 0px;
+        margin:0 0 10px;
       }
       
       .di-new-area-container, .di-edit-area-container,

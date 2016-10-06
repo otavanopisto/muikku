@@ -3,7 +3,7 @@
 @import "_jquery.datepicker.scss";
 
 body {
-  padding:60px 0 75px 0;
+  padding:60px 0 75px;
   
   .loading {
     position:fixed;
@@ -29,7 +29,7 @@ body {
 
 #content {
   background:#fff;
-  padding:0px;
+  padding:0;
 }
 
 .workspace-generic-view-title {
@@ -57,7 +57,7 @@ h2.workspace-management-generic-title {
 }
 
 .workspace-management-container {
-  padding:0 20px 0 20px;
+  padding:0 2;
   margin:20px 0;
   position:relative;
   
@@ -120,7 +120,7 @@ h2.workspace-management-generic-title {
 .workspace-material-license {
   
   .default-material-license {
-    margin:10px 0 0 0;
+    margin:10px 0 0;
   }
   
   .creative-commons-container {

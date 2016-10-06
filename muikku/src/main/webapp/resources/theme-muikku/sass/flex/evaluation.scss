@@ -89,7 +89,7 @@ body.evaluation {
       .evaluation-select-workspace {
         @include flex(1 1 auto);
         cursor: pointer;
-        padding: 15px 10px 10px 10px;
+        padding: 15px 10px 10px;
 
         span.icon-arrow-down,
         span.icon-arrow-up {
@@ -613,7 +613,7 @@ body.evaluation {
       position: relative;
       border-radius: 3px;
       border-top:3px solid #fff;
-      box-shadow: 0 0 10px 0px rgba(169, 169, 169, 0.2);
+      box-shadow: 0 0 10px 0 rgba(169, 169, 169, 0.2);
 
       &.assignment-pending {
         opacity: 0.1;
@@ -940,7 +940,7 @@ body.evaluation {
                     right: 0;
                     top: -6px;
                     text-align: right;
-                    padding: 0px 10px;
+                    padding: 0 10px;
                     white-space: nowrap;
                     
                     .evaluation-assignment-assessmentvalue,
@@ -1139,7 +1139,7 @@ body.evaluation {
           &:hover {
             background: #fff;
             border: 2px solid #8dd6f1;
-            box-shadow: 0 0 0px 3px rgba(202,225,252,0.75);
+            box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
           }
           
         }

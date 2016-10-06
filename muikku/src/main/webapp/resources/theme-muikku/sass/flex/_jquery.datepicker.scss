@@ -22,7 +22,7 @@
   .ui-widget-header {
     border:0;
     background:#6aa4cf;
-    padding:4px 0px;
+    padding:4px 0;
     position:relative;
 
     .ui-datepicker-prev {
@@ -39,7 +39,7 @@
       
       &:hover {
         background:transparent;
-        border:0px;
+        border:0;
         text-decoration:none;
       }
     
@@ -78,7 +78,7 @@
       
       &:hover {
         background:transparent;
-        border:0px;
+        border:0;
         text-decoration:none;
       }
       

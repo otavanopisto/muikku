@@ -35,7 +35,7 @@
     .mf-primary-function { /* Overrides mainfunction button styles */
       margin:0 0 0 15px;
       box-shadow:none;
-      border:0px;
+      border:0;
       text-shadow:none;
       background:#0099ff;
       width:auto;
@@ -69,7 +69,7 @@
     height:55px;
     
     .di-browse-areas-container {
-      margin:0px 0 10px 0px;
+      margin:0 0 10px;
     }
     
     .di-new-area-container, .di-edit-area-container,

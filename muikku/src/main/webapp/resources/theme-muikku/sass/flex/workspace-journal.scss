@@ -9,7 +9,7 @@
   background-color:#fff;
   font-size:14px;
   height:35px;
-  padding:0 30px 0 30px;
+  padding:0 30px;
   
   .workspace-journal-new-entry-button { 
     background:#0099ff;
@@ -88,7 +88,7 @@
   
   .workspace-single-journal-entry {
     position:relative;
-    margin:0 0 30px 0;
+    margin:0 0 30px;
     border-bottom:8px solid #eee;
     padding:0 0 25px 0;
     
@@ -198,7 +198,7 @@
       padding-top:0.01em;
     
       .workspace-journal-title {
-        margin:10px 0 20px 0;
+        margin:10px 0 20px;
       }
     
       .workspace-journal-content {
@@ -302,7 +302,7 @@
     .mf-toolbar {
     
       input {
-        border-radius:0px;
+        border-radius:0;
         border:0;
         color:#fff;
         font-weight:400;

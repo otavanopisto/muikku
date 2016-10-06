@@ -20,7 +20,7 @@ body {
   background-color:#f0f3f5;
   font-size:14px;
   font-weight:300;
-  padding:60px 5px 50px 5px;
+  padding:60px 5px 50px;
   margin: 0;
   font-family:'Open Sans', Arial, sans-serif;
   line-height:1.9em; /* Set line-height:1 to element when there's a need to override */
@@ -326,7 +326,7 @@ div[class*='dock-dynamic-navi-button'] > a {
 
 /* Content where everything goes */
 main.content {
-  margin:30px 0 0 0;
+  margin:30px 0 0;
 }
 
 #workspaceDockWrapper,

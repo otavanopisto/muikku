@@ -75,7 +75,7 @@ input[type="url"] {
   font-size: 17px;
   color: #0061a2;
   max-width: 100%;
-  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   box-sizing: border-box;
   margin: 4px 3px;
   
@@ -96,7 +96,7 @@ input[type="url"] {
   &:focus,
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0px 3px rgba(202,225,252,0.75);
+    box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
     
     span.muikku-text-field-hint {
       display: block;
@@ -151,7 +151,7 @@ textarea {
   color: #4c4c4c;
   width: 100%;
   max-width: 100%;
-  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   box-sizing: border-box;
   text-align: left;
   margin: 0;
@@ -174,7 +174,7 @@ textarea {
   &:focus,
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0px 3px rgba(202,225,252,0.75);
+    box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
   }
 
 }
@@ -188,7 +188,7 @@ select {
   color: #0061a2;
   display: inline-block;
   margin: 4px;
-  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   border-radius: 3px;
   max-width: 100%;
   word-wrap: break-word;
@@ -197,17 +197,17 @@ select {
   &:focus,
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0px 3px rgba(202,225,252,0.85);
+    box-shadow: 0 0 0 3px rgba(202,225,252,0.85);
   }
   
   &[disabled="disabled"] {
     border: 2px solid #cae1fc;
-    box-shadow: 0 0 0px 3px rgba(202,225,252,0.15);
+    box-shadow: 0 0 0 3px rgba(202,225,252,0.15);
     color: #7c7c7c;
     
     &:hover {
       border: 2px solid #cae1fc;
-      box-shadow: 0 0 0px 3px rgba(202,225,252,0.15);
+      box-shadow: 0 0 0 3px rgba(202,225,252,0.15);
       color: #7c7c7c;
     }
 
@@ -757,11 +757,11 @@ sup {
     
     span.muikku-field-examples-title {
       font-weight: 600;
-      margin: 0px 6px;
+      margin: 0 6px;
     }
     
     span.muikku-field-example {
-      margin: 3px 0px 3px 5px;
+      margin: 3px 0 3px 5px;
       padding: 0 8px;
       border-left: 1px solid #439ba0;
       display: inline-block;
@@ -771,7 +771,7 @@ sup {
   }
 
   .muikku-page-assignment-type {
-    padding: 0px 8px;
+    padding: 0 8px;
     border-radius: 2px;
     font-size: 12px;
     color: #fff;

@@ -211,7 +211,7 @@
     line-height: 1px;
     margin-right: 25px;
     vertical-align: -25px;
-    width: 0px;
+    width: 0;
   }
   
   &::after {
@@ -238,7 +238,7 @@
   background: #f8f8f8;
   font-size: 20px;
   border-left: 3px solid #a30606;
-  border-radius: 0px;
+  border-radius: 0;
   line-height: 40px;
   font-style: italic;
   display: inline-block;
@@ -255,7 +255,7 @@
     line-height: 1px;
     margin-right: 25px;
     vertical-align: -25px;
-    width: 0px;
+    width: 0;
   }
   
   &::after {
@@ -301,10 +301,10 @@
 
 // EXAMPLE TEXT
 .material-example {
-  padding: 0px 10px 4px 15px;
+  padding: 0 10px 4px 15px;
   color: #000;
   border-left: 3px solid #11a0ff;
-  border-radius: 0px;
+  border-radius: 0;
   box-shadow: none;
   text-shadow: none;
 }

@@ -3,7 +3,7 @@ div.cke_reset_all * {
   font-size: 16px;
   color: #2c2c2c;
   font-weight: 300;
-  border-radius: 0px;
+  border-radius: 0;
   border: none;
   box-shadow: none;
   text-shadow: none;
@@ -402,7 +402,7 @@ div.cke_reset_all {
             padding:6px 0 5px;
             background-image: none;
             box-shadow: none;
-            border-radius: 0px;
+            border-radius: 0;
             color: #fff;
             
             &.cke_dialog_ui_button_cancel,
@@ -458,9 +458,9 @@ div.cke_reset_all {
         outline: none;
         font-size: 15px;
         max-width: 100%;
-        box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+        box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
         box-sizing: border-box;
-        margin: 4px 0px;
+        margin: 4px 0;
 
         &.max-size {
           width: 100%;
@@ -469,7 +469,7 @@ div.cke_reset_all {
         &:focus,
         &:hover {
           border: 1px solid #97bfed;
-          box-shadow: 0 0 0px 3px rgba(202,225,252,0.75);
+          box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
         }
     
         &::-webkit-input-placeholder {
@@ -507,7 +507,7 @@ div.cke_reset_all {
         transition: border,box-shadow 0.1s,0.2s ease-in-out;
         outline: none;
         display: inline-block;
-        box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+        box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
         border-radius: 3px;
         display: inline-block;
         
@@ -515,7 +515,7 @@ div.cke_reset_all {
         &:hover,
         &:checked {
           border: 1px solid #97bfed;
-          box-shadow: 0 0 0px 3px rgba(202,225,252,0.85);
+          box-shadow: 0 0 0 3px rgba(202,225,252,0.85);
         }
       }
       
@@ -530,7 +530,7 @@ div.cke_reset_all {
         outline: none;
         display: inline-block;
         margin: 4px 0px;
-        box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+        box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
         border-radius: 3px;
         max-width: 100%;
         word-wrap: break-word;
@@ -538,13 +538,13 @@ div.cke_reset_all {
         &:focus,
         &:hover {
           border: 1px solid #97bfed;
-          box-shadow: 0 0 0px 3px rgba(202,225,252,0.85);
+          box-shadow: 0 0 0 3px rgba(202,225,252,0.85);
         }
       
         option {
           background: #fff;
           font-weight: 300;
-          padding: 0px 3px;
+          padding: 0 3px;
         }
       
       }

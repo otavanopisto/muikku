@@ -59,7 +59,7 @@ div[class*='workspace-materials-full-screen-navi-button'] > span {
     position: absolute;
     top: 0;
     left: -4500px;
-    width: 0px;
+    width: 0;
     color: #fff; 
     text-transform: uppercase;
     padding: 13px 15px 15px 14px;
@@ -761,7 +761,7 @@ nav.workspace-waterials-management-nav {
 .workspace-materials-view-page.material-management-view.page-edit-mode {
   box-shadow: 0 0 0 10px rgba(148,183,208,0.95);
   position: relative;
-  padding: 50px 0px 0px;
+  padding: 50px 0 0;
   
   // Editor input override
   input[type="text"].workspace-material-html-editor-title {
@@ -772,7 +772,7 @@ nav.workspace-waterials-management-nav {
     font-size: 27px;
     border: 0;
     padding: 0 0 2px;
-    margin: 19px 30px 0px;
+    margin: 19px 30px 0;
     border-radius: 0;
     background: #f3faff;
     box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
@@ -844,7 +844,7 @@ nav.workspace-waterials-management-nav {
     font-size: 27px;
     border: 0;
     padding: 0 0 2px;
-    margin: 19px 30px 0px;
+    margin: 19px 30px 0;
     border-radius: 0;
     background: #f3faff;
     box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
@@ -953,7 +953,7 @@ nav.workspace-waterials-management-nav {
   background: #fff;
   padding: 0 5px 0 0;
   text-align: right;
-  box-shadow: 8px 0px 10px rgba(0,0,0,0.1);
+  box-shadow: 8px 0 10px rgba(0,0,0,0.1);
   min-height: 40px;
 
   .collaborator {
@@ -973,7 +973,7 @@ nav.workspace-waterials-management-nav {
       display: block;
       background: #fff;
       color: #000;
-      width: 0px;
+      width: 0;
       padding: 6px 10px;
       position: absolute;
       transition: opacity 0.5s ease-in-out;
@@ -982,7 +982,7 @@ nav.workspace-waterials-management-nav {
       min-height: 28px;
       max-height: 28px;
       font-size: 14px;
-      box-shadow: -4px 0px 10px rgba(0,0,0,0.05);
+      box-shadow: -4px 0 10px rgba(0,0,0,0.05);
       white-space: nowrap;
     }
     
@@ -1063,7 +1063,7 @@ nav.workspace-waterials-management-nav {
     font-size: 27px;
     border: 0;
     padding: 0 0 2px;
-    margin: 19px 30px 0px;
+    margin: 19px 30px 0;
     border-radius: 0;
     background: #f3faff;
     box-shadow: 0 0 0 10px rgba(243,250,255,0.8);

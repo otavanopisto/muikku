@@ -69,14 +69,14 @@ input[type="text"] {
   margin: 0;
   font-weight: 300;
   font-style: italic;
-  border: 0px;
+  border: 0;
   color: #000;
   resize: vertical;
   box-sizing: border-box;
   
   &:hover {
     background: #ebf7ff;
-    border: 0px;
+    border: 0;
   }
   
   &:focus {
@@ -117,7 +117,7 @@ select {
   color: #0061a2;
   display: inline-block;
   margin: 4px;
-  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   border-radius: 3px;
   max-width: 100%;
   word-wrap: break-word;

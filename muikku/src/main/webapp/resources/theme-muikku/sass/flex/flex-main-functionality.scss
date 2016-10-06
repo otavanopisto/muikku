@@ -333,7 +333,7 @@
   margin-top: 5px;
   
   .mf-view-tool {
-    padding: 0 10px 0 10px;
+    padding: 0 10px;
     border: 1px solid $brd2;
     background-color: $bgr1; 
     font-size: 1.5em;
@@ -389,7 +389,7 @@
 
 
 .mf-content-toolbar {
-  /* padding: 20px 0 0 0px; */
+  
 }
 
 .mf-content-tool-container {
@@ -693,7 +693,7 @@ ul.mf-tool-label-container {
   }
 
   .content {
-    padding: 0 10px 10px 10px;
+    padding: 0 10px 10px;
   }
 
   .mf-item-label {
@@ -1095,7 +1095,7 @@ ul.mf-tool-label-container {
 .mf-toolbar {
       
   input {
-    border-radius: 0px;
+    border-radius: 0;
     border: 0;
     color: #fff;
     font-weight: 400;
