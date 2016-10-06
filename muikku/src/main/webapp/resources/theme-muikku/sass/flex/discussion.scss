@@ -292,8 +292,10 @@
     }
     
     /* Message clicked open */
+    
     &.open {
       position:relative;
+      
       .di-user-picture {
         border-radius: 100%;
         color: #fff;
@@ -303,26 +305,34 @@
         padding: 4px;
         text-align: center;
         width: 20px;
+        
         &.default {
+        
           &.usr-1 {      
            background-color:$category1;
           }     
+          
           &.usr-2 {
            background-color:$category2;      
-          }     
+          }
+               
           &.usr-3 {
            background-color:$category3;      
-          }     
+          }
+               
           &.usr-4 {
            background-color:$category4;      
           }
+          
           &.usr-5 {
            background-color:$category5;      
-          }             
+          }
+                       
           &.usr-6 {
            background-color:$category6;      
           }             
         }
+        
         &.reply-recipient {
           display:inline-block;
           float:none;
@@ -330,6 +340,7 @@
           width:20px;
         }          
       } 
+      
       &.owner {
         border-left:5px solid $brd2; 
          
@@ -338,6 +349,7 @@
         }
          
       }
+      
       .di-message-topic {
         h3 {
           margin:0 0 1em;
@@ -347,6 +359,7 @@
           font-size:22px;
         } 
       }
+      
       a.di-remove-thread-link {
         background:#de3211;
         border-radius:3px;
@@ -355,16 +368,21 @@
         color:#fff !important;
         cursor:pointer;
       }    
+      
       .di-message-details {
           font-size: 22px;
           font-weight: 300;
+          
           &.di-message-details-reply {
             font-size:18px;
           }
-          > span {          
+          
+          > span {
+                    
             &:not(:first-child) {
-            margin-left:10px;            
+             margin-left:10px;            
             }
+            
             &.di-reply-title-date {
               &:before {
                content: "-";
@@ -373,12 +391,14 @@
               }
             }
           }
+          
           .di-reply-to-decor {
             color:#108201;
             font-size: 15px;
             margin-left: 30px !important;
             margin-right: 31px;           
           }
+          
           .di-reply-to-decor-content {
 
           }
