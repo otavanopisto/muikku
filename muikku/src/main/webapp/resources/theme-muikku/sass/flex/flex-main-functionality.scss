@@ -1025,57 +1025,57 @@ ul.mf-tool-label-container {
     background-color: #fff;
     
     .mf-form-element-subcontainer-item {
-      padding:5px;
+      padding: 5px;
     }
-    
-    .mf-textfield-title {
-      color: $formTitle;
-      flex-shrink: 0;
-      overflow:  hidden;
-      text-overflow: ellipsis;
-    }
-    
-    .mf-textfield-content {
-      color: $formFontColor;
-      flex-shrink: 1;
-      font-size: 14px;
-    }
-    
   }
+
+  .mf-textfield-title {
+    color: $formTitle;
+    flex-shrink: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .mf-textfield-content {
+    color: $formFontColor;
+    flex-shrink: 1;
+    font-size: 14px;
+  }
+  
+  input[type="text"] {
+    border: 0 solid #fff;
+    color: #000;
+    border-radius: 3px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    font-size: 14px;
     
-    input[type="text"] {
-      border: 0 solid #fff;
-      color: #000;
-      border-radius: 3px;
-      padding-top: 5px;
-      padding-bottom: 5px;
-      padding-left: 5px;
-      font-size: 14px;
+    &:focus {
+      background-color: #eee;     
+      border: 0;
+      box-shadow: none;    
+    }
+    
+    &:hover {
+      background-color: #eee;   
+      border: 0;
+      box-shadow: none;      
+    }
+  
+    &.mf-textfield-subject {        
       
       &:focus {
-        background-color: #eee;     
-        border: 0;
-        box-shadow: none;    
+        background-color: #eee;         
       }
       
       &:hover {
-        background-color: #eee;   
-        border: 0;
-        box-shadow: none;      
-      }
-    
-      &.mf-textfield-subject {        
-        
-        &:focus {
-          background-color: #eee;         
-        }
-        
-        &:hover {
-          background-color: #eee;         
-        }
+        background-color: #eee;         
       }
     }
   }
+    
+}
   
   .mf-select {
     position: relative;

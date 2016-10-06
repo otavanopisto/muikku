@@ -107,35 +107,35 @@
 }
 
 .di-user-picture {
-    border-radius: 100%;
-    color: #fff;
-    font-size: 25px;
-    height: 25px;
-    padding: 5px;
-    line-height:1;
-    text-align: center;
-    margin: 0 auto;    
-    width: 25px;
-    &.default {
-      &.usr-1 {      
-        background-color:$category1;
-      }     
-      &.usr-2 {
-        background-color:$category2;      
-      }     
-      &.usr-3 {
-        background-color:$category3;      
-      }     
-      &.usr-4 {
-        background-color:$category4;      
-      }
-      &.usr-5 {
-        background-color:$category5;      
-      }             
-      &.usr-6 {
-        background-color:$category6;      
-      }             
+  border-radius: 100%;
+  color: #fff;
+  font-size: 25px;
+  height: 25px;
+  padding: 5px;
+  line-height:1;
+  text-align: center;
+  margin: 0 auto;    
+  width: 25px;
+  &.default {
+    &.usr-1 {      
+      background-color:$category1;
+    }     
+    &.usr-2 {
+      background-color:$category2;      
+    }     
+    &.usr-3 {
+      background-color:$category3;      
+    }     
+    &.usr-4 {
+      background-color:$category4;      
     }
+    &.usr-5 {
+      background-color:$category5;      
+    }             
+    &.usr-6 {
+      background-color:$category6;      
+    }             
+  }
 } 
 
 .di-message-state {
