@@ -423,15 +423,11 @@
         font-weight: 600;
         text-align: center;
         margin-right: 10px;
-        > span:not(:first-child) {          
-          margin-left: 10px;            
-        }      
       }
       
       .di-message-content-info > span:not(:first-child) {
           margin-left: 10px;            
       }
- 
     
       .di-message-content-tools {
         margin-left: 10px;      
