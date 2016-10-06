@@ -212,19 +212,19 @@
   }
 
   .cm-message-recipient-arrow {
-    font-size:12px;
+    font-size: 12px;
     margin: 0 5px;
     color: #049a00;
   }  
 
   .cm-message-recipient-name {
-    margin-right:5px;
-    color:#777777;
+    margin-right: 5px;
+    color: #777777;
   
-    &:not(:last-child){
-     &:after{
-      content : ",";
-     }
+    &:not(:last-child) {
+      &::after {
+        content: ",";
+      }
      
     }  
   }
@@ -246,7 +246,7 @@
       }
       
       .cm-message-header-container {
-        box-sizing: border-box;
+        box-sizing:  border-box;
         cursor: pointer;
         display: inline-block; 
         position: relative;
