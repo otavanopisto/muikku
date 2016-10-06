@@ -38,7 +38,7 @@
   
 }
 
-.di-search-result-container{
+.di-search-result-container {
   background-color: #fff;
   box-shadow: -2px 3px 5px rgba(0, 0, 0, 0.03);
   margin-top: 12px;
@@ -49,42 +49,44 @@
 
 }
 
-.di-search-result-discussion{
+.di-search-result-discussion {
   font-size: 12px;
   max-height: 50px;
   overflow: hidden;
   padding: 10px;
 }
-.di-search-form-container{
+.di-search-form-container {
   padding:10px;
-   & input{  
+   & input {  
     font-size: 12px;
     font-weight: 300;
     padding: 7px;
   }
 }
-.di-search-result-users{
+.di-search-result-users {
   font-size: 12px;
   padding: 10px;
 }
 
-.di-search-result-topic{
+.di-search-result-topic {
   color: #0099ff;
   font-weight: 400;
   line-height: 1em;
   text-transform: none;
 }
 
-.di-search-result-user{
+.di-search-result-user {
   display:inline-block;
   line-height: 1em;
   text-transform: none;
-  div{
+  
+  div {
    display:inline-block;
   }
+  
   .di-user-picture-container {
     text-align:center;
-    .di-user-picture{
+    .di-user-picture {
       font-size: 14px;
       height: 14px;
       line-height: 1;
@@ -93,12 +95,13 @@
       width: 14px;  
     }
   }
-  .di-user-name{
+  
+  .di-user-name {
     color: #000;
     font-weight: 600;  
   }
   
-  &:not(:first-child){
+  &:not(:first-child) {
     margin-left:10px;
   }
 }
