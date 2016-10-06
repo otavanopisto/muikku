@@ -72,7 +72,7 @@ import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
-
+import fi.otavanopisto.muikku.atests.CommunicatorUserLabelRESTModel;
 import fi.otavanopisto.muikku.atests.Flag;
 import fi.otavanopisto.muikku.atests.StudentFlag;
 
@@ -83,6 +83,7 @@ import fi.otavanopisto.muikku.atests.DiscussionThread;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
 import wiremock.org.apache.commons.lang.StringUtils;
@@ -492,6 +493,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void assertNotPresent(String selector) {
     int size = getWebDriver().findElements(By.cssSelector(selector)).size();
     assertTrue(String.format("Unexpectedly found element %s", selector), size == 0);
+  }
+  
+  protected void assertGoesAway(String selector, long timeOut) {
+    assertTrue(new WebDriverWait(getWebDriver(), timeOut).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElements(selector);
+          if (elements.isEmpty()) {
+            return true;
+          }
+        } catch (Exception e) {
+        }
+        return false;
+      }
+    }));
   }
   
   protected void assertVisible(String selector) {
@@ -1001,6 +1017,24 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .delete("/test/communicator/messages")
       .then()
       .statusCode(204);
+  }
+
+  protected void deleteCommunicatorUserLabels(Long userId) {
+    asAdmin()
+      .delete("/test/communicator/labels/user/{ID}", userId)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void createCommunicatorUserLabel(Long userId, String name) {
+    CommunicatorUserLabelRESTModel payload = new CommunicatorUserLabelRESTModel(null, name, 1l);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/communicator/labels/user/{ID}", userId);
+    
+    response.then()
+    .statusCode(200);
   }
   
   protected void createCommunicatorMesssage(String caption, String content, Long sender, Long recipient) throws JsonParseException, JsonMappingException, IOException {
