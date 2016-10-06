@@ -28,11 +28,13 @@
     width: 100%;
     box-sizing: border-box;
     font-weight: 400;
+     
     &.disabled {
      @include gradient-top-bottom(#dcdcdc,#b0b0b0,#757575);      
      color: #dadada;
      text-shadow: none;
     }
+    
     .mf-primary-function-text {
       display: inline-block;
       padding: 12px;
