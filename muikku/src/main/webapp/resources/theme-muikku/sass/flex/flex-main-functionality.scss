@@ -28,11 +28,13 @@
     width: 100%;
     box-sizing: border-box;
     font-weight: 400;
-    &.disabled{
+     
+    &.disabled {
      @include gradient-top-bottom(#dcdcdc,#b0b0b0,#757575);      
      color: #dadada;
      text-shadow: none;
     }
+    
     .mf-primary-function-text {
       display: inline-block;
       padding: 12px;
@@ -409,7 +411,7 @@
 }
 
 .mf-tool-action-container {  
-  a{
+  a {
     color: #72d200;    
   }
   padding: 0 0 10px 20px;
@@ -419,7 +421,7 @@ ul.mf-tool-label-container {
   padding: 0 0 5px 0;
   margin-top: 0;
   
-  li{
+  li {
     list-style-type: none;
   }
 }
@@ -431,7 +433,8 @@ ul.mf-tool-label-container {
   z-index: 99;
   text-align: left;
   top: 37px;
-  > div{
+  
+  > div {
     box-shadow: 0 7px 15px rgba(0,0,0,0.3);
   }
   
@@ -1010,86 +1013,73 @@ ul.mf-tool-label-container {
       width: 95px;
       margin-left: 5px;
     }
-    
-    .mf-textfield {
-      position: relative;
-      top: 0;
-     
-      
-      .mf-textfield-subcontainer {
-        border: 2px solid #fff;
-        color: #000;
-        border-radius: 3px;
-        background-color: #fff;
-        
-        .mf-textfield-title {
-          color: $formTitle;
-          flex-shrink: 0;
-          overflow:  hidden;
-          text-overflow: ellipsis;
-        }
-        
-        .mf-textfield-content {
-          color: $formFontColor;
-          flex-shrink: 1;
-          font-size: 14px;
-        }
-        
-      }
-      
-      input[type="text"] {
-        border: 0 solid #fff;
-        color: #000;
-        border-radius: 3px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        padding-left: 5px;
-        font-size: 14px;
-        &:focus {
-          background-color: #eee;     
-          border: 0;
-          box-shadow: none;    
-        }
-        
-        &:hover {
-          background-color: #eee;   
-          border: 0;
-          box-shadow: none;      
-        }
-        
-        &.mf-textfield-subject {        
-          
-          &:focus {
-            background-color: #eee;         
-          }
-          
-          &:hover {
-            background-color: #eee;         
-          }
-         
-        }
-        
-      }
-      
-    }
-    
-    .mf-select {
-      position: relative;
-      top: 0;
-    
-      select {        
-        width: 100%;
-        
-        option {
-          padding: 8px;
-        }
-      
-      }
-    
-    }
-    
   }
 
+  .mf-form-element, 
+  .mf-textfield {
+    position: relative;
+    top: 0;
+      
+    .mf-form-element-subcontainer, 
+    .mf-textfield-subcontainer {
+      border: 2px solid #fff;
+      color: #000;
+      border-radius: 3px;
+      background-color: #fff;
+    }
+  
+    .mf-form-element-subcontainer-item {
+      padding: 5px;
+    }
+      
+    .mf-textfield-title {
+      color: $formTitle;
+      flex-shrink: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .mf-textfield-content {
+      color: $formFontColor;
+      flex-shrink: 1;
+      font-size: 14px;
+    }
+    
+    input[type="text"] {
+      border: 0 solid #fff;
+      color: #000;
+      border-radius: 3px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-left: 5px;
+      font-size: 14px;
+      
+      &:focus {
+        background-color: #eee;     
+        border: 0;
+        box-shadow: none;    
+      }
+      
+      &:hover {
+        background-color: #eee;   
+        border: 0;
+        box-shadow: none;      
+      }
+    }
+  }
+  
+  .mf-select {
+    position: relative;
+    top: 0;
+  
+    select {        
+      width: 100%;
+    }
+
+    option {
+      padding: 8px;
+    }  
+  }
 }
 
 .mf-toolbar {
