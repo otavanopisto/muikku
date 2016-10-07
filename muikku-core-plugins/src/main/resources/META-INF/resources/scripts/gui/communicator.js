@@ -67,7 +67,8 @@
     loadMessageDetails: function (message, messageDetailsCallback) {
       var recipientIds = message.recipientIds || [];
       
-      var recipientCalls = $.map(recipientIds, function (recipientId) {
+      // TODO: restricts count of visible recipients to five
+      var recipientCalls = $.map(recipientIds.slice(0, 5), function (recipientId) {
         return function (callback) {
           mApi().communicator.communicatormessages.recipients.info
             .read(message.id, recipientId)
