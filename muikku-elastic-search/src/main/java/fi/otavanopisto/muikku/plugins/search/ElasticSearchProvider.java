@@ -433,8 +433,6 @@ public class ElasticSearchProvider implements SearchProvider {
         }
       }
       
-      System.out.println(query);
-      
       SearchRequestBuilder requestBuilder = elasticClient
         .prepareSearch("muikku")
         .setTypes("Workspace")
