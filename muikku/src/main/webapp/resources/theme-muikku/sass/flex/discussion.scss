@@ -397,7 +397,7 @@
         }
         
         &.di-reply-title-date {
-          &:before {
+          &::before {
            content: "-";
            margin-right: 5 px;
            color: #000;
@@ -412,7 +412,7 @@
       }
 
 
-      .di-message-content-text  {
+      .di-message-content-text {
         font-weight: 300;
         margin-left: 10px;
         margin-right: 10px;
