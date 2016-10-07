@@ -379,12 +379,14 @@ public class ElasticSearchProvider implements SearchProvider {
               accessQuery.should(termQuery("access", access));
             break;
             case MEMBERS_ONLY:
+              BoolQueryBuilder memberQuery = boolQuery();
               IdsQueryBuilder idsQuery = idsQuery("Workspace");
               for (SchoolDataIdentifier userWorkspace : getUserWorkspaces(accessUser)) {
                 idsQuery.addIds(String.format("%s/%s", userWorkspace.getIdentifier(), userWorkspace.getDataSource()));
               }
-              accessQuery.should(idsQuery);
-              accessQuery.should(termQuery("access", access));
+              memberQuery.must(idsQuery);
+              memberQuery.must(termQuery("access", access));
+              accessQuery.should(memberQuery);
             break;
           }
         }

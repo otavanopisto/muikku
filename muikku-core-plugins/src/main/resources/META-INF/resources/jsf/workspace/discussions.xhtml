@@ -33,6 +33,7 @@
     <input type="hidden" name="userEntityId" value="#{sessionBackingBean.loggedUserId}"/>
     <input type="hidden" name="workspaceEntityId" value="#{workspaceDiscussionsBackingBean.workspaceEntityId}"/>
     <input type="hidden" name="areaPermissions" value="#{workspaceDiscussionsBackingBean.areaPermissions}"/>
+    <input type="hidden" name="lockStickyPermission" value="#{workspaceDiscussionsBackingBean.lockStickyPermission}"/>
     <main id="content">
       <section>
         <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.discussions.pageTitle']} - #{workspaceDiscussionsBackingBean.workspaceName}</h1>

@@ -15,6 +15,11 @@ public class ForumAreaDAO extends CorePluginsDAO<ForumArea> {
     super.delete(forumArea);
   }
   
+  public ForumArea updateArchived(ForumArea forumArea, Boolean archived) {
+    forumArea.setArchived(archived);
+    return persist(forumArea);
+  }
+  
   public ForumArea updateForumArea(ForumArea forumArea, String name) {
     forumArea.setName(name);
     return persist(forumArea);

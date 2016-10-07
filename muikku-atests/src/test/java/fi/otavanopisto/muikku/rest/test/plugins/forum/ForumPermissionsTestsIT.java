@@ -1,15 +1,16 @@
 package fi.otavanopisto.muikku.rest.test.plugins.forum;
 
+import static org.hamcrest.Matchers.is;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.jayway.restassured.response.Response;
 
-import fi.otavanopisto.muikku.AbstractRESTTest;
 import fi.otavanopisto.muikku.plugins.forum.rest.ForumAreaRESTModel;
 
-public class ForumPermissionsTestsIT extends AbstractRESTTest {
+public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
 
   private Long areaId = null;
 
@@ -27,7 +28,7 @@ public class ForumPermissionsTestsIT extends AbstractRESTTest {
   
   @After
   public void after() {
-    asAdmin().delete("/forum/areas/{ID}?permanent=true", areaId);
+    permanentDeleteArea(areaId);
   }
   
   @Test
@@ -42,7 +43,7 @@ public class ForumPermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
 
-    asAdmin().delete("/forum/areas/{ID}?permanent=true", new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteArea(new Long(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -57,7 +58,7 @@ public class ForumPermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
 
-    asAdmin().delete("/forum/areas/{ID}?permanent=true", new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteArea(new Long(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -72,7 +73,7 @@ public class ForumPermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
 
-    asAdmin().delete("/forum/areas/{ID}?permanent=true", new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteArea(new Long(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -86,7 +87,8 @@ public class ForumPermissionsTestsIT extends AbstractRESTTest {
       .then()
       .statusCode(403);
   }
-  /* These work on dev machines, but not travis
+  
+  /* These work on dev machines, but not travis */
   
   @Test
   public void testListAreasAdmin() throws NoSuchFieldException {
@@ -124,7 +126,7 @@ public class ForumPermissionsTestsIT extends AbstractRESTTest {
       .body("id.size()", is(1));
   }
   
-  */
+  /* These work on dev machines, but not travis */
   
   @Test
   public void testFindAreaAdmin() throws NoSuchFieldException {
@@ -160,31 +162,6 @@ public class ForumPermissionsTestsIT extends AbstractRESTTest {
   
 ////  testUpdate
 ////  testDelete
-//  
-////  @Test
-////  public void testUpdateContactURLType() throws NoSuchFieldException {
-////    ContactURLType contactURLType = new ContactURLType(null, "Not Updated", Boolean.FALSE);
-////    
-////    Response response = given().headers(getAdminAuthHeaders())
-////      .contentType("application/json")
-////      .body(contactURLType)
-////      .post("/common/contactURLTypes");
-////    
-////    Long id = new Long(response.body().jsonPath().getInt("id"));
-////    try {
-////      ContactURLType updateContactURLType = new ContactURLType(id, "Updated", Boolean.FALSE);
-////
-////      Response updateResponse = given().headers(getAuthHeaders())
-////        .contentType("application/json")
-////        .body(updateContactURLType)
-////        .put("/common/contactURLTypes/{ID}", id);
-////      assertOk(updateResponse, forumPermissions, CommonPermissions.UPDATE_CONTACTURLTYPE, 200);
-////
-////    } finally {
-////      given().headers(getAdminAuthHeaders())
-////        .delete("/common/contactURLTypes/{ID}?permanent=true", id);
-////    }
-////  }
 
   @Test
   public void testDeleteForumAreaAdmin() throws NoSuchFieldException {
@@ -220,8 +197,8 @@ public class ForumPermissionsTestsIT extends AbstractRESTTest {
       .delete("/forum/areas/{ID}", id)
       .then()
       .statusCode(403);
-    
-    asAdmin().delete("/forum/areas/{ID}", id);
+
+    permanentDeleteArea(id);
   }  
 
   @Test
@@ -240,7 +217,7 @@ public class ForumPermissionsTestsIT extends AbstractRESTTest {
       .then()
       .statusCode(403);
     
-    asAdmin().delete("/forum/areas/{ID}", id);
+    permanentDeleteArea(id);
   }  
 
   @Test
@@ -259,6 +236,6 @@ public class ForumPermissionsTestsIT extends AbstractRESTTest {
       .then()
       .statusCode(403);
     
-    asAdmin().delete("/forum/areas/{ID}", id);
+    permanentDeleteArea(id);
   }  
 }

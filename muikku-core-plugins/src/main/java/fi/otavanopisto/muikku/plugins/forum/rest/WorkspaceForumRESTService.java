@@ -189,7 +189,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response deleteWorkspaceForumArea(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId) {
+  public Response archiveWorkspaceForumArea(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
@@ -206,7 +206,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
 
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumArea) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETEWORKSPACEFORUM, workspaceEntity)) {
-      forumController.deleteArea(forumArea);
+      forumController.archiveArea(forumArea);
     } else {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -392,6 +392,11 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
     
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_EDIT_WORKSPACE_MESSAGES, workspaceEntity)) {
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLocked().equals(updThread.getLocked())) {
+        if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+
       forumController.updateForumThread(forumThread, 
           updThread.getTitle(),
           updThread.getMessage(),
@@ -414,7 +419,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}/threads/{THREADID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response deleteThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) {
+  public Response archiveThread(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
@@ -467,6 +472,11 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
 
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_WRITE_WORKSPACE_MESSAGES, workspaceEntity)) {
+      if (Boolean.TRUE.equals(newThread.getSticky()) || Boolean.TRUE.equals(newThread.getLocked())) {
+        if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity))
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+
       Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Whitelist.relaxed().addAttributes("a", "target")));
       message.outputSettings().escapeMode(EscapeMode.xhtml);
       message.select("a[target]").attr("rel", "noopener noreferer");
@@ -684,7 +694,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response deleteReply(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) {
+  public Response archiveReply(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
