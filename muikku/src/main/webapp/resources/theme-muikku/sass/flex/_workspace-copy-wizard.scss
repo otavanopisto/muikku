@@ -19,7 +19,7 @@
   
   &.loading {
   
-    &:after {
+    &::after {
       @include generic-loader(50px);
       position: absolute;
       left: 50%;
@@ -164,7 +164,7 @@
   width: 60px;
   position: absolute;
   
-  &:before {
+  &::before {
     color: #c2e2e4;    
     cursor: pointer;
     font-weight: normal;
@@ -186,7 +186,7 @@
   top: 50%;
   margin-top: -30px;
   
-  &:before {
+  &::before {
     content: "\e62e";
     font-size: 60px;
   }
@@ -198,7 +198,7 @@
   top: 50%;
   margin-top: -30px;
   
-  &:before {
+  &::before {
     content: "\e62f";
     font-size: 60px;
   }
@@ -209,7 +209,7 @@
   right: 15px;
   top: 18px;
   
-  &:before {
+  &::before {
     content: "\e903";
     font-size: 50px;
   }
@@ -256,7 +256,7 @@ ul.summary {
         color: #000;
       }
      
-      &:after {
+      &::after {
         content: "\e904";
         font-size: 40px;
         height: 34px;
@@ -288,7 +288,7 @@ ul.summary {
         color: #000;
       }
       
-      &:after {
+      &::after {
         content: "\e639";
         font-size: 40px;
         height: 40px;

@@ -51,14 +51,14 @@
     margin-left: 10px;
     padding: 9px 0;
 
-    &:before {
+    &::before {
       margin-right:5px;
       font-family: 'muikku';
     }     
 
     &.usergroup {
 
-      &:before {
+      &::before {
        color:green;
       }     
 
@@ -67,7 +67,7 @@
     &:hover {
       color:red;
       
-      &:before {
+      &::before {
         color:red;
       }
       

@@ -45,7 +45,7 @@ body {
       -moz-animation: users-loading 0.7s infinite linear;
       animation: users-loading 0.7s infinite linear;
 
-      &:before {
+      &::before {
         content: "\e900";
         font-family: 'muikku' !important;
         speak: none;

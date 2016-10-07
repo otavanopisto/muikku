@@ -52,7 +52,7 @@
           opacity: 1;
         }
         
-        &:before {
+        &::before {
           content: "\e903";
           color: #fff;
           font-size: 40px;

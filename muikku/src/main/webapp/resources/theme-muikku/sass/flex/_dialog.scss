@@ -57,7 +57,7 @@
         display: none;
       }
       
-      &:before {
+      &::before {
         content: "\e63b";
         color: #fff;
         font-size: 22px;

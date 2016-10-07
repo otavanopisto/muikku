@@ -10,7 +10,7 @@
     padding-top: 75px;
     padding-bottom: 75px;
   
-    &:after {
+    &::after {
       @include generic-loader(50px);
     
       margin-left: auto;
@@ -27,7 +27,7 @@
     padding-top: 75px;
     padding-bottom: 75px;
   
-    &:after {
+    &::after {
       @include generic-loader(50px);
     
       margin-left: auto;
@@ -333,7 +333,7 @@
             margin-left:10px;            
             }
             &.di-reply-title-date{
-              &:before{
+              &::before{
                content: "-";
                margin-right:5px;
                color:#000;

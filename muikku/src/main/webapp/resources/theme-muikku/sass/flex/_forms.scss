@@ -76,7 +76,7 @@ label {
     padding: 10px 10px 10px 40px !important;
   }
   
-  &:before {
+  &::before {
     display: inline-block;
     content: "\e61c";
     font-family: 'muikku' !important;

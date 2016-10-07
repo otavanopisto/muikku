@@ -43,7 +43,7 @@
         text-decoration: none;
       }
     
-      &:before {
+      &::before {
         cursor: pointer;
         content: "\e605";
         color: #fff;
@@ -80,7 +80,7 @@
         text-decoration: none;
       }
       
-      &:before {
+      &::before {
         cursor: pointer;
         content: "\e608";
         color: #fff;
