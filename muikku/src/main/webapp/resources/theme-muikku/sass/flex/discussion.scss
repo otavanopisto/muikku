@@ -17,6 +17,7 @@
       margin-right: auto;
       display: block;
     }
+    
   }
   
 }
@@ -34,6 +35,7 @@
       margin-right: auto;
       display: block;
     }
+    
   }
   
 }
@@ -46,7 +48,6 @@
   right: 0;
   width: 400px;
   text-align:left;
-
 }
 
 .di-search-result-discussion {
@@ -89,6 +90,7 @@
   
   .di-user-picture-container {
     text-align:center;
+    
     .di-user-picture {
       font-size: 14px;
       height: 14px;
@@ -174,12 +176,8 @@
 }
 
 .di-search-result-content{
-    color: #8e8e8e;
+  color: #8e8e8e;
 }
-
-/* .di-admin-tools{ */
-/*   border-right:2px solid #e2e8eb;    */
-/* } */
 
 .di-no-messages {
   min-height:400px;
@@ -205,6 +203,7 @@
      option {
        padding:8px;
      }
+     
   }
 
 }
@@ -313,7 +312,6 @@
     }
     
     // Message clicked open
-    
     &.open {
       position:relative;
         
