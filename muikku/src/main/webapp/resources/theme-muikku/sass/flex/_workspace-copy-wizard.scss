@@ -1,29 +1,5 @@
 @import "_animations.scss";
 @import "_jquery.datepicker.scss";
-@import "_ckeditor_theme.scss";
-
-// OVERRIDE
-.cke {
-  
-  // CKE top, content and bottom wrapper
-  .cke_inner { 
-    border: 1px solid #abdbed;
-    border-radius: 3px;
-    box-shadow: none;
-        
-    &:hover {
-      border-color: #abdbed;
-      box-shadow:none;
-      
-      .cke_top {
-        background: #abdbed;
-      }
-      
-    }
-    
-  }
-  
-}
 
 .workspace-copy-wizard.flex-grid {
   max-width: 100%;

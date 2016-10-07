@@ -2,6 +2,7 @@
 @import "_styles.scss";
 @import "_jquery.datepicker.scss";
 @import "_workspace-copy-wizard.scss";
+@import "_ckeditor_theme_management.scss";
 
 body {
   padding: 60px 0 75px;
@@ -206,7 +207,7 @@ h2.workspace-management-generic-title {
     display: inline-block;
     margin: 0 5px;
 
-    &:before {
+    &::before {
       border-radius: 100%;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
       color: #fff;

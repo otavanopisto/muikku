@@ -1,0 +1,39 @@
+@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "_workspaces.scss"; /* Generic workspace styles */
+
+body[class^='workspace'] { 
+  
+  .workspace-generic-view-title {
+    background: #fff;
+    font-size: 25px;
+    font-weight: 300;
+    line-height: 1;
+    margin: 0;
+    padding: 20px;
+    text-transform: uppercase;
+  }
+  
+  /* WORKSPACE PERMISSIONS VIEW */
+  
+  table#environmentUserRolePermissionsTable {
+    border:0;
+    border-collapse:collapse;
+  
+    td.workspace-permission-column-label {
+      padding:2px 4px;
+      text-transform:uppercase;
+      background:#eaf8fe;
+    }
+    
+    td.workspace-permission-column-data {
+      padding:4px;
+    }
+    
+    td.workspace-permission-column-input {
+      padding:4px;
+      text-align:center;
+    }
+  
+  }
+  
+}

@@ -3,8 +3,12 @@
 
 .workspace-generic-view-title {
   background: #fff;
-  padding: 20px;
+  font-size: 25px;
+  font-weight: 300;
+  line-height: 1;
   margin: 0;
+  padding: 20px;
+  text-transform: uppercase;
 }
 
 .workspace-announcer-content-wrapper {
@@ -43,9 +47,11 @@
       }
       
     }
+    
     .an-announcement-details{
       margin-bottom: 10px;
       max-height: 262px;
+      cursor: default;
     }   
      
   }
