@@ -1,0 +1,190 @@
+@import "_vars";
+@import "_styles";
+@import "_custom-ckeditor-styles";
+@import "_connect-field";
+@import "_organizer-field";
+@import "_sorter-field";
+@import "_audio-field";
+@import "_file-field";
+@import "_jquery.datepicker";
+@import "_evaluation_material_styles"; 
+@import "_correct_answers"; 
+@import "_ckeditor_theme.scss";
+@import "_draft";
+@import "_dialog";
+
+body {
+  background-color: #fff;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 0;
+  margin: 0;
+  font-family:'Open Sans', Arial, sans-serif;
+  line-height:1.5em; /* Set line-height:1 to element when there's a need to override */
+  color:#000;
+}
+// FRONTPAGE VIEW WRAPPER
+.evaluation-frontpage-wrapper {
+  background: #fff;
+}
+
+// NAVIGATION (FRONTPAGE & WORKSPACE VIEWS)
+.evaluation-navigation {
+  background: #7ed9ff;
+  bottom: 0;
+  box-shadow: 5px 0 5px rgba(0, 0, 0, 0.3);
+  left: 0;
+  height: 55px;
+  padding: 0 10px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 10;
+  
+  // Navi item
+  .eval-nav-item {
+    color: #fff;
+    cursor: pointer;
+    float: left;
+    font-size: 35px;
+    height: 35px;
+    margin: 5px;
+    width: 35px;
+    padding: 5px;
+    text-align: center;
+  }
+  
+  .eval-search {
+    float: right;
+  }
+   
+}
+
+// FILTER WRAPPER
+.evaluation-filter-wrapper {
+  background: #fff;
+  bottom: 0;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
+  display: none;
+  left: 0;
+  padding:10px;
+  position: fixed;
+  top: 55px;
+  width: 300px;
+  z-index:20;
+}
+
+// FRONTPAGE EVALUATION REQUESTS WRAPPER
+.evaluation-requests-wrapper{
+  padding: 55px 0 0;
+  
+  // Requests title
+  .evaluation-requests-title {
+    margin:25px 25px 0;
+    
+    h3 {
+      font-size: 24px;
+      margin: 0;
+      padding: 0;
+      text-transform: none;
+    }
+    
+  }
+  
+  // Requests container
+  .evaluation-requests-container {
+    padding: 15px;
+    vertical-align: top;
+  }
+  
+  // Request
+  .evaluation-request {
+    background: #fff;
+    border: 1px solid #fff;
+    box-shadow: 0 3px 5px rgba(58, 111, 148, 0.2);
+    display: inline-block;
+    margin: 5px;
+    padding: 3px;
+    vertical-align: top;
+    width: 300px;
+  }
+  
+  .evaluation-request-title {
+    background: #ebfbfe;
+    padding: 4px 6px;
+  }
+  
+  .evaluation-request-student {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .evaluation-request-studyprogram {
+    font-size: 13px;
+    font-style: italic;
+  }
+  
+  .evaluation-request-data {
+    font-size: 13px;
+    padding: 4px 6px;
+  }
+  
+  .evaluation-request-data-row {
+    padding: 2px 0;
+    position: relative;
+    
+    .workspace-name {
+      height: 42px;
+    }
+    
+    &.highlight {
+      font-weight: 600;
+    }
+  
+    a {
+      font-size: 14px;
+      font-weight: 400;
+      color: $link;
+    }
+    
+    .evaluation-request-data-label {
+    
+    }
+    
+    .evaluation-request-data-text {
+      float: right;
+      
+      &.assignments-status {
+        border-radius: 2px;
+        color: #fff;
+        line-height: 1;
+        padding: 4px;
+      }
+      
+      &.not-done {
+        background: #da5760;
+      }
+      
+      &.all-done {
+        background: #63da57;
+      }
+      
+    }
+    
+  }
+  
+}
+
+// SEARCH WRAPPER 
+.evaluation-search-wrapper {
+  background: #fff;
+  bottom: 0;
+  box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.1);
+  display: none;
+  padding: 10px;
+  position: fixed;
+  right: 0;
+  top: 55px;
+  width: 300px;
+  z-index:20;
+}
