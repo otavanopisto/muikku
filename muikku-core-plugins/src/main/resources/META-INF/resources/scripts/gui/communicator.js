@@ -7,6 +7,43 @@
   
   $.extend(CommunicatorFolderController.prototype, {
     
+    loadMessageDetails: function (message, messageDetailsCallback) {
+      var recipientIds = message.recipientIds || [];
+      
+      // TODO: restricts count of visible recipients to five
+      var recipientCalls = $.map(recipientIds.slice(0, 5), function (recipientId) {
+        return function (callback) {
+          mApi().communicator.communicatormessages.recipients.info
+            .read(message.id, recipientId)
+            .callback(callback);
+        };
+      });
+      
+      var senderCall = function (senderCallback) {
+        mApi().communicator.communicatormessages.sender
+          .read(message.id)
+          .callback(senderCallback);
+      };
+      
+      var recipientBatchCall = function (recipientsCallback) {
+        async.parallel(recipientCalls, recipientsCallback);
+      }
+      
+      async.parallel([recipientBatchCall, senderCall], function (err, results) {
+        if (err) {
+          messageDetailsCallback(err);
+        } else {
+          var recipients = results[0];
+          var sender = results[1];
+          
+          messageDetailsCallback(null, {
+            recipients: recipients,
+            sender: sender
+          });
+        }
+      });
+    },
+    
     loadItems: function (firstResult, maxResults, mainCallback) {
       throw Error("loadItems not implemented");
     },
@@ -73,20 +110,23 @@
     loadThread: function (threadId, firstResult, maxResults, callback) {
       mApi().communicator.messages
         .read(threadId)
-        .on("$", function (message, messageCallback) {
-          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-            if(err){
+        .on("$", $.proxy(function (message, messageCallback) {
+          this.loadMessageDetails(message, function (err, details) {
+            if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-            }else{            
-              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-              message.senderFullName = user.firstName + ' ' + user.lastName;
-              message.senderHasPicture = user.hasImage;
+            } else {
+              message.sender = details.sender;
+              message.recipients = details.recipients;
+
+              message.isOwner = MUIKKU_LOGGED_USER_ID === details.sender.id;
+              message.senderFullName = details.sender.firstName + ' ' + details.sender.lastName;
+              message.senderHasPicture = details.sender.hasImage;
               message.caption = $('<div>').html(message.caption).text();
-              message.content = message.content;
+              
               messageCallback();
             }
           });
-        })
+        }, this))
         .callback(callback);
     },
     readThreadMessageCount: function (communicatorMessageId, callback) {
@@ -133,20 +173,24 @@
     loadThread: function (threadId, firstResult, maxResults, callback) {
       mApi().communicator.messages
         .read(threadId)
-        .on("$", function (message, messageCallback) {
-          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-            if(err){
+        .on("$", $.proxy(function (message, messageCallback) {
+          
+          this.loadMessageDetails(message, function (err, details) {
+            if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-            }else{            
-              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-              message.senderFullName = user.firstName + ' ' + user.lastName;
-              message.senderHasPicture = user.hasImage;
+            } else {
+              message.sender = details.sender;
+              message.recipients = details.recipients;
+
+              message.isOwner = MUIKKU_LOGGED_USER_ID === details.sender.id;
+              message.senderFullName = details.sender.firstName + ' ' + details.sender.lastName;
+              message.senderHasPicture = details.sender.hasImage;
               message.caption = $('<div>').html(message.caption).text();
-              message.content = message.content;
+              
               messageCallback();
             }
           });
-        })
+        }, this))
         .callback(callback);
     },
     
@@ -201,20 +245,24 @@
     loadThread: function (threadId, firstResult, maxResults, callback) {
       mApi().communicator.trash
         .read(threadId)
-        .on("$", function (message, messageCallback) {
-          mApi().communicator.communicatormessages.sender.read(message.id).callback(function (err, user) {  
-            if(err){
+        .on("$", $.proxy(function (message, messageCallback) {
+          
+          this.loadMessageDetails(message, function (err, details) {
+            if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
-            }else{            
-              message.isOwner = MUIKKU_LOGGED_USER_ID === user.id;
-              message.senderFullName = user.firstName + ' ' + user.lastName;
-              message.senderHasPicture = user.hasImage;
+            } else {
+              message.sender = details.sender;
+              message.recipients = details.recipients;
+
+              message.isOwner = MUIKKU_LOGGED_USER_ID === details.sender.id;
+              message.senderFullName = details.sender.firstName + ' ' + details.sender.lastName;
+              message.senderHasPicture = details.sender.hasImage;
               message.caption = $('<div>').html(message.caption).text();
-              message.content = message.content;
+              
               messageCallback();
             }
           });
-        })
+        }, this))
         .callback(callback);
     },
     
@@ -1430,7 +1478,6 @@
       controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
       controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
       controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
-
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
     },
     

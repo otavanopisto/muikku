@@ -210,7 +210,25 @@
   .cm-message-details {
     cursor: default; /* Override mf-item-details */
   }
+
+  .cm-message-recipient-arrow {
+    font-size: 12px;
+    margin: 0 5px;
+    color: #049a00;
+  }  
+
+  .cm-message-recipient-name {
+    margin-right: 5px;
+    color: #777777;
   
+    &:not(:last-child) {
+      &::after {
+        content: ",";
+      }
+     
+    }  
+  }
+
   .cm-message-details-container {
     background-color: #fff;
     position: relative;
@@ -219,7 +237,8 @@
       box-sizing: border-box;
       word-break: break-all;
       word-wrap: break-word;
-      
+      font-weight: 600;
+      margin-top: 10px;      
       .cm-message-select {
         display: inline-block;
         margin: 0 0 0 5px;
@@ -227,7 +246,7 @@
       }
       
       .cm-message-header-container {
-        box-sizing: border-box;
+        box-sizing:  border-box;
         cursor: pointer;
         display: inline-block; 
         position: relative;
@@ -433,6 +452,8 @@
       
       .cm-message-header-content-primary {
         font-weight: 400;
+        max-width:80%;
+        
       } 
     
     } 
