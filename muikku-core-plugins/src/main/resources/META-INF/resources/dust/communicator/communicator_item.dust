@@ -30,7 +30,7 @@
         </div>
         <div class="cm-message-additional no-margin-top no-margin-bottom">
           <div class="cm-message-header-count flex-center">
-            {@gt key=messageCount value=1}<span class="cm-message-replies">{messageCount}</span>{/gt}
+            {@gt key=messageCountInThread value=1}<span class="cm-message-replies">{messageCountInThread}</span>{/gt}
           </div>
           <div class="cm-message-latest">
             <span>

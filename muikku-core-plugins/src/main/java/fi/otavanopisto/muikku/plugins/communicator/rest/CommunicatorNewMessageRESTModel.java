@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-public class CommunicatorNewMessageRESTModel extends CommunicatorMessageRESTModel {
+public class CommunicatorNewMessageRESTModel extends AbstractCommunicatorMessageRESTModel {
 
   public CommunicatorNewMessageRESTModel() {
   }
@@ -13,8 +13,9 @@ public class CommunicatorNewMessageRESTModel extends CommunicatorMessageRESTMode
   public CommunicatorNewMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, String categoryName, String caption, 
       String content, Date created, Set<String> tags, List<Long> recipientIds, List<Long> recipientGroupIds, 
       List<Long> recipientTeachersWorkspaceIds, List<Long> recipientStudentsWorkspaceIds) {
-    super(id, communicatorMessageId, senderId, categoryName, caption, content, created, tags, recipientIds);
+    super(id, communicatorMessageId, senderId, categoryName, caption, content, created, tags);
 
+    this.recipientIds = recipientIds;
     this.recipientGroupIds = recipientGroupIds;
     this.recipientStudentsWorkspaceIds = recipientStudentsWorkspaceIds;
     this.recipientTeachersWorkspaceIds = recipientTeachersWorkspaceIds;
@@ -43,6 +44,16 @@ public class CommunicatorNewMessageRESTModel extends CommunicatorMessageRESTMode
   public void setRecipientTeachersWorkspaceIds(List<Long> recipientTeachersWorkspaceIds) {
     this.recipientTeachersWorkspaceIds = recipientTeachersWorkspaceIds;
   }
+
+  public List<Long> getRecipientIds() {
+    return recipientIds;
+  }
+
+  public void setRecipientIds(List<Long> recipientIds) {
+    this.recipientIds = recipientIds;
+  }
+
+  private List<Long> recipientIds = new ArrayList<Long>();
 
   private List<Long> recipientGroupIds = new ArrayList<Long>();
   

@@ -37,6 +37,10 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
+import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.Permit;
 import fi.otavanopisto.security.PermitContext;
 
@@ -66,6 +70,15 @@ public class CommunicatorController {
   @Inject
   private CommunicatorMessageIdLabelDAO communicatorMessageIdLabelDAO; 
   
+  @Inject
+  private UserEntityController userEntityController;
+
+  @Inject
+  private UserController userController;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
   @Inject
   private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
 
@@ -353,6 +366,34 @@ public class CommunicatorController {
     communicatorUserLabelDAO.delete(communicatorUserLabel);
   }
 
+  /**
+   * Returns message sender UserBasicInfo
+   * 
+   * @param communicatorMessage
+   * @return
+   */
+  public UserBasicInfo getSenderBasicInfo(CommunicatorMessage communicatorMessage) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      UserEntity userEntity = userEntityController.findUserEntityById(communicatorMessage.getSender());
+      fi.otavanopisto.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
+      Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
+      
+      fi.otavanopisto.muikku.rest.model.UserBasicInfo result = new fi.otavanopisto.muikku.rest.model.UserBasicInfo(
+          userEntity.getId(), 
+          user.getFirstName(), 
+          user.getLastName(), 
+          user.getStudyProgrammeName(),
+          hasPicture,
+          user.hasEvaluationFees(),
+          user.getCurriculumIdentifier());
+
+      return result;
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+  
   /**
    * Cleans list of UserEntities so that there are no duplicates present. Returns the original list.
    * 

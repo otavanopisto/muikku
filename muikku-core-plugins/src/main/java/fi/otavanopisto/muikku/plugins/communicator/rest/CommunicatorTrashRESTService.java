@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.plugins.communicator.rest;
 
+import static fi.otavanopisto.muikku.plugins.communicator.rest.CommunicatorRESTModels.*;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +28,9 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.AuthorizationException;
@@ -62,14 +67,35 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     List<CommunicatorMessage> trashItems = communicatorController.listTrashItems(user, firstResult, maxResults);
 
-    List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
+    List<CommunicatorThreadRESTModel> result = new ArrayList<CommunicatorThreadRESTModel>();
     
-    for (CommunicatorMessage msg : trashItems) {
-      String categoryName = msg.getCategory() != null ? msg.getCategory().getName() : null;
+    for (CommunicatorMessage receivedItem : trashItems) {
+      String categoryName = receivedItem.getCategory() != null ? receivedItem.getCategory().getName() : null;
+      boolean hasUnreadMsgs = false;
+      Date latestMessageDate = receivedItem.getCreated();
       
-      result.add(new CommunicatorMessageRESTModel(
-          msg.getId(), msg.getCommunicatorMessageId().getId(), msg.getSender(), categoryName, 
-          msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), getMessageRecipientIdList(msg)));
+      List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(
+          user, receivedItem.getCommunicatorMessageId(), true);
+      
+      for (CommunicatorMessageRecipient recipient : recipients) {
+        hasUnreadMsgs = hasUnreadMsgs || Boolean.FALSE.equals(recipient.getReadByReceiver()); 
+        Date created = recipient.getCommunicatorMessage().getCreated();
+        latestMessageDate = latestMessageDate == null || latestMessageDate.before(created) ? created : latestMessageDate;
+      }
+      
+      UserBasicInfo senderBasicInfo = communicatorController.getSenderBasicInfo(receivedItem);
+      Long messageCountInThread = communicatorController.countMessagesByUserAndMessageId(user, receivedItem.getCommunicatorMessageId(), true);
+
+      List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, receivedItem.getCommunicatorMessageId());
+      List<CommunicatorMessageIdLabelRESTModel> restLabels = restLabel(labels);
+      
+      List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(receivedItem);
+      List<CommunicatorMessageRecipientRESTModel> messageRecipientsRestModel = restRecipient(messageRecipients);
+      
+      result.add(new CommunicatorThreadRESTModel(receivedItem.getId(), receivedItem.getCommunicatorMessageId().getId(), 
+          receivedItem.getSender(), senderBasicInfo, categoryName, receivedItem.getCaption(), receivedItem.getContent(), 
+          receivedItem.getCreated(), tagIdsToStr(receivedItem.getTags()), messageRecipientsRestModel, 
+          hasUnreadMsgs, latestMessageDate, messageCountInThread, restLabels));
     }
     
     return Response.ok(
@@ -95,7 +121,7 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
       
       result.add(new CommunicatorMessageRESTModel(
           msg.getId(), msg.getCommunicatorMessageId().getId(), msg.getSender(), categoryName, 
-          msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), getMessageRecipientIdList(msg)));
+          msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags())));
     }
     
     return Response.ok(
@@ -176,15 +202,15 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
-  private List<Long> getMessageRecipientIdList(CommunicatorMessage msg) {
-    List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(msg);
-    List<Long> recipients = new ArrayList<Long>();
-    for (CommunicatorMessageRecipient messageRecipient : messageRecipients) {
-      recipients.add(messageRecipient.getId());
-    }
-
-    return recipients;
-  }
+//  private List<Long> getMessageRecipientIdList(CommunicatorMessage msg) {
+//    List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(msg);
+//    List<Long> recipients = new ArrayList<Long>();
+//    for (CommunicatorMessageRecipient messageRecipient : messageRecipients) {
+//      recipients.add(messageRecipient.getId());
+//    }
+//
+//    return recipients;
+//  }
   
   private Set<String> tagIdsToStr(Set<Long> tagIds) {
     Set<String> tagsStr = new HashSet<String>();

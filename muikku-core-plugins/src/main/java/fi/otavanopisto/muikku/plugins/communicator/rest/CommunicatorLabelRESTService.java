@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.communicator.rest;
 
-import java.util.ArrayList;
+import static fi.otavanopisto.muikku.plugins.communicator.rest.CommunicatorRESTModels.*;
+
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -57,14 +58,9 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
     List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(userEntity, messageId);
-    List<CommunicatorMessageIdLabelRESTModel> result = new ArrayList<CommunicatorMessageIdLabelRESTModel>();
-    
-    for (CommunicatorMessageIdLabel label : labels) {
-      result.add(toRESTModel(label));
-    }
     
     return Response.ok(
-      result
+      restLabel(labels)
     ).build();
   }
   
@@ -86,7 +82,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
         userLabel = communicatorController.createMessageIdLabel(userEntity, messageId, label);
     
         return Response.ok(
-          toRESTModel(userLabel)
+          restLabel(userLabel)
         ).build();
       } else {
         return Response.status(Status.BAD_REQUEST).build();
@@ -111,7 +107,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     }
     
     return Response.ok(
-      toRESTModel(label)
+      restLabel(label)
     ).build();
   }
 
@@ -141,14 +137,9 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     
     // Lists only labels of logged user so we can consider this safe
     List<CommunicatorUserLabel> userLabels = communicatorController.listUserLabelsByUserEntity(userEntity);
-    List<CommunicatorUserLabelRESTModel> result = new ArrayList<CommunicatorUserLabelRESTModel>();
-    
-    for (CommunicatorUserLabel userLabel : userLabels) {
-      result.add(toRESTModel(userLabel));
-    }
     
     return Response.ok(
-      result
+      restUserLabel(userLabels)
     ).build();
   }
   
@@ -162,7 +153,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     CommunicatorUserLabel userLabel = communicatorController.createUserLabel(newUserLabel.getName(), newUserLabel.getColor(), userEntity);
 
     return Response.ok(
-      toRESTModel(userLabel)
+      restUserLabel(userLabel)
     ).build();
   }
   
@@ -177,7 +168,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     
     if ((userLabel != null) && canAccessLabel(userEntity, userLabel)) {
       return Response.ok(
-        toRESTModel(userLabel)
+        restUserLabel(userLabel)
       ).build();
     } else {
       return Response.status(Status.NOT_FOUND).build();
@@ -220,7 +211,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
       CommunicatorUserLabel editedUserLabel = communicatorController.updateUserLabel(userLabel, updatedUserLabel.getName(), updatedUserLabel.getColor());
 
       return Response.ok(
-        toRESTModel(editedUserLabel)
+        restUserLabel(editedUserLabel)
       ).build();
     } else {
       return Response.status(Status.NOT_FOUND).build();
@@ -240,18 +231,4 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     return false;
   }
   
-  private CommunicatorUserLabelRESTModel toRESTModel(CommunicatorUserLabel userLabel) {
-    return new CommunicatorUserLabelRESTModel(userLabel.getId(), userLabel.getName(), userLabel.getColor());    
-  }
-  
-  private CommunicatorMessageIdLabelRESTModel toRESTModel(CommunicatorMessageIdLabel messageIdLabel) {
-    return new CommunicatorMessageIdLabelRESTModel(
-        messageIdLabel.getId(), 
-        messageIdLabel.getUserEntity(), 
-        messageIdLabel.getCommunicatorMessageId() != null ? messageIdLabel.getCommunicatorMessageId().getId() : null,
-        messageIdLabel.getLabel() != null ? messageIdLabel.getLabel().getId() : null,
-        messageIdLabel.getLabel() != null ? messageIdLabel.getLabel().getName() : null,
-        messageIdLabel.getLabel() != null ? messageIdLabel.getLabel().getColor() : null
-    );    
-  }
 }

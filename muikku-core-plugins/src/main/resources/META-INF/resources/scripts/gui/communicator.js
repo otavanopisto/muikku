@@ -7,64 +7,6 @@
   
   $.extend(CommunicatorFolderController.prototype, {
     
-    loadItemDetails: function (item, itemCallback) {
-      var recipientIds = item.recipientIds||[];
-      var recipientCount = recipientIds.length;
-      
-      var recipientCalls = $.map(recipientIds.slice(0, 5), function (recipientId) {
-        return function (callback) {
-          mApi().communicator.communicatormessages.recipients.info
-            .read(item.id, recipientId)
-            .callback(callback);
-        };
-      });
-      
-      var countCall = $.proxy(function (countCallback) {
-        this.readThreadMessageCount(item.communicatorMessageId, countCallback);
-      }, this);
-      
-      var senderCall = function (senderCallback) {
-        mApi().communicator.communicatormessages.sender
-          .read(item.id)
-          .callback(senderCallback);
-      };
-      
-      var recipientBatchCall = function (recipientsCallback) {
-        async.parallel(recipientCalls, recipientsCallback);
-      }
-      
-      var labelsCall = function (labelsCallback) {
-        mApi().communicator.messages.labels
-          .read(item.communicatorMessageId)
-          .callback(labelsCallback);
-      }
-      
-      async.parallel([recipientBatchCall, countCall, senderCall, labelsCall], function (err, results) {
-        if (err) {
-          itemCallback(err);
-        } else {
-          var recipients = results[0];
-          var count = results[1];
-          var sender = results[2];
-          var labels = results[3];
-
-          var communicator = $(".communicator").communicator("instance");
-          
-          for (var i = 0, l = labels.length; i < l; i++) {
-            labels[i]["colorHex"] = communicator.colorIntToHex(labels[i].labelColor);
-          }
-          
-          itemCallback(null, {
-            recipientCount: recipientCount,
-            recipients: recipients,
-            sender: sender,
-            count: count,
-            labels: labels
-          });
-        }
-      });
-    },
-    
     loadItems: function (firstResult, maxResults, mainCallback) {
       throw Error("loadItems not implemented");
     },
@@ -126,20 +68,6 @@
         
       mApi().communicator.items
         .read(params)
-        .on('$', $.proxy(function (item, itemCallback) {
-          this.loadItemDetails(item, function (err, details) {
-            if (err) {
-              itemCallback(err);
-            } else {
-              item.sender = details.sender;
-              item.recipientCount = details.recipientCount;
-              item.recipients = details.recipients;
-              item.messageCount = details.count;
-              item.labels = details.labels;
-              itemCallback();
-            }
-          });
-        }, this))
         .callback(mainCallback);
     },
     loadThread: function (threadId, firstResult, maxResults, callback) {
@@ -199,20 +127,6 @@
           firstResult: firstResult,
           maxResults: maxResults
         })
-        .on('$', $.proxy(function (item, itemCallback) {
-          this.loadItemDetails(item, function (err, details) {
-            if (err) {
-              itemCallback(err);
-            } else {
-              item.sender = details.sender;
-              item.recipientCount = details.recipientCount;
-              item.recipients = details.recipients;
-              item.messageCount = details.count;
-              item.labels = details.labels;
-              itemCallback();
-            }
-          });
-        }, this))
         .callback(mainCallback);
     },
 
@@ -281,20 +195,6 @@
         
       mApi().communicator.trash
         .read(params)
-        .on('$', $.proxy(function (item, itemCallback) {
-          this.loadItemDetails(item, function (err, details) {
-            if (err) {
-              itemCallback(err);
-            } else {
-              item.sender = details.sender;
-              item.recipientCount = details.recipientCount;
-              item.recipients = details.recipients;
-              item.messageCount = details.count;
-              item.labels = details.labels;
-              itemCallback();
-            }
-          });
-        }, this))
         .callback(mainCallback);
     },
   
@@ -392,7 +292,16 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
+          var communicator = $(".communicator").communicator("instance");
           var hasMore = false;
+          
+          $.each(items, function (ind, item) {
+            item["recipientCount"] = item.recipients.length;
+
+            for (var i = 0, l = item.labels.length; i < l; i++) {
+              item.labels[i]["colorHex"] = communicator.colorIntToHex(item.labels[i].labelColor);
+            }
+          });
           
           if (items.length > this.options.maxMessageCount) {
             hasMore = true;
@@ -972,7 +881,7 @@
       
       label.hexColor = this.colorIntToHex(label.color);
 
-      renderDustTemplate('/communicator/communicator_label.dust', label, $.proxy(function (text) {
+      renderDustTemplate('communicator/communicator_label.dust', label, $.proxy(function (text) {
         this.element.find(".cm-categories ul").append(text);
         
         if (callback) {
