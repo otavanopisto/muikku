@@ -8,11 +8,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply_;
 
 public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialReply> {
 	
@@ -48,6 +48,26 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public Long countByUserAndStateAndMaterials(Long userEntityId, WorkspaceMaterialReplyState replyState, List<WorkspaceMaterial> materials) {
+    if (materials == null || materials.isEmpty()) {
+      return 0L;
+    }
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<WorkspaceMaterialReply> root = criteria.from(WorkspaceMaterialReply.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceMaterialReply_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(WorkspaceMaterialReply_.state), replyState),
+        root.get(WorkspaceMaterialReply_.workspaceMaterial).in(materials)
+      )
+    );
+   
+    return entityManager.createQuery(criteria).getSingleResult();
   }
 
   public List<WorkspaceMaterialReply> listByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {

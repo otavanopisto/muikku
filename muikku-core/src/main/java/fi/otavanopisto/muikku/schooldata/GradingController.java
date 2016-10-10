@@ -16,6 +16,7 @@ import fi.otavanopisto.muikku.dao.grading.GradingScaleItemEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.grading.GradingScaleEntity;
 import fi.otavanopisto.muikku.model.grading.GradingScaleItemEntity;
+import fi.otavanopisto.muikku.schooldata.entity.AssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -175,6 +176,10 @@ public class GradingController {
   
   public List<WorkspaceAssessmentRequest> listStudentAssessmentRequests(SchoolDataIdentifier studentIdentifier) {
     return gradingSchoolDataController.listAssessmentRequestsByStudent(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+  }
+  
+  public List<AssessmentRequest> listAssessmentRequestsByStaffMember(SchoolDataIdentifier staffMemberIdentifier) {
+    return gradingSchoolDataController.listAssessmentRequestsByStaffMember(staffMemberIdentifier.getDataSource(), staffMemberIdentifier.getIdentifier());
   }
   
   public List<WorkspaceAssessmentRequest> listStudentAssessmentRequestsSince(SchoolDataIdentifier studentIdentifier, Date date) {
