@@ -1,25 +1,25 @@
 <div class="evaluation-request">
   <div class="evaluation-request-title">
-    <div class="evaluation-request-student">Paskiainen, Hemmo</div>
-    <div class="evaluation-request-studyprogram">Internetix/Lukio</div>
+    <div class="evaluation-request-student">{lastName}, {firstName}</div>
+    <div class="evaluation-request-studyprogram">{studyProgramme}</div>
   </div>
   <div class="evaluation-request-data">
     <div class="evaluation-request-data-row">
       <div class="workspace-name">
-        <a href="#">BI4 - Apinan analogia, jeesuksen mytologia ja Lemmy</a>
+        <a href="#">{workspaceName}</a>
       </div>
     </div>
     <div class="evaluation-request-data-row">
       <span class="evaluation-request-data-label">Ilmoittautunut kurssille</span>
-      <span class="evaluation-request-data-text">12.12.2015</span>
+      <span class="evaluation-request-data-text">{enrollmentDate|formatDate}</span>
     </div>
     <div class="evaluation-request-data-row highlight">
       <span class="evaluation-request-data-label">Arviointipyyntö jätetty</span>
-      <span class="evaluation-request-data-text">13.12.2016</span>
+      <span class="evaluation-request-data-text">{assessmentRequestDate|formatDate}</span>
     </div>
     <div class="evaluation-request-data-row">
       <span class="evaluation-request-data-label">Tehtäviä tehty</span>
-      <span class="evaluation-request-data-text assignments-status not-done">12/13</span>
+      <span class="evaluation-request-data-text assignments-status not-done">{assignmentsDone}/{assignmentsTotal}</span>
     </div>
   </div>
 </div>

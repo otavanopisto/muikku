@@ -6,6 +6,8 @@
       this._loadAssessmentRequests();
     },
     _loadAssessmentRequests: function () {
+      var requestContainer = $('.evaluation-requests-container'); 
+      $(requestContainer).empty();
       mApi().evaluation.assessmentRequests
         .read()
         .callback($.proxy(function (err, assessmentRequests) {
@@ -13,11 +15,14 @@
             $('.notification-queue').notificationQueue('notification', 'error', err);
           }
           else {
-            // TODO assessment requests to ui
+            for (var i = 0; i < assessmentRequests.length; i++) {
+              renderDustTemplate("evaluation/evaluation-request-card.dust", assessmentRequests[i], $.proxy(function (html) {
+                $(requestContainer).append(html);
+              }, this));
+            }
           }
         }, this)); 
     }
-    
   });
 
   $(document).ready(function () {
