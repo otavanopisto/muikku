@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.GradingSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.AssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -364,6 +365,15 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/assessmentRequests/", studentId), CourseAssessmentRequest[].class));
+  }
+  
+  public List<AssessmentRequest> listAssessmentRequestsByStaffMember(String identifier) {
+    Long staffMemberId = identifierMapper.getPyramusStaffId(identifier);
+    if (staffMemberId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus staff member", identifier));
+      return null; 
+    }
+    return entityFactory.createEntity(pyramusClient.get(String.format("/staff/members/%d/assessmentRequests/", staffMemberId), fi.otavanopisto.pyramus.rest.model.AssessmentRequest[].class));
   }
   
   @Override

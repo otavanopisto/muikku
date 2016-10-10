@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.schooldata.entity.AssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -295,6 +296,17 @@ class GradingSchoolDataController {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
   
+    return null;
+  }
+  
+  public List<AssessmentRequest> listAssessmentRequestsByStaffMember(String schoolDataSource, String staffMemberIdentifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
+    if (schoolDataBridge != null) {
+      return schoolDataBridge.listAssessmentRequestsByStaffMember(staffMemberIdentifier);
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
+    }
     return null;
   }
 

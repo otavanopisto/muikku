@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.schooldata;
 import java.util.Date;
 import java.util.List;
 
+import fi.otavanopisto.muikku.schooldata.entity.AssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -121,6 +122,8 @@ public interface GradingSchoolDataBridge {
   public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier, String studentIdentifier);
 
   public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String studentIdentifier);
+  
+  public List<AssessmentRequest> listAssessmentRequestsByStaffMember(String staffMemberIdentifier);
   
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
       String workspaceIdentifier, String studentIdentifier, String requestText, Date date);

@@ -18,6 +18,7 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.AssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRoleArchetype;
@@ -76,7 +77,7 @@ public class PyramusSchoolDataEntityFactory {
     return new PyramusWorkspaceRole(identifierMapper.getWorkspaceStudentRoleIdentifier(), "Course Student",
         WorkspaceRoleArchetype.STUDENT);
   }
-
+  
   public User createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember staffMember) {
     String displayName = staffMember.getFirstName() + " " + staffMember.getLastName();
 
@@ -354,6 +355,36 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     return result;
+  }
+  
+  public List<AssessmentRequest> createEntity(fi.otavanopisto.pyramus.rest.model.AssessmentRequest... assessmentRequests) {
+    List<AssessmentRequest> result = new ArrayList<>();
+    
+    if (assessmentRequests != null) {
+      for (fi.otavanopisto.pyramus.rest.model.AssessmentRequest assessmentRequest : assessmentRequests) {
+        result.add(createEntity(assessmentRequest));
+      }
+    }
+    
+    return result;
+  }
+
+  public AssessmentRequest createEntity(fi.otavanopisto.pyramus.rest.model.AssessmentRequest assessmentRequest) {
+    if (assessmentRequest == null) {
+      logger.severe("Attempted to translate null assessment request into school data entity");
+      return null;
+    }
+    return new PyramusAssessmentRequest(
+      assessmentRequest.getId() == null ? null : assessmentRequest.getId().toString(),
+      assessmentRequest.getUserId() == null ? null : identifierMapper.getStudentIdentifier(assessmentRequest.getUserId()),
+      assessmentRequest.getFirstName(),
+      assessmentRequest.getLastName(),
+      assessmentRequest.getStudyProgramme(),
+      assessmentRequest.getCourseId() == null ? null : identifierMapper.getWorkspaceIdentifier(assessmentRequest.getCourseId()),
+      assessmentRequest.getCourseName(),
+      assessmentRequest.getCourseNameExtension(),
+      assessmentRequest.getCourseEnrollmentDate(),
+      assessmentRequest.getAssessmentRequestDate());
   }
 
   public WorkspaceAssessmentRequest createEntity(CourseAssessmentRequest courseAssessmentRequest) {

@@ -70,6 +70,26 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
    
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public Long countByHiddenAndAssignmentTypeAndParents(Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, List<WorkspaceNode> parents) {
+    if (parents == null || parents.isEmpty()) {
+      return 0L;
+    }
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.hidden), hidden),
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.assignmentType), assignmentType),
+        root.get(WorkspaceMaterial_.parent).in(parents)
+      )
+    );
+   
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
 
 	public WorkspaceMaterial findByFolderAndUrlName(WorkspaceNode parent, String urlName) {
     EntityManager entityManager = getEntityManager();

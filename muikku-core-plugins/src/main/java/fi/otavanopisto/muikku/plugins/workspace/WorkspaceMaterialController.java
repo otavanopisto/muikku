@@ -736,6 +736,11 @@ public class WorkspaceMaterialController {
 
   /* Utility methods */
   
+  public Long getMaterialCountByWorkspaceAndAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType) {
+    List<WorkspaceNode> folders = listVisibleWorkspaceFolders(workspaceEntity);
+    return workspaceMaterialDAO.countByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, assignmentType, folders);
+  }
+  
   public List<WorkspaceMaterial> listVisibleWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType) {
     final List<WorkspaceNode> folders = listVisibleWorkspaceFolders(workspaceEntity);
     List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, assignmentType, folders);
