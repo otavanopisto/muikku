@@ -54,7 +54,7 @@
     margin-left: 10px;
     padding: 9px 0;
 
-    &:before {
+    &::before {
       margin-right: 5px;
       font-family: 'muikku';      
     }     
@@ -62,7 +62,7 @@
 
     &.user {
 
-      &:before {
+      &::before {
         color: orange;
       }     
         
@@ -70,7 +70,7 @@
     
     &.usergroup {
 
-      &:before {
+      &::before {
         color: green;
       }
            
@@ -78,7 +78,7 @@
       
     &.workspace {
 
-      &:before {
+      &::before {
          color: blue;
       }     
     
@@ -87,7 +87,7 @@
     &:hover {   
       color: red;
       
-      &:before {
+      &::before {
         color: red;
       }
       
@@ -173,8 +173,8 @@
 
 .cm-label-menu-content {
   
-  &:before,
-  &:after {
+  &::before,
+  &::after {
     left:18px;
   }
   
@@ -189,7 +189,7 @@
   &.loading {
     padding: 20px;
   
-    &:after {
+    &::after {
       @include generic-loader(50px);
     
       margin-left: auto;

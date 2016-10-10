@@ -1,18 +1,21 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
+
 public class WorkspaceFolder {
 
   public WorkspaceFolder() {
   }
 
-  public WorkspaceFolder(Long id, Long parentId, Long nextSiblingId, Boolean hidden, String title, String path) {
+  public WorkspaceFolder(Long id, Long parentId, Long nextSiblingId, Boolean hidden, String title, String path, MaterialViewRestrict viewRestrict) {
     super();
     this.id = id;
     this.parentId = parentId;
     this.nextSiblingId = nextSiblingId;
     this.hidden = hidden;
     this.title = title;
-    this.setPath(path);
+    this.path = path;
+    this.viewRestrict = viewRestrict;
   }
   
   public Long getId() {
@@ -63,10 +66,20 @@ public class WorkspaceFolder {
     this.path = path;
   }
 
+  public MaterialViewRestrict getViewRestrict() {
+    return viewRestrict;
+  }
+
+  public void setViewRestrict(MaterialViewRestrict viewRestrict) {
+    this.viewRestrict = viewRestrict;
+  }
+
   private Long id;
   private Long parentId;
   private Long nextSiblingId;
   private Boolean hidden;
   private String title;
   private String path;
+  private MaterialViewRestrict viewRestrict;
+
 }

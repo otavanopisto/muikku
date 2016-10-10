@@ -670,23 +670,29 @@
   
   $.widget("custom.messageTools", {
     options : {
-      toolset : 'thread'
+      value : 'none'
     },
-
     _create : function(){
-      switch (this.options.toolset) {
+      this.toolset(this.options.value);
+    },
+    toolset: function(value) {      
+      if ( value === undefined ) {
+        return this.options.value;
+      }      
+      this.options.value = value;
+      switch (this.options.value) {
         case 'message':
           var toolTemplate = 'communicator/communicator_tools_message.dust';
-          this.loadTools(toolTemplate);
-        break;
-        
-        default:
+          this._loadTools(toolTemplate);
+          break;
+        case 'thread':
           var toolTemplate = 'communicator/communicator_tools_thread.dust';
-          this.loadTools(toolTemplate);
-      }
+          this._loadTools(toolTemplate);
+          break;
+      }      
     },
-	 
-    loadTools: function(toolSet) {
+    
+    _loadTools: function(toolSet) {
       renderDustTemplate(toolSet, {}, $.proxy(function (text) {
         this.element.html(text);
       }, this));
@@ -742,7 +748,7 @@
             maxMessageCount: this.options.maxMessageCount,
             folderId: folderId
           });
-          $('.mf-controls-container').messageTools();          
+          $('.mf-controls-container').messageTools();
           this.element.on('click', '.mf-label-functions', $.proxy(this._onLabelMenuOpenClick, this));    
           this.element.on('click', '.mf-label-function-edit', $.proxy(this._onLabelEditClick, this));  
           this.element.on('click', '.mf-label-function-delete', $.proxy(this._onLabelDeleteClick, this));               
@@ -751,9 +757,9 @@
           this.element.on('click', '.cm-folder', $.proxy(this._onCommunicatorFolderClick, this));
           
           if (threadId) {
-            this.loadThread(threadId);
+            this.loadThread(threadId);  
           } else {
-            this.loadFolder(folderId);
+            this.loadFolder(folderId);       
           }
         }
       , this));
@@ -764,7 +770,7 @@
       this._updateSelected(id);
       
       this.element.find('.cm-thread-container').hide();
-      $('.mf-controls-container').messageTools( 'loadTools', 'communicator/communicator_tools_thread.dust');       
+      $('.mf-controls-container').messageTools( 'toolset', 'thread');       
       this.element.find('.cm-messages-container')
         .communicatorMessages('loadFolder', id)
         .show();
@@ -785,7 +791,7 @@
       this._updateSelected(folderId);
       
       this.element.find('.cm-messages-container').hide();
-      $('.mf-controls-container').messageTools( 'loadTools', 'communicator/communicator_tools_message.dust');     
+      $('.mf-controls-container').messageTools( 'toolset', 'message');     
       this.element.find('.cm-thread-container')
         .empty()
         .communicatorThread('loadThread', folderId, threadId)
@@ -1421,7 +1427,7 @@
       
       return $.proxy(function (callback) {
         mApi().user.users
-          .read({ 'searchString' : term })
+          .read({ 'searchString' : term, 'onlyDefaultUsers': true })
           .callback(function(err, results) {
             if (err) {
               callback(err);
@@ -1436,7 +1442,7 @@
                   category: getLocaleText("plugin.communicator.users"),
                   label : label,
                   id: result.id,
-                  type : "USER",
+                  type: "USER",
                   img: result.hasImage ? "/picture?userId=" + result.id : null,
                   existing: existingUserIds.indexOf(result.id) != -1
                 };

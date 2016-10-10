@@ -3,13 +3,14 @@
   $.widget("custom.coursePicker", {
 
     _create : function() {
-      this._typingTimer = null;
+      this._refreshTimer = null;
       this._firstResult = 0;
       this._maxResults = 25;
       this._hasEvaluationFees = true;
       this._categoryId = null;
       this._search = null;
       this._educationTypes = [];
+      this._curriculums = [];
       this.element.find('.cp-page-link-load-more').addClass('disabled');
       
       this._load($.proxy(function (err, results) {
@@ -62,16 +63,16 @@
     
     category: function (categoryId) {
       this._categoryId = categoryId;
-      this._reloadWorkspaces();
+      this._searchCriteriaChanged();
     },
     
     search: function (search) {
       this._search = search;
-      this._reloadWorkspaces();
+      this._searchCriteriaChanged();
     },
     
     educationTypes: function (educationTypes) {
-      this._educationTypes = educationTypes||[];
+      this._educationTypes = educationTypes || [];
  
       this.element.find('.cp-education-type-filter').each(function (index, element) {
         $(element).closest('li').removeClass('selected');
@@ -81,13 +82,13 @@
         this.element.find('.cp-education-type-filter[data-id="' + typeId + '"]').closest('li').addClass('selected');
       }, this));
       
-      this._reloadWorkspaces();
+      this._searchCriteriaChanged();
     },
     
     curriculums: function (curriculums) {
       this._curriculums = curriculums||[];
       
-      this._reloadWorkspaces();
+      this._searchCriteriaChanged();
     },
     
     _load: function (callback) {
@@ -150,10 +151,10 @@
     _reloadWorkspaces: function () {
       this._firstResult = 0;
       this.element.find('#coursesList').empty();
-      this._loadWorkspaces();
+      this._loadWorkspaces(true);
     },
     
-    _loadWorkspaces: function () {
+    _loadWorkspaces: function (clearList) {
       var loader = $('<div>') 
         .addClass('loading')
         .appendTo($(this.element.find('#coursesList')));
@@ -193,6 +194,11 @@
         }, this))
         .callback($.proxy(function (err, workspaces) {
           $(loader).remove();
+
+          if (clearList) {
+            this.element.find('#coursesList').empty();
+          }
+          
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
@@ -218,26 +224,32 @@
     
     _loadMore: function () {        
       this._firstResult += this._maxResults;
-      this._loadWorkspaces();
+      this._loadWorkspaces(false);
     },
     
     _onCategoryChange: function (event, data) {
       this.category(data.value);
     },
+
+    _searchCriteriaChanged: function () {
+      this._clearRefreshTimeout();
+      this._refreshTimer = setTimeout($.proxy(function() {
+        this._reloadWorkspaces();
+      }, this), 250);
+    },
+
+    _clearRefreshTimeout: function () {
+      if (this._refreshTimer) {
+        clearTimeout(this._refreshTimer);
+      }
+    },
     
     _onSearchKeyUp: function (event) {
-      if (this._typingTimer) {
-        clearTimeout(this._typingTimer);
-      }
-      this._typingTimer = setTimeout($.proxy(function() {
-        this.search($(event.target).closest('.search').val());
-      }, this), 100);
+      this.search($(event.target).closest('.search').val()); 
     },
 
     _onSearchKeyDown: function (event) {
-      if (this._typingTimer) {
-        clearTimeout(this._typingTimer);
-      }
+      this._clearRefreshTimeout();
     },
 
     _onLoadMoreClick: function (event) {

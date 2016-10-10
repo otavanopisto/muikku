@@ -69,7 +69,7 @@
   border: 2px solid #abdbed;
   transition: border,box-shadow 0.1s,0.2s ease-in-out;
   outline: none;
-  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   border-radius: 3px;
   text-transform: uppercase;
   color: #186089;
@@ -90,7 +90,7 @@
   
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0px 3px rgba(202,225,252,0.75);
+    box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
   }
   
   a {
@@ -120,7 +120,7 @@
   
   /* Fix for Chrome upload file field display issue */
   &::-webkit-file-upload-button {
-    width: 0px;
+    width: 0;
     padding: 0;
     margin: 0;
     -webkit-appearance: none;

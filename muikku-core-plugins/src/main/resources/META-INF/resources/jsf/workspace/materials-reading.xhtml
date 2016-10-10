@@ -62,21 +62,25 @@
               <ui:fragment rendered="#{node.type eq 'folder'}">
                 <li>
                   <ul class="workspace-materials-toc-section">
-                    <li class="workspace-materials-toc-subtitle">#{node.title}</li>
-  
-                    <ui:repeat var="articleNode" value="#{node.children}">
-                      <ui:fragment rendered="#{articleNode.type eq 'folder'}">
-                        <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
-                      </ui:fragment>
-                      <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                        <li class="workspace-materials-toc-item #{articleNode.viewRestricted eq true ? 'item-view-restricted' : ''}" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
-                          <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'assignment' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
-                          <ui:fragment rendered="#{articleNode.viewRestricted eq true}">
-                            <span class="icon-closed-material"></span>
-                          </ui:fragment>
-                        </li>
-                      </ui:fragment>
-                    </ui:repeat>
+                    <ui:fragment rendered="#{node.viewRestricted eq true}">
+                      <li class="workspace-materials-toc-subtitle item-view-restricted">#{node.title}<span class="icon-closed-material"></span></li>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{node.viewRestricted eq false}">
+                      <li class="workspace-materials-toc-subtitle">#{node.title}</li>
+                      <ui:repeat var="articleNode" value="#{node.children}">
+                        <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+                          <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+                          <li class="workspace-materials-toc-item #{articleNode.viewRestricted eq true ? 'item-view-restricted' : ''}" data-workspace-material-id="#{articleNode.workspaceMaterialId}">
+                            <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'assignment' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+                            <ui:fragment rendered="#{articleNode.viewRestricted eq true}">
+                              <span class="icon-closed-material"></span>
+                            </ui:fragment>
+                          </li>
+                        </ui:fragment>
+                      </ui:repeat>
+                    </ui:fragment>
                   </ul>
                 </li>
               </ui:fragment>
@@ -105,28 +109,32 @@
           <h1>#{workspaceMaterialsReadingBackingBean.workspaceName}</h1>
           <ui:repeat var="node" value="#{workspaceMaterialsReadingBackingBean.contentNodes}">
             <ui:fragment rendered="#{node.type eq 'folder'}">
-              <section id="page-#{node.workspaceMaterialId}" class="workspace-materials-view-page-section material-reading-view" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-path="#{node.path}">
+              <section id="page-#{node.workspaceMaterialId}" class="workspace-materials-view-page-section material-reading-view" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-path="#{node.path}" data-view-restricted="#{node.viewRestricted}">
                 <h2>#{node.title}</h2>
-                
-                <ui:repeat var="articleNode" value="#{node.children}">
-                  <ui:fragment rendered="#{articleNode.type eq 'folder'}">
-                    <ui:fragment rendered="#{articleNode.level eq 1}">
-                      <h3>#{articleNode.title}</h3>
+                <ui:fragment rendered="#{node.viewRestricted eq true}">
+                  <p class="content-view-restricted-message">#{i18n.text['plugin.workspace.sectionViewRestricted']}</p>
+                </ui:fragment>
+                <ui:fragment rendered="#{node.viewRestricted eq false}">
+                  <ui:repeat var="articleNode" value="#{node.children}">
+                    <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+                      <ui:fragment rendered="#{articleNode.level eq 1}">
+                        <h3>#{articleNode.title}</h3>
+                      </ui:fragment>
+                      <ui:fragment rendered="#{articleNode.level eq 2}">
+                        <h4>#{articleNode.title}</h4>
+                      </ui:fragment>
+                      <ui:fragment rendered="#{articleNode.level eq 3}">
+                        <h5>#{articleNode.title}</h5>
+                      </ui:fragment>
+                      <ui:fragment rendered="#{(articleNode.level eq 4) or (articleNode.level gt 4)}">
+                        <h6>#{articleNode.title}</h6>
+                      </ui:fragment>
                     </ui:fragment>
-                    <ui:fragment rendered="#{articleNode.level eq 2}">
-                      <h4>#{articleNode.title}</h4>
+                    <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+                      <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-assignment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" data-license="#{articleNode.license}" data-producers="#{articleNode.producers}" data-view-restricted="#{articleNode.viewRestricted}" class="workspace-materials-view-page material-reading-view"/>
                     </ui:fragment>
-                    <ui:fragment rendered="#{articleNode.level eq 3}">
-                      <h5>#{articleNode.title}</h5>
-                    </ui:fragment>
-                    <ui:fragment rendered="#{(articleNode.level eq 4) or (articleNode.level gt 4)}">
-                      <h6>#{articleNode.title}</h6>
-                    </ui:fragment>
-                  </ui:fragment>
-                  <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                    <article id="page-#{articleNode.workspaceMaterialId}" data-correct-answers="#{articleNode.correctAnswers}" data-assignment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" data-material-content="#{articleNode.html}" data-path="#{articleNode.path}" data-license="#{articleNode.license}" data-producers="#{articleNode.producers}" data-view-restricted="#{articleNode.viewRestricted}" class="workspace-materials-view-page material-reading-view"/>
-                  </ui:fragment>
-                </ui:repeat>
+                  </ui:repeat>
+                </ui:fragment>
               </section>
             </ui:fragment>  
             

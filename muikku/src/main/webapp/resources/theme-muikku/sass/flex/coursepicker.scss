@@ -1,7 +1,6 @@
 @import "_vars.scss";
 @import "_animations.scss";
 @import "_styles.scss";
-@import "_workspaces-copy-wizard.scss";
 
 /* Coursepicker (.cp-*) */
 
@@ -14,7 +13,9 @@
       margin-right: auto;
       display: block;
     }
+
 } 
+
 .cp-course { 
   margin:0 0 5px 0;
   &.not-published {
@@ -24,16 +25,20 @@
     .cp-course-header-name {
       color:#d89828;
     }
+
   }
+
   .cp-course-fee {
     color: #3f639a;
     font-size: 21px;
     margin-right: 5px;
     vertical-align: top;
   }  
+
   .cp-course-details {
     position:relative;
   }
+
 }
 
 .cp-course-details-open {

@@ -1,4 +1,4 @@
-/* Material loading */
+// MATERIAL LOADING
 .workspace-material-queued-html,
 .workspace-material-loading {
   background-image: url("gfx/workspace-material-loading.gif"); 
@@ -11,6 +11,7 @@
   margin: 10px 0;
 }
 
+// TASK FIELD SAVED LABEL
 .muikku-field-save-state-label {
   position: absolute;
   z-index: 2;
@@ -26,15 +27,18 @@
   z-index: 999;
 }
 
+// VERTICAL SCROLLING WRAPPER FOR TABLES
 .table-wrapper {
   max-width: 100%;
   overflow-x: auto;
 }
 
+// WRAPPER FOR TEXTFIELDS
 .textfield-wrapper {
   display: inline-block;
   position: relative;
 
+  // Hint text for textfields
   span.muikku-text-field-hint {
     display: block;
     visibility: hidden;
@@ -57,8 +61,7 @@
 
 }
 
-
-/* Input field and textarea overrides */
+// INPUT OVERRIDES
 input[type="text"],
 input[type="url"] {
   width: auto;
@@ -72,7 +75,7 @@ input[type="url"] {
   font-size: 17px;
   color: #0061a2;
   max-width: 100%;
-  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   box-sizing: border-box;
   margin: 4px 3px;
   
@@ -93,7 +96,7 @@ input[type="url"] {
   &:focus,
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0px 3px rgba(202,225,252,0.75);
+    box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
     
     span.muikku-text-field-hint {
       display: block;
@@ -111,12 +114,14 @@ input[type="url"] {
     font-style: italic;
   }
   
-  &:-moz-placeholder { /* older Firefox*/
+  // older Firefox
+  &:-moz-placeholder {
     color: #b4b4b4;
     font-style: italic;
   }
   
-  &::-moz-placeholder { /* Firefox 19+ */ 
+  // Firefox 19+
+  &::-moz-placeholder { 
     color: #b4b4b4;
     font-style: italic;
   }
@@ -133,6 +138,7 @@ input[type="url"] {
   
 }
 
+// TEXTAREA OVERRIDES
 textarea {
   height: auto;
   border: 2px solid #abdbed;
@@ -145,7 +151,7 @@ textarea {
   color: #4c4c4c;
   width: 100%;
   max-width: 100%;
-  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   box-sizing: border-box;
   text-align: left;
   margin: 0;
@@ -168,21 +174,21 @@ textarea {
   &:focus,
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0px 3px rgba(202,225,252,0.75);
+    box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
   }
 
 }
 
-/* Select and Option field overrides */
+// SELECT & OPTION OVERRIDES */
 select {
-  background: #000;
+  background: #fff;
   border: 2px solid #abdbed;
   transition: border,box-shadow 0.1s,0.2s ease-in-out;
   outline: none;
   color: #0061a2;
   display: inline-block;
   margin: 4px;
-  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   border-radius: 3px;
   max-width: 100%;
   word-wrap: break-word;
@@ -191,17 +197,17 @@ select {
   &:focus,
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0px 3px rgba(202,225,252,0.85);
+    box-shadow: 0 0 0 3px rgba(202,225,252,0.85);
   }
   
   &[disabled="disabled"] {
     border: 2px solid #cae1fc;
-    box-shadow: 0 0 0px 3px rgba(202,225,252,0.15);
+    box-shadow: 0 0 0 3px rgba(202,225,252,0.15);
     color: #7c7c7c;
     
     &:hover {
       border: 2px solid #cae1fc;
-      box-shadow: 0 0 0px 3px rgba(202,225,252,0.15);
+      box-shadow: 0 0 0 3px rgba(202,225,252,0.15);
       color: #7c7c7c;
     }
 
@@ -215,7 +221,7 @@ select {
   
 }
 
-/* Radio button and Check box wrapper Span */
+// RADIO BUTTON & CHECKBOX HORTZ WRAPPER
 span.radiobutton-horizontal,
 span.checkbox-horizontal {
 
@@ -225,6 +231,7 @@ span.checkbox-horizontal {
 
 }
 
+// RADIO BUTTON & CHECKBOX VERTZ WRAPPER
 span.radiobutton-vertical,
 span.checkbox-vertical {
   display: inline-block;
@@ -236,6 +243,7 @@ span.checkbox-vertical {
   
 }
 
+// RADIO BUTTON & CHECKBOX OVERRIDES
 input[type="radio"],
 input[type="checkbox"] {
   margin: 0 10px;
@@ -272,6 +280,7 @@ input[type="checkbox"] {
   
 }
 
+// TASK FIELD UNSAVED, SAVED, SAVING
 input[type="text"],
 textarea,
 select {
@@ -302,6 +311,7 @@ select {
 
 }
 
+// CHECKBOX & RADIO BUTTON UNSAVED, SAVED, SAVING
 .muikku-select-field,
 .muikku-checkbox-field {
 
@@ -345,6 +355,13 @@ select {
 
 }
 
+// OVERRIDES THE VALUES USED IN READING/MANAGEMENT
+label,select,option,input,textarea { 
+  font-weight: 400;
+  font-size: 14px;
+}
+
+// GENERIC PAGE ELEMENTS
 blockquote {
   font-family: 'Open Sans', Arial, sans-serif;
   font-style: italic;
@@ -357,7 +374,7 @@ blockquote {
   margin: 0 40px;
 
   p {
-    margin: 10px 0 10px 0;
+    margin: 10px 0;
   }
 
 }
@@ -378,7 +395,7 @@ p, h1, h2, h3, h4, h5, h6 {
   word-wrap: break-word;
 }
 
-label,select,option,input,textarea { /* Overrides the values used in reading/management */
+label,select,option,input,textarea {
   font-weight: 400;
   font-size: 14px;
 }
@@ -410,7 +427,7 @@ h1 {
   font-size: 30px;
 }
   
-h2 { /* Page title */
+h2 {
   font-size: 26px;
 }
 
@@ -463,13 +480,15 @@ mark[data-muikku-word-definition] {
   font-size: 14px;
 }
 
-.workspace-materials-view-page.material-view { /* This is single material page */
+// DOCUMENT
+.workspace-materials-view-page.material-view { 
   padding: 10px 20px;
   margin: 30px auto;
   position: relative;
   background: #fff;
   
-  &[data-binary-type="pdf"] { /* If material page is PDF */
+  // If material page is PDF
+  &[data-binary-type="pdf"] { 
     padding: 0;
     
     h2 {
@@ -501,8 +520,7 @@ figure.image {
   .icon-copyright {
     display: block;
     
-    
-    &:before {
+    &::before {
       cursor: pointer;
       font-size: 26px;
       line-height: 1;
@@ -659,7 +677,7 @@ sup {
   clear: both;
 }
 
-/* Material's Assignment Submit Buttons */
+// ASSIGNMENT'S SUBMIT BUTTON */
 .muikku-save-page-wrapper {
   text-align: center;
   margin: 20px -15px 15px;
@@ -693,29 +711,29 @@ sup {
         cursor: default;
       }
       
-      /* Check Exercise */
+      // Check Exercise
       &.muikku-check-exercises {
         background: $exerciseAssignment;
       }
       
-      /* Submit Assignment */
+      // Submit Assignment
       &.muikku-submit-assignment {
         background: $evaluatedAssignment;
       }
       
-      /* Withdraw Assingment */
+      // Withdraw Assingment
       &.muikku-withdraw-assignment {
         background: darken($evaluatedAssignment,10%);
       }
       
-      /* Update Assignment */
+      // Update Assignment
       &.muikku-update-assignment {
         background: lighten($evaluatedAssignment,5%);
       }
       
     }
     
-    /* Show Correct Answers */
+    // Show Correct Answers
     &.muikku-show-correct-answers-button,
     &.muikku-hide-correct-answers-button {
       background: $exerciseCorrectAnswersOnRequest;
@@ -739,11 +757,11 @@ sup {
     
     span.muikku-field-examples-title {
       font-weight: 600;
-      margin: 0px 6px;
+      margin: 0 6px;
     }
     
     span.muikku-field-example {
-      margin: 3px 0px 3px 5px;
+      margin: 3px 0 3px 5px;
       padding: 0 8px;
       border-left: 1px solid #439ba0;
       display: inline-block;
@@ -753,7 +771,7 @@ sup {
   }
 
   .muikku-page-assignment-type {
-    padding: 0px 8px;
+    padding: 0 8px;
     border-radius: 2px;
     font-size: 12px;
     color: #fff;
@@ -772,7 +790,7 @@ sup {
       background: $exerciseAssignment;
     }
     
-    /* When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed" */
+    // When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed"
     span.done,
     span.evaluated-passed,
     span.evaluated-failed {
@@ -787,8 +805,8 @@ sup {
       line-height: 1;
     }
     
-    /* Color and icon for "done" assignment and exercise */
-    .done:before {
+    // Color and icon for "done" assignment and exercise
+    .done::before {
       content: "\e639";
       background: #0099ff;
       font-size: 24px;
@@ -810,8 +828,8 @@ sup {
       left: 0;
     }
     
-    /* Color and icon for "evaluated-passed" assignment */
-    .evaluated-passed:before {
+    // Color and icon for "evaluated-passed" assignment
+    .evaluated-passed::before {
       content: "\f164";
       background: #1ec30c;
       font-size: 24px;
@@ -833,8 +851,8 @@ sup {
       left: 0;
     }
     
-    /* Color and icon for "evaluated-failed" assignment */
-    .evaluated-failed:before {
+    // Color and icon for "evaluated-failed" assignment
+    .evaluated-failed::before {
       content: "\f165";
       background: #ea7401;
       font-size: 24px;
@@ -906,7 +924,7 @@ footer.article-details {
 
 }
 
-/* View Restriction */
+// CONTENT VIEW RESTRICTION 
 p.content-view-restricted-message {
   text-align: center;
   font-style: italic;

@@ -22,8 +22,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -34,7 +32,6 @@ import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
-import fi.otavanopisto.muikku.model.users.FlagStudent_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
@@ -51,6 +48,7 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNo
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
@@ -73,11 +71,9 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.otavanopisto.muikku.rest.model.StudentFlag;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
-import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
 import fi.otavanopisto.muikku.users.FlagController;
@@ -247,6 +243,29 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     for (CommunicatorMessageId x : communicatorController.listAllMessageIds())
       communicatorController.delete(x);
     
+    return Response.noContent().build();
+  }
+  
+  @POST
+  @Path("/communicator/labels/user/{ID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createCommunicatorUserLabel(@PathParam ("ID") Long userId, fi.otavanopisto.muikku.atests.CommunicatorUserLabelRESTModel payload) {
+    UserEntity userEntity = userEntityController.findUserEntityById(userId);
+    CommunicatorUserLabelRESTModel newUserLabel = new CommunicatorUserLabelRESTModel(null, payload.getName(), payload.getColor());
+    communicatorController.createUserLabel(newUserLabel.getName(), newUserLabel.getColor(), userEntity);
+    return Response.ok().build();
+  }
+  
+  @DELETE
+  @Path("/communicator/labels/user/{ID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteCommunicatorUserLabels(@PathParam ("ID") Long userId) {
+    UserEntity userEntity = userEntityController.findUserEntityById(userId);
+    List<CommunicatorUserLabel> userLabels = communicatorController.listUserLabelsByUserEntity(userEntity);
+    for (CommunicatorUserLabel communicatorUserLabel : userLabels) {
+      communicatorController.delete(communicatorUserLabel);      
+    }
+
     return Response.noContent().build();
   }
   
@@ -537,10 +556,10 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     if (forumArea == null) {
       return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
     }
-//    forumController.list
-    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE);
+
+    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE, true);
     for (ForumThread thread : threads) {
-      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE);
+      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE, true);
       for (ForumThreadReply reply : replies) {
         forumController.deleteReply(reply); 
       }
@@ -828,9 +847,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
     }
 
-    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE);
+    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE, true);
     for (ForumThread thread : threads) {
-      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE);
+      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE, true);
       for (ForumThreadReply reply : replies) {
         forumController.deleteReply(reply); 
       }

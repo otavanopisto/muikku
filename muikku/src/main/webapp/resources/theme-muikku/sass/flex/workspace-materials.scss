@@ -24,12 +24,14 @@ body {
   font-size: 16px;
 } 
 
+// PAGE FLOW CONTAINER 
 #content  > section > article {
   position: relative;
   z-index: 10;
   min-width: 0;
 
-    & > h1 { // Material's title
+    // Material's title
+    & > h1 {
     position: relative;
     z-index: 12;
     max-width: 700px;
@@ -46,11 +48,13 @@ body {
   
 }
 
-.workspace-materials-view-page-section.material-view { // <section>
+// DOCUMENT
+.workspace-materials-view-page-section.material-view {
   position: relative;
   z-index: 10;
-  
-  & > h2 { // Section's title 
+
+  // Section's title
+  & > h2 {
     position: relative;
     z-index: 12;
     max-width: 700px;
@@ -67,7 +71,8 @@ body {
     text-transform: uppercase;
   }
   
-  & > h3, > h4, > h5, > h6 { // Alternative Section's titles 
+  // Alternative Section's titles
+  & > h3, > h4, > h5, > h6 {
     position: relative;
     z-index: 13;
     width: auto;
@@ -76,13 +81,14 @@ body {
     font-weight: 300;
     color: #000;
     font-size: 26px;
-    padding: 10px 20px 10px 20px;
+    padding: 10px 20px 10px;
     text-transform: none;
     line-height: 1.3em;
   }
   
 }
 
+// TOC
 nav.workspace-materials-toc-wrapper {
   background: #fff;
   text-align: left;
@@ -104,199 +110,232 @@ nav.workspace-materials-toc-wrapper {
   ul, 
   li {
     list-style: none;
+  }
+  
+}
+  
+// TOC ITEMS CONTAINER
+.workspace-materials-toc-container {
+  position: relative;
+  height: 100%;
+}
+
+// TOC TITLE
+.workspace-materials-toc-title {
+  text-transform: uppercase;
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 19px;
+  color: #2c2c2c;
+  height: 20px;
+}
+
+// TOC SCROLLABLE AREA
+.workspace-materials-toc-content-scrolling {
+  padding: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  top: 40px;
+  bottom: 35px;
+}
+
+// TOC ROOT
+.workspace-materials-toc-root {
+  padding: 0;
+  margin: 0;
+  
+  > ul,
+  > li {
     margin: 0;
     padding: 0;
   }
   
 }
   
-.workspace-materials-toc-container {
+// TOC SECTION <ul>
+.workspace-materials-toc-section {
+  margin: 0;
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+
+// TOC SUBTITLE <li>
+.workspace-materials-toc-subtitle {
+  font-size: 15px;
+  padding: 2px 8px;
+  margin: 0;
+  text-transform: uppercase;
   position: relative;
-  height: 100%;
-
-  .workspace-materials-toc-title {
-    text-transform: uppercase;
-    margin: 0;
-    padding: 10px 12px;
-    font-size: 19px;
-    color: #2c2c2c;
-    height: 20px;
-  }
-
-  .workspace-materials-toc-content-scrolling {
-    padding: 4px;
-    width: 100%;
-    box-sizing: border-box;
+  
+  .icon-closed-material {
+    color: #da4a51;
+    font-size: 15px;
+    padding: 4px 2px;
     position: absolute;
-    top: 40px;
-    bottom: 35px;
+    right: 5px;
+    top: 1px;
   }
     
-  .workspace-materials-toc-section {
-    margin: 0;
-    padding-top: 5px;
-    padding-bottom: 10px;
+  &.item-view-restricted {
+    padding: 2px 28px 2px 6px;
   }
   
-  .workspace-materials-toc-subtitle {
-    font-size: 15px;
-    padding: 2px 8px;
-    text-transform: uppercase;
+}
+
+// TOC DOCUMENT <li>
+.workspace-materials-toc-item {
+  font-weight: 300;
+  list-style: none;
+  position: relative;
+  word-wrap: break-word;
+  margin: 0;
+  
+  &:first-child {
+    margin-top: 5px;
+    padding-top: 2px;
+  }
+  
+  &.item-hidden {
+    opacity: 0.4;
+  }
+  
+  a {
+    border-left: 2px solid #fff;
+    border-radius: 2px;
+    color: #2c2c2c;
+    display: block;
+    margin: 1px 0;
+    padding: 2px 8px 2px 6px;
+    position: relative;
+    text-decoration: none;
+    
+    &:hover,
+    &.active {
+      background: #596e7d;
+      color: #fff;
+    }
+    
+    &.assignment {
+      border-left: 2px solid $evaluatedAssignment;
+      
+      // Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room 
+      &.submitted,
+      &.evaluated-passed,
+      &.evaluated-failed {
+        padding-right: 20px;
+      }
+      
+    }
+    
+    &.exercise {
+      border-left: 2px solid $exerciseAssignment;
+      
+       // Adjust link padding when exercise is "done" so icon has more room
+       &.submitted {
+        padding-right: 20px;
+      }
+      
+    }
+
+  }
+  
+  // When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed"
+  span.submitted,
+  span.evaluated-passed,
+  span.evaluated-failed {
+    border: 1px solid #fff;
+    border-radius: 100%;
+    color: #fff;
+    display: block;
+    height: 14px;
+    line-height: 1;
+    position: absolute;
+    right: 3px;
+    top: 5px;
+    width: 14px;
+  }
+  
+  // Color and icon for "done" assignment and exercise 
+  .submitted::before {
+    background: #0099ff;
+    border-radius: 100%;
+    content: "\e639";
+    font-family: 'muikku' !important;
+    font-style: normal;
+    font-size: 10px;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-variant: normal;
+    font-weight: normal;
+    height: 10px;
+    line-height: 1;
+    padding: 2px;
+    position: absolute;
+    speak: none;
+    text-transform: none;
+    top: 0;
+    width: 10px;
+  }
+  
+  // Color and icon for "evaluated-passed" assignment 
+  .evaluated-passed::before {
+    background: #1ec30c;
+    border-radius: 100%;
+    content: "\f164";
+    font-family: 'muikku' !important;
+    font-size: 10px;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    height: 10px;
+    line-height: 1;
+    padding: 2px;
+    position: absolute;
+    speak: none;
+    text-transform: none;
+    top: 0;
+    width: 10px;
+  }
+  
+  // Color and icon for "evaluated-failed" assignment 
+  .evaluated-failed::before {
+    background: #ea7401;
+    border-radius: 100%;
+    content: "\f165";
+    font-family: 'muikku' !important;
+    font-size: 10px;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    height: 10px;
+    line-height: 1;
+    padding: 2px;
+    position: absolute;
+    speak: none;
+    text-transform: none;
+    top: 0;
+    width: 10px;
   }
 
-  .workspace-materials-toc-item {
-    font-weight: 300;
-    list-style: none;
-    position: relative;
-    word-wrap: break-word;
-    
-    &:first-child {
-      margin-top: 5px;
-      padding-top: 2px;
-    }
-    
-    &.item-hidden {
-      opacity: 0.4;
-    }
+  .icon-closed-material {
+    color: #da4a51;
+    font-size: 15px;
+    padding: 4px 2px;
+    position: absolute;
+    right: 5px;
+    top: 1px;
+  }
+  
+            
+  &.item-view-restricted {
     
     a {
-      border-left: 2px solid #fff;
-      border-radius: 2px;
-      color: #2c2c2c;
-      display: block;
-      margin: 1px 0;
-      padding: 2px 8px 2px 6px;
-      position: relative;
-      text-decoration: none;
-      
-      &:hover,
-      &.active {
-        background: #596e7d;
-        color: #fff;
-      }
-      
-      &.assignment {
-        border-left: 2px solid $evaluatedAssignment;
-        
-        // Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room 
-        &.submitted,
-        &.evaluated-passed,
-        &.evaluated-failed {
-          padding-right: 20px;
-        }
-        
-      }
-      
-      &.exercise {
-        border-left: 2px solid $exerciseAssignment;
-        
-         // Adjust link padding when exercise is "done" so icon has more room
-         &.submitted {
-          padding-right: 20px;
-        }
-        
-      }
-
-    }
-    
-    // When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed"
-    span.submitted,
-    span.evaluated-passed,
-    span.evaluated-failed {
-      border: 1px solid #fff;
-      border-radius: 100%;
-      color: #fff;
-      display: block;
-      height: 14px;
-      line-height: 1;
-      position: absolute;
-      right: 3px;
-      top: 5px;
-      width: 14px;
-    }
-    
-    // Color and icon for "done" assignment and exercise 
-    .submitted::before {
-      background: #0099ff;
-      border-radius: 100%;
-      content: "\e639";
-      font-family: 'muikku' !important;
-      font-style: normal;
-      font-size: 10px;
-      -moz-osx-font-smoothing: grayscale;
-      -webkit-font-smoothing: antialiased;
-      font-variant: normal;
-      font-weight: normal;
-      height: 10px;
-      line-height: 1;
-      padding: 2px;
-      position: absolute;
-      speak: none;
-      text-transform: none;
-      top: 0;
-      width: 10px;
-    }
-    
-    // Color and icon for "evaluated-passed" assignment 
-    .evaluated-passed::before {
-      background: #1ec30c;
-      border-radius: 100%;
-      content: "\f164";
-      font-family: 'muikku' !important;
-      font-size: 10px;
-      -moz-osx-font-smoothing: grayscale;
-      -webkit-font-smoothing: antialiased;
-      font-style: normal;
-      font-variant: normal;
-      font-weight: normal;
-      height: 10px;
-      line-height: 1;
-      padding: 2px;
-      position: absolute;
-      speak: none;
-      text-transform: none;
-      top: 0;
-      width: 10px;
-    }
-    
-    // Color and icon for "evaluated-failed" assignment 
-    .evaluated-failed::before {
-      background: #ea7401;
-      border-radius: 100%;
-      content: "\f165";
-      font-family: 'muikku' !important;
-      font-size: 10px;
-      -moz-osx-font-smoothing: grayscale;
-      -webkit-font-smoothing: antialiased;
-      font-style: normal;
-      font-variant: normal;
-      font-weight: normal;
-      height: 10px;
-      line-height: 1;
-      padding: 2px;
-      position: absolute;
-      speak: none;
-      text-transform: none;
-      top: 0;
-      width: 10px;
-    }
-
-    .icon-closed-material {
-      color: #da4a51;
-      font-size: 15px;
-      padding: 4px 2px;
-      position: absolute;
-      right: 5px;
-      top: 0;
-    }
-    
-              
-    &.item-view-restricted {
-      
-      a {
-        padding: 2px 28px 2px 6px;
-      }
-
+      padding: 2px 28px 2px 6px;
     }
 
   }

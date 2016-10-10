@@ -22,7 +22,6 @@ import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
@@ -69,6 +68,8 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceName = workspaceBackingBean.getWorkspaceName();
+
+    lockStickyPermission = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity);
     
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
@@ -105,8 +106,13 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     return areaPermissions;
   }
   
+  public Boolean getLockStickyPermission() {
+    return lockStickyPermission;
+  }
+  
   private Long workspaceEntityId;
   private String areaPermissions;
+  private Boolean lockStickyPermission;
 
   public static class AreaPermission {
     

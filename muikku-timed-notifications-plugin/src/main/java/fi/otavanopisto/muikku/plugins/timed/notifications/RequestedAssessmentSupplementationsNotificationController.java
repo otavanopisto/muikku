@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.timed.notifications;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
@@ -28,7 +27,8 @@ public class RequestedAssessmentSupplementationsNotificationController {
   
   public SearchResult searchActiveStudentIds(Collection<Long> groups, int firstResult, int maxResults){
     SearchProvider searchProvider = getProvider("elastic-search");
-    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, firstResult, maxResults, Collections.singleton("id"));
+    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, false, 
+        firstResult, maxResults, Collections.singleton("id"));
   }
   
   public RequestedAssessmentSupplementationNotification createRequestedAssessmentSupplementationNotification(SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier workspaceIdentifier){

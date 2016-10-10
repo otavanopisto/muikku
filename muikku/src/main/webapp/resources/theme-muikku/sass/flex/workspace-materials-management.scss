@@ -13,7 +13,7 @@
 @import "_correct_answers.scss"; 
 @import "_notif-queue.scss";
 @import "_connectionlost.scss";
-@import "_ckeditor_theme.scss";
+@import "_ckeditor_theme_management.scss";
 @import "_dialog.scss";
 
 body {
@@ -32,1400 +32,1324 @@ body {
     border: 3px solid #abdbed !important;
   }
   
-  /* WORKSPACE NAVIGATION - FULLSCREEN */
-  div[class*='workspace-materials-full-screen-navi-button'] > a,
-  div[class*='workspace-materials-full-screen-navi-button'] > span {
-    cursor: pointer;
-    font-size: 30px;
-    color: #fff;
-    text-decoration: none;
-    @include iconShadow;
+}
+
+// WORKSPACE NAVIGATION - FULLSCREEN
+div[class*='workspace-materials-full-screen-navi-button'] > a,
+div[class*='workspace-materials-full-screen-navi-button'] > span {
+  cursor: pointer;
+  font-size: 30px;
+  color: #fff;
+  text-decoration: none;
+  @include iconShadow;
+  background: transparent;
+  padding: 6px;
+  margin: 0;
+  display: inline-block;
+  position: relative;
+  width: 34px;
+  text-align: center;
+
+  span[class*='workspace-materials-full-screen-tt-container-'] {
+    opacity: 0;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 16px;
+    height: 16px;
+    font-weight: 300;
+    position: absolute;
+    top: 0;
+    left: -4500px;
+    width: 0;
+    color: #fff; 
+    text-transform: uppercase;
+    padding: 13px 15px 15px 14px;
+    @include rounded-top-left(3px);
+    @include rounded-bottom-left(3px);
+    @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+  }
+
+  &:hover {
+    @include iconShadow(rgba(255,255,190,0.5));
     background: transparent;
-    padding: 6px;
-    margin: 0;
-    display: inline-block;
-    position: relative;
-    width: 34px;
-    text-align: center;
+  }
+
+}
+
+// TOC
+#workspaceMaterialsManagementTOCWrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 396px;
+  z-index: 20;
+}
+
+// TOC LEFT NAVIGATION
+nav.workspace-waterials-management-nav {
+  width: 46px;
+  height: 100%;
+  background: #7794a8;
+  position: absolute;
+  top: 0;
+  z-index: 36;
+}
+
+// TOC ITEMS CONTAINER
+#workspaceMaterialsManagementTOCContainer {
+  width: 350px;
+  background: #e8f0f5;
+  z-index: 26;
+  box-shadow: 0 0 25px rgba(0,0,0,0.3);
+  position: absolute;
+  top: 0;
+  bottom: 0; 
+  margin-left: 46px;
+  border-left: 1px solid #fff;
+  line-height: 1.5em;
+  font-size: 14px;
   
-    span[class*='workspace-materials-full-screen-tt-container-'] {
-      opacity: 0;
-      font-family: 'Open Sans', Arial, sans-serif;
-      font-size: 16px;
-      height: 16px;
-      font-weight: 300;
-      position: absolute;
-      top: 0;
-      left: -4500px;
-      width: 0px;
-      color: #fff; 
-      text-transform: uppercase;
-      padding: 13px 15px 15px 14px;
-      @include rounded-top-left(3px);
-      @include rounded-bottom-left(3px);
-      @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
-    }
+  ul,
+  li {
+    list-style: none;
+  }
       
-    &:hover {
-      @include iconShadow(rgba(255,255,190,0.5));
-      background: transparent;
-    }
+}
+
+// TOC TITLE
+.workspace-materials-management-TOC-title {
+  padding: 12px;
+  position: relative;
+  
+  h1 {
+    color: #2c2c2c;
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+  }
+
+}
+
+// TOC SCROLLABLE AREA
+.workspace-materials-toc-content-scrolling {
+  width: 350px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  position: absolute;
+  top: 40px;
+  bottom: 0;
+}
+        
+// TOC ROOT
+.workspace-materials-toc-root {
+
+  .sortable-placeholder {
+    background: #bed3df;
   }
   
-  #workspaceMaterialsManagementTOCWrapper {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 396px;
-    z-index: 20;
-    
-    nav.workspace-waterials-management-nav {
-      width: 46px;
-      height: 100%;
-      background: #7794a8;
-      position: absolute;
-      top: 0;
-      z-index: 36;
-    }
-
-    #workspaceMaterialsManagementTOCContainer {
-      width: 350px;
-      background: #e8f0f5;
-      z-index: 26;
-      box-shadow: 0 0 25px rgba(0,0,0,0.3);
-      position: absolute;
-      top: 0;
-      bottom: 0; 
-      margin-left: 46px;
-      border-left: 1px solid #fff;
-      line-height: 1.5em;
-      font-size: 14px;
-      
-      ul,
-      li {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      
-      .workspace-materials-management-TOC-title {
-        padding: 12px;
-        position: relative;
-        
-        h1 {
-          color: #2c2c2c;
-          font-size: 20px;
-          margin: 0;
-          padding: 0;
-          text-transform: uppercase;
-        }
-
-      }
-        
-      .workspace-materials-toc-content-scrolling {
-        width: 350px;
-        padding: 0 6px;
-        box-sizing: border-box;
-        position: absolute;
-        top: 40px;
-        bottom: 0;
-        
-        .workspace-materials-toc-root {
-
-          /* PLACEHOLDER item to indicate where user can drop sortable item */
-          .sortable-placeholder {
-            background: #bed3df;
-          }
-          
-          .sortable-section-placeholder {
-            background: #bed3df;
-            margin: 0;
-            padding: 10px 0;
-          }
-
-          .workspace-materials-toc-item {
-            list-style: none;
-            position: relative;
-            margin: 1px 0;
-            word-wrap: break-word;
-            
-            &.item-hidden {
-              opacity: 0.4;
-            }
-            
-            &.parent-hidden {
-              opacity: 0.4;
-            }
-            
-            a {
-              border-left: 2px solid #e8f0f5;
-              color: #2c2c2c;
-              display: block;
-              @include rounded(2px);
-              padding: 2px 28px 2px 6px;
-              text-decoration: none;
-              
-              &.assignment {
-                border-left: 2px solid $evaluatedAssignment;
-                margin: 1px 0 0;
-              }
-              
-              &.exercise {
-                border-left: 2px solid $exerciseAssignment;
-                margin: 1px 0 0;
-              }
-              
-            }
-            
-            &:hover,
-            &.active {
-              background: #596e7d;
-              color: #fff;
-              border-radius: 2px;
-              
-              a {
-                color: #fff;
-              }
-            
-              .workspace-materials-toc-itemDragHandle {
-                opacity: 1;
-              }
-              
-              .item-view-restricted {
-                display: none;
-              }
-            
-            }
-            
-            /* When user drops sortable item this prevents hover effect happening so link stays readable */
-            &.no-hover:hover {
-            
-              a {
-                color: #2c2c2c;
-              }
-            
-            }
-            
-            /* ITEM SORTING RULES */
-            &.ui-sortable-helper {
-              background: #000;
-              color: #fff;
-              border-radius: 2px;
-              left: 6px;
-              
-              a {
-                color: #fff;
-              }
-            
-              .workspace-materials-toc-itemDragHandle {
-                opacity: 1;
-              }
-              
-            }
-            
-            .workspace-materials-toc-itemDragHandle {
-              color: #ffffff;
-              cursor: grab;
-              font-size: 14px;
-              opacity: 0;
-              padding: 5px;
-              position: absolute;
-              right: 2px;
-              top: 0;
-            }
-            
-            .item-view-restricted {
-              color: #da4a51;
-              font-size: 15px;
-              padding: 4px 2px;
-              position: absolute;
-              right: 5px;
-              top: 0;
-            }
-
-          } 
-    
-          .workspace-materials-toc-section {
-            margin: 0;
-            padding: 10px 0;
-            
-            &.temporary-toc-fix {
-              padding: 0;
-            }
-            
-            .workspace-materials-toc-subtitle {
-              margin: 0 0 5px 0;
-              text-transform: uppercase;
-              font-size: 15px;
-              position: relative;
-              
-              a {
-                font-weight: 400;
-                padding: 2px 24px 2px 8px;
-                text-decoration: none;
-                color: #2c2c2c;
-                display: inline-block;
-              }
-              
-              .workspace-materials-toc-sectionDragHandle {
-                opacity: 0;
-                color: #2c2c2c;
-                cursor: grab;
-                font-size: 14px;
-                padding: 6px 8px;
-                position: absolute;
-                top: 0;
-                right: 0;
-              }
-              
-              &:hover,
-              &.active {
-                background: #c8e6f7;
-
-                .workspace-materials-toc-sectionDragHandle {
-                  opacity: 1;
-                }
-                
-              }
-
-              &.item-hidden {
-                opacity: 0.4;
-              }
-              
-              &.parent-hidden {
-                opacity: 0.4;
-              }
-              
-            }
-            
-            &.ui-sortable-helper {
-              background: #47728c;
-              color: #fff;
-              border-radius: 2px;
-              left: 6px;
-            }
-            
-          } 
-          
-        } 
-
-      } 
-      
-    } 
-    
-  } 
+  .sortable-section-placeholder {
+    background: #bed3df;
+    margin: 0;
+    padding: 10px 0;
+  }
   
-  #contentWorkspaceMaterialsManagement {
-    max-width: 695px;
-    min-width: 695px;
-    width: auto;
-    margin: 0 auto;
+}
+
+// TOC SECTION <ul>
+.workspace-materials-toc-section {
+  margin: 0;
+  padding: 10px 0;
+  
+  &.temporary-toc-fix {
+    padding: 0;
+  }
+
+  &.ui-sortable-helper {
+    background: #47728c;
+    color: #fff;
+    border-radius: 2px;
+    left: 6px;
+  }
+ 
+}
+
+// TOC SUBTITLE <li>
+.workspace-materials-toc-subtitle {
+  font-size: 15px;
+  margin: 0 0 5px;
+  padding: 0;
+  position: relative;
+  text-transform: uppercase;
+  
+  a {
+    font-weight: 400;
+    padding: 2px 24px 2px 8px;
+    text-decoration: none;
+    color: #2c2c2c;
+    display: block;
+  }
+  
+  .workspace-materials-toc-sectionDragHandle {
+    opacity: 0;
+    color: #2c2c2c;
+    cursor: grab;
+    font-size: 14px;
+    padding: 6px 8px;
     position: absolute;
-    left: 420px;
-    
-    .workspace-materials-management-add {
-      text-align: center;
-      position: relative;
-      margin: 10px auto;
-      
-      span.workspace-materials-management-line-separator {
-        display: block;
-        position: absolute;
-        height: 1px;
-        top: 13px;
-        left: 0;
-        right: 0;
-        background: #7391a7;
-      }
-      
-      a.workspaces-materials-management-add {
-        color: #a8c2d4;
-        text-transform: uppercase;
-        display: inline-block;
-        background: #4f6677;
-        padding: 5px 10px;
-        position: relative;
-        transition: color 0.3s ease-in-out; 
-        font-size: 14px;
-        font-weight: 400;
-        
-        &.icon-add::before {
-          font-size: 17px;
-          float: left;
-        }
-        
-        &:hover {
-          color: #fff;
-        }
-        
-        span {
-          float: left;
-          padding: 2px 4px;
-          font-family: 'Open Sans', Arial, sans-serif !important;
-        }
-        
-      }
-      
+    top: 0;
+    right: 0;
+  }
+  
+  &:hover,
+  &.active {
+    background: #c8e6f7;
+
+    .workspace-materials-toc-sectionDragHandle {
+      opacity: 1;
     }
     
-    /* Just added page that creates new article or section */
-    .workspace-materials-view-page.material-management-view.workspace-materials-management-new {
-      padding: 20px 30px;
-      margin: 30px auto;
-      box-shadow: 0 0 0 5px rgba(137,212,142,0.95);
-      text-align: center;
+    .item-view-restricted {
+      display: none;
+    }
+    
+  }
 
-      a.workspace-materials-management-new-page-link {
-        color: #0099ff;
-        text-decoration: none;
-        text-transform: uppercase;
-        font-size: 16px;
-        transition: color 0.3s ease-in-out;
-        font-family: 'Open Sans', Arial, sans-serif !important;
-        display: inline-block;
-        background: #fff;
-        text-align: center;
-        margin: 0 10px;
+  &.item-hidden {
+    opacity: 0.4;
+  }
+  
+  &.parent-hidden {
+    opacity: 0.4;
+  }
+  
+  .item-view-restricted {
+    color: #da4a51;
+    font-size: 15px;
+    padding: 4px 2px;
+    position: absolute;
+    right: 5px;
+    top: 0;
+  }
+  
+}
 
-        &:hover {
-          color: #0e1d27;
-          
-          &.icon-new-page::before {
-            color: #1e5274;
-          }
-          
-        }
-        
-        &.icon-new-page::before {
-          font-family: "muikku";
-          transition: color 0.5s ease-in-out;
-          font-size: 60px;
-          color: #82c8f7;
-          display: block;
-        }
-      }
-      
-      a.workspace-materials-management-new-section-link {
-        color: #0099ff;
-        text-decoration: none;
-        text-transform: uppercase;
-        font-size: 16px;
-        transition: color 0.3s ease-in-out;
-        font-family: 'Open Sans', Arial, sans-serif !important;
-        display: inline-block;
-        background: #fff;
-        text-align: center;
-        margin: 0 10px;
+// TOC DOCUMENT <li>
+.workspace-materials-toc-item {
+  list-style: none;
+  margin: 1px 0;
+  padding: 0;
+  position: relative;
+  word-wrap: break-word;
+  
+  &.item-hidden {
+    opacity: 0.4;
+  }
+  
+  &.parent-hidden {
+    opacity: 0.4;
+  }
 
-        &:hover {
-          color: #0e1d27;
-          
-          &.icon-new-section::before {
-            color: #1e5274;
-          }
-          
-        }
-        
-        &.icon-new-section::before {
-          font-family: "muikku";
-          transition: color 0.5s ease-in-out;
-          font-size: 60px;
-          color: #82c8f7;
-          display: block;
-        }
-      }
-      
-      &:hover {
-        box-shadow: 0 0 0 5px rgba(137,212,142,0.95);
-      }
+  &:hover,
+  &.active {
+    background: #596e7d;
+    color: #fff;
+    border-radius: 2px;
+    
+    a {
+      color: #fff;
     }
   
-    /* File-upload field wrapper */
-    .workspaces-materials-management-insert-file {
-      margin: 20px 0;
-    
-      /* Area where user inserts file by clicking it or dragging into it */
-      .muikku-file-input-field-file-uploader-container {
-        border: 1px solid #7391a7;
-        position: relative;
-        padding: 10px;
-        color: #a8c2d4;
-        transition: color,border 0.3s,0.6s ease-in-out,ease-in-out;
-        margin: 0;
-        background: transparent;
-        box-shadow: none;
-        border-radius: 0;
-        text-transform: uppercase;
-        font-size: 14px;
-        
-        span {
-          text-transform: uppercase;
-        }
-        
-        &:hover {
-          color: #fff;
-          border: 1px solid #94b7d0;
-          box-shadow: none;
-        }
-        
-      }
-      
-      /* File-upload selection container where user selects what to do with the file */
-      .materials-management-file-upload-selection-container {
-        position: relative;
-        max-width: 655px;
-        width: auto;
-        background: #fff;
-        margin: 25px auto 40px auto;
-        box-shadow: 0 0 0 5px rgba(137,212,142,0.95);
-        padding: 20px;
-        word-wrap: break-word;
-        -webkit-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-        -moz-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-        -o-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-        -ms-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-        transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-        
-        p.materials-management-generic-question-container {
-          margin: 0 0 20px;
-        }
-        
-        /* Links inside file-upload selection container */
-        a[class*='materials-management-upload-select'] {
-          color: #0099ff;
-          text-decoration: none;
-          text-transform: uppercase;
-          transition: color 0.3s ease-in-out;
-          font-size: 16px;
-          display: inline-block;
-          margin: 4px auto;
-          
-          &:hover {
-            color: #0e1d27;
-          }
-        }
-        
-      }
-    
+    .workspace-materials-toc-itemDragHandle {
+      opacity: 1;
     }
-
-    .workspace-materials-view-page.material-management-view {
-      position: relative;
-      max-width: 695px;
-      width: auto;
-      background: #fff;
-      margin: 30px auto;
-      box-shadow: $w-page-sc;
-      padding: 50px 20px 10px;
-      word-wrap: break-word;
-      box-shadow: 0 0 0 0 rgba(148,183,208,0.95);
-      -webkit-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
-      -moz-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
-      -o-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
-      -ms-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
-      transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
-
-      a.page-view-restrict {
-        background: #62eba9;   
-        border-radius: 100%; 
-        border: 1px solid #fff;  
-      }
-      
-      &[data-view-restrict="LOGGED_IN"] {
-      
-        a.page-view-restrict {
-          background: #da4a51;
-          border-radius: 100%;
-          border: 1px solid #fff;
-        }
-        
-      }
-      
-      &.folder { 
-        position: relative;
-        font-weight: 300;
-        max-width: 695px;
-        width: auto;
-        background: #fff;
-        box-shadow: 0 0 0 0 rgba(148,183,208,0.95);
-        padding: 70px 20px 30px;
-        word-wrap: break-word;
-        line-height: 1.3em;
-        font-size: 18px;
-        color: #38393a;
-        text-transform: uppercase;
-        
-        &.item-hidden {
-          opacity: 0.4;
-        }
-        
-        .page-content {
-          font-size: 27px;
-          line-height: 1.3em;
-        }
-        
-        &.page-edit-mode {
-          padding: 50px 0 10px;
-          box-sizing: border-box;
-        
-          /* Folder editor input override */
-          input[type="text"].workspace-material-folder-editor-title {
-            width: 100%;
-            box-sizing: border-box;
-            text-align: left;
-            color: #38393a;
-            font-size: 27px;
-            border: 0;
-            padding: 0 0 2px;
-            margin: 19px 30px 0px;
-            border-radius: 0;
-            background: #f3faff;
-            box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
-          }
-          
-          /* Folder editor title override */
-          .workspace-material-folder-editor-title-wrapper {
-            margin: 19px 30px 26px 30px;
-          
-            input.workspace-material-folder-editor-title {
-              padding: 0 0 2px;
-              margin: 0;
-            }
-          
-          }
-
-          /* Binary editor input override */
-          input[type="text"].workspace-material-binary-editor-title {
-            width: 100%;
-            box-sizing: border-box;
-            text-align: left;
-            color: #38393a;
-            font-size: 27px;
-            border: 0;
-            padding: 0 0 2px;
-            margin: 19px 30px 0px;
-            border-radius: 0;
-            background: #f3faff;
-            box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
-          }
-          
-          /* Binary editor title override */
-          .workspace-material-binary-editor-title-wrapper {
-            margin: 19px 30px 26px;
-          
-            input.workspace-material-binary-editor-title {
-              padding: 0 0 2px ;
-              margin: 0;
-            }
-          
-          }
-        
-        }
-      }
-      
-      &.item-hidden {
-        opacity: 0.4;
-      }
-             
-      &.parent-hidden {
-        opacity: 0.4;
-      }
-      
-      /* Material's attachment widget */
-      .materials-management-page-attachment-widget {
-        min-height: 70px;
-        margin: 0 -10px 0;
-        
-        .material-attachments-title {
-          margin: 0 0 10px;
-          font-size: 20px;
-        }
-      
-        /* Material's attachment upload wrapper */
-        .materials-management-page-attachments-upload-container {
-          padding: 20px;
-          position: relative;
-          box-sizing: border-box;
-          border: 1px solid #7391a7;
-          transition: background 0.6s ease-in-out;
-          cursor: pointer;
-          
-           &:hover {
-            background: #ebfbff;
-          }
-          
-          input[type="file"] {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            opacity: 0;
-            width: 100%;
-            cursor: pointer;
-          }
-          
-          .materials-management-page-attachment-description {
-            display: block;
-            font-size: 16px;
-            text-align: center;
-          }
-          
-        }
-        
-        /* Uploaded attachments wrapper */
-        .materials-management-page-attachments-container {
-          position: relative;
-          
-          .content-loading {
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            z-index: 9999;
-            opacity: 0.98;
-            background: #4f6677;
-            font-size: 80px;
-            color: #c8e8ff;
-            
-            .icon-spinner {
-              position: absolute;
-              left: 50%;
-              top: 50%;
-              margin: -50px 0 0 -50px;
-              -webkit-animation: spinner 0.5s linear infinite;
-              -moz-animation: spinner 0.5s linear infinite;
-              -ms-animation: spinner 0.5s linear infinite;
-              -o-animation: spinner 0.5s linear infinite;
-              animation: spinner 0.5s linear infinite;
-            }
-          }
-        
-          /* Uploaded single attachment wrapper */
-          .materials-management-page-attachment {
-            background: #ebf8ff;
-            padding: 5px 10px;
-            position: relative;
-            margin: 10px 0;
-            
-            &:hover {
-              box-shadow: 0 0 0 3px #cce2ed;
-            
-              .materials-management-page-attachment-actions {
-                display: block;
-              }
-            
-            }
-            
-            .materials-management-page-attachment-actions {
-              position: absolute;
-              right: 2px;
-              top: 2px;
-              display: none;
-            
-              .materials-management-page-attachment-action {
-                color: #000;
-                display: inline-block;
-                margin: 2px 5px;
-                padding: 2px;
-              }
-            
-            }
-            
-            .materials-management-page-attachment-url {
-              color: #1b5f86;
-              font-size: 13px;
-              font-style: italic;
-            }
-            
-            .muikku-page-attachments-upload-progress {
-              height: 5px;
-              border: 0;
-              
-              .ui-widget-header {
-                background: #58e45e;
-                border: 0;
-                border-radius: 0;
-                margin: 0;
-              }
-            }
+    
+    .item-view-restricted {
+      display: none;
+    }
   
-            .materials-management-page-attachment-meta-container {
-              display: none;
-            }
-            
-            &.materials-management-page-attachment-selected  {
-              box-shadow: 0 0 0 3px #cce2ed;
-            
-              .materials-management-page-attachment-meta-container {
-                display: block;
-                
-                label {
-                  min-width: 100px;
-                }
-                
-                input[type="text"].materials-management-page-attachment-meta-unsaved {
-                  border-color: #d6ea2f;
-                  box-shadow: 0 0 0 3px #f1f6cb;
-                }
-                
-                input[type="text"].materials-management-page-attachment-meta-saved {
-                  border-color: #27b91c;
-                  box-shadow: 0 0 0 3px #bcf7b7;
-                }
-                
-              }
-            
-            }
-
-          }
-
-        }
-      
-      }
-      
-      /* Material's License Override widget */
-      .materials-management-page-license-widget {
-        min-height: 240px;
-        margin: 0 -10px 0;
-        
-        .material-license-title {
-          margin: 0 0 10px;
-          font-size: 20px;
-        }
-        
-        .materials-management-page-license {
-        
-          input[type="url"] {
-            width: calc(100% - 5px);
-          }
-        
-        }
-        
-        label {
-         font-weight: 400;
-        }
-        
-        .save-page-license {
-          background: #27b91c none repeat scroll 0 0;
-          border: 0 none;
-          border-radius: 2px;
-          color: #fff;
-          display: block;
-          font-size: 14px;
-          line-height:1;
-          margin: 10px 0 0 5px;
-          padding: 6px 8px;
-          text-transform: uppercase;
-        }
-        
-        .creative-commons-container {
-         margin: 4px; 
-         font-size: 16px;
-        }
-        
-        .creative-commons-attribute {
-        
-          label {
-            font-weight: 300;
-          }
-        
-        }
-        
-      }
-
-       /* Material's Producers Override widget */
-      .materials-management-page-producers-widget {
-        min-height: 215px;
-        margin: 0 -10px 0;
-        
-        .material-producers-title {
-          margin: 0 0 10px;
-          font-size: 20px;
-        }
-        
-        .material-producers {
+  }
+  
+  // When user drops sortable item this prevents hover effect happening so link stays readable
+  &.no-hover:hover {
+  
+    a {
+      color: #2c2c2c;
+    }
+  
+  }
+  
+  &.ui-sortable-helper {
+    background: #000;
+    color: #fff;
+    border-radius: 2px;
+    left: 6px;
     
-          input.material-producer-add {
-            width: 250px;
-          }
-          
-          .material-producer {
-            border-radius: 2px;
-            color: #000;
-            display: inline-block;
-            font-size: 18px;
-            font-weight: 300;
-            line-height: 1;
-            margin: 0 5px 20px;
-            padding: 8px 8px 8px 12px;  
-            
-            a.material-producer-remove {
-              text-decoration: none;
-              vertical-align: middle;
-              display: inline-block;
-              margin: 0 0 0 5px;
-              
-              &::before {
-                content: "\e63b";
-                color: #de3211;
-                font-size: 20px;
-                font-weight: normal;
-                font-family: 'muikku';
-                speak: none;
-                font-style: normal;
-                text-decoration: none;
-                font-variant: normal;
-                text-transform: none;
-                line-height: 1;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-              }
-              
-            }
-            
-          }
-          
-        }
-        
-        .save-page-producers {
-          background: #27b91c none repeat scroll 0 0;
-          border: 0 none;
-          border-radius: 2px;
-          color: #fff;
-          display: block;
-          font-size: 14px;
-          line-height: 1;
-          margin: 10px 0 0 5px;
-          padding: 6px 8px;
-          text-transform: uppercase;
-        }
-      
-      }
-
-      img {
-        max-width: 100%;
-        height: auto !important;
-      }
-      
-      a > img {
-        cursor: -webkit-zoom-in;
-        cursor: -moz-zoom-in;
-      }
-      
-      mark[data-muikku-word-definition] {
-        border-bottom: 1px dashed #007925;
-        color: #007925;
-        background: transparent;
-        cursor: help;
-        font-weight: 400;
-        position: relative;
-        
-        &:hover::after {
-          background: #c4ffd6 none repeat scroll 0 0;
-          border: 2px solid #fff;
-          border-radius: 3px;
-          bottom: 25px;
-          box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
-          color: #000;
-          content: attr(data-muikku-word-definition);
-          font-size: 14px;
-          font-weight: 300;
-          left: -10px;
-          line-height: 1.5em;
-          max-width: 400px;
-          min-width: 200px;
-          padding: 5px 10px;
-          position: absolute;
-        }
-        
-      }
-            
-      figure.image {
-        margin: 5px;
-        position: relative;
-        width: auto;
-        line-height: 1;
-        
-        a > img {
-          cursor: -webkit-zoom-in;
-          cursor: -moz-zoom-in;
-        }
-        
-        .image-details {
-          position: absolute;
-          right: 0;
-          left: auto;
-          top: 5px;
-        }
-          
-        .icon-copyright {
-          display: block;
-          
-          
-          &::before {
-            cursor: pointer;
-            font-size: 26px;
-            line-height: 1;
-            color: #fff;
-            background: #0099ff;
-            border-radius: 100%;
-            float: right;
-            margin: 0 5px 0 0;
-          }
-          
-          .image-details-container {
-            display: none;
-            margin: 30px 0 0;
-            font-family: 'Open Sans', Arial, sans-serif;
-            opacity: 0.9;
-            background: #fff;
-            padding: 15px 10px;
-            font-size: 13px;
-            
-            span.image-details-label {
-              padding: 0 5px 0 0;
-            }
-            
-            a {
-              color: #0099ff;
-              padding: 0;
-              line-height: 140%;
-              word-wrap: break-word;
-            }
-            
-            span {
-              color: #000;
-              padding: 0;
-              line-height: 140%;
-              word-wrap: break-word;
-            }
-            
-          }
-          
-          &:hover {
-            left: 0;
-            
-            .image-details-container {
-              display: block;
-            }
-          
-          }
-          
-        }
-      
-        figcaption {
-          max-width: 100%;
-          background: #f0fbf8;
-          font-style: italic;
-          font-size: 13px;
-          padding: 4px 8px 8px;
-          line-height: 130%;
-          border-radius: 2px;
-          box-sizing: border-box;
-          text-align: left;
-        }
-        
-      }
-      
-      &.page-hidden {
-        opacity: 0.4;
-      }
-      
-      &:hover {
-        box-shadow: 0 0 0 5px rgba(148,183,208,0.95);
-      }
-      
-      /* It's necessary to hide save button inside matrial's management view  */
-      button.muikku-save-page {
-        display: none;
-      }
-      
-      /* Section in edit mode */
-      &.page-edit-mode {
-        box-shadow: 0 0 0 10px rgba(148,183,208,0.95);
-        position: relative;
-        padding: 50px 0px 0px;
-        
-        /* Editor input override */
-        input[type="text"].workspace-material-html-editor-title {
-          width: 100%;
-          box-sizing: border-box;
-          text-align: left;
-          color: #38393a;
-          font-size: 27px;
-          border: 0;
-          padding: 0 0 2px;
-          margin: 19px 30px 0px;
-          border-radius: 0;
-          background: #f3faff;
-          box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
-        }
-        
-        /* Editor title override */
-        .workspace-material-html-editor-title-wrapper {
-          margin: 19px 30px 26px;
-        
-          input.workspace-material-html-editor-title {
-            padding: 0 0 2px;
-            margin: 0;
-          }
-        
-        }
-        
-        /* Editor collaborators */
-        .material-editor-collaborator-wrapper {
-          position: absolute;
-          top: 41px;
-          right: -40px;
-          width: 35px;
-          @include rounded-top-right(3px);
-          @include rounded-bottom-right(3px);
-          background: #fff;
-          padding: 0 5px 0 0;
-          text-align: right;
-          box-shadow: 8px 0px 10px rgba(0,0,0,0.1);
-          min-height: 40px;
-
-          .collaborator {
-            position: relative;
-            @include rounded-top-right(3px);
-            @include rounded-bottom-right(3px);
-            background: #fff;
-            right: 0;
-            width: 30px;
-            height: 30px;
-            margin: 0 0 0 auto;
-            transition: right 0.3s,0.3s ease-in-out;
-            padding: 5px;
-            z-index: 9;
-            
-            span {
-              display: block;
-              background: #fff;
-              color: #000;
-              width: 0px;
-              padding: 6px 10px;
-              position: absolute;
-              transition: opacity 0.5s ease-in-out;
-              opacity: 0;
-              visibility: hidden;
-              min-height: 28px;
-              max-height: 28px;
-              font-size: 14px;
-              box-shadow: -4px 0px 10px rgba(0,0,0,0.05);
-              white-space: nowrap;
-            }
-            
-            &:hover {
-              padding: 5px;
-              right: -5px;
-              position: relative;
-              box-shadow: 5px 0 8px rgba(0,0,0,0.1);
-              z-index: 10;
-              
-              span {
-                width: auto;
-                top: 0;
-                right: 40px;
-                opacity: 1;
-                visibility: visible;
-              }
-              
-            }
-            
-            img {
-              width: 100%;
-              height: 100%;
-            }
-          }
-
-        }
-        
-        /* Editor save status */
-        .workspace-material-html-editor-status {
-          position: absolute;
-          top: 12px;
-          right: 120px;
-          z-index: 11;
-          font-size: 14px;
-          color: #fff;
-          
-          span {
-            font-family: 'Open Sans', Arial, sans-serif;
-          }
-        
-        }
-        
-        .workspace-materials-management-view-page-controls { /* Hide and show edit/close icons when page is in editing mode */
-        
-          a.edit-page {
-            display: none;
-          }
-          
-          a.close-page-editor {
-            display: inline-block;
-          }
-          
-        }  
-        
-        /* If page is in edit-mode then we remove negative margins and adjust min-height */
-        .materials-management-page-attachment-widget {
-          min-height: 85px;
-          margin: 5px 10px;
-          padding-bottom: 10px;
-        }
-        
-        .materials-management-page-license-widget {
-          margin: 5px 10px;
-          padding-bottom: 10px;
-          min-height: 240px;
-        }
-        
-        .materials-management-page-producers-widget {
-          margin: 5px 10px;
-          padding-bottom: 10px;
-        }
-         
-      }
-
-      .workspace-materials-management-view-page-controls {
-        a.close-attachments-editor, 
-        a.close-license-editor, 
-        a.close-producers-editor {
-          display: none !important;
-        }
-      }
-      
-      /* If page is in attachment edit-mode then we hide everything else including ckeditor */  
-      &.workspace-materials-management-editing-attachments,
-      &.workspace-materials-management-editing-license,
-      &.workspace-materials-management-editing-producers {
-      
-        .workspace-material-html-editor-title-wrapper,
-        .cke,
-        .workspace-material-html-editor-status,
-        .material-editor-collaborator-wrapper {
-           display: none !important;
-        }
-      
-        .workspace-materials-management-view-page-controls {
-        
-          a,
-          span.assignment-type,
-          span.correct-answers-settings {
-            display: none !important;
-          }
-        
-        }
-      
-        .page-content {
-          display: none;
-        }   
-      } 
-      
-      &.workspace-materials-management-editing-attachments {
-        .workspace-materials-management-view-page-controls {
-          a.close-attachments-editor {
-            display: inline-block !important;
-          }
-        }
-      }
-      
-      &.workspace-materials-management-editing-license {
-        .workspace-materials-management-view-page-controls {
-          a.close-license-editor {
-            display: inline-block !important;
-          }
-        }
-      }
-      
-      &.workspace-materials-management-editing-producers {
-        .workspace-materials-management-view-page-controls {
-          a.close-producers-editor {
-            display: inline-block !important;
-          }
-        }
-      }
-      
-      .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link and correct answers */
-        height: 29px;
-        width: 29px;
-        margin: 5px 10px;
-        border-radius: 100%;
-        line-height: 1;
-        border: 1px solid #fff;
-        position: relative;
-        left: 0;
-        top: 0;
-        color: #fff;
-        text-align: center;
-        display: inline-block;
-        background: #bdc7cf;
-        vertical-align: top;
-      
-        a.change-assignment {
-          margin: 0;
-          position: relative;
-          top: 0;
-          left: 0;
-          font-size: 17px;
-          height: 29px;
-          width: 29px;
-        }
-        
-      }
+    a {
+      color: #fff;
+    }
+  
+    .workspace-materials-toc-itemDragHandle {
+      opacity: 1;
+    }
     
-      &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
-        background: $evaluatedAssignment;
-      }
-      
-      &[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
-        background: $exerciseAssignment;
-      }
-      
-      .workspace-materials-management-view-page-controls span.correct-answers-settings { /* Special case for assignment type link and correct answers */
-        height: 29px;
-        width: 29px;
-        margin: 5px 10px;
-        border-radius: 100%;
-        line-height: 1;
-        border: 1px solid #fff;
-        position: relative;
-        left: 0;
-        top: 0;
-        color: #fff;
-        text-align: center;
-        background: #bdc7cf;
-        display: inline-block;
-        vertical-align: top;
+  }
+  
+  a {
+    border-left: 2px solid #e8f0f5;
+    color: #2c2c2c;
+    display: block;
+    @include rounded(2px);
+    padding: 2px 28px 2px 6px;
+    text-decoration: none;
     
-        a.correct-answers {
-          margin: 0;
-          position: relative;
-          left: 0;
-          top: 1px;
-          font-size: 17px;
-          height: 29px;
-          width: 29px;
-        }
+    &.assignment {
+      border-left: 2px solid $evaluatedAssignment;
+      margin: 1px 0 0;
+    }
+    
+    &.exercise {
+      border-left: 2px solid $exerciseAssignment;
+      margin: 1px 0 0;
+    }
+    
+  }
+  
+  .workspace-materials-toc-itemDragHandle {
+    color: #ffffff;
+    cursor: grab;
+    font-size: 14px;
+    opacity: 0;
+    padding: 5px;
+    position: absolute;
+    right: 2px;
+    top: 0;
+  }
+  
+  .item-view-restricted {
+    color: #da4a51;
+    font-size: 15px;
+    padding: 4px 2px;
+    position: absolute;
+    right: 5px;
+    top: 0;
+  }
 
-        &.hidden {
-          display: none;
-        }
+} 
 
-      }
+// CONTENT RULES
+#contentWorkspaceMaterialsManagement {
+  max-width: 695px;
+  min-width: 695px;
+  width: auto;
+  margin: 0 auto;
+  position: absolute;
+  left: 420px;
+}
 
-      &[data-correct-answers="ALWAYS"] .workspace-materials-management-view-page-controls span.correct-answers-settings { /* Special case for assignment type link */
-        background: $exerciseCorrectAnswersAlways;
-      }
-      
-      &[data-correct-answers="NEVER"] .workspace-materials-management-view-page-controls span.correct-answers-settings { /* Special case for assignment type link */
-        background: $exerciseCorrectAnswersNever;
-      }
-      
-      &[data-correct-answers="ON_REQUEST"] .workspace-materials-management-view-page-controls span.correct-answers-settings { /* Special case for assignment type link */
-        background: $exerciseCorrectAnswersOnRequest;
-      }
-
-      .workspace-materials-management-view-page-controls {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 41px;
-        background: #7996aa;
-        
-        .management-page-controls-primary-subsection {
-          float: left;
-          display: inline-block;
-        }
-        
-        .management-page-controls-secondary-subsection {
-          float: right;
-          display: inline-block;
-        }
-      
-        a.edit-page, 
-        a.delete-page, 
-        a.hide-page,
-        a.change-assignment,
-        a.correct-answers,
-        a.publish-page,
-        a.revert-page,
-        a.close-page-editor,
-        a.page-attachments,
-        a.close-attachments-editor,
-        a.close-license-editor,
-        a.close-producers-editor,
-        a.page-license,
-        a.page-view-restrict,
-        a.page-producers,
-        a.page-closed-material {
-          color: #fff;
-          font-size: 21px;
-          display: inline-block;
-          margin: 5px 10px;
-          position: relative;
-          height: 30px;
-          text-align: center;
-          
-          &:hover {
-            @include iconShadow(rgba(255,255,190,0.8));
-          }
-
-          &::before {
-            padding: 5px;
-            display: inline-block;
-          }
-        
-          span {
-            display: none;
-          }
-          
-        }
-        
-        a.change-assignment::before,
-        a.correct-answers::before {
-          position: relative;
-          top: 1px;
-        }
-        
-        a.delete-page {
-          font-size: 22px;
-          height: 31px;
-        }
-        
-        a.edit-page,
-        a.close-page-editor {
-          width: 29px;
-        }
-        
-        a.page-view-restrict {
-          width: 29px;
-          height: 29px;
-        }
-        
-        a.close-page-editor {
-          display: none;
-        }
-        
-        a.publish-page.disabled,
-        a.revert-page.disabled {
-          opacity: 0.35;
-          cursor: default;
-        }
-        
-      }
-
+// ADD NEW ELEMENT
+.workspace-materials-management-add {
+  text-align: center;
+  position: relative;
+  margin: 10px auto;
+  
+  span.workspace-materials-management-line-separator {
+    display: block;
+    position: absolute;
+    height: 1px;
+    top: 13px;
+    left: 0;
+    right: 0;
+    background: #7391a7;
+  }
+  
+  a.workspaces-materials-management-add {
+    color: #a8c2d4;
+    text-transform: uppercase;
+    display: inline-block;
+    background: #4f6677;
+    padding: 5px 10px;
+    position: relative;
+    transition: color 0.3s ease-in-out; 
+    font-size: 14px;
+    font-weight: 400;
+    
+    &.icon-add::before {
+      font-size: 17px;
+      float: left;
+    }
+    
+    &:hover {
+      color: #fff;
+    }
+    
+    span {
+      float: left;
+      padding: 2px 4px;
+      font-family: 'Open Sans', Arial, sans-serif !important;
     }
     
   }
   
 }
+  
+// NEW 'DOCUMENT OR SECTION' SELECTION
+.workspace-materials-view-page.material-management-view.workspace-materials-management-new {
+  padding: 20px 30px;
+  margin: 30px auto;
+  box-shadow: 0 0 0 5px rgba(137,212,142,0.95);
+  text-align: center;
 
+  a.workspace-materials-management-new-page-link {
+    color: #0099ff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+    transition: color 0.3s ease-in-out;
+    font-family: 'Open Sans', Arial, sans-serif !important;
+    display: inline-block;
+    background: #fff;
+    text-align: center;
+    margin: 0 10px;
+
+    &:hover {
+      color: #0e1d27;
+      
+      &.icon-new-page::before {
+        color: #1e5274;
+      }
+
+    }
+
+    &.icon-new-page::before {
+      font-family: "muikku";
+      transition: color 0.5s ease-in-out;
+      font-size: 60px;
+      color: #82c8f7;
+      display: block;
+    }
+
+  }
+  
+  a.workspace-materials-management-new-section-link {
+    color: #0099ff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+    transition: color 0.3s ease-in-out;
+    font-family: 'Open Sans', Arial, sans-serif !important;
+    display: inline-block;
+    background: #fff;
+    text-align: center;
+    margin: 0 10px;
+
+    &:hover {
+      color: #0e1d27;
+      
+      &.icon-new-section::before {
+        color: #1e5274;
+      }
+      
+    }
+    
+    &.icon-new-section::before {
+      font-family: "muikku";
+      transition: color 0.5s ease-in-out;
+      font-size: 60px;
+      color: #82c8f7;
+      display: block;
+    }
+    
+  }
+  
+  &:hover {
+    box-shadow: 0 0 0 5px rgba(137,212,142,0.95);
+  }
+  
+}
+
+// FILE UPLOAD ELEMENT
+.workspaces-materials-management-insert-file {
+  margin: 20px 0;
+
+  // Area where user inserts file by clicking it or dragging into it
+  .muikku-file-input-field-file-uploader-container {
+    border: 1px solid #7391a7;
+    padding: 10px;
+    color: #a8c2d4;
+    transition: color,border 0.3s,0.6s ease-in-out,ease-in-out;
+    margin: 0;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    
+    span {
+      text-transform: uppercase;
+    }
+    
+    &:hover {
+      color: #fff;
+      border: 1px solid #94b7d0;
+      box-shadow: none;
+    }
+    
+  }
+  
+  // File-upload selection container where user selects what to do with the file
+  .materials-management-file-upload-selection-container {
+    position: relative;
+    max-width: 655px;
+    width: auto;
+    background: #fff;
+    margin: 25px auto 40px;
+    box-shadow: 0 0 0 5px rgba(137,212,142,0.95);
+    padding: 20px;
+    word-wrap: break-word;
+    -webkit-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+    -moz-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+    -o-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+    -ms-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+    transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+    
+    p.materials-management-generic-question-container {
+      margin: 0 0 20px;
+    }
+    
+    // Links inside file-upload selection container
+    a[class*='materials-management-upload-select'] {
+      color: #0099ff;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s ease-in-out;
+      font-size: 16px;
+      display: inline-block;
+      margin: 4px auto;
+      
+      &:hover {
+        color: #0e1d27;
+      }
+
+    }
+
+  }
+
+}
+
+// DOCUMENT & SECTION CONTROLS
+.workspace-materials-management-view-page-controls { 
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 41px;
+  background: #7996aa;
+  
+  .management-page-controls-primary-subsection {
+    float: left;
+    display: inline-block;
+    height: 41px;
+  }
+  
+  .management-page-controls-secondary-subsection {
+    float: right;
+    display: inline-block;
+    height: 41px;
+  }
+  
+  // Main rules for document & section control icons
+  a {
+    color: #fff;
+    font-size: 21px;
+    display: inline-block;
+    margin: 5px 10px;
+    position: relative;
+    height: 30px;
+    text-align: center;
+    
+    &:hover {
+      @include iconShadow(rgba(255,255,190,0.8));
+    }
+
+    &::before {
+      padding: 5px;
+      display: inline-block;
+    }
+  
+    span {
+      display: none;
+    }
+    
+  }
+  
+  // Attachments, producers and licence editors close icons
+  a.close-attachments-editor, 
+  a.close-license-editor, 
+  a.close-producers-editor {
+    display: none;
+  }
+  
+  // View restriction icons
+  a.page-view-restrict,
+  a.folder-view-restrict {
+    background: #62eba9;   
+    border-radius: 100%; 
+    border: 1px solid #fff;  
+  }
+  
+  // Assignment type icon
+  span.assignment-type { 
+    height: 29px;
+    width: 29px;
+    margin: 5px 10px;
+    border-radius: 100%;
+    line-height: 1;
+    border: 1px solid #fff;
+    position: relative;
+    left: 0;
+    top: 0;
+    color: #fff;
+    text-align: center;
+    display: inline-block;
+    background: #bdc7cf;
+    vertical-align: top;
+  
+    a.change-assignment {
+      margin: 0;
+      position: relative;
+      top: 0;
+      left: 0;
+      font-size: 17px;
+      height: 29px;
+      width: 29px;
+    }
+    
+  }
+  
+  // Correct answers icon
+  span.correct-answers-settings { 
+    height: 29px;
+    width: 29px;
+    margin: 5px 10px;
+    border-radius: 100%;
+    line-height: 1;
+    border: 1px solid #fff;
+    position: relative;
+    left: 0;
+    top: 0;
+    color: #fff;
+    text-align: center;
+    background: #bdc7cf;
+    display: inline-block;
+    vertical-align: top;
+
+    a.correct-answers {
+      margin: 0;
+      position: relative;
+      left: 0;
+      top: 1px;
+      font-size: 17px;
+      height: 29px;
+      width: 29px;
+    }
+
+    &.hidden {
+      display: none;
+    }
+
+  }
+
+  // Custom overrides for document & section control icons
+  a.change-assignment::before,
+  a.correct-answers::before {
+    position: relative;
+    top: 1px;
+  }
+  
+  a.delete-page {
+    font-size: 22px;
+    height: 31px;
+  }
+  
+  a.edit-page,
+  a.close-page-editor {
+    width: 29px;
+  }
+  
+  a.page-view-restrict,
+  a.folder-view-restrict {
+    width: 29px;
+    height: 29px;
+  }
+  
+  a.close-page-editor {
+    display: none;
+  }
+  
+  a.publish-page.disabled,
+  a.revert-page.disabled {
+    opacity: 0.35;
+    cursor: default;
+  }  
+  
+}
+
+
+// DOCUMENT
+.workspace-materials-view-page.material-management-view {
+  position: relative;
+  max-width: 695px;
+  width: auto;
+  background: #fff;
+  margin: 30px auto;
+  box-shadow: $document-shadow;
+  padding: 50px 20px 10px;
+  word-wrap: break-word;
+  box-shadow: 0 0 0 0 rgba(148,183,208,0.95);
+  -webkit-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+  -moz-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+  -o-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+  -ms-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+  transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+  
+  &.item-hidden {
+    opacity: 0.4;
+  }
+         
+  &.parent-hidden {
+    opacity: 0.4;
+  }
+  
+  &.page-hidden {
+    opacity: 0.4;
+  }
+  
+  &:hover {
+    box-shadow: 0 0 0 5px rgba(148,183,208,0.95);
+  }
+  
+  // When document's view is restricted
+  &[data-view-restrict="LOGGED_IN"] a.page-view-restrict {
+    background: #da4a51;
+    border-radius: 100%;
+    border: 1px solid #fff;
+  }
+  
+  // Special cases for assignment type links
+  &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type {
+    background: $evaluatedAssignment;
+  }
+
+  &[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type {
+    background: $exerciseAssignment;
+  }
+
+  &[data-correct-answers="ALWAYS"] .workspace-materials-management-view-page-controls span.correct-answers-settings {
+    background: $exerciseCorrectAnswersAlways;
+  }
+
+  &[data-correct-answers="NEVER"] .workspace-materials-management-view-page-controls span.correct-answers-settings {
+    background: $exerciseCorrectAnswersNever;
+  }
+
+  &[data-correct-answers="ON_REQUEST"] .workspace-materials-management-view-page-controls span.correct-answers-settings {
+    background: $exerciseCorrectAnswersOnRequest;
+  }
+
+}
+
+// DOCUMENT EDIT MODE
+.workspace-materials-view-page.material-management-view.page-edit-mode {
+  box-shadow: 0 0 0 10px rgba(148,183,208,0.95);
+  position: relative;
+  padding: 50px 0 0;
+  
+  // Editor input override
+  input[type="text"].workspace-material-html-editor-title {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    color: #38393a;
+    font-size: 27px;
+    border: 0;
+    padding: 0 0 2px;
+    margin: 19px 30px 0;
+    border-radius: 0;
+    background: #f3faff;
+    box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
+  }
+  
+  // Editor title override
+  .workspace-material-html-editor-title-wrapper {
+    margin: 19px 30px 26px;
+  
+    input.workspace-material-html-editor-title {
+      padding: 0 0 2px;
+      margin: 0;
+    }
+  
+  }
+  
+  // Editor save status
+  .workspace-material-html-editor-status {
+    position: absolute;
+    top: 12px;
+    right: 120px;
+    z-index: 11;
+    font-size: 14px;
+    color: #fff;
+    
+    span {
+      font-family: 'Open Sans', Arial, sans-serif;
+    }
+  
+  }
+  
+  // Hide/show edit/close icons when page is in editing mode
+  .workspace-materials-management-view-page-controls { 
+  
+    a.edit-page {
+      display: none;
+    }
+    
+    a.close-page-editor {
+      display: inline-block;
+    }
+    
+  } 
+
+  // When page is in edit-mode then we remove negative margins and adjust min-height
+  .materials-management-page-attachment-widget {
+    margin: 5px 10px;
+    min-height: 85px;
+    padding-bottom: 10px;
+  }
+  
+  .materials-management-page-license-widget {
+    margin: 5px 10px;
+    min-height: 240px;
+    padding-bottom: 10px;
+  }
+  
+  .materials-management-page-producers-widget {
+    margin: 5px 10px;
+    padding-bottom: 10px;
+  }
+  
+  // Binary editor input override
+  input[type="text"].workspace-material-binary-editor-title {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    color: #38393a;
+    font-size: 27px;
+    border: 0;
+    padding: 0 0 2px;
+    margin: 19px 30px 0;
+    border-radius: 0;
+    background: #f3faff;
+    box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
+  }
+  
+  // Binary editor title override
+  .workspace-material-binary-editor-title-wrapper {
+    margin: 19px 30px 26px;
+  
+    input.workspace-material-binary-editor-title {
+      padding: 0 0 2px ;
+      margin: 0;
+    }
+  
+  }
+   
+}
+
+// DOCUMENT'S ATTACHMENT/LICENSE/PRODUCERS EDIT MODE
+.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-attachments,
+.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-license,
+.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-producers {
+
+  .workspace-material-html-editor-title-wrapper,
+  .cke,
+  .workspace-material-html-editor-status,
+  .material-editor-collaborator-wrapper {
+     display: none;
+  }
+
+  .workspace-materials-management-view-page-controls {
+  
+    a,
+    span {
+      display: none;
+    }
+  
+  }
+
+  .page-content {
+    display: none;
+  }
+  
+  // When page in edit mode and view changes to attachment/license/producers editing
+  &.page-edit-mode {
+  
+    .workspace-materials-management-view-page-controls { 
+      
+      a.close-page-editor {
+        display: none;
+      }
+      
+    } 
+  
+  }
+  
+}
+
+// DOCUMENT ATTACHMENT EDIT MODE CONTROLLER
+.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-attachments {
+  
+  .workspace-materials-management-view-page-controls {
+  
+    a.close-attachments-editor {
+      display: inline-block;
+    }
+    
+  } 
+  
+}
+
+// DOCUMENT LICENSE EDIT MODE CONTROLLER
+.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-license {
+  
+  .workspace-materials-management-view-page-controls {
+  
+    a.close-license-editor {
+      display: inline-block;
+    }
+    
+  } 
+    
+}
+
+// DOCUMENT PRODUCERS EDIT MODE CONTROLLER
+.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-producers {
+
+  .workspace-materials-management-view-page-controls {
+  
+    a.close-producers-editor {
+      display: inline-block;
+    }
+    
+  }
+    
+} 
+
+// DOCUMENT EDIT MODE COLLABORATORS
+.material-editor-collaborator-wrapper {
+  position: absolute;
+  top: 41px;
+  right: -40px;
+  width: 35px;
+  @include rounded-top-right(3px);
+  @include rounded-bottom-right(3px);
+  background: #fff;
+  padding: 0 5px 0 0;
+  text-align: right;
+  box-shadow: 8px 0 10px rgba(0,0,0,0.1);
+  min-height: 40px;
+
+  .collaborator {
+    position: relative;
+    @include rounded-top-right(3px);
+    @include rounded-bottom-right(3px);
+    background: #fff;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    margin: 0 0 0 auto;
+    transition: right 0.3s,0.3s ease-in-out;
+    padding: 5px;
+    z-index: 9;
+    
+    span {
+      display: block;
+      background: #fff;
+      color: #000;
+      width: 0;
+      padding: 6px 10px;
+      position: absolute;
+      transition: opacity 0.5s ease-in-out;
+      opacity: 0;
+      visibility: hidden;
+      min-height: 28px;
+      max-height: 28px;
+      font-size: 14px;
+      box-shadow: -4px 0 10px rgba(0,0,0,0.05);
+      white-space: nowrap;
+    }
+    
+    &:hover {
+      padding: 5px;
+      right: -5px;
+      position: relative;
+      box-shadow: 5px 0 8px rgba(0,0,0,0.1);
+      z-index: 10;
+      
+      span {
+        width: auto;
+        top: 0;
+        right: 40px;
+        opacity: 1;
+        visibility: visible;
+      }
+      
+    }
+    
+    img {
+      width: 100%;
+      height: 100%;
+    }
+    
+  }
+
+}
+
+// SECTION
+.workspace-materials-view-page.material-management-view.folder { 
+  position: relative;
+  font-weight: 300;
+  max-width: 695px;
+  width: auto;
+  background: #fff;
+  box-shadow: 0 0 0 0 rgba(148,183,208,0.95);
+  padding: 70px 20px 30px;
+  word-wrap: break-word;
+  font-size: 18px;
+  color: #38393a;
+  text-transform: uppercase;
+  
+  &.item-hidden {
+    opacity: 0.4;
+  }
+  
+  // When section's view is restricted
+  &[data-view-restrict="LOGGED_IN"] a.folder-view-restrict {
+    background: #da4a51;
+    border-radius: 100%;
+    border: 1px solid #fff;
+    
+    &::before {
+      padding: 4px 5px 5px;
+    }
+    
+  }
+  
+  .page-content {
+    font-size: 27px;
+    line-height: 1.3em;
+  }
+
+}
+  
+// SECTION EDIT MODE
+.workspace-materials-view-page.material-management-view.folder.page-edit-mode {
+  padding: 50px 0 10px;
+  box-sizing: border-box;
+
+  // Section editor input override
+  input[type="text"].workspace-material-folder-editor-title {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    color: #38393a;
+    font-size: 27px;
+    border: 0;
+    padding: 0 0 2px;
+    margin: 19px 30px 0;
+    border-radius: 0;
+    background: #f3faff;
+    box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
+  }
+  
+  // Section editor title override
+  .workspace-material-folder-editor-title-wrapper {
+    margin: 19px 30px 26px;
+  
+    input.workspace-material-folder-editor-title {
+      padding: 0 0 2px;
+      margin: 0;
+    }
+  
+  }
+
+}
+
+// ATTACHMENT WIDGET
+.materials-management-page-attachment-widget {
+  min-height: 70px;
+  margin: 0 -10px 0;
+  
+  .material-attachments-title {
+    margin: 0 0 10px;
+    font-size: 20px;
+  }
+
+  // Attachment upload wrapper
+  .materials-management-page-attachments-upload-container {
+    padding: 20px;
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid #7391a7;
+    transition: background 0.6s ease-in-out;
+    cursor: pointer;
+    
+     &:hover {
+      background: #ebfbff;
+    }
+    
+    input[type="file"] {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+      width: 100%;
+      cursor: pointer;
+    }
+    
+    .materials-management-page-attachment-description {
+      display: block;
+      font-size: 16px;
+      text-align: center;
+    }
+    
+  }
+  
+  // Uploaded attachments wrapper
+  .materials-management-page-attachments-container {
+    position: relative;
+    
+    .content-loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      z-index: 9999;
+      opacity: 0.98;
+      background: #4f6677;
+      font-size: 80px;
+      color: #c8e8ff;
+    }
+    
+    .icon-spinner {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin: -50px 0 0 -50px;
+      -webkit-animation: spinner 0.5s linear infinite;
+      -moz-animation: spinner 0.5s linear infinite;
+      -ms-animation: spinner 0.5s linear infinite;
+      -o-animation: spinner 0.5s linear infinite;
+      animation: spinner 0.5s linear infinite;
+    }
+    
+  }
+  
+  // Uploaded single attachment
+  .materials-management-page-attachment {
+    background: #ebf8ff;
+    padding: 5px 10px;
+    position: relative;
+    margin: 10px 0;
+    
+    &:hover {
+      box-shadow: 0 0 0 3px #cce2ed;
+    
+      .materials-management-page-attachment-actions {
+        display: block;
+      }
+    
+    }
+    
+    .materials-management-page-attachment-actions {
+      position: absolute;
+      right: 2px;
+      top: 2px;
+      display: none;
+    }
+    
+    .materials-management-page-attachment-action {
+      color: #000;
+      display: inline-block;
+      margin: 2px 5px;
+      padding: 2px;
+    }
+    
+    .materials-management-page-attachment-url {
+      color: #1b5f86;
+      font-size: 13px;
+      font-style: italic;
+    }
+    
+    .muikku-page-attachments-upload-progress {
+      height: 5px;
+      border: 0;
+    }
+    
+    .ui-widget-header {
+      background: #58e45e;
+      border: 0;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .materials-management-page-attachment-meta-container {
+      display: none;
+    }
+
+  }
+  
+  // Uploaded selected single attachment
+  .materials-management-page-attachment.materials-management-page-attachment-selected  {
+    box-shadow: 0 0 0 3px #cce2ed;
+  
+    .materials-management-page-attachment-meta-container {
+      display: block;
+    }
+    
+    label {
+      min-width: 100px;
+    }
+    
+    input[type="text"].materials-management-page-attachment-meta-unsaved {
+      border-color: #d6ea2f;
+      box-shadow: 0 0 0 3px #f1f6cb;
+    }
+    
+    input[type="text"].materials-management-page-attachment-meta-saved {
+      border-color: #27b91c;
+      box-shadow: 0 0 0 3px #bcf7b7;
+    }
+  
+  }
+  
+}
+  
+// LICENSE OVERRIDE WIDGET
+.materials-management-page-license-widget {
+  min-height: 240px;
+  margin: 0 -10px 0;
+  
+  .material-license-title {
+    margin: 0 0 10px;
+    font-size: 20px;
+  }
+  
+  .materials-management-page-license {
+  
+    input[type="url"] {
+      width: calc(100% - 5px);
+    }
+  
+  }
+  
+  label {
+   font-weight: 400;
+  }
+  
+  .save-page-license {
+    background: #27b91c none repeat scroll 0 0;
+    border: 0 none;
+    border-radius: 2px;
+    color: #fff;
+    display: block;
+    font-size: 14px;
+    line-height:1;
+    margin: 10px 0 0 5px;
+    padding: 6px 8px;
+    text-transform: uppercase;
+  }
+  
+  .creative-commons-container {
+   margin: 4px; 
+   font-size: 16px;
+  }
+  
+  .creative-commons-attribute {
+  
+    label {
+      font-weight: 300;
+    }
+  
+  }
+  
+}
+
+// PRODUCERS OVERRIDE WIDGET
+.materials-management-page-producers-widget {
+  min-height: 215px;
+  margin: 0 -10px 0;
+  
+  .material-producers-title {
+    margin: 0 0 10px;
+    font-size: 20px;
+  }
+
+  input.material-producer-add {
+    width: 250px;
+  }
+  
+  .material-producer {
+    border-radius: 2px;
+    color: #000;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1;
+    margin: 0 5px 20px;
+    padding: 8px 8px 8px 12px;  
+    
+    a.material-producer-remove {
+      text-decoration: none;
+      vertical-align: middle;
+      display: inline-block;
+      margin: 0 0 0 5px;
+      
+      &::before {
+        content: "\e63b";
+        color: #de3211;
+        font-size: 20px;
+        font-weight: normal;
+        font-family: 'muikku';
+        speak: none;
+        font-style: normal;
+        text-decoration: none;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+    }
+    
+  }
+  
+  .save-page-producers {
+    background: #27b91c none repeat scroll 0 0;
+    border: 0 none;
+    border-radius: 2px;
+    color: #fff;
+    display: block;
+    font-size: 14px;
+    line-height: 1;
+    margin: 10px 0 0 5px;
+    padding: 6px 8px;
+    text-transform: uppercase;
+  }
+
+}
+  
 @media screen and (max-width: 767px) {
 
   body #workspaceMaterialsManagementTOCWrapper {

@@ -13,12 +13,13 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.otavanopisto.muikku.model.util.ArchivableEntity;
 import fi.otavanopisto.muikku.model.util.OwnedEntity;
 import fi.otavanopisto.muikku.model.util.ResourceEntity;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class ForumArea implements ResourceEntity, OwnedEntity {
+public class ForumArea implements ResourceEntity, OwnedEntity, ArchivableEntity {
 
   public Long getId() {
     return id;
@@ -87,7 +88,7 @@ public class ForumArea implements ResourceEntity, OwnedEntity {
   
   @NotNull
   @Column(nullable = false)
-  private Boolean archived = Boolean.FALSE;
+  private Boolean archived;
   
   @Column (name = "owner_id")
   private Long owner;

@@ -50,6 +50,7 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestControl
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
@@ -777,6 +778,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             (Collection<SchoolDataIdentifier>) null,
             Boolean.FALSE,
             Boolean.FALSE,
+            false,
             0,
             maxResults != null ? maxResults : Integer.MAX_VALUE);
         
@@ -1724,7 +1726,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         nextSibling == null ? null : nextSibling.getId(),
         workspaceFolder.getHidden(),
         workspaceFolder.getTitle(),
-        workspaceFolder.getPath());
+        workspaceFolder.getPath(),
+        workspaceFolder.getViewRestrict());
   }
 
   @DELETE
@@ -1881,8 +1884,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode nextSibling = restFolder.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restFolder.getNextSiblingId());
     Boolean hidden = restFolder.getHidden();
     String title = restFolder.getTitle();
+    MaterialViewRestrict viewRestrict = restFolder.getViewRestrict();
     
-    workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden);
+    workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden, viewRestrict);
     return Response.ok(createRestModel(workspaceFolder)).build();
   }
 

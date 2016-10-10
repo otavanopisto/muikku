@@ -121,6 +121,10 @@ public class ForumController {
     return forumAreaDAO.updateForumArea(forumArea, name);
   }
 
+  public void archiveArea(ForumArea forumArea) {
+    forumAreaDAO.updateArchived(forumArea, true);
+  }
+  
   public void deleteArea(ForumArea forumArea) {
     forumAreaDAO.delete(forumArea);
   }
@@ -189,13 +193,19 @@ public class ForumController {
   }
 
   public List<ForumThread> listForumThreads(ForumArea forumArea, int firstResult, int maxResults) {
-    List<ForumThread> threads = forumThreadDAO.listByForumAreaOrdered(forumArea, firstResult, maxResults);
-    
-    return threads;
+    return listForumThreads(forumArea, firstResult, maxResults, false);
+  }
+
+  public List<ForumThread> listForumThreads(ForumArea forumArea, int firstResult, int maxResults, boolean includeArchived) {
+    return forumThreadDAO.listByForumAreaOrdered(forumArea, firstResult, maxResults, includeArchived);
   }
   
   public List<ForumThreadReply> listForumThreadReplies(ForumThread forumThread, Integer firstResult, Integer maxResults) {
-    return forumThreadReplyDAO.listByForumThread(forumThread, firstResult, maxResults);
+    return listForumThreadReplies(forumThread, firstResult, maxResults, false);
+  }
+  
+  public List<ForumThreadReply> listForumThreadReplies(ForumThread forumThread, Integer firstResult, Integer maxResults, boolean includeArchived) {
+    return forumThreadReplyDAO.listByForumThread(forumThread, firstResult, maxResults, includeArchived);
   }
   
   public List<ForumThread> listLatestForumThreads(int firstResult, int maxResults) {
@@ -301,13 +311,17 @@ public class ForumController {
   }
 
   public List<ForumAreaGroup> listForumAreaGroups() {
-    return forumAreaGroupDAO.listAll();
+    return forumAreaGroupDAO.listUnArchived();
   }
 
   public ForumAreaGroup createForumAreaGroup(String name) {
     return forumAreaGroupDAO.create(name, Boolean.FALSE);
   }
 
+  public void archiveAreaGroup(ForumAreaGroup forumAreaGroup) {
+    forumAreaGroupDAO.updateArchived(forumAreaGroup, true);
+  }
+  
   public void deleteAreaGroup(ForumAreaGroup forumAreaGroup) {
     forumAreaGroupDAO.delete(forumAreaGroup);
   }

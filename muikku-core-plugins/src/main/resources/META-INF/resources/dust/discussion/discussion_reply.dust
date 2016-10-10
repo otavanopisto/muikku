@@ -33,10 +33,13 @@
     <div class="flex-row">
       <div class="mf-item-content-tools di-message-content-tools lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
         <div class="di-message-content-tools-container mf-item-tools">
-          {^isReply}
-            <div class="di-message-tool di-reply-answer-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
-          {/isReply}
-          <div class="di-message-tool di-reply-quote-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.quote"/}</span></div>
+          {@eq key=locked value="false" type="boolean"}
+            {^isReply}
+              <div class="di-message-tool di-reply-answer-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
+            {/isReply}
+            <div class="di-message-tool di-reply-quote-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.quote"/}</span></div>
+          {/eq}
+          
           {#canEdit}
             <div class="di-message-tool di-reply-edit-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
           {/canEdit}

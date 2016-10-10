@@ -109,6 +109,10 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String FORUM_EDIT_ENVIRONMENT_MESSAGES = "FORUM_EDIT_ENVIRONMENT_MESSAGES";
   
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
+  public static final String FORUM_LOCK_OR_STICKIFY_MESSAGES = "FORUM_LOCK_OR_STICKIFY_MESSAGES";
+  
   // Workspace forum messages
   
   @Scope (PermissionScope.WORKSPACE)
@@ -131,6 +135,11 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String FORUM_EDIT_WORKSPACE_MESSAGES = "FORUM_EDIT_WORKSPACE_MESSAGES";
 
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  public static final String FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES = "FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES";
+  
   @Override
   public List<String> listPermissions() {
     return listPermissions(ForumResourcePermissionCollection.class);
