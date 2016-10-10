@@ -1,4 +1,4 @@
-/* Exercise Field's Correct Answers Counter */
+// CORRECT ANSWERS COUNTER
 .correct-answers-count-container {
   display: block;
   margin: 5px;
@@ -6,18 +6,18 @@
   font-size: 20px;
   
   .correct-answers-count-label {
-    padding: 0px 5px;
+    padding: 0 5px;
     display: inline-block;
   }
   
   .correct-answers-count-data {
-    padding: 0px 5px;
+    padding: 0 5px;
     display: inline-block;
   }
   
 }
 
-/* Material's Example answers */
+// EXAMPLE ANSWERS
 span.muikku-field-examples {
   border-radius: 3px;
   padding: 3px;
@@ -30,11 +30,11 @@ span.muikku-field-examples {
   
   span.muikku-field-examples-title {
     font-weight: 600;
-    margin: 0px 6px;
+    margin: 0 6px;
   }
   
   span.muikku-field-example {
-    margin: 3px 0px 3px 5px;
+    margin: 3px 0 3px 5px;
     padding: 0 8px;
     border-left: 1px solid #439ba0;
     display: inline-block;
@@ -43,7 +43,7 @@ span.muikku-field-examples {
   
 }
 
-/* If no correct answers set but we need to show student's answer visually */
+// WHEN TASK FIELD HAS NO CORRECT ANSWERS SET - EVALUATION ONLY
 select {
   background: #fff;
   border: 2px solid #abdbed;
@@ -68,7 +68,7 @@ input[checked="checked"] {
   
 }
 
-/* For textfields/memofields/selections checks */
+// TEXTFIELD, TEXTAREA, SELECT CORRECT ANSWERS
 input[type="text"].muikku-field-correct-answer,
 textarea.muikku-field-correct-answer,
 select.muikku-field-correct-answer {
@@ -83,6 +83,7 @@ select.muikku-field-correct-answer {
   
 }
 
+// TEXTFIELD, TEXTAREA, SELECT INCORRECT ANSWERS
 input[type="text"].muikku-field-incorrect-answer,
 textarea.muikku-field-incorrect-answer,
 select.muikku-field-incorrect-answer {
@@ -97,7 +98,7 @@ select.muikku-field-incorrect-answer {
   
 }
 
-/* For connectfields checks */
+// CONNECT FIELD CORRECT ANSWERS
 div.muikku-connect-field.muikku-field-correct-answer {
   box-shadow: none;
   border: none;
@@ -109,6 +110,7 @@ div.muikku-connect-field.muikku-field-correct-answer {
   
 }
 
+// CONNECT FIELD INCORRECT ANSWERS
 div.muikku-connect-field.muikku-field-incorrect-answer {
   box-shadow: none;
   border: none;
@@ -125,8 +127,8 @@ div.muikku-connect-field.muikku-field-incorrect-answer {
     
   }
   
-  /* Connect field's correct answer's styling is required here as we mark 
-  wrapping element to be incorrect when checking exercise */
+  // Connect field's correct answer's styling is required here as we mark 
+  // wrapping element to be incorrect when checking exercise
   .muikku-connect-field-counterpart.muikku-connect-field-correct-answer, 
   .muikku-connect-field-term.muikku-connect-field-correct-answer {
     background: #55fc70;
@@ -134,7 +136,7 @@ div.muikku-connect-field.muikku-field-incorrect-answer {
   
 }
 
-/* For organizerfields checks */
+// ORGANIZER FIELD CORRECT ANSWERS
 div.muikku-organizer-field {
   
   .muikku-category.muikku-field-correct-answer {
@@ -175,7 +177,7 @@ div.muikku-organizer-field {
   
 }
 
-/* For sorterfields checks */
+// ORGANIZER FIELD INCORRECT ANSWERS
 .muikku-sorter-field {
   
   .muikku-sorter-items-container.muikku-field-correct-answer {
@@ -232,7 +234,7 @@ div.muikku-organizer-field {
   
 }
 
-/* For checkboxes/radiobuttons checks */
+// RADIO BUTTON, CHECKBOX CORRECT ANSWERS
 span.muikku-field-correct-answer {
   box-shadow: none;
   border: none;
@@ -249,6 +251,7 @@ span.muikku-field-correct-answer {
   
 }
 
+// RADIO BUTTON, CHECKBOX INCORRECT ANSWERS
 span.muikku-field-incorrect-answer {
   box-shadow: none;
   border: none;

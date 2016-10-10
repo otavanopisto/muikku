@@ -1,121 +1,123 @@
-/* Site's Main Vars */
-$siteWidth:960px;
+// Site's Main Vars
+$siteWidth: 960px;
 
-/* Text Colors */
-$content:#2c2c2c;
-$header:#2c2c2c;
-$title:#000;
-$subTitle:#4e4e4e;
-$link:#4290ea;
+// Text Colors
+$content: #2c2c2c;
+$header: #2c2c2c;
+$title: #000;
+$subTitle: #4e4e4e;
+$link: #4290ea;
 $formTitle: #5b5b5b;
-$footerText:#fff;
-$footerLink:#b3e9ff;
+$footerText: #fff;
+$footerLink: #b3e9ff;
 
-/* Links */
-$contextualLink:#0099ff;
-$contextualLinkHover:#006ab1; 
-$forgotPasswordLink:#fff;
+// Links
+$contextualLink: #0099ff;
+$contextualLinkHover: #006ab1; 
+$forgotPasswordLink: #fff;
 
-/* Forms */
-$formBorderColor:#dadada;
-$formBorderColorFocus:#858585;
-$formBackgroundColor:#fff;
-$formFontColor:#252525;
-$formFontColorFocus:#000;
+// Forms
+$formBorderColor: #dadada;
+$formBorderColorFocus: #858585;
+$formBackgroundColor: #fff;
+$formFontColor: #252525;
+$formFontColorFocus: #000;
 
-/* Assignments - Colors */
-$exerciseAssignment:#ff9900;
-$evaluatedAssignment:#ce01bd;
+// Assignments - Colors
+$exerciseAssignment: #ff9900;
+$evaluatedAssignment: #ce01bd;
 
-/* Exercise Correct Answers - Colors */
-$exerciseCorrectAnswersAlways:#62eba9;
-$exerciseCorrectAnswersNever:#da4a51;
-$exerciseCorrectAnswersOnRequest:#62c3eb;
+// Exercise Correct Answers - Colors
+$exerciseCorrectAnswersAlways: #62eba9;
+$exerciseCorrectAnswersNever: #da4a51;
+$exerciseCorrectAnswersOnRequest: #62c3eb;
 
-/* Static Navigation */
-$naviBgColor:#4594bf;
-$naviBorderTop:#71c3e1;
-$naviBorderBottom:#b2e0ff;
-$naviWorkspaceBorderBottom:#fff;
+// Static Navigation
+$naviBgColor: #4594bf;
+$naviBorderTop: #71c3e1;
+$naviBorderBottom: #b2e0ff;
+$naviWorkspaceBorderBottom: #fff;
 
-/* Bottom bar */
-$btBarBgr:#485c64;
+// Bottom bar
+$btBarBgr: #485c64;
 
-/* MainFunctions */
-$mainFuncSideHeader:#aed4e3;
-$mainFuncFilter1:#32acf6;
-$mainFuncFilter2:#f90ae3;
-$mainFuncFilter3:#5dc005;
+// MainFunctions
+$mainFuncSideHeader: #aed4e3;
+$mainFuncFilter1: #32acf6;
+$mainFuncFilter2: #f90ae3;
+$mainFuncFilter3: #5dc005;
 
-/* MainFunction Content */
-$mainFuncContent:#f0f3f4;
+// MainFunction Content
+$mainFuncContent: #f0f3f4;
 
-/* MainFunction Sidebar */
-$mainFuncSide:#f1f8fb;
+// MainFunction Sidebar
+$mainFuncSide: #f1f8fb;
 
-/* MainFunction Content Functions */
-$mainFuncCf:#f5fcff;
+// MainFunction Content Functions
+$mainFuncCf: #f5fcff;
 
-/* MainFunction Button Area */
-$mainFuncSb:#ebf6fb;
+// MainFunction Button Area
+$mainFuncSb: #ebf6fb;
 
-/* MainFunction Button */
-$mainFuncBtnGr:#feccb1,#f17432,#ea5507,#fb955e;  
-$mainFuncBtnBrd:#ea5507;
+// MainFunction Button
+$mainFuncBtnGr: #feccb1,#f17432,#ea5507,#fb955e;  
+$mainFuncBtnBrd: #ea5507;
 
-/* Border */
-$brd:#dadada;
-$brd1:#ededed;
-$brd2:#dadada;
-$brd3:#eee;
-$brd-top:#9bbee6;
+// Border
+$brd: #dadada;
+$brd1: #ededed;
+$brd2: #dadada;
+$brd3: #eee;
+$brd-top: #9bbee6;
 
-/* Lights */
+// Lights
 $light: #f9f9f9;
-$dim : #eee;
-$dimmer : #dadada;
-$dimmest : #cecece;
+$dim: #eee;
+$dimmer: #dadada;
+$dimmest: #cecece;
 
-/* Widgets */
+// Widgets
 $w-sc: 0 0 15px rgba(216, 230, 235, 0.2);
-$w-bgr:#fff;
+$w-bgr: #fff;
 $w-brd: #f0f0f0;
 $w-tbgr:#596e7d;
 
-/* Main Functionality Background */
+// Main Functionality Background
 $bgr: #fff;
-$bgr1 : #ededed;
-$bgr2 : #dadada;
-$bgr3 : #eee;
-$bgr4 : #f9f9f9;
+$bgr1: #ededed;
+$bgr2: #dadada;
+$bgr3: #eee;
+$bgr4: #f9f9f9;
 
-/* Highlighted background */
+// Highlighted background
 $hlBgr: #fff8c1;
 
+// Category - Colors
+$category1: #0099ff;
+$category2: #ff9900;
+$category3: #ff008d;
+$category4: #0bf0f2;
+$category5: #f00bf2;
+$category6: #47ccae;
+$category7: #7082b0;
+$category8: #6eb5cf;
+$category9: #ff0000;
+$category10: #0cff00;
+$category11: #000000;
 
-/* Category - Colors */
-$category1:#0099ff;
-$category2:#ff9900;
-$category3:#ff008d;
-$category4:#0bf0f2;
-$category5:#f00bf2;
-$category6:#47ccae;
-$category7:#7082b0;
-$category8:#6eb5cf;
-$category9:#ff0000;
-$category10:#0cff00;
-$category11:#000000;
+// Assignment Colors
+$taskBoxColor: #cff1f9; // Generic color for task field boxes to be used in background or borders
+$taskBoxTextColor: #000;
+$taskBoxHoverColor: #b1e8fe; // Generic hover color for task field boxes to be used in background or borders
+$taskBoxEditedColor: #b1e8fe; // Term in use or edited
+$selectedtaskBoxColor: #3dc7ff; // Generic selected color for task field boxes to be used in background or borders
+$selectedTaskBoxTextColor: #fff;
 
-/* Assignment Colors */
-$taskBoxColor:#cff1f9; /*#e1f7fc; Generic color for task field boxes to be used in background or borders */
-$taskBoxTextColor:#000;
-$taskBoxHoverColor:#b1e8fe; /* Generic hover color for task field boxes to be used in background or borders */
-$taskBoxEditedColor:#b1e8fe; /* Term in use or edited */
-$selectedtaskBoxColor:#3dc7ff; /* Generic selected color for task field boxes to be used in background or borders */
-$selectedTaskBoxTextColor:#fff;
+// Assignment Colors - Connect Field specific
+$CFfieldNumberBGColor: #fff; // Connect Field's field number background color
+$CFCorrectFieldNumberBGColor: #62c3eb; // Connect Field's correct field number background color
+$CFCorrectFieldNumberTextColor: #fff; // Connect Field's correct field number text color
+$CFPlaceHolderBGColor: #f8f8f8;
 
-/* Assignment Colors - Connect Field specific */
-$CFfieldNumberBGColor:#fff; /* Connect Field's field number background color */
-$CFCorrectFieldNumberBGColor:#62c3eb; /* Connect Field's correct field number background color */
-$CFCorrectFieldNumberTextColor:#fff; /* Connect Field's correct field number text color */
-$CFPlaceHolderBGColor:f8f8f8;
+// Workspace Reading View Document
+$document-shadow: 0 15px 15px rgba(105, 108, 128, 0.3);
