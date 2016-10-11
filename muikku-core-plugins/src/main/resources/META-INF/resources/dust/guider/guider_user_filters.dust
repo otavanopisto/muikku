@@ -16,6 +16,7 @@
             <span>{name}{?nameExtension} ({nameExtension}){/nameExtension}</span>
           </a>
           <div class="mf-label-functions-menu gt-flag-functions-menu">
+            <div data-is-owner="{isOwner}" data-flag-id="{id}" class="mf-label-function-edit gt-flag-function-edit">{#localize key="plugin.communicator.label.menu.edit"/}</div>
             <div data-is-owner="{isOwner}" data-flag-id="{id}" class="mf-label-function-delete gt-flag-function-delete">{#localize key="plugin.communicator.label.menu.remove"/}</div>
           </div>            
          </li>    
