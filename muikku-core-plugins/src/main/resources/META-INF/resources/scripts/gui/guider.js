@@ -56,7 +56,7 @@
               }, {
               'text': dialog.data('button-cancel-text'),
               'class': 'cancel-button',
-              'click': function(event) {
+              'click': function() {
                 $(this).dialog().remove();
               }
             }]
