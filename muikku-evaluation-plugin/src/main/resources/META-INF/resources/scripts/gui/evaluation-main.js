@@ -34,8 +34,13 @@
     },
     _create : function() {
       this._evaluationModal = $('<div>')
-        .addClass('evaluation-modal')
-        .appendTo('body'); 
+        .addClass('eval-modal')
+        .appendTo('body');
+
+      $(document).on('click', '.eval-modal-close', $.proxy(function (event) {
+        this._evaluationModal.remove();
+      }, this));
+      
       
       renderDustTemplate("evaluation/evaluation-modal-view.dust", {}, $.proxy(function (html) {
         $(this._evaluationModal).append(html);
@@ -50,5 +55,5 @@
   $(document).on('click', '.workspace-name', function (event) {
     $(document).evaluationDialog();
   });
-
+  
 }).call(this);

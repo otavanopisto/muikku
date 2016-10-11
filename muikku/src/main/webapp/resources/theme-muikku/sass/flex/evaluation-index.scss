@@ -1,5 +1,6 @@
 @import "_vars";
 @import "_styles";
+@import "_fonts";
 @import "_custom-ckeditor-styles";
 @import "_connect-field";
 @import "_organizer-field";
@@ -35,7 +36,7 @@ body {
   bottom: 0;
   box-shadow: 5px 0 5px rgba(0, 0, 0, 0.3);
   left: 0;
-  height: 55px;
+  height: 60px;
   padding: 0 10px;
   position: fixed;
   right: 0;
@@ -44,15 +45,22 @@ body {
   
   // Navi item
   .eval-nav-item {
+    border-radius: 100%;
     color: #fff;
     cursor: pointer;
     float: left;
-    font-size: 35px;
-    height: 35px;
-    margin: 5px;
-    width: 35px;
-    padding: 5px;
+    font-size: 32px;
+    height: 32px;
+    margin: 4px;
+    width: 32px;
+    padding: 10px;
     text-align: center;
+    transition: background, 0.5s, ease-in-out;
+    
+    &:hover {
+      background: darken(#7ed9ff, 5%);
+    }
+    
   }
   
   .eval-search {
@@ -70,106 +78,105 @@ body {
   left: 0;
   padding:10px;
   position: fixed;
-  top: 55px;
+  top: 60px;
   width: 300px;
   z-index:20;
 }
 
 // FRONTPAGE EVALUATION REQUESTS WRAPPER
-.evaluation-requests-wrapper{
-  padding: 55px 0 0;
+.evaluation-requests-wrapper {
+  padding: 60px 0 0;
+}
+
+// REQUEST PAGE TITLE
+.evaluation-requests-title {
+  margin:25px 25px 0;
   
-  // Requests title
-  .evaluation-requests-title {
-    margin:25px 25px 0;
-    
-    h3 {
-      font-size: 24px;
-      margin: 0;
-      padding: 0;
-      text-transform: none;
-    }
-    
+  h3 {
+    font-size: 24px;
+    margin: 0;
+    padding: 0;
+    text-transform: none;
   }
   
-  // Requests container
-  .evaluation-requests-container {
-    padding: 15px;
-    vertical-align: top;
+}
+
+// REQUESTS CONTAINER
+.evaluation-requests-container {
+  padding: 15px;
+  vertical-align: top;
+}
+
+// REQUEST
+.evaluation-request {
+  background: #fff;
+  border: 1px solid #fff;
+  box-shadow: 0 3px 5px rgba(58, 111, 148, 0.2);
+  display: inline-block;
+  margin: 10px;
+  padding: 3px;
+  vertical-align: top;
+  width: 300px;
+}
+
+.evaluation-request-title {
+  background: #ebfbfe;
+  padding: 4px 6px;
+}
+
+.evaluation-request-student {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.evaluation-request-study-programme {
+  font-size: 13px;
+  font-style: italic;
+}
+
+.evaluation-request-data {
+  font-size: 13px;
+  padding: 4px 6px;
+}
+
+.evaluation-request-data-row {
+  padding: 2px 0;
+  position: relative;
+  
+  .workspace-name {
+    height: 42px;
   }
   
-  // Request
-  .evaluation-request {
-    background: #fff;
-    border: 1px solid #fff;
-    box-shadow: 0 3px 5px rgba(58, 111, 148, 0.2);
-    display: inline-block;
-    margin: 5px;
-    padding: 3px;
-    vertical-align: top;
-    width: 300px;
-  }
-  
-  .evaluation-request-title {
-    background: #ebfbfe;
-    padding: 4px 6px;
-  }
-  
-  .evaluation-request-student {
-    font-size: 16px;
+  &.highlight {
     font-weight: 600;
   }
-  
-  .evaluation-request-studyprogram {
-    font-size: 13px;
-    font-style: italic;
+
+  a {
+    font-size: 14px;
+    font-weight: 400;
+    color: $link;
   }
   
-  .evaluation-request-data {
-    font-size: 13px;
-    padding: 4px 6px;
+  .evaluation-request-data-label {
+  
   }
   
-  .evaluation-request-data-row {
-    padding: 2px 0;
-    position: relative;
+  .evaluation-request-data-text {
+    float: right;
     
-    .workspace-name {
-      height: 42px;
+    &.assignments-status {
+      border-radius: 2px;
+      color: #fff;
+      line-height: 1;
+      padding: 4px;
     }
     
-    &.highlight {
-      font-weight: 600;
-    }
-  
-    a {
-      font-size: 14px;
-      font-weight: 400;
-      color: $link;
+    &.not-done {
+      background: #da5760;
     }
     
-    .evaluation-request-data-label {
-    
-    }
-    
-    .evaluation-request-data-text {
-      float: right;
-      
-      &.assignments-status {
-        border-radius: 2px;
-        color: #fff;
-        line-height: 1;
-        padding: 4px;
-      }
-      
-      &.not-done {
-        background: #da5760;
-      }
-      
-      &.all-done {
-        background: #63da57;
-      }
-      
+    &.all-done {
+      background: #63da57;
     }
     
   }
@@ -185,7 +192,9 @@ body {
   padding: 10px;
   position: fixed;
   right: 0;
-  top: 55px;
+  top: 60px;
   width: 300px;
   z-index:20;
 }
+
+@import "_mobile_evaluation";

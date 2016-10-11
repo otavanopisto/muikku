@@ -1,7 +1,7 @@
 <div class="evaluation-request">
   <div class="evaluation-request-title">
     <div class="evaluation-request-student">{lastName}, {firstName}</div>
-    <div class="evaluation-request-studyprogram">{studyProgramme}</div>
+    <div class="evaluation-request-study-programme">{studyProgramme}</div>
   </div>
   <div class="evaluation-request-data">
     <div class="evaluation-request-data-row">

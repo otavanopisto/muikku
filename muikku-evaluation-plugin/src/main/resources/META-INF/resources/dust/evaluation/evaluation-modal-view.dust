@@ -1,1 +1,20 @@
-<div>Hello world!</div>
+<div class="eval-modal-close icon-close-small"><span class="tooltip"></span></div>
+
+<div class="eval-modal-student-container">
+  <div class="eval-modal-student-header">
+    <div class="eval-modal-student-name">Ylpö, Arvo Josefiina Pentti</div>
+    <div class="eval-modal-student-programme">Internetix/Lukio</div>
+  </div>
+  <div class="eval-modal-assignment-content">
+  
+  </div>
+</div>
+
+<div class="eval-modal-evaluate-container">
+  <div class="eval-modal-evaluate-header">
+    <div class="eval-modal-workspace-name">BI4 - API-noiden PLA-neetta ja Lemmy</div>
+  </div>
+  <div class="eval-modal-evaluate-content">
+  
+  </div>
+</div>

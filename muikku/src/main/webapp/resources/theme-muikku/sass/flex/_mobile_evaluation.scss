@@ -1,0 +1,100 @@
+@media screen and (max-width: 769px) {
+
+  // STUDENT INFO & ASSIGNMENTS
+  .eval-modal-student-container {
+    bottom: auto;
+    left: auto;
+    margin: 0 auto 20px;
+    position: relative;
+    right: auto;
+    top: auto;
+  }
+  
+  // WORKSPACE INFO & EVALUATION FORMS
+  .eval-modal-evaluate-container {
+    bottom: auto;
+    left: auto;
+    margin: 0 auto 20px;
+    position: relative;
+    right: auto;
+    top: auto;
+  }
+  
+  .eval-modal-assignment-content,
+  .eval-modal-evaluate-content {
+    bottom: auto;
+    left: auto;
+    position: relative;
+    right: auto;
+    top: auto;
+  }
+  
+  // REQUESTS CONTAINER
+  .evaluation-requests-container {
+    padding: 10px;
+  }
+  
+  // REQUEST
+  .evaluation-request {
+    width: calc(50% - 30px);
+  }
+  
+  .eval-modal-student-name {
+    font-size: 20px;
+    padding: 20px 10px 20px 20px;
+  }
+  
+  .eval-modal-student-programme {
+    font-size: 12px;
+    margin: 18px 10px;
+  }
+  
+  .eval-modal-workspace-name {
+    font-size: 20px;
+    padding: 20px 60px 20px 20px;
+  } 
+  
+}
+
+@media screen and (max-width: 479px) {
+  
+  // REQUEST PAGE TITLE
+  .evaluation-requests-title {
+    margin:25px 15px 0;
+    
+    h3 {
+      font-size: 20px;
+    }
+    
+  }
+  
+  // REQUESTS CONTAINER
+  .evaluation-requests-container {
+    padding: 0;
+  }
+  
+  // REQUEST
+  .evaluation-request {
+    width: calc(100% - 30px);
+  }
+  
+  .evaluation-request-student {
+    font-size: 14px;
+  }
+  
+  .eval-modal-student-name {
+    font-size: 18px;
+    padding: 22px 10px 20px 20px;
+  }
+  
+  .eval-modal-student-programme {
+    font-size: 12px;
+    margin: 19px 10px;
+  }
+  
+  .eval-modal-workspace-name {
+    font-size: 18px;
+    padding: 22px 60px 20px 20px;
+  } 
+  
+}

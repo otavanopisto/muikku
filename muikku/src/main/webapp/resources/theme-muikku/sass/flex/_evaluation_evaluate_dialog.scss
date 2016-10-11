@@ -1,10 +1,104 @@
-.evaluation-modal {
+.eval-modal {
   background: #fff;
-  border-radius: 5px;
-  bottom: 5px;
-  left: 5px;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 30;
+}
+
+.eval-modal-close {
+  background: #3786bf;
+  border-radius: 100%;
+  cursor: pointer;
   position: absolute;
   right: 5px;
   top: 5px;
-  z-index: 30;
+  transition: background, 0.5s, ease-in-out;
+  z-index: 31;
+  
+  &:hover {
+    background: darken(#3786bf, 5%);
+  }
+  
+  &.icon-close-small {
+    color: #fff;
+    font-size: 30px;
+    height: 30px;
+    padding: 10px;
+    width: 30px;
+  }
+  
+}
+
+// STUDENT INFO & ASSIGNMENTS
+.eval-modal-student-container {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 50%;
+  top: 0;
+}
+
+// WORKSPACE INFO & EVALUATION FORMS
+.eval-modal-evaluate-container {
+  bottom: 0;
+  left: 50%;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+// MODAL HEADER'S
+.eval-modal-student-header,
+.eval-modal-evaluate-header {
+  background: #3786bf;
+  height: 60px;
+  position: relative;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.eval-modal-student-name {
+  color: #fff;
+  display: inline-block;
+  font-size: 24px;
+  line-height: 1em;
+  padding: 18px 10px 18px 20px;
+}
+
+.eval-modal-student-programme {
+  background: #5196c7;
+  border-radius: 3px;
+  color: #fff;
+  display: inline-block;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1em;
+  margin: 17px 10px;
+  padding: 6px 8px;
+  vertical-align: top;
+}
+
+.eval-modal-workspace-name {
+  width: 100%;
+  box-sizing: border-box;
+  color: #fff;
+  display: inline-block;
+  font-size: 24px;
+  line-height: 1em;
+  overflow: hidden;
+  padding: 18px 60px 18px 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+  
+.eval-modal-assignment-content,
+.eval-modal-evaluate-content {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 60px;
 }
