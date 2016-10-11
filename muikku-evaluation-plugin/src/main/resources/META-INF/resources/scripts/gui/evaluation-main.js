@@ -1,5 +1,7 @@
 (function() {
   'use strict';
+  
+  // Evaluation main view widget
 
   $.widget("custom.evaluationMainView", {
     _create : function() {
@@ -25,8 +27,41 @@
     }
   });
 
+  // Evaluation dialog widget
+
+  $.widget("custom.evaluationDialog", {
+    options: {
+    },
+    _create : function() {
+    },
+    open: function () {
+      renderDustTemplate("evaluation/evaluation-modal-view.dust", null, $.proxy(function (html) {
+        $(html).dialog({
+          modal: true, 
+          resizable: false,
+          width: 'auto',
+          height: 'auto',
+          buttons : [{
+            'text' : 'Cancel (localize)',
+            'class' : '',
+            'click' : function(event) {
+              $(this).dialog().remove();
+            }
+          }],
+          beforeClose: function(event, ui) {
+            $(this).dialog().remove();          
+          },
+        });
+      }, this));
+    }
+  });
+
   $(document).ready(function () {
     $(document).evaluationMainView();
+  });
+
+  $(document).on('click', '.workspace-name', function (event) {
+    $(document).evaluationDialog().evaluationDialog('open');
   });
 
 }).call(this);
