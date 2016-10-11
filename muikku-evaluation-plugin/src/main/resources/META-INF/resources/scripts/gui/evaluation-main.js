@@ -32,28 +32,26 @@
   $.widget("custom.evaluationDialog", {
     options: {
     },
-    _create : function() {
+    open: function() {
       this._evaluationModal = $('<div>')
         .addClass('eval-modal')
         .appendTo('body');
-
-      $(document).on('click', '.eval-modal-close', $.proxy(function (event) {
-        this._evaluationModal.remove();
-      }, this));
-      
       
       renderDustTemplate("evaluation/evaluation-modal-view.dust", {}, $.proxy(function (html) {
-        $(this._evaluationModal).append(html);
+        this._evaluationModal.append(html);
+        $('.eval-modal-close').click($.proxy(function (event) {
+          this._evaluationModal.remove();
+        }, this));
       }, this));
     }
   });
 
   $(document).ready(function () {
-    $(document).evaluationMainView();
+    $(document).evaluationMainView().evaluationDialog();
   });
 
   $(document).on('click', '.workspace-name', function (event) {
-    $(document).evaluationDialog();
+    $(document).evaluationDialog('open');
   });
   
 }).call(this);
