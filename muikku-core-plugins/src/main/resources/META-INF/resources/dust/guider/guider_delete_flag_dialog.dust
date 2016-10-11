@@ -1,3 +1,7 @@
 <div class="workspace-material-management-confirm-dialog" title="{#localize key="plugin.guider.flags.confirmFlagDelete.title"/}" data-button-delete-text="{#localize key="plugin.guider.flags.confirmFlagDelete.confirmButton"/}" data-button-cancel-text="{#localize key="plugin.guider.flags.confirmFlagDelete.cancelButton"/}">
-  {#localize key="plugin.guider.flags.confirmFlagDelete.text"/}
+  {@eq key=isOwner value="true"}
+    {#localize key="plugin.guider.flags.confirmFlagDelete.deletionText"/}
+  {:else}
+    {#localize key="plugin.guider.flags.confirmFlagDelete.removalText"/}
+  {/eq}
 </div>

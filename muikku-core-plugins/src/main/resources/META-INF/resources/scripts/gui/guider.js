@@ -30,6 +30,7 @@
 
     _onFlagDeleteClick: function(event) {
     	var flagId = Number($(event.target).closest("[data-flag-id]").attr('data-flag-id'));
+    	var isOwner = $(event.target).closest("[data-is-owner]").attr('data-is-owner');
 
     	function confirmCallback() {
           mApi().flag.flags.del(flagId).callback(function() {
@@ -37,7 +38,7 @@
           });
     	}
 
-        renderDustTemplate('guider/guider_delete_flag_dialog.dust', { }, $.proxy(function (text) {
+        renderDustTemplate('guider/guider_delete_flag_dialog.dust', { isOwner: isOwner }, $.proxy(function (text) {
           var dialog = $(text);
           $(text).dialog({
             modal: true, 
@@ -48,16 +49,16 @@
               'text': dialog.data('button-delete-text'),
               'class': 'delete-button',
               'click': function(event) {
+                  $(this).dialog().remove();
+                  confirmCallback();
+                }
+              }, {
+              'text': dialog.data('button-cancel-text'),
+              'class': 'cancel-button',
+              'click': function(event) {
                 $(this).dialog().remove();
-                confirmCallback();
               }
-            }, {
-          'text': dialog.data('button-cancel-text'),
-          'class': 'cancel-button',
-          'click': function(event) {
-            $(this).dialog().remove();
-            }
-          }]
+            }]
         });
       }, this));
     },
@@ -166,7 +167,8 @@
                   'id': flag.id,
                   'name': flag.name,
                   'color': flag.color,
-                  'iconClass': 'icon-flag'
+                  'iconClass': 'icon-flag',
+                  'isOwner': flag.ownerIdentifier === MUIKKU_LOGGED_USER ? 'true' : 'false'
                 };
               })
             });
