@@ -34,7 +34,7 @@
         var isOwner = $(event.target).closest("[data-is-owner]").attr('data-is-owner');
 
         function confirmCallback() {
-          mApi().flag.flags.del(flagId).callback(function() {
+          mApi().user.flags.del(flagId).callback(function() {
               $(event.target).closest(".mf-label").remove();
           });
         }

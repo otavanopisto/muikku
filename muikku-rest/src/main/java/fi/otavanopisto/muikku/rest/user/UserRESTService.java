@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -700,6 +701,54 @@ public class UserRESTService extends AbstractRESTService {
     }
 
     return Response.ok(createRestModel(flagController.updateFlag(flag, payload.getName(), payload.getColor(), payload.getDescription()))).build();
+  }
+
+  @DELETE
+  @Path("/flags/{ID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteFlag(@PathParam("ID") long flagId) {
+    Flag flag = flagController.findFlagById(flagId);
+
+    if (flag == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    boolean isOwner = false;
+    UserSchoolDataIdentifier ownerIdentifier = flag.getOwnerIdentifier();
+    SchoolDataIdentifier loggedIdentifier = sessionController.getLoggedUser();
+    if (loggedIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Must be logged in.").build();
+    }
+
+    UserSchoolDataIdentifier loggedUserIdentifier =
+        userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(
+            loggedIdentifier);
+    
+    if (loggedUserIdentifier == null) {
+      return Response
+                .status(Status.BAD_REQUEST)
+                .entity("No user school data identifier for logged user")
+                .build();
+    }
+    
+    if (Objects.equals(ownerIdentifier.getIdentifier(), loggedUserIdentifier.getIdentifier())) {
+      isOwner = true;
+    }
+    
+    if (!flagController.hasFlagPermission(flag, loggedIdentifier)) {
+      return Response
+                  .status(Status.FORBIDDEN)
+                  .entity("You don't have the permission to delete this flag")
+                  .build();
+    }
+
+    if (isOwner) {
+      flagController.deleteFlagCascade(flag);
+      return Response.noContent().build();
+    } else {
+      flagController.unshareFlag(flag, loggedUserIdentifier);
+      return Response.noContent().build();
+    }
   }
   
   @POST
