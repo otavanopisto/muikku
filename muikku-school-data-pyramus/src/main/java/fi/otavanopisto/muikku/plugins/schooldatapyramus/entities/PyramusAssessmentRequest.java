@@ -7,9 +7,8 @@ import fi.otavanopisto.muikku.schooldata.entity.AssessmentRequest;
 
 public class PyramusAssessmentRequest implements AssessmentRequest {
   
-  public PyramusAssessmentRequest(String identifier, String userIdentifier, String firstName, String lastName, String studyProgramme,
+  public PyramusAssessmentRequest(String userIdentifier, String firstName, String lastName, String studyProgramme,
       String courseIdentifier, String courseName, String courseNameExtension, Date courseEnrollmentDate, Date assessmentRequestDate) {
-    this.identifier = identifier;
     this.userIdentifier = userIdentifier;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -24,11 +23,6 @@ public class PyramusAssessmentRequest implements AssessmentRequest {
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
-  }
-
-  @Override
-  public String getIdentifier() {
-    return identifier;
   }
 
   @Override
@@ -76,7 +70,6 @@ public class PyramusAssessmentRequest implements AssessmentRequest {
     return assessmentRequestDate;
   }
 
-  private final String identifier;
   private final String userIdentifier;
   private final String firstName;
   private final String lastName;

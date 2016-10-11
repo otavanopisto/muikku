@@ -4,7 +4,6 @@ import java.util.Date;
 
 public interface AssessmentRequest extends SchoolDataEntity {
 	
-	public String getIdentifier();
   public String getUserIdentifier();
   public String getFirstName();
   public String getLastName();
