@@ -119,6 +119,7 @@ public class Evaluation2RESTService {
     restAssessmentRequest.setStudyProgramme(assessmentRequest.getStudyProgramme());
     restAssessmentRequest.setWorkspaceName(assessmentRequest.getCourseName());
     restAssessmentRequest.setWorkspaceNameExtension(assessmentRequest.getCourseNameExtension());
+    restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     return restAssessmentRequest;
   }
 

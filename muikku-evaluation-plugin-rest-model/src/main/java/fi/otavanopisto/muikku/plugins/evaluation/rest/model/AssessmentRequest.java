@@ -76,11 +76,20 @@ public class AssessmentRequest {
     this.assignmentsTotal = assignmentsTotal;
   }
 
+  public String getWorkspaceUrlName() {
+    return workspaceUrlName;
+  }
+
+  public void setWorkspaceUrlName(String workspaceUrlName) {
+    this.workspaceUrlName = workspaceUrlName;
+  }
+
   private String firstName;
   private String lastName;
   private String studyProgramme;
   private String workspaceName;
   private String workspaceNameExtension;
+  private String workspaceUrlName;
   private Date enrollmentDate;
   private Date assessmentRequestDate;
   private Long assignmentsDone;
