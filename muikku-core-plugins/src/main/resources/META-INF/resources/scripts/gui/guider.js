@@ -1,3 +1,4 @@
+/* global MUIKKU_LOGGED_USER */
 (function() {
   
   $.widget("custom.guiderSearch", {
@@ -29,14 +30,14 @@
     },
 
     _onFlagDeleteClick: function(event) {
-    	var flagId = Number($(event.target).closest("[data-flag-id]").attr('data-flag-id'));
-    	var isOwner = $(event.target).closest("[data-is-owner]").attr('data-is-owner');
+        var flagId = Number($(event.target).closest("[data-flag-id]").attr('data-flag-id'));
+        var isOwner = $(event.target).closest("[data-is-owner]").attr('data-is-owner');
 
-    	function confirmCallback() {
+        function confirmCallback() {
           mApi().flag.flags.del(flagId).callback(function() {
               $(event.target).closest(".mf-label").remove();
           });
-    	}
+        }
 
         renderDustTemplate('guider/guider_delete_flag_dialog.dust', { isOwner: isOwner }, $.proxy(function (text) {
           var dialog = $(text);
@@ -48,7 +49,7 @@
             buttons: [{
               'text': dialog.data('button-delete-text'),
               'class': 'delete-button',
-              'click': function(event) {
+              'click': function() {
                   $(this).dialog().remove();
                   confirmCallback();
                 }
