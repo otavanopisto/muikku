@@ -9,6 +9,8 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
+
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
 public class WorkspaceFolder extends WorkspaceNode {
@@ -34,6 +36,14 @@ public class WorkspaceFolder extends WorkspaceNode {
     this.defaultMaterial = defaultMaterial;
   }
 
+  public MaterialViewRestrict getViewRestrict() {
+    return viewRestrict;
+  }
+  
+  public void setViewRestrict(MaterialViewRestrict viewRestrict) {
+    this.viewRestrict = viewRestrict;
+  }
+
   @NotNull
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
@@ -41,4 +51,8 @@ public class WorkspaceFolder extends WorkspaceNode {
 
   @ManyToOne
   private WorkspaceNode defaultMaterial;
+
+  @Column (nullable = false)
+  @Enumerated (EnumType.STRING)
+  private MaterialViewRestrict viewRestrict;
 }

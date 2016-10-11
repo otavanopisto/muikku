@@ -1,8 +1,6 @@
 package fi.otavanopisto.muikku.mock.model;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-
 import fi.otavanopisto.pyramus.rest.model.Sex;
 
 public class MockStudent extends MockLoggable{

@@ -104,30 +104,4 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
     }
   }
 
-  /*
-  @Test
-  public void courseJournalStudentsCantSeeEachOther() throws Exception {
-    loginStudent1();
-    Workspace workspace = createWorkspace("testcourse", "1", Boolean.TRUE);
-    try {
-      navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), true);
-      waitForPresent(".cke_wysiwyg_frame");
-      switchToFrame(".cke_wysiwyg_frame");
-      sendKeys(".cke_editable", "content");
-      switchToDefaultFrame();
-      sendKeys(".mf-textfield-subject", "title");
-      click("button[value='Create']");
-      waitForPresent("#content");
-      assertText(".workspace-journal-title", "title");
-      assertText(".workspace-journal-content", "content");
-      
-      loginStudent2();
-      navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), true);
-      waitForPresent("#content");
-      assertNotPresent(".workspace-journal-title");
-    } finally {
-      deleteWorkspace(workspace.getId());
-    }
-  }
-   */
 }

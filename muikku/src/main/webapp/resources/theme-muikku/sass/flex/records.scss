@@ -8,7 +8,7 @@
   &.loading {
     height:200px;
     
-    &:before {
+    &::before {
       @include generic-loader(50px);
       margin-top:50%;
       margin-left:50%;

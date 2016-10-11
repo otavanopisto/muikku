@@ -32,7 +32,7 @@ body.evaluation {
     top: 0;
     z-index: 9999;
 
-    &:before {
+    &::before {
       @include generic-loader(50px);
       position: absolute;
       top: 50%;
@@ -89,7 +89,7 @@ body.evaluation {
       .evaluation-select-workspace {
         @include flex(1 1 auto);
         cursor: pointer;
-        padding: 15px 10px 10px 10px;
+        padding: 15px 10px 10px;
 
         span.icon-arrow-down,
         span.icon-arrow-up {
@@ -169,7 +169,7 @@ body.evaluation {
 
         .evaluation-flags {
 
-          &.icon-flag:before {
+          &.icon-flag::before {
             color: #fff;
             display: inline-block;
             font-size: 30px;
@@ -204,7 +204,7 @@ body.evaluation {
 
             }
 
-            &.icon-flag:before {
+            &.icon-flag::before {
               background: #fff none repeat scroll 0 0;
               border-radius: 100%;
               display: inline-block;
@@ -229,8 +229,8 @@ body.evaluation {
 
           }
 
-          &:after, 
-          &:before {
+          &::after, 
+          &::before {
             bottom: 100%;
             left: 230px;
             border: solid transparent;
@@ -241,14 +241,14 @@ body.evaluation {
             pointer-events: none;
           }
 
-          &:after {
+          &::after {
             border-color: rgba(255, 255, 255, 0);
             border-bottom-color: #fff;
             border-width: 8px;
             margin-left: -8px;
           }
 
-          &:before {
+          &::before {
             border-color: rgba(0, 222, 255, 0);
             border-bottom-color: #ffff;
             border-width: 8px;
@@ -259,7 +259,7 @@ body.evaluation {
 
         .evaluation-search {
 
-          &.icon-search:before {
+          &.icon-search::before {
             color: #fff;
             display: inline-block;
             font-size: 30px;
@@ -280,8 +280,8 @@ body.evaluation {
           border: 1px solid #fff;
           border-radius: 5px;
 
-          &:after, 
-          &:before {
+          &::after, 
+          &::before {
             bottom: 100%;
             left: 292px;
             border: solid transparent;
@@ -292,14 +292,14 @@ body.evaluation {
             pointer-events: none;
           }
 
-          &:after {
+          &::after {
             border-color: rgba(255, 255, 255, 0);
             border-bottom-color: #fff;
             border-width: 8px;
             margin-left: -8px;
           }
 
-          &:before {
+          &::before {
             border-color: rgba(0, 222, 255, 0);
             border-bottom-color: #ffff;
             border-width: 8px;
@@ -359,7 +359,7 @@ body.evaluation {
 
     &.loading {
 
-      &:before {
+      &::before {
         @include generic-loader(50px);
         position: absolute;
         top: 50%;
@@ -613,7 +613,7 @@ body.evaluation {
       position: relative;
       border-radius: 3px;
       border-top:3px solid #fff;
-      box-shadow: 0 0 10px 0px rgba(169, 169, 169, 0.2);
+      box-shadow: 0 0 10px 0 rgba(169, 169, 169, 0.2);
 
       &.assignment-pending {
         opacity: 0.1;
@@ -940,7 +940,7 @@ body.evaluation {
                     right: 0;
                     top: -6px;
                     text-align: right;
-                    padding: 0px 10px;
+                    padding: 0 10px;
                     white-space: nowrap;
                     
                     .evaluation-assignment-assessmentvalue,
@@ -1139,7 +1139,7 @@ body.evaluation {
           &:hover {
             background: #fff;
             border: 2px solid #8dd6f1;
-            box-shadow: 0 0 0px 3px rgba(202,225,252,0.75);
+            box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
           }
           
         }
@@ -1276,7 +1276,7 @@ body.evaluation {
           display: none;
         }
         
-        &:before {
+        &::before {
           border-bottom-left-radius: 10px;
           color: #fff;
           content: "\e63b";

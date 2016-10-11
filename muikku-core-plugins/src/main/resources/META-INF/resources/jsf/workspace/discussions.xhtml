@@ -10,7 +10,6 @@
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js" />
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.7/ckeditor.js"/>    
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.klass/0.1a/jquery.klass-0.1a.js"/>  
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/webshim/1.15.10/minified/polyfiller.js"/>
@@ -34,6 +33,7 @@
     <input type="hidden" name="userEntityId" value="#{sessionBackingBean.loggedUserId}"/>
     <input type="hidden" name="workspaceEntityId" value="#{workspaceDiscussionsBackingBean.workspaceEntityId}"/>
     <input type="hidden" name="areaPermissions" value="#{workspaceDiscussionsBackingBean.areaPermissions}"/>
+    <input type="hidden" name="lockStickyPermission" value="#{workspaceDiscussionsBackingBean.lockStickyPermission}"/>
     <main id="content">
       <section>
         <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.discussions.pageTitle']} - #{workspaceDiscussionsBackingBean.workspaceName}</h1>
@@ -55,13 +55,13 @@
                 <div class="mf-tools-mobile">
                   <div class="mf-tools-mobile-activate icon-navicon">
                     <div class="mf-tools-mobile-list">
-                      <div class="mf-tool-container di-new-area-container">
+                      <div class="mf-tool-container default di-new-area-container">
                         <div class="mf-tool di-new-area-button icon-add" title="#{i18n.text['plugin.discussion.createarea.topic']}"></div>
                       </div>
-                      <div class="mf-tool-container di-edit-area-container">
+                      <div class="mf-tool-container default di-edit-area-container">
                         <div class="mf-tool di-edit-area-button icon-edit" title="#{i18n.text['plugin.discussion.editarea.topic']}"></div>
                       </div>
-                      <div class="mf-tool-container di-delete-area-container">
+                      <div class="mf-tool-container default di-delete-area-container">
                         <div class="mf-tool di-delete-area-button icon-delete" title="#{i18n.text['plugin.discussion.deletearea.topic']}"></div>
                       </div>
                     </div>                  
@@ -69,13 +69,13 @@
                 </div>
               </div>              
               <div class="di-admin-tools lg-flex-cell-11 md-flex-cell-11 sm-flex-cell-11 sm-flex-hide">
-                <div class="mf-tool-container di-new-area-container">
+                <div class="mf-tool-container default di-new-area-container">
                   <div class="mf-tool di-new-area-button icon-add" title="#{i18n.text['plugin.discussion.createarea.topic']}"></div>    
                 </div>             
-                <div class="mf-tool-container di-edit-area-container">
+                <div class="mf-tool-container default di-edit-area-container">
                   <div class="mf-tool di-edit-area-button icon-edit" title="#{i18n.text['plugin.discussion.editarea.topic']}"></div>    
                 </div>
-                <div class="mf-tool-container di-delete-area-container">
+                <div class="mf-tool-container default di-delete-area-container">
                   <div class="mf-tool di-delete-area-button icon-delete" title="#{i18n.text['plugin.discussion.deletearea.topic']}"></div>    
                 </div>               
               </div>

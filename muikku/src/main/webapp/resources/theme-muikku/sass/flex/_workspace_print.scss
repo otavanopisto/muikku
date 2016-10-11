@@ -1,4 +1,4 @@
-/* Print styles for materials */
+// PRINT STYLES FOR MATERIALS
 
 @media print {
   
@@ -25,6 +25,7 @@
       margin-top: 10px !important;
       padding: 0;
     }
+    
   } 
   
   #staticNavigationWrapper {
@@ -51,4 +52,5 @@
   .flex-row {
     display: block;
   }
+  
 }

@@ -36,6 +36,30 @@ p {
   margin: 10px 0;
 }
 
+.muikku-word-definition {
+  z-index: 9999;
+  background: #c4ffd6 none repeat scroll 0 0;
+  border: 2px solid #fff;
+  border-radius: 3px;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
+  color: #000;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.5em;
+  max-width: 250px;
+  padding: 5px 10px;
+  position: absolute;
+}
+    
+mark[data-muikku-word-definition] {
+  border-bottom: 1px dashed #007925;
+  color: #007925;
+  background: transparent;
+  cursor: help;
+  font-weight: 400;
+  position: relative;
+}
+
 textarea,
 input[type="text"] {
   font-family: 'Open Sans', Arial, sans-serif !important;
@@ -45,14 +69,14 @@ input[type="text"] {
   margin: 0;
   font-weight: 300;
   font-style: italic;
-  border: 0px;
+  border: 0;
   color: #000;
   resize: vertical;
   box-sizing: border-box;
   
   &:hover {
     background: #ebf7ff;
-    border: 0px;
+    border: 0;
   }
   
   &:focus {
@@ -93,7 +117,7 @@ select {
   color: #0061a2;
   display: inline-block;
   margin: 4px;
-  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   border-radius: 3px;
   max-width: 100%;
   word-wrap: break-word;
