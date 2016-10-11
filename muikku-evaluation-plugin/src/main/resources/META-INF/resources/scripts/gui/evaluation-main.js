@@ -33,25 +33,13 @@
     options: {
     },
     _create : function() {
+      this._evaluationModal = $('<div>')
+        .addClass('evaluation-modal')
+        .appendTo('body'); 
     },
     open: function () {
       renderDustTemplate("evaluation/evaluation-modal-view.dust", null, $.proxy(function (html) {
-        $(html).dialog({
-          modal: true, 
-          resizable: false,
-          width: 'auto',
-          height: 'auto',
-          buttons : [{
-            'text' : 'Cancel (localize)',
-            'class' : '',
-            'click' : function(event) {
-              $(this).dialog().remove();
-            }
-          }],
-          beforeClose: function(event, ui) {
-            $(this).dialog().remove();          
-          },
-        });
+        $(this._evaluationModal).append($(html));
       }, this));
     }
   });
@@ -61,7 +49,7 @@
   });
 
   $(document).on('click', '.workspace-name', function (event) {
-    $(document).evaluationDialog().evaluationDialog('open');
+    $(document).evaluationDialog();
   });
 
 }).call(this);
