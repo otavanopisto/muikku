@@ -36,10 +36,9 @@
       this._evaluationModal = $('<div>')
         .addClass('evaluation-modal')
         .appendTo('body'); 
-    },
-    open: function () {
-      renderDustTemplate("evaluation/evaluation-modal-view.dust", null, $.proxy(function (html) {
-        $(this._evaluationModal).append($(html));
+      
+      renderDustTemplate("evaluation/evaluation-modal-view.dust", {}, $.proxy(function (html) {
+        $(this._evaluationModal).append(html);
       }, this));
     }
   });
