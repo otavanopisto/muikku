@@ -22,7 +22,43 @@
         this.filters(this._filters);
         this.element.on('click', '.gt-filter-link', $.proxy(this._onFilterLink, this));
         this.element.on('click', '.mf-label-functions', $.proxy(this._onFilterMenuLink, this));
+
+        this.element.on('click', '.mf-label-function-delete', $.proxy(this._onFlagDeleteClick, this));               
       
+      }, this));
+    },
+
+    _onFlagDeleteClick: function(event) {
+    	var flagId = Number($(event.target).closest("[data-flag-id]").attr('data-flag-id'));
+
+    	function confirmCallback() {
+          mApi().flag.flags.del(flagId).callback(function() {
+              $(event.target).closest(".mf-label").remove();
+          });
+    	}
+
+        renderDustTemplate('guider/guider_delete_flag_dialog.dust', { }, $.proxy(function (text) {
+          var dialog = $(text);
+          $(text).dialog({
+            modal: true, 
+            resizable: false,
+            width: 360,
+            dialogClass: "guider-edit-flag-dialog",
+            buttons: [{
+              'text': dialog.data('button-delete-text'),
+              'class': 'delete-button',
+              'click': function(event) {
+                $(this).dialog().remove();
+                confirmCallback();
+              }
+            }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog().remove();
+            }
+          }]
+        });
       }, this));
     },
     
