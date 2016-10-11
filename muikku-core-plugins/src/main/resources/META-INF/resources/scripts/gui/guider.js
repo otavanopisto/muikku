@@ -1,6 +1,5 @@
 /* global MUIKKU_LOGGED_USER */
 (function() {
-  
   $.widget("custom.guiderSearch", {
     _create : function() {
       this.element.on('keyup', '.search', $.proxy(this._inputKeyUp, this));
@@ -30,7 +29,51 @@
       }, this));
     },
 
-    _onFlagEditClick: function(event) {
+    _onFlagEditClick: function (event) {
+      var flagId = Number($(event.target).closest("[data-flag-id]").attr('data-flag-id'));
+      
+      this._loadFlag(flagId, $.proxy(function (err, flag) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          renderDustTemplate('guider/guider_edit_flag.dust', { flag: flag }, $.proxy(function(text) {
+            var dialog = $(text);
+            $(dialog).dialog({
+              modal : true,
+              minHeight : 200,
+              resizable : false,
+              width : 560,
+              dialogClass : "guider-edit-flag-dialog",
+              buttons : [ {
+                'text' : dialog.attr('data-button-save'),
+                'class' : 'save-button',
+                'click' : function(event) {
+                  $.each(['name', 'color', 'description'], $.proxy(function (index, property) {
+                    flag[property] = $(this).find('*[name="' + property + '"]').val();
+                  }, this));
+                  
+                  mApi().user.flags
+                    .update(flagId, flag)
+                    .callback($.proxy(function (err) {
+                      if (err) {
+                        $('.notification-queue').notificationQueue('notification', 'error', err);
+                      } else {
+                        $(this).dialog("destroy").remove();
+                        window.location.reload(true);
+                      }
+                    }, this));
+                }
+              }, {
+                'text' : dialog.attr('data-button-cancel'),
+                'class' : 'cancel-button',
+                'click' : function(event) {
+                  $(this).dialog("destroy").remove();
+                }
+              } ]
+            });
+          }, this));
+        }
+      }, this));
     },
 
     _onFlagDeleteClick: function(event) {
@@ -66,6 +109,18 @@
             }]
         });
       }, this));
+    },
+
+    _loadFlag: function (id, callback) {
+      mApi().user.flags
+        .read(id)
+        .callback($.proxy(function (err, flag) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(err, flag);
+          }
+        }, this));
     },
     
     filters: function (filters) {
