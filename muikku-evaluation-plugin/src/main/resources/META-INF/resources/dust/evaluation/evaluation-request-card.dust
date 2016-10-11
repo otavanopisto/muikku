@@ -6,7 +6,7 @@
   <div class="evaluation-request-data">
     <div class="evaluation-request-data-row">
       <div class="workspace-name">
-        <a href="#">{workspaceName}</a>
+        <a href="#">{workspaceName} {#workspaceNameExtension}({workspaceNameExtension}){/workspaceNameExtension}</a>
       </div>
     </div>
     <div class="evaluation-request-data-row">
