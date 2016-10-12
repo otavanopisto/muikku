@@ -54,7 +54,7 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   public static final String FORUM_ACCESSENVIRONMENTFORUM = "FORUM_ACCESSENVIRONMENTFORUM";
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String FORUM_DELETEENVIRONMENTFORUM = "FORUM_DELETEENVIRONMENTFORUM";
 
   /**
