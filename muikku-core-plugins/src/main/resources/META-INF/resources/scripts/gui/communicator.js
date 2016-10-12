@@ -229,7 +229,7 @@
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
       $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
-      $(document).on('click', $.proxy(this._onDocumentClicked, this))
+      $(document).on('click', $.proxy(this._onDocumentClicked, this));
     },
     
     loadFolder: function (id) {
@@ -1125,7 +1125,7 @@
               replyMessage: message
             };
             
-            renderDustTemplate('/communicator/communicator_create_message.dust', data, $.proxy(function (text) {
+            renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
               this.element.html(text);
               if (message.senderId === MUIKKU_LOGGED_USER_ID) {                 
                 $.each(message.recipients,  $.proxy(function (index, recipient) {
@@ -1148,7 +1148,7 @@
           }
         }, this));
       } else {
-        renderDustTemplate('/communicator/communicator_create_message.dust', {}, $.proxy(function (text) {
+        renderDustTemplate('communicator/communicator_create_message.dust', {}, $.proxy(function (text) {
           this.element.html(text);
           if(callback){
             callback();
