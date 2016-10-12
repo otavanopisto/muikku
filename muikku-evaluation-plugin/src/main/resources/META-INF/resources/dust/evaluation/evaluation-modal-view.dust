@@ -2,8 +2,7 @@
 
 <section class="eval-modal-student-container" id="evaluationStudentContainer">
   <header class="eval-modal-student-header flex-row flex-align-items-center">
-    <div class="eval-modal-student-name">{studentName}</div>
-    <div class="eval-modal-student-programme sm-flex-hide">{studyProgrammeName}</div>
+    <div class="eval-modal-student-name">{studentName} ({studyProgrammeName})</div>
   </header>
   <div class="eval-modal-assignment-content">
   

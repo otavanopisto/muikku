@@ -30,7 +30,7 @@
 }
 
 // MOBILE - 1 COLUMN & DECREASED FONT SIZE
-@media screen and (min-width: 320px) and (max-width: 599px) {
+@media screen and (min-width: 0px) and (max-width: 599px) {
   
   // REQUEST PAGE TITLE
   .evaluation-requests-title {
@@ -50,10 +50,26 @@
     font-size: 14px;
   }
   
+  .eval-modal-student-name,
+  .eval-modal-workspace-name {
+    font-size: 18px;
+  }
+  
+  .eval-modal-close {
+    
+    &.icon-close-small {
+      color: #fff;
+      font-size: 26px;
+      height: 26px;
+      width: 26px;
+    }
+    
+  }
+  
 }
 
 // MOBILE EVALUATION DIALOG
-@media screen and (min-width: 320px) and (max-width: 1023px) {
+@media screen and (max-width: 1023px) {
 
   .eval-modal-student-container,
   .eval-modal-evaluate-container {
@@ -63,6 +79,10 @@
   
   .eval-modal-evaluate-container {
     
+  }
+  
+  .eval-modal-workspace-name {
+    padding: 0 20px 0 20px;
   }
   
 }
