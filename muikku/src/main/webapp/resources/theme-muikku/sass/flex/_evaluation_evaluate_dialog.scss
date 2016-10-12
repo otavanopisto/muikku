@@ -2,6 +2,7 @@
   background: #fff;
   left: 0;
   height: 100%;
+  overflow: auto;
   position: fixed;
   right: 0;
   top: 0;
@@ -26,13 +27,13 @@
     color: #fff;
     font-size: 30px;
     height: 30px;
-    padding: 10px;
+    padding: 8px;
     width: 30px;
   }
   
 }
 
-// STUDENT INFO & ASSIGNMENTS
+// STUDENT INFO & ASSIGNMENTS <section>
 .eval-modal-student-container {
   bottom: 0;
   left: 0;
@@ -41,7 +42,7 @@
   top: 0;
 }
 
-// WORKSPACE INFO & EVALUATION FORMS
+// WORKSPACE INFO & EVALUATION FORMS <section>
 .eval-modal-evaluate-container {
   bottom: 0;
   left: 50%;
@@ -50,11 +51,11 @@
   top: 0;
 }
 
-// MODAL HEADER'S
+// MODAL HEADER'S <header>
 .eval-modal-student-header,
 .eval-modal-evaluate-header {
   background: #3786bf;
-  height: 60px;
+  padding: 10px 0;
   position: relative;
   white-space: nowrap;
   width: 100%;
@@ -64,8 +65,8 @@
   color: #fff;
   display: inline-block;
   font-size: 24px;
-  line-height: 1em;
-  padding: 18px 10px 18px 20px;
+  line-height: 1.5em;
+  padding: 0 20px;
 }
 
 .eval-modal-student-programme {
@@ -76,7 +77,6 @@
   font-size: 14px;
   font-style: italic;
   line-height: 1em;
-  margin: 17px 10px;
   padding: 6px 8px;
   vertical-align: top;
 }
@@ -87,9 +87,9 @@
   color: #fff;
   display: inline-block;
   font-size: 24px;
-  line-height: 1em;
+  line-height: 1.5em;
   overflow: hidden;
-  padding: 18px 60px 18px 20px;
+  padding: 0 60px 0 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -138,9 +138,10 @@
     box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
     font-family:'Open Sans', Arial, sans-serif;
     font-size: 14px;
+    padding: 0 5px;
     
     option {
-      padding: 5px;
+      padding: 5px 10px;
     }
     
   }

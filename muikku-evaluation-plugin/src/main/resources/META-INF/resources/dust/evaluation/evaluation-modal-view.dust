@@ -1,19 +1,19 @@
 <div class="eval-modal-close icon-close-small"><span class="tooltip"></span></div>
 
 <section class="eval-modal-student-container" id="evaluationStudentContainer">
-  <div class="eval-modal-student-header">
+  <header class="eval-modal-student-header flex-row flex-align-items-center">
     <div class="eval-modal-student-name">{studentName}</div>
-    <div class="eval-modal-student-programme">{studyProgrammeName}</div>
-  </div>
+    <div class="eval-modal-student-programme sm-flex-hide">{studyProgrammeName}</div>
+  </header>
   <div class="eval-modal-assignment-content">
   
   </div>
 </section>
 
 <section class="eval-modal-evaluate-container" id="evaluationEvaluateContainer">
-  <div class="eval-modal-evaluate-header">
+  <header class="eval-modal-evaluate-header flex-row flex-align-items-center">
     <div class="eval-modal-workspace-name">{courseName}</div>
-  </div>
+  </header>
   <div class="eval-modal-evaluate-content">
   
     {>"evaluation/evaluation-evaluate-workspace-form.dust"/}

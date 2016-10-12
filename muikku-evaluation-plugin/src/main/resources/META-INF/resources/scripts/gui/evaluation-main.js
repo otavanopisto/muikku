@@ -37,6 +37,8 @@
         .addClass('eval-modal')
         .appendTo('body');
       
+      $('body').addClass('no-scroll');
+      
       renderDustTemplate("evaluation/evaluation-modal-view.dust", {
         studentName: $(requestCard).find('.evaluation-request-student').text(),
         studyProgrammeName: $(requestCard).find('.evaluation-request-study-programme').text(),
@@ -44,6 +46,7 @@
       }, $.proxy(function (html) {
         this._evaluationModal.append(html);
         $('.eval-modal-close').click($.proxy(function (event) {
+          $('body').removeClass('no-scroll');
           this._evaluationModal.remove();
         }, this));
       }, this));

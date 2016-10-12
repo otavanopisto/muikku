@@ -27,21 +27,6 @@
     width: calc(50% - 20px);
   }
   
-  .eval-modal-student-name {
-    font-size: 20px;
-    padding: 20px 10px 20px 20px;
-  }
-  
-  .eval-modal-student-programme {
-    font-size: 12px;
-    margin: 18px 10px;
-  }
-  
-  .eval-modal-workspace-name {
-    font-size: 20px;
-    padding: 20px 60px 20px 20px;
-  } 
-  
 }
 
 // MOBILE - 1 COLUMN & DECREASED FONT SIZE
@@ -65,19 +50,19 @@
     font-size: 14px;
   }
   
-  .eval-modal-student-name {
-    font-size: 18px;
-    padding: 22px 10px 20px 20px;
+}
+
+// MOBILE EVALUATION DIALOG
+@media screen and (min-width: 320px) and (max-width: 1023px) {
+
+  .eval-modal-student-container,
+  .eval-modal-evaluate-container {
+    position: static;
+    min-height: 500px;
   }
   
-  .eval-modal-student-programme {
-    font-size: 12px;
-    margin: 19px 10px;
+  .eval-modal-evaluate-container {
+    
   }
-  
-  .eval-modal-workspace-name {
-    font-size: 18px;
-    padding: 22px 60px 20px 20px;
-  } 
   
 }
