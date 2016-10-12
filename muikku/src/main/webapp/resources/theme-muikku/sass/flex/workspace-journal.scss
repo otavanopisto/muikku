@@ -3,59 +3,58 @@
 @import "_custom-ckeditor-styles.scss";
  @import "_workspace-materials-defaults.scss";
 
-/* WORKSPACE JOURNAL */
-
+// WORKSPACE JOURNAL
 .workspace-journal-new-entry-container {
-  background-color:#fff;
-  font-size:14px;
-  height:35px;
-  padding:0 30px 0 30px;
+  background-color: #fff;
+  font-size: 14px;
+  height: 35px;
+  padding: 0 30px;
   
   .workspace-journal-new-entry-button { 
-    background:#0099ff;
+    background: #0099ff;
     border-radius: 3px;
-    color:#ffffff;
-    cursor:pointer;
-    display:inline-block;
-    font-size:14px;
-    line-height:1.3em;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 1.3em;
     text-transform: uppercase;
-    padding:8px 12px;
-    font-weight:400;
+    padding: 8px 12px;
+    font-weight: 400;
   }
 
 }
 
 .workspace-journal-teacher-tools-container { 
-  padding:10px;
-  background:#d5f3ff;
-  border:1px solid #fff; 
-  position:relative;
+  padding: 10px;
+  background: #d5f3ff;
+  border: 1px solid #fff; 
+  position: relative;
 
   .workspace-journal-select-student-container {
-    line-height:normal;
+    line-height: normal;
     
     .journal-select-student-label,
     .journal-select-student-selection {
-      padding:0.5em;
-      font-size:14px;
-      font-weight:300;
+      padding: 0.5em;
+      font-size: 14px;
+      font-weight: 300;
     }
     
     .journal-select-student-label {
-      color:#0a4853;
-      text-transform:uppercase;
+      color: #0a4853;
+      text-transform: uppercase;
     }
     
     .journal-select-student-selection {
-      max-width:250px;
-      border:1px solid #67e1f7;
-      border-radius:5px;
+      max-width: 250px;
+      border: 1px solid #67e1f7;
+      border-radius: 5px;
      
       &:hover,
       &:focus {
-        border:1px solid #67e1f7;
-        outline:none;
+        border: 1px solid #67e1f7;
+        outline: none;
       }
     }
     
@@ -64,147 +63,128 @@
 }
 
 .workspace-generic-view-title {
-  background:#fff;
-  font-size:25px;
-  font-weight:300;
-  line-height:1;
-  margin:0;
-  padding:20px;
-  text-transform:uppercase;
+  background: #fff;
+  font-size: 25px;
+  font-weight: 300;
+  line-height: 1;
+  margin: 0;
+  padding: 20px;
+  text-transform: uppercase;
 }
 
 .workspace-journal-content-wrapper {
-  min-height:500px;
-  background:#fff;
-  padding:20px;
+  min-height: 500px;
+  background: #fff;
+  padding: 20px;
   
   .workspace-journal-no-entries {
-    box-sizing:border-box;
-    font-size:22px;
-    font-style:italic;
-    color:#666;
-    text-align:center;
+    box-sizing: border-box;
+    font-size: 22px;
+    font-style: italic;
+    color: #666;
+    text-align: center;
   }
   
   .workspace-single-journal-entry {
-    position:relative;
-    margin:0 0 30px 0;
-    border-bottom:8px solid #eee;
-    padding:0 0 25px 0;
+    position: relative;
+    margin: 0 0 30px;
+    border-bottom: 8px solid #eee;
+    padding: 0 0 25px;
     
     &:last-child {
-      margin:0;
-      border:none;
-      padding:0;
+      margin: 0;
+      border: none;
+      padding: 0;
     }
     
     .workspace-journal-title {
-      font-size:24px;
-      font-weight:300;
+      font-size: 24px;
+      font-weight: 300;
     }
     
-    .workspace-journal-entry-meta {
-    
-      .workspace-journal-dateTime {
-        font-style:italic;
-        color:#aaa;
-        font-weight:400;
-        display:inline-block;
-        margin:0 10px 0 0;
-      }
-      
+    .workspace-journal-dateTime {
+      font-style:italic;
+      color:#aaa;
+      font-weight:400;
+      display:inline-block;
+      margin:0 10px 0 0;
     }
+    
+    button {
+      border-radius: 3px;
+      border: 0;
+      color: #fff;
+      font-weight: 400;
+      text-transform: uppercase;
+      margin: 5px;
+      outline: none;
+      font-family: 'Open Sans', Arial, sans-serif;
+      padding: 2px 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .journal-edit-button {
+      background: #f6a930;
+    }
+    
+    .journal-delete-button {
+      background: #de3211;
+    }
+    
+    .journal-permanent-url-button {
+      background: #7391a7;
+    }
+  
+  }
+  
+  .workspace-journal-header-container {
+    padding: 5px 0;
+    border-bottom: 2px solid #f8f8f8;
+  }
+  
+  .workspace-journal-poster-container {
+    line-height: normal;
+  }
+  
+  .workspace-journal-poster-image {
+    @incude border(2px,#fff,solid);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+    height: 48px;   
+    box-sizing: border-box; 
+    display: inline-block;
+    border-radius: 24px;
+    z-index: 15;
+    background-size: 100% auto;
+    border: 2px solid #fff;
+    overflow: hidden;
+  
+    img {
+      width: 100%;
+      border: 0;
+    }
+    
+  }
 
-    .workspace-journal-content {
-    
+  .workspace-journal-poster-name {
+    font-size: 26px;
+  }
+  
+  .workspace-journal-entry-meta {
+  
+    .workspace-journal-dateTime {
+      font-style: italic;
+      color: #aaa;
+      font-weight: 400;
     }
     
-    .workspace-journal-footer {
-    
-      button {
-        border-radius:3px;
-        border:0;
-        color:#fff;
-        font-weight:400;
-        text-transform:uppercase;
-        margin:5px;
-        outline:none;
-        font-family:'Open Sans', Arial, sans-serif;
-        padding:2px 8px;
-        font-size:14px;
-        cursor:pointer;
-      }
-      
-      .journal-edit-button {
-        background:#f6a930;
-      }
-      
-      .journal-delete-button {
-        background:#de3211;
-      }
-      
-      .journal-permanent-url-button {
-        background:#7391a7;
-      }
-    
-    }
-    
-    .workspace-journal-header-container {
-      padding:5px 0;
-      border-bottom:2px solid #f8f8f8;
-    
-      .workspace-journal-poster-container {
-        line-height:normal;
-      
-        .workspace-journal-poster-image {
-          @incude border(2px,#fff,solid);
-          box-shadow:0 0 1px rgba(0, 0, 0, 0.2);
-          height:48px;   
-          box-sizing:border-box; 
-          display:inline-block;
-          border-radius:24px;
-          z-index:15;
-          background-size:100% auto;
-          border:2px solid #fff;
-          overflow:hidden;
-        
-          img {
-            width:100%;
-            border:0;
-          }
-          
-        }
-      
-        .workspace-journal-poster-name {
-          font-size:26px;
-        }
-        
-        .workspace-journal-entry-meta {
-        
-          .workspace-journal-dateTime {
-            font-style:italic;
-            color:#aaa;
-            font-weight:400;
-          }
-          
-        }
-      
-      }
-      
-    
-    }
-    
-    .workspace-journal-content-container {
-      padding-top:0.01em;
-    
-      .workspace-journal-title {
-        margin:10px 0 20px 0;
-      }
-    
-      .workspace-journal-content {
-
-      }
-    
+  }
+  
+  .workspace-journal-content-container {
+    padding-top: 0.01em;
+  
+    .workspace-journal-title {
+      margin: 10px 0 20px;
     }
   
   }
@@ -215,7 +195,7 @@
 #socialNavigation.sn-container {
   
   .sn-container.open {
-    padding:5px;
+    padding: 5px;
   }
 
   .jo-message-create {
@@ -223,9 +203,9 @@
     .mf-form-header {
     
       h3 {
-        color:#fff;
-        margin:0;
-        padding:0;
+        color: #fff;
+        margin: 0;
+        padding: 0;
       }
     
     }
@@ -233,49 +213,50 @@
     .mf-content {
     
       .mf-fieldRow {
-        position:relative;
-        margin:2px 0 3px 0;
+        position: relative;
+        margin: 2px 0 3px;
         
         .mf-textfield {
-          position:relative;
-          top:0;
+          position: relative;
+          top: 0;
           
           .mf-textfield-title {
-            color:#fff;
+            color: #fff;
           }
         
           input[type="text"] {
-            border:0 solid #fff;
-            color:#000;
-            border-radius:3px;
-            padding:5px 8px;
-            line-height:1em;
-            margin-top:5px;
-            min-width:200px;
-            box-shadow:none;
+            border: 0 solid #fff;
+            color: #000;
+            border-radius: 3px;
+            padding: 5px 8px;
+            line-height: 1em;
+            margin-top: 5px;
+            min-width: 200px;
+            box-shadow: none;
             
             &:focus {
-              background-color:#eee;         
+              background-color: #eee;         
             }
             
             &:hover {
-              background-color:#eee;         
+              background-color: #eee;         
             }
             
             &.mf-textfield-subject {        
-              width:100%;
-              box-sizing:border-box;
-              margin:0;
+              width: 100%;
+              box-sizing: border-box;
+              margin: 0;
               
               &:focus {
-                background-color:#fff;         
+                background-color: #fff;         
               }
               
               &:hover {
-                background-color:#fff;         
+                background-color: #fff;         
               }
              
             }
+            
           }
           
         }
@@ -283,14 +264,14 @@
         .mf-textarea {
         
           textarea {
-            border:0 solid #fff;
-            color:#000;
-            border-radius:3px;
-            padding:5px 8px;
-            line-height:1em;
-            margin:5px 0 0 0;
-            min-width:200px;
-            box-shadow:none;
+            border: 0 solid #fff;
+            color: #000;
+            border-radius: 3px;
+            padding: 5px 8px;
+            line-height: 1em;
+            margin: 5px 0 0;
+            min-width: 200px;
+            box-shadow: none;
           }
         
         }
@@ -302,25 +283,25 @@
     .mf-toolbar {
     
       input {
-        border-radius:0px;
-        border:0;
-        color:#fff;
-        font-weight:400;
-        text-transform:uppercase;
-        margin:5px;
-        outline:none;
-        font-family:'Open Sans', Arial, sans-serif;
-        min-width:90px;
-        padding:10px;
-        font-size:16px;
+        border-radius: 0;
+        border: 0;
+        color: #fff;
+        font-weight: 400;
+        text-transform: uppercase;
+        margin: 5px;
+        outline: none;
+        font-family: 'Open Sans', Arial, sans-serif;
+        min-width: 90px;
+        padding: 10px;
+        font-size: 16px;
       }
     
       input[name="send"] {
-        background:#27b91c;
+        background: #27b91c;
       }
       
       input[name="cancel"] {
-        background:#7391a7;
+        background: #7391a7;
       }
     
     }
@@ -328,7 +309,7 @@
   }
   
   .jo-message-new-content {
-    width:100%;
+    width: 100%;
   }  
 
 }

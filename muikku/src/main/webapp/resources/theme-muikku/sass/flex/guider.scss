@@ -47,7 +47,8 @@
   
   &.loading {
     padding-bottom: 20px;
-    &:after {
+    
+    &::after {
       @include generic-loader(50px);
       margin-left: auto;
       margin-right: auto;
@@ -95,7 +96,8 @@
    .gt-user-details-label{
      display:inline-block;
      font-weight:400;
-     &:after{
+     
+     &::after{
       content: ":";
      }
    }
@@ -182,8 +184,9 @@
   &.loading {
     background-color: #fff;
     padding-bottom: 50px;
-    padding-top: 50px;    
-    &:after {
+    padding-top: 50px;
+     
+    &::after {
       @include generic-loader(50px);    
       margin-left: auto;
       margin-right: auto;
@@ -298,7 +301,7 @@
     position:relative;
     border:2px solid #fff;
     
-    &.icon-flag:before {
+    &.icon-flag::before {
       background:#fff none repeat scroll 0 0;
       border-radius:100%;
       display:inline-block;
@@ -333,8 +336,8 @@
       border:1px solid #00deff;
       z-index:2;
 
-      &:after, 
-      &:before {
+      &::after, 
+      &::before {
         bottom:100%;
         left:15px;
         border:solid transparent;
@@ -345,14 +348,14 @@
         pointer-events:none;
       }
       
-      &:after {
+      &::after {
         border-color:rgba(255, 255, 255, 0);
         border-bottom-color:#fff;
         border-width:7px;
         margin-left:-7px;
       }
       
-      &:before {
+      &::before {
         border-color:rgba(0, 222, 255, 0);
         border-bottom-color:#00deff;
         border-width:8px;
@@ -429,8 +432,8 @@
       border:1px solid #00deff;
       z-index:2;
 
-      &:after, 
-      &:before {
+      &::after, 
+      &::before {
         bottom:100%;
         left:52px;
         border:solid transparent;
@@ -441,14 +444,14 @@
         pointer-events:none;
       }
       
-      &:after {
+      &::after {
         border-color:rgba(255, 255, 255, 0);
         border-bottom-color:#fff;
         border-width:7px;
         margin-left:-7px;
       }
       
-      &:before {
+      &::before {
         border-color:rgba(0, 222, 255, 0);
         border-bottom-color:#00deff;
         border-width:8px;
@@ -536,7 +539,7 @@
 /*     position:relative; */
   }  
   #guider-share-flag-dialog-users {
-    margin:0 0 10px 0;
+    margin:0 0 10px;
   }
   
   .shares {

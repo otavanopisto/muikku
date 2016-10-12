@@ -58,7 +58,7 @@ div[class*='workspace-materials-full-screen-navi-button'] > span {
     position: absolute;
     top: 0;
     left: -4500px;
-    width: 0px;
+    width: 0;
     color: #fff;
     text-transform: uppercase;
     padding: 13px 15px 15px 14px;
@@ -200,7 +200,7 @@ nav.workspace-waterials-reading-nav {
 
 // TOC SUBTITLE <li>
 .workspace-materials-toc-subtitle {
-  margin: 0 0 5px;
+  margin: 0;
   text-transform: uppercase;
   font-size: 15px;
   padding: 2px 8px;
@@ -432,7 +432,7 @@ nav.workspace-waterials-reading-nav {
 // DOCUMENT
 .workspace-materials-view-page.material-reading-view {
   background: #fff;
-  box-shadow: $w-page-sc;
+  box-shadow: $document-shadow;
   margin: 30px auto;
   max-width: 655px;
   padding: 10px 20px;
@@ -454,7 +454,7 @@ nav.workspace-waterials-reading-nav {
 // SECTION
 .workspace-materials-view-page.material-reading-view.folder {
   background: #fff;
-  box-shadow: $w-page-sc;
+  box-shadow: $document-shadow;
   color: #38393a;
   line-height: 1.3em;
   max-width: 700px;

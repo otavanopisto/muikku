@@ -62,24 +62,24 @@
 /* Workspace Material's checkbox and radio animations */
 
 @-webkit-keyframes saving-checkbox-radio {
-  0% { box-shadow:0 0 0px 3px #e4e630; }
-  25% { box-shadow:0 0 0px 3px #ffffff; }
-  50% { box-shadow:0 0 0px 3px #e4e630; }
-  100% { box-shadow:0 0 0px 3px #ffffff; }
+  0% { box-shadow:0 0 0 3px #e4e630; }
+  25% { box-shadow:0 0 0 3px #ffffff; }
+  50% { box-shadow:0 0 0 3px #e4e630; }
+  100% { box-shadow:0 0 0 3px #ffffff; }
 }
 
 @-moz-keyframes saving-checkbox-radio {
-  0% { box-shadow:0 0 0px 3px #e4e630; }
-  25% { box-shadow:0 0 0px 3px #ffffff; }
-  50% { box-shadow:0 0 0px 3px #e4e630; }
-  100% { box-shadow:0 0 0px 3px #ffffff; }
+  0% { box-shadow:0 0 0 3px #e4e630; }
+  25% { box-shadow:0 0 0 3px #ffffff; }
+  50% { box-shadow:0 0 0 3px #e4e630; }
+  100% { box-shadow:0 0 0 3px #ffffff; }
 }
 
 @keyframes saving-checkbox-radio {
-  0% { box-shadow:0 0 0px 3px #e4e630; }
-  25% { box-shadow:0 0 0px 3px #ffffff; }
-  50% { box-shadow:0 0 0px 3px #e4e630; }
-  100% { box-shadow:0 0 0px 3px #ffffff ;}
+  0% { box-shadow:0 0 0 3px #e4e630; }
+  25% { box-shadow:0 0 0 3px #ffffff; }
+  50% { box-shadow:0 0 0 3px #e4e630; }
+  100% { box-shadow:0 0 0 3px #ffffff ;}
 }
 
 /* Evaluation Single Card Loading */

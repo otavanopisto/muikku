@@ -112,7 +112,7 @@
   }
 
   > div {
-    &:before {
+    &::before {
       margin-left: 10px;
     }
     
@@ -335,7 +335,7 @@
   margin-top: 5px;
   
   .mf-view-tool {
-    padding: 0 10px 0 10px;
+    padding: 0 10px;
     border: 1px solid $brd2;
     background-color: $bgr1; 
     font-size: 1.5em;
@@ -366,7 +366,7 @@
     padding: 10px 10px 10px 40px !important;
   }
   
-  &:before {
+  &::before {
     display: inline-block;
     content: "\e61c";
     font-family: 'muikku' !important;
@@ -391,7 +391,7 @@
 
 
 .mf-content-toolbar {
-  /* padding: 20px 0 0 0px; */
+  
 }
 
 .mf-content-tool-container {
@@ -455,8 +455,8 @@ ul.mf-tool-label-container {
   border: 1px solid #72D200;
   border-radius: 3px;
   
-  &:after, 
-  &:before {
+  &::after, 
+  &::before {
     margin-top: 10px;      
     bottom: 100%;
     border: solid transparent;
@@ -467,14 +467,14 @@ ul.mf-tool-label-container {
     pointer-events: none;
   }  
 
-  &:after {
+  &::after {
     border-color: rgba(255, 255, 255, 0);
     border-bottom-color: #fff;
     border-width: 7px;
     margin-left: -7px;
   }
   
-  &:before {
+  &::before {
     border-color: rgba(0, 222, 255, 0);
     border-bottom-color: #72D200;
     border-width: 8px;
@@ -525,7 +525,7 @@ ul.mf-tool-label-container {
   }
     
   > div { 
-    &:before {
+    &::before {
       font-size: 23px;
       color: #fff;
     }
@@ -696,7 +696,7 @@ ul.mf-tool-label-container {
   }
 
   .content {
-    padding: 0 10px 10px 10px;
+    padding: 0 10px 10px;
   }
 
   .mf-item-label {
@@ -846,7 +846,7 @@ ul.mf-tool-label-container {
     padding: 5px;
   }
   
-  .mf-item-short:after {
+  .mf-item-short::after {
     content : " -"  ;
   }
   
@@ -1085,7 +1085,7 @@ ul.mf-tool-label-container {
 .mf-toolbar {
       
   input {
-    border-radius: 0px;
+    border-radius: 0;
     border: 0;
     color: #fff;
     font-weight: 400;
