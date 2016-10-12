@@ -1,38 +1,34 @@
-// SCREEN LANDSCAPE - 3 COLUMNS
+// REQUESTS (min 1280px)
 @media screen and (min-width: 1280px) {
   
-  // REQUEST
   .evaluation-request {
-    width: calc(25% - 20px);
     max-width: 320px;
+    width: calc(25% - 20px);
   }
   
 }
 
-// TABLET LANDSCAPE - 3 COLUMNS
+// REQUESTS (901px - 1279px)
 @media screen and (min-width: 901px) and (max-width: 1279px) {
   
-  // REQUEST
   .evaluation-request {
     width: calc(33% - 18px);
   }
   
 }
 
-// MOBILE & TABLET PORTRAIT & LANDSCAPE - 2 COLUMNS & DECREASED FONT SIZE
+// REQUESTS (600px - 900px)
 @media screen and (min-width: 600px) and (max-width: 900px) {
 
-  // REQUEST
   .evaluation-request {
     width: calc(50% - 20px);
   }
   
 }
 
-// MOBILE - 1 COLUMN & DECREASED FONT SIZE
-@media screen and (min-width: 320px) and (max-width: 599px) {
+// REQUESTS (max 599px)
+@media screen and (max-width: 599px) {
   
-  // REQUEST PAGE TITLE
   .evaluation-requests-title {
     
     h3 {
@@ -41,7 +37,6 @@
     
   }
   
-  // REQUEST
   .evaluation-request {
     width: calc(100% - 20px);
   }
@@ -50,10 +45,26 @@
     font-size: 14px;
   }
   
+  .eval-modal-student-name,
+  .eval-modal-workspace-name {
+    font-size: 18px;
+  }
+  
+  .eval-modal-close {
+    
+    &.icon-close-small {
+      color: #fff;
+      font-size: 26px;
+      height: 26px;
+      width: 26px;
+    }
+    
+  }
+  
 }
 
-// MOBILE EVALUATION DIALOG
-@media screen and (min-width: 320px) and (max-width: 1023px) {
+// DIALOG (0px - 1023px)
+@media screen and (max-width: 1023px) {
 
   .eval-modal-student-container,
   .eval-modal-evaluate-container {
@@ -63,6 +74,10 @@
   
   .eval-modal-evaluate-container {
     
+  }
+  
+  .eval-modal-workspace-name {
+    padding: 0 20px;
   }
   
 }
