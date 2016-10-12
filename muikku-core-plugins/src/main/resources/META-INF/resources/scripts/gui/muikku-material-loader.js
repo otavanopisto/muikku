@@ -81,7 +81,7 @@
             case 'embed':
             case 'iframe':
             case 'source':
-              urlAttribute = 'src';
+              urlAttribute = $(element).hasClass('lazyframe') ? 'data-url' : 'src';
             break;
             case 'object':
               urlAttribute = 'data';
