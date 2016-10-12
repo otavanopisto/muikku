@@ -89,14 +89,14 @@
   font-size: 24px;
   line-height: 1em;
   overflow: hidden;
-  padding: 18px 60px 18px 0;
+  padding: 18px 60px 18px 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
   
 .eval-modal-assignment-content,
 .eval-modal-evaluate-content {
-  
+  padding: 10px 20px;
 }
 
 // EVALUATE FORM
@@ -108,8 +108,45 @@
     text-transform: uppercase;
   }
   
+  input[type="text"],
+  input[type="date"] {
+    background: #fff;
+    border: 2px solid #abdbed;
+    border-radius: 3px;
+    box-shadow: 0 0 0px 3px rgba(215,215,215,0.15); 
+    font-family:'Open Sans', Arial, sans-serif;
+    font-size: 14px;
+    padding: 5px;
+  }
+  
+  textarea {
+    background: #fff;
+    border: 2px solid #abdbed;
+    border-radius: 3px;
+    box-sizing: border-box;
+    box-shadow: 0 0 0px 3px rgba(215,215,215,0.15); 
+    font-family:'Open Sans', Arial, sans-serif;
+    font-size: 14px;
+    padding: 5px;
+    width: 100%;
+  }
+  
+  select {
+    background: #fff;
+    border: 2px solid #abdbed;
+    border-radius: 3px;
+    box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+    font-family:'Open Sans', Arial, sans-serif;
+    font-size: 14px;
+    
+    option {
+      padding: 5px;
+    }
+    
+  }
+  
 }
 
 .evaluation-modal-evaluate-form-row {
-  margin: 15px 0; 
+  margin: 5px 0 15px; 
 }
