@@ -16,7 +16,7 @@
   .ui-menu-item {
   
     &[data-existing="true"] {
-      color:$environment-disabled-font-color;
+      color: $environment-font-disabled-color;
       font-style: italic;
       cursor: default;
     }
@@ -295,7 +295,7 @@
         .cm-message-replies {
           font-weight: 600;
           width: 100%;
-          background-color: $hlBgr;
+          background-color: $environment-background-highlight-color;
           text-align: center;
           padding: 5px;
         }
@@ -309,7 +309,7 @@
   }
 
   &.unread {
-    border-left: 1px solid #0099ff;
+    border-left: 1px solid $item-border-color-active;
     font-weight: 400;
     
   }
@@ -352,9 +352,9 @@
   .cm-message-tool {
     padding: 0 10px;
     border: 1px solid $environment-border-selected-color;
-    background-color: $bgr1; 
+    background-color: $environment-background-dim-color; 
     display: inline-block;
-    color: #000;
+    color: $environment-font-color;
     cursor: pointer;
     
     &:not(:first-child) {
@@ -365,14 +365,14 @@
 
   .cm-message-reply {
     padding: 5px 5px 5px 10px;
-    background-color: #fff;    
+    background-color: $environment-background-color;    
   }
   
   .cm-message-recipients {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: #000;
+    color: $environment-font-color;
     display: inline-block;
     max-width: calc(100% - 170px);
     margin: 0 0 0 5px;
@@ -386,7 +386,7 @@
 
  .cm-message-selected-recipients {
    padding: 5px;
-   background-color: #fff;
+   background-color: $environment-background-color;
    
    span {
      display: inline-block;
@@ -413,7 +413,7 @@
       border-left: 5px solid $environment-border-selected-color; 
        
       h3 {
-        color: #dadada;
+        color: $environment-font-disabled-color;
       }
        
     }       
@@ -423,9 +423,7 @@
       &.default {
         background-image:url("/gfx/default-user-picture.jpg");
         background-size: 100%;
-        border: 2px solid #fff;
         border-radius: 40px;
-        box-shadow: 0 0 0 2px #00deff;
         margin: 2px;
       }
      

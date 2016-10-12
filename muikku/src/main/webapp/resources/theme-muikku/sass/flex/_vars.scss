@@ -1,11 +1,13 @@
 
 $environment-icon-family: 'muikku';
 $environment-font-family: 'Open Sans',Arial,sans-serif;
-
 $environment-background-color: #fff;
+$environment-background-dim-color: #ededed;
+$environment-background-highlight-color: #fff8c1;
 $environment-background-selected-color: #eee;
+
 $environment-font-color: #000;
-$environment-disabled-font-color: #aaa;
+$environment-font-disabled-color: #aaa;
 $environment-border-color: #ededed;
 $environment-border-selected-color: #dadada;
 
@@ -20,6 +22,8 @@ $item-header-label-color: #daf5ff;
 // From communicator
 
 $item-border-color: #fff;
+$item-border-color-active: #0099ff;
+$item-border-color-highlight: #ff9600;
 $item-target-icon-color: #049a00;
 
 
