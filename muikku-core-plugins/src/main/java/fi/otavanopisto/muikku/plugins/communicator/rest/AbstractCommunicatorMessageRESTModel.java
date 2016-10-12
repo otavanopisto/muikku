@@ -10,13 +10,12 @@ public abstract class AbstractCommunicatorMessageRESTModel {
   }
   
   public AbstractCommunicatorMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, String categoryName, String caption, 
-      String content, Date created, Set<String> tags) {
+      Date created, Set<String> tags) {
     this.id = id;
     this.communicatorMessageId = communicatorMessageId;
     this.senderId = senderId;
     this.categoryName = categoryName;
     this.caption = caption;
-    this.content = content;
     this.created = created;
     this.tags = tags;
   }
@@ -61,14 +60,6 @@ public abstract class AbstractCommunicatorMessageRESTModel {
     this.caption = caption;
   }
 
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
-  }
-
   public Date getCreated() {
     return created;
   }
@@ -94,8 +85,6 @@ public abstract class AbstractCommunicatorMessageRESTModel {
   private String categoryName;
   
   private String caption;
-
-  private String content;
 
   private Date created;
   
