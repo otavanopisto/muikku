@@ -7,27 +7,16 @@ import java.util.Set;
 
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 
-public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRESTModel {
+public class CommunicatorSentThreadRESTModel extends CommunicatorThreadRESTModel {
 
-  public CommunicatorMessageRESTModel() {
-  }
-  
-  public CommunicatorMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, UserBasicInfo sender, 
-      String categoryName, String caption, String content, Date created, Set<String> tags,
+  public CommunicatorSentThreadRESTModel(Long id, Long communicatorMessageId, Long senderId, UserBasicInfo sender, 
+      String categoryName, String caption, Date created, Set<String> tags, boolean unreadMessagesInThread, 
+      Date threadLatestMessageDate, Long messageCountInThread, List<CommunicatorMessageIdLabelRESTModel> labels,
       List<CommunicatorMessageRecipientRESTModel> recipients, Long recipientCount) {
-    super(id, communicatorMessageId, senderId, categoryName, caption, created, tags);
-    this.content = content;
-    this.sender = sender;
+    super(id, communicatorMessageId, senderId, sender, categoryName, caption, created, tags, unreadMessagesInThread, 
+        threadLatestMessageDate, messageCountInThread, labels);
     this.recipients = recipients;
     this.recipientCount = recipientCount;
-  }
-  
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
   }
 
   public List<CommunicatorMessageRecipientRESTModel> getRecipients() {
@@ -46,16 +35,6 @@ public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRES
     this.recipientCount = recipientCount;
   }
 
-  public UserBasicInfo getSender() {
-    return sender;
-  }
-
-  public void setSender(UserBasicInfo sender) {
-    this.sender = sender;
-  }
-
-  private String content;
-  private UserBasicInfo sender;
   private Long recipientCount;
   private List<CommunicatorMessageRecipientRESTModel> recipients = new ArrayList<CommunicatorMessageRecipientRESTModel>();
 }

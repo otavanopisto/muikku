@@ -7,18 +7,17 @@ import java.util.Set;
 
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 
-public class CommunicatorThreadRESTModel extends CommunicatorMessageRESTModel {
+public class CommunicatorThreadRESTModel extends AbstractCommunicatorMessageRESTModel {
 
   public CommunicatorThreadRESTModel(Long id, Long communicatorMessageId, Long senderId, UserBasicInfo sender, 
-      String categoryName, String caption, String content, Date created, Set<String> tags, List<CommunicatorMessageRecipientRESTModel> recipients, 
-      boolean unreadMessagesInThread, Date threadLatestMessageDate, Long messageCountInThread, List<CommunicatorMessageIdLabelRESTModel> labels) {
-    super(id, communicatorMessageId, senderId, categoryName, caption, content, created, tags);
+      String categoryName, String caption, Date created, Set<String> tags, boolean unreadMessagesInThread, 
+      Date threadLatestMessageDate, Long messageCountInThread, List<CommunicatorMessageIdLabelRESTModel> labels) {
+    super(id, communicatorMessageId, senderId, categoryName, caption, created, tags);
     this.sender = sender;
     this.unreadMessagesInThread = unreadMessagesInThread;
     this.threadLatestMessageDate = threadLatestMessageDate;
     this.messageCountInThread = messageCountInThread;
     this.labels = labels;
-    this.recipients = recipients;
   }
   
   public boolean isUnreadMessagesInThread() {
@@ -61,18 +60,9 @@ public class CommunicatorThreadRESTModel extends CommunicatorMessageRESTModel {
     this.labels = labels;
   }
 
-  public List<CommunicatorMessageRecipientRESTModel> getRecipients() {
-    return recipients;
-  }
-
-  public void setRecipients(List<CommunicatorMessageRecipientRESTModel> recipients) {
-    this.recipients = recipients;
-  }
-
   private Date threadLatestMessageDate;
   private boolean unreadMessagesInThread;
   private UserBasicInfo sender;
   private Long messageCountInThread;
-  private List<CommunicatorMessageIdLabelRESTModel> labels;
-  private List<CommunicatorMessageRecipientRESTModel> recipients = new ArrayList<CommunicatorMessageRecipientRESTModel>();
+  private List<CommunicatorMessageIdLabelRESTModel> labels = new ArrayList<CommunicatorMessageIdLabelRESTModel>();
 }

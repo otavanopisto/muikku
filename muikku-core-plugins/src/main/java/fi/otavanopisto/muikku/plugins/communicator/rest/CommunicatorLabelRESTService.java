@@ -1,7 +1,5 @@
 package fi.otavanopisto.muikku.plugins.communicator.rest;
 
-import static fi.otavanopisto.muikku.plugins.communicator.rest.CommunicatorRESTModels.*;
-
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -47,6 +45,9 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
   
   @Inject
   private CommunicatorController communicatorController;
+
+  @Inject
+  private CommunicatorRESTModels restModels;
   
   @GET
   @Path ("/messages/{COMMUNICATORMESSAGEID}/labels")
@@ -60,7 +61,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(userEntity, messageId);
     
     return Response.ok(
-      restLabel(labels)
+      restModels.restLabel(labels)
     ).build();
   }
   
@@ -82,7 +83,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
         userLabel = communicatorController.createMessageIdLabel(userEntity, messageId, label);
     
         return Response.ok(
-          restLabel(userLabel)
+          restModels.restLabel(userLabel)
         ).build();
       } else {
         return Response.status(Status.BAD_REQUEST).build();
@@ -107,7 +108,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     }
     
     return Response.ok(
-      restLabel(label)
+      restModels.restLabel(label)
     ).build();
   }
 
@@ -139,7 +140,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     List<CommunicatorUserLabel> userLabels = communicatorController.listUserLabelsByUserEntity(userEntity);
     
     return Response.ok(
-      restUserLabel(userLabels)
+      restModels.restUserLabel(userLabels)
     ).build();
   }
   
@@ -153,7 +154,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     CommunicatorUserLabel userLabel = communicatorController.createUserLabel(newUserLabel.getName(), newUserLabel.getColor(), userEntity);
 
     return Response.ok(
-      restUserLabel(userLabel)
+      restModels.restUserLabel(userLabel)
     ).build();
   }
   
@@ -168,7 +169,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     
     if ((userLabel != null) && canAccessLabel(userEntity, userLabel)) {
       return Response.ok(
-        restUserLabel(userLabel)
+        restModels.restUserLabel(userLabel)
       ).build();
     } else {
       return Response.status(Status.NOT_FOUND).build();
@@ -211,7 +212,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
       CommunicatorUserLabel editedUserLabel = communicatorController.updateUserLabel(userLabel, updatedUserLabel.getName(), updatedUserLabel.getColor());
 
       return Response.ok(
-        restUserLabel(editedUserLabel)
+        restModels.restUserLabel(editedUserLabel)
       ).build();
     } else {
       return Response.status(Status.NOT_FOUND).build();

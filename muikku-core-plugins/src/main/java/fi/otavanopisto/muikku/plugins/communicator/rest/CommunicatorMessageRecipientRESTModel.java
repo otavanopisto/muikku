@@ -4,13 +4,14 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 public class CommunicatorMessageRecipientRESTModel {
 
   public CommunicatorMessageRecipientRESTModel() {
-    
   }
   
-  public CommunicatorMessageRecipientRESTModel(Long id, Long communicatorMessageId, Long recipientId) {
+  public CommunicatorMessageRecipientRESTModel(Long id, Long communicatorMessageId, Long userId, String firstName, String lastName) {
     this.id = id;
     this.communicatorMessageId = communicatorMessageId;
-    this.recipientId = recipientId;
+    this.userId = userId;
+    this.firstName = firstName;
+    this.lastName = lastName;
   }
 
   public Long getId() {
@@ -29,17 +30,33 @@ public class CommunicatorMessageRecipientRESTModel {
     this.communicatorMessageId = communicatorMessageId;
   }
 
-  public Long getRecipientId() {
-    return recipientId;
+  public Long getUserId() {
+    return userId;
   }
 
-  public void setRecipientId(Long recipientId) {
-    this.recipientId = recipientId;
+  public void setUserId(Long userId) {
+    this.userId = userId;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 
   private Long id;
-
   private Long communicatorMessageId;
-
-  private Long recipientId;
+  private Long userId;
+  private String firstName;
+  private String lastName;
 }
