@@ -7,6 +7,10 @@ import java.util.Set;
 
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 
+/**
+ * REST model for full information about a single message including recipients, sender and 
+ * message content.
+ */
 public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRESTModel {
 
   public CommunicatorMessageRESTModel() {

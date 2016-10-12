@@ -7,6 +7,9 @@ import java.util.Set;
 
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 
+/**
+ * REST model for message threads containing information about the thread but not the contents nor recipients.
+ */
 public class CommunicatorThreadRESTModel extends AbstractCommunicatorMessageRESTModel {
 
   public CommunicatorThreadRESTModel(Long id, Long communicatorMessageId, Long senderId, UserBasicInfo sender, 
