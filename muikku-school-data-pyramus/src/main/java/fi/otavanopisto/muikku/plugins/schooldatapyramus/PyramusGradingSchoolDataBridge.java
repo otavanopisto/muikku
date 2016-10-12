@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGrade;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScale;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScaleItem;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
@@ -53,6 +54,20 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+  }
+
+  @Override
+  public List<fi.otavanopisto.muikku.schooldata.entity.Grade> listGrades() {
+    List<fi.otavanopisto.muikku.schooldata.entity.Grade> grades = new ArrayList<fi.otavanopisto.muikku.schooldata.entity.Grade>();
+    fi.otavanopisto.pyramus.rest.model.GradeItem[] gradeItems = pyramusClient.get("/common/grades/", fi.otavanopisto.pyramus.rest.model.GradeItem[].class);
+    for (int i = 0; i < gradeItems.length; i++) {
+      grades.add(new PyramusGrade(
+          gradeItems[i].getScaleId().toString(),
+          gradeItems[i].getScaleName(),
+          gradeItems[i].getGradeId().toString(),
+          gradeItems[i].getGradeName()));
+    }
+    return grades;
   }
 
 	@Override
@@ -126,7 +141,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier,
       String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
-    
+
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
     Long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
