@@ -1,6 +1,6 @@
 <div class="eval-modal-close icon-close-small"><span class="tooltip"></span></div>
 
-<div class="eval-modal-student-container">
+<section class="eval-modal-student-container" id="evaluationStudentContainer">
   <div class="eval-modal-student-header">
     <div class="eval-modal-student-name">{studentName}</div>
     <div class="eval-modal-student-programme">{studyProgrammeName}</div>
@@ -8,13 +8,15 @@
   <div class="eval-modal-assignment-content">
   
   </div>
-</div>
+</section>
 
-<div class="eval-modal-evaluate-container">
+<section class="eval-modal-evaluate-container" id="evaluationEvaluateContainer">
   <div class="eval-modal-evaluate-header">
     <div class="eval-modal-workspace-name">{courseName}</div>
   </div>
   <div class="eval-modal-evaluate-content">
+  
+    {>"evaluation/evaluation-evaluate-workspace-form.dust"/}
     
   </div>
-</div>
+</section>

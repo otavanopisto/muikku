@@ -89,16 +89,27 @@
   font-size: 24px;
   line-height: 1em;
   overflow: hidden;
-  padding: 18px 60px 18px 20px;
+  padding: 18px 60px 18px 0;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
   
 .eval-modal-assignment-content,
 .eval-modal-evaluate-content {
-  bottom: 0;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 60px;
+  
+}
+
+// EVALUATE FORM
+.evaluation-modal-evaluate-form {
+  
+  label {
+    display: block;
+    margin: 0;
+    text-transform: uppercase;
+  }
+  
+}
+
+.evaluation-modal-evaluate-form-row {
+  margin: 15px 0; 
 }
