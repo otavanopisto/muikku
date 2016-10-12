@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.Date;
 
-public interface AssessmentRequest extends SchoolDataEntity {
+public interface CompositeAssessmentRequest extends SchoolDataEntity {
 	
   public String getUserIdentifier();
   public String getFirstName();

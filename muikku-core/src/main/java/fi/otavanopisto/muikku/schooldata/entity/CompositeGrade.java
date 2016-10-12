@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
-public interface Grade extends SchoolDataEntity {
+public interface CompositeGrade extends SchoolDataEntity {
 	
-	public String getScaleIdentifier();
+  public String getScaleIdentifier();
 	
 	public String getScaleName();
 	

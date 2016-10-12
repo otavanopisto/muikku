@@ -5,7 +5,21 @@
 
   $.widget("custom.evaluationMainView", {
     _create : function() {
+      this._grades = [];
+      this._loadGrades();
       this._loadAssessmentRequests();
+    },
+    _loadGrades: function() {
+      mApi().evaluation.grades
+      .read()
+      .callback($.proxy(function (err, grades) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          this._grades = grades;
+        }
+      }, this)); 
     },
     _loadAssessmentRequests: function () {
       var requestContainer = $('.evaluation-requests-container'); 

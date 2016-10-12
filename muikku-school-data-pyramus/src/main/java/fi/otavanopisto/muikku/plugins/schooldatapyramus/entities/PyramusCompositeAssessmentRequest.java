@@ -3,11 +3,11 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 import java.util.Date;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
-import fi.otavanopisto.muikku.schooldata.entity.AssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 
-public class PyramusAssessmentRequest implements AssessmentRequest {
+public class PyramusCompositeAssessmentRequest implements CompositeAssessmentRequest {
   
-  public PyramusAssessmentRequest(String userIdentifier, String firstName, String lastName, String studyProgramme,
+  public PyramusCompositeAssessmentRequest(String userIdentifier, String firstName, String lastName, String studyProgramme,
       String courseIdentifier, String courseName, String courseNameExtension, Date courseEnrollmentDate, Date assessmentRequestDate) {
     this.userIdentifier = userIdentifier;
     this.firstName = firstName;

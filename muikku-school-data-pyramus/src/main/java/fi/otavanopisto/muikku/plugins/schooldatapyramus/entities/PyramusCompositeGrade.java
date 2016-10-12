@@ -1,11 +1,11 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
-import fi.otavanopisto.muikku.schooldata.entity.Grade;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGrade;
 
-public class PyramusGrade implements Grade {
+public class PyramusCompositeGrade implements CompositeGrade {
 
-	public PyramusGrade(String scaleIdentifier, String scaleName, String gradeIdentifier, String gradeName) {
+	public PyramusCompositeGrade(String scaleIdentifier, String scaleName, String gradeIdentifier, String gradeName) {
 		this.scaleIdentifier = scaleIdentifier;
 		this.scaleName = scaleName;
 		this.gradeIdentifier = gradeIdentifier;

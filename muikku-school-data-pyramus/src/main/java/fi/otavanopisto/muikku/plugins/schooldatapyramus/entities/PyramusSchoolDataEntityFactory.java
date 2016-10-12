@@ -18,7 +18,7 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.AssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRoleArchetype;
@@ -357,11 +357,11 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
   
-  public List<AssessmentRequest> createEntity(fi.otavanopisto.pyramus.rest.model.AssessmentRequest... assessmentRequests) {
-    List<AssessmentRequest> result = new ArrayList<>();
+  public List<CompositeAssessmentRequest> createEntity(fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest... assessmentRequests) {
+    List<CompositeAssessmentRequest> result = new ArrayList<>();
     
     if (assessmentRequests != null) {
-      for (fi.otavanopisto.pyramus.rest.model.AssessmentRequest assessmentRequest : assessmentRequests) {
+      for (fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
         result.add(createEntity(assessmentRequest));
       }
     }
@@ -369,12 +369,12 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public AssessmentRequest createEntity(fi.otavanopisto.pyramus.rest.model.AssessmentRequest assessmentRequest) {
+  public CompositeAssessmentRequest createEntity(fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest assessmentRequest) {
     if (assessmentRequest == null) {
       logger.severe("Attempted to translate null assessment request into school data entity");
       return null;
     }
-    return new PyramusAssessmentRequest(
+    return new PyramusCompositeAssessmentRequest(
       assessmentRequest.getUserId() == null ? null : identifierMapper.getStudentIdentifier(assessmentRequest.getUserId()),
       assessmentRequest.getFirstName(),
       assessmentRequest.getLastName(),

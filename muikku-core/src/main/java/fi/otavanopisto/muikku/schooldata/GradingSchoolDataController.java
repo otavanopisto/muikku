@@ -14,8 +14,8 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
-import fi.otavanopisto.muikku.schooldata.entity.AssessmentRequest;
-import fi.otavanopisto.muikku.schooldata.entity.Grade;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGrade;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -155,17 +155,18 @@ class GradingSchoolDataController {
     return Collections.emptyList();
   }
   
-  /* Grade */
+  /* CompositeGrade */
   
-  public List<Grade> listGrades(SchoolDataSource schoolDataSource) {
-    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
-    if (schoolDataBridge != null) {
-      return schoolDataBridge.listGrades();
-    } else {
-      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+  public List<CompositeGrade> listCompositeGrades() {
+    List<CompositeGrade> result = new ArrayList<>();
+    for (GradingSchoolDataBridge gradingBridge : getGradingBridges()) {
+      try {
+        result.addAll(gradingBridge.listCompositeGrades());
+      } catch (SchoolDataBridgeInternalException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing grades", e);
+      }
     }
-  
-    return null;
+    return result;
   }
   
   /* GradingScales */
@@ -319,11 +320,11 @@ class GradingSchoolDataController {
     return null;
   }
   
-  public List<AssessmentRequest> listAssessmentRequestsByStaffMember(String schoolDataSource, String staffMemberIdentifier) {
+  public List<CompositeAssessmentRequest> listCompositeAssessmentRequestsByStaffMember(String schoolDataSource, String staffMemberIdentifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
-      return schoolDataBridge.listAssessmentRequestsByStaffMember(staffMemberIdentifier);
+      return schoolDataBridge.listCompositeAssessmentRequestsByStaffMember(staffMemberIdentifier);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
