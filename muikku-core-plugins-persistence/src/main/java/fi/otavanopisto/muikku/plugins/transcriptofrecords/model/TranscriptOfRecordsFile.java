@@ -15,6 +15,20 @@ import javax.validation.constraints.NotNull;
 @Entity
 @PrimaryKeyJoinColumn(name="id")
 public class TranscriptOfRecordsFile {
+  
+  public TranscriptOfRecordsFile(
+      Long userEntityId,
+      String fileName,
+      Boolean archived,
+      String title,
+      String description) {
+    super();
+    this.userEntityId = userEntityId;
+    this.fileName = fileName;
+    this.archived = archived;
+    this.title = title;
+    this.description = description;
+  }
 
   public Long getId() {
     return id;
@@ -55,6 +69,14 @@ public class TranscriptOfRecordsFile {
   @NotNull
   @Column(nullable = false)
   private String fileName;
+  
+  @NotNull
+  @Column(nullable = false, length = 255)
+  private String title;
+
+  @NotNull
+  @Column(nullable = false)
+  private String description;
   
   @NotNull
   @Column(nullable = false)
