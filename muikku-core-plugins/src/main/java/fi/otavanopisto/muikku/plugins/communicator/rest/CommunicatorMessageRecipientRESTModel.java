@@ -6,20 +6,12 @@ public class CommunicatorMessageRecipientRESTModel {
   public CommunicatorMessageRecipientRESTModel() {
   }
   
-  public CommunicatorMessageRecipientRESTModel(Long id, Long communicatorMessageId, Long userId, String firstName, String lastName) {
-    this.id = id;
+  public CommunicatorMessageRecipientRESTModel(Long recipientId, Long communicatorMessageId, Long userId, String firstName, String lastName) {
+    this.recipientId = recipientId;
     this.communicatorMessageId = communicatorMessageId;
     this.userId = userId;
     this.firstName = firstName;
     this.lastName = lastName;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
   }
 
   public Long getCommunicatorMessageId() {
@@ -54,7 +46,15 @@ public class CommunicatorMessageRecipientRESTModel {
     this.lastName = lastName;
   }
 
-  private Long id;
+  public Long getRecipientId() {
+    return recipientId;
+  }
+
+  public void setRecipientId(Long recipientId) {
+    this.recipientId = recipientId;
+  }
+
+  private Long recipientId;
   private Long communicatorMessageId;
   private Long userId;
   private String firstName;
