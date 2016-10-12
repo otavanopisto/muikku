@@ -1,7 +1,37 @@
+
+$environment-icon-family: 'muikku';
+$environment-font-family: 'Open Sans',Arial,sans-serif;
+
+$environment-background-color: #fff;
+$environment-background-selected-color: #eee;
+$environment-font-color: #000;
+$environment-disabled-font-color: #aaa;
+$environment-border-color: #ededed;
+$environment-border-selected-color: #dadada;
+
 // From coursepicker
+
 
 $item-header-font-color: #d89828;
 $item-header-icon-font-color: #3f639a;
 $item-header-label-color: #daf5ff;
 
+
+// From communicator
+
+$item-border-color: #fff;
+$item-target-icon-color: #049a00;
+
+
+$target-font-color: #777;
+$target-user-icon-color: #ff9600;
+$target-workspace-icon-color: #0012ff;
+$target-group-icon-color: #049a00;
+$target-remove-icon-color: #d80000;
+$target-remove-font-color: #d80000;
+
+$navigation-bar-icon-color: #dadada;
+$navigation-bar-border-color: #fff;
+$navigation-bar-hover-border-color: #ededed;
+$navigation-bar-selected-color: #ededed;
 
