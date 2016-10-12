@@ -32,12 +32,16 @@
   $.widget("custom.evaluationDialog", {
     options: {
     },
-    open: function() {
+    open: function(requestCard) {
       this._evaluationModal = $('<div>')
         .addClass('eval-modal')
         .appendTo('body');
       
-      renderDustTemplate("evaluation/evaluation-modal-view.dust", {}, $.proxy(function (html) {
+      renderDustTemplate("evaluation/evaluation-modal-view.dust", {
+        studentName: $(requestCard).find('.evaluation-request-student').text(),
+        studyProgrammeName: $(requestCard).find('.evaluation-request-study-programme').text(),
+        courseName: $(requestCard).find('.workspace-name').text()
+      }, $.proxy(function (html) {
         this._evaluationModal.append(html);
         $('.eval-modal-close').click($.proxy(function (event) {
           this._evaluationModal.remove();
@@ -51,7 +55,8 @@
   });
 
   $(document).on('click', '.evaluate-button', function (event) {
-    $(document).evaluationDialog('open');
+    var requestCard = event.target.closest('.evaluation-request');
+    $(document).evaluationDialog('open', requestCard);
   });
   
 }).call(this);
