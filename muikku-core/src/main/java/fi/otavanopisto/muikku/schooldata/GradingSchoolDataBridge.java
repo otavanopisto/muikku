@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import fi.otavanopisto.muikku.schooldata.entity.AssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.Grade;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -18,6 +19,15 @@ public interface GradingSchoolDataBridge {
    * @return school data source identifier
    */
   public String getSchoolDataSource();
+  
+  /* Grades */
+  
+  /**
+   * Lists all available grades.
+   * 
+   * @return All available grades
+   */
+  public List<Grade> listGrades();
 
   /* GradingScales */
 
@@ -123,6 +133,14 @@ public interface GradingSchoolDataBridge {
 
   public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String studentIdentifier);
   
+  /**
+   * Returns all assessment requests associated with the given staff member. For example, assessment request of
+   * a workspace that the staff member is teaching.  
+   * 
+   * @param staffMemberIdentifier Staff member identifier
+   * 
+   * @return All assessment requests associated with the given staff member
+   */
   public List<AssessmentRequest> listAssessmentRequestsByStaffMember(String staffMemberIdentifier);
   
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,

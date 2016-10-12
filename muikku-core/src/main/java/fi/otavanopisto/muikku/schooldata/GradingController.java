@@ -37,7 +37,10 @@ public class GradingController {
 	private GradingScaleEntityDAO gradingScaleEntityDAO;
 	
 	@Inject
-	private GradingScaleItemEntityDAO gradingScaleItemEntityDAO; 
+	private GradingScaleItemEntityDAO gradingScaleItemEntityDAO;
+	
+	/* Grade (UI element) */
+	
 
 	/* GradingScaleEntity */
 

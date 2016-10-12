@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.schooldata.entity.AssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.Grade;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -154,8 +155,22 @@ class GradingSchoolDataController {
     return Collections.emptyList();
   }
   
+  /* Grade */
+  
+  public List<Grade> listGrades(SchoolDataSource schoolDataSource) {
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      return schoolDataBridge.listGrades();
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+    }
+  
+    return null;
+  }
+  
   /* GradingScales */
   
+  // TODO Deprecate after new evaluation
   public GradingScale findGradingScale(SchoolDataSource schoolDataSource, String identifier) {
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
     if (schoolDataBridge != null) {
@@ -167,6 +182,7 @@ class GradingSchoolDataController {
     return null;
   }
 
+  // TODO Deprecate after new evaluation
   public GradingScale findGradingScale(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
@@ -178,6 +194,7 @@ class GradingSchoolDataController {
     return null;
   }
   
+  // TODO Deprecate after new evaluation
   public List<GradingScale> listGradingScales() {
     // TODO: This method WILL cause performance problems, replace with something more sensible 
     
@@ -196,6 +213,7 @@ class GradingSchoolDataController {
   
   /* GradingScaleItems */
   
+  // TODO Deprecate after new evaluation
   public GradingScaleItem findGradingScaleItem(SchoolDataSource schoolDataSource, GradingScale gradingScale, String identifier) {
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
     if (schoolDataBridge != null) {
@@ -207,6 +225,7 @@ class GradingSchoolDataController {
     return null;
   }
 
+  // TODO Deprecate after new evaluation
   public GradingScaleItem findGradingScaleItem(String schoolDataSource, GradingScale gradingScale, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
@@ -218,6 +237,7 @@ class GradingSchoolDataController {
     return null;
   }
   
+  // TODO Deprecate after new evaluation
   public List<GradingScaleItem> listGradingScaleItems(GradingScale gradingScale) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(gradingScale.getSchoolDataSource());
     if (schoolDataSource != null) {
