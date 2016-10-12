@@ -13,8 +13,9 @@ public class CommunicatorNewMessageRESTModel extends AbstractCommunicatorMessage
   public CommunicatorNewMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, String categoryName, String caption, 
       String content, Date created, Set<String> tags, List<Long> recipientIds, List<Long> recipientGroupIds, 
       List<Long> recipientTeachersWorkspaceIds, List<Long> recipientStudentsWorkspaceIds) {
-    super(id, communicatorMessageId, senderId, categoryName, caption, content, created, tags);
+    super(id, communicatorMessageId, senderId, categoryName, caption, created, tags);
 
+    this.content = content;
     this.recipientIds = recipientIds;
     this.recipientGroupIds = recipientGroupIds;
     this.recipientStudentsWorkspaceIds = recipientStudentsWorkspaceIds;
@@ -52,6 +53,16 @@ public class CommunicatorNewMessageRESTModel extends AbstractCommunicatorMessage
   public void setRecipientIds(List<Long> recipientIds) {
     this.recipientIds = recipientIds;
   }
+
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
+  }
+
+  private String content;
 
   private List<Long> recipientIds = new ArrayList<Long>();
 
