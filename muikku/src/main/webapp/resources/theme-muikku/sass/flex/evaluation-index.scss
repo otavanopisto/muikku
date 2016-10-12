@@ -90,7 +90,7 @@ body {
 
 // REQUEST PAGE TITLE
 .evaluation-requests-title {
-  margin:25px 25px 0;
+  margin:25px 15px 0;
   
   h3 {
     font-size: 24px;
@@ -103,7 +103,6 @@ body {
 
 // REQUESTS CONTAINER
 .evaluation-requests-container {
-  padding: 15px;
   vertical-align: top;
 }
 
@@ -112,11 +111,12 @@ body {
   background: #fff;
   border: 1px solid #fff;
   box-shadow: 0 3px 5px rgba(58, 111, 148, 0.2);
+  box-sizing: border-box;
   display: inline-block;
   margin: 10px;
-  padding: 3px;
+  padding: 2px;
   vertical-align: top;
-  width: 300px;
+  width: 285px;
 }
 
 .evaluation-request-title {
@@ -179,6 +179,26 @@ body {
       background: #63da57;
     }
     
+  }
+
+}
+
+.evaluation-request-button-row {
+  text-align: right;
+  margin: 12px 0 0;
+  
+  .evaluation-request-card-button {
+    background: #0099ff;
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 18px;
+    height: 18px;
+    margin: 4px 0 4px 4px;
+    width: 18px;
+    padding: 5px;
+    text-align: center;
   }
   
 }

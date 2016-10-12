@@ -50,7 +50,7 @@
     $(document).evaluationMainView().evaluationDialog();
   });
 
-  $(document).on('click', '.workspace-name', function (event) {
+  $(document).on('click', '.evaluate-button', function (event) {
     $(document).evaluationDialog('open');
   });
   

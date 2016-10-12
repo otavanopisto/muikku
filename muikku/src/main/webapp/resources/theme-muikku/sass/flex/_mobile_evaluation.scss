@@ -1,42 +1,30 @@
-@media screen and (max-width: 769px) {
-
-  // STUDENT INFO & ASSIGNMENTS
-  .eval-modal-student-container {
-    bottom: auto;
-    left: auto;
-    margin: 0 auto 20px;
-    position: relative;
-    right: auto;
-    top: auto;
-  }
-  
-  // WORKSPACE INFO & EVALUATION FORMS
-  .eval-modal-evaluate-container {
-    bottom: auto;
-    left: auto;
-    margin: 0 auto 20px;
-    position: relative;
-    right: auto;
-    top: auto;
-  }
-  
-  .eval-modal-assignment-content,
-  .eval-modal-evaluate-content {
-    bottom: auto;
-    left: auto;
-    position: relative;
-    right: auto;
-    top: auto;
-  }
-  
-  // REQUESTS CONTAINER
-  .evaluation-requests-container {
-    padding: 10px;
-  }
+// SCREEN LANDSCAPE - 3 COLUMNS
+@media screen and (min-width: 1280px) {
   
   // REQUEST
   .evaluation-request {
-    width: calc(50% - 30px);
+    width: calc(25% - 20px);
+    max-width: 300px;
+  }
+  
+}
+
+// TABLET LANDSCAPE - 3 COLUMNS
+@media screen and (min-width: 901px) and (max-width: 1279px) {
+  
+  // REQUEST
+  .evaluation-request {
+    width: calc(33% - 18px);
+  }
+  
+}
+
+// MOBILE & TABLET PORTRAIT & LANDSCAPE - 2 COLUMNS & DECREASED FONT SIZE
+@media screen and (min-width: 600px) and (max-width: 900px) {
+
+  // REQUEST
+  .evaluation-request {
+    width: calc(50% - 20px);
   }
   
   .eval-modal-student-name {
@@ -56,11 +44,11 @@
   
 }
 
-@media screen and (max-width: 479px) {
+// MOBILE - 1 COLUMN & DECREASED FONT SIZE
+@media screen and (min-width: 320px) and (max-width: 599px) {
   
   // REQUEST PAGE TITLE
   .evaluation-requests-title {
-    margin:25px 15px 0;
     
     h3 {
       font-size: 20px;
@@ -68,14 +56,9 @@
     
   }
   
-  // REQUESTS CONTAINER
-  .evaluation-requests-container {
-    padding: 0;
-  }
-  
   // REQUEST
   .evaluation-request {
-    width: calc(100% - 30px);
+    width: calc(100% - 20px);
   }
   
   .evaluation-request-student {
