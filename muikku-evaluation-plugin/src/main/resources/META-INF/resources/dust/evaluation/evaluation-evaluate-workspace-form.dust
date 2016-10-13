@@ -1,4 +1,3 @@
-
   <div class="evaluation-modal-evaluate-form"> 
     <div class="evaluation-modal-evaluate-form-row">
       <label for="evaluateFormLiteralEvaluation">Opintojakson sanallinen arviointi</label>
@@ -26,11 +25,7 @@
       <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentAssessor"/}</label>
       <select name="assessor">
       {#assessors}
-        {@eq key=selected value="true" type="boolean"}
-          <option value="{userEntityId}" selected="selected">{displayName}</option>
-        {:else}
-          <option value="{userEntityId}">{displayName}</option>
-        {/eq}
+        <option value="{userEntityId}">{lastName}, {firstName}</option>
       {/assessors}
       </select>
     </div>

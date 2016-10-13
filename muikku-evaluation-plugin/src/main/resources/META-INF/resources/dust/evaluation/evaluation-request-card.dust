@@ -1,4 +1,4 @@
-<div class="evaluation-request">
+<div class="evaluation-request" data-workspace-entity-id="{workspaceEntityId}">
   <div class="evaluation-request-title">
     <div class="evaluation-request-student">{lastName}, {firstName}</div>
     <div class="evaluation-request-study-programme">{studyProgramme}</div>

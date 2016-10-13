@@ -84,9 +84,18 @@ public class RESTAssessmentRequest {
     this.workspaceUrlName = workspaceUrlName;
   }
 
+  public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+
+  public void setWorkspaceEntityId(Long workspaceEntityId) {
+    this.workspaceEntityId = workspaceEntityId;
+  }
+
   private String firstName;
   private String lastName;
   private String studyProgramme;
+  private Long workspaceEntityId;
   private String workspaceName;
   private String workspaceNameExtension;
   private String workspaceUrlName;

@@ -118,7 +118,7 @@ public class Evaluation2RESTService {
         compositeAssessmentRequest.getSchoolDataSource(),
         compositeAssessmentRequest.getCourseIdentifier());
     if (workspaceEntity == null) {
-      logger.severe(String.format("WorkspaceEntity not found for AssessmentRequest course %s not found", compositeAssessmentRequest.getCourseIdentifier()));
+      logger.severe(String.format("WorkspaceEntity for course %s not found", compositeAssessmentRequest.getCourseIdentifier()));
     }
     else {
       List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
@@ -149,6 +149,7 @@ public class Evaluation2RESTService {
     restAssessmentRequest.setFirstName(compositeAssessmentRequest.getFirstName());
     restAssessmentRequest.setLastName(compositeAssessmentRequest.getLastName());
     restAssessmentRequest.setStudyProgramme(compositeAssessmentRequest.getStudyProgramme());
+    restAssessmentRequest.setWorkspaceEntityId(workspaceEntity == null ? null : workspaceEntity.getId());
     restAssessmentRequest.setWorkspaceName(compositeAssessmentRequest.getCourseName());
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());

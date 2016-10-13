@@ -34,40 +34,54 @@
 
   $.widget("custom.evaluationDialog", {
     _create : function() {
-      this._gradingScales = {};
       this._loadGradingScales();
     },
     open: function(requestCard) {
       this._evaluationModal = $('<div>')
         .addClass('eval-modal')
         .appendTo('body');
-      
       $('body').addClass('no-scroll');
       
-      renderDustTemplate("evaluation/evaluation-modal-view.dust", {
-        studentName: $(requestCard).find('.evaluation-request-student').text(),
-        studyProgrammeName: $(requestCard).find('.evaluation-request-study-programme').text(),
-        courseName: $(requestCard).find('.workspace-name').text(),
-        gradingScales: this._gradingScales
-      }, $.proxy(function (html) {
-        this._evaluationModal.append(html);
-        $('.eval-modal-close').click($.proxy(function (event) {
-          $('body').removeClass('no-scroll');
-          this._evaluationModal.remove();
+      // Assessors
+      var workspaceEntityId = $(requestCard).attr('data-workspace-entity-id');
+      mApi().workspace.workspaces.staffMembers
+        .read(workspaceEntityId, {orderBy: 'name'})
+        .callback($.proxy(function (err, staffMembers) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            // Modal itself
+            renderDustTemplate("evaluation/evaluation-modal-view.dust", {
+              studentName: $(requestCard).find('.evaluation-request-student').text(),
+              studyProgrammeName: $(requestCard).find('.evaluation-request-study-programme').text(),
+              courseName: $(requestCard).find('.workspace-name').text(),
+              gradingScales: this._gradingScales||{},
+              assessors: staffMembers
+            }, $.proxy(function (html) {
+              this._evaluationModal.append(html);
+              $('.eval-modal-close').click($.proxy(function (event) {
+                this.close();
+              }, this));
+            }, this));
+          }
         }, this));
-      }, this));
+    },
+    close: function() {
+      $('body').removeClass('no-scroll');
+      this._evaluationModal.remove();
     },
     _loadGradingScales: function() {
       mApi().evaluation.compositeGradingScales
-      .read()
-      .callback($.proxy(function (err, gradingScales) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        }
-        else {
-          this._gradingScales = gradingScales;
-        }
-      }, this)); 
+        .read()
+        .callback($.proxy(function (err, gradingScales) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            this._gradingScales = gradingScales;
+          }
+        }, this)); 
     }
   });
 
