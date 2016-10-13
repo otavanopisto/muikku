@@ -42,8 +42,8 @@
 }
 
 .di-search-result-container {
-  background-color: #fff;
-  box-shadow: -2px 3px 5px rgba(0, 0, 0, 0.03);
+  background-color: $environment-background-color;
+  box-shadow: $environment-box-shadow;
   margin-top: 12px;
   position: absolute;
   right: 0;
