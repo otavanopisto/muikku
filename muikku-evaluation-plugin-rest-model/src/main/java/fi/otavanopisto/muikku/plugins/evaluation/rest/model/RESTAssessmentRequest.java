@@ -92,6 +92,14 @@ public class RESTAssessmentRequest {
     this.workspaceEntityId = workspaceEntityId;
   }
 
+  public Date getEvaluationDate() {
+    return evaluationDate;
+  }
+
+  public void setEvaluationDate(Date evaluationDate) {
+    this.evaluationDate = evaluationDate;
+  }
+
   private String firstName;
   private String lastName;
   private String studyProgramme;
@@ -101,6 +109,7 @@ public class RESTAssessmentRequest {
   private String workspaceUrlName;
   private Date enrollmentDate;
   private Date assessmentRequestDate;
+  private Date evaluationDate;
   private Long assignmentsDone;
   private Long assignmentsTotal;
 
