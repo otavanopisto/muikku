@@ -1,7 +1,7 @@
 (function() {
   'use strict';
   
-  // Evaluation main view widget
+  // Evaluation workspace view widget
 
   $.widget("custom.evaluationWorkspaceView", {
     _create : function() {
@@ -31,12 +31,12 @@
   });
 
     $(document).ready(function () {
-    $(document).evaluationWorkspaceView().evaluationDialog();
+    $(document).evaluationWorkspaceView().evaluationModal();
   });
 
   $(document).on('click', '.evaluate-button', function (event) {
     var requestCard = event.target.closest('.evaluation-request');
-    $(document).evaluationDialog('open', requestCard);
+    $(document).evaluationModal('open', requestCard);
   });
   
 }).call(this);

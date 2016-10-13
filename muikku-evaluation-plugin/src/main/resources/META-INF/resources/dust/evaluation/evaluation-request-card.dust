@@ -22,7 +22,7 @@
       <span class="evaluation-request-data-text assignments-status not-done">{assignmentsDone}/{assignmentsTotal}</span>
     </div>
     <div class="evaluation-request-button-row">
-      <div class="evaluation-request-card-button evaluate-button icon-evaluate"></div>
+      <div class="evaluation-request-card-button evaluate-button icon-evaluate" title="Arvioi Opiskelijan opintojakso"></div>
     </div>
   </div>
 </div>
