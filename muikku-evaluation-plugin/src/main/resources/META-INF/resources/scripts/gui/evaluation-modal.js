@@ -53,6 +53,12 @@
         .appendTo('body');
       $('body').addClass('no-scroll');
       
+      var verbalAssessment, assessorId, gradeId;
+      var evaluationDate = new Date();
+      if ($(requestCard).attr('data-evaluated') == 'true') {
+        // load evaluation data
+      }
+      
       // Assessors
       var workspaceEntityId = $(requestCard).attr('data-workspace-entity-id');
       mApi().workspace.workspaces.staffMembers
@@ -73,11 +79,12 @@
               this._evaluationModal.append(html);
               // CKEditor
               CKEDITOR.replace(this._evaluationModal.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
-              // Datepicker
               $(this._evaluationModal).find('input[name="evaluationDate"]')
                 .css({'z-index': 9999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
+              $(this._evaluationModal).find('input[name="evaluationDate"]')
+                .datepicker('setDate', evaluationDate);
               // Close button
               $('.eval-modal-close').click($.proxy(function (event) {
                 this.close();
