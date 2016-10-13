@@ -1,4 +1,6 @@
 
+// Environment level variables
+
 $environment-icon-family: 'muikku';
 $environment-font-family: 'Open Sans',Arial,sans-serif;
 $environment-box-shadow: -2px 3px 5px rgba(0, 0, 0, 0.03);
@@ -6,27 +8,56 @@ $environment-background-color: #fff;
 $environment-background-dim-color: #ededed;
 $environment-background-highlight-color: #fff8c1;
 $environment-background-selected-color: #eee;
-
 $environment-font-color: #000;
 $environment-font-disabled-color: #aaa;
 $environment-border-color: #ededed;
 $environment-border-selected-color: #dadada;
 
-// From coursepicker
 
+// Items in the content-area  (messages, users, workspaces...)
 
 $item-header-font-color: #d89828;
 $item-header-icon-font-color: #3f639a;
 $item-header-label-color: #daf5ff;
-
-
-// From communicator
-
 $item-border-color: #fff;
 $item-border-color-active: #0099ff;
 $item-border-color-highlight: #ff9600;
 $item-target-icon-color: #049a00;
+$item-state-locked-icon-color: #c92d2d;
+$item-state-pinned-icon-color: #149000;
+$item-state-info-font-color: #a4a4a4;
 
+// Vertical navigation bar seen in mainfunctions (labels, folders...)
+
+$navigation-bar-icon-color: #dadada;
+$navigation-bar-border-color: #fff;
+$navigation-bar-hover-border-color: #ededed;
+$navigation-bar-selected-color: #ededed;
+
+
+// Categories are used in differentiating things (users, message areas...) by color
+
+$category-color-1: #0099ff;
+$category-color-2: #ff9900;
+$category-color-3: #ff008d;
+$category-color-4: #0bf0f2;
+$category-color-5: #f00bf2;
+$category-color-6: #47ccae;
+$category-color-7: #7082b0;
+$category-color-8: #6eb5cf;
+$category-color-9: #ff0000;
+$category-color-10: #0cff00;
+$category-color-11: #000000;
+
+// Searches and filterings 
+
+$search-result-font-color: #0099ff;
+
+
+$user-picture-font-color: #fff;
+
+
+// Target (user, group, workspace...) - fe. a recipient
 
 $target-font-color: #777;
 $target-user-icon-color: #ff9600;
@@ -35,8 +66,7 @@ $target-group-icon-color: #049a00;
 $target-remove-icon-color: #d80000;
 $target-remove-font-color: #d80000;
 
-$navigation-bar-icon-color: #dadada;
-$navigation-bar-border-color: #fff;
-$navigation-bar-hover-border-color: #ededed;
-$navigation-bar-selected-color: #ededed;
+
+
+
 
