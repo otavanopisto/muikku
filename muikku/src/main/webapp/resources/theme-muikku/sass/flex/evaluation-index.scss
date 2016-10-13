@@ -162,6 +162,22 @@ body {
   padding: 2px;
   vertical-align: top;
   width: 285px;
+  
+  &.evaluation-evaluated-nonpassing {
+    border: 1px solid #ea7503;
+    box-shadow: 0 3px 5px rgba(234, 117, 3, 0.2);
+  }
+  
+  &.evaluation-evaluated-passing {
+    border: 1px solid #3edd2d;
+    box-shadow: 0 3px 5px rgba(60, 221, 3, 0.2);
+  }
+  
+  &.evaluation-requested {
+    border: 1px solid #00ccff;
+    box-shadow: 0 3px 5px rgba(0, 204, 255, 0.2);
+  }
+  
 }
 
 .evaluation-request-title {
@@ -233,17 +249,30 @@ body {
   margin: 12px 0 0;
   
   .evaluation-request-card-button {
-    background: #0099ff;
     color: #fff;
     border-radius: 3px;
     cursor: pointer;
     display: inline-block;
     font-size: 18px;
     height: 18px;
-    margin: 4px 0 4px 4px;
+    margin: 4px 0 4px 8px;
     width: 18px;
     padding: 5px;
     text-align: center;
+    vertical-align: top;
+    
+    &.delete-button {
+      background: #d50b36;
+      font-size: 20px;
+      height: 20px;
+      padding: 4px;
+      width: 20px;
+    }
+    
+    &.evaluate-button {
+      background: #0099ff;
+    }
+    
   }
   
 }

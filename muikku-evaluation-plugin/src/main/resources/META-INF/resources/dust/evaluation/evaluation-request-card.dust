@@ -19,7 +19,7 @@
     </div>
     <div class="evaluation-request-data-row">
       <span class="evaluation-request-data-label">Tehtäviä tehty</span>
-      <span class="evaluation-request-data-text assignments-status not-done">{assignmentsDone}/{assignmentsTotal}</span>
+      <span class="evaluation-request-data-text assignments-status {@eq key=assignmentsDone value=assignmentsTotal}all-done{/eq} {@ne key=assignmentsDone value=assignmentsTotal}not-done{/ne}">{assignmentsDone}/{assignmentsTotal}</span>
     </div>
     <div class="evaluation-request-button-row">
       <div class="evaluation-request-card-button evaluate-button icon-evaluate" title="Arvioi Opiskelijan opintojakso"></div>
