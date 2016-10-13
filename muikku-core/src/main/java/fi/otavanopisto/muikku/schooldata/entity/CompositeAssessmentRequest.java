@@ -13,5 +13,6 @@ public interface CompositeAssessmentRequest extends SchoolDataEntity {
   public String getCourseNameExtension();
   public Date getCourseEnrollmentDate();
   public Date getAssessmentRequestDate();
+  public Date getEvaluationDate();
 
 }
