@@ -1,33 +1,40 @@
-  <div class="evaluation-modal-evaluate-form"> 
-    <div class="evaluation-modal-evaluate-form-row">
-      <label for="evaluateFormLiteralEvaluation">Opintojakson sanallinen arviointi</label>
-      <textarea id="evaluateFormLiteralEvaluation"></textarea>
-    </div>
-    <div class="evaluation-modal-evaluate-form-row">
-      <label for="evaluationDate">Arviointipäivämäärä</label>
-      <input required="required" type="date" name="evaluationDate" id="evaluationDate"/>
-    </div>
-    <div class="evaluation-modal-evaluate-form-row">
-      <label for="grade">Arvosana</label>
-      <select name="grade" id="grade">
-        {#gradingScales}
-          <optgroup label="{name}">
-          {#grades scaleid=id scaleds=dataSource}
-            <option value="{id}/{dataSource}@{scaleid}/{scaleds}">
-              {name}
-            </option>
-          {/grades}
-          </optgroup>
-        {/gradingScales}
-      </select>
-    </div>
-    <div class="evaluation-modal-evaluate-form-row">
-      <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentAssessor"/}</label>
-      <select name="assessor">
-      {#assessors}
-        <option value="{userEntityId}">{lastName}, {firstName}</option>
-      {/assessors}
-      </select>
+<div class="evaluation-modal-evaluate-form"> 
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="evaluateFormLiteralEvaluation">Opintojakson sanallinen arviointi</label>
+    <textarea id="evaluateFormLiteralEvaluation"></textarea>
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="evaluationDate">Arviointipäivämäärä</label>
+    <input required="required" type="date" name="evaluationDate" id="evaluationDate"/>
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="grade">Arvosana</label>
+    <select name="grade" id="grade">
+      {#gradingScales}
+        <optgroup label="{name}">
+        {#grades scaleid=id scaleds=dataSource}
+          <option value="{id}/{dataSource}@{scaleid}/{scaleds}">
+            {name}
+          </option>
+        {/grades}
+        </optgroup>
+      {/gradingScales}
+    </select>
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentAssessor"/}</label>
+    <select name="assessor">
+    {#assessors}
+      <option value="{userEntityId}">{lastName}, {firstName}</option>
+    {/assessors}
+    </select>
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <div class="eval-modal-evaluate-buttonset">
+      <div class="eval-modal-evaluate-button button-delete">POISTA ARVIOINTI</div>
+      <div class="eval-modal-evaluate-button button-evaluate-nonpassing">TÄYDENNETTÄVÄ</div>
+      <div class="eval-modal-evaluate-button button-evaluate-passing">ARVIOI OPINTOJAKSO</div>
+      <div class="eval-modal-evaluate-button button-cancel">PERUUTA</div>
     </div>
   </div>
-
+</div>

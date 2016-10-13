@@ -81,6 +81,12 @@
 // EVALUATE FORM
 .evaluation-modal-evaluate-form {
   
+  .cke {
+    border: 2px solid #abdbed;
+    box-shadow: none;
+    border-radius: 3px;
+  }
+  
   label {
     display: block;
     margin: 0;
@@ -92,8 +98,7 @@
     background: #fff;
     border: 2px solid #abdbed;
     border-radius: 3px;
-    box-shadow: 0 0 0px 3px rgba(215,215,215,0.15); 
-    font-family:'Open Sans', Arial, sans-serif;
+    font-family: 'Open Sans', Arial, sans-serif;
     font-size: 14px;
     padding: 5px;
   }
@@ -103,8 +108,8 @@
     border: 2px solid #abdbed;
     border-radius: 3px;
     box-sizing: border-box;
-    box-shadow: 0 0 0px 3px rgba(215,215,215,0.15); 
-    font-family:'Open Sans', Arial, sans-serif;
+
+    font-family: 'Open Sans', Arial, sans-serif;
     font-size: 14px;
     padding: 5px;
     width: 100%;
@@ -114,8 +119,7 @@
     background: #fff;
     border: 2px solid #abdbed;
     border-radius: 3px;
-    box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
-    font-family:'Open Sans', Arial, sans-serif;
+    font-family: 'Open Sans', Arial, sans-serif;
     font-size: 14px;
     padding: 0 5px;
     
@@ -129,4 +133,36 @@
 
 .evaluation-modal-evaluate-form-row {
   margin: 5px 0 15px; 
+}
+
+.eval-modal-evaluate-buttonset {
+  padding: 20px;
+  text-align: right;
+}
+
+.eval-modal-evaluate-button {
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 16px;
+  line-height: 1;
+  padding: 8px 12px;
+  margin: 15px 0 0 15px;
+  
+  &.button-cancel {
+    background: #7391a7;
+  }
+  
+  &.button-evaluate-passing {
+    background: #27b91c;
+  }
+  
+  &.button-delete {
+    background: #d50b36;
+  }
+  
+  &.button-evaluate-nonpassing {
+    background: #ea7503;
+  }
+  
 }

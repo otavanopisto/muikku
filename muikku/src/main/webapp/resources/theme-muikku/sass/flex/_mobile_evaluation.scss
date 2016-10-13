@@ -37,12 +37,23 @@
     
   }
   
+  .evaluation-request-data-row {
+    padding: 2px 0;
+    position: relative;
+    
+    .workspace-name {
+      height: auto;
+    }
+  
+  }
+  
   .evaluation-request {
     width: calc(100% - 20px);
   }
   
   .evaluation-request-student {
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 400;
   }
   
   .eval-modal-student-name,
