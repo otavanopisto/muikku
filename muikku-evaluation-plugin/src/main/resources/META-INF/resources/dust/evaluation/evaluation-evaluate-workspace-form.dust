@@ -4,7 +4,7 @@
       <textarea id="evaluateFormLiteralEvaluation"></textarea>
     </div>
     <div class="evaluation-modal-evaluate-form-row">
-      <label for="evaluationDate">Arviointi päivämäärä</label>
+      <label for="evaluationDate">Arviointipäivämäärä</label>
       <input required="required" type="date" name="evaluationDate" id="evaluationDate"/>
     </div>
     <div class="evaluation-modal-evaluate-form-row">
