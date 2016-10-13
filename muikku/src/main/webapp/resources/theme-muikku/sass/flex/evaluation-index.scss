@@ -33,7 +33,7 @@ body {
 .evaluation-navigation {
   background: #7ed9ff;
   bottom: 0;
-  box-shadow: 5px 0 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
   left: 0;
   height: 60px;
   padding: 0 10px;
@@ -47,12 +47,29 @@ body {
     color: #fff;
     cursor: pointer;
     float: left;
-    font-size: 32px;
-    height: 32px;
     margin: 4px;
-    width: 32px;
-    padding: 10px;
     text-align: center;
+    
+    &.icon-filter {
+      font-size: 28px;
+      height: 28px;
+      padding: 12px;
+      width: 28px;
+    }
+    
+    &.icon-home {
+      font-size: 34px;
+      height: 34px;
+      padding: 8px;
+      width: 34px;
+    }
+    
+    &.icon-search {
+      font-size: 32px;
+      height: 32px;
+      padding: 10px;
+      width: 32px;
+    }
     
     &:hover {
       text-shadow: 0 0 15px #fff;
@@ -81,17 +98,20 @@ body {
 }
 
 // FRONTPAGE EVALUATION REQUESTS WRAPPER
-.evaluation-requests-wrapper {
+.evaluation-requests-wrapper,
+.evaluation-workspace-students-wrapper {
   padding: 60px 0 0;
 }
 
-// REQUEST PAGE TITLE
-.evaluation-requests-title {
+// REQUESTS PAGE TITLE
+.evaluation-requests-title,
+.evaluation-workspace-title {
   margin:25px 15px 0;
   
   h3 {
     font-size: 24px;
     font-weight: 300;
+    display: inline-block;
     margin: 0;
     padding: 0;
     text-transform: none;
@@ -99,8 +119,35 @@ body {
   
 }
 
+// REQUESTS SORTING WRAPPER
+.evaluation-sorting-wrapper {
+  display: inline-block;
+  margin: 0 10px;
+  
+  .eval-sorting {
+    background: #eee;
+    border-radius: 3px;
+    color: #000;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    height: 14px;
+    margin: 0 2px;
+    padding:4px;
+    width: 14px;
+    
+    &.selected {
+      background: #0099ff;
+      color: #fff;
+    }
+    
+  }
+  
+}
+
 // REQUESTS CONTAINER
-.evaluation-requests-container {
+.evaluation-requests-container,
+.evaluation-workspace-students-container {
   vertical-align: top;
 }
 
