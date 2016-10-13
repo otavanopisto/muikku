@@ -104,6 +104,11 @@
               this._evaluationModal.append(html);
               // CKEditor
               CKEDITOR.replace(this._evaluationModal.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
+              // Datepicker
+              $(this._evaluationModal).find('input[name="evaluationDate"]')
+                .css({'z-index': 9999, 'position': 'relative'})
+                .attr('type', 'text')
+                .datepicker();
               // Close button
               $('.eval-modal-close').click($.proxy(function (event) {
                 this.close();
