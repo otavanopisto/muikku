@@ -6,6 +6,7 @@ $environment-font-family: 'Open Sans',Arial,sans-serif;
 $environment-box-shadow: -2px 3px 5px rgba(0, 0, 0, 0.03);
 $environment-background-color: #fff;
 $environment-background-dim-color: #ededed;
+$environment-background-light-dim-color: #f9f9f9;
 $environment-background-highlight-color: #fff8c1;
 $environment-background-selected-color: #eee;
 $environment-font-color: #000;
@@ -26,6 +27,11 @@ $item-target-icon-color: #049a00;
 $item-state-locked-icon-color: #c92d2d;
 $item-state-pinned-icon-color: #149000;
 $item-state-info-font-color: #a4a4a4;
+$item-grade-font-color: #fff;
+$item-grade-passing-color: #0acf00;
+$item-grade-failing-color: #ea7401;
+
+
 
 // Vertical navigation bar seen in mainfunctions (labels, folders...)
 
