@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCompositeGrade;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCompositeGradingScale;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScale;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScaleItem;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
@@ -24,6 +25,7 @@ import fi.otavanopisto.muikku.schooldata.GradingSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeGrade;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
@@ -58,19 +60,23 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
   @Override
-  public List<CompositeGrade> listCompositeGrades() {
-    List<CompositeGrade> grades = new ArrayList<fi.otavanopisto.muikku.schooldata.entity.CompositeGrade>();
-    fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade[] gradeItems = pyramusClient.get(
-        "/composite/grades/",
-        fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade[].class);
-    for (int i = 0; i < gradeItems.length; i++) {
-      grades.add(new PyramusCompositeGrade(
-          gradeItems[i].getScaleId().toString(),
-          gradeItems[i].getScaleName(),
-          gradeItems[i].getGradeId().toString(),
-          gradeItems[i].getGradeName()));
+  public List<CompositeGradingScale> listCompositeGradingScales() {
+    List<CompositeGradingScale> localGradingScales = new ArrayList<fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale>();
+    fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale[] restGradingScales = pyramusClient.get(
+        "/composite/gradingScales/",
+        fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale[].class);
+    for (int i = 0; i < restGradingScales.length; i++) {
+      List<CompositeGrade> localGrades = new ArrayList<CompositeGrade>();
+      List<fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade> restGrades = restGradingScales[i].getGrades();
+      for (fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade restGrade : restGrades) {
+        localGrades.add(new PyramusCompositeGrade(restGrade.getGradeId().toString(), restGrade.getGradeName()));
+      }
+      localGradingScales.add(new PyramusCompositeGradingScale(
+        restGradingScales[i].getScaleId().toString(),
+        restGradingScales[i].getScaleName(),
+        localGrades));
     }
-    return grades;
+    return localGradingScales;
   }
 
 	@Override

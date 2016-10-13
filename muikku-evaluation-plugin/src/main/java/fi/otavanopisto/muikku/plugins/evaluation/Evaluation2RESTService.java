@@ -16,7 +16,8 @@ import javax.ws.rs.core.Response.Status;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RESTAssessmentRequest;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RESTGrade;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGrade;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGradingScale;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -28,6 +29,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeGrade;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -63,7 +65,7 @@ public class Evaluation2RESTService {
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
 
   @GET
-  @Path("/grades")
+  @Path("/compositeGradingScales")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listGrades() {
     if (!sessionController.isLoggedIn()) {
@@ -72,22 +74,25 @@ public class Evaluation2RESTService {
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    List<RESTGrade> restGrades = new ArrayList<RESTGrade>();
-    List<CompositeGrade> grades = gradingController.listCompositeGrades();
-    for (CompositeGrade grade : grades) {
-      RESTGrade restGrade = new RESTGrade();
-      restGrade.setDataSource(grade.getSchoolDataSource());
-      restGrade.setScaleIdentifier(grade.getScaleIdentifier());
-      restGrade.setScaleName(grade.getScaleName());
-      restGrade.setGradeIdentifier(grade.getGradeIdentifier());
-      restGrade.setGradeName(grade.getGradeName());
-      restGrades.add(restGrade);
+    List<WorkspaceGradingScale> restGradingScales = new ArrayList<WorkspaceGradingScale>();
+    List<CompositeGradingScale> gradingScales = gradingController.listCompositeGradingScales();
+    for (CompositeGradingScale gradingScale : gradingScales) {
+      List<CompositeGrade> grades = gradingScale.getGrades(); 
+      List<WorkspaceGrade> restGrades = new ArrayList<WorkspaceGrade>();
+      for (CompositeGrade grade : grades) {
+        restGrades.add(new WorkspaceGrade(grade.getGradeName(), grade.getGradeIdentifier(), gradingScale.getSchoolDataSource()));
+      }
+      restGradingScales.add(new WorkspaceGradingScale(
+          gradingScale.getScaleName(),
+          gradingScale.getScaleIdentifier(),
+          gradingScale.getSchoolDataSource(),
+          restGrades));
     }
-    return Response.ok(restGrades).build();
+    return Response.ok(restGradingScales).build();
   }
 
   @GET
-  @Path("/assessmentRequests")
+  @Path("/compositeAssessmentRequests")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listAssessmentRequests() {
     if (!sessionController.isLoggedIn()) {

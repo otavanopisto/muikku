@@ -5,26 +5,15 @@
 
   $.widget("custom.evaluationMainView", {
     _create : function() {
-      this._grades = [];
-      this._loadGrades();
       this._loadAssessmentRequests();
     },
-    _loadGrades: function() {
-      mApi().evaluation.grades
-      .read()
-      .callback($.proxy(function (err, grades) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        }
-        else {
-          this._grades = grades;
-        }
-      }, this)); 
+    getGrades() {
+      return this._grades;
     },
     _loadAssessmentRequests: function () {
       var requestContainer = $('.evaluation-requests-container'); 
       $(requestContainer).empty();
-      mApi().evaluation.assessmentRequests
+      mApi().evaluation.compositeAssessmentRequests
         .read()
         .callback($.proxy(function (err, assessmentRequests) {
           if (err) {
@@ -44,7 +33,9 @@
   // Evaluation dialog widget
 
   $.widget("custom.evaluationDialog", {
-    options: {
+    _create : function() {
+      this._gradingScales = {};
+      this._loadGradingScales();
     },
     open: function(requestCard) {
       this._evaluationModal = $('<div>')
@@ -56,7 +47,8 @@
       renderDustTemplate("evaluation/evaluation-modal-view.dust", {
         studentName: $(requestCard).find('.evaluation-request-student').text(),
         studyProgrammeName: $(requestCard).find('.evaluation-request-study-programme').text(),
-        courseName: $(requestCard).find('.workspace-name').text()
+        courseName: $(requestCard).find('.workspace-name').text(),
+        gradingScales: this._gradingScales
       }, $.proxy(function (html) {
         this._evaluationModal.append(html);
         $('.eval-modal-close').click($.proxy(function (event) {
@@ -64,6 +56,18 @@
           this._evaluationModal.remove();
         }, this));
       }, this));
+    },
+    _loadGradingScales: function() {
+      mApi().evaluation.compositeGradingScales
+      .read()
+      .callback($.proxy(function (err, gradingScales) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          this._gradingScales = gradingScales;
+        }
+      }, this)); 
     }
   });
 

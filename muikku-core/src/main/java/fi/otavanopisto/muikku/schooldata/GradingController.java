@@ -17,7 +17,7 @@ import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.grading.GradingScaleEntity;
 import fi.otavanopisto.muikku.model.grading.GradingScaleItemEntity;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
-import fi.otavanopisto.muikku.schooldata.entity.CompositeGrade;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -40,10 +40,10 @@ public class GradingController {
 	@Inject
 	private GradingScaleItemEntityDAO gradingScaleItemEntityDAO;
 	
-	/* CompositeGrade */
+	/* CompositeGradingScale */
 	
-	public List<CompositeGrade> listCompositeGrades() {
-	  return gradingSchoolDataController.listCompositeGrades();
+	public List<CompositeGradingScale> listCompositeGradingScales() {
+	  return gradingSchoolDataController.listCompositeGradingScales();
 	}
 
 	/* GradingScaleEntity */

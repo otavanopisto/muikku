@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
-import fi.otavanopisto.muikku.schooldata.entity.CompositeGrade;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -27,7 +27,7 @@ public interface GradingSchoolDataBridge {
    * 
    * @return All available grades
    */
-  public List<CompositeGrade> listCompositeGrades();
+  public List<CompositeGradingScale> listCompositeGradingScales();
 
   /* GradingScales */
 

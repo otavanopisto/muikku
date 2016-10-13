@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
-import fi.otavanopisto.muikku.schooldata.entity.CompositeGrade;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -155,13 +155,13 @@ class GradingSchoolDataController {
     return Collections.emptyList();
   }
   
-  /* CompositeGrade */
+  /* CompositeGradingScale */
   
-  public List<CompositeGrade> listCompositeGrades() {
-    List<CompositeGrade> result = new ArrayList<>();
+  public List<CompositeGradingScale> listCompositeGradingScales() {
+    List<CompositeGradingScale> result = new ArrayList<>();
     for (GradingSchoolDataBridge gradingBridge : getGradingBridges()) {
       try {
-        result.addAll(gradingBridge.listCompositeGrades());
+        result.addAll(gradingBridge.listCompositeGradingScales());
       } catch (SchoolDataBridgeInternalException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing grades", e);
       }
