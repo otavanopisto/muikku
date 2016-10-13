@@ -100,6 +100,14 @@ public class RESTAssessmentRequest {
     this.evaluationDate = evaluationDate;
   }
 
+  public Boolean getPassing() {
+    return passing;
+  }
+
+  public void setPassing(Boolean passing) {
+    this.passing = passing;
+  }
+
   private String firstName;
   private String lastName;
   private String studyProgramme;
@@ -110,6 +118,7 @@ public class RESTAssessmentRequest {
   private Date enrollmentDate;
   private Date assessmentRequestDate;
   private Date evaluationDate;
+  private Boolean passing;
   private Long assignmentsDone;
   private Long assignmentsTotal;
 

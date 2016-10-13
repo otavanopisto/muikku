@@ -9,7 +9,7 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   
   public PyramusCompositeAssessmentRequest(String userIdentifier, String firstName, String lastName, String studyProgramme,
       String courseIdentifier, String courseName, String courseNameExtension, Date courseEnrollmentDate, Date assessmentRequestDate,
-      Date evaluationDate) {
+      Date evaluationDate, Boolean passing) {
     this.userIdentifier = userIdentifier;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -20,6 +20,7 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
     this.courseEnrollmentDate = courseEnrollmentDate;
     this.assessmentRequestDate = assessmentRequestDate;
     this.evaluationDate = evaluationDate;
+    this.passing = passing;
   }
 
   @Override
@@ -77,6 +78,11 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
     return evaluationDate;
   }
 
+  @Override
+  public Boolean getPassing() {
+    return passing;
+  }
+
   private final String userIdentifier;
   private final String firstName;
   private final String lastName;
@@ -87,5 +93,6 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   private final Date courseEnrollmentDate;
   private final Date assessmentRequestDate;
   private final Date evaluationDate;
+  private final Boolean passing;
 
 }

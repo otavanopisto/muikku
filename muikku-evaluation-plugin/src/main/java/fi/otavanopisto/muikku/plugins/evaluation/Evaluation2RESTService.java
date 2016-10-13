@@ -144,6 +144,7 @@ public class Evaluation2RESTService {
     RESTAssessmentRequest restAssessmentRequest = new RESTAssessmentRequest();
     restAssessmentRequest.setAssessmentRequestDate(compositeAssessmentRequest.getAssessmentRequestDate());
     restAssessmentRequest.setEvaluationDate(compositeAssessmentRequest.getEvaluationDate());
+    restAssessmentRequest.setPassing(compositeAssessmentRequest.getPassing());
     restAssessmentRequest.setAssignmentsDone(assignmentsDone);
     restAssessmentRequest.setAssignmentsTotal(assignmentsTotal);
     restAssessmentRequest.setEnrollmentDate(compositeAssessmentRequest.getCourseEnrollmentDate());
