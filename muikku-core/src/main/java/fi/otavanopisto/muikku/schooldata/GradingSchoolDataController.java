@@ -63,6 +63,16 @@ class GradingSchoolDataController {
     return null;
   }
   
+  public WorkspaceAssessment findWorkspaceAssessment(SchoolDataIdentifier courseStudentIdentifier) {
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(courseStudentIdentifier.getDataSource());
+    if (schoolDataBridge != null) {
+      return schoolDataBridge.findWorkspaceAssessment(courseStudentIdentifier.getIdentifier());
+    } else {
+      logger.log(Level.SEVERE, String.format("School Data Bridge could not be found for data source: %s", courseStudentIdentifier.getDataSource()));
+    }
+    return null;
+  }
+
   public WorkspaceAssessment findWorkspaceAssessment(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier,
       SchoolDataIdentifier workspaceAssesmentIdentifier) {
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(workspaceAssesmentIdentifier.getDataSource());

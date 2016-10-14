@@ -3,13 +3,15 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 import java.util.Date;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 
 public class PyramusCompositeAssessmentRequest implements CompositeAssessmentRequest {
   
-  public PyramusCompositeAssessmentRequest(String userIdentifier, String firstName, String lastName, String studyProgramme,
-      String courseIdentifier, String courseName, String courseNameExtension, Date courseEnrollmentDate, Date assessmentRequestDate,
-      Date evaluationDate, Boolean passing) {
+  public PyramusCompositeAssessmentRequest(SchoolDataIdentifier courseStudentIdentifier, String userIdentifier, String firstName, String lastName,
+      String studyProgramme, String courseIdentifier, String courseName, String courseNameExtension, Date courseEnrollmentDate,
+      Date assessmentRequestDate, Date evaluationDate, Boolean passing) {
+    this.courseStudentIdentifier = courseStudentIdentifier;
     this.userIdentifier = userIdentifier;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -26,6 +28,11 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+  }
+
+  @Override
+  public SchoolDataIdentifier getCourseStudentIdentifier() {
+    return courseStudentIdentifier;
   }
 
   @Override
@@ -83,6 +90,7 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
     return passing;
   }
 
+  private final SchoolDataIdentifier courseStudentIdentifier;
   private final String userIdentifier;
   private final String firstName;
   private final String lastName;

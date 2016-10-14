@@ -375,6 +375,7 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
     return new PyramusCompositeAssessmentRequest(
+      toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(assessmentRequest.getCourseStudentId())),
       assessmentRequest.getUserId() == null ? null : identifierMapper.getStudentIdentifier(assessmentRequest.getUserId()),
       assessmentRequest.getFirstName(),
       assessmentRequest.getLastName(),

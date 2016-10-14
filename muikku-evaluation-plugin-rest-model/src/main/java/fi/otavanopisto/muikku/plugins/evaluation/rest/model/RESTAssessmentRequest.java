@@ -108,6 +108,15 @@ public class RESTAssessmentRequest {
     this.passing = passing;
   }
 
+  public String getCourseStudentIdentifier() {
+    return courseStudentIdentifier;
+  }
+
+  public void setCourseStudentIdentifier(String courseStudentIdentifier) {
+    this.courseStudentIdentifier = courseStudentIdentifier;
+  }
+
+  private String courseStudentIdentifier;
   private String firstName;
   private String lastName;
   private String studyProgramme;
