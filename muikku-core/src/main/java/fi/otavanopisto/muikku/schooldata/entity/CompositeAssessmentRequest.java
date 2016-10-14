@@ -2,8 +2,11 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.Date;
 
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+
 public interface CompositeAssessmentRequest extends SchoolDataEntity {
 	
+  public SchoolDataIdentifier getCourseStudentIdentifier();
   public String getUserIdentifier();
   public String getFirstName();
   public String getLastName();

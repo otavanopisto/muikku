@@ -125,6 +125,10 @@ public class GradingController {
       SchoolDataIdentifier workspaceAssesmentIdentifier) {
     return gradingSchoolDataController.findWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssesmentIdentifier);
   }
+  
+  public WorkspaceAssessment findWorkspaceAssessment(SchoolDataIdentifier courseStudentIdentifier) {
+    return gradingSchoolDataController.findWorkspaceAssessment(courseStudentIdentifier);
+  }
 	
   public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataSource schoolDataSource, String workspaceIdentifier, String studentIdentifier){
     return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);

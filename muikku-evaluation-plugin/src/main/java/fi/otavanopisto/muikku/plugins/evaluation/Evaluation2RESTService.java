@@ -65,6 +65,20 @@ public class Evaluation2RESTService {
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
 
   @GET
+  @Path("/courseStudent/{COURSESTUDENTID}/assessment")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspaceStudentAssessment() {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    // TODO Implement
+    return null;
+  }
+
+  @GET
   @Path("/compositeGradingScales")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listGrades() {
@@ -142,6 +156,7 @@ public class Evaluation2RESTService {
       }
     }
     RESTAssessmentRequest restAssessmentRequest = new RESTAssessmentRequest();
+    restAssessmentRequest.setCourseStudentIdentifier(compositeAssessmentRequest.getCourseStudentIdentifier().toString());
     restAssessmentRequest.setAssessmentRequestDate(compositeAssessmentRequest.getAssessmentRequestDate());
     restAssessmentRequest.setEvaluationDate(compositeAssessmentRequest.getEvaluationDate());
     restAssessmentRequest.setPassing(compositeAssessmentRequest.getPassing());

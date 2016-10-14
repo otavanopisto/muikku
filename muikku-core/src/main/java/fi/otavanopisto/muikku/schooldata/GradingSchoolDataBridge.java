@@ -78,9 +78,18 @@ public interface GradingSchoolDataBridge {
    * @return found workspace assessment or null of non found
    */
   public WorkspaceAssessment findWorkspaceAssessment(String identifier, String WorkspaceIdentifier, String studentIdentifier);
+  
+  /**
+   * Returns a workspace assessment for the workspace student corresponding to the given identifier.
+   * 
+   * @param workspaceStudentIdentifier Workspace student identifier
+   * 
+   * @return Workspace student's workspace assessment, or <code>null</code> if one does not exist
+   */
+  public WorkspaceAssessment findWorkspaceAssessment(String workspaceStudentIdentifier);
 
   /**
-   * Lists workspace assesments by workspace and student
+   * Lists workspace assessments by workspace and student
    * 
    * @param workspaceIdentifier
    *        identifier of the workspace
