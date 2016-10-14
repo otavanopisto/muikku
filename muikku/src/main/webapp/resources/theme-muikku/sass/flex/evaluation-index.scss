@@ -6,7 +6,7 @@
 @import "_ckeditor_theme_management";
 @import "_draft";
 @import "_dialog";
-@import "_evaluation_evaluate_dialog";
+@import "_evaluation_evaluate_modal";
 
 body {
   background-color: #fff;
@@ -154,7 +154,7 @@ body {
 // REQUEST
 .evaluation-request {
   background: #fff;
-  border: 1px solid #fff;
+  border: 2px solid #fff;
   box-shadow: 0 3px 5px rgba(58, 111, 148, 0.2);
   box-sizing: border-box;
   display: inline-block;
@@ -163,18 +163,23 @@ body {
   vertical-align: top;
   width: 285px;
   
-  &.evaluation-evaluated-nonpassing {
-    border: 1px solid #ea7503;
+  &.evaluated-incomplete {
+    border: 2px solid #ea7503;
     box-shadow: 0 3px 5px rgba(234, 117, 3, 0.2);
   }
   
-  &.evaluation-evaluated-passing {
-    border: 1px solid #3edd2d;
+  &.evaluated-passed {
+    border: 2px solid #3edd2d;
     box-shadow: 0 3px 5px rgba(60, 221, 3, 0.2);
+    
+    .evaluation-request-card-button.delete-button {
+      display: inline-block;
+    }
+    
   }
   
   &.evaluation-requested {
-    border: 1px solid #00ccff;
+    border: 2px solid #00ccff;
     box-shadow: 0 3px 5px rgba(0, 204, 255, 0.2);
   }
   
@@ -264,6 +269,7 @@ body {
     
     &.delete-button {
       background: #d50b36;
+      display: none;
       font-size: 20px;
       height: 20px;
       padding: 4px;
