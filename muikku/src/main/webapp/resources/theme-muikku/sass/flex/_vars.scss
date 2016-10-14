@@ -10,9 +10,11 @@ $environment-background-light-dim-color: #f9f9f9;
 $environment-background-highlight-color: #fff8c1;
 $environment-background-selected-color: #eee;
 $environment-font-color: #000;
+$environment-alt-font-color: #fff; 
 $environment-font-disabled-color: #aaa;
 $environment-border-color: #ededed;
 $environment-border-selected-color: #dadada;
+$environment-border-transparent: rgba(255, 255, 255, 0);
 
 
 // Items in the content-area  (messages, users, workspaces...)
@@ -22,24 +24,40 @@ $item-header-icon-font-color: #3f639a;
 $item-header-label-color: #daf5ff;
 $item-border-color: #fff;
 $item-border-color-active: #0099ff;
-$item-border-color-highlight: #ff9600;
+$item-background-active-color: #dff7ff;
+$item-background-highlight-color: #d5f4ff;
+$item-border-highlight-color: #ff9600;
 $item-target-icon-color: #049a00;
 $item-state-locked-icon-color: #c92d2d;
 $item-state-pinned-icon-color: #149000;
 $item-state-info-font-color: #a4a4a4;
+$item-title-background-color: #f8f8f8;
 $item-grade-font-color: #fff;
 $item-grade-passing-color: #0acf00;
 $item-grade-failing-color: #ea7401;
-
+$item-button-add-color: #0099ff;
+$item-button-font-color: #fff;
 
 
 // Vertical navigation bar seen in mainfunctions (labels, folders...)
+
+// Todo: change to vertical navigation bar
 
 $navigation-bar-icon-color: #dadada;
 $navigation-bar-border-color: #fff;
 $navigation-bar-hover-border-color: #ededed;
 $navigation-bar-selected-color: #ededed;
 
+
+// Horizontal navigation bar seen in mainfunctions (delete, add labels, add area, edit area...)
+
+// Todo: change to horizontal navigation bar
+
+$content-navigation-menu-border-1: #00deff;
+$content-navigation-menu-shadow: 0 7px 15px rgba(0,0,0,0.3);
+$content-navigation-menu-highlight-color: #3a98f0;
+$content-navigation-action-remove-color: #d80000;
+$content-navigation-action-font-color: #fff;
 
 // Categories are used in differentiating things (users, message areas...) by color
 
@@ -58,8 +76,6 @@ $category-color-11: #000000;
 // Searches and filterings 
 
 $search-result-font-color: #0099ff;
-
-
 $user-picture-font-color: #fff;
 
 
