@@ -428,7 +428,9 @@ public class ElasticSearchProvider implements SearchProvider {
           if (StringUtils.isNotBlank(words[i])) {
             query.must(boolQuery()
                 .should(prefixQuery("name", words[i]))
-                .should(prefixQuery("description", words[i])));
+                .should(prefixQuery("description", words[i]))
+                .should(prefixQuery("subject", words[i]))
+                );
           }
         }
       }
