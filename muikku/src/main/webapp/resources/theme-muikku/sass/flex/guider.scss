@@ -1,5 +1,4 @@
 @import "_vars.scss";
-@import "_vars_backup";
 @import "_styles.scss";
 
 /* Guider, Guiding tool (.gt-*) */
@@ -51,7 +50,7 @@
 }
 
 .gt-email-field{
-  color: $dimmest;
+  color: $item-header-secondary-font-color;
   font-size: 10px;
 }
 
