@@ -1,38 +1,39 @@
 @import "_vars.scss";
+@import "_vars_backup";
 @import "_styles.scss";
 
 /* Guider, Guiding tool (.gt-*) */
 
 .gt-controls-container{
-  padding:0 5px 0 5px;
+  padding: 0 5px 0 5px;
 }
 
 .gt-side-header{
-  padding:3px;
+  padding: 3px;
 }
 
 .gt-side-content{
 }
 
 .gt-side-header > span{
-  color:#fff;
+  color: #fff;
 }
 
 .gt-side-tools{
-  height:inherit;
-  margin-bottom:0;
+  height: inherit;
+  margin-bottom: 0;
 }
 
 .gt-students-view-container{
-  min-height:400px;
+  min-height: 400px;
 }
 
 .gt-content-functions{
-   height:70px;  
+   height: 70px;  
 }
 
 .gt-content-main{
-  min-height:450px;
+  min-height: 450px;
 }
 
 .gt-user {
@@ -58,28 +59,28 @@
 }  
 
 .gt-user-name{
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .gt-user-meta-topic{
   span{
-   margin-left:10px;
-   font-weight:400;
+   margin-left: 10px;
+   font-weight: 400;
   }
   
 }
 
 .gt-email-field{
-  color:$dimmest;
-  font-size:10px;
+  color: $dimmest;
+  font-size: 10px;
 }
 
 .gt-user-details-container {
-  background-color:#f0f3f4;
+  background-color: #f0f3f4;
 }
 
 .gt-user-details-data{
-  padding:10px;
+  padding: 10px;
   
 
  } 
@@ -87,15 +88,15 @@
 
 
 .gt-user-details-items{
-    padding:10px;
+    padding: 10px;
     
     .gt-user-details-item{
     
     }
     
    .gt-user-details-label{
-     display:inline-block;
-     font-weight:400;
+     display: inline-block;
+     font-weight: 400;
      
      &::after{
       content: ":";
@@ -103,63 +104,63 @@
    }
 
    .gt-user-details-value{
-     margin-left:10px;
+     margin-left: 10px;
    }
    
    .gt-user-details-indent {
-     margin-left:4em;
+     margin-left: 4em;
    }
   }
 
 
 .gt-user-details-close {
- position:absolute;
- margin-top:0;
- margin-left:0;
- background-color:none;
- height:30px;
- width:200px;
+ position: absolute;
+ margin-top: 0;
+ margin-left: 0;
+ background-color: none;
+ height: 30px;
+ width: 200px;
  cursor: pointer;
 }
 
 
 .gt-user-header-name {
-  display : inline-block;
-  text-transform:uppercase;
+  display: inline-block;
+  text-transform: uppercase;
 }
 
 .gt-user-header-details {
-  display : inline-block;
-  float:right;  
+  display: inline-block;
+  float: right;  
 
 }
 .gt-user-rating {
-  padding-right:5px;
+  padding-right: 5px;
 }
 
 .gt-user-description {
-  display:inline-block;
-  background-color:#fff;  
-  cursor:pointer;  
+  display: inline-block;
+  background-color: #fff;  
+  cursor: pointer;  
 }
 
 .gt-user-description-text {
   font-size: 0.9em; 
-  padding:5px;
-  min-height:100px;
+  padding: 5px;
+  min-height: 100px;
 }
 
 .gt-user-additionalInfo {
-  display:inline-block;
-  width:30%;
-  float:right;
+  display: inline-block;
+  width: 30%;
+  float: right;
   font-size: 0.7em;
 
 }
 
 
 .gt-user-details-toolbar {
-  padding:10px;;
+  padding: 10px;;
   
 }
 .gt-user-view-headline {
@@ -174,11 +175,11 @@
 
 .gt-user-view-profile {
   > div{
-    padding:10px;
+    padding: 10px;
   }
   
   div[class*="gt-data-container"]{
-    width:100%;
+    width: 100%;
   }
   
   &.loading {
@@ -197,12 +198,12 @@
 
  .gt-data {
    .gt-course-details-container {
-      cursor:pointer;
-      background:#fff;
+      cursor: pointer;
+      background: #fff;
       
       .gt-course-description {
-        display:inline-block;
-        cursor:pointer;  
+        display: inline-block;
+        cursor: pointer;  
       }
       
     }
@@ -218,15 +219,15 @@
   &.open {
   
     .gt-course-details-container {
-      margin:-5px;
-      padding:5px;
-      background:$mainFuncFilter1;
-      color:#fff;
-      border-top-right-radius:3px;
-      border-bottom-right-radius:3px;
+      margin: -5px;
+      padding: 5px;
+      background: $mainFuncFilter1;
+      color: #fff;
+      border-top-right-radius: 3px;
+      border-bottom-right-radius: 3px;
       
       .gt-course-header-name {
-        color:#fff;
+        color: #fff;
       }
       
     }
@@ -236,12 +237,12 @@
 }
 
 .gt-course h4 {
-  margin:5px -5px;
-  text-transform:none;
-  font-size:14px;
-  font-weight:400;
-  background:#f8f8f8;
-  padding:5px;
+  margin: 5px -5px;
+  text-transform: none;
+  font-size: 14px;
+  font-weight: 400;
+  background: #f8f8f8;
+  padding: 5px;
 }
 
 .gt-course .gt-course-activity {
@@ -270,122 +271,122 @@
 
 
 .gt-course-activity-row {
-  transition:background 0.3s ease-in-out;
+  transition: background 0.3s ease-in-out;
   
   &:hover {
-    background:#dff7ff;
-    border-radius:3px;
+    background: #dff7ff;
+    border-radius: 3px;
   }
 }
 
 .gt-course-activity-row label {
-  font-weight:300;
-  padding:5px;
-  margin:0 0 0 5px;
+  font-weight: 300;
+  padding: 5px;
+  margin: 0 0 0 5px;
 }
 
 .gt-course-activity-row span {
   text-align: right;
-  padding:5px;
+  padding: 5px;
 }
 
 .gt-user-view-flags-container {
-  vertical-align:center;
+  vertical-align: center;
   .gt-flag {
-    display:inline-block;
-    white-space:nowrap;
-    margin:0;
-    padding:5px;
-    font-size:14px;
-    border-radius:20px;
-    position:relative;
-    border:2px solid #fff;
+    display: inline-block;
+    white-space: nowrap;
+    margin: 0;
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 20px;
+    position: relative;
+    border: 2px solid #fff;
     
     &.icon-flag::before {
-      background:#fff none repeat scroll 0 0;
-      border-radius:100%;
-      display:inline-block;
-      height:15px;
-      padding:5px;
-      text-align:center;
-      width:15px;
-      border-style:solid;
-      border-width:1px;
+      background: #fff none repeat scroll 0 0;
+      border-radius: 100%;
+      display: inline-block;
+      height: 15px;
+      padding: 5px;
+      text-align: center;
+      width: 15px;
+      border-style: solid;
+      border-width: 1px;
       border-color: attr(data-flag-color color);
     }
     
     .gt-flag-label {
-      font-family:'Open Sans', Arial, sans-serif;
-      color:#000;
-      display:inline-block;
-      padding:0 5px;
+      font-family: 'Open Sans', Arial, sans-serif;
+      color: #000;
+      display: inline-block;
+      padding: 0 5px;
     }
     
     .gt-flag-action-container {
-      display:none;
-      float:none;
-      position:absolute;
-      padding:0;
-      background:#fff;
-      position:absolute;
-      left:0;
-      margin:2px 0 0 0;
-      border-radius:5px;
-      box-shadow:0 7px 15px rgba(0,0,0,0.3);
-      white-space:nowrap;
-      border:1px solid #00deff;
-      z-index:2;
+      display: none;
+      float: none;
+      position: absolute;
+      padding: 0;
+      background: #fff;
+      position: absolute;
+      left: 0;
+      margin: 2px 0 0 0;
+      border-radius: 5px;
+      box-shadow: 0 7px 15px rgba(0,0,0,0.3);
+      white-space: nowrap;
+      border: 1px solid #00deff;
+      z-index: 2;
 
       &::after, 
       &::before {
-        bottom:100%;
-        left:15px;
-        border:solid transparent;
-        content:" ";
-        height:0;
-        width:0;
-        position:absolute;
-        pointer-events:none;
+        bottom: 100%;
+        left: 15px;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
       }
       
       &::after {
-        border-color:rgba(255, 255, 255, 0);
-        border-bottom-color:#fff;
-        border-width:7px;
-        margin-left:-7px;
+        border-color: rgba(255, 255, 255, 0);
+        border-bottom-color: #fff;
+        border-width: 7px;
+        margin-left: -7px;
       }
       
       &::before {
-        border-color:rgba(0, 222, 255, 0);
-        border-bottom-color:#00deff;
-        border-width:8px;
-        margin-left:-8px;
+        border-color: rgba(0, 222, 255, 0);
+        border-bottom-color: #00deff;
+        border-width: 8px;
+        margin-left: -8px;
       }
       
       .gt-flag-actions-separator {
-        margin:1px 0;
-        height:1px;
-        background:#eee;
-        float:none;
+        margin: 1px 0;
+        height: 1px;
+        background: #eee;
+        float: none;
       }
       
       a {
-        display:block;
-        padding:13px;
-        margin:0;
-        color:#000;
-        font-size:14px;
-        border-radius:3px;
+        display: block;
+        padding: 13px;
+        margin: 0;
+        color: #000;
+        font-size: 14px;
+        border-radius: 3px;
         
         .gt-flag-action-label {
-          font-family:'Open Sans', Arial, sans-serif;
-          color:#000;
-          padding:0 0 0 8px;
-          vertical-align:top;
+          font-family: 'Open Sans', Arial, sans-serif;
+          color: #000;
+          padding: 0 0 0 8px;
+          vertical-align: top;
         }
         
         &:hover {
-          background:#d5f4ff;
+          background: #d5f4ff;
         }
         
       }
@@ -395,7 +396,7 @@
     &:hover {
     
       .gt-flag-action-container {
-        display:block;
+        display: block;
       }
     
     }
@@ -403,87 +404,87 @@
   }
 
   .gt-add-flag-widget {
-    background:#4faaff;
-    color:#fff;
-    border-radius:5px;
-    padding:6px 8px 6px 6px;
-    display:inline-block;
-    cursor:pointer;
-    position:relative;
-    font-size:14px;
-    border:2px solid #fff;
+    background: #4faaff;
+    color: #fff;
+    border-radius: 5px;
+    padding: 6px 8px 6px 6px;
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    font-size: 14px;
+    border: 2px solid #fff;
 
     .gt-add-flag-widget-label {
-      font-family:'Open Sans', Arial, sans-serif;
-      vertical-align:top;
-      text-transform:uppercase;
+      font-family: 'Open Sans', Arial, sans-serif;
+      vertical-align: top;
+      text-transform: uppercase;
     }
     
     .gt-add-flags-container {
-      display:none;
-      padding:0;
-      background:#fff;
-      position:absolute;
-      left:-40px;
-      margin:8px 0 0 0;
-      border-radius:5px;
-      box-shadow:0 7px 15px rgba(0,0,0,0.3);
-      white-space:nowrap;
-      border:1px solid #00deff;
-      z-index:2;
+      display: none;
+      padding: 0;
+      background: #fff;
+      position: absolute;
+      left: -40px;
+      margin: 8px 0 0 0;
+      border-radius: 5px;
+      box-shadow: 0 7px 15px rgba(0,0,0,0.3);
+      white-space: nowrap;
+      border: 1px solid #00deff;
+      z-index: 2;
 
       &::after, 
       &::before {
         bottom:100%;
-        left:52px;
-        border:solid transparent;
-        content:" ";
-        height:0;
-        width:0;
-        position:absolute;
-        pointer-events:none;
+        left: 52px;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
       }
       
       &::after {
-        border-color:rgba(255, 255, 255, 0);
-        border-bottom-color:#fff;
-        border-width:7px;
-        margin-left:-7px;
+        border-color: rgba(255, 255, 255, 0);
+        border-bottom-color: #fff;
+        border-width: 7px;
+        margin-left: -7px;
       }
       
       &::before {
-        border-color:rgba(0, 222, 255, 0);
-        border-bottom-color:#00deff;
-        border-width:8px;
-        margin-left:-8px;
+        border-color: rgba(0, 222, 255, 0);
+        border-bottom-color: #00deff;
+        border-width: 8px;
+        margin-left: -8px;
       }
         
       .gt-flags-separator {
-        margin:1px 0;
-        height:1px;
-        background:#eee;
+        margin: 1px 0;
+        height: 1px;
+        background: #eee;
       }
       
       a {
-        display:block;
-        padding:13px;
-        margin:0;
-        font-size:14px;
-        border-radius:3px;
+        display: block;
+        padding: 13px;
+        margin: 0;
+        font-size: 14px;
+        border-radius: 3px;
         text-align: left;
         
         &.gt-new-flag {
-          color:#000;
+          color: #000;
         }
         
         .gt-flag-label {
-          font-family:'Open Sans', Arial, sans-serif;
-          color:#000;
-          padding:0 0 0 8px;
+          font-family: 'Open Sans', Arial, sans-serif;
+          color: #000;
+          padding: 0 0 0 8px;
         }
         
         &:hover {
-          background:#d5f4ff;
+          background: #d5f4ff;
         }
         
       }
@@ -491,10 +492,10 @@
     }
     
     &:hover {
-      background:#3a98f0;
+      background: #3a98f0;
     
       .gt-add-flags-container {
-        display:block;
+        display: block;
       }
     
     }
@@ -507,79 +508,76 @@
 
 /* Flag Share Dialog's additional styles. Main dialog style i sin separate .scss */
 .guider-share-flag-dialog {
-   overflow:visible !important;
-   height:auto !important;
-   
+  height: auto !important;
+  overflow: visible !important;
+
   .ui-autocomplete {
-    text-transform:none;
-    font-family:'Open Sans', Arial, sans-serif;
-    position:absolute;
-    
-    .ui-menu-item {
-      font-size:14px;
-      font-weight:300;
-      cursor:pointer;
-      color:#000;
+    font-family: 'Open Sans', Arial, sans-serif;
+    position: absolute;
+    text-transform: none;
       
+    .ui-menu-item {
+      color: #000;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 300;
+
       &[data-existing="true"] {
-        color:#aaa;
-        font-style:italic;
-        cursor:default;
+        color: #aaa;
+        cursor: default;
+        font-style: italic;
       }
     
       &:hover {
-        font-weight:300;
+        font-weight: 300;
       }
     
     }
+  
+}
     
-  }
-    
-  .guider-dialog-user-search{
-/*     position:relative; */
-  }  
   #guider-share-flag-dialog-users {
-    margin:0 0 10px;
+    margin: 0 0 10px;
   }
   
   .shares {
-    text-transform:none;
+    text-transform: none;
     
     .share {
-      position:relative;
-      padding:0 5px;
-      margin:2px 0;
-      border-radius:3px;
+      border-radius: 3px;
+      margin: 2px 0;
+      padding: 0 5px;
+      position: relative;
       
       &[data-share-status="REMOVED"] {
-        display:none;
+        display: none;
       }
       
       &:hover {
-        background:#f9f9f9;
+        background: #f9f9f9;
       }
     
       label {
-        display:block;
-        padding:0 70px 0 0;
-        font-size:14px;
-        margin:0;
+        display: block;
+        font-size: 14px;
+        margin: 0;
+        padding: 0 70px 0 0;
       }
       
       a.remove {
-        background:#de3211;
-        color:#fff;
-        display:block;
-        font-size:14px;
-        font-weight:400;
-        line-height:1;
-        padding:4px 8px;
-        position:absolute;
-        right:5px;
-        text-align:right;
-        text-decoration:none;
-        top:1px;
-        width:auto;
+        background: #de3211;
+        color: #fff;
+        display: block;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1;
+        padding: 4px 8px;
+        position: absolute;
+        right: 5px;
+        text-align: right;
+        text-decoration: none;
+        top: 1px;
+        width: auto;
       }
     
     }
@@ -589,49 +587,49 @@
 
 /* This is an unneccessary override, needs to be similar with the rest of the mainfunctions - in the future */
 
-.gt-filters-container{
-  ul{
+.gt-filters-container {
+  ul {
       list-style-type: none;
-      
-      li{
-        border-bottom: 1px solid $brd1;
-        border-left:0;        
-        a{
-          font-weight:300;
-          text-decoration:none;
-          color:#000;
-          display:inline-block;
-          box-sizing:border-box;
-          width:100%;
-          padding-top:5px;
-          padding-bottom:5px;
-          padding-left:10px;
-          border-left: 5px solid #fff;       
-          &:hover{
-            border-left:5px solid $brd1;     
-            cursor:pointer;   
-          } 
-          &.selected{
-            background-color:$bgr3;
-            border-left:5px solid $brd2;
+  }  
+  li {
+    border-bottom: 1px solid $environment-border-color;
+    border-left: 0;
 
-          }                
-        }
-        &:hover{
-          border-left:0     
-        } 
-      }
-   
+    &:hover {
+      border-left: 0;
+    } 
+  }
+  a {
+    border-left: 5px solid #fff;   
+    box-sizing: border-box;
+    color: #000;
+    display: inline-block;
+    font-weight: 300;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    text-decoration: none;
+       
+    &:hover {
+      border-left: 5px solid $environment-border-color;     
+      cursor: pointer;   
+    } 
+    
+    &.selected {
+      background-color: $bgr3;
+      border-left: 5px solid $environment-border-selected-color;
+    }                
   }  
 }
 
 .gt-filter-link[data-type="flag"] {
+  
   .icon-flag {
     margin-right: 10px;
   }
-  
 }
 
 span.ui-helper-hidden-accessible {
-  display:none;
+  display: none;
 }
