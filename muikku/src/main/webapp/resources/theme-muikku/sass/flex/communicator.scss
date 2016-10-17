@@ -401,7 +401,7 @@
 /* When the message is open */  
   
   &.open {
-    border-left: 5px solid orange;   
+    border-left: 5px solid $item-border-highlight-color;   
     padding-left: 10px;
      
     .cm-message-details {
