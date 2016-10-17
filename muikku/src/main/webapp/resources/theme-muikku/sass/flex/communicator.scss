@@ -232,8 +232,7 @@
       box-sizing: border-box;
       word-break: break-all;
       word-wrap: break-word;
-      font-weight: 600;
-      margin-top: 10px;      
+      
       .cm-message-select {
         display: inline-block;
         margin: 0 0 0 5px;
@@ -250,7 +249,6 @@
         .cm-message-sender-name {
           box-sizing: border-box;
           color: #000;
-          font-weight: 400;
           height: 1.5em;
           margin: 0 0 0 5px;
           max-width: calc(100% - 135px);
@@ -261,6 +259,7 @@
         }
             
         .cm-message-caption {
+          font-weight: 300;
           margin: 0 0 0 5px;
           word-break: break-all;
           word-wrap: break-word;
@@ -309,8 +308,7 @@
 
   &.unread {
     border-left: 1px solid $item-border-color-active;
-    font-weight: 400;
-    
+    font-weight: 600;
   }
   
   .cm-message-view {
@@ -368,15 +366,14 @@
   }
   
   .cm-message-recipients {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     color: $environment-font-color;
     display: inline-block;
-    max-width: calc(100% - 170px);
     margin: 0 0 0 5px;
+    max-width: calc(100% - 170px);
+    overflow: hidden;
+    text-overflow: ellipsis;
     vertical-align: bottom;
-    font-weight: 400;
+    white-space: nowrap;
     
     .cm-message-recipient-name {
       padding: 0 5px;
