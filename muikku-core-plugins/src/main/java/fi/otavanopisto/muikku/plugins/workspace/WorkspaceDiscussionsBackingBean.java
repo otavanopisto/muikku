@@ -76,6 +76,10 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     for (WorkspaceForumArea forumArea : forumController.listWorkspaceForumAreas(workspaceEntity)) {
       areaPermissions.put(forumArea.getId(), new AreaPermission(sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES, workspaceEntity)));
     }
+
+    canCreateArea = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_CREATEWORKSPACEFORUM, workspaceEntity);
+    canUpdateArea = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_UPDATEWORKSPACEFORUM, workspaceEntity);
+    canDeleteArea = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETEWORKSPACEFORUM, workspaceEntity);
     
     try {
       this.areaPermissions = new ObjectMapper().writeValueAsString(areaPermissions);
@@ -109,10 +113,25 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
   public Boolean getLockStickyPermission() {
     return lockStickyPermission;
   }
+
+  public boolean getCanCreateArea() {
+    return canCreateArea;
+  }
+  
+  public boolean getCanUpdateArea() {
+    return canUpdateArea;
+  }
+  
+  public boolean getCanDeleteArea() {
+    return canDeleteArea;
+  }
   
   private Long workspaceEntityId;
   private String areaPermissions;
   private Boolean lockStickyPermission;
+  private boolean canCreateArea = false;
+  private boolean canUpdateArea = false;
+  private boolean canDeleteArea = false;
 
   public static class AreaPermission {
     
