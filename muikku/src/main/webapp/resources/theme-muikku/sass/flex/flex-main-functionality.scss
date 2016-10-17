@@ -1,4 +1,5 @@
 @import "_vars.scss";
+@import "_vars_backup";
 @import "_styles.scss";
 
 .mf-content-master {
@@ -28,11 +29,13 @@
     width: 100%;
     box-sizing: border-box;
     font-weight: 400;
-    &.disabled{
+     
+    &.disabled {
      @include gradient-top-bottom(#dcdcdc,#b0b0b0,#757575);      
      color: #dadada;
      text-shadow: none;
     }
+    
     .mf-primary-function-text {
       display: inline-block;
       padding: 12px;
@@ -110,7 +113,7 @@
   }
 
   > div {
-    &:before {
+    &::before {
       margin-left: 10px;
     }
     
@@ -273,7 +276,7 @@
     margin: 0;
     
     li {
-      border-bottom: 1px solid $brd1;
+      border-bottom: 1px solid $environment-border-color;
       border-left: 5px solid #fff;
       
       a {
@@ -289,13 +292,13 @@
       }
             
       &:hover {
-        border-left: 5px solid $brd1;     
+        border-left: 5px solid $environment-border-color;     
         cursor: pointer;   
       }
        
       &.selected {
         background-color: $bgr3;
-        border-left: 5px solid $brd2;
+        border-left: 5px solid $environment-border-selected-color;
         
         a {
           font-weight: normal;
@@ -333,8 +336,8 @@
   margin-top: 5px;
   
   .mf-view-tool {
-    padding: 0 10px 0 10px;
-    border: 1px solid $brd2;
+    padding: 0 10px;
+    border: 1px solid $environment-border-selected-color;
     background-color: $bgr1; 
     font-size: 1.5em;
     float: left;
@@ -364,7 +367,7 @@
     padding: 10px 10px 10px 40px !important;
   }
   
-  &:before {
+  &::before {
     display: inline-block;
     content: "\e61c";
     font-family: 'muikku' !important;
@@ -389,7 +392,7 @@
 
 
 .mf-content-toolbar {
-  /* padding: 20px 0 0 0px; */
+  
 }
 
 .mf-content-tool-container {
@@ -409,7 +412,7 @@
 }
 
 .mf-tool-action-container {  
-  a{
+  a {
     color: #72d200;    
   }
   padding: 0 0 10px 20px;
@@ -419,7 +422,7 @@ ul.mf-tool-label-container {
   padding: 0 0 5px 0;
   margin-top: 0;
   
-  li{
+  li {
     list-style-type: none;
   }
 }
@@ -431,7 +434,8 @@ ul.mf-tool-label-container {
   z-index: 99;
   text-align: left;
   top: 37px;
-  > div{
+  
+  > div {
     box-shadow: 0 7px 15px rgba(0,0,0,0.3);
   }
   
@@ -452,8 +456,8 @@ ul.mf-tool-label-container {
   border: 1px solid #72D200;
   border-radius: 3px;
   
-  &:after, 
-  &:before {
+  &::after, 
+  &::before {
     margin-top: 10px;      
     bottom: 100%;
     border: solid transparent;
@@ -464,14 +468,14 @@ ul.mf-tool-label-container {
     pointer-events: none;
   }  
 
-  &:after {
+  &::after {
     border-color: rgba(255, 255, 255, 0);
     border-bottom-color: #fff;
     border-width: 7px;
     margin-left: -7px;
   }
   
-  &:before {
+  &::before {
     border-color: rgba(0, 222, 255, 0);
     border-bottom-color: #72D200;
     border-width: 8px;
@@ -499,7 +503,7 @@ ul.mf-tool-label-container {
 
   &.button {
     background-color: #72d200; 
-    border: 1px solid $brd2;
+    border: 1px solid $environment-border-selected-color;
     color: #fff;
     cursor: pointer;
     display: inline-block;    
@@ -522,7 +526,7 @@ ul.mf-tool-label-container {
   }
     
   > div { 
-    &:before {
+    &::before {
       font-size: 23px;
       color: #fff;
     }
@@ -693,7 +697,7 @@ ul.mf-tool-label-container {
   }
 
   .content {
-    padding: 0 10px 10px 10px;
+    padding: 0 10px 10px;
   }
 
   .mf-item-label {
@@ -843,7 +847,7 @@ ul.mf-tool-label-container {
     padding: 5px;
   }
   
-  .mf-item-short:after {
+  .mf-item-short::after {
     content : " -"  ;
   }
   
@@ -1010,92 +1014,79 @@ ul.mf-tool-label-container {
       width: 95px;
       margin-left: 5px;
     }
-    
-    .mf-textfield {
-      position: relative;
-      top: 0;
-     
-      
-      .mf-textfield-subcontainer {
-        border: 2px solid #fff;
-        color: #000;
-        border-radius: 3px;
-        background-color: #fff;
-        
-        .mf-textfield-title {
-          color: $formTitle;
-          flex-shrink: 0;
-          overflow:  hidden;
-          text-overflow: ellipsis;
-        }
-        
-        .mf-textfield-content {
-          color: $formFontColor;
-          flex-shrink: 1;
-          font-size: 14px;
-        }
-        
-      }
-      
-      input[type="text"] {
-        border: 0 solid #fff;
-        color: #000;
-        border-radius: 3px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        padding-left: 5px;
-        font-size: 14px;
-        &:focus {
-          background-color: #eee;     
-          border: 0;
-          box-shadow: none;    
-        }
-        
-        &:hover {
-          background-color: #eee;   
-          border: 0;
-          box-shadow: none;      
-        }
-        
-        &.mf-textfield-subject {        
-          
-          &:focus {
-            background-color: #eee;         
-          }
-          
-          &:hover {
-            background-color: #eee;         
-          }
-         
-        }
-        
-      }
-      
-    }
-    
-    .mf-select {
-      position: relative;
-      top: 0;
-    
-      select {        
-        width: 100%;
-        
-        option {
-          padding: 8px;
-        }
-      
-      }
-    
-    }
-    
   }
 
+  .mf-form-element, 
+  .mf-textfield {
+    position: relative;
+    top: 0;
+      
+    .mf-form-element-subcontainer, 
+    .mf-textfield-subcontainer {
+      border: 2px solid #fff;
+      color: #000;
+      border-radius: 3px;
+      background-color: #fff;
+    }
+  
+    .mf-form-element-subcontainer-item {
+      padding: 5px;
+    }
+      
+    .mf-textfield-title {
+      color: $formTitle;
+      flex-shrink: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .mf-textfield-content {
+      color: $formFontColor;
+      flex-shrink: 1;
+      font-size: 14px;
+    }
+    
+    input[type="text"] {
+      border: 0 solid #fff;
+      color: #000;
+      border-radius: 3px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-left: 5px;
+      font-size: 14px;
+      
+      &:focus {
+        background-color: #eee;     
+        border: 0;
+        box-shadow: none;    
+      }
+      
+      &:hover {
+        background-color: #eee;   
+        border: 0;
+        box-shadow: none;      
+      }
+    }
+  }
+  
+  .mf-select {
+    position: relative;
+    top: 0;
+  
+    select {        
+      width: 100%;
+    }
+
+    option {
+      padding: 8px;
+    }  
+  }
 }
 
 .mf-toolbar {
       
   input {
-    border-radius: 0px;
+    border-radius: 0;
     border: 0;
     color: #fff;
     font-weight: 400;
@@ -1161,7 +1152,7 @@ ul.mf-tool-label-container {
   
   .mf-items-tool {
     background-color: $bgr1;
-    border: 1px solid $brd2;
+    border: 1px solid $environment-border-selected-color;
     color: #000;
     cursor: pointer;
     font-size: 1.5em;
@@ -1246,89 +1237,89 @@ div[class*="-side-button-dropdown"] {
 /* Categories */
 
 .mf-category-1-brd {
-  border-left: 5px solid $category1;
+  border-left: 5px solid $category-color-1;
 }
 
 .mf-category-2-brd {
-  border-left: 5px solid $category2;
+  border-left: 5px solid $category-color-2;
 }
 
 .mf-category-3-brd {
-  border-left: 5px solid $category3;
+  border-left: 5px solid $category-color-3;
 }
 
 .mf-category-4-brd {
-  border-left: 5px solid $category4;
+  border-left: 5px solid $category-color-4;
 }
 
 .mf-category-5-brd {
-  border-left: 5px solid $category5;
+  border-left: 5px solid $category-color-5;
 }
 
 .mf-category-6-brd {
-  border-left: 5px solid $category6;
+  border-left: 5px solid $category-color-6;
 }
 
 .mf-category-7-brd {
-  border-left: 5px solid $category7;
+  border-left: 5px solid $category-color-7;
 }
 
 .mf-category-8-brd {
-  border-left: 5px solid $category8;
+  border-left: 5px solid $category-color-8;
 }
 
 .mf-category-9-brd {
-  border-left: 5px solid $category9;
+  border-left: 5px solid $category-color-9;
 }
 
 .mf-category-10-brd {
-  border-left: 5px solid $category10;
+  border-left: 5px solid $category-color-10;
 }
 
 .mf-category-11-brd {
-  border-left: 5px solid $category11;
+  border-left: 5px solid $category-color-11;
 }
 
 .mf-category-1-font {
-  color: $category1;
+  color: $category-color-1;
 }
 
 .mf-category-2-font {
-  color: $category2;
+  color: $category-color-2;
 }
 
 .mf-category-3-font {
-  color: $category3;
+  color: $category-color-3;
 }
 
 .mf-category-4-font {
-  color: $category4;
+  color: $category-color-4;
 }
 
 .mf-category-5-font {
-  color: $category5;
+  color: $category-color-5;
 }
 
 .mf-category-6-font {
-  color: $category6;
+  color: $category-color-6;
 }
 
 .mf-category-7-font {
-  color: $category7;
+  color: $category-color-7;
 }
 
 .mf-category-8-font {
-  color: $category8;
+  color: $category-color-8;
 }
 
 .mf-category-9-font {
-  color: $category9;
+  color: $category-color-9;
 }
 
 .mf-category-10-font {
-  color: $category10;
+  color: $category-color-10;
 }
 
 .mf-category-11-font {
-  color: $category11;
+  color: $category-color-11;
 }

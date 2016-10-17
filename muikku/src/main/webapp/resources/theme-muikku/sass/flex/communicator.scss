@@ -15,7 +15,7 @@
   .ui-menu-item {
   
     &[data-existing="true"] {
-      color: #aaa;
+      color: $environment-font-disabled-color;
       font-style: italic;
       cursor: default;
     }
@@ -41,7 +41,7 @@
     
    .cm-message-tool {
      padding: 0 10px;
-     border: 1px solid $brd2;
+     border: 1px solid $environment-border-selected-color;
      color: #000;
      cursor: pointer;
     }   
@@ -54,63 +54,58 @@
     margin-left: 10px;
     padding: 9px 0;
 
-    &:before {
+    &::before {
       margin-right: 5px;
-      font-family: 'muikku';      
+      font-family: $environment-icon-family;      
     }     
 
 
     &.user {
 
-      &:before {
-        color: orange;
+      &::before {
+        color: $target-user-icon-color;
       }     
         
     }
     
     &.usergroup {
 
-      &:before {
-        color: green;
+      &::before {
+        color: $target-workspace-icon-color;
       }
            
     }
       
     &.workspace {
 
-      &:before {
-         color: blue;
+      &::before {
+         color: $target-group-icon-color;
       }     
     
     }     
     
     &:hover {   
-      color: red;
+      color: $target-remove-font-color;
       
-      &:before {
-        color: red;
+      &::before {
+        color: $target-group-icon-color;
       }
       
     } 
             
-  }  
-   
-  .cm-message-recipient-remove {
-    background-color: $bgr2;
-    margin-top: 0 !important;
-  }
+  }     
 
 }
 
 .cm-box {
   
   a {
-    font-family: "Open Sans",Arial,sans-serif;
+    font-family: $environment-font-family;
   }
   
   &::before {
     margin-left: 5px;
-    color: #dadada;
+    color: $navigation-bar-icon-color;
   }
   
 }
@@ -128,7 +123,7 @@
 }
 
 .cm-categories {
-  background-color: #fff;
+  background-color: $environment-background-color;
    
   ul {
     list-style-type: none;
@@ -136,27 +131,27 @@
     margin: 0;
      
     li {
-      border-bottom: 1px solid $brd1;
-      border-left: 5px solid #fff;
+      border-bottom: 1px solid $environment-border-color;
+      border-left: 5px solid $navigation-bar-border-color;
        
       a {
         font-weight: 300;
         text-decoration: none;
         height: 30px;
-        color: #000;
+        color: $environment-font-color;
         display: inline-block;
         box-sizing: border-box;
         padding-top: 8px;      
       }
             
       &:hover {
-        border-left: 5px solid $brd1;     
+        border-left: 5px solid $navigation-bar-hover-border-color;     
         cursor: pointer;   
       } 
       
       &.selected {
-        background-color: $bgr3;
-        border-left: 5px solid $brd2;
+        background-color: $environment-background-selected-color;
+        border-left: 5px solid $environment-border-selected-color;
         
         a {
           font-weight: normal;
@@ -173,8 +168,8 @@
 
 .cm-label-menu-content {
   
-  &:before,
-  &:after {
+  &::before,
+  &::after {
     left:18px;
   }
   
@@ -189,7 +184,7 @@
   &.loading {
     padding: 20px;
   
-    &:after {
+    &::after {
       @include generic-loader(50px);
     
       margin-left: auto;
@@ -202,7 +197,7 @@
 }
 
 .cm-message {
-  border-left: 1px solid #fff;
+  border-left: 1px solid $item-border-color;
   box-sizing: border-box;
   margin: 0 0 5px;
   min-width: 300px;
@@ -210,9 +205,27 @@
   .cm-message-details {
     cursor: default; /* Override mf-item-details */
   }
+
+  .cm-message-recipient-arrow {
+    font-size: 12px;
+    margin: 0 5px;
+    color: $item-target-icon-color;
+  }  
+
+  .cm-message-recipient-name {
+    margin-right: 5px;
+    color: $target-font-color;
   
+    &:not(:last-child) {
+      &::after {
+        content: ",";
+      }
+     
+    }  
+  }
+
   .cm-message-details-container {
-    background-color: #fff;
+    background-color: $environment-background-color;
     position: relative;
     
     .cm-message-header {
@@ -227,7 +240,7 @@
       }
       
       .cm-message-header-container {
-        box-sizing: border-box;
+        box-sizing:  border-box;
         cursor: pointer;
         display: inline-block; 
         position: relative;
@@ -236,7 +249,6 @@
         .cm-message-sender-name {
           box-sizing: border-box;
           color: #000;
-          font-weight: 400;
           height: 1.5em;
           margin: 0 0 0 5px;
           max-width: calc(100% - 135px);
@@ -247,6 +259,7 @@
         }
             
         .cm-message-caption {
+          font-weight: 300;
           margin: 0 0 0 5px;
           word-break: break-all;
           word-wrap: break-word;
@@ -265,9 +278,9 @@
       position: absolute;
       right: 5px;
       top: 5px;
-      width: 130px;
+      width: 140px;
       text-align: right;
-      background: #fff;
+      background: $environment-background-color;
       
       .cm-message-latest {
         display: inline-block;
@@ -280,7 +293,7 @@
         .cm-message-replies {
           font-weight: 600;
           width: 100%;
-          background-color: $hlBgr;
+          background-color: $environment-background-highlight-color;
           text-align: center;
           padding: 5px;
         }
@@ -294,9 +307,8 @@
   }
 
   &.unread {
-    border-left: 1px solid #0099ff;
-    font-weight: 400;
-    
+    border-left: 1px solid $item-border-color-active;
+    font-weight: 600;
   }
   
   .cm-message-view {
@@ -336,10 +348,10 @@
   
   .cm-message-tool {
     padding: 0 10px;
-    border: 1px solid $brd2;
-    background-color: $bgr1; 
+    border: 1px solid $environment-border-selected-color;
+    background-color: $environment-background-dim-color; 
     display: inline-block;
-    color: #000;
+    color: $environment-font-color;
     cursor: pointer;
     
     &:not(:first-child) {
@@ -350,19 +362,18 @@
 
   .cm-message-reply {
     padding: 5px 5px 5px 10px;
-    background-color: #fff;    
+    background-color: $environment-background-color;    
   }
   
   .cm-message-recipients {
+    color: $environment-font-color;
+    display: inline-block;
+    margin: 0 0 0 5px;
+    max-width: calc(100% - 170px);
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    color: #000;
-    display: inline-block;
-    max-width: calc(100% - 170px);
-    margin: 0 0 0 5px;
     vertical-align: bottom;
-    font-weight: 400;
+    white-space: nowrap;
     
     .cm-message-recipient-name {
       padding: 0 5px;
@@ -371,7 +382,7 @@
 
  .cm-message-selected-recipients {
    padding: 5px;
-   background-color: #fff;
+   background-color: $environment-background-color;
    
    span {
      display: inline-block;
@@ -387,7 +398,7 @@
 /* When the message is open */  
   
   &.open {
-    border-left: 5px solid orange;   
+    border-left: 5px solid $item-border-highlight-color;   
     padding-left: 10px;
      
     .cm-message-details {
@@ -395,10 +406,10 @@
     }
      
     &.owner {
-      border-left: 5px solid $brd2; 
+      border-left: 5px solid $environment-border-selected-color; 
        
       h3 {
-        color: #dadada;
+        color: $environment-font-disabled-color;
       }
        
     }       
@@ -408,9 +419,7 @@
       &.default {
         background-image:url("/gfx/default-user-picture.jpg");
         background-size: 100%;
-        border: 2px solid #fff;
         border-radius: 40px;
-        box-shadow: 0 0 0 2px #00deff;
         margin: 2px;
       }
      
@@ -433,6 +442,8 @@
       
       .cm-message-header-content-primary {
         font-weight: 400;
+        max-width:80%;
+        
       } 
     
     } 

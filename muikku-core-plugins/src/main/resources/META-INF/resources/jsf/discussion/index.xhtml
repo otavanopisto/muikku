@@ -29,7 +29,8 @@
   
   <ui:define name="mf-content-master"> 
     <input type="hidden" name="userId" value="#{sessionBackingBean.loggedUserId}"/>
-    <input type="hidden" name="areaPermissions" value="#{discussionBackingBean.areaPermissions}"/>  
+    <input type="hidden" name="areaPermissions" value="#{discussionBackingBean.areaPermissions}"/>
+    <input type="hidden" name="lockStickyPermission" value="#{discussionBackingBean.lockStickyPermission}"/>
     <div id="discussion">
       <h2 class="main-functionality-page-title">#{i18n.text['plugin.forum.pageTitle']}</h2>
       <ui:insert name="mf-content-functions">

@@ -1,4 +1,5 @@
 @import "_vars.scss";
+@import "_vars_backup";
 @import "_styles.scss";
 
 body { 
@@ -6,7 +7,7 @@ body {
   #readingView {
 
     .context-wrapper {
-      padding:20px 20px 20px 20px;
+      padding:20px;
     
       section {
         padding:0 20px 0 0;
@@ -15,7 +16,7 @@ body {
           margin:20px 0;
           
           &:first-child {
-            margin:0 0 20px 0;
+            margin:0 0 20px;
           }
         
           header {
@@ -36,7 +37,7 @@ body {
               font-size:16px;
               font-weight:300;
               background:#fff;
-              padding:5px 0 10px 0;
+              padding:5px 0 10px;
               font-style:italic;
               color:#666;
               border-bottom:1px solid #eee;
@@ -71,7 +72,7 @@ body {
         padding:0 0 0 10px;
         
         .gc-navigation-item {
-          margin:0 0 20px 0;
+          margin:0 0 20px;
           border-radius:5px;
           
           a.gc-navigation-title {

@@ -176,7 +176,7 @@
                 .html($(counterpart).html())
                 .next('.counterpart-placeholder')
                 .remove();
-              this._swapElements(this.options.meta.selectedTerm, $(e.target));
+              this._swapElements(this.options.meta.selectedTerm, $(e.target).closest('.muikku-connect-field-counterpart'));
             }
           }, this));
           
@@ -273,8 +273,6 @@
         }
       },
       _swapElements: function(term, counterpart){
-      term.html(term.attr("data-title"));
-      counterpart.html(counterpart.attr("data-title"));
         var termIndex = $(term).parent().find('.muikku-connect-field-term').index(term);
         var counterPartIndex = $(counterpart).parent().find('.muikku-connect-field-counterpart').index(counterpart);
         var occupyingElement = this._element.find( '.muikku-connect-field-counterpart:eq( '+termIndex+' )' );
@@ -297,8 +295,6 @@
         this._updateValues();
         this._element.find('.muikku-connect-field-term-selected').removeClass('muikku-connect-field-term-selected');
         this.options.meta.selectedTerm = null;
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, term[0]]);
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, counterpart[0]]);
       },
       _destroy : function() {
       }

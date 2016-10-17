@@ -571,7 +571,7 @@ a.header {
   opacity:1;
   visibility:visible;
   margin-left:-40px;
-  border:1px dotted $brd1;
+  border:1px dotted $environment-border-color;
   @include dynNaviGr(#fff,$bgr1); 
   @include background-image('gfx/icons/32x32/actions/navigate-chevron_l.png');   
 }

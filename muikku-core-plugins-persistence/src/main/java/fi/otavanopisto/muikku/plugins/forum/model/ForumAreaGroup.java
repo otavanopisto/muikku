@@ -9,8 +9,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.otavanopisto.muikku.model.util.ArchivableEntity;
+
 @Entity
-public class ForumAreaGroup {
+public class ForumAreaGroup implements ArchivableEntity {
 
   public Long getId() {
     return id;
@@ -41,5 +43,5 @@ public class ForumAreaGroup {
 
   @NotNull
   @Column(nullable = false)
-  private Boolean archived = Boolean.FALSE;
+  private Boolean archived;
 }

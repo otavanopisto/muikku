@@ -255,6 +255,7 @@
     newMessageDialog: function (options) {
       var dialog = $('<div>')
         .discussionNewMessageDialog($.extend({
+          lockStickyPermission: this.options.lockStickyPermission,
           ioController: this.options.ioController
         }, options||{}));
       
@@ -277,6 +278,7 @@
     editMessageDialog: function (options) {
       var dialog = $('<div>')
         .discussionEditMessageDialog($.extend({
+          lockStickyPermission: this.options.lockStickyPermission,
           ioController: this.options.ioController
         }, options||{}));
       
@@ -973,7 +975,6 @@
     footerDialogClose: function() {
       $(document.body).removeClass('footerDialogOpen').removeAttr('style');
     }
-    
   });
   
   $.widget("custom.discussionNewMessageDialog", $.custom.discussionAbstractMessageDialog, {
@@ -996,9 +997,12 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          var areas = results[0];
+          var parameters = {
+              areas: results[0],
+              lockStickyPermission: this.options.lockStickyPermission
+          };
           
-          renderDustTemplate('/discussion/discussion_create_message.dust', areas, $.proxy(function (text) {
+          renderDustTemplate('/discussion/discussion_create_message.dust', parameters, $.proxy(function (text) {
             this.element.html(text);
             
             if (this.options.areaId) {
@@ -1048,8 +1052,13 @@
           return;
         }
 
-        var sticky = this.element.find('*[name="sticky"]').val() == 'true';
-        var locked = this.element.find('*[name="locked"]').val() == 'true';
+        var sticky = false;
+        var locked = false;
+        
+        if (this.options.lockStickyPermission) {
+          sticky = this.element.find("input[name='sticky']").prop("checked") ? true : false;
+          locked = this.element.find("input[name='locked']").prop("checked") ? true : false;
+        }
         
         this.options.ioController.createThread(forumAreaId, title, message, sticky, locked, $.proxy(function(err, result) {
           if (err) {
@@ -1198,8 +1207,14 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          renderDustTemplate('/discussion/discussion_edit_message.dust', thread, $.proxy(function (text) {
+          var parameters = {
+              thread: thread,
+              lockStickyPermission: this.options.lockStickyPermission
+          };
+          
+          renderDustTemplate('/discussion/discussion_edit_message.dust', parameters, $.proxy(function (text) {
             this.element.html(text);
+            
             this._messageEditor = CKEDITOR.replace(this.element.find('textarea[name="message"]')[0], $.extend(this.options.ckeditor, {
               draftKey: 'discussion-edit-message-' + this.options.areaId + '-' + this.options.threadId,
               on: {
@@ -1224,6 +1239,7 @@
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
         var title = this.element.find('*[name="title"]').val();
+        
         if (!title && !title.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.notitle'));
           return;
@@ -1235,14 +1251,28 @@
           return;
         }
         
-        this.options.ioController.updateThread(this.options.areaId, this.options.threadId, title, message, $.proxy(function(err, result) {
+        this.options.ioController.loadThread(this.options.areaId, this.options.threadId, $.proxy(function(err, thread) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
-            this.destroyEditor(true);
-            $('.discussion').discussion('reloadThread');
-            this.element.trigger('dialogClose');
-            this.element.remove();
+            var sticky = thread.sticky;
+            var locked = thread.locked;
+            
+            if (this.options.lockStickyPermission) {
+              sticky = this.element.find("input[name='sticky']").prop("checked") ? true : false;
+              locked = this.element.find("input[name='locked']").prop("checked") ? true : false;
+            }
+          
+            this.options.ioController.updateThread(this.options.areaId, this.options.threadId, title, message, sticky, locked, $.proxy(function(err, result) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                this.destroyEditor(true);
+                $('.discussion').discussion('reloadThread');
+                this.element.trigger('dialogClose');
+                this.element.remove();
+              }
+            }, this));
           }
         }, this));
       }

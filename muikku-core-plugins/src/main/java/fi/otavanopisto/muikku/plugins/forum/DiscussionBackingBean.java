@@ -32,10 +32,12 @@ public class DiscussionBackingBean {
 
   @Inject
   private ForumController forumController;
-  
+
   @RequestAction
   public String init() {
     List<EnvironmentForumArea> forumAreas = forumController.listEnvironmentForums();
+    lockStickyPermission = sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES);
+    
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
     for (EnvironmentForumArea forumArea : forumAreas) {
@@ -51,12 +53,17 @@ public class DiscussionBackingBean {
     return null;
   }
   
+  public Boolean getLockStickyPermission() {
+    return lockStickyPermission;
+  }
+  
   public String getAreaPermissions() {
     return areaPermissions;
   }
   
   private String areaPermissions;
-
+  private Boolean lockStickyPermission;
+  
   public static class AreaPermission {
     
     public AreaPermission(Boolean removeThread) {

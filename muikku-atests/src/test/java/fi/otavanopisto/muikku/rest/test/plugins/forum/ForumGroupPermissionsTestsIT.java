@@ -4,11 +4,10 @@ import org.junit.Test;
 
 import com.jayway.restassured.response.Response;
 
-import fi.otavanopisto.muikku.AbstractRESTTest;
 import fi.otavanopisto.muikku.plugins.forum.rest.ForumAreaGroupRESTModel;
 
-public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
-  
+public class ForumGroupPermissionsTestsIT extends AbstractForumRESTTestsIT {
+
   @Test
   public void testCreateAreaGroupAdmin() throws NoSuchFieldException {
     ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_create_forumareagroup");
@@ -21,7 +20,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
     
-    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteAreaGroup(new Long(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -36,7 +35,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
     
-    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteAreaGroup(new Long(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -51,7 +50,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
     response.then()
       .statusCode(200);
     
-    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", new Long(response.body().jsonPath().getInt("id")));
+    permanentDeleteAreaGroup(new Long(response.body().jsonPath().getInt("id")));
   }
   
   @Test
@@ -114,7 +113,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
       .then()
       .statusCode(200);
     
-    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", areaGroupId);
+    permanentDeleteAreaGroup(areaGroupId);
   }
 
   @Test
@@ -133,7 +132,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
       .then()
       .statusCode(200);
     
-    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", areaGroupId);
+    permanentDeleteAreaGroup(areaGroupId);
   }
 
   @Test
@@ -152,7 +151,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
       .then()
       .statusCode(200);
     
-    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", areaGroupId);
+    permanentDeleteAreaGroup(areaGroupId);
   }
 
   @Test
@@ -171,7 +170,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
       .then()
       .statusCode(200);
     
-    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", areaGroupId);
+    permanentDeleteAreaGroup(areaGroupId);
   }
 
   @Test
@@ -190,7 +189,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
       .then()
       .statusCode(204);
     
-    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", id);
+    permanentDeleteAreaGroup(id);
   }
   
   @Test
@@ -209,7 +208,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
       .then()
       .statusCode(403);
     
-    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", id);
+    permanentDeleteAreaGroup(id);
   }
   
   @Test
@@ -228,7 +227,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
       .then()
       .statusCode(403);
     
-    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", id);
+    permanentDeleteAreaGroup(id);
   }
   
   @Test
@@ -247,7 +246,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTTest {
       .then()
       .statusCode(403);
     
-    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", id);
+    permanentDeleteAreaGroup(id);
   }
   
 }

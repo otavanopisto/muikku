@@ -193,5 +193,146 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
+ 
+  @Test
+  public void communicatorCreateLabelTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    try{
+      try{
+        login();
+        navigate("/communicator", true);
+        waitAndClick(".mf-tool-container .cm-add-label-menu");
+        waitForPresent("#communicatorNewlabelField");
+        sendKeys("#communicatorNewlabelField", "Test");
+        waitAndClick("#newLabelSubmit");
+        waitForPresent(".mf-label-name a span");
+        assertText(".mf-label-name a span", "Test");
+        
+      }finally{
+        deleteCommunicatorUserLabels(admin.getId());
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+
+  @Test
+  public void communicatorAddLabelTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      login();
+      try{
+        long recipient = getUserIdByEmail("admin@example.com");
+        long sender = getUserIdByEmail("student@example.com");
+        createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
+        createCommunicatorUserLabel(admin.getId(), "test");
+        navigate("/communicator#inbox", true);
+        waitAndClick("input[name=\"messageSelect\"]");
+        waitAndClick(".mf-tool-container .cm-add-label-menu");
+        waitAndClick(".cm-label-link-name");
+        reloadCurrentPage();
+        waitForPresent(".cm-message-header-content-primary");
+        assertText(".cm-message-header-content-secondary .cm-message-label span", "test");
+        waitAndClick(".cm-folder .cm-label-name");
+        waitForPresent(".cm-message-header-container");
+        assertText(".cm-message-header-container .cm-message-caption", "Test captiontest");
+      }finally{
+        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorMessages();
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void communicatorEditLabelTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      login();
+      try{
+        long recipient = getUserIdByEmail("admin@example.com");
+        long sender = getUserIdByEmail("student@example.com");
+        createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
+        createCommunicatorUserLabel(admin.getId(), "test");
+        navigate("/communicator#inbox", true);
+        waitAndClick(".mf-label-functions");
+        waitAndClick(".mf-label-function-edit");
+        waitForPresent(".mf-label-edit-dialog input[name=\"name\"]");
+        clearElement(".mf-label-edit-dialog input[name=\"name\"]");
+        waitAndSendKeys(".mf-label-edit-dialog input[name=\"name\"]", "edited");
+        waitAndClick(".save-button span");
+        assertText(".cm-folder .cm-label-name a span", "edited");
+      }finally{
+        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorMessages();
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+
+  @Test
+  public void communicatorDeleteLabelTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      login();
+      try{
+        long recipient = getUserIdByEmail("admin@example.com");
+        long sender = getUserIdByEmail("student@example.com");
+        createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
+        createCommunicatorUserLabel(admin.getId(), "test");
+        navigate("/communicator#inbox", true);
+        waitAndClick(".mf-label-functions");
+        waitAndClick(".mf-label-function-delete");
+        waitAndClick(".save-button span");
+        assertGoesAway(".cm-folder .cm-label-name a span", 5l);
+      }finally{
+        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorMessages();
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void communicatorMoveToTrashTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      login();
+      try{
+        long recipient = getUserIdByEmail("admin@example.com");
+        long sender = getUserIdByEmail("student@example.com");
+        createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
+        navigate("/communicator#inbox", true);
+        waitAndClick("input[name=\"messageSelect\"]");
+        
+        waitAndClick(".icon-delete");
+        assertGoesAway(".cm-message .cm-message-caption", 10l);
+        waitAndClick("a[href$=\"trash\"]");
+        waitForPresent(".cm-message-header-container .cm-message-caption");
+        assertText(".cm-message-header-container .cm-message-caption", "Test caption");
+      }finally{
+        deleteCommunicatorMessages();
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }  
   
 }

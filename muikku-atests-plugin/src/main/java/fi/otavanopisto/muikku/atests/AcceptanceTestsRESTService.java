@@ -48,6 +48,7 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNo
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
@@ -242,6 +243,29 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     for (CommunicatorMessageId x : communicatorController.listAllMessageIds())
       communicatorController.delete(x);
     
+    return Response.noContent().build();
+  }
+  
+  @POST
+  @Path("/communicator/labels/user/{ID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response createCommunicatorUserLabel(@PathParam ("ID") Long userId, fi.otavanopisto.muikku.atests.CommunicatorUserLabelRESTModel payload) {
+    UserEntity userEntity = userEntityController.findUserEntityById(userId);
+    CommunicatorUserLabelRESTModel newUserLabel = new CommunicatorUserLabelRESTModel(null, payload.getName(), payload.getColor());
+    communicatorController.createUserLabel(newUserLabel.getName(), newUserLabel.getColor(), userEntity);
+    return Response.ok().build();
+  }
+  
+  @DELETE
+  @Path("/communicator/labels/user/{ID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteCommunicatorUserLabels(@PathParam ("ID") Long userId) {
+    UserEntity userEntity = userEntityController.findUserEntityById(userId);
+    List<CommunicatorUserLabel> userLabels = communicatorController.listUserLabelsByUserEntity(userEntity);
+    for (CommunicatorUserLabel communicatorUserLabel : userLabels) {
+      communicatorController.delete(communicatorUserLabel);      
+    }
+
     return Response.noContent().build();
   }
   
@@ -532,10 +556,10 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     if (forumArea == null) {
       return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
     }
-//    forumController.list
-    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE);
+
+    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE, true);
     for (ForumThread thread : threads) {
-      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE);
+      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE, true);
       for (ForumThreadReply reply : replies) {
         forumController.deleteReply(reply); 
       }
@@ -823,9 +847,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
     }
 
-    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE);
+    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE, true);
     for (ForumThread thread : threads) {
-      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE);
+      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE, true);
       for (ForumThreadReply reply : replies) {
         forumController.deleteReply(reply); 
       }

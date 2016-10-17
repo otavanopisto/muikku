@@ -13,17 +13,17 @@ $exerciseCorrectAnswersOnRequest:#62c3eb;
 
 /* Category - colors */
 
-$category1 : #0099ff;
-$category2 : #ff9900;
-$category3 : #ff008d;
-$category4 : #0bf0f2;
-$category5 : #f00bf2;
-$category6 : #47ccae;
-$category7 : #7082b0;
-$category8 : #6eb5cf;
-$category9 : #ff0000;
-$category10 : #0cff00;
-$category11 : #000000;
+$category-color-1 : #0099ff;
+$category-color-2 : #ff9900;
+$category-color-3 : #ff008d;
+$category-color-4 : #0bf0f2;
+$category-color-5 : #f00bf2;
+$category-color-6 : #47ccae;
+$category-color-7 : #7082b0;
+$category-color-8 : #6eb5cf;
+$category-color-9 : #ff0000;
+$category-color-10 : #0cff00;
+$category-color-11 : #000000;
 
 /* Fonts */
 
@@ -46,8 +46,8 @@ $sc: rgba(218,218,218,1);
 
 /* Border */
 $brd:#dadada;
-$brd1:#ededed;
-$brd2:#dadada;
+$environment-border-color:#ededed;
+$environment-border-selected-color:#dadada;
 $brd3:#eee;
 $brd-top:#9bbee6;
 
