@@ -731,7 +731,9 @@ public class UserRESTService extends AbstractRESTService {
                 .build();
     }
     
-    if (Objects.equals(ownerIdentifier.getIdentifier(), loggedUserIdentifier.getIdentifier())) {
+    if (Objects.equals(ownerIdentifier.getIdentifier(), loggedUserIdentifier.getIdentifier()) &&
+        Objects.equals(ownerIdentifier.getDataSource().getIdentifier(),
+                       loggedUserIdentifier.getDataSource().getIdentifier())) {
       isOwner = true;
     }
     
