@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>CREATE TABLE TranscriptOfRecordsFile(
+    id BIGINT(20) PRIMARY KEY,
+    userEntityId BIGINT(20) NOT NULL,
+    fileName VARCHAR(4096) NOT NULL,
+    archived TINYINT(1) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description VARCHAR(4096) NOT NULL
+  )</sql>
+
+</update>

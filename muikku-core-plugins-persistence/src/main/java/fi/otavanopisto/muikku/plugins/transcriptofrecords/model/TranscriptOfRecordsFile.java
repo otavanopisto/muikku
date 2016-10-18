@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -67,7 +65,7 @@ public class TranscriptOfRecordsFile {
   private Long userEntityId;
   
   @NotNull
-  @Column(nullable = false)
+  @Column(nullable = false, length = 4096)
   private String fileName;
   
   @NotNull
@@ -75,7 +73,7 @@ public class TranscriptOfRecordsFile {
   private String title;
 
   @NotNull
-  @Column(nullable = false)
+  @Column(nullable = false, length = 4096)
   private String description;
   
   @NotNull
